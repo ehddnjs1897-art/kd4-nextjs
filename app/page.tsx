@@ -205,7 +205,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
               color: "var(--gold)",
               marginBottom: "16px",
               padding: "6px 10px",
-              background: "rgba(196,165,90,0.08)",
+              background: "rgba(59,91,219,0.08)",
               borderRadius: "2px",
               borderLeft: "2px solid var(--gold)",
             }}
@@ -362,50 +362,109 @@ export default function HomePage() {
             alignItems: "center",
           }}
         >
-          {/* 상단 골드 바 */}
+          {/* 상단 바 */}
           <div
             style={{
               width: "100%",
               padding: "20px 24px",
               display: "flex",
               justifyContent: "center",
-              borderBottom: "1px solid rgba(196,165,90,0.2)",
-              background: "rgba(0,0,0,0.3)",
-              backdropFilter: "blur(4px)",
+              borderBottom: "1px solid rgba(59,91,219,0.25)",
+              background: "rgba(0,0,0,0.4)",
+              backdropFilter: "blur(6px)",
             }}
           >
             <span
               style={{
                 fontFamily: "var(--font-display)",
-                fontSize: "0.8rem",
-                letterSpacing: "0.3em",
-                color: "var(--gold)",
+                fontSize: "0.72rem",
+                letterSpacing: "0.38em",
+                color: "rgba(255,255,255,0.45)",
+                textTransform: "uppercase",
               }}
             >
-              KD4 ACTING STUDIO
+              SINCHON · SEOUL · EST. 2020
             </span>
           </div>
 
           {/* 중앙 텍스트 */}
           <div style={{ textAlign: "center", padding: "0 24px" }}>
-            <h1
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "clamp(3rem, 12vw, 9rem)",
-                fontWeight: 700,
-                letterSpacing: "0.05em",
-                color: "var(--white)",
-                textTransform: "uppercase",
-                lineHeight: 1,
-                marginBottom: "24px",
-                textShadow: "0 4px 40px rgba(0,0,0,0.8)",
-              }}
-            >
-              OFF THE PLASTIC
-            </h1>
+            {/* 1순위: KD4 액팅 스튜디오 */}
             <p
               style={{
-                fontSize: "clamp(0.85rem, 2.5vw, 1.1rem)",
+                fontFamily: "var(--font-display)",
+                fontSize: "clamp(0.7rem, 1.5vw, 0.85rem)",
+                fontWeight: 400,
+                letterSpacing: "0.32em",
+                color: "var(--gold)",
+                textTransform: "uppercase",
+                marginBottom: "16px",
+                textShadow: "0 0 30px rgba(59,91,219,0.8)",
+              }}
+            >
+              KD4 ACTING STUDIO
+            </p>
+            <h1
+              style={{
+                fontFamily: "var(--font-sans)",
+                fontSize: "clamp(2.6rem, 9vw, 7.5rem)",
+                fontWeight: 900,
+                letterSpacing: "-0.02em",
+                color: "var(--white)",
+                lineHeight: 1,
+                marginBottom: "20px",
+                textShadow: "0 4px 60px rgba(0,0,0,0.9)",
+              }}
+            >
+              KD4 액팅 스튜디오
+            </h1>
+
+            {/* 2순위: OFF THE PLASTIC */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "12px",
+                marginBottom: "32px",
+              }}
+            >
+              <span
+                style={{
+                  display: "block",
+                  width: "40px",
+                  height: "1px",
+                  background: "var(--gold)",
+                  opacity: 0.7,
+                }}
+              />
+              <p
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "clamp(0.75rem, 2vw, 1rem)",
+                  fontWeight: 300,
+                  letterSpacing: "0.28em",
+                  color: "var(--gold)",
+                  textTransform: "uppercase",
+                  opacity: 0.9,
+                }}
+              >
+                OFF THE PLASTIC
+              </p>
+              <span
+                style={{
+                  display: "block",
+                  width: "40px",
+                  height: "1px",
+                  background: "var(--gold)",
+                  opacity: 0.7,
+                }}
+              />
+            </div>
+
+            <p
+              style={{
+                fontSize: "clamp(0.82rem, 2vw, 1rem)",
                 color: "var(--gray-light)",
                 letterSpacing: "0.02em",
                 marginBottom: "40px",
@@ -468,7 +527,7 @@ export default function HomePage() {
               padding: "20px 24px",
               display: "flex",
               justifyContent: "center",
-              borderTop: "1px solid rgba(196,165,90,0.2)",
+              borderTop: "1px solid rgba(59,91,219,0.25)",
               background: "rgba(0,0,0,0.3)",
               backdropFilter: "blur(4px)",
             }}
@@ -1318,7 +1377,7 @@ export default function HomePage() {
         style={{
           padding: "120px 24px",
           background:
-            "radial-gradient(ellipse at center, rgba(196,165,90,0.08) 0%, var(--bg) 70%)",
+            "radial-gradient(ellipse at center, rgba(59,91,219,0.08) 0%, var(--bg) 70%)",
           borderTop: "1px solid var(--border)",
           textAlign: "center",
         }}

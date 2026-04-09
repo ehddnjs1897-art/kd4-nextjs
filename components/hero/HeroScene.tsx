@@ -54,7 +54,7 @@ export default function HeroScene() {
       const addFloorLine = (z: number) => {
         const lg = new THREE.PlaneGeometry(10, 0.02);
         const lm = new THREE.MeshBasicMaterial({
-          color: 0xc4a55a,
+          color: 0x3b5bdb,
           opacity: 0.18,
           transparent: true,
         });
@@ -68,7 +68,7 @@ export default function HeroScene() {
       // Center aisle line
       const aisleGeo = new THREE.PlaneGeometry(0.06, 80);
       const aisleMat = new THREE.MeshBasicMaterial({
-        color: 0xc4a55a,
+        color: 0x3b5bdb,
         opacity: 0.3,
         transparent: true,
       });
@@ -124,7 +124,7 @@ export default function HeroScene() {
         const len = Math.abs(zEnd - zStart);
         const trimGeo = new THREE.PlaneGeometry(0.04, len);
         const trimMat = new THREE.MeshBasicMaterial({
-          color: 0xc4a55a,
+          color: 0x3b5bdb,
           opacity: 0.35,
           transparent: true,
         });
@@ -153,7 +153,7 @@ export default function HeroScene() {
 
           const accentGeo = new THREE.BoxGeometry(0.08, 0.06, 0.08);
           const accentMat = new THREE.MeshStandardMaterial({
-            color: 0xc4a55a,
+            color: 0x3b5bdb,
             metalness: 0.7,
             roughness: 0.3,
           });
@@ -191,7 +191,7 @@ export default function HeroScene() {
       for (let z = 1; z > -52; z -= 7) addCeilingSpot(z, 1.4);
 
       // Stage spotlight (gold)
-      const stageSpot = new THREE.SpotLight(0xc4a55a, 8, 30, Math.PI / 9, 0.35, 1.2);
+      const stageSpot = new THREE.SpotLight(0x3b5bdb, 8, 30, Math.PI / 9, 0.35, 1.2);
       stageSpot.position.set(0, 4, -45);
       stageSpot.target.position.set(0, 0, -55);
       scene.add(stageSpot);
