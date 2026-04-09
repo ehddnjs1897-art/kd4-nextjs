@@ -8,6 +8,7 @@
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 import { uploadFile } from '@/lib/storage'
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5 MB
@@ -102,10 +103,28 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // ── 업로드 ──
+    // ── Storage 업로드 ──
     const result = await uploadFile(file, bucket, actorId, file.name)
 
-    return NextResponse.json(result, { status: 200 })
+    // ── actor_photos 테이블 삽입 ──
+    const { data: photoRow, error: dbErr } = await supabaseAdmin
+      .from('actor_photos')
+      .insert({
+        actor_id: actorId,
+        url: result.url,
+        storage_path: result.path,
+        is_profile: false,
+        sort_order: 0,
+      })
+      .select('id')
+      .single()
+
+    if (dbErr) {
+      console.error('[POST /api/upload] actor_photos 삽입 오류:', dbErr.message)
+      return NextResponse.json({ error: 'DB 삽입 실패' }, { status: 500 })
+    }
+
+    return NextResponse.json({ url: result.url, id: photoRow.id, path: result.path, provider: result.provider }, { status: 200 })
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : '알 수 없는 오류'
     console.error('[POST /api/upload] 오류:', message)
