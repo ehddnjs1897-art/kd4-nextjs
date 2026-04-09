@@ -1,65 +1,1446 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import dynamic from "next/dynamic";
+import Link from "next/link";
+import { useState } from "react";
+import { CLASSES } from "@/lib/classes";
+
+const HeroScene = dynamic(() => import("@/components/hero/HeroScene"), {
+  ssr: false,
+});
+
+// ─── FAQ 아코디언 ──────────────────────────────────────────────────────────────
+
+const FAQ_ITEMS = [
+  {
+    q: "연기 경험이 없어도 참여할 수 있나요?",
+    a: "베이직 클래스는 연기 경험이 전혀 없는 분들을 위한 입문 클래스입니다. 취미로 시작하셔도 됩니다.",
+  },
+  {
+    q: "어떤 클래스부터 시작하면 좋을까요?",
+    a: "처음이시라면 베이직 클래스 또는 마이즈너 테크닉 정규 클래스를 추천드립니다. 상담 후 결정하실 수 있습니다.",
+  },
+  {
+    q: "수업은 얼마나 자주 있나요?",
+    a: "대부분의 클래스는 월 4회 진행됩니다. 움직임 클래스는 월 3회입니다.",
+  },
+  {
+    q: "위치가 어디인가요?",
+    a: "서울시 서대문구 대현동 90-7 아리움3차 1층 101호 (신촌 대로)에 위치합니다.",
+  },
+  {
+    q: "수강료 납부 방식은 어떻게 되나요?",
+    a: "수강신청 후 별도 안내 드립니다. 문의: 010-8564-0244",
+  },
+];
+
+function FaqAccordion() {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+      {FAQ_ITEMS.map((item, i) => (
+        <div
+          key={i}
+          style={{
+            background: "var(--bg2)",
+            border: "1px solid var(--border)",
+            borderRadius: "var(--radius)",
+            overflow: "hidden",
+          }}
+        >
+          <button
+            onClick={() => setOpenIndex(openIndex === i ? null : i)}
+            style={{
+              width: "100%",
+              padding: "20px 24px",
+              textAlign: "left",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "16px",
+              color: "var(--white)",
+              fontSize: "0.95rem",
+              fontWeight: 500,
+              background: "none",
+              cursor: "pointer",
+              transition: "color var(--transition)",
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <span>{item.q}</span>
+            <span
+              style={{
+                color: "var(--gold)",
+                fontSize: "1.2rem",
+                lineHeight: 1,
+                flexShrink: 0,
+                transition: "transform var(--transition)",
+                transform: openIndex === i ? "rotate(45deg)" : "rotate(0deg)",
+              }}
+            >
+              +
+            </span>
+          </button>
+          {openIndex === i && (
+            <div
+              style={{
+                padding: "0 24px 20px",
+                color: "var(--gray-light)",
+                fontSize: "0.9rem",
+                lineHeight: 1.7,
+                borderTop: "1px solid var(--border)",
+                paddingTop: "16px",
+              }}
+            >
+              {item.a}
+            </div>
+          )}
         </div>
-      </main>
+      ))}
     </div>
+  );
+}
+
+// ─── 클래스 카드 ───────────────────────────────────────────────────────────────
+
+function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
+  return (
+    <div
+      style={{
+        background: "var(--bg2)",
+        border: cls.highlight
+          ? "1px solid var(--gold)"
+          : "1px solid var(--border)",
+        borderRadius: "var(--radius)",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        position: "relative",
+      }}
+    >
+      {/* 상단 골드 선 (highlight 카드) */}
+      {cls.highlight && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: "3px",
+            background: "var(--gold)",
+          }}
+        />
+      )}
+
+      <div style={{ padding: "28px 24px 24px", flex: 1 }}>
+        {/* step 뱃지 */}
+        <span
+          style={{
+            display: "inline-block",
+            padding: "3px 10px",
+            border: "1px solid var(--border)",
+            borderRadius: "2px",
+            fontSize: "0.7rem",
+            letterSpacing: "0.1em",
+            color: "var(--gray)",
+            marginBottom: "16px",
+          }}
+        >
+          {cls.step}
+        </span>
+
+        {/* 인용구 */}
+        <p
+          style={{
+            color: "var(--gold)",
+            fontSize: "0.85rem",
+            lineHeight: 1.5,
+            marginBottom: "12px",
+            fontStyle: "italic",
+          }}
+        >
+          &ldquo;{cls.quote}&rdquo;
+        </p>
+
+        {/* 클래스명 */}
+        <h3
+          style={{
+            fontSize: "1.15rem",
+            fontWeight: 700,
+            color: "var(--white)",
+            marginBottom: "4px",
+          }}
+        >
+          {cls.nameKo}
+        </h3>
+        <p
+          style={{
+            fontSize: "0.75rem",
+            color: "var(--gray)",
+            letterSpacing: "0.08em",
+            marginBottom: cls.subtitle || cls.note ? "12px" : "16px",
+          }}
+        >
+          {cls.nameEn}
+        </p>
+
+        {/* subtitle */}
+        {cls.subtitle && (
+          <p
+            style={{
+              fontSize: "0.8rem",
+              color: "var(--gray-light)",
+              marginBottom: cls.note ? "8px" : "16px",
+            }}
+          >
+            {cls.subtitle}
+          </p>
+        )}
+
+        {/* note (골드 강조) */}
+        {cls.note && (
+          <p
+            style={{
+              fontSize: "0.78rem",
+              color: "var(--gold)",
+              marginBottom: "16px",
+              padding: "6px 10px",
+              background: "rgba(196,165,90,0.08)",
+              borderRadius: "2px",
+              borderLeft: "2px solid var(--gold)",
+            }}
+          >
+            {cls.note}
+          </p>
+        )}
+
+        {/* bullets */}
+        <ul
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "6px",
+            marginBottom: "20px",
+          }}
+        >
+          {cls.bullets.map((b, i) => (
+            <li
+              key={i}
+              style={{
+                fontSize: "0.82rem",
+                color: "var(--gray-light)",
+                lineHeight: 1.5,
+                paddingLeft: "14px",
+                position: "relative",
+              }}
+            >
+              <span
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  top: "0.45em",
+                  width: "5px",
+                  height: "1px",
+                  background: "var(--gold)",
+                  display: "inline-block",
+                }}
+              />
+              {b}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* 하단 정보 */}
+      <div
+        style={{
+          borderTop: "1px solid var(--border)",
+          padding: "16px 24px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
+        }}
+      >
+        {/* 스케줄 / 시간 / 정원 */}
+        <div
+          style={{
+            display: "flex",
+            gap: "16px",
+            flexWrap: "wrap",
+          }}
+        >
+          {[
+            { label: "일정", value: cls.schedule },
+            { label: "시간", value: cls.duration },
+            { label: "정원", value: cls.capacity },
+            ...(cls.course ? [{ label: "코스", value: cls.course }] : []),
+          ].map((info) => (
+            <div key={info.label}>
+              <span
+                style={{ fontSize: "0.68rem", color: "var(--gray)", display: "block" }}
+              >
+                {info.label}
+              </span>
+              <span style={{ fontSize: "0.82rem", color: "var(--gray-light)" }}>
+                {info.value}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* 가격 + 강사 */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-end",
+          }}
+        >
+          <div>
+            <span style={{ fontSize: "0.7rem", color: "var(--gray)" }}>월 수강료</span>
+            <p
+              style={{
+                fontSize: "1.25rem",
+                fontWeight: 700,
+                color: "var(--gold)",
+                lineHeight: 1.2,
+              }}
+            >
+              ₩{cls.price}
+            </p>
+          </div>
+          {cls.instructor && (
+            <span
+              style={{
+                fontSize: "0.75rem",
+                color: "var(--gray)",
+                textAlign: "right",
+              }}
+            >
+              {cls.instructor}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── 메인 페이지 ───────────────────────────────────────────────────────────────
+
+export default function HomePage() {
+  return (
+    <>
+      {/* ── 1. HERO ──────────────────────────────────────────────────────────── */}
+      <section
+        id="hero"
+        style={{
+          position: "relative",
+          width: "100%",
+          height: "100vh",
+          minHeight: "600px",
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {/* Three.js 배경 */}
+        <HeroScene />
+
+        {/* 오버레이 텍스트 */}
+        <div
+          style={{
+            position: "relative",
+            zIndex: 10,
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          {/* 상단 골드 바 */}
+          <div
+            style={{
+              width: "100%",
+              padding: "20px 24px",
+              display: "flex",
+              justifyContent: "center",
+              borderBottom: "1px solid rgba(196,165,90,0.2)",
+              background: "rgba(0,0,0,0.3)",
+              backdropFilter: "blur(4px)",
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "0.8rem",
+                letterSpacing: "0.3em",
+                color: "var(--gold)",
+              }}
+            >
+              KD4 ACTING STUDIO
+            </span>
+          </div>
+
+          {/* 중앙 텍스트 */}
+          <div style={{ textAlign: "center", padding: "0 24px" }}>
+            <h1
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "clamp(3rem, 12vw, 9rem)",
+                fontWeight: 700,
+                letterSpacing: "0.05em",
+                color: "var(--white)",
+                textTransform: "uppercase",
+                lineHeight: 1,
+                marginBottom: "24px",
+                textShadow: "0 4px 40px rgba(0,0,0,0.8)",
+              }}
+            >
+              OFF THE PLASTIC
+            </h1>
+            <p
+              style={{
+                fontSize: "clamp(0.85rem, 2.5vw, 1.1rem)",
+                color: "var(--gray-light)",
+                letterSpacing: "0.02em",
+                marginBottom: "40px",
+                textShadow: "0 2px 20px rgba(0,0,0,0.9)",
+              }}
+            >
+              우리는 양산형 배우를 찍어내는 학원을 거부합니다.
+            </p>
+
+            {/* CTA 버튼 */}
+            <div
+              style={{
+                display: "flex",
+                gap: "16px",
+                justifyContent: "center",
+                flexWrap: "wrap",
+              }}
+            >
+              <a
+                href="#classes"
+                style={{
+                  padding: "14px 32px",
+                  background: "var(--gold)",
+                  color: "#0a0a0a",
+                  fontWeight: 700,
+                  fontSize: "0.85rem",
+                  letterSpacing: "0.08em",
+                  borderRadius: "var(--radius)",
+                  display: "inline-block",
+                  transition: "opacity var(--transition)",
+                }}
+              >
+                클래스 둘러보기
+              </a>
+              <Link
+                href="/actors"
+                style={{
+                  padding: "14px 32px",
+                  border: "1px solid var(--gold)",
+                  color: "var(--gold)",
+                  fontWeight: 600,
+                  fontSize: "0.85rem",
+                  letterSpacing: "0.08em",
+                  borderRadius: "var(--radius)",
+                  display: "inline-block",
+                  background: "rgba(0,0,0,0.4)",
+                  backdropFilter: "blur(4px)",
+                  transition: "background var(--transition)",
+                }}
+              >
+                동료 배우 만나기
+              </Link>
+            </div>
+          </div>
+
+          {/* 하단 골드 바 + 스크롤 화살표 */}
+          <div
+            style={{
+              width: "100%",
+              padding: "20px 24px",
+              display: "flex",
+              justifyContent: "center",
+              borderTop: "1px solid rgba(196,165,90,0.2)",
+              background: "rgba(0,0,0,0.3)",
+              backdropFilter: "blur(4px)",
+            }}
+          >
+            <a
+              href="#stats"
+              style={{
+                color: "var(--gold)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "4px",
+                opacity: 0.7,
+              }}
+            >
+              <span style={{ fontSize: "0.65rem", letterSpacing: "0.2em" }}>SCROLL</span>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              >
+                <path d="M8 3v10M3 9l5 5 5-5" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 2. STATS ─────────────────────────────────────────────────────────── */}
+      <section
+        id="stats"
+        style={{
+          background: "var(--bg2)",
+          borderTop: "1px solid var(--border)",
+          borderBottom: "1px solid var(--border)",
+          padding: "60px 24px",
+        }}
+      >
+        <div
+          className="container"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+            gap: "40px",
+            textAlign: "center",
+          }}
+        >
+          {[
+            { num: "400+", label: "프로 배우 코칭" },
+            { num: "100+", label: "상업 영화·드라마 출연" },
+            { num: "5년+", label: "스튜디오 운영" },
+            { num: "50+", label: "소속 배우" },
+          ].map((stat) => (
+            <div key={stat.label}>
+              <p
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "clamp(2rem, 5vw, 3rem)",
+                  fontWeight: 700,
+                  color: "var(--gold)",
+                  lineHeight: 1,
+                  marginBottom: "8px",
+                }}
+              >
+                {stat.num}
+              </p>
+              <p
+                style={{
+                  fontSize: "0.8rem",
+                  color: "var(--gray)",
+                  letterSpacing: "0.04em",
+                }}
+              >
+                {stat.label}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── 3. ABOUT ─────────────────────────────────────────────────────────── */}
+      <section id="about" className="section" style={{ background: "var(--bg)" }}>
+        <div className="container">
+          <div style={{ maxWidth: "720px", margin: "0 auto", textAlign: "center" }}>
+            <p
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "0.75rem",
+                letterSpacing: "0.3em",
+                color: "var(--gold)",
+                marginBottom: "16px",
+              }}
+            >
+              ALL IN ONE SYSTEM
+            </p>
+            <h2
+              style={{
+                fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
+                fontWeight: 700,
+                marginBottom: "16px",
+                lineHeight: 1.2,
+              }}
+            >
+              배우지망생 →{" "}
+              <span style={{ color: "var(--gold)" }}>진짜 배우</span>
+            </h2>
+            <p
+              style={{
+                color: "var(--gray-light)",
+                fontSize: "0.95rem",
+                marginBottom: "60px",
+                lineHeight: 1.7,
+              }}
+            >
+              연기 훈련부터 캐스팅까지, 배우 액셀러레이팅 시스템
+            </p>
+
+            {/* 3단계 */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                gap: "2px",
+              }}
+            >
+              {[
+                {
+                  step: "STEP 01",
+                  title: "아메리칸 액팅 메소드 트레이닝",
+                  desc: "마이즈너 테크닉 · 이바나 처벅 테크닉 기반의 심층 연기 훈련",
+                },
+                {
+                  step: "STEP 02",
+                  title: "포트폴리오 제작",
+                  desc: "전문 영화팀과 함께 제작하는 출연영상으로 실전 포트폴리오 완성",
+                },
+                {
+                  step: "STEP 03",
+                  title: "캐스팅 연계",
+                  desc: "캐스팅 디렉터·조감독과 직접 연결되는 실전 캐스팅 지원",
+                },
+              ].map((s, i) => (
+                <div
+                  key={i}
+                  style={{
+                    background: "var(--bg3)",
+                    padding: "32px 24px",
+                    textAlign: "left",
+                    borderTop: "3px solid var(--gold)",
+                  }}
+                >
+                  <p
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontSize: "0.7rem",
+                      letterSpacing: "0.2em",
+                      color: "var(--gold)",
+                      marginBottom: "12px",
+                    }}
+                  >
+                    {s.step}
+                  </p>
+                  <h3
+                    style={{
+                      fontSize: "0.95rem",
+                      fontWeight: 700,
+                      marginBottom: "10px",
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    {s.title}
+                  </h3>
+                  <p style={{ fontSize: "0.8rem", color: "var(--gray)", lineHeight: 1.6 }}>
+                    {s.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 4. DIRECTOR ──────────────────────────────────────────────────────── */}
+      <section
+        id="director"
+        className="section"
+        style={{ background: "var(--bg2)", borderTop: "1px solid var(--border)" }}
+      >
+        <div className="container">
+          <div style={{ maxWidth: "760px" }}>
+            <p
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "0.7rem",
+                letterSpacing: "0.3em",
+                color: "var(--gold)",
+                marginBottom: "8px",
+              }}
+            >
+              LEADER
+            </p>
+            <h2
+              style={{
+                fontSize: "clamp(1.6rem, 4vw, 2.4rem)",
+                fontWeight: 700,
+                marginBottom: "36px",
+                letterSpacing: "0.02em",
+              }}
+            >
+              권동원
+            </h2>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+                gap: "40px",
+              }}
+            >
+              {/* 약력 */}
+              <div>
+                <p
+                  style={{
+                    fontSize: "0.7rem",
+                    letterSpacing: "0.15em",
+                    color: "var(--gold)",
+                    marginBottom: "16px",
+                  }}
+                >
+                  PROFILE
+                </p>
+                <ul style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  {[
+                    "프로 배우 400명+ 액팅 코칭",
+                    "유익액터스 대표",
+                    "영화 경쟁선 제작·주연",
+                    "K-핸드메이드 페스티벌 연기상 수상",
+                    "LG 크리에이터 특별상",
+                    "Youtube 2000만뷰+",
+                    "건원(建輝) / The Chora 졸업",
+                    "LA Meisner Workshop 수료",
+                    "한국 마이즈너테크닉 아카데미 수료",
+                  ].map((item, i) => (
+                    <li
+                      key={i}
+                      style={{
+                        fontSize: "0.85rem",
+                        color: "var(--gray-light)",
+                        paddingLeft: "16px",
+                        position: "relative",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      <span
+                        style={{
+                          position: "absolute",
+                          left: 0,
+                          top: "0.6em",
+                          width: "6px",
+                          height: "1px",
+                          background: "var(--gold)",
+                          display: "inline-block",
+                        }}
+                      />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* 필모 */}
+              <div>
+                <p
+                  style={{
+                    fontSize: "0.7rem",
+                    letterSpacing: "0.15em",
+                    color: "var(--gold)",
+                    marginBottom: "16px",
+                  }}
+                >
+                  FILMOGRAPHY
+                </p>
+                {[
+                  {
+                    cat: "드라마",
+                    items: [
+                      "무빙2 (2026)",
+                      "나의 유죄 인간 (2026)",
+                      "금쪽같은 내 스타 (2025)",
+                      "중증외상센터 (2025)",
+                      "세작 (2024)",
+                    ],
+                  },
+                  {
+                    cat: "영화",
+                    items: ["경계선 (2025, 제작·주연)", "강철비2 (2021)"],
+                  },
+                  {
+                    cat: "CF",
+                    items: ["MSD 제약 키트루다 (2025)", "현대 인증중고차 (2024)"],
+                  },
+                ].map((group) => (
+                  <div key={group.cat} style={{ marginBottom: "20px" }}>
+                    <p
+                      style={{
+                        fontSize: "0.72rem",
+                        color: "var(--gray)",
+                        marginBottom: "8px",
+                        letterSpacing: "0.05em",
+                      }}
+                    >
+                      {group.cat}
+                    </p>
+                    <ul style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                      {group.items.map((item, i) => (
+                        <li
+                          key={i}
+                          style={{ fontSize: "0.82rem", color: "var(--gray-light)" }}
+                        >
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 5. CLASSES ───────────────────────────────────────────────────────── */}
+      <section id="classes" className="section" style={{ background: "var(--bg)" }}>
+        <div className="container">
+          <div style={{ textAlign: "center", marginBottom: "60px" }}>
+            <p
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "0.75rem",
+                letterSpacing: "0.3em",
+                color: "var(--gold)",
+                marginBottom: "12px",
+              }}
+            >
+              CURRICULUM
+            </p>
+            <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700 }}>
+              클래스
+            </h2>
+          </div>
+
+          {/* 반응형 그리드: 모바일 1열 / 태블릿 2열 / PC 3열 */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 320px), 1fr))",
+              gap: "16px",
+            }}
+          >
+            {CLASSES.map((cls, i) => (
+              <ClassCard key={i} cls={cls} />
+            ))}
+          </div>
+
+          <div style={{ textAlign: "center", marginTop: "48px" }}>
+            <a
+              href="https://forms.gle/68E7yFFFoDiPCRwD9"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-block",
+                padding: "16px 48px",
+                background: "var(--gold)",
+                color: "#0a0a0a",
+                fontWeight: 700,
+                fontSize: "0.9rem",
+                letterSpacing: "0.08em",
+                borderRadius: "var(--radius)",
+              }}
+            >
+              수강신청 하기
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 6. COMPARISON ────────────────────────────────────────────────────── */}
+      <section
+        id="comparison"
+        className="section"
+        style={{ background: "var(--bg2)", borderTop: "1px solid var(--border)" }}
+      >
+        <div className="container">
+          <div style={{ textAlign: "center", marginBottom: "60px" }}>
+            <p
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "0.75rem",
+                letterSpacing: "0.3em",
+                color: "var(--gold)",
+                marginBottom: "12px",
+              }}
+            >
+              WHY KD4
+            </p>
+            <h2 style={{ fontSize: "clamp(1.6rem, 4vw, 2.4rem)", fontWeight: 700 }}>
+              KD4 vs 일반 학원
+            </h2>
+          </div>
+
+          <div style={{ overflowX: "auto" }}>
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                minWidth: "480px",
+              }}
+            >
+              <thead>
+                <tr>
+                  {["항목", "KD4 액팅 스튜디오", "일반 학원"].map((h, i) => (
+                    <th
+                      key={h}
+                      style={{
+                        padding: "14px 20px",
+                        textAlign: i === 0 ? "left" : "center",
+                        fontSize: "0.75rem",
+                        letterSpacing: "0.08em",
+                        color: i === 1 ? "var(--gold)" : "var(--gray)",
+                        borderBottom: "1px solid var(--border)",
+                        fontWeight: i === 1 ? 700 : 400,
+                        background:
+                          i === 1 ? "rgba(196,165,90,0.06)" : "transparent",
+                      }}
+                    >
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  {
+                    item: "훈련 방식",
+                    kd4: "마이즈너·이바나처벅 테크닉",
+                    other: "입시식 주입 훈련",
+                  },
+                  {
+                    item: "클래스 규모",
+                    kd4: "소수정예 (6~10명)",
+                    other: "대형 클래스",
+                  },
+                  {
+                    item: "포트폴리오",
+                    kd4: "전문 영화팀 출연영상 제작",
+                    other: "없음 / 자체 촬영",
+                  },
+                  {
+                    item: "캐스팅 연계",
+                    kd4: "직접 캐스팅 디렉터 연결",
+                    other: "미제공",
+                  },
+                  {
+                    item: "커뮤니티",
+                    kd4: "동료 배우 네트워크",
+                    other: "없음",
+                  },
+                ].map((row, i) => (
+                  <tr key={i}>
+                    <td
+                      style={{
+                        padding: "16px 20px",
+                        fontSize: "0.82rem",
+                        color: "var(--gray)",
+                        borderBottom: "1px solid var(--border)",
+                      }}
+                    >
+                      {row.item}
+                    </td>
+                    <td
+                      style={{
+                        padding: "16px 20px",
+                        fontSize: "0.85rem",
+                        color: "var(--white)",
+                        fontWeight: 500,
+                        textAlign: "center",
+                        borderBottom: "1px solid var(--border)",
+                        background: "rgba(196,165,90,0.04)",
+                      }}
+                    >
+                      {row.kd4}
+                    </td>
+                    <td
+                      style={{
+                        padding: "16px 20px",
+                        fontSize: "0.82rem",
+                        color: "var(--gray)",
+                        textAlign: "center",
+                        borderBottom: "1px solid var(--border)",
+                      }}
+                    >
+                      {row.other}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 7. HOW IT WORKS ──────────────────────────────────────────────────── */}
+      <section id="how" className="section" style={{ background: "var(--bg)" }}>
+        <div className="container">
+          <div style={{ textAlign: "center", marginBottom: "60px" }}>
+            <p
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "0.75rem",
+                letterSpacing: "0.3em",
+                color: "var(--gold)",
+                marginBottom: "12px",
+              }}
+            >
+              PROCESS
+            </p>
+            <h2 style={{ fontSize: "clamp(1.6rem, 4vw, 2.4rem)", fontWeight: 700 }}>
+              How It Works
+            </h2>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+              gap: "2px",
+              maxWidth: "800px",
+              margin: "0 auto",
+            }}
+          >
+            {[
+              {
+                num: "01",
+                title: "상담 & 수강신청",
+                desc: "온라인 폼으로 간편하게 신청하고, 본인에게 맞는 클래스를 안내받으세요.",
+              },
+              {
+                num: "02",
+                title: "첫 수업 & 피드백",
+                desc: "첫 수업에서 본인의 연기 상태를 진단하고 맞춤 피드백을 받습니다.",
+              },
+              {
+                num: "03",
+                title: "성장 & 캐스팅",
+                desc: "포트폴리오를 완성하고 캐스팅 디렉터와의 연결을 통해 실전에 나섭니다.",
+              },
+            ].map((step, i) => (
+              <div
+                key={i}
+                style={{
+                  background: "var(--bg3)",
+                  padding: "36px 28px",
+                  position: "relative",
+                }}
+              >
+                <p
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontSize: "3rem",
+                    fontWeight: 700,
+                    color: "rgba(196,165,90,0.12)",
+                    lineHeight: 1,
+                    marginBottom: "16px",
+                  }}
+                >
+                  {step.num}
+                </p>
+                <h3
+                  style={{
+                    fontSize: "1rem",
+                    fontWeight: 700,
+                    marginBottom: "12px",
+                    color: "var(--white)",
+                  }}
+                >
+                  {step.title}
+                </h3>
+                <p
+                  style={{
+                    fontSize: "0.82rem",
+                    color: "var(--gray)",
+                    lineHeight: 1.7,
+                  }}
+                >
+                  {step.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 8. STORIES ───────────────────────────────────────────────────────── */}
+      <section
+        id="stories"
+        className="section"
+        style={{ background: "var(--bg2)", borderTop: "1px solid var(--border)" }}
+      >
+        <div className="container">
+          <div style={{ textAlign: "center", marginBottom: "60px" }}>
+            <p
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "0.75rem",
+                letterSpacing: "0.3em",
+                color: "var(--gold)",
+                marginBottom: "12px",
+              }}
+            >
+              TESTIMONIALS
+            </p>
+            <h2 style={{ fontSize: "clamp(1.6rem, 4vw, 2.4rem)", fontWeight: 700 }}>
+              동료 배우 이야기
+            </h2>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 280px), 1fr))",
+              gap: "16px",
+            }}
+          >
+            {[1, 2, 3].map((n) => (
+              <div
+                key={n}
+                style={{
+                  background: "var(--bg3)",
+                  border: "1px solid var(--border)",
+                  borderRadius: "var(--radius)",
+                  padding: "32px 28px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "20px",
+                  minHeight: "200px",
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: "var(--font-serif)",
+                    fontSize: "2.5rem",
+                    color: "var(--gold)",
+                    lineHeight: 1,
+                    opacity: 0.4,
+                  }}
+                >
+                  &ldquo;
+                </span>
+                <div
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <p
+                    style={{
+                      fontSize: "0.75rem",
+                      color: "var(--gray)",
+                      letterSpacing: "0.1em",
+                      textAlign: "center",
+                    }}
+                  >
+                    COMING SOON
+                  </p>
+                </div>
+                <div
+                  style={{
+                    borderTop: "1px solid var(--border)",
+                    paddingTop: "16px",
+                  }}
+                >
+                  <div
+                    style={{
+                      height: "10px",
+                      width: "80px",
+                      background: "var(--border)",
+                      borderRadius: "2px",
+                      marginBottom: "6px",
+                    }}
+                  />
+                  <div
+                    style={{
+                      height: "8px",
+                      width: "50px",
+                      background: "var(--bg2)",
+                      borderRadius: "2px",
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 9. AI TOOLS ──────────────────────────────────────────────────────── */}
+      <section id="ai" className="section" style={{ background: "var(--bg)" }}>
+        <div className="container">
+          <div
+            style={{
+              maxWidth: "680px",
+              margin: "0 auto",
+              textAlign: "center",
+            }}
+          >
+            <p
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "0.75rem",
+                letterSpacing: "0.3em",
+                color: "var(--gold)",
+                marginBottom: "12px",
+              }}
+            >
+              NEW
+            </p>
+            <h2
+              style={{
+                fontSize: "clamp(1.6rem, 4vw, 2.4rem)",
+                fontWeight: 700,
+                marginBottom: "16px",
+              }}
+            >
+              AI 대본 분석
+            </h2>
+            <p
+              style={{
+                fontSize: "1rem",
+                color: "var(--gray-light)",
+                marginBottom: "12px",
+              }}
+            >
+              당신의 대사를 깊이 이해하는 AI
+            </p>
+            <p
+              style={{
+                fontSize: "0.85rem",
+                color: "var(--gray)",
+                marginBottom: "32px",
+                lineHeight: 1.7,
+              }}
+            >
+              5가지 연기 메소드로 대본을 분석합니다
+            </p>
+
+            {/* 메소드 태그 */}
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "8px",
+                justifyContent: "center",
+                marginBottom: "40px",
+              }}
+            >
+              {[
+                "Uta Hagen",
+                "Ivana Chubbuck",
+                "Meisner",
+                "대사별 노트",
+                "현장 요약",
+              ].map((tag) => (
+                <span
+                  key={tag}
+                  style={{
+                    padding: "6px 14px",
+                    border: "1px solid var(--border)",
+                    borderRadius: "2px",
+                    fontSize: "0.75rem",
+                    color: "var(--gray-light)",
+                    letterSpacing: "0.05em",
+                  }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+
+            <Link
+              href="/ai-tools"
+              style={{
+                display: "inline-block",
+                padding: "14px 40px",
+                border: "1px solid var(--gold)",
+                color: "var(--gold)",
+                fontWeight: 600,
+                fontSize: "0.85rem",
+                letterSpacing: "0.08em",
+                borderRadius: "var(--radius)",
+                transition: "background var(--transition), color var(--transition)",
+              }}
+            >
+              AI 도구 체험하기
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 10. FAQ ──────────────────────────────────────────────────────────── */}
+      <section
+        id="faq"
+        className="section"
+        style={{ background: "var(--bg2)", borderTop: "1px solid var(--border)" }}
+      >
+        <div className="container">
+          <div style={{ textAlign: "center", marginBottom: "60px" }}>
+            <p
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "0.75rem",
+                letterSpacing: "0.3em",
+                color: "var(--gold)",
+                marginBottom: "12px",
+              }}
+            >
+              FAQ
+            </p>
+            <h2 style={{ fontSize: "clamp(1.6rem, 4vw, 2.4rem)", fontWeight: 700 }}>
+              자주 묻는 질문
+            </h2>
+          </div>
+
+          <div style={{ maxWidth: "720px", margin: "0 auto" }}>
+            <FaqAccordion />
+          </div>
+        </div>
+      </section>
+
+      {/* ── 11. CTA ──────────────────────────────────────────────────────────── */}
+      <section
+        id="cta"
+        style={{
+          padding: "120px 24px",
+          background:
+            "radial-gradient(ellipse at center, rgba(196,165,90,0.08) 0%, var(--bg) 70%)",
+          borderTop: "1px solid var(--border)",
+          textAlign: "center",
+        }}
+      >
+        <div className="container">
+          <p
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "0.75rem",
+              letterSpacing: "0.3em",
+              color: "var(--gold)",
+              marginBottom: "16px",
+            }}
+          >
+            START NOW
+          </p>
+          <h2
+            style={{
+              fontSize: "clamp(2rem, 5vw, 3.5rem)",
+              fontWeight: 700,
+              marginBottom: "20px",
+              lineHeight: 1.15,
+            }}
+          >
+            지금 시작하세요
+          </h2>
+          <p
+            style={{
+              color: "var(--gray-light)",
+              fontSize: "0.95rem",
+              marginBottom: "48px",
+              lineHeight: 1.7,
+            }}
+          >
+            배우지망생 → 진짜 배우
+            <br />
+            연기 훈련부터 캐스팅까지
+          </p>
+
+          <div
+            style={{
+              display: "flex",
+              gap: "16px",
+              justifyContent: "center",
+              flexWrap: "wrap",
+              marginBottom: "48px",
+            }}
+          >
+            <a
+              href="https://forms.gle/68E7yFFFoDiPCRwD9"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-block",
+                padding: "18px 52px",
+                background: "var(--gold)",
+                color: "#0a0a0a",
+                fontWeight: 700,
+                fontSize: "1rem",
+                letterSpacing: "0.08em",
+                borderRadius: "var(--radius)",
+              }}
+            >
+              수강신청 하기
+            </a>
+            <a
+              href="https://pf.kakao.com/_xnKd4"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-block",
+                padding: "18px 52px",
+                border: "1px solid var(--gold)",
+                color: "var(--gold)",
+                fontWeight: 600,
+                fontSize: "1rem",
+                letterSpacing: "0.08em",
+                borderRadius: "var(--radius)",
+              }}
+            >
+              카카오로 문의하기
+            </a>
+          </div>
+
+          {/* 연락처 */}
+          <div
+            style={{
+              display: "flex",
+              gap: "24px",
+              justifyContent: "center",
+              flexWrap: "wrap",
+            }}
+          >
+            <a
+              href="tel:010-8564-0244"
+              style={{
+                fontSize: "0.82rem",
+                color: "var(--gray)",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              <span style={{ color: "var(--gold)" }}>전화</span>
+              010-8564-0244
+            </a>
+            <a
+              href="mailto:uikactors@gmail.com"
+              style={{
+                fontSize: "0.82rem",
+                color: "var(--gray)",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              <span style={{ color: "var(--gold)" }}>이메일</span>
+              uikactors@gmail.com
+            </a>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
