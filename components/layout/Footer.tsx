@@ -222,7 +222,7 @@ export default function Footer() {
               {[
                 { label: '스튜디오 소개', href: '#about' },
                 { label: '클래스 안내', href: '#classes' },
-                { label: '동료 배우', href: '/actors' },
+                { label: '배우 DB', href: '/actors' },
                 { label: '커뮤니티', href: '/board' },
                 { label: 'AI 도구', href: '/ai-tools' },
               ].map(link => (

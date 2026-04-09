@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CLASSES } from "@/lib/classes";
 
 const HeroScene = dynamic(() => import("@/components/hero/HeroScene"), {
@@ -329,6 +329,24 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
 // ─── 메인 페이지 ───────────────────────────────────────────────────────────────
 
 export default function HomePage() {
+  useEffect(() => {
+    const els = document.querySelectorAll<HTMLElement>('section[id]:not(#hero)')
+    els.forEach((el) => el.classList.add('reveal-section'))
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-visible')
+            observer.unobserve(e.target)
+          }
+        })
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -60px 0px' }
+    )
+    els.forEach((el) => observer.observe(el))
+    return () => observer.disconnect()
+  }, [])
+
   return (
     <>
       {/* ── 1. HERO ──────────────────────────────────────────────────────────── */}
@@ -362,116 +380,128 @@ export default function HomePage() {
             alignItems: "center",
           }}
         >
-          {/* 상단 바 */}
+          {/* 중앙 텍스트 */}
           <div
             style={{
-              width: "100%",
-              padding: "20px 24px",
+              flex: 1,
               display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
               justifyContent: "center",
-              borderBottom: "1px solid rgba(59,91,219,0.25)",
-              background: "rgba(0,0,0,0.4)",
-              backdropFilter: "blur(6px)",
+              textAlign: "center",
+              padding: "0 24px",
             }}
           >
-            <span
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "0.72rem",
-                letterSpacing: "0.38em",
-                color: "rgba(255,255,255,0.45)",
-                textTransform: "uppercase",
-              }}
-            >
-              SINCHON · SEOUL · EST. 2020
-            </span>
-          </div>
-
-          {/* 중앙 텍스트 */}
-          <div style={{ textAlign: "center", padding: "0 24px" }}>
-            {/* 1순위: KD4 액팅 스튜디오 */}
+            {/* eyebrow */}
             <p
               style={{
                 fontFamily: "var(--font-display)",
-                fontSize: "clamp(0.7rem, 1.5vw, 0.85rem)",
+                fontSize: "clamp(0.65rem, 1.4vw, 0.8rem)",
                 fontWeight: 400,
-                letterSpacing: "0.32em",
+                letterSpacing: "0.38em",
                 color: "var(--gold)",
                 textTransform: "uppercase",
-                marginBottom: "16px",
+                marginBottom: "20px",
                 textShadow: "0 0 30px rgba(59,91,219,0.8)",
+                animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
+                animationDelay: "0.2s",
               }}
             >
               KD4 ACTING STUDIO
             </p>
+
+            {/* H1 */}
             <h1
               style={{
                 fontFamily: "var(--font-sans)",
-                fontSize: "clamp(2.6rem, 9vw, 7.5rem)",
+                fontSize: "clamp(2.8rem, 9vw, 7.5rem)",
                 fontWeight: 900,
                 letterSpacing: "-0.02em",
                 color: "var(--white)",
                 lineHeight: 1,
-                marginBottom: "20px",
+                marginBottom: "24px",
                 textShadow: "0 4px 60px rgba(0,0,0,0.9)",
+                animation: "heroFadeUp 0.9s cubic-bezier(0.22,1,0.36,1) both",
+                animationDelay: "0.45s",
               }}
             >
               KD4 액팅 스튜디오
             </h1>
 
-            {/* 2순위: OFF THE PLASTIC */}
+            {/* OFF THE PLASTIC 데코 */}
             <div
               style={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 gap: "12px",
-                marginBottom: "32px",
+                marginBottom: "36px",
+                animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
+                animationDelay: "0.7s",
               }}
             >
-              <span
-                style={{
-                  display: "block",
-                  width: "40px",
-                  height: "1px",
-                  background: "var(--gold)",
-                  opacity: 0.7,
-                }}
-              />
+              <span style={{ display: "block", width: "36px", height: "1px", background: "var(--gold)", opacity: 0.5 }} />
               <p
                 style={{
                   fontFamily: "var(--font-display)",
-                  fontSize: "clamp(0.75rem, 2vw, 1rem)",
+                  fontSize: "clamp(0.65rem, 1.6vw, 0.85rem)",
                   fontWeight: 300,
-                  letterSpacing: "0.28em",
+                  letterSpacing: "0.32em",
                   color: "var(--gold)",
                   textTransform: "uppercase",
-                  opacity: 0.9,
+                  opacity: 0.75,
                 }}
               >
                 OFF THE PLASTIC
               </p>
-              <span
-                style={{
-                  display: "block",
-                  width: "40px",
-                  height: "1px",
-                  background: "var(--gold)",
-                  opacity: 0.7,
-                }}
-              />
+              <span style={{ display: "block", width: "36px", height: "1px", background: "var(--gold)", opacity: 0.5 }} />
             </div>
 
+            {/* 카피 라인 1 */}
             <p
               style={{
-                fontSize: "clamp(0.82rem, 2vw, 1rem)",
+                fontSize: "clamp(0.82rem, 1.8vw, 1rem)",
                 color: "var(--gray-light)",
                 letterSpacing: "0.02em",
-                marginBottom: "40px",
+                marginBottom: "6px",
                 textShadow: "0 2px 20px rgba(0,0,0,0.9)",
+                animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
+                animationDelay: "0.9s",
               }}
             >
-              우리는 양산형 배우를 찍어내는 학원을 거부합니다.
+              우리는 양산형 배우를 찍어내는 공장식 학원을 거부합니다.
+            </p>
+
+            {/* 카피 라인 2 */}
+            <p
+              style={{
+                fontSize: "clamp(0.82rem, 1.8vw, 1rem)",
+                color: "var(--gold)",
+                fontWeight: 600,
+                letterSpacing: "0.02em",
+                marginBottom: "14px",
+                textShadow: "0 2px 20px rgba(0,0,0,0.9)",
+                animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
+                animationDelay: "1.05s",
+              }}
+            >
+              우리는 배우를 성장시키는 KD4 액팅 스튜디오입니다.
+            </p>
+
+            {/* 배우들의 아지트 */}
+            <p
+              style={{
+                fontSize: "clamp(0.68rem, 1.2vw, 0.78rem)",
+                color: "rgba(255,255,255,0.35)",
+                letterSpacing: "0.22em",
+                fontFamily: "var(--font-display)",
+                textTransform: "uppercase",
+                marginBottom: "40px",
+                animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
+                animationDelay: "1.15s",
+              }}
+            >
+              배우들의 아지트
             </p>
 
             {/* CTA 버튼 */}
@@ -481,6 +511,8 @@ export default function HomePage() {
                 gap: "16px",
                 justifyContent: "center",
                 flexWrap: "wrap",
+                animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
+                animationDelay: "1.35s",
               }}
             >
               <a
@@ -515,7 +547,7 @@ export default function HomePage() {
                   transition: "background var(--transition)",
                 }}
               >
-                동료 배우 만나기
+                배우 DB
               </Link>
             </div>
           </div>
@@ -648,65 +680,133 @@ export default function HomePage() {
               연기 훈련부터 캐스팅까지, 배우 액셀러레이팅 시스템
             </p>
 
-            {/* 3단계 */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                gap: "2px",
-              }}
-            >
+            {/* 3단계 — 진행 느낌 */}
+            <div className="steps-journey">
               {[
                 {
+                  num: "01",
                   step: "STEP 01",
-                  title: "아메리칸 액팅 메소드 트레이닝",
+                  title: "아메리칸 액팅\n메소드 트레이닝",
                   desc: "마이즈너 테크닉 · 이바나 처벅 테크닉 기반의 심층 연기 훈련",
+                  icon: "🎭",
                 },
                 {
+                  num: "02",
                   step: "STEP 02",
-                  title: "포트폴리오 제작",
+                  title: "포트폴리오\n제작",
                   desc: "전문 영화팀과 함께 제작하는 출연영상으로 실전 포트폴리오 완성",
+                  icon: "🎬",
                 },
                 {
+                  num: "03",
                   step: "STEP 03",
-                  title: "캐스팅 연계",
+                  title: "캐스팅\n연계",
                   desc: "캐스팅 디렉터·조감독과 직접 연결되는 실전 캐스팅 지원",
+                  icon: "🌟",
                 },
               ].map((s, i) => (
-                <div
-                  key={i}
-                  style={{
-                    background: "var(--bg3)",
-                    padding: "32px 24px",
-                    textAlign: "left",
-                    borderTop: "3px solid var(--gold)",
-                  }}
-                >
-                  <p
+                <>
+                  <div
+                    key={s.num}
                     style={{
-                      fontFamily: "var(--font-display)",
-                      fontSize: "0.7rem",
-                      letterSpacing: "0.2em",
-                      color: "var(--gold)",
-                      marginBottom: "12px",
+                      position: "relative",
+                      background: "var(--bg3)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "8px",
+                      padding: "40px 28px 32px",
+                      textAlign: "left",
+                      overflow: "hidden",
+                      transition: "border-color var(--transition)",
                     }}
                   >
-                    {s.step}
-                  </p>
-                  <h3
-                    style={{
-                      fontSize: "0.95rem",
-                      fontWeight: 700,
-                      marginBottom: "10px",
-                      lineHeight: 1.4,
-                    }}
-                  >
-                    {s.title}
-                  </h3>
-                  <p style={{ fontSize: "0.8rem", color: "var(--gray)", lineHeight: 1.6 }}>
-                    {s.desc}
-                  </p>
-                </div>
+                    {/* 대형 배경 숫자 */}
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: "-12px",
+                        right: "16px",
+                        fontFamily: "var(--font-display)",
+                        fontSize: "6.5rem",
+                        fontWeight: 700,
+                        color: "rgba(59,91,219,0.07)",
+                        lineHeight: 1,
+                        userSelect: "none",
+                        pointerEvents: "none",
+                      }}
+                    >
+                      {s.num}
+                    </span>
+
+                    {/* STEP 라벨 */}
+                    <p
+                      style={{
+                        fontFamily: "var(--font-display)",
+                        fontSize: "0.65rem",
+                        letterSpacing: "0.25em",
+                        color: "var(--gold)",
+                        marginBottom: "16px",
+                      }}
+                    >
+                      {s.step}
+                    </p>
+
+                    {/* 이모지 아이콘 */}
+                    <div
+                      style={{
+                        width: "44px",
+                        height: "44px",
+                        background: "rgba(59,91,219,0.1)",
+                        borderRadius: "8px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "1.4rem",
+                        marginBottom: "20px",
+                      }}
+                    >
+                      {s.icon}
+                    </div>
+
+                    {/* 제목 */}
+                    <h3
+                      style={{
+                        fontSize: "1rem",
+                        fontWeight: 700,
+                        marginBottom: "12px",
+                        lineHeight: 1.4,
+                        whiteSpace: "pre-line",
+                      }}
+                    >
+                      {s.title}
+                    </h3>
+
+                    {/* 설명 */}
+                    <p
+                      style={{
+                        fontSize: "0.82rem",
+                        color: "var(--gray)",
+                        lineHeight: 1.7,
+                      }}
+                    >
+                      {s.desc}
+                    </p>
+                  </div>
+
+                  {/* 화살표 (마지막 제외) */}
+                  {i < 2 && (
+                    <div key={`arrow-${i}`} className="step-journey-arrow">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path
+                          d="M4 10h12M11 5l5 5-5 5"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  )}
+                </>
               ))}
             </div>
           </div>

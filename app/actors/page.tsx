@@ -86,9 +86,9 @@ export default async function ActorsPage({ searchParams }: PageProps) {
         {/* 페이지 헤더 */}
         <div style={styles.header}>
           <p style={styles.eyebrow}>ACTOR ROSTER</p>
-          <h1 style={styles.pageTitle}>배우 목록</h1>
+          <h1 style={styles.pageTitle}>배우 DB</h1>
           <p style={styles.subtitle}>
-            KD4 액팅 스튜디오 소속 배우들을 만나보세요.
+            KD4 액팅 스튜디오 배우들을 만나보세요.
           </p>
         </div>
 
