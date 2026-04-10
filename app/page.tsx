@@ -930,7 +930,7 @@ export default function HomePage() {
                   {[
                     "프로 배우 400명+ 액팅 코칭",
                     "유익액터스 대표",
-                    "영화 경쟁선 제작·주연",
+                    "경계선 제작·주연",
                     "K-웹드라마 어워드 연기상 수상",
                     "LG 크리에이터 특별상",
                     "Youtube 2000만뷰+",
@@ -1505,8 +1505,8 @@ export default function HomePage() {
                 padding: "18px 52px",
                 background: "var(--gold)",
                 color: "#0a0a0a",
-                fontWeight: 700,
-                fontSize: "1rem",
+                fontWeight: 800,
+                fontSize: "1.15rem",
                 letterSpacing: "0.08em",
                 borderRadius: "var(--radius)",
               }}
@@ -1522,8 +1522,8 @@ export default function HomePage() {
                 padding: "18px 52px",
                 border: "1px solid var(--gold)",
                 color: "var(--gold)",
-                fontWeight: 600,
-                fontSize: "1rem",
+                fontWeight: 800,
+                fontSize: "1.15rem",
                 letterSpacing: "0.08em",
                 borderRadius: "var(--radius)",
               }}
