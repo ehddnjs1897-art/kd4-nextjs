@@ -493,40 +493,28 @@ export default function HomePage() {
               KD4 액팅 스튜디오
             </h1>
 
-            {/* OFF THE PLASTIC 데코 */}
-            <div
+            {/* 배우들의 아지트 */}
+            <p
               style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "12px",
-                marginBottom: "36px",
+                fontSize: "clamp(0.78rem, 1.6vw, 0.95rem)",
+                color: "#ffffff",
+                letterSpacing: "0.3em",
+                fontFamily: "var(--font-display)",
+                textTransform: "uppercase",
+                marginBottom: "32px",
                 animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
                 animationDelay: "0.7s",
+                textShadow: "0 0 20px rgba(255,255,255,0.3)",
               }}
             >
-              <span style={{ display: "block", width: "36px", height: "1px", background: "var(--gold)", opacity: 0.5 }} />
-              <p
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: "clamp(0.65rem, 1.6vw, 0.85rem)",
-                  fontWeight: 300,
-                  letterSpacing: "0.32em",
-                  color: "var(--gold)",
-                  textTransform: "uppercase",
-                  opacity: 0.75,
-                }}
-              >
-                OFF THE PLASTIC
-              </p>
-              <span style={{ display: "block", width: "36px", height: "1px", background: "var(--gold)", opacity: 0.5 }} />
-            </div>
+              배우들의 아지트
+            </p>
 
             {/* 카피 라인 1 */}
             <p
               style={{
                 fontSize: "clamp(0.82rem, 1.8vw, 1rem)",
-                color: "var(--gray-light)",
+                color: "#ffffff",
                 letterSpacing: "0.02em",
                 marginBottom: "6px",
                 textShadow: "0 2px 20px rgba(0,0,0,0.9)",
@@ -544,7 +532,7 @@ export default function HomePage() {
                 color: "var(--gold)",
                 fontWeight: 600,
                 letterSpacing: "0.02em",
-                marginBottom: "14px",
+                marginBottom: "32px",
                 textShadow: "0 2px 20px rgba(0,0,0,0.9)",
                 animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
                 animationDelay: "1.05s",
@@ -553,21 +541,33 @@ export default function HomePage() {
               우리는 배우를 성장시키는 KD4 액팅 스튜디오입니다.
             </p>
 
-            {/* 배우들의 아지트 */}
-            <p
+            {/* OFF THE PLASTIC 데코 */}
+            <div
               style={{
-                fontSize: "clamp(0.72rem, 1.4vw, 0.88rem)",
-                color: "rgba(196,165,90,0.75)",
-                letterSpacing: "0.28em",
-                fontFamily: "var(--font-display)",
-                textTransform: "uppercase",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "12px",
                 marginBottom: "40px",
                 animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
                 animationDelay: "1.15s",
               }}
             >
-              배우들의 아지트
-            </p>
+              <span style={{ display: "block", width: "36px", height: "1px", background: "var(--gold)" }} />
+              <p
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "clamp(0.65rem, 1.6vw, 0.85rem)",
+                  fontWeight: 400,
+                  letterSpacing: "0.32em",
+                  color: "var(--gold)",
+                  textTransform: "uppercase",
+                }}
+              >
+                OFF THE PLASTIC
+              </p>
+              <span style={{ display: "block", width: "36px", height: "1px", background: "var(--gold)" }} />
+            </div>
 
             {/* CTA 버튼 */}
             <div
@@ -753,24 +753,24 @@ export default function HomePage() {
               style={{
                 position: "relative",
                 width: "100%",
-                borderRadius: "10px",
+                aspectRatio: "3/2",
+                borderRadius: "12px",
                 overflow: "hidden",
-                border: "1px solid rgba(196,165,90,0.2)",
+                border: "1px solid rgba(196,165,90,0.15)",
                 marginBottom: "64px",
-                boxShadow: "0 8px 40px rgba(0,0,0,0.5)",
+                boxShadow: "0 12px 48px rgba(0,0,0,0.6)",
               }}
             >
               <Image
                 src="/og-image.jpg"
                 alt="KD4 액팅 스튜디오 공간"
-                width={1200}
-                height={630}
+                fill
                 style={{
-                  width: "100%",
-                  height: "auto",
-                  display: "block",
+                  objectFit: "cover",
+                  objectPosition: "center 25%",
                 }}
                 priority
+                sizes="(max-width: 768px) 100vw, 900px"
               />
               {/* 하단 그라디언트 오버레이 */}
               <div
@@ -779,8 +779,8 @@ export default function HomePage() {
                   bottom: 0,
                   left: 0,
                   right: 0,
-                  height: "30%",
-                  background: "linear-gradient(to top, rgba(10,10,10,0.6), transparent)",
+                  height: "25%",
+                  background: "linear-gradient(to top, rgba(10,10,10,0.5), transparent)",
                   pointerEvents: "none",
                 }}
               />
