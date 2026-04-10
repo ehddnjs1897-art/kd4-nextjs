@@ -4,17 +4,29 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
-type Step = 'form' | 'success'
+type MemberType = 'actor' | 'director'
+type Step = 'type-select' | 'form' | 'success'
 
 export default function SignupPage() {
-  const [step, setStep] = useState<Step>('form')
+  const [step, setStep] = useState<Step>('type-select')
+  const [memberType, setMemberType] = useState<MemberType>('actor')
+
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirm, setPasswordConfirm] = useState('')
   const [phone, setPhone] = useState('')
+  const [affiliation, setAffiliation] = useState('') // 디렉터: 소속 (선택)
+
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  function formatPhone(value: string) {
+    const digits = value.replace(/\D/g, '')
+    if (digits.length <= 3) return digits
+    if (digits.length <= 7) return `${digits.slice(0, 3)}-${digits.slice(3)}`
+    return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7, 11)}`
+  }
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault()
@@ -31,22 +43,37 @@ export default function SignupPage() {
 
     setLoading(true)
     const supabase = createClient()
+
+    const metadata: Record<string, string> = {
+      name,
+      member_type: memberType,
+    }
+    if (memberType === 'actor' && phone) {
+      metadata.phone = phone
+    }
+    if (memberType === 'director' && affiliation) {
+      metadata.affiliation = affiliation
+    }
+
     const { error: authError } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: {
-          name,
-          phone,
-        },
+        data: metadata,
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
       },
     })
 
     if (authError) {
-      if (authError.message.includes('already registered')) {
+      const msg = authError.message
+      if (msg.includes('already registered') || msg.includes('User already registered')) {
         setError('이미 가입된 이메일입니다. 로그인 페이지로 이동해 주세요.')
+      } else if (msg.includes('rate limit') || msg.includes('Email rate limit')) {
+        setError('이메일 발송 한도를 초과했습니다. 잠시 후 다시 시도해 주세요.')
+      } else if (msg.includes('disabled') || msg.includes('not enabled')) {
+        setError('이메일 회원가입이 현재 비활성화되어 있습니다.')
       } else {
-        setError('회원가입 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.')
+        setError(`오류: ${msg}`)
       }
       setLoading(false)
       return
@@ -56,13 +83,70 @@ export default function SignupPage() {
     setLoading(false)
   }
 
-  function formatPhone(value: string) {
-    const digits = value.replace(/\D/g, '')
-    if (digits.length <= 3) return digits
-    if (digits.length <= 7) return `${digits.slice(0, 3)}-${digits.slice(3)}`
-    return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7, 11)}`
+  /* ---- Step 1: 유형 선택 ---- */
+  if (step === 'type-select') {
+    return (
+      <div style={styles.page}>
+        <div style={styles.card}>
+          <div style={styles.logoArea}>
+            <span style={styles.logoText}>KD4</span>
+            <span style={styles.logoSub}>ACTING STUDIO</span>
+          </div>
+
+          <h1 style={styles.title}>회원 유형을 선택하세요</h1>
+          <p style={styles.subtitle}>가입 목적에 맞는 유형을 선택해 주세요.</p>
+
+          <div style={styles.typeGrid}>
+            <button
+              style={{
+                ...styles.typeCard,
+                ...(memberType === 'actor' ? styles.typeCardActive : {}),
+              }}
+              onClick={() => setMemberType('actor')}
+            >
+              <span style={styles.typeIcon}>🎬</span>
+              <span style={styles.typeLabel}>배우 회원</span>
+              <span style={styles.typeDesc}>
+                KD4 스튜디오에서 활동하는 배우
+                <br />내 갤러리 페이지 관리 가능
+              </span>
+            </button>
+
+            <button
+              style={{
+                ...styles.typeCard,
+                ...(memberType === 'director' ? styles.typeCardActive : {}),
+              }}
+              onClick={() => setMemberType('director')}
+            >
+              <span style={styles.typeIcon}>🎥</span>
+              <span style={styles.typeLabel}>디렉터 회원</span>
+              <span style={styles.typeDesc}>
+                캐스팅 디렉터, 조감독, 제작사
+                <br />배우 DB 전체 열람 가능
+              </span>
+            </button>
+          </div>
+
+          <button
+            style={styles.btnPrimary}
+            onClick={() => setStep('form')}
+          >
+            다음 →
+          </button>
+
+          <p style={styles.loginText}>
+            이미 계정이 있으신가요?{' '}
+            <Link href="/auth/login" style={styles.loginLink}>
+              로그인
+            </Link>
+          </p>
+        </div>
+      </div>
+    )
   }
 
+  /* ---- Step 3: 성공 ---- */
   if (step === 'success') {
     return (
       <div style={styles.page}>
@@ -86,13 +170,26 @@ export default function SignupPage() {
     )
   }
 
+  /* ---- Step 2: 가입 폼 ---- */
   return (
     <div style={styles.page}>
       <div style={styles.card}>
-        {/* 로고 */}
         <div style={styles.logoArea}>
           <span style={styles.logoText}>KD4</span>
           <span style={styles.logoSub}>ACTING STUDIO</span>
+        </div>
+
+        {/* 유형 배지 */}
+        <div style={styles.typeBadgeRow}>
+          <span style={styles.typeBadge}>
+            {memberType === 'actor' ? '🎬 배우 회원' : '🎥 디렉터 회원'}
+          </span>
+          <button
+            style={styles.typeChangeBtn}
+            onClick={() => setStep('type-select')}
+          >
+            변경
+          </button>
         </div>
 
         <h1 style={styles.title}>회원가입</h1>
@@ -177,25 +274,45 @@ export default function SignupPage() {
             )}
           </div>
 
-          {/* 전화번호 */}
-          <div style={styles.fieldGroup}>
-            <label htmlFor="phone" style={styles.label}>
-              전화번호
-            </label>
-            <input
-              id="phone"
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(formatPhone(e.target.value))}
-              placeholder="010-0000-0000"
-              disabled={loading}
-              maxLength={13}
-              style={styles.input}
-            />
-            <p style={styles.hint}>
-              전화번호 입력 시 배우 DB와 자동 매칭됩니다.
-            </p>
-          </div>
+          {/* 배우 회원: 전화번호 */}
+          {memberType === 'actor' && (
+            <div style={styles.fieldGroup}>
+              <label htmlFor="phone" style={styles.label}>
+                전화번호
+              </label>
+              <input
+                id="phone"
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(formatPhone(e.target.value))}
+                placeholder="010-0000-0000"
+                disabled={loading}
+                maxLength={13}
+                style={styles.input}
+              />
+              <p style={styles.hint}>
+                전화번호 입력 시 배우 DB와 자동 연결됩니다.
+              </p>
+            </div>
+          )}
+
+          {/* 디렉터 회원: 소속 */}
+          {memberType === 'director' && (
+            <div style={styles.fieldGroup}>
+              <label htmlFor="affiliation" style={styles.label}>
+                소속 <span style={styles.optional}>(선택)</span>
+              </label>
+              <input
+                id="affiliation"
+                type="text"
+                value={affiliation}
+                onChange={(e) => setAffiliation(e.target.value)}
+                placeholder="제작사, 캐스팅사, 방송국 등"
+                disabled={loading}
+                style={styles.input}
+              />
+            </div>
+          )}
 
           <button
             type="submit"
@@ -232,7 +349,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   card: {
     width: '100%',
-    maxWidth: 440,
+    maxWidth: 460,
     background: 'var(--bg2)',
     border: '1px solid var(--border)',
     borderRadius: 8,
@@ -262,11 +379,83 @@ const styles: Record<string, React.CSSProperties> = {
   },
   title: {
     fontFamily: 'var(--font-display)',
-    fontSize: '1.4rem',
+    fontSize: '1.3rem',
     fontWeight: 600,
     color: 'var(--white)',
-    marginBottom: 24,
+    marginBottom: 8,
     textAlign: 'center',
+  },
+  subtitle: {
+    textAlign: 'center',
+    fontSize: '0.85rem',
+    color: 'var(--gray)',
+    marginBottom: 28,
+  },
+  typeGrid: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: 12,
+    marginBottom: 24,
+  },
+  typeCard: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 8,
+    padding: '20px 12px',
+    background: 'var(--bg3)',
+    border: '1px solid var(--border)',
+    borderRadius: 8,
+    cursor: 'pointer',
+    textAlign: 'center',
+    transition: 'all 0.2s',
+    fontFamily: 'inherit',
+  },
+  typeCardActive: {
+    borderColor: 'var(--gold)',
+    background: 'rgba(196,165,90,0.08)',
+  },
+  typeIcon: {
+    fontSize: '1.8rem',
+  },
+  typeLabel: {
+    fontFamily: 'var(--font-display)',
+    fontSize: '0.9rem',
+    fontWeight: 700,
+    color: 'var(--white)',
+    letterSpacing: '0.03em',
+  },
+  typeDesc: {
+    fontSize: '0.72rem',
+    color: 'var(--gray)',
+    lineHeight: 1.6,
+  },
+  typeBadgeRow: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    marginBottom: 20,
+  },
+  typeBadge: {
+    display: 'inline-block',
+    padding: '4px 14px',
+    background: 'rgba(196,165,90,0.1)',
+    border: '1px solid rgba(196,165,90,0.35)',
+    borderRadius: 20,
+    fontSize: '0.8rem',
+    color: 'var(--gold)',
+    fontWeight: 600,
+  },
+  typeChangeBtn: {
+    background: 'none',
+    border: 'none',
+    color: 'var(--gray)',
+    fontSize: '0.78rem',
+    cursor: 'pointer',
+    textDecoration: 'underline',
+    fontFamily: 'inherit',
+    padding: 0,
   },
   errorBox: {
     background: 'rgba(220, 38, 38, 0.12)',
@@ -295,6 +484,10 @@ const styles: Record<string, React.CSSProperties> = {
   },
   required: {
     color: 'var(--gold)',
+  },
+  optional: {
+    color: 'var(--gray)',
+    fontSize: '0.72rem',
   },
   input: {
     background: 'var(--bg3)',
@@ -372,5 +565,6 @@ const styles: Record<string, React.CSSProperties> = {
     textAlign: 'center',
     letterSpacing: '0.05em',
     cursor: 'pointer',
+    textDecoration: 'none',
   },
 }

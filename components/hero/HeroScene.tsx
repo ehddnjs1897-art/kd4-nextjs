@@ -15,10 +15,11 @@ export default function HeroScene() {
     try {
       // ── Renderer ──────────────────────────────────────────────────────────
       const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      const isMobile = window.innerWidth <= 768;
+      renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.shadowMap.enabled = !isMobile;
+      renderer.shadowMap.type = THREE.PCFShadowMap;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
       renderer.toneMappingExposure = 0.9;
 
@@ -219,8 +220,11 @@ export default function HeroScene() {
         return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
       };
 
+      let isVisible = true;
+
       const animate = (ts: number) => {
         animFrameId = requestAnimationFrame(animate);
+        if (!isVisible) return;
         if (!startTime) startTime = ts;
         const elapsed = ts - startTime;
 
@@ -245,6 +249,13 @@ export default function HeroScene() {
       }
       animFrameId = requestAnimationFrame(animate);
 
+      // 모바일: 뷰포트 벗어나면 render 중지
+      const observer = new IntersectionObserver(
+        (entries) => { isVisible = entries[0].isIntersecting; },
+        { threshold: 0 }
+      );
+      observer.observe(canvas);
+
       // ── RESIZE HANDLER ────────────────────────────────────────────────────
       const onResize = () => {
         camera.aspect = window.innerWidth / window.innerHeight;
@@ -257,6 +268,7 @@ export default function HeroScene() {
       return () => {
         cancelAnimationFrame(animFrameId);
         window.removeEventListener("resize", onResize);
+        observer.disconnect();
         renderer.dispose();
       };
     } catch (err) {

@@ -1,16 +1,30 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
+const ERROR_MESSAGES: Record<string, string> = {
+  missing_code: '인증 코드가 없습니다. 다시 시도해 주세요.',
+  exchange_failed: 'OAuth 인증에 실패했습니다. 다시 시도해 주세요.',
+  verification_failed: '이메일 인증에 실패했습니다. 링크가 만료되었을 수 있습니다.',
+}
+
 export default function LoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    const errorCode = searchParams.get('error')
+    if (errorCode && ERROR_MESSAGES[errorCode]) {
+      setError(ERROR_MESSAGES[errorCode])
+    }
+  }, [searchParams])
 
   async function handleEmailLogin(e: React.FormEvent) {
     e.preventDefault()
@@ -53,8 +67,20 @@ export default function LoginPage() {
     }
   }
 
-  function handleKakaoLogin() {
-    window.location.href = '/api/auth/kakao'
+  async function handleKakaoLogin() {
+    setLoading(true)
+    setError('')
+    const supabase = createClient()
+    const { error: authError } = await supabase.auth.signInWithOAuth({
+      provider: 'kakao',
+      options: {
+        redirectTo: `${location.origin}/auth/callback`,
+      },
+    })
+    if (authError) {
+      setError('카카오 로그인 중 오류가 발생했습니다.')
+      setLoading(false)
+    }
   }
 
   return (

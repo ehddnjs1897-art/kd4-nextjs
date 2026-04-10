@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { CLASSES } from "@/lib/classes";
@@ -658,15 +659,15 @@ export default function HomePage() {
           background: "var(--bg2)",
           borderTop: "1px solid var(--border)",
           borderBottom: "1px solid var(--border)",
-          padding: "60px 24px",
+          padding: "60px 0",
         }}
       >
         <div
           className="container"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-            gap: "20px",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: "12px",
           }}
         >
           {[
@@ -681,19 +682,22 @@ export default function HomePage() {
               <p
                 style={{
                   fontFamily: "var(--font-display)",
-                  fontSize: "clamp(2rem, 5vw, 2.8rem)",
+                  fontSize: "clamp(1.4rem, 6vw, 2.8rem)",
                   fontWeight: 700,
                   color: "var(--gold)",
                   lineHeight: 1,
+                  whiteSpace: "nowrap",
                 }}
               >
                 {stat.num}
               </p>
               <p
                 style={{
-                  fontSize: "0.8rem",
+                  fontSize: "clamp(0.65rem, 2vw, 0.8rem)",
                   color: "var(--gray)",
                   letterSpacing: "0.04em",
+                  textAlign: "center",
+                  lineHeight: 1.3,
                 }}
               >
                 {stat.label}
@@ -733,12 +737,50 @@ export default function HomePage() {
               style={{
                 color: "var(--gray-light)",
                 fontSize: "0.95rem",
-                marginBottom: "60px",
+                marginBottom: "48px",
                 lineHeight: 1.7,
               }}
             >
               연기 훈련부터 캐스팅까지, 배우 액셀러레이팅 시스템
             </p>
+
+            {/* 스튜디오 사진 */}
+            <div
+              style={{
+                position: "relative",
+                width: "100%",
+                borderRadius: "10px",
+                overflow: "hidden",
+                border: "1px solid rgba(196,165,90,0.2)",
+                marginBottom: "64px",
+                boxShadow: "0 8px 40px rgba(0,0,0,0.5)",
+              }}
+            >
+              <Image
+                src="/og-image.jpg"
+                alt="KD4 액팅 스튜디오 공간"
+                width={1200}
+                height={630}
+                style={{
+                  width: "100%",
+                  height: "auto",
+                  display: "block",
+                }}
+                priority
+              />
+              {/* 하단 그라디언트 오버레이 */}
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  height: "30%",
+                  background: "linear-gradient(to top, rgba(10,10,10,0.6), transparent)",
+                  pointerEvents: "none",
+                }}
+              />
+            </div>
 
             {/* 3단계 — 진행 느낌 */}
             <div className="steps-journey">
@@ -870,8 +912,6 @@ export default function HomePage() {
         <div className="container">
           <div
             style={{
-              display: "grid",
-              gridTemplateColumns: "1fr auto",
               gap: "48px",
               alignItems: "start",
             }}
@@ -1356,7 +1396,7 @@ export default function HomePage() {
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={`/casting/${encodeURIComponent(photo.file)}`}
+                  src={photo.url}
                   alt={photo.name}
                   style={{
                     width: "100%",

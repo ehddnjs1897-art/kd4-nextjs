@@ -33,9 +33,32 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: 'KD4 액팅 스튜디오',
-  description: '연기 훈련부터 캐스팅까지, 배우 액셀러레이팅 시스템',
+  description: '마이즈너 테크닉 기반 연기 훈련 · 포트폴리오 제작 · 캐스팅 연계. 현장에서 통하는 배우를 만듭니다.',
+  metadataBase: new URL('https://kd4.club'),
   icons: {
     icon: '/favicon.ico',
+  },
+  openGraph: {
+    title: 'KD4 액팅 스튜디오',
+    description: '마이즈너 테크닉 기반 연기 훈련 · 포트폴리오 제작 · 캐스팅 연계. 현장에서 통하는 배우를 만듭니다.',
+    url: 'https://kd4.club',
+    siteName: 'KD4 액팅 스튜디오',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'KD4 액팅 스튜디오 — 마이즈너 테크닉 연기 훈련',
+      },
+    ],
+    locale: 'ko_KR',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'KD4 액팅 스튜디오',
+    description: '마이즈너 테크닉 기반 연기 훈련 · 포트폴리오 제작 · 캐스팅 연계.',
+    images: ['/og-image.jpg'],
   },
 }
 

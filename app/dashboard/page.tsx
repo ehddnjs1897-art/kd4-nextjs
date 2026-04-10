@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import LogoutButton from '@/components/layout/LogoutButton'
 
-type UserRole = 'user' | 'editor' | 'admin'
+type UserRole = 'user' | 'actor' | 'editor' | 'director' | 'admin'
 
 interface UserProfile {
   id: string
@@ -36,7 +36,9 @@ function formatDate(isoStr: string) {
 
 const ROLE_LABEL: Record<UserRole, string> = {
   user: '일반 회원',
-  editor: '배우 (편집 권한)',
+  actor: '배우 회원 (승인 대기)',
+  editor: '배우 회원',
+  director: '디렉터 회원',
   admin: '관리자',
 }
 
@@ -64,6 +66,7 @@ export default async function DashboardPage() {
   const role: UserRole = (profile?.role as UserRole) || 'user'
   const createdAt = profile?.created_at || user.created_at
   const canEdit = role === 'editor' || role === 'admin'
+  const canViewActorDb = role === 'editor' || role === 'director' || role === 'admin'
 
   return (
     <div style={styles.page}>
@@ -74,7 +77,7 @@ export default async function DashboardPage() {
           <h1 style={styles.pageTitle}>마이페이지</h1>
         </div>
 
-        <div style={styles.layout}>
+        <div style={styles.layout} className="dashboard-layout">
           {/* ---- 내 정보 카드 ---- */}
           <section style={styles.card}>
             <h2 style={styles.cardTitle}>내 정보</h2>
@@ -111,7 +114,7 @@ export default async function DashboardPage() {
 
           {/* ---- 우측 사이드 ---- */}
           <div style={styles.sideCol}>
-            {/* 편집 권한 메뉴 */}
+            {/* 배우 회원: 갤러리 관리 */}
             {canEdit && (
               <section style={styles.card}>
                 <h2 style={styles.cardTitle}>갤러리 관리</h2>
@@ -120,6 +123,19 @@ export default async function DashboardPage() {
                 </p>
                 <Link href="/dashboard/edit" style={styles.btnPrimary}>
                   내 갤러리 편집
+                </Link>
+              </section>
+            )}
+
+            {/* 디렉터/배우 회원: 배우 DB 바로가기 */}
+            {canViewActorDb && (
+              <section style={styles.card}>
+                <h2 style={styles.cardTitle}>배우 DB</h2>
+                <p style={styles.cardDesc}>
+                  KD4 액팅 스튜디오 배우들의 갤러리를 열람합니다.
+                </p>
+                <Link href="/actors" style={styles.btnSecondary}>
+                  배우 DB 보기
                 </Link>
               </section>
             )}
@@ -183,8 +199,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: 'var(--white)',
   },
   layout: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 360px',
+    /* layout handled by .dashboard-layout CSS class */
     gap: 28,
     alignItems: 'start',
   },

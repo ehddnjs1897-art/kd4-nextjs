@@ -1,6 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 
 // ─── 타입 ────────────────────────────────────────────────────────────────────
 
@@ -50,6 +52,8 @@ const TAB_LABELS: Record<TabKey, string> = {
 // ─── 메인 컴포넌트 ───────────────────────────────────────────────────────────
 
 export default function AIToolsPage() {
+  const router = useRouter()
+  const [authChecked, setAuthChecked] = useState(false)
   const [scriptText, setScriptText] = useState('')
   const [characterName, setCharacterName] = useState('')
   const [loading, setLoading] = useState(false)
@@ -57,6 +61,17 @@ export default function AIToolsPage() {
   const [rawText, setRawText] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<TabKey>('utaHagen')
+
+  // 비로그인 → 로그인 페이지
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) router.replace('/auth/login?next=/ai-tools')
+      else setAuthChecked(true)
+    })
+  }, [router])
+
+  if (!authChecked) return null
 
   const apiKey = process.env.NEXT_PUBLIC_GEMINI_KEY
 

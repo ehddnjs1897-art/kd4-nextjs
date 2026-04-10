@@ -1,9 +1,22 @@
 import { Metadata } from 'next'
-import Image from 'next/image'
-import { notFound } from 'next/navigation'
+import Link from 'next/link'
+import { notFound, redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import ActorTabs from '@/components/actors/ActorTabs'
 import ShareButton from '@/components/actors/ShareButton'
+import ProfilePhotoWrapper from '@/components/actors/ProfilePhotoWrapper'
+
+type UserRole = 'user' | 'actor' | 'editor' | 'director' | 'admin'
+
+/** 배우DB 열람 가능 여부 */
+function canViewActorDb(role: UserRole | null): boolean {
+  return role === 'editor' || role === 'director' || role === 'admin'
+}
+
+/** 연락처 등 전체 정보 열람 (디렉터/관리자만) */
+function isDirectorOrAdmin(role: UserRole | null): boolean {
+  return role === 'director' || role === 'admin'
+}
 
 /* ---- 타입 정의 ---- */
 interface Actor {
@@ -103,15 +116,52 @@ export default async function ActorDetailPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const actor = await getActor(id)
-  if (!actor) notFound()
 
-  /* 로그인 여부 확인 (연락처 노출 제어) */
+  /* ---- 인증 & 역할 확인 ---- */
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  const isLoggedIn = !!user
+
+  // 비로그인 → 로그인 페이지
+  if (!user) {
+    redirect(`/auth/login?next=/actors/${id}`)
+  }
+
+  // 역할 조회
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  const role = (profile?.role ?? 'actor') as UserRole
+
+  // actor(미승인) / user → 접근 불가
+  if (!canViewActorDb(role)) {
+    return (
+      <div style={styles.page}>
+        <div className="container">
+          <div style={styles.deniedBox}>
+            <p style={styles.deniedIcon}>🔒</p>
+            <h1 style={styles.deniedTitle}>열람 권한 없음</h1>
+            <p style={styles.deniedDesc}>
+              배우 DB는 KD4 소속 배우 또는{' '}
+              <strong style={{ color: 'var(--gold)' }}>디렉터 회원</strong>만 열람할 수 있습니다.
+            </p>
+            <div style={styles.deniedBtns}>
+              <Link href="/auth/signup" style={styles.btnPrimary}>디렉터 회원으로 가입</Link>
+              <Link href="/actors" style={styles.btnSecondary}>목록으로</Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  /* ---- 데이터 fetch (디렉터/관리자만 여기 도달) ---- */
+  const actor = await getActor(id)
+  if (!actor) notFound()
 
   const photoUrl = profilePhotoUrl(actor)
   const pageUrl =
@@ -122,18 +172,19 @@ export default async function ActorDetailPage({
   return (
     <div style={styles.page}>
       <div className="container">
-        <div style={styles.layout}>
+        <div className="actor-detail-layout">
           {/* ---- 좌측: 프로필 ---- */}
-          <aside style={styles.sidebar}>
-            <div style={styles.profileImageWrap}>
-              <Image
+          <aside style={styles.sidebar} className="actor-detail-sidebar">
+            <div style={styles.profileImageWrap} className="actor-detail-profile-img">
+              <ProfilePhotoWrapper
                 src={photoUrl}
                 alt={actor.name}
-                fill
-                sizes="(max-width:768px) 100vw, 340px"
-                style={{ objectFit: 'cover', objectPosition: 'center top' }}
-                unoptimized={photoUrl.includes('drive.google.com')}
-                priority
+                imageProtected={!isDirectorOrAdmin(role)}
+                downloadHref={
+                  isDirectorOrAdmin(role) && actor.drive_photo_id
+                    ? `https://drive.google.com/uc?id=${actor.drive_photo_id}&export=download`
+                    : undefined
+                }
               />
             </div>
 
@@ -185,7 +236,8 @@ export default async function ActorDetailPage({
           <div style={styles.content}>
             <ActorTabs
               actor={actor}
-              isLoggedIn={isLoggedIn}
+              canViewContact={isDirectorOrAdmin(role)}
+              imageProtected={!isDirectorOrAdmin(role)}
             />
           </div>
         </div>
@@ -201,23 +253,78 @@ const styles: Record<string, React.CSSProperties> = {
     paddingTop: 80,
     paddingBottom: 80,
   },
+  /* ---- 접근 불가 ---- */
+  deniedBox: {
+    maxWidth: 480,
+    margin: '60px auto',
+    textAlign: 'center',
+    background: 'var(--bg2)',
+    border: '1px solid var(--border)',
+    borderRadius: 12,
+    padding: '60px 40px',
+  },
+  deniedIcon: {
+    fontSize: '2.8rem',
+    marginBottom: 16,
+  },
+  deniedTitle: {
+    fontFamily: 'var(--font-display)',
+    fontSize: '1.6rem',
+    fontWeight: 700,
+    color: 'var(--white)',
+    marginBottom: 16,
+  },
+  deniedDesc: {
+    fontSize: '0.95rem',
+    color: 'var(--gray)',
+    lineHeight: 1.8,
+    marginBottom: 12,
+  },
+  deniedSub: {
+    fontSize: '0.82rem',
+    color: 'var(--gray)',
+    marginBottom: 28,
+  },
+  deniedLink: {
+    color: 'var(--gold)',
+    textDecoration: 'underline',
+  },
+  deniedBtns: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 10,
+    marginTop: 4,
+  },
+  btnPrimary: {
+    display: 'block',
+    background: 'var(--gold)',
+    color: '#0a0a0a',
+    borderRadius: 6,
+    padding: '12px 0',
+    fontSize: '0.9rem',
+    fontWeight: 700,
+    fontFamily: 'var(--font-display)',
+    textDecoration: 'none',
+    letterSpacing: '0.05em',
+  },
+  btnSecondary: {
+    display: 'block',
+    border: '1px solid var(--border)',
+    color: 'var(--gray)',
+    borderRadius: 6,
+    padding: '11px 0',
+    fontSize: '0.88rem',
+    textDecoration: 'none',
+  },
   layout: {
-    display: 'grid',
-    gridTemplateColumns: '320px 1fr',
-    gap: 40,
-    alignItems: 'start',
+    /* layout handled by .actor-detail-layout CSS class */
   },
   sidebar: {
     position: 'sticky',
     top: 80,
   },
   profileImageWrap: {
-    position: 'relative',
-    aspectRatio: '9/16',
-    borderRadius: 8,
-    overflow: 'hidden',
-    background: 'var(--bg3)',
-    marginBottom: 20,
+    marginBottom: 20, /* aspect-ratio / overflow는 ProfilePhotoWrapper 내부에서 처리 */
   },
   profileInfo: {
     display: 'flex',

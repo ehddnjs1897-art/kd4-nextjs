@@ -5,8 +5,8 @@
 
 import { createClient } from '@supabase/supabase-js'
 
-const SUPABASE_URL = 'https://qudyncopszvcbnwgrwbd.supabase.co'
-const SERVICE_ROLE_KEY = 'sb_secret_seNPYzM-osjneCy2w91Lkw_248ByWeq'
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://qudyncopszvcbnwgrwbd.supabase.co'
+const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
 const SHEET_ID = '1XfatoR0V4DoTVpQrujG8kpMd1Soaaw86C2qVKnd5IZI'
 
 const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {

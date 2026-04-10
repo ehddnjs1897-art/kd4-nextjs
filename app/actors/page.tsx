@@ -1,20 +1,20 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+import { supabaseAdmin } from '@/lib/supabase/admin'
+
+type UserRole = 'user' | 'actor' | 'editor' | 'director' | 'admin'
 
 interface Actor {
   id: string
   name: string
-  gender: 'M' | 'F'
-  age_group: string
+  gender: '남' | '여' | null
+  age_group: string | null
   drive_photo_id: string | null
 }
 
-interface ActorsResponse {
-  actors: Actor[]
-  total: number
-}
-
-type GenderFilter = 'all' | 'M' | 'F'
+type GenderFilter = 'all' | '남' | '여'
 type AgeFilter = 'all' | '20대' | '30대' | '40대' | '50대 이상'
 
 interface PageProps {
@@ -25,37 +25,37 @@ interface PageProps {
 }
 
 async function fetchActors(gender: string, ageGroup: string): Promise<Actor[]> {
-  const base =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    (process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : 'http://localhost:3000')
+  let query = supabaseAdmin
+    .from('actors')
+    .select('id, name, gender, age_group, drive_photo_id')
+    .eq('is_public', true)
+    .order('age_group', { ascending: true, nullsFirst: false })
+    .order('created_at', { ascending: false })
 
-  const params = new URLSearchParams()
-  if (gender && gender !== 'all') params.set('gender', gender)
-  if (ageGroup && ageGroup !== 'all') params.set('ageGroup', ageGroup)
+  if (gender && gender !== 'all') {
+    query = query.eq('gender', gender)
+  }
+  if (ageGroup && ageGroup !== 'all') {
+    query = query.eq('age_group', ageGroup)
+  }
 
-  try {
-    const res = await fetch(`${base}/api/actors?${params.toString()}`, {
-      next: { revalidate: 60 },
-    })
-    if (!res.ok) return []
-    const data: ActorsResponse = await res.json()
-    return data.actors ?? []
-  } catch {
+  const { data, error } = await query
+  if (error) {
+    console.error('[ActorsPage] Supabase 오류:', error.message)
     return []
   }
+  return (data ?? []) as Actor[]
 }
 
 function thumbnailUrl(drivePhotoId: string | null): string {
   if (!drivePhotoId) return '/placeholder-actor.svg'
-  return `https://drive.google.com/thumbnail?id=${drivePhotoId}&sz=w400`
+  return `https://drive.google.com/thumbnail?id=${drivePhotoId}&sz=w600`
 }
 
 const GENDER_OPTIONS: { value: GenderFilter; label: string }[] = [
   { value: 'all', label: '전체' },
-  { value: 'M', label: '남' },
-  { value: 'F', label: '여' },
+  { value: '남', label: '남' },
+  { value: '여', label: '여' },
 ]
 
 const AGE_OPTIONS: { value: AgeFilter; label: string }[] = [
@@ -63,10 +63,68 @@ const AGE_OPTIONS: { value: AgeFilter; label: string }[] = [
   { value: '20대', label: '20대' },
   { value: '30대', label: '30대' },
   { value: '40대', label: '40대' },
-  { value: '50대 이상', label: '50대 이상' },
+  { value: '50대 이상', label: '50대+' },
 ]
 
+/** 배우DB 열람 가능 여부 (배우 회원 이상) */
+function canViewActorDb(role: UserRole | null): boolean {
+  return role === 'editor' || role === 'director' || role === 'admin'
+  // actor(미승인 배우) / user(구형) 는 열람 불가
+}
+
+/** 연락처 등 전체 정보 열람 (디렉터/관리자만) */
+function isDirectorOrAdmin(role: UserRole | null): boolean {
+  return role === 'director' || role === 'admin'
+}
+
 export default async function ActorsPage({ searchParams }: PageProps) {
+  /* ---- 인증 확인 ---- */
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  // 비로그인 → 로그인 페이지로
+  if (!user) {
+    redirect('/auth/login?next=/actors')
+  }
+
+  // 역할 조회
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  const role = (profile?.role ?? 'actor') as UserRole
+
+  // 배우 회원 / 일반 회원 → 접근 불가 안내
+  if (!canViewActorDb(role)) {
+    return (
+      <div style={styles.page}>
+        <div className="container">
+          <div style={styles.deniedBox}>
+            <p style={styles.deniedIcon}>🔒</p>
+            <h1 style={styles.deniedTitle}>열람 권한 없음</h1>
+            <p style={styles.deniedDesc}>
+              배우 DB는 KD4 소속 배우 또는<br />
+              <strong style={{ color: 'var(--gold)' }}>디렉터 회원</strong>만 열람할 수 있습니다.
+            </p>
+            <div style={styles.deniedBtns}>
+              <Link href="/auth/signup" style={styles.btnPrimary}>
+                디렉터 회원으로 가입
+              </Link>
+              <Link href="/" style={styles.btnSecondary}>
+                홈으로
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  /* ---- 데이터 fetch (디렉터/관리자만 여기 도달) ---- */
   const params = await searchParams
   const gender = params.gender ?? 'all'
   const ageGroup = params.ageGroup ?? 'all'
@@ -87,9 +145,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
         <div style={styles.header}>
           <p style={styles.eyebrow}>ACTOR ROSTER</p>
           <h1 style={styles.pageTitle}>배우 DB</h1>
-          <p style={styles.subtitle}>
-            KD4 액팅 스튜디오 배우들을 만나보세요.
-          </p>
+          <p style={styles.subtitle}>KD4 액팅 스튜디오 배우들을 만나보세요.</p>
         </div>
 
         {/* 필터바 */}
@@ -138,9 +194,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
         {actors.length === 0 ? (
           <div style={styles.emptyState}>
             <p style={styles.emptyText}>해당 조건의 배우가 없습니다.</p>
-            <Link href="/actors" style={styles.resetLink}>
-              필터 초기화
-            </Link>
+            <Link href="/actors" style={styles.resetLink}>필터 초기화</Link>
           </div>
         ) : (
           <div style={styles.grid}>
@@ -151,20 +205,16 @@ export default async function ActorsPage({ searchParams }: PageProps) {
                     src={thumbnailUrl(actor.drive_photo_id)}
                     alt={actor.name}
                     fill
-                    sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
-                    style={{
-                      objectFit: 'cover',
-                      objectPosition: 'center top',
-                    }}
+                    sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
+                    style={{ objectFit: 'cover', objectPosition: 'center top' }}
                     unoptimized={!!actor.drive_photo_id}
                   />
-                  <div style={styles.cardOverlay} />
-                </div>
-                <div style={styles.cardInfo}>
-                  <span style={styles.cardName}>{actor.name}</span>
-                  <span style={styles.cardMeta}>
-                    {actor.gender === 'M' ? '남' : '여'} · {actor.age_group}
-                  </span>
+                  <div style={styles.cardOverlay}>
+                    <span style={styles.cardName}>{actor.name}</span>
+                    <span style={styles.cardMeta}>
+                      {actor.gender ?? ''}{actor.gender && actor.age_group ? ' · ' : ''}{actor.age_group ?? ''}
+                    </span>
+                  </div>
                 </div>
               </Link>
             ))}
@@ -182,6 +232,70 @@ const styles: Record<string, React.CSSProperties> = {
     paddingTop: 80,
     paddingBottom: 80,
   },
+  /* ---- 접근 불가 ---- */
+  deniedBox: {
+    maxWidth: 480,
+    margin: '80px auto',
+    textAlign: 'center',
+    background: 'var(--bg2)',
+    border: '1px solid var(--border)',
+    borderRadius: 12,
+    padding: '60px 40px',
+  },
+  deniedIcon: {
+    fontSize: '2.8rem',
+    marginBottom: 16,
+  },
+  deniedTitle: {
+    fontFamily: 'var(--font-display)',
+    fontSize: '1.6rem',
+    fontWeight: 700,
+    color: 'var(--white)',
+    marginBottom: 16,
+  },
+  deniedDesc: {
+    fontSize: '0.95rem',
+    color: 'var(--gray)',
+    lineHeight: 1.8,
+    marginBottom: 12,
+  },
+  deniedSub: {
+    fontSize: '0.82rem',
+    color: 'var(--gray)',
+    marginBottom: 28,
+  },
+  deniedLink: {
+    color: 'var(--gold)',
+    textDecoration: 'underline',
+  },
+  deniedBtns: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 10,
+    marginTop: 4,
+  },
+  btnPrimary: {
+    display: 'block',
+    background: 'var(--gold)',
+    color: '#0a0a0a',
+    borderRadius: 6,
+    padding: '12px 0',
+    fontSize: '0.9rem',
+    fontWeight: 700,
+    fontFamily: 'var(--font-display)',
+    textDecoration: 'none',
+    letterSpacing: '0.05em',
+  },
+  btnSecondary: {
+    display: 'block',
+    border: '1px solid var(--border)',
+    color: 'var(--gray)',
+    borderRadius: 6,
+    padding: '11px 0',
+    fontSize: '0.88rem',
+    textDecoration: 'none',
+  },
+  /* ---- 목록 ---- */
   header: {
     textAlign: 'center',
     marginBottom: 48,
@@ -209,9 +323,9 @@ const styles: Record<string, React.CSSProperties> = {
   filterSection: {
     display: 'flex',
     flexWrap: 'wrap' as const,
-    gap: 20,
+    gap: 16,
     marginBottom: 20,
-    padding: '20px 24px',
+    padding: '16px 20px',
     background: 'var(--bg2)',
     border: '1px solid var(--border)',
     borderRadius: 8,
@@ -226,12 +340,12 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '0.75rem',
     color: 'var(--gray)',
     letterSpacing: '0.08em',
-    textTransform: 'uppercase' as const,
     flexShrink: 0,
   },
   filterBtnGroup: {
     display: 'flex',
     gap: 6,
+    flexWrap: 'wrap' as const,
   },
   filterBtn: {
     padding: '5px 14px',
@@ -242,6 +356,7 @@ const styles: Record<string, React.CSSProperties> = {
     border: '1px solid var(--border)',
     transition: 'all 0.2s',
     textDecoration: 'none',
+    whiteSpace: 'nowrap' as const,
   },
   filterBtnActive: {
     background: 'var(--gold)',
@@ -256,13 +371,13 @@ const styles: Record<string, React.CSSProperties> = {
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
     gap: 16,
   },
   card: {
     display: 'block',
     textDecoration: 'none',
-    borderRadius: 6,
+    borderRadius: 8,
     overflow: 'hidden',
     background: 'var(--bg2)',
     border: '1px solid var(--border)',
@@ -270,7 +385,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   imageWrap: {
     position: 'relative',
-    aspectRatio: '9/16',
+    aspectRatio: '16/9',
     overflow: 'hidden',
     background: 'var(--bg3)',
   },
@@ -279,25 +394,22 @@ const styles: Record<string, React.CSSProperties> = {
     bottom: 0,
     left: 0,
     right: 0,
-    height: '40%',
-    background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%)',
-  },
-  cardInfo: {
-    padding: '10px 12px',
+    padding: '32px 14px 14px',
+    background: 'linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 60%, transparent 100%)',
     display: 'flex',
     flexDirection: 'column',
-    gap: 3,
+    gap: 2,
   },
   cardName: {
     fontFamily: 'var(--font-display)',
-    fontSize: '0.95rem',
+    fontSize: '1rem',
     fontWeight: 600,
     color: 'var(--white)',
     letterSpacing: '0.03em',
   },
   cardMeta: {
-    fontSize: '0.75rem',
-    color: 'var(--gray)',
+    fontSize: '0.72rem',
+    color: 'rgba(240,240,240,0.7)',
   },
   emptyState: {
     textAlign: 'center',

@@ -1,6 +1,17 @@
 'use client'
 
+import { usePathname } from 'next/navigation'
+
+/** 배우DB · 커뮤니티 · 대본분석 · 인증 페이지에서는 CTA 표시 안 함 */
+const HIDE_ON: string[] = ['/actors', '/board', '/ai-tools', '/auth', '/dashboard', '/admin']
+
 export default function FloatingCTA() {
+  const pathname = usePathname()
+
+  // 숨겨야 하는 경로 prefix 중 하나라도 일치하면 렌더하지 않음
+  const isHidden = HIDE_ON.some((prefix) => pathname.startsWith(prefix))
+  if (isHidden) return null
+
   return (
     <>
       {/* 카카오 플로팅 버블 */}
@@ -43,8 +54,8 @@ export default function FloatingCTA() {
         style={{
           position: 'fixed',
           bottom: '16px',
-          left: '32px',
-          right: '32px',
+          left: '16px',
+          right: '16px',
           zIndex: 900,
         }}
       >
@@ -62,8 +73,8 @@ export default function FloatingCTA() {
             color: '#ffffff',
             fontFamily: 'var(--font-sans)',
             fontWeight: 700,
-            fontSize: '0.9rem',
-            letterSpacing: '0.03em',
+            fontSize: 'clamp(0.68rem, 2.9vw, 0.9rem)',
+            letterSpacing: '0.01em',
             textDecoration: 'none',
             borderRadius: '14px',
             boxShadow: '0 4px 20px rgba(74,127,255,0.45)',

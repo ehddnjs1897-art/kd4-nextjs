@@ -1,22 +1,22 @@
 // KD4 캐스팅현황 사진 목록
-// 추가 방법: public/casting/ 폴더에 파일 넣고 아래 배열에 파일명 추가
-// Supabase 연결 후 → Storage로 마이그레이션 예정
+// Supabase Storage: casting 버킷 사용
 
-// 동일인물 사진이 연속으로 붙지 않도록 인터리브 배치
-export const CASTING_PHOTOS: { file: string; name: string; work?: string }[] = [
-  { file: 'KD4_캐스팅_권동원_1.png', name: '권동원' },
-  { file: 'KD4_캐스팅_명승호_1.png', name: '명승호' },
-  { file: 'KD4_캐스팅_강승현_1.png', name: '강승현' },
-  { file: 'KD4_캐스팅_박우진_1.png', name: '박우진' },
-  { file: 'KD4_캐스팅_권동원_무빙1.png', name: '권동원', work: '무빙' },
-  { file: 'KD4_캐스팅_배승헌_1.png', name: '배승헌' },
-  { file: 'KD4_캐스팅_윤지원_1.png', name: '윤지원' },
-  { file: 'KD4_캐스팅_명승호_크래시2.png', name: '명승호', work: '크래시' },
-  { file: 'KD4_캐스팅_이차일_1.png', name: '이차일' },
-  { file: 'KD4_캐스팅_이훈_1.png', name: '이훈' },
-  { file: 'KD4_캐스팅_장서후_1.png', name: '장서후' },
-  { file: 'KD4_캐스팅_정다운_1 (1).png', name: '정다운' },
-  { file: 'KD4_캐스팅_채병욱_1.png', name: '채병욱' },
-  { file: 'KD4_캐스팅_김신율_1.png', name: '김신율' },
-  { file: 'KD4_캐스팅_김이영_1.png', name: '김이영' },
+const BASE = 'https://qudyncopszvcbnwgrwbd.supabase.co/storage/v1/object/public/casting'
+
+export const CASTING_PHOTOS: { url: string; name: string; work?: string }[] = [
+  { url: `${BASE}/kwondongwon-1.png`, name: '권동원' },
+  { url: `${BASE}/myungseungho-1.png`, name: '명승호' },
+  { url: `${BASE}/kangseunghyun-1.png`, name: '강승현' },
+  { url: `${BASE}/pakwoojin-1.png`, name: '박우진' },
+  { url: `${BASE}/kwondongwon-moving1.png`, name: '권동원', work: '무빙' },
+  { url: `${BASE}/baesunghun-1.png`, name: '배승헌' },
+  { url: `${BASE}/yoonjiwon-1.png`, name: '윤지원' },
+  { url: `${BASE}/myungseungho-crash2.png`, name: '명승호', work: '크래시' },
+  { url: `${BASE}/leechaeil-1.png`, name: '이차일' },
+  { url: `${BASE}/leehoon-1.png`, name: '이훈' },
+  { url: `${BASE}/jangseohoo-1.png`, name: '장서후' },
+  { url: `${BASE}/jungdawoon-1.png`, name: '정다운' },
+  { url: `${BASE}/chaebiyungwook-1.png`, name: '채병욱' },
+  { url: `${BASE}/kimsinyul-1.png`, name: '김신율' },
+  { url: `${BASE}/kimiyoung-1.png`, name: '김이영' },
 ]

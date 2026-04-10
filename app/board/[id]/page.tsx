@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import CommentSection from '@/components/board/CommentSection'
@@ -81,6 +81,7 @@ export default async function PostDetailPage({ params }: { params: Params }) {
 
   // 현재 로그인 유저
   const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect(`/auth/login?next=/board/${id}`)
 
   let currentUserRole: string | null = null
   if (user) {

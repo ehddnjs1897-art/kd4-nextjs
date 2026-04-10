@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 
 export const metadata = { title: '커뮤니티 — KD4 액팅 스튜디오' }
@@ -30,6 +31,8 @@ export default async function BoardPage({
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) redirect('/auth/login?next=/board')
 
   let query = supabase
     .from('posts')

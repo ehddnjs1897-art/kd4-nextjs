@@ -31,7 +31,6 @@
 }
 
 html {
-  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -211,20 +210,19 @@ ul, ol { list-style: none; }
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 180px 180px;
-  animation: grain 0.12s steps(1) infinite;
+  will-change: background-position;
+  animation: grain 0.8s steps(1) infinite;
 }
 
 @keyframes grain {
   0%  { background-position: 0 0; }
-  10% { background-position: -40px 20px; }
-  20% { background-position: 60px -30px; }
-  30% { background-position: -20px 50px; }
-  40% { background-position: 80px 10px; }
-  50% { background-position: -60px -20px; }
-  60% { background-position: 30px 70px; }
-  70% { background-position: -80px 40px; }
-  80% { background-position: 50px -50px; }
-  90% { background-position: -10px 80px; }
+  25% { background-position: -40px 20px; }
+  50% { background-position: 60px -30px; }
+  75% { background-position: -20px 50px; }
+}
+
+@media (max-width: 768px) {
+  .hero-grain { animation: none; }
 }
 
 .hero-vignette {
@@ -241,12 +239,17 @@ ul, ol { list-style: none; }
   z-index: 1;
   background: radial-gradient(ellipse 38% 55% at 50% 0%, rgba(196,165,90,0.09) 0%, transparent 70%);
   pointer-events: none;
+  will-change: opacity;
   animation: spotPulse 4s ease-in-out infinite;
 }
 
 @keyframes spotPulse {
   0%, 100% { opacity: 0.7; }
   50% { opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .hero-spotlight { animation: none; opacity: 0.85; }
 }
 
 .hero-content {
@@ -1434,12 +1437,15 @@ ul, ol { list-style: none; }
 .reveal-section {
   opacity: 0;
   transform: translateY(40px);
+  will-change: opacity, transform;
   transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
               transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  contain: layout style;
 }
 .reveal-section.is-visible {
   opacity: 1;
   transform: translateY(0);
+  will-change: auto;
 }
 
 /* === STEP PROGRESSION GRID === */
@@ -1469,16 +1475,35 @@ ul, ol { list-style: none; }
 
 /* === DIRECTOR GRID === */
 .director-grid {
+  display: grid;
   grid-template-columns: 1fr auto;
 }
+@media (max-width: 520px) {
+  .stats-card {
+    padding: 20px 8px;
+    gap: 8px;
+    border-radius: 12px;
+  }
+  .stats-icon-wrap {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+  }
+}
+
 @media (max-width: 640px) {
   .director-grid {
     grid-template-columns: 1fr;
   }
   .director-grid img {
+    order: -1;
     width: 100% !important;
     max-width: 260px;
+    height: auto !important;
+    aspect-ratio: 3/4;
     margin: 0 auto;
+    object-fit: cover;
   }
 }
 
@@ -1490,6 +1515,7 @@ ul, ol { list-style: none; }
 .marquee-track {
   display: flex;
   width: max-content;
+  will-change: transform;
   animation: marqueeScroll 60s linear infinite;
 }
 .marquee-track:hover {
@@ -1501,10 +1527,13 @@ ul, ol { list-style: none; }
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
 }
 
-/* === SHIMMER TEXT ANIMATION === */
+/* === SHIMMER TEXT ANIMATION ===
+   7.5s 재생 → 30s 정지 → 반복 (37.5s 전체 주기)
+   처음 20% (0~7.5s): 스윕 / 나머지 80% (7.5~37.5s): 정지 */
 @keyframes shimmerText {
   0%   { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  20%  { background-position:  200% center; }
+  100% { background-position:  200% center; }
 }
 .shimmer-text {
   background: linear-gradient(
@@ -1519,7 +1548,15 @@ ul, ol { list-style: none; }
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: shimmerText 7.5s linear infinite;
+  will-change: background-position;
+  animation: shimmerText 37.5s linear infinite;
+}
+
+@media (max-width: 768px) {
+  .shimmer-text {
+    animation: none;
+    background-position: 0% center;
+  }
 }
 
 /* === ICON GLOW BOX === */
@@ -1618,3 +1655,45 @@ ul, ol { list-style: none; }
   filter: blur(14px);
 }
 
+
+/* === ACTOR DETAIL PAGE — RESPONSIVE === */
+.actor-detail-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 40px;
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .actor-detail-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .actor-detail-sidebar {
+    position: static !important;
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  .actor-detail-profile-img {
+    margin-bottom: 0 !important;
+  }
+}
+@media (max-width: 480px) {
+  .actor-detail-sidebar {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* === DASHBOARD PAGE — RESPONSIVE === */
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 28px;
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+}
