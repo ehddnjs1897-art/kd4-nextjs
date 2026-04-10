@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 const STEPS = [
   {
     num: '01',
-    title: '마이즈너 테크닉 훈련',
+    title: '마이즈너 테크닉 / 이바나 처벅 테크닉 훈련',
     sub: '연기력 확장 · 카메라 연기 최적화',
-    desc: '상대방에게 집중하여 순간의 충동에 반응하는 훈련. 억지로 짜내는 감정 없이 살아있는 연기를 만듭니다.',
+    desc: '마이즈너의 Repetition 훈련과 이바나 처벅 테크닉을 결합하여, 억지로 짜내는 감정 없이 상대방의 반응에 진정성 있게 살아있는 연기를 만듭니다.',
   },
   {
     num: '02',
@@ -28,15 +28,12 @@ const STEPS = [
   },
 ]
 
-const PARTNERS = [
-  'CGV 신촌아트레온 아트하우스',
-  '캐스팅 디렉터 방진원',
-  '액터길드 (Actor Guild)',
-  '리플레이 공식 제휴',
-  'spectrum8 스튜디오',
-  '사진작가 공인희',
-  '찍어주다',
-  'neez.n 프로덕션',
+const WHO_NEEDS = [
+  '연기의 본질을 제대로 배우고 싶은 분',
+  '활동의 한계에 부딪힌 배우',
+  '열심히 하지만 달라지는 게 없는 배우',
+  '억지로 짜내는 연기에서 벗어나고 싶은 배우',
+  '출연영상이 없어서 캐스팅 기회를 놓치는 배우',
 ]
 
 const TESTIMONIALS = [
@@ -95,13 +92,25 @@ export default function AboutPage() {
             fontFamily: 'var(--font-sans)',
             fontSize: 'clamp(0.95rem, 2.5vw, 1.125rem)',
             color: 'var(--secondary)',
+            lineHeight: 1.9,
+            maxWidth: '620px',
+            margin: '0 auto 16px',
+          }}
+        >
+          KD4 액팅 스튜디오는 아메리칸 액팅 메소드 훈련과 체계적인 성장 시스템으로<br />
+          현장에서 통하는 연기를 훈련합니다.
+        </p>
+        <p
+          style={{
+            fontFamily: 'var(--font-sans)',
+            fontSize: 'clamp(0.88rem, 2vw, 1rem)',
+            color: 'var(--secondary)',
             lineHeight: 1.8,
-            maxWidth: '600px',
+            maxWidth: '540px',
             margin: '0 auto 40px',
           }}
         >
-          KD4 액팅 스튜디오는 아메리칸 액팅 메소드 훈련과
-          체계적인 성장 시스템으로 현장에서 통하는 연기를 훈련합니다.
+          카메라 연기에 최적화된 &lsquo;연기하지 않는 연기&rsquo;의 핵심 기법입니다.
         </p>
         <div
           style={{
@@ -124,41 +133,21 @@ export default function AboutPage() {
 
       {/* ── 철학 ── */}
       <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '48px', alignItems: 'center' }}>
-          <div>
-            <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px' }}>
-              PHILOSOPHY
-            </p>
-            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', fontWeight: 700, lineHeight: 1.3, marginBottom: '20px' }}>
-              연기하지 않는 연기
-            </h2>
-            <p style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', color: 'var(--secondary)', lineHeight: 1.85 }}>
-              <strong style={{ color: 'var(--white)' }}>마이즈너 테크닉</strong>은 혼자 감정을 만들어내는 것이 아니라,
-              상대방에게 집중하여 순간의 충동에 반응하는 훈련법입니다.
-              카메라 연기에 최적화된 &apos;연기하지 않는 연기&apos;의 핵심 기법.
-            </p>
-            <p style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', color: 'var(--secondary)', lineHeight: 1.85, marginTop: '16px' }}>
-              플라스틱처럼 굳어버린 연기 패턴에서 벗어나,
-              상대방에게 반응하는 살아있는 연기를 훈련합니다.
-              <strong style={{ color: 'var(--white)' }}>샌포드 마이즈너(Sanford Meisner)</strong>의 정통 연기 철학 계승.
-            </p>
-          </div>
-          <div
-            style={{
-              background: 'var(--bg3)',
-              border: '1px solid var(--border)',
-              borderRadius: '16px',
-              padding: '32px',
-            }}
-          >
-            <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.05rem', lineHeight: 1.8, color: 'var(--secondary)', fontStyle: 'italic', marginBottom: '20px' }}>
-              &ldquo;새는 알에서 나오기 위해 투쟁한다. 알은 새의 세계이다.
-              누구든지 태어나려고 하는 자는 하나의 세계를 파괴하여야 한다.
-              새는 신을 향해 날아간다.&rdquo;
-            </p>
-            <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', color: 'var(--gold)', letterSpacing: '0.1em' }}>— 헤르만 헤세, 데미안</p>
-          </div>
-        </div>
+        <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px' }}>
+          PHILOSOPHY
+        </p>
+        <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', fontWeight: 700, lineHeight: 1.3, marginBottom: '20px' }}>
+          연기하지 않는 연기
+        </h2>
+        <p style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', color: 'var(--secondary)', lineHeight: 1.85, maxWidth: '680px' }}>
+          <strong style={{ color: 'var(--white)' }}>마이즈너 테크닉</strong>은 혼자 감정을 만들어내는 것이 아니라,
+          상대방에게 집중하여 순간의 충동에 반응하는 훈련법입니다.
+          카메라 연기에 최적화된 &apos;연기하지 않는 연기&apos;의 핵심 기법.
+        </p>
+        <p style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', color: 'var(--secondary)', lineHeight: 1.85, marginTop: '16px', maxWidth: '680px' }}>
+          플라스틱처럼 굳어버린 연기 패턴에서 벗어나,
+          상대방에게 반응하는 살아있는 연기를 훈련합니다.
+        </p>
       </section>
 
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
@@ -172,12 +161,7 @@ export default function AboutPage() {
           이런 배우에게 필요합니다
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
-          {[
-            '활동의 한계에 부딪힌 배우',
-            '열심히 하지만 달라지는 게 없는 배우',
-            '억지로 짜내는 연기에서 벗어나고 싶은 배우',
-            '출연영상이 없어서 캐스팅 기회를 놓치는 배우',
-          ].map(item => (
+          {WHO_NEEDS.map((item, i) => (
             <div
               key={item}
               style={{
@@ -190,7 +174,17 @@ export default function AboutPage() {
                 alignItems: 'flex-start',
               }}
             >
-              <span style={{ color: 'var(--gold)', fontSize: '1.1rem', marginTop: '1px', flexShrink: 0 }}>▸</span>
+              <span style={{
+                fontFamily: 'var(--font-display), Oswald, sans-serif',
+                color: 'var(--gold)',
+                fontSize: '0.9rem',
+                fontWeight: 700,
+                marginTop: '1px',
+                flexShrink: 0,
+                minWidth: '20px',
+              }}>
+                {i + 1}.
+              </span>
               <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.95rem', lineHeight: 1.6, color: 'var(--white)' }}>{item}</p>
             </div>
           ))}
@@ -240,50 +234,28 @@ export default function AboutPage() {
 
       {/* ── 대표 소개 ── */}
       <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '48px', alignItems: 'center' }}>
-          <div>
-            <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px' }}>
-              DIRECTOR
-            </p>
-            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', fontWeight: 700, marginBottom: '20px' }}>
-              권동원 대표
-            </h2>
-            <p style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', color: 'var(--secondary)', lineHeight: 1.85, marginBottom: '16px' }}>
-              상업 영화 · 드라마 100여 편 출연, 연기상 수상 현역 배우가
-              직접 지도합니다.
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {[
-                '누적 캐스팅 연계 100건+',
-                '누적 코칭 배우 400명+',
-                '커뮤니티 배우 70명',
-                '디즈니+ · 넷플릭스 · tvN · MBC · KBS · 상업영화',
-              ].map(item => (
-                <div key={item} style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--gold)', flexShrink: 0 }} />
-                  <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: 'var(--secondary)' }}>{item}</p>
-                </div>
-              ))}
+        <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px' }}>
+          DIRECTOR
+        </p>
+        <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', fontWeight: 700, marginBottom: '20px' }}>
+          권동원 대표
+        </h2>
+        <p style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', color: 'var(--secondary)', lineHeight: 1.85, marginBottom: '24px', maxWidth: '600px' }}>
+          상업 영화 · 드라마 100여 편 출연, 연기상 수상 현역 배우가
+          직접 지도합니다.
+        </p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '500px' }}>
+          {[
+            '누적 캐스팅 연계 100건+',
+            '누적 코칭 배우 400명+',
+            '커뮤니티 배우 70명',
+            '디즈니+ · 넷플릭스 · tvN · MBC · KBS · 상업영화',
+          ].map(item => (
+            <div key={item} style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--gold)', flexShrink: 0 }} />
+              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: 'var(--secondary)' }}>{item}</p>
             </div>
-          </div>
-          <div
-            style={{
-              background: 'var(--bg2)',
-              border: '1px solid rgba(196,165,90,0.2)',
-              borderRadius: '16px',
-              padding: '32px',
-            }}
-          >
-            <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: 'var(--secondary)', lineHeight: 1.85 }}>
-              늘 배우들의 건강한 삶과 커리어의 상승,
-              실질적인 유익을 위해 고민하고 실행하겠습니다.
-              함께 해주셔서 감사합니다.
-            </p>
-            <p style={{ marginTop: '20px', fontFamily: 'var(--font-sans)', fontSize: '0.85rem', color: 'var(--gold)' }}>
-              KD4 액팅 스튜디오 대표<br />
-              <strong style={{ fontSize: '1rem', color: 'var(--white)' }}>권동원</strong>
-            </p>
-          </div>
+          ))}
         </div>
       </section>
 
@@ -313,36 +285,6 @@ export default function AboutPage() {
               </p>
               <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', color: 'var(--gold)' }}>— {t.name}</p>
             </div>
-          ))}
-        </div>
-      </section>
-
-      <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
-
-      {/* ── 파트너십 ── */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
-        <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px', textAlign: 'center' }}>
-          PARTNERSHIP
-        </p>
-        <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 700, textAlign: 'center', marginBottom: '32px' }}>
-          협력 파트너
-        </h2>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
-          {PARTNERS.map(p => (
-            <span
-              key={p}
-              style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: '0.85rem',
-                color: 'var(--secondary)',
-                background: 'var(--bg3)',
-                border: '1px solid var(--border)',
-                borderRadius: '100px',
-                padding: '8px 18px',
-              }}
-            >
-              {p}
-            </span>
           ))}
         </div>
       </section>
@@ -398,6 +340,29 @@ export default function AboutPage() {
             />
           </div>
         </div>
+      </section>
+
+      {/* ── 헤세 인용구 — 맨 하단 ── */}
+      <section
+        style={{
+          borderTop: '1px solid var(--border)',
+          padding: 'clamp(32px, 6vw, 56px) 24px',
+          textAlign: 'center',
+        }}
+      >
+        <p
+          style={{
+            fontFamily: 'var(--font-serif)',
+            fontSize: 'clamp(0.85rem, 1.8vw, 1rem)',
+            color: '#ffffff',
+            lineHeight: 1.6,
+            letterSpacing: '0.02em',
+            fontStyle: 'italic',
+          }}
+        >
+          &ldquo;새는 알에서 나오기 위해 투쟁한다. 알은 새의 세계이다. 누구든지 태어나려고 하는 자는 하나의 세계를 파괴하여야 한다. 새는 신을 향해 날아간다.&rdquo;
+          &nbsp;&nbsp;<span style={{ fontStyle: 'normal', color: 'rgba(255,255,255,0.5)', fontSize: '0.85em' }}>— 헤르만 헤세, 데미안</span>
+        </p>
       </section>
 
       {/* ── CTA ── */}
