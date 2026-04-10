@@ -23,6 +23,7 @@ export default function Navbar() {
   const [crewDropOpen, setCrewDropOpen] = useState(false)
   const [mobileCrewOpen, setMobileCrewOpen] = useState(false)
   const [userRole, setUserRole] = useState<UserRole>(null)
+  const [authLoaded, setAuthLoaded] = useState(false)
   const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   /* ── 스크롤 감지 ── */
@@ -53,13 +54,18 @@ export default function Navbar() {
 
     const fetchRole = async () => {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { setUserRole(null); return }
+      if (!user) {
+        setUserRole(null)
+        setAuthLoaded(true)
+        return
+      }
       const { data } = await supabase
         .from('profiles')
         .select('role')
         .eq('id', user.id)
         .single()
       setUserRole((data?.role as UserRole) || 'user')
+      setAuthLoaded(true)
     }
 
     fetchRole()
@@ -70,7 +76,8 @@ export default function Navbar() {
     return () => subscription.unsubscribe()
   }, [])
 
-  const isCrewApproved = userRole === 'crew' || userRole === 'editor' || userRole === 'admin'
+  const isLoggedIn = authLoaded && userRole !== null
+  const isCrewApproved = isLoggedIn
   const closeMobile = () => setMobileOpen(false)
 
   /* ── 드롭다운 hover (딜레이로 떨림 방지) ── */

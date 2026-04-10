@@ -77,12 +77,12 @@ export default function Footer() {
             <span
               style={{
                 fontFamily: 'var(--font-display), Oswald, sans-serif',
-                fontSize: '0.6rem',
-                fontWeight: 300,
-                color: 'var(--gray)',
-                letterSpacing: '0.25em',
+                fontSize: '0.55rem',
+                fontWeight: 400,
+                color: '#ffffff',
+                letterSpacing: '0.22em',
                 textTransform: 'uppercase',
-                marginTop: '-1px',
+                marginTop: '6px',
               }}
             >
               Acting Studio

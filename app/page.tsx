@@ -495,16 +495,15 @@ export default function HomePage() {
 
             {/* 배우들의 아지트 */}
             <p
+              className="shimmer-tag"
               style={{
                 fontSize: "clamp(0.78rem, 1.6vw, 0.95rem)",
-                color: "#ffffff",
                 letterSpacing: "0.3em",
                 fontFamily: "var(--font-display)",
                 textTransform: "uppercase",
                 marginBottom: "32px",
                 animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
                 animationDelay: "0.7s",
-                textShadow: "0 0 20px rgba(255,255,255,0.3)",
               }}
             >
               배우들의 아지트
@@ -748,43 +747,6 @@ export default function HomePage() {
               연기 훈련부터 캐스팅까지, 배우 액셀러레이팅 시스템
             </p>
 
-            {/* 스튜디오 사진 */}
-            <div
-              style={{
-                position: "relative",
-                width: "100%",
-                aspectRatio: "3/2",
-                borderRadius: "12px",
-                overflow: "hidden",
-                border: "1px solid rgba(196,165,90,0.15)",
-                marginBottom: "64px",
-                boxShadow: "0 12px 48px rgba(0,0,0,0.6)",
-              }}
-            >
-              <Image
-                src="/og-image.jpg"
-                alt="KD4 액팅 스튜디오 공간"
-                fill
-                style={{
-                  objectFit: "cover",
-                  objectPosition: "center 25%",
-                }}
-                priority
-                sizes="(max-width: 768px) 100vw, 900px"
-              />
-              {/* 하단 그라디언트 오버레이 */}
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  height: "25%",
-                  background: "linear-gradient(to top, rgba(10,10,10,0.5), transparent)",
-                  pointerEvents: "none",
-                }}
-              />
-            </div>
 
             {/* 3단계 — 진행 느낌 */}
             <div className="steps-journey">
