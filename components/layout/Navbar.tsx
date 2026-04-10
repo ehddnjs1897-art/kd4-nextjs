@@ -16,7 +16,7 @@ const navLinks = [
   { label: '스튜디오 소개', href: '#about' },
   { label: '배우 DB', href: '/actors' },
   { label: '커뮤니티', href: '/board' },
-  { label: 'AI 도구', href: '/ai-tools' },
+  { label: '대본 분석 자동시스템', href: '/ai-tools' },
 ]
 
 export default function Navbar() {
@@ -100,7 +100,7 @@ export default function Navbar() {
                 color: 'var(--gray-light)',
                 letterSpacing: '0.22em',
                 textTransform: 'uppercase',
-                marginTop: '-2px',
+                marginTop: '2px',
               }}
             >
               Acting Studio
@@ -140,8 +140,6 @@ export default function Navbar() {
             <li
               ref={dropdownRef}
               style={{ position: 'relative' }}
-              onMouseEnter={() => setDropdownOpen(true)}
-              onMouseLeave={() => setDropdownOpen(false)}
             >
               <button
                 onClick={() => setDropdownOpen(v => !v)}

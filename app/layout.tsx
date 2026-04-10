@@ -4,6 +4,7 @@ import Script from 'next/script'
 import '../styles/globals.css'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
+import FloatingCTA from '@/components/layout/FloatingCTA'
 
 const notoSansKR = Noto_Sans_KR({
   subsets: ['latin'],
@@ -49,8 +50,9 @@ export default function RootLayout({
         className={`${notoSansKR.variable} ${notoSerifKR.variable} ${oswald.variable}`}
       >
         <Navbar />
-        <main>{children}</main>
+        <main style={{ paddingBottom: '88px' }}>{children}</main>
         <Footer />
+        <FloatingCTA />
         <Script
           src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
           strategy="afterInteractive"

@@ -1,5 +1,5 @@
 /**
- * 공유 타입 정의
+ * 공유 타입 정의 — DB 스키마 기준
  */
 
 // ─── 배우 관련 ───────────────────────────────────────────────────────────────
@@ -7,62 +7,68 @@
 export interface Actor {
   id: string
   name: string
-  gender: string | null
-  age_group: string | null
-  birth_year: number | null
+  name_en: string | null
+  gender: string | null            // '남' | '여' | 'M' | 'F'
+  age_group: string | null         // '20대' | '30대' | '40대' | '50대 이상'
   height: number | null
   weight: number | null
-  agency: string | null
-  profile_image_url: string | null
-  bio: string | null
+  skills: string[] | null
+  phone?: string                   // 비로그인 시 제외
+  email?: string                   // 비로그인 시 제외
+  instagram: string | null
+  profile_photo: string | null     // Supabase Storage URL (9:16)
+  drive_photo_id: string | null    // 구글 드라이브 파일 ID (초기 임포트)
+  drive_folder_id: string | null
+  drive_photo_position: string | null
+  source: string | null            // 'manual' | 'drive_import'
   is_public: boolean
   created_at: string
   updated_at: string
-  // 비로그인 시 제외되는 컬럼
-  phone?: string
-  email?: string
 }
 
-export interface ActorPublic extends Omit<Actor, 'phone' | 'email'> {}
+export type ActorPublic = Omit<Actor, 'phone' | 'email'>
 
 export interface ActorPhoto {
   id: string
   actor_id: string
   url: string
+  storage_path: string | null
+  drive_file_id: string | null
+  drive_photo_id: string | null
   caption: string | null
-  order: number
-  created_at: string
+  sort_order: number
+  is_profile: boolean
 }
 
 export interface ActorVideo {
   id: string
   actor_id: string
-  url: string
+  youtube_id: string
   title: string | null
-  thumbnail_url: string | null
-  created_at: string
+  sort_order: number
 }
 
-export interface ActorFilmography {
+export interface FilmoEntry {
   id: string
   actor_id: string
+  category: 'drama' | 'film' | 'cf' | 'musical' | 'theater' | 'etc'
   title: string
   role: string | null
   year: number | null
-  type: string | null // 영화, 드라마, 웹드라마 등
-  created_at: string
+  production: string | null
+  sort_order: number
 }
 
 export interface ActorDetail extends ActorPublic {
   actor_photos: ActorPhoto[]
   actor_videos: ActorVideo[]
-  actor_filmography: ActorFilmography[]
+  actor_filmography: FilmoEntry[]
 }
 
 // ─── 공통 API 응답 ───────────────────────────────────────────────────────────
 
 export interface PaginatedResponse<T> {
-  data: T[]
+  actors: T[]
   total: number
   page: number
   limit: number

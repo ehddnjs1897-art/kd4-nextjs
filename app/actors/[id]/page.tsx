@@ -71,7 +71,7 @@ function profilePhotoUrl(actor: Actor): string {
   if (actor.profile_photo) return actor.profile_photo
   if (actor.drive_photo_id)
     return `https://drive.google.com/thumbnail?id=${actor.drive_photo_id}&sz=w900`
-  return '/placeholder-actor.jpg'
+  return '/placeholder-actor.svg'
 }
 
 /* ---- generateMetadata ---- */

@@ -55,10 +55,11 @@ CREATE TABLE IF NOT EXISTS actors (
   name TEXT NOT NULL,
   name_en TEXT,
   gender TEXT CHECK (gender IN ('남', '여')),
-  age_group TEXT CHECK (age_group IN ('20대', '30대', '40대', '50대이상')),
+  age_group TEXT CHECK (age_group IN ('20대', '30대', '40대', '50대 이상')),
   height INT,
   weight INT,
-  skills TEXT,
+  skills TEXT[],                  -- 특기 배열 (예: ARRAY['댄스', '무술'])
+
   phone TEXT,
   email TEXT,
   instagram TEXT,
@@ -119,6 +120,8 @@ CREATE TABLE IF NOT EXISTS actor_photos (
   url TEXT NOT NULL,
   storage_path TEXT,
   drive_file_id TEXT,
+  drive_photo_id TEXT,           -- 드라이브 파일 ID (썸네일 URL 생성용)
+  caption TEXT,
   sort_order INT DEFAULT 0,
   is_profile BOOLEAN DEFAULT FALSE
 );
@@ -172,10 +175,11 @@ CREATE POLICY "actor_videos_editor_write" ON actor_videos
 CREATE TABLE IF NOT EXISTS actor_filmography (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   actor_id UUID REFERENCES actors(id) ON DELETE CASCADE,
-  category TEXT CHECK (category IN ('drama', 'movie', 'cf', 'stage')),
+  category TEXT CHECK (category IN ('drama', 'film', 'cf', 'musical', 'theater', 'etc')),
   year INT,
   title TEXT,
   role TEXT,
+  production TEXT,               -- 제작사 / 방송사
   sort_order INT DEFAULT 0
 );
 

@@ -15,16 +15,16 @@ interface ActorsResponse {
 }
 
 type GenderFilter = 'all' | 'M' | 'F'
-type AgeFilter = 'all' | '20' | '30' | '40' | '50+'
+type AgeFilter = 'all' | '20대' | '30대' | '40대' | '50대 이상'
 
 interface PageProps {
   searchParams: Promise<{
     gender?: string
-    age?: string
+    ageGroup?: string
   }>
 }
 
-async function fetchActors(gender: string, age: string): Promise<Actor[]> {
+async function fetchActors(gender: string, ageGroup: string): Promise<Actor[]> {
   const base =
     process.env.NEXT_PUBLIC_SITE_URL ||
     (process.env.VERCEL_URL
@@ -33,7 +33,7 @@ async function fetchActors(gender: string, age: string): Promise<Actor[]> {
 
   const params = new URLSearchParams()
   if (gender && gender !== 'all') params.set('gender', gender)
-  if (age && age !== 'all') params.set('age', age)
+  if (ageGroup && ageGroup !== 'all') params.set('ageGroup', ageGroup)
 
   try {
     const res = await fetch(`${base}/api/actors?${params.toString()}`, {
@@ -48,7 +48,7 @@ async function fetchActors(gender: string, age: string): Promise<Actor[]> {
 }
 
 function thumbnailUrl(drivePhotoId: string | null): string {
-  if (!drivePhotoId) return '/placeholder-actor.jpg'
+  if (!drivePhotoId) return '/placeholder-actor.svg'
   return `https://drive.google.com/thumbnail?id=${drivePhotoId}&sz=w400`
 }
 
@@ -60,22 +60,22 @@ const GENDER_OPTIONS: { value: GenderFilter; label: string }[] = [
 
 const AGE_OPTIONS: { value: AgeFilter; label: string }[] = [
   { value: 'all', label: '전체' },
-  { value: '20', label: '20대' },
-  { value: '30', label: '30대' },
-  { value: '40', label: '40대' },
-  { value: '50+', label: '50대 이상' },
+  { value: '20대', label: '20대' },
+  { value: '30대', label: '30대' },
+  { value: '40대', label: '40대' },
+  { value: '50대 이상', label: '50대 이상' },
 ]
 
 export default async function ActorsPage({ searchParams }: PageProps) {
   const params = await searchParams
   const gender = params.gender ?? 'all'
-  const age = params.age ?? 'all'
-  const actors = await fetchActors(gender, age)
+  const ageGroup = params.ageGroup ?? 'all'
+  const actors = await fetchActors(gender, ageGroup)
 
   function filterHref(key: string, value: string) {
     const next = new URLSearchParams()
     if (key !== 'gender') next.set('gender', gender)
-    if (key !== 'age') next.set('age', age)
+    if (key !== 'ageGroup') next.set('ageGroup', ageGroup)
     next.set(key, value)
     return `/actors?${next.toString()}`
   }
@@ -118,10 +118,10 @@ export default async function ActorsPage({ searchParams }: PageProps) {
               {AGE_OPTIONS.map((opt) => (
                 <Link
                   key={opt.value}
-                  href={filterHref('age', opt.value)}
+                  href={filterHref('ageGroup', opt.value)}
                   style={{
                     ...styles.filterBtn,
-                    ...(age === opt.value ? styles.filterBtnActive : {}),
+                    ...(ageGroup === opt.value ? styles.filterBtnActive : {}),
                   }}
                 >
                   {opt.label}

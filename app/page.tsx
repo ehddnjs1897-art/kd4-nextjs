@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { CLASSES } from "@/lib/classes";
+import { CASTING_PHOTOS } from "@/lib/casting-photos";
 
 const HeroScene = dynamic(() => import("@/components/hero/HeroScene"), {
   ssr: false,
@@ -297,16 +298,21 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
           }}
         >
           <div>
-            <span style={{ fontSize: "0.7rem", color: "var(--gray)" }}>월 수강료</span>
-            <p
-              style={{
-                fontSize: "1.25rem",
-                fontWeight: 700,
-                color: "var(--gold)",
-                lineHeight: 1.2,
-              }}
-            >
-              ₩{cls.price}
+            <span style={{ fontSize: "0.65rem", color: "var(--gray)", letterSpacing: "0.06em" }}>월 수강료</span>
+            <p style={{ display: "flex", alignItems: "baseline", gap: "2px", marginTop: "2px" }}>
+              <span
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "clamp(1.8rem, 4vw, 2.2rem)",
+                  fontWeight: 900,
+                  color: "var(--white)",
+                  lineHeight: 1,
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                ₩{cls.price}
+              </span>
+              <span style={{ fontSize: "0.7rem", color: "var(--gray)", marginLeft: "2px" }}>/월</span>
             </p>
           </div>
           {cls.instructor && (
@@ -366,6 +372,60 @@ export default function HomePage() {
       >
         {/* Three.js 배경 */}
         <HeroScene />
+
+        {/* 우상단 인증 뱃지 */}
+        <div
+          style={{
+            position: "absolute",
+            top: "88px",
+            right: "28px",
+            zIndex: 20,
+            animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
+            animationDelay: "0.5s",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "4px",
+              padding: "10px 16px 12px",
+              background: "rgba(10,10,10,0.65)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              border: "1px solid rgba(196,165,90,0.5)",
+              borderRadius: "12px",
+              boxShadow: "0 0 20px rgba(196,165,90,0.15), inset 0 1px 0 rgba(196,165,90,0.2)",
+            }}
+          >
+            <span style={{ fontSize: "1.4rem", lineHeight: 1 }}>🏆</span>
+            <span
+              style={{
+                fontFamily: "var(--font-sans)",
+                fontSize: "0.82rem",
+                fontWeight: 800,
+                color: "var(--gold)",
+                letterSpacing: "0.01em",
+                whiteSpace: "nowrap",
+              }}
+            >
+              신촌 대표 액팅 스쿨
+            </span>
+            <span
+              style={{
+                fontFamily: "var(--font-sans)",
+                fontSize: "0.6rem",
+                color: "rgba(196,165,90,0.6)",
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                whiteSpace: "nowrap",
+              }}
+            >
+              KD4 Acting Studio
+            </span>
+          </div>
+        </div>
 
         {/* 오버레이 텍스트 */}
         <div
@@ -605,26 +665,26 @@ export default function HomePage() {
           className="container"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
-            gap: "40px",
-            textAlign: "center",
+            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+            gap: "20px",
           }}
         >
           {[
-            { num: "400+", label: "프로 배우 코칭" },
-            { num: "100+", label: "상업 영화·드라마 출연" },
-            { num: "5년+", label: "스튜디오 운영" },
-            { num: "50+", label: "소속 배우" },
+            { num: "300+", label: "배우 코칭", icon: "🎭" },
+            { num: "3년+", label: "스튜디오 운영", icon: "⭐" },
+            { num: "70명+", label: "현재 수강배우", icon: "📈" },
           ].map((stat) => (
-            <div key={stat.label}>
+            <div key={stat.label} className="stats-card">
+              <div className="stats-icon-wrap">
+                <span style={{ position: "relative", zIndex: 1 }}>{stat.icon}</span>
+              </div>
               <p
                 style={{
                   fontFamily: "var(--font-display)",
-                  fontSize: "clamp(2rem, 5vw, 3rem)",
+                  fontSize: "clamp(2rem, 5vw, 2.8rem)",
                   fontWeight: 700,
                   color: "var(--gold)",
                   lineHeight: 1,
-                  marginBottom: "8px",
                 }}
               >
                 {stat.num}
@@ -705,15 +765,14 @@ export default function HomePage() {
                   icon: "🌟",
                 },
               ].map((s, i) => (
-                <>
+                <div key={s.num} style={{ display: 'contents' }}>
                   <div
-                    key={s.num}
                     style={{
                       position: "relative",
                       background: "var(--bg3)",
                       border: "1px solid var(--border)",
                       borderRadius: "8px",
-                      padding: "40px 28px 32px",
+                      padding: "56px 36px 48px",
                       textAlign: "left",
                       overflow: "hidden",
                       transition: "border-color var(--transition)",
@@ -723,10 +782,10 @@ export default function HomePage() {
                     <span
                       style={{
                         position: "absolute",
-                        top: "-12px",
-                        right: "16px",
+                        top: "12px",
+                        right: "24px",
                         fontFamily: "var(--font-display)",
-                        fontSize: "6.5rem",
+                        fontSize: "5.5rem",
                         fontWeight: 700,
                         color: "rgba(59,91,219,0.07)",
                         lineHeight: 1,
@@ -741,8 +800,9 @@ export default function HomePage() {
                     <p
                       style={{
                         fontFamily: "var(--font-display)",
-                        fontSize: "0.65rem",
-                        letterSpacing: "0.25em",
+                        fontSize: "1rem",
+                        letterSpacing: "0.2em",
+                        fontWeight: 600,
                         color: "var(--gold)",
                         marginBottom: "16px",
                       }}
@@ -751,20 +811,8 @@ export default function HomePage() {
                     </p>
 
                     {/* 이모지 아이콘 */}
-                    <div
-                      style={{
-                        width: "44px",
-                        height: "44px",
-                        background: "rgba(59,91,219,0.1)",
-                        borderRadius: "8px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "1.4rem",
-                        marginBottom: "20px",
-                      }}
-                    >
-                      {s.icon}
+                    <div className="step-icon-glow">
+                      <span style={{ position: "relative", zIndex: 1 }}>{s.icon}</span>
                     </div>
 
                     {/* 제목 */}
@@ -806,7 +854,7 @@ export default function HomePage() {
                       </svg>
                     </div>
                   )}
-                </>
+                </div>
               ))}
             </div>
           </div>
@@ -820,7 +868,17 @@ export default function HomePage() {
         style={{ background: "var(--bg2)", borderTop: "1px solid var(--border)" }}
       >
         <div className="container">
-          <div style={{ maxWidth: "760px" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr auto",
+              gap: "48px",
+              alignItems: "start",
+            }}
+            className="director-grid"
+          >
+            {/* 텍스트 영역 */}
+            <div>
             <p
               style={{
                 fontFamily: "var(--font-display)",
@@ -846,7 +904,7 @@ export default function HomePage() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+                gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
                 gap: "40px",
               }}
             >
@@ -867,10 +925,10 @@ export default function HomePage() {
                     "프로 배우 400명+ 액팅 코칭",
                     "유익액터스 대표",
                     "영화 경쟁선 제작·주연",
-                    "K-핸드메이드 페스티벌 연기상 수상",
+                    "K-웹드라마 어워드 연기상 수상",
                     "LG 크리에이터 특별상",
                     "Youtube 2000만뷰+",
-                    "건원(建輝) / The Chora 졸업",
+                    "건명원 / The Chora 졸업",
                     "LA Meisner Workshop 수료",
                     "한국 마이즈너테크닉 아카데미 수료",
                   ].map((item, i) => (
@@ -958,7 +1016,26 @@ export default function HomePage() {
                 ))}
               </div>
             </div>
-          </div>
+            </div>{/* end 텍스트 영역 */}
+
+            {/* 대표 사진 */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/director.jpg"
+              alt="대표 권동원"
+              style={{
+                width: '300px',
+                height: '420px',
+                objectFit: 'cover',
+                objectPosition: 'center top',
+                borderRadius: '12px',
+                border: '1px solid var(--border)',
+                flexShrink: 0,
+                alignSelf: 'stretch',
+              }}
+            />
+
+          </div>{/* end director-grid */}
         </div>
       </section>
 
@@ -1090,12 +1167,12 @@ export default function HomePage() {
                   },
                   {
                     item: "캐스팅 연계",
-                    kd4: "직접 캐스팅 디렉터 연결",
-                    other: "미제공",
+                    kd4: "직접 캐스팅 연계",
+                    other: "이미지 단역 / 단역 연결",
                   },
                   {
                     item: "커뮤니티",
-                    kd4: "동료 배우 네트워크",
+                    kd4: "배우 성장 네트워크",
                     other: "없음",
                   },
                 ].map((row, i) => (
@@ -1233,14 +1310,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 8. STORIES ───────────────────────────────────────────────────────── */}
+      {/* ── 8. CASTING ───────────────────────────────────────────────────────── */}
       <section
-        id="stories"
+        id="casting"
         className="section"
-        style={{ background: "var(--bg2)", borderTop: "1px solid var(--border)" }}
+        style={{ background: "var(--bg2)", borderTop: "1px solid var(--border)", paddingBottom: "80px" }}
       >
         <div className="container">
-          <div style={{ textAlign: "center", marginBottom: "60px" }}>
+          <div style={{ textAlign: "center", marginBottom: "48px" }}>
             <p
               style={{
                 fontFamily: "var(--font-display)",
@@ -1250,87 +1327,53 @@ export default function HomePage() {
                 marginBottom: "12px",
               }}
             >
-              TESTIMONIALS
+              CASTING RESULTS
             </p>
             <h2 style={{ fontSize: "clamp(1.6rem, 4vw, 2.4rem)", fontWeight: 700 }}>
-              동료 배우 이야기
+              KD4 캐스팅현황
             </h2>
+            <p style={{ color: "var(--gray)", fontSize: "0.9rem", marginTop: "12px" }}>
+              KD4 배우들의 실제 캐스팅 결과입니다
+            </p>
           </div>
+        </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 280px), 1fr))",
-              gap: "16px",
-            }}
-          >
-            {[1, 2, 3].map((n) => (
+        {/* 마퀴 — 컨테이너 밖으로 full-width */}
+        <div className="marquee-wrap">
+          <div className="marquee-track">
+            {[...CASTING_PHOTOS, ...CASTING_PHOTOS].map((photo, i) => (
               <div
-                key={n}
+                key={i}
                 style={{
+                  flexShrink: 0,
+                  width: "200px",
+                  marginRight: "16px",
+                  borderRadius: "8px",
+                  overflow: "hidden",
                   background: "var(--bg3)",
                   border: "1px solid var(--border)",
-                  borderRadius: "var(--radius)",
-                  padding: "32px 28px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "20px",
-                  minHeight: "200px",
                 }}
               >
-                <span
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`/casting/${encodeURIComponent(photo.file)}`}
+                  alt={photo.name}
                   style={{
-                    fontFamily: "var(--font-serif)",
-                    fontSize: "2.5rem",
-                    color: "var(--gold)",
-                    lineHeight: 1,
-                    opacity: 0.4,
+                    width: "100%",
+                    aspectRatio: "9 / 16",
+                    objectFit: "cover",
+                    display: "block",
                   }}
-                >
-                  &ldquo;
-                </span>
-                <div
-                  style={{
-                    flex: 1,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <p
-                    style={{
-                      fontSize: "0.75rem",
-                      color: "var(--gray)",
-                      letterSpacing: "0.1em",
-                      textAlign: "center",
-                    }}
-                  >
-                    COMING SOON
+                />
+                <div style={{ padding: "10px 12px" }}>
+                  <p style={{ color: "var(--white)", fontSize: "0.82rem", fontWeight: 600 }}>
+                    {photo.name}
                   </p>
-                </div>
-                <div
-                  style={{
-                    borderTop: "1px solid var(--border)",
-                    paddingTop: "16px",
-                  }}
-                >
-                  <div
-                    style={{
-                      height: "10px",
-                      width: "80px",
-                      background: "var(--border)",
-                      borderRadius: "2px",
-                      marginBottom: "6px",
-                    }}
-                  />
-                  <div
-                    style={{
-                      height: "8px",
-                      width: "50px",
-                      background: "var(--bg2)",
-                      borderRadius: "2px",
-                    }}
-                  />
+                  {photo.work && (
+                    <p style={{ color: "var(--gold)", fontSize: "0.72rem", marginTop: "2px" }}>
+                      {photo.work}
+                    </p>
+                  )}
                 </div>
               </div>
             ))}
@@ -1338,110 +1381,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 9. AI TOOLS ──────────────────────────────────────────────────────── */}
-      <section id="ai" className="section" style={{ background: "var(--bg)" }}>
-        <div className="container">
-          <div
-            style={{
-              maxWidth: "680px",
-              margin: "0 auto",
-              textAlign: "center",
-            }}
-          >
-            <p
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "0.75rem",
-                letterSpacing: "0.3em",
-                color: "var(--gold)",
-                marginBottom: "12px",
-              }}
-            >
-              NEW
-            </p>
-            <h2
-              style={{
-                fontSize: "clamp(1.6rem, 4vw, 2.4rem)",
-                fontWeight: 700,
-                marginBottom: "16px",
-              }}
-            >
-              AI 대본 분석
-            </h2>
-            <p
-              style={{
-                fontSize: "1rem",
-                color: "var(--gray-light)",
-                marginBottom: "12px",
-              }}
-            >
-              당신의 대사를 깊이 이해하는 AI
-            </p>
-            <p
-              style={{
-                fontSize: "0.85rem",
-                color: "var(--gray)",
-                marginBottom: "32px",
-                lineHeight: 1.7,
-              }}
-            >
-              5가지 연기 메소드로 대본을 분석합니다
-            </p>
-
-            {/* 메소드 태그 */}
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "8px",
-                justifyContent: "center",
-                marginBottom: "40px",
-              }}
-            >
-              {[
-                "Uta Hagen",
-                "Ivana Chubbuck",
-                "Meisner",
-                "대사별 노트",
-                "현장 요약",
-              ].map((tag) => (
-                <span
-                  key={tag}
-                  style={{
-                    padding: "6px 14px",
-                    border: "1px solid var(--border)",
-                    borderRadius: "2px",
-                    fontSize: "0.75rem",
-                    color: "var(--gray-light)",
-                    letterSpacing: "0.05em",
-                  }}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-
-            <Link
-              href="/ai-tools"
-              style={{
-                display: "inline-block",
-                padding: "14px 40px",
-                border: "1px solid var(--gold)",
-                color: "var(--gold)",
-                fontWeight: 600,
-                fontSize: "0.85rem",
-                letterSpacing: "0.08em",
-                borderRadius: "var(--radius)",
-                transition: "background var(--transition), color var(--transition)",
-              }}
-            >
-              AI 도구 체험하기
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 10. FAQ ──────────────────────────────────────────────────────────── */}
+      {/* ── 9. FAQ ──────────────────────────────────────────────────────────── */}
       <section
         id="faq"
         className="section"
@@ -1495,6 +1435,7 @@ export default function HomePage() {
             START NOW
           </p>
           <h2
+            className="shimmer-text"
             style={{
               fontSize: "clamp(2rem, 5vw, 3.5rem)",
               fontWeight: 700,
@@ -1544,7 +1485,7 @@ export default function HomePage() {
               수강신청 하기
             </a>
             <a
-              href="https://pf.kakao.com/_xnKd4"
+              href="https://pf.kakao.com/_ximxdqn"
               target="_blank"
               rel="noopener noreferrer"
               style={{

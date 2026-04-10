@@ -85,6 +85,23 @@ Google Sheets ID: 1XfatoR0V4DoTVpQrujG8kpMd1Soaaw86C2qVKnd5IZI
 .env.local에서: STORAGE_PROVIDER=r2
 lib/storage.ts에 R2 구현 추가 (TODO 표시됨)
 
+## 브랜드 이미지 자산 (Google Drive)
+> 아래 링크를 코드에 직접 사용할 것. 임의로 다른 이미지 사용 금지.
+
+| 용도 | 직접 링크 (img src용) | 원본 Drive |
+|------|----------------------|-----------|
+| 대표(권동원) 사진 | `https://drive.google.com/uc?export=view&id=1WfyN6x21sRLNzzNNYB-dBschGRzdEzUP` | [Drive](https://drive.google.com/file/d/1WfyN6x21sRLNzzNNYB-dBschGRzdEzUP/view) |
+| KD4 로고 | `https://drive.google.com/uc?export=view&id=1rLVpClYzhnIq-GGzuwJK2ISxLdpGPC5b` | [Drive](https://drive.google.com/file/d/1rLVpClYzhnIq-GGzuwJK2ISxLdpGPC5b/view) |
+| 스튜디오 사진 | `https://drive.google.com/uc?export=view&id=1by0ZDO3J5yS-44McKbmAPixjPtI3xWNr` | [Drive](https://drive.google.com/file/d/1by0ZDO3J5yS-44McKbmAPixjPtI3xWNr/view) |
+
+## 외부 링크 (코드에서 재사용)
+| 용도 | URL |
+|------|-----|
+| 수강신청 구글폼 | `https://forms.gle/68E7yFFFoDiPCRwD9` |
+| 카카오채널 상담 | `https://pf.kakao.com/_ximxdqn` |
+| 인스타그램 | `https://www.instagram.com/kd4actingstudio` |
+| 네이버 블로그 | `https://blog.naver.com/kd4actingstudio` |
+
 ## 코드 규칙
 - supabaseAdmin(service_role)은 서버 전용 (client.ts에서 절대 import 금지)
 - Three.js HeroScene: dynamic(import, {ssr: false}) 필수
