@@ -7,6 +7,17 @@ export const metadata: Metadata = {
     '마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 현장에서 통하는 배우를 키웁니다. 삶의 변화, 좋은 연기, 커리어의 성장.',
 }
 
+const PARTNERS = [
+  'CGV 신촌아트레온 아트하우스',
+  '액터길드 (Actor Guild)',
+  '리플레이',
+  '방진원 캐스팅 디렉터',
+  '이상원 캐스팅 디렉터',
+  '박안드레 조감독',
+  'spectrum8 스튜디오',
+  'neez.n 프로덕션',
+]
+
 const STEPS = [
   {
     num: '01',
@@ -285,6 +296,36 @@ export default function AboutPage() {
               </p>
               <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', color: 'var(--gold)' }}>— {t.name}</p>
             </div>
+          ))}
+        </div>
+      </section>
+
+      <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
+
+      {/* ── 협력 파트너 ── */}
+      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
+        <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px', textAlign: 'center' }}>
+          PARTNERSHIP
+        </p>
+        <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 700, textAlign: 'center', marginBottom: '32px' }}>
+          협력 파트너
+        </h2>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
+          {PARTNERS.map(p => (
+            <span
+              key={p}
+              style={{
+                fontFamily: 'var(--font-sans)',
+                fontSize: '0.85rem',
+                color: 'var(--secondary)',
+                background: 'var(--bg3)',
+                border: '1px solid var(--border)',
+                borderRadius: '100px',
+                padding: '8px 18px',
+              }}
+            >
+              {p}
+            </span>
           ))}
         </div>
       </section>
