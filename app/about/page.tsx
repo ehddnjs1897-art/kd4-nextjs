@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export const metadata: Metadata = {
   title: '스튜디오 소개 | KD4 액팅 스튜디오',
@@ -123,21 +124,20 @@ export default function AboutPage() {
         >
           카메라 연기에 최적화된 &lsquo;연기하지 않는 연기&rsquo;의 핵심 기법입니다.
         </p>
-        <div
+        <p
           style={{
-            display: 'inline-block',
-            padding: '10px 28px',
-            borderRadius: '4px',
-            border: '1px solid rgba(196,165,90,0.4)',
             fontFamily: 'var(--font-display), Oswald, sans-serif',
-            fontSize: '0.75rem',
-            letterSpacing: '0.25em',
-            color: 'var(--gold)',
+            fontSize: 'clamp(2.4rem, 7vw, 5rem)',
+            fontWeight: 700,
+            letterSpacing: '0.08em',
+            color: '#1a3fad',
             textTransform: 'uppercase',
+            lineHeight: 1,
+            marginTop: '8px',
           }}
         >
           OFF THE PLASTIC
-        </div>
+        </p>
       </section>
 
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
@@ -245,28 +245,71 @@ export default function AboutPage() {
 
       {/* ── 대표 소개 ── */}
       <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
-        <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px' }}>
-          DIRECTOR
-        </p>
-        <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', fontWeight: 700, marginBottom: '20px' }}>
-          권동원 대표
-        </h2>
-        <p style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', color: 'var(--secondary)', lineHeight: 1.85, marginBottom: '24px', maxWidth: '600px' }}>
-          상업 영화 · 드라마 100여 편 출연, 연기상 수상 현역 배우가
-          직접 지도합니다.
-        </p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '500px' }}>
-          {[
-            '누적 캐스팅 연계 100건+',
-            '누적 코칭 배우 400명+',
-            '커뮤니티 배우 70명',
-            '디즈니+ · 넷플릭스 · tvN · MBC · KBS · 상업영화',
-          ].map(item => (
-            <div key={item} style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--gold)', flexShrink: 0 }} />
-              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: 'var(--secondary)' }}>{item}</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '48px', alignItems: 'center' }}>
+          {/* 좌측: 텍스트 */}
+          <div>
+            <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px' }}>
+              ACTOR ACCELERATOR
+            </p>
+            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', fontWeight: 700, marginBottom: '20px' }}>
+              권동원 대표
+            </h2>
+            <p style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', color: 'var(--secondary)', lineHeight: 1.85, marginBottom: '24px' }}>
+              상업 영화 · 드라마 100여 편 출연, 연기상 수상 현역 배우가
+              직접 지도합니다.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {[
+                '누적 캐스팅 연계 100건+',
+                '누적 코칭 배우 400명+',
+                '커뮤니티 배우 70명',
+                '디즈니+ · 넷플릭스 · tvN · MBC · KBS · 상업영화 100여편 출연',
+              ].map(item => (
+                <div key={item} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--gold)', flexShrink: 0, marginTop: '7px' }} />
+                  <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: 'var(--secondary)', lineHeight: 1.6 }}>{item}</p>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+
+          {/* 우측: 사진 */}
+          <div
+            style={{
+              position: 'relative',
+              borderRadius: '16px',
+              overflow: 'hidden',
+              aspectRatio: '3/4',
+              border: '1px solid rgba(196,165,90,0.2)',
+              boxShadow: '0 16px 64px rgba(0,0,0,0.6)',
+            }}
+          >
+            <Image
+              src="/director.jpg"
+              alt="권동원 대표"
+              fill
+              style={{ objectFit: 'cover', objectPosition: 'center top' }}
+              sizes="(max-width: 768px) 100vw, 400px"
+            />
+            <div style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              padding: '20px 20px 16px',
+              background: 'linear-gradient(to top, rgba(10,10,10,0.85) 0%, transparent 100%)',
+            }}>
+              <p style={{
+                fontFamily: 'var(--font-display), Oswald, sans-serif',
+                fontSize: '0.65rem',
+                letterSpacing: '0.2em',
+                color: 'rgba(196,165,90,0.8)',
+                textTransform: 'uppercase',
+              }}>
+                KD4 Acting Studio
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 

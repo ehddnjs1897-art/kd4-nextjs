@@ -322,7 +322,7 @@ export default function Navbar() {
                 display: 'inline-block',
                 padding: '8px 20px',
                 background: 'var(--gold)',
-                color: '#0a0a0a',
+                color: '#ffffff',
                 fontFamily: 'var(--font-sans)',
                 fontSize: '0.825rem',
                 fontWeight: 700,
