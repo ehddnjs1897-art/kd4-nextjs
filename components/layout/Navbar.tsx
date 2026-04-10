@@ -306,23 +306,6 @@ export default function Navbar() {
                       </Link>
                     ))}
 
-                    {/* KD4 크루 라벨 */}
-                    <div style={{
-                      marginTop: '8px',
-                      paddingTop: '8px',
-                      borderTop: '1px solid rgba(196,165,90,0.1)',
-                      textAlign: 'center',
-                    }}>
-                      <span style={{
-                        fontSize: '0.65rem',
-                        color: 'rgba(196,165,90,0.5)',
-                        letterSpacing: '0.1em',
-                        textTransform: 'uppercase',
-                        fontFamily: 'var(--font-display)',
-                      }}>
-                        KD4 크루 전용
-                      </span>
-                    </div>
                   </div>
                 )}
               </li>
@@ -505,16 +488,6 @@ export default function Navbar() {
                           {item.label}
                         </Link>
                       ))}
-                      <div style={{
-                        padding: '8px 16px 4px',
-                        fontSize: '0.65rem',
-                        color: 'rgba(196,165,90,0.4)',
-                        letterSpacing: '0.1em',
-                        textTransform: 'uppercase',
-                        fontFamily: 'var(--font-display)',
-                      }}>
-                        KD4 크루 전용
-                      </div>
                     </div>
                   )}
                 </li>
