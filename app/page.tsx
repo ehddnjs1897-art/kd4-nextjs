@@ -5,7 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { CLASSES } from "@/lib/classes";
-import { CASTING_PHOTOS } from "@/lib/casting-photos";
+import { CASTING_PHOTOS } from "@/lib/casting-photos"
+import ContactForm from "@/components/contact/ContactForm";
 
 const HeroScene = dynamic(() => import("@/components/hero/HeroScene"), {
   ssr: false,
@@ -502,8 +503,7 @@ export default function HomePage() {
                 fontFamily: "var(--font-display)",
                 textTransform: "uppercase",
                 marginBottom: "32px",
-                animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
-                animationDelay: "0.7s",
+                animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.7s both, shimmerTag 6s 1.5s linear infinite",
               }}
             >
               배우들의 아지트
@@ -1417,7 +1417,30 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 11. CTA ──────────────────────────────────────────────────────────── */}
+      {/* ── 11. CONTACT ─────────────────────────────────────────────────────── */}
+      <section
+        id="contact"
+        style={{
+          padding: "100px 24px",
+          borderTop: "1px solid var(--border)",
+          background: "var(--bg2)",
+        }}
+      >
+        <div className="container" style={{ maxWidth: "680px" }}>
+          <p style={{ fontFamily: "var(--font-display)", fontSize: "0.75rem", letterSpacing: "0.3em", color: "var(--gold)", marginBottom: "12px", textAlign: "center" }}>
+            CONTACT
+          </p>
+          <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.6rem, 4vw, 2.2rem)", fontWeight: 700, textAlign: "center", marginBottom: "12px" }}>
+            상담 접수
+          </h2>
+          <p style={{ color: "var(--gray-light)", fontSize: "0.9rem", textAlign: "center", marginBottom: "48px", lineHeight: 1.7 }}>
+            궁금한 점을 남겨주시면 빠르게 연락드리겠습니다.
+          </p>
+          <ContactForm />
+        </div>
+      </section>
+
+      {/* ── 12. CTA ──────────────────────────────────────────────────────────── */}
       <section
         id="cta"
         style={{

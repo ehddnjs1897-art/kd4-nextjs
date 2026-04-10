@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 const publicLinks = [
@@ -77,8 +78,17 @@ export default function Navbar() {
   }, [])
 
   const isLoggedIn = authLoaded && userRole !== null
-  const isCrewApproved = isLoggedIn
+  const isCrewApproved = true  // 드롭다운은 항상 표시
   const closeMobile = () => setMobileOpen(false)
+
+  /* ── 크루 링크 클릭: 비로그인 시 로그인 페이지로 ── */
+  const router = useRouter()
+  const handleCrewLinkClick = (e: React.MouseEvent, href: string) => {
+    if (!isLoggedIn) {
+      e.preventDefault()
+      router.push(`/auth/login?next=${encodeURIComponent(href)}`)
+    }
+  }
 
   /* ── 드롭다운 hover (딜레이로 떨림 방지) ── */
   const handleDropEnter = () => {
@@ -271,6 +281,7 @@ export default function Navbar() {
                       <Link
                         key={item.label}
                         href={item.href}
+                        onClick={e => handleCrewLinkClick(e, item.href)}
                         style={{
                           display: 'block',
                           padding: '10px 16px',
@@ -478,7 +489,7 @@ export default function Navbar() {
                         <Link
                           key={item.label}
                           href={item.href}
-                          onClick={closeMobile}
+                          onClick={e => { handleCrewLinkClick(e, item.href); if (isLoggedIn) closeMobile() }}
                           style={{
                             display: 'block',
                             padding: '14px 16px',
