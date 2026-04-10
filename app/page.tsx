@@ -383,7 +383,7 @@ export default function HomePage() {
           style={{
             position: "absolute",
             top: "88px",
-            left: "28px",
+            right: "64px",
             zIndex: 20,
             animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
             animationDelay: "0.5s",
