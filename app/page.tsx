@@ -20,11 +20,11 @@ const FAQ_ITEMS = [
   },
   {
     q: "어떤 클래스부터 시작하면 좋을까요?",
-    a: "처음이시라면 베이직 클래스 또는 마이즈너 테크닉 정규 클래스를 추천드립니다. 상담 후 결정하실 수 있습니다.",
+    a: "베이직 클래스는 취미 클래스이고, 연기를 진지하게 배우고 싶은 분이라면 마이즈너 테크닉 정규 클래스부터 시작하시길 추천드립니다.",
   },
   {
     q: "수업은 얼마나 자주 있나요?",
-    a: "대부분의 클래스는 월 4회 진행됩니다. 움직임 클래스는 월 3회입니다.",
+    a: "특별한 경우가 아니라면 주 1회 진행됩니다.",
   },
   {
     q: "위치가 어디인가요?",
@@ -32,7 +32,11 @@ const FAQ_ITEMS = [
   },
   {
     q: "수강료 납부 방식은 어떻게 되나요?",
-    a: "수강신청 후 별도 안내 드립니다. 문의: 010-8564-0244",
+    a: "계좌이체 / 카드결제 가능합니다.",
+  },
+  {
+    q: "상담 가능한가요?",
+    a: "카카오 채널 및 수강신청 폼을 통해 미리 예약 후 방문 상담 가능합니다.",
   },
 ];
 
@@ -379,7 +383,7 @@ export default function HomePage() {
           style={{
             position: "absolute",
             top: "88px",
-            right: "28px",
+            left: "28px",
             zIndex: 20,
             animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
             animationDelay: "0.5s",
@@ -552,9 +556,9 @@ export default function HomePage() {
             {/* 배우들의 아지트 */}
             <p
               style={{
-                fontSize: "clamp(0.68rem, 1.2vw, 0.78rem)",
-                color: "rgba(255,255,255,0.35)",
-                letterSpacing: "0.22em",
+                fontSize: "clamp(0.72rem, 1.4vw, 0.88rem)",
+                color: "rgba(196,165,90,0.75)",
+                letterSpacing: "0.28em",
                 fontFamily: "var(--font-display)",
                 textTransform: "uppercase",
                 marginBottom: "40px",

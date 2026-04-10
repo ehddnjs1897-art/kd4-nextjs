@@ -77,17 +77,37 @@ export const CLASSES: ClassItem[] = [
     step: "STEP 2 수료자",
     nameKo: "출연영상 심화 클래스",
     nameEn: "Advanced Class",
-    quote: "수료자만 선택할 수 있는 심화 트랙",
+    quote: "수료자만 선택할 수 있는 두 가지 트랙",
+    subtitle: "Advanced · 2개월",
     bullets: [
-      "고급 장면 연기 / 마이즈너 테크닉 심화",
+      "고급 장면 연기",
+      "이바나 처벅 테크닉 심화",
       "맞춤형 시나리오 / 전문 영화팀 제작",
-      "출연영상 클래스 수료자 전용"
+      "캐스팅 연계"
     ],
     schedule: "월 4회",
     duration: "4시간",
     capacity: "6명",
     course: "2개월",
     price: "450,000"
+  },
+  {
+    step: "STEP 2 수료자",
+    nameKo: "출연영상 1달 완성 클래스",
+    nameEn: "1 Month Film Class",
+    quote: "수업 없이 영상만 — 1개월 완성",
+    subtitle: "1month · 영상만 제작",
+    bullets: [
+      "수업 없이 영상만 제작",
+      "레퍼런스 취합",
+      "시나리오 전달",
+      "현장 촬영"
+    ],
+    schedule: "1개월",
+    duration: "영상 제작 전용",
+    capacity: "소수정예",
+    course: "1개월",
+    price: "문의"
   },
   {
     step: "STEP 3",
