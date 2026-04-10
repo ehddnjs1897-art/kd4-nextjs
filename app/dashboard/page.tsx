@@ -2,8 +2,9 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import LogoutButton from '@/components/layout/LogoutButton'
+import CrewRequestButton from '@/components/dashboard/CrewRequestButton'
 
-type UserRole = 'user' | 'actor' | 'editor' | 'director' | 'admin'
+type UserRole = 'user' | 'crew_pending' | 'crew' | 'actor' | 'editor' | 'director' | 'admin'
 
 interface UserProfile {
   id: string
@@ -36,6 +37,8 @@ function formatDate(isoStr: string) {
 
 const ROLE_LABEL: Record<UserRole, string> = {
   user: '일반 회원',
+  crew_pending: 'KD4 크루 (승인 대기)',
+  crew: 'KD4 크루',
   actor: '배우 회원 (승인 대기)',
   editor: '배우 회원',
   director: '디렉터 회원',
@@ -66,7 +69,9 @@ export default async function DashboardPage() {
   const role: UserRole = (profile?.role as UserRole) || 'user'
   const createdAt = profile?.created_at || user.created_at
   const canEdit = role === 'editor' || role === 'admin'
-  const canViewActorDb = role === 'editor' || role === 'director' || role === 'admin'
+  const canViewActorDb = role === 'crew' || role === 'editor' || role === 'director' || role === 'admin'
+  const isCrewPending = role === 'crew_pending'
+  const canRequestCrew = role === 'user'
 
   return (
     <div style={styles.page}>
@@ -127,16 +132,69 @@ export default async function DashboardPage() {
               </section>
             )}
 
-            {/* 디렉터/배우 회원: 배우 DB 바로가기 */}
+            {/* KD4 크루 신청 (일반 회원) */}
+            {canRequestCrew && (
+              <section style={{
+                ...styles.card,
+                border: '1px solid rgba(196,165,90,0.25)',
+                background: 'rgba(196,165,90,0.04)',
+              }}>
+                <h2 style={styles.cardTitle}>KD4 크루 신청</h2>
+                <p style={styles.cardDesc}>
+                  배우 DB, 커뮤니티, 대본 분석 등 크루 전용 기능에 접근하려면
+                  관리자 승인이 필요합니다.
+                </p>
+                <CrewRequestButton />
+              </section>
+            )}
+
+            {/* KD4 크루 대기 중 */}
+            {isCrewPending && (
+              <section style={{
+                ...styles.card,
+                border: '1px solid rgba(240,173,78,0.3)',
+                background: 'rgba(240,173,78,0.04)',
+              }}>
+                <h2 style={{ ...styles.cardTitle, color: '#f0ad4e' }}>KD4 크루 승인 대기 중</h2>
+                <p style={styles.cardDesc}>
+                  크루 신청이 접수되었습니다. 관리자 승인 후 배우 DB, 커뮤니티,
+                  대본 분석 기능을 이용하실 수 있습니다.
+                </p>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '10px 14px',
+                  background: 'rgba(240,173,78,0.08)',
+                  border: '1px solid rgba(240,173,78,0.2)',
+                  borderRadius: 6,
+                  fontSize: '0.82rem',
+                  color: '#f0ad4e',
+                }}>
+                  <span>⏳</span>
+                  <span>승인 검토 중입니다</span>
+                </div>
+              </section>
+            )}
+
+            {/* KD4 크루 전용: 배우 DB 바로가기 */}
             {canViewActorDb && (
               <section style={styles.card}>
-                <h2 style={styles.cardTitle}>배우 DB</h2>
+                <h2 style={styles.cardTitle}>KD4 크루 전용</h2>
                 <p style={styles.cardDesc}>
-                  KD4 액팅 스튜디오 배우들의 갤러리를 열람합니다.
+                  배우 DB, 커뮤니티, 대본 분석 등 크루 전용 기능을 이용합니다.
                 </p>
-                <Link href="/actors" style={styles.btnSecondary}>
-                  배우 DB 보기
-                </Link>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <Link href="/actors" style={styles.btnSecondary}>
+                    배우 DB 보기
+                  </Link>
+                  <Link href="/board" style={styles.btnSecondary}>
+                    커뮤니티
+                  </Link>
+                  <Link href="/ai-tools" style={styles.btnSecondary}>
+                    대본 분석
+                  </Link>
+                </div>
               </section>
             )}
 

@@ -1,20 +1,31 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/client'
 
-const navLinks = [
+const publicLinks = [
   { label: '스튜디오 소개', href: '/about' },
   { label: '클래스', href: '/#classes' },
+]
+
+const crewLinks = [
   { label: '배우 DB', href: '/actors' },
   { label: '커뮤니티', href: '/board' },
   { label: '대본 분석', href: '/ai-tools' },
 ]
 
+type UserRole = 'user' | 'crew_pending' | 'crew' | 'editor' | 'admin' | null
+
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [crewDropOpen, setCrewDropOpen] = useState(false)
+  const [mobileCrewOpen, setMobileCrewOpen] = useState(false)
+  const [userRole, setUserRole] = useState<UserRole>(null)
+  const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  /* ── 스크롤 감지 ── */
   useEffect(() => {
     let ticking = false
     const onScroll = () => {
@@ -30,12 +41,46 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  /* ── 모바일 오버레이 시 body 스크롤 잠금 ── */
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
   }, [mobileOpen])
 
+  /* ── 인증 상태 & 역할 fetch ── */
+  useEffect(() => {
+    const supabase = createClient()
+
+    const fetchRole = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { setUserRole(null); return }
+      const { data } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+      setUserRole((data?.role as UserRole) || 'user')
+    }
+
+    fetchRole()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      fetchRole()
+    })
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const isCrewApproved = userRole === 'crew' || userRole === 'editor' || userRole === 'admin'
   const closeMobile = () => setMobileOpen(false)
+
+  /* ── 드롭다운 hover (딜레이로 떨림 방지) ── */
+  const handleDropEnter = () => {
+    if (hoverTimeout.current) clearTimeout(hoverTimeout.current)
+    setCrewDropOpen(true)
+  }
+  const handleDropLeave = () => {
+    hoverTimeout.current = setTimeout(() => setCrewDropOpen(false), 120)
+  }
 
   return (
     <>
@@ -65,7 +110,7 @@ export default function Navbar() {
             height: '64px',
           }}
         >
-          {/* Logo */}
+          {/* ── 로고 ── */}
           <Link href="/" style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
             <span
               style={{
@@ -93,7 +138,7 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop Nav */}
+          {/* ── Desktop Nav ── */}
           <ul
             style={{
               display: 'flex',
@@ -105,7 +150,8 @@ export default function Navbar() {
             }}
             className="desktop-nav"
           >
-            {navLinks.map(link => (
+            {/* 공개 링크 */}
+            {publicLinks.map(link => (
               <li key={link.label}>
                 <Link
                   href={link.href}
@@ -123,9 +169,149 @@ export default function Navbar() {
                 </Link>
               </li>
             ))}
+
+            {/* KD4 크루 드롭다운 — 승인된 회원만 */}
+            {isCrewApproved && (
+              <li
+                style={{ position: 'relative' }}
+                onMouseEnter={handleDropEnter}
+                onMouseLeave={handleDropLeave}
+              >
+                <button
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    color: crewDropOpen ? 'var(--gold)' : 'var(--gray-light)',
+                    fontFamily: 'var(--font-sans)',
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    transition: 'color 0.2s',
+                    padding: '4px 0',
+                    letterSpacing: '0.02em',
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
+                  onMouseLeave={e => {
+                    if (!crewDropOpen) e.currentTarget.style.color = 'var(--gray-light)'
+                  }}
+                  aria-haspopup="true"
+                  aria-expanded={crewDropOpen}
+                >
+                  KD4 크루
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="currentColor"
+                    style={{
+                      transform: crewDropOpen ? 'rotate(180deg)' : 'rotate(0)',
+                      transition: 'transform 0.2s',
+                      marginTop: '1px',
+                    }}
+                  >
+                    <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+                  </svg>
+                </button>
+
+                {/* 드롭다운 패널 */}
+                {crewDropOpen && (
+                  <div
+                    onMouseEnter={handleDropEnter}
+                    onMouseLeave={handleDropLeave}
+                    style={{
+                      position: 'absolute',
+                      top: 'calc(100% + 10px)',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      background: 'rgba(17,17,17,0.98)',
+                      border: '1px solid rgba(196,165,90,0.2)',
+                      borderRadius: '8px',
+                      padding: '8px',
+                      minWidth: '150px',
+                      boxShadow: '0 8px 32px rgba(0,0,0,0.6)',
+                      backdropFilter: 'blur(8px)',
+                      zIndex: 10,
+                    }}
+                  >
+                    {/* 위쪽 삼각형 */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '-5px',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      width: 0,
+                      height: 0,
+                      borderLeft: '5px solid transparent',
+                      borderRight: '5px solid transparent',
+                      borderBottom: '5px solid rgba(196,165,90,0.2)',
+                    }} />
+                    <div style={{
+                      position: 'absolute',
+                      top: '-4px',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      width: 0,
+                      height: 0,
+                      borderLeft: '5px solid transparent',
+                      borderRight: '5px solid transparent',
+                      borderBottom: '5px solid rgba(17,17,17,0.98)',
+                    }} />
+
+                    {crewLinks.map(item => (
+                      <Link
+                        key={item.label}
+                        href={item.href}
+                        style={{
+                          display: 'block',
+                          padding: '10px 16px',
+                          color: 'var(--gray-light)',
+                          fontFamily: 'var(--font-sans)',
+                          fontSize: '0.85rem',
+                          fontWeight: 500,
+                          borderRadius: '5px',
+                          transition: 'background 0.15s, color 0.15s',
+                          textDecoration: 'none',
+                        }}
+                        onMouseEnter={e => {
+                          e.currentTarget.style.background = 'rgba(196,165,90,0.1)'
+                          e.currentTarget.style.color = 'var(--gold)'
+                        }}
+                        onMouseLeave={e => {
+                          e.currentTarget.style.background = 'transparent'
+                          e.currentTarget.style.color = 'var(--gray-light)'
+                        }}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+
+                    {/* KD4 크루 라벨 */}
+                    <div style={{
+                      marginTop: '8px',
+                      paddingTop: '8px',
+                      borderTop: '1px solid rgba(196,165,90,0.1)',
+                      textAlign: 'center',
+                    }}>
+                      <span style={{
+                        fontSize: '0.65rem',
+                        color: 'rgba(196,165,90,0.5)',
+                        letterSpacing: '0.1em',
+                        textTransform: 'uppercase',
+                        fontFamily: 'var(--font-display)',
+                      }}>
+                        KD4 크루 전용
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </li>
+            )}
           </ul>
 
-          {/* CTA + Hamburger */}
+          {/* ── CTA + 햄버거 ── */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <a
               href="https://forms.gle/68E7yFFFoDiPCRwD9"
@@ -151,7 +337,7 @@ export default function Navbar() {
               수강신청
             </a>
 
-            {/* Hamburger */}
+            {/* 햄버거 */}
             <button
               onClick={() => setMobileOpen(v => !v)}
               aria-label="메뉴 열기"
@@ -166,45 +352,39 @@ export default function Navbar() {
                 cursor: 'pointer',
               }}
             >
-              <span
-                style={{
-                  display: 'block',
-                  width: '22px',
-                  height: '2px',
-                  background: 'var(--white)',
-                  borderRadius: '1px',
-                  transition: 'transform 0.25s, opacity 0.25s',
-                  transform: mobileOpen ? 'translateY(7px) rotate(45deg)' : 'none',
-                }}
-              />
-              <span
-                style={{
-                  display: 'block',
-                  width: '22px',
-                  height: '2px',
-                  background: 'var(--white)',
-                  borderRadius: '1px',
-                  transition: 'opacity 0.25s',
-                  opacity: mobileOpen ? 0 : 1,
-                }}
-              />
-              <span
-                style={{
-                  display: 'block',
-                  width: '22px',
-                  height: '2px',
-                  background: 'var(--white)',
-                  borderRadius: '1px',
-                  transition: 'transform 0.25s, opacity 0.25s',
-                  transform: mobileOpen ? 'translateY(-7px) rotate(-45deg)' : 'none',
-                }}
-              />
+              <span style={{
+                display: 'block',
+                width: '22px',
+                height: '2px',
+                background: 'var(--white)',
+                borderRadius: '1px',
+                transition: 'transform 0.25s, opacity 0.25s',
+                transform: mobileOpen ? 'translateY(7px) rotate(45deg)' : 'none',
+              }} />
+              <span style={{
+                display: 'block',
+                width: '22px',
+                height: '2px',
+                background: 'var(--white)',
+                borderRadius: '1px',
+                transition: 'opacity 0.25s',
+                opacity: mobileOpen ? 0 : 1,
+              }} />
+              <span style={{
+                display: 'block',
+                width: '22px',
+                height: '2px',
+                background: 'var(--white)',
+                borderRadius: '1px',
+                transition: 'transform 0.25s, opacity 0.25s',
+                transform: mobileOpen ? 'translateY(-7px) rotate(-45deg)' : 'none',
+              }} />
             </button>
           </div>
         </div>
       </nav>
 
-      {/* Mobile Overlay */}
+      {/* ── 모바일 오버레이 ── */}
       {mobileOpen && (
         <div
           style={{
@@ -220,7 +400,8 @@ export default function Navbar() {
         >
           <nav style={{ width: '100%', padding: '0 32px' }}>
             <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-              {navLinks.map(link => (
+              {/* 공개 링크 */}
+              {publicLinks.map(link => (
                 <li key={link.label} style={{ borderBottom: '1px solid var(--border)' }}>
                   <Link
                     href={link.href}
@@ -239,6 +420,87 @@ export default function Navbar() {
                   </Link>
                 </li>
               ))}
+
+              {/* KD4 크루 아코디언 — 승인된 회원만 */}
+              {isCrewApproved && (
+                <li style={{ borderBottom: '1px solid var(--border)' }}>
+                  <button
+                    onClick={() => setMobileCrewOpen(v => !v)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      width: '100%',
+                      padding: '22px 0',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      color: mobileCrewOpen ? 'var(--gold)' : 'var(--white)',
+                      fontFamily: 'var(--font-display), Oswald, sans-serif',
+                      fontSize: '1.5rem',
+                      fontWeight: 400,
+                      letterSpacing: '0.05em',
+                      textAlign: 'left',
+                    }}
+                  >
+                    KD4 크루
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 12 12"
+                      fill="currentColor"
+                      style={{
+                        transform: mobileCrewOpen ? 'rotate(180deg)' : 'rotate(0)',
+                        transition: 'transform 0.2s',
+                        flexShrink: 0,
+                        color: 'var(--gold)',
+                      }}
+                    >
+                      <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+                    </svg>
+                  </button>
+
+                  {/* 아코디언 내부 링크 */}
+                  {mobileCrewOpen && (
+                    <div style={{
+                      paddingBottom: '12px',
+                      borderTop: '1px solid rgba(196,165,90,0.15)',
+                      marginTop: '-4px',
+                    }}>
+                      {crewLinks.map(item => (
+                        <Link
+                          key={item.label}
+                          href={item.href}
+                          onClick={closeMobile}
+                          style={{
+                            display: 'block',
+                            padding: '14px 16px',
+                            color: 'var(--gray-light)',
+                            fontFamily: 'var(--font-sans)',
+                            fontSize: '1.1rem',
+                            fontWeight: 400,
+                            letterSpacing: '0.03em',
+                            textDecoration: 'none',
+                            borderBottom: '1px solid rgba(255,255,255,0.04)',
+                          }}
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                      <div style={{
+                        padding: '8px 16px 4px',
+                        fontSize: '0.65rem',
+                        color: 'rgba(196,165,90,0.4)',
+                        letterSpacing: '0.1em',
+                        textTransform: 'uppercase',
+                        fontFamily: 'var(--font-display)',
+                      }}>
+                        KD4 크루 전용
+                      </div>
+                    </div>
+                  )}
+                </li>
+              )}
             </ul>
 
             <a

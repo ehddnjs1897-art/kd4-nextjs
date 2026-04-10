@@ -30,12 +30,16 @@ function formatDate(iso: string) {
 }
 
 const ROLE_CYCLE: Record<string, string> = {
-  user: 'editor',
+  user: 'crew',
+  crew_pending: 'crew',
+  crew: 'editor',
   editor: 'admin',
   admin: 'user',
 }
 const ROLE_LABEL: Record<string, string> = {
   user: '일반회원',
+  crew_pending: '크루 신청 대기',
+  crew: 'KD4 크루',
   editor: '편집자',
   admin: '관리자',
 }
@@ -235,9 +239,15 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                         <button
                           onClick={() => handleRoleChange(p.id, p.role)}
                           disabled={loadingId === p.id}
-                          style={s.actionBtn}
+                          style={p.role === 'crew_pending'
+                            ? { ...s.actionBtn, borderColor: 'rgba(74,158,255,0.5)', color: '#7ab8ff' }
+                            : s.actionBtn}
                         >
-                          {loadingId === p.id ? '...' : `→ ${ROLE_LABEL[ROLE_CYCLE[p.role] ?? 'user']}`}
+                          {loadingId === p.id
+                            ? '...'
+                            : p.role === 'crew_pending'
+                            ? '✓ 크루 승인'
+                            : `→ ${ROLE_LABEL[ROLE_CYCLE[p.role] ?? 'user']}`}
                         </button>
                       </td>
                     </tr>
@@ -419,20 +429,24 @@ function StatCard({ label, value }: { label: string; value: number }) {
 // ─── 역할 뱃지 스타일 ────────────────────────────────────────────────────────
 
 function roleBadgeStyle(role: string): React.CSSProperties {
-  const colors: Record<string, string> = {
-    admin: 'rgba(196,165,90,0.2)',
-    editor: 'rgba(92,184,92,0.15)',
-    user: 'rgba(255,255,255,0.07)',
+  const configs: Record<string, { bg: string; border: string; color: string }> = {
+    admin:        { bg: 'rgba(196,165,90,0.2)',  border: 'rgba(196,165,90,0.4)', color: 'var(--gold)' },
+    editor:       { bg: 'rgba(92,184,92,0.15)',  border: 'rgba(92,184,92,0.3)',  color: '#7ed07e' },
+    crew:         { bg: 'rgba(74,158,255,0.15)', border: 'rgba(74,158,255,0.3)', color: '#7ab8ff' },
+    crew_pending: { bg: 'rgba(240,173,78,0.15)', border: 'rgba(240,173,78,0.4)', color: '#f0ad4e' },
+    user:         { bg: 'rgba(255,255,255,0.07)', border: 'rgba(255,255,255,0.1)', color: 'var(--white)' },
   }
+  const c = configs[role] ?? configs.user
   return {
     display: 'inline-block',
     padding: '2px 10px',
-    background: colors[role] ?? 'rgba(255,255,255,0.07)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    background: c.bg,
+    border: `1px solid ${c.border}`,
     borderRadius: 12,
     fontSize: '0.72rem',
-    color: role === 'admin' ? 'var(--gold)' : 'var(--white)',
+    color: c.color,
     letterSpacing: '0.04em',
+    fontWeight: role === 'crew_pending' ? 700 : 400,
   }
 }
 

@@ -8,7 +8,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
-const VALID_ROLES = ['user', 'editor', 'admin'] as const
+const VALID_ROLES = ['user', 'crew_pending', 'crew', 'editor', 'admin'] as const
 type ValidRole = (typeof VALID_ROLES)[number]
 
 // ─── 공통: admin 권한 확인 ───────────────────────────────────────────────────
