@@ -399,9 +399,9 @@ export default function HomePage() {
               background: "rgba(10,10,10,0.65)",
               backdropFilter: "blur(12px)",
               WebkitBackdropFilter: "blur(12px)",
-              border: "1px solid rgba(196,165,90,0.5)",
+              border: "1px solid rgba(255,255,255,0.5)",
               borderRadius: "12px",
-              boxShadow: "0 0 20px rgba(196,165,90,0.15), inset 0 1px 0 rgba(196,165,90,0.2)",
+              boxShadow: "0 0 20px rgba(255,255,255,0.08), inset 0 1px 0 rgba(255,255,255,0.15)",
             }}
           >
             <span style={{ fontSize: "1.4rem", lineHeight: 1 }}>🏆</span>
@@ -410,7 +410,7 @@ export default function HomePage() {
                 fontFamily: "var(--font-sans)",
                 fontSize: "0.82rem",
                 fontWeight: 800,
-                color: "var(--gold)",
+                color: "#ffffff",
                 letterSpacing: "0.01em",
                 whiteSpace: "nowrap",
               }}
@@ -421,7 +421,7 @@ export default function HomePage() {
               style={{
                 fontFamily: "var(--font-sans)",
                 fontSize: "0.6rem",
-                color: "rgba(196,165,90,0.6)",
+                color: "rgba(255,255,255,0.6)",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 whiteSpace: "nowrap",

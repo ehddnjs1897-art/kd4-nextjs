@@ -127,11 +127,11 @@ export default function Navbar() {
               style={{
                 fontFamily: 'var(--font-display), Oswald, sans-serif',
                 fontSize: '0.55rem',
-                fontWeight: 300,
-                color: 'var(--gray-light)',
+                fontWeight: 400,
+                color: '#ffffff',
                 letterSpacing: '0.22em',
                 textTransform: 'uppercase',
-                marginTop: '2px',
+                marginTop: '6px',
               }}
             >
               Acting Studio
@@ -156,14 +156,14 @@ export default function Navbar() {
                 <Link
                   href={link.href}
                   style={{
-                    color: 'var(--gray-light)',
+                    color: '#ffffff',
                     fontFamily: 'var(--font-sans)',
                     fontSize: '0.875rem',
                     fontWeight: 500,
                     transition: 'color 0.2s',
                   }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
-                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--gray-light)')}
+                  onMouseLeave={e => (e.currentTarget.style.color = '#ffffff')}
                 >
                   {link.label}
                 </Link>
@@ -185,7 +185,7 @@ export default function Navbar() {
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer',
-                    color: crewDropOpen ? 'var(--gold)' : 'var(--gray-light)',
+                    color: crewDropOpen ? 'var(--gold)' : '#ffffff',
                     fontFamily: 'var(--font-sans)',
                     fontSize: '0.875rem',
                     fontWeight: 600,
@@ -195,7 +195,7 @@ export default function Navbar() {
                   }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
                   onMouseLeave={e => {
-                    if (!crewDropOpen) e.currentTarget.style.color = 'var(--gray-light)'
+                    if (!crewDropOpen) e.currentTarget.style.color = '#ffffff'
                   }}
                   aria-haspopup="true"
                   aria-expanded={crewDropOpen}
