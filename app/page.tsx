@@ -509,21 +509,31 @@ export default function HomePage() {
   useGSAP(() => {
     const ease = "cubic-bezier(.7, 0, .3, 1)" as any
 
-    /* === PRELOADER: 인사말 순환 → 커튼 업 (빠르게) === */
+    /* === PRELOADER: 인사말 순환 → 라운드 커브 트랜지션 (Dennis 스타일) === */
     const greetings = document.querySelectorAll('.greeting-word')
     const preloader = preloaderRef.current
+    const roundedDiv = preloader?.querySelector('.rounded-div') as HTMLElement
     if (preloader && greetings.length) {
       const tl = gsap.timeline()
+      // 인사말 빠르게 순환
       greetings.forEach((word, i) => {
-        tl.to(word, { opacity: 1, duration: 0.15, delay: i === 0 ? 0.1 : 0 })
-          .to(word, { opacity: 0, duration: 0.1, delay: 0.15 })
+        tl.to(word, { opacity: 1, duration: 0.12, delay: i === 0 ? 0.1 : 0 })
+          .to(word, { opacity: 0, duration: 0.08, delay: 0.12 })
       })
+      // 라운드 커브가 먼저 올라오고
+      if (roundedDiv) {
+        tl.to(roundedDiv, {
+          height: "150%",
+          duration: 0.6,
+          ease: "power2.inOut",
+        }, '-=0.1')
+      }
+      // 프리로더 전체가 위로 슬라이드
       tl.to(preloader, {
         yPercent: -100,
         duration: 0.7,
         ease: "power3.inOut",
-        delay: 0.02,
-      })
+      }, '-=0.3')
       // 히어로 요소 입장
       tl.from('.hero-subtitle', { y: 40, opacity: 0, duration: 0.7, ease: "power2.out" }, '-=0.3')
       tl.from('.hero-scroll-indicator', { opacity: 0, duration: 0.5 }, '-=0.4')
@@ -626,20 +636,20 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      {/* ── PRELOADER (Dennis Snellenberg style) ──────────────────────────── */}
+      {/* ── PRELOADER (Dennis Snellenberg style — 화이트 배경) ──────────── */}
       <div className="preloader" ref={preloaderRef}>
         {["Hello", "Bonjour", "안녕하세요", "Hola", "배우들의 아지트"].map((word, i) => (
           <span
             key={i}
             className="greeting-word"
             style={{
-              color: "#ffffff",
               fontSize: i === 4 ? "clamp(1.8rem, 4vw, 3.5rem)" : undefined,
             }}
           >
             {word}
           </span>
         ))}
+        <div className="rounded-div" />
       </div>
 
       {/* ── 1. HERO (Dennis Snellenberg style) ───────────────────────────────── */}
@@ -693,7 +703,7 @@ export default function HomePage() {
         </div>
 
         {/* 마퀴 빅네임 (하단) */}
-        <div className="hero-marquee" ref={marqueeRef} style={{ zIndex: 10, paddingBottom: "clamp(40px, 8vh, 80px)" }}>
+        <div className="hero-marquee" ref={marqueeRef} style={{ zIndex: 10, paddingBottom: "clamp(60px, 15vh, 140px)" }}>
           <div className="hero-marquee-inner" ref={marqueeInnerRef}>
             {[0, 1, 2, 3].map((copy) => (
               <h1 key={copy}>

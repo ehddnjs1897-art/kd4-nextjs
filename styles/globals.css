@@ -1927,20 +1927,31 @@ main {
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: var(--bg);
+  background: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
+}
+.preloader .rounded-div {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background: var(--bg);
+  border-radius: 50% 50% 0 0;
+  z-index: 1;
 }
 .greeting-word {
   position: absolute;
   font-family: 'Satoshi', var(--font-display), sans-serif;
   font-weight: 500;
   font-size: clamp(2rem, 5vw, 4rem);
-  color: #ffffff;
+  color: #1a1a1a;
   opacity: 0;
   letter-spacing: 0.05em;
+  z-index: 2;
 }
 
 /* ═══ HERO MARQUEE (Dennis Snellenberg style) ═══ */
