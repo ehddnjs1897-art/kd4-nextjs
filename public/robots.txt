@@ -6,4 +6,21 @@ Disallow: /auth/
 Disallow: /dashboard
 Disallow: /api/
 
+# 네이버 검색봇 허용
+User-agent: Yeti
+Allow: /
+
+# AI 검색봇 허용
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
 Sitemap: https://kd4.club/sitemap.xml
