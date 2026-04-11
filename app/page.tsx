@@ -3,11 +3,16 @@
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { CLASSES } from "@/lib/classes";
 import CountdownTimer from "@/components/ui/CountdownTimer";
 import { CASTING_PHOTOS } from "@/lib/casting-photos"
 import ContactForm from "@/components/contact/ContactForm";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const HeroScene = dynamic(() => import("@/components/hero/HeroScene"), {
   ssr: false,
@@ -470,6 +475,94 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
 // ─── 메인 페이지 ───────────────────────────────────────────────────────────────
 
 export default function HomePage() {
+  const preloaderRef = useRef<HTMLDivElement>(null)
+  const heroRef = useRef<HTMLElement>(null)
+  const marqueeRef = useRef<HTMLDivElement>(null)
+  const marqueeInnerRef = useRef<HTMLDivElement>(null)
+  const mainRef = useRef<HTMLElement>(null)
+
+  /* ── Lenis 부드러운 스크롤 ── */
+  useEffect(() => {
+    let lenis: any
+    let rafId: number
+    import('lenis').then((mod) => {
+      const Lenis = mod.default
+      lenis = new Lenis({
+        duration: 1.2,
+        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+      })
+      lenis.on('scroll', ScrollTrigger.update)
+      function raf(time: number) {
+        lenis.raf(time)
+        rafId = requestAnimationFrame(raf)
+      }
+      rafId = requestAnimationFrame(raf)
+    })
+    return () => {
+      if (lenis) lenis.destroy()
+      if (rafId) cancelAnimationFrame(rafId)
+    }
+  }, [])
+
+  /* ── GSAP 애니메이션 ── */
+  useGSAP(() => {
+    const ease = "cubic-bezier(.7, 0, .3, 1)" as any
+
+    /* === PRELOADER: 인사말 순환 → 커튼 업 === */
+    const greetings = document.querySelectorAll('.greeting-word')
+    const preloader = preloaderRef.current
+    if (preloader && greetings.length) {
+      const tl = gsap.timeline()
+      greetings.forEach((word, i) => {
+        tl.to(word, { opacity: 1, duration: 0.25, delay: i === 0 ? 0.15 : 0 })
+          .to(word, { opacity: 0, duration: 0.15, delay: 0.2 })
+      })
+      tl.to(preloader, {
+        yPercent: -100,
+        duration: 0.8,
+        ease: "power3.inOut",
+        delay: 0.05,
+      })
+      // 히어로 요소 입장
+      tl.from('.hero-subtitle', { y: 40, opacity: 0, duration: 0.7, ease: "power2.out" }, '-=0.3')
+      tl.from('.hero-scroll-indicator', { opacity: 0, duration: 0.5 }, '-=0.4')
+    }
+
+    /* === MARQUEE: 스크롤 연동 가로 이동 === */
+    if (marqueeInnerRef.current) {
+      gsap.to(marqueeInnerRef.current, {
+        xPercent: -15,
+        ease: "none",
+        scrollTrigger: {
+          trigger: marqueeRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 0.5,
+        },
+      })
+    }
+
+    /* === 스크롤 인디케이터 반복 === */
+    gsap.to('.hero-scroll-indicator', {
+      y: 8, repeat: -1, yoyo: true, duration: 1, ease: "power1.inOut",
+    })
+
+    /* === HERO INTRO 섹션 등장 === */
+    gsap.from('.hero-intro-section', {
+      y: 60,
+      opacity: 0,
+      duration: 0.8,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: '.hero-intro-section',
+        start: 'top 85%',
+        toggleActions: 'play none none reverse',
+      },
+    })
+  })
+
+  /* ── 기존 섹션 리빌 (IntersectionObserver) ── */
   useEffect(() => {
     const els = document.querySelectorAll<HTMLElement>('section[id]:not(#hero)')
     els.forEach((el) => el.classList.add('reveal-section'))
@@ -505,9 +598,25 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      {/* ── 1. HERO ──────────────────────────────────────────────────────────── */}
+      {/* ── PRELOADER (Dennis Snellenberg style) ──────────────────────────── */}
+      <div className="preloader" ref={preloaderRef}>
+        {["Hello", "Bonjour", "안녕하세요", "Hola", "KD4"].map((word, i) => (
+          <span
+            key={i}
+            className="greeting-word"
+            style={{
+              color: i === 4 ? "var(--gold)" : "#ffffff",
+            }}
+          >
+            {word}
+          </span>
+        ))}
+      </div>
+
+      {/* ── 1. HERO (Dennis Snellenberg style) ───────────────────────────────── */}
       <section
         id="hero"
+        ref={heroRef}
         style={{
           position: "relative",
           width: "100%",
@@ -516,309 +625,127 @@ export default function HomePage() {
           overflow: "hidden",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
+          justifyContent: "flex-end",
         }}
       >
         {/* Three.js 배경 */}
         <HeroScene />
 
-        {/* 우상단 인증 뱃지 */}
+        {/* 오른쪽 하단 서브타이틀 */}
         <div
-          className="hero-badge-wrap"
+          className="hero-subtitle"
           style={{
             position: "absolute",
-            top: "88px",
-            right: "64px",
-            zIndex: 20,
-            animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
-            animationDelay: "0.5s",
+            right: "clamp(24px, 4vw, 60px)",
+            bottom: "clamp(100px, 18vh, 180px)",
+            zIndex: 10,
+            textAlign: "right",
+            opacity: 0,
           }}
         >
-          <div
-            className="badge-inner"
+          <div className="hero-arrow" style={{ marginBottom: "16px", textAlign: "right" }}>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="1">
+              <path d="M7 7l10 10M17 7v10H7" />
+            </svg>
+          </div>
+          <p
             style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "4px",
-              padding: "10px 16px 12px",
-              background: "rgba(10,10,10,0.65)",
-              backdropFilter: "blur(12px)",
-              WebkitBackdropFilter: "blur(12px)",
-              border: "1px solid rgba(255,255,255,0.5)",
-              borderRadius: "12px",
-              boxShadow: "0 0 20px rgba(255,255,255,0.08), inset 0 1px 0 rgba(255,255,255,0.15)",
+              fontFamily: "var(--font-display)",
+              fontSize: "clamp(1rem, 2vw, 1.5rem)",
+              fontWeight: 300,
+              color: "#ffffff",
+              lineHeight: 1.5,
+              letterSpacing: "0.05em",
             }}
           >
-            <span className="badge-emoji" style={{ fontSize: "1.4rem", lineHeight: 1 }}>🏆</span>
-            <span
-              className="badge-title"
-              style={{
-                fontFamily: "var(--font-sans)",
-                fontSize: "0.82rem",
-                fontWeight: 800,
-                color: "#ffffff",
-                letterSpacing: "0.01em",
-                whiteSpace: "nowrap",
-              }}
-            >
-              신촌 대표 액팅 스쿨
-            </span>
-            <span
-              className="badge-sub"
-              style={{
-                fontFamily: "var(--font-sans)",
-                fontSize: "0.6rem",
-                color: "rgba(255,255,255,0.6)",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                whiteSpace: "nowrap",
-              }}
-            >
-              KD4 Acting Studio
-            </span>
+            <span style={{ display: "block", color: "rgba(255,255,255,0.35)", fontSize: "0.85em" }}>Meisner Technique</span>
+            연기하지 않는 연기
+          </p>
+        </div>
+
+        {/* 마퀴 빅네임 (하단) */}
+        <div className="hero-marquee" ref={marqueeRef} style={{ zIndex: 10, paddingBottom: "clamp(40px, 8vh, 80px)" }}>
+          <div className="hero-marquee-inner" ref={marqueeInnerRef}>
+            {[0, 1].map((copy) => (
+              <h1 key={copy}>
+                KD4 — ACTING STUDIO — KD4 — ACTING STUDIO —{" "}
+              </h1>
+            ))}
           </div>
         </div>
 
-        {/* 오버레이 텍스트 */}
+        {/* 스크롤 인디케이터 */}
         <div
+          className="hero-scroll-indicator"
           style={{
-            position: "relative",
+            position: "absolute",
+            bottom: "12px",
+            left: "50%",
+            transform: "translateX(-50%)",
             zIndex: 10,
-            width: "100%",
-            height: "100%",
             display: "flex",
             flexDirection: "column",
-            justifyContent: "space-between",
             alignItems: "center",
+            gap: "4px",
+            opacity: 0,
           }}
         >
-          {/* 중앙 텍스트 */}
-          <div
+          <span style={{ fontSize: "0.6rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.4)" }}>SCROLL</span>
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5">
+            <path d="M8 3v10M3 9l5 5 5-5" />
+          </svg>
+        </div>
+      </section>
+
+      {/* ── HERO INTRO (카피 + CTA, Stats 직전) ───────────────────────────────── */}
+      <section className="hero-intro-section">
+        <p
+          className="shimmer-tag"
+          style={{
+            fontSize: "clamp(0.78rem, 1.6vw, 0.95rem)",
+            letterSpacing: "0.3em",
+            fontFamily: "var(--font-display)",
+            textTransform: "uppercase",
+            marginBottom: "32px",
+          }}
+        >
+          배우들의 아지트
+        </p>
+        <p style={{ fontSize: "clamp(0.88rem, 1.8vw, 1.05rem)", color: "#ffffff", letterSpacing: "0.02em", marginBottom: "6px" }}>
+          우리는 양산형 배우를 찍어내는 공장식 학원을 거부합니다.
+        </p>
+        <p style={{ fontSize: "clamp(0.88rem, 1.8vw, 1.05rem)", color: "var(--gold)", fontWeight: 600, letterSpacing: "0.02em", marginBottom: "32px" }}>
+          우리는 배우를 성장시키는 KD4 액팅 스튜디오입니다.
+        </p>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", marginBottom: "40px" }}>
+          <span style={{ display: "block", width: "36px", height: "1px", background: "var(--gold)" }} />
+          <p style={{ fontFamily: "var(--font-display)", fontSize: "clamp(0.65rem, 1.6vw, 0.85rem)", fontWeight: 400, letterSpacing: "0.32em", color: "var(--gold)", textTransform: "uppercase" }}>
+            OFF THE PLASTIC
+          </p>
+          <span style={{ display: "block", width: "36px", height: "1px", background: "var(--gold)" }} />
+        </div>
+        <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
+          <a
+            href="#classes"
             style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              textAlign: "center",
-              padding: "0 24px",
+              padding: "14px 32px", background: "var(--gold)", color: "#0a0a0a",
+              fontWeight: 700, fontSize: "0.85rem", letterSpacing: "0.08em",
+              borderRadius: "var(--radius)", display: "inline-block", transition: "opacity var(--transition)",
             }}
           >
-            {/* eyebrow */}
-            <p
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "clamp(0.65rem, 1.4vw, 0.8rem)",
-                fontWeight: 400,
-                letterSpacing: "0.38em",
-                color: "var(--gold)",
-                textTransform: "uppercase",
-                marginBottom: "20px",
-                textShadow: "0 0 30px rgba(0,87,255,0.8)",
-                animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
-                animationDelay: "0.2s",
-              }}
-            >
-              KD4 ACTING STUDIO
-            </p>
-
-            {/* H1 */}
-            <h1
-              style={{
-                fontFamily: "var(--font-sans)",
-                fontSize: "clamp(2.8rem, 9vw, 7.5rem)",
-                fontWeight: 900,
-                letterSpacing: "-0.02em",
-                color: "var(--white)",
-                lineHeight: 1,
-                marginBottom: "24px",
-                textShadow: "0 4px 60px rgba(0,0,0,0.9)",
-                animation: "heroFadeUp 0.9s cubic-bezier(0.22,1,0.36,1) both",
-                animationDelay: "0.45s",
-              }}
-            >
-              KD4 액팅 스튜디오
-            </h1>
-
-            {/* 배우들의 아지트 */}
-            <p
-              className="shimmer-tag"
-              style={{
-                fontSize: "clamp(0.78rem, 1.6vw, 0.95rem)",
-                letterSpacing: "0.3em",
-                fontFamily: "var(--font-display)",
-                textTransform: "uppercase",
-                marginBottom: "32px",
-                animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.7s both, shimmerTag 6s 1.5s linear infinite",
-              }}
-            >
-              배우들의 아지트
-            </p>
-
-            {/* 카피 라인 1 */}
-            <p
-              style={{
-                fontSize: "clamp(0.82rem, 1.8vw, 1rem)",
-                color: "#ffffff",
-                letterSpacing: "0.02em",
-                marginBottom: "6px",
-                textShadow: "0 2px 20px rgba(0,0,0,0.9)",
-                animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
-                animationDelay: "0.9s",
-              }}
-            >
-              우리는 양산형 배우를 찍어내는 공장식 학원을 거부합니다.
-            </p>
-
-            {/* 카피 라인 2 */}
-            <p
-              style={{
-                fontSize: "clamp(0.82rem, 1.8vw, 1rem)",
-                color: "var(--gold)",
-                fontWeight: 600,
-                letterSpacing: "0.02em",
-                marginBottom: "32px",
-                textShadow: "0 2px 20px rgba(0,0,0,0.9)",
-                animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
-                animationDelay: "1.05s",
-              }}
-            >
-              우리는 배우를 성장시키는 KD4 액팅 스튜디오입니다.
-            </p>
-
-            {/* OFF THE PLASTIC 데코 */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "12px",
-                marginBottom: "40px",
-                animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
-                animationDelay: "1.15s",
-              }}
-            >
-              <span style={{ display: "block", width: "36px", height: "1px", background: "var(--gold)" }} />
-              <p
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: "clamp(0.65rem, 1.6vw, 0.85rem)",
-                  fontWeight: 400,
-                  letterSpacing: "0.32em",
-                  color: "var(--gold)",
-                  textTransform: "uppercase",
-                }}
-              >
-                OFF THE PLASTIC
-              </p>
-              <span style={{ display: "block", width: "36px", height: "1px", background: "var(--gold)" }} />
-            </div>
-
-            {/* 할인 뱃지 */}
-            <p
-              style={{
-                display: "inline-block",
-                padding: "6px 16px",
-                background: "rgba(0,102,255,0.1)",
-                border: "1px solid var(--gold)",
-                borderRadius: "20px",
-                fontSize: "0.78rem",
-                fontWeight: 600,
-                color: "var(--gold)",
-                marginBottom: "20px",
-                animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
-                animationDelay: "1.25s",
-              }}
-            >
-              🌸 봄맞이 스페셜 — 첫 달 10만원 할인
-            </p>
-
-            {/* CTA 버튼 */}
-            <div
-              style={{
-                display: "flex",
-                gap: "16px",
-                justifyContent: "center",
-                flexWrap: "wrap",
-                animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
-                animationDelay: "1.35s",
-              }}
-            >
-              <a
-                href="#classes"
-                style={{
-                  padding: "14px 32px",
-                  background: "var(--gold)",
-                  color: "#0a0a0a",
-                  fontWeight: 700,
-                  fontSize: "0.85rem",
-                  letterSpacing: "0.08em",
-                  borderRadius: "var(--radius)",
-                  display: "inline-block",
-                  transition: "opacity var(--transition)",
-                }}
-              >
-                클래스 둘러보기
-              </a>
-              <Link
-                href="/actors"
-                style={{
-                  padding: "14px 32px",
-                  border: "1px solid var(--gold)",
-                  color: "var(--gold)",
-                  fontWeight: 600,
-                  fontSize: "0.85rem",
-                  letterSpacing: "0.08em",
-                  borderRadius: "var(--radius)",
-                  display: "inline-block",
-                  background: "rgba(0,0,0,0.4)",
-                  backdropFilter: "blur(4px)",
-                  transition: "background var(--transition)",
-                }}
-              >
-                배우 DB
-              </Link>
-            </div>
-          </div>
-
-          {/* 하단 골드 바 + 스크롤 화살표 */}
-          <div
+            클래스 둘러보기
+          </a>
+          <Link
+            href="/actors"
             style={{
-              width: "100%",
-              padding: "20px 24px",
-              display: "flex",
-              justifyContent: "center",
-              borderTop: "1px solid rgba(0,87,255,0.25)",
-              background: "rgba(0,0,0,0.3)",
-              backdropFilter: "blur(4px)",
+              padding: "14px 32px", border: "1px solid var(--gold)", color: "var(--gold)",
+              fontWeight: 600, fontSize: "0.85rem", letterSpacing: "0.08em",
+              borderRadius: "var(--radius)", display: "inline-block",
+              background: "rgba(0,0,0,0.4)", backdropFilter: "blur(4px)", transition: "background var(--transition)",
             }}
           >
-            <a
-              href="#stats"
-              style={{
-                color: "var(--gold)",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "4px",
-                opacity: 0.7,
-              }}
-            >
-              <span style={{ fontSize: "0.65rem", letterSpacing: "0.2em" }}>SCROLL</span>
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <path d="M8 3v10M3 9l5 5 5-5" />
-              </svg>
-            </a>
-          </div>
+            배우 DB
+          </Link>
         </div>
       </section>
 

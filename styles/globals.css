@@ -1922,3 +1922,65 @@ main {
   0%   { transform: translateX(-50%); }
   100% { transform: translateX(0); }
 }
+
+/* ═══ PRELOADER (Dennis Snellenberg style) ═══ */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.greeting-word {
+  position: absolute;
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(2rem, 5vw, 4rem);
+  color: #ffffff;
+  opacity: 0;
+  letter-spacing: 0.1em;
+}
+
+/* ═══ HERO MARQUEE (Dennis Snellenberg style) ═══ */
+.hero-marquee {
+  overflow: hidden;
+  width: 100%;
+}
+.hero-marquee-inner {
+  display: flex;
+  white-space: nowrap;
+  will-change: transform;
+}
+.hero-marquee h1 {
+  font-family: var(--font-display);
+  font-size: max(9em, 15vw);
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+  margin: 0;
+  padding: 0 3vw;
+  pointer-events: none;
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+
+/* ═══ HERO INTRO SECTION (카피 + CTA, Stats 위) ═══ */
+.hero-intro-section {
+  padding: 80px 24px 60px;
+  text-align: center;
+  background: var(--bg);
+  position: relative;
+}
+.hero-intro-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 60px;
+  background: linear-gradient(to bottom, transparent, var(--gold));
+}
