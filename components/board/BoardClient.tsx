@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import Link from 'next/link'
 
-type Category = '전체' | '공지' | '질문' | '자유' | '일반'
-const CATEGORIES: Category[] = ['전체', '공지', '질문', '자유']
+type Category = '전체' | '공지' | '질문' | '자유' | '수업'
+const CATEGORIES: Category[] = ['전체', '질문', '자유', '수업', '공지']
 
 interface Post {
   id: string
@@ -25,7 +25,7 @@ function CategoryBadge({ category }: { category: string }) {
     공지: '#e74c3c',
     질문: '#4a9eff',
     자유: '#888888',
-    일반: '#888888',
+    수업: '#a855f7',
   }
   const color = colorMap[category] ?? '#888888'
   return (

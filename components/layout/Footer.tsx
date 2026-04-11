@@ -199,9 +199,9 @@ export default function Footer() {
                 <a
                   href="https://www.instagram.com/kd4actingstudio"
                   target="_blank" rel="noopener noreferrer"
-                  style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s' }}
-                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
-                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--gray-light)')}
+                  style={{ color: 'var(--gold)', fontSize: '0.85rem', transition: 'color 0.2s', textDecoration: 'underline', textUnderlineOffset: '3px' }}
+                  onMouseEnter={e => (e.currentTarget.style.opacity = '0.75')}
+                  onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
                 >
                   @kd4actingstudio
                 </a>
@@ -210,9 +210,9 @@ export default function Footer() {
                 <a
                   href="https://pf.kakao.com/_ximxdqn"
                   target="_blank" rel="noopener noreferrer"
-                  style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s' }}
-                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
-                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--gray-light)')}
+                  style={{ color: 'var(--gold)', fontSize: '0.85rem', transition: 'opacity 0.2s', textDecoration: 'underline', textUnderlineOffset: '3px' }}
+                  onMouseEnter={e => (e.currentTarget.style.opacity = '0.75')}
+                  onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
                 >
                   카카오채널: KD4 액팅 스튜디오
                 </a>

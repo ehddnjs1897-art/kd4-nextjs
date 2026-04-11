@@ -4,26 +4,38 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
-const CATEGORIES = ['일반', '공지', '질문', '자유'] as const
-type Category = typeof CATEGORIES[number]
+// 일반 사용자 카테고리
+const USER_CATEGORIES = ['질문', '자유', '수업'] as const
+// 관리자 추가 카테고리
+const ADMIN_CATEGORIES = ['질문', '자유', '수업', '공지'] as const
+
+type Category = '질문' | '자유' | '수업' | '공지'
 
 export default function WritePage() {
   const router = useRouter()
-  const [category, setCategory] = useState<Category>('일반')
+  const [category, setCategory] = useState<Category>('질문')
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [checkingAuth, setCheckingAuth] = useState(true)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (!user) {
         router.replace('/auth/login?next=/board/write')
-      } else {
-        setCheckingAuth(false)
+        return
       }
+      // 역할 확인 (관리자면 '공지' 탭 노출)
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .maybeSingle()
+      if (profile?.role === 'admin') setIsAdmin(true)
+      setCheckingAuth(false)
     })
   }, [router])
 
@@ -39,18 +51,25 @@ export default function WritePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, content, category }),
       })
-      const json = await res.json()
+
+      let json: { id?: string; error?: string } = {}
+      try { json = await res.json() } catch { /* empty */ }
+
       if (!res.ok) {
-        setError(json.error ?? '게시글 작성 중 오류가 발생했습니다.')
-      } else {
+        setError(json.error ?? `오류가 발생했습니다. (${res.status})`)
+      } else if (json.id) {
         router.push(`/board/${json.id}`)
+      } else {
+        setError('게시글 ID를 받지 못했습니다.')
       }
-    } catch {
-      setError('게시글 작성 중 오류가 발생했습니다.')
+    } catch (err) {
+      setError(`네트워크 오류: ${err instanceof Error ? err.message : '알 수 없는 오류'}`)
     } finally {
       setSubmitting(false)
     }
   }
+
+  const CATEGORIES = isAdmin ? ADMIN_CATEGORIES : USER_CATEGORIES
 
   if (checkingAuth) {
     return (
@@ -108,7 +127,7 @@ export default function WritePage() {
                 <button
                   key={cat}
                   type="button"
-                  onClick={() => setCategory(cat)}
+                  onClick={() => setCategory(cat as Category)}
                   style={{
                     padding: '7px 16px',
                     borderRadius: 'var(--radius)',
