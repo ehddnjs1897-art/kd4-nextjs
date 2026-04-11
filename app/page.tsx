@@ -644,8 +644,8 @@ export default function HomePage() {
             left: "50%",
             transform: "translate(-50%, -55%)",
             zIndex: 5,
-            width: "clamp(200px, 30vw, 400px)",
-            height: "clamp(200px, 30vw, 400px)",
+            width: "clamp(400px, 60vw, 800px)",
+            height: "clamp(400px, 60vw, 800px)",
             opacity: 0,
           }}
         >
