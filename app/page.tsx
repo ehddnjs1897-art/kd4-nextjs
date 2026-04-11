@@ -563,6 +563,46 @@ export default function HomePage() {
         toggleActions: 'play none none reverse',
       },
     })
+
+    /* === 전체 섹션 ScrollTrigger 등장 === */
+    gsap.utils.toArray<HTMLElement>('section[id]:not(#hero)').forEach((section) => {
+      gsap.from(section, {
+        y: 50,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 85%',
+          toggleActions: 'play none none reverse',
+        },
+      })
+    })
+
+    /* === 클래스 카드 배치 스태거 === */
+    ScrollTrigger.batch('.classes-grid > div', {
+      onEnter: (batch) => {
+        gsap.from(batch, {
+          y: 40, opacity: 0, scale: 0.97,
+          stagger: 0.1, duration: 0.6, ease: "power2.out",
+        })
+      },
+      start: 'top 90%',
+    })
+
+    /* === 후기 마퀴: 스크롤 연동 가속 === */
+    document.querySelectorAll('.review-marquee-track').forEach((track, i) => {
+      gsap.to(track, {
+        x: i % 2 === 0 ? -150 : 150,
+        ease: "none",
+        scrollTrigger: {
+          trigger: track.parentElement,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 0.5,
+        },
+      })
+    })
   })
 
   /* ── 기존 섹션 리빌 (IntersectionObserver) ── */

@@ -1910,9 +1910,7 @@ main {
   animation: reviewScrollReverse 40s linear infinite;
 }
 
-.review-marquee:hover .review-marquee-track {
-  animation-play-state: paused;
-}
+/* hover 시 멈추지 않음 — 계속 스크롤 */
 
 @keyframes reviewScroll {
   0%   { transform: translateX(0); }
