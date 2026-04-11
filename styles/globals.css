@@ -1957,7 +1957,7 @@ main {
 }
 .hero-marquee h1 {
   font-family: 'Satoshi', var(--font-display), sans-serif;
-  font-size: max(6em, 10vw);
+  font-size: max(12em, 20vw);
   font-weight: 700;
   color: #ffffff;
   line-height: 1;

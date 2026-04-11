@@ -701,7 +701,7 @@ export default function HomePage() {
           <div className="hero-marquee-inner" ref={marqueeInnerRef}>
             {[0, 1].map((copy) => (
               <h1 key={copy}>
-                KD4 액팅 스튜디오 — KD4 액팅 스튜디오 —{" "}
+                KD4 액팅 스튜디오 - KD4 액팅 스튜디오 -{" "}
               </h1>
             ))}
           </div>
