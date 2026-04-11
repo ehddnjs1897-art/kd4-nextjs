@@ -1,9 +1,11 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { useState, useCallback, useRef } from "react"
+import { useState, useCallback, useRef, Suspense } from "react"
+import { useSearchParams } from "next/navigation"
 import GameUI from "@/components/game/GameUI"
 import GameOver from "@/components/game/GameOver"
+import type { CharacterType } from "@/components/game/SpotlightRush"
 
 const SpotlightRush = dynamic(() => import("@/components/game/SpotlightRush"), {
   ssr: false,
@@ -31,7 +33,9 @@ interface StageInfo {
   act: number
 }
 
-export default function GamePlayPage() {
+function GamePlayInner() {
+  const searchParams = useSearchParams()
+  const character = (searchParams.get("char") as CharacterType) || "xbot"
   const [score, setScore] = useState(0)
   const [lives, setLives] = useState(3)
   const [height, setHeight] = useState(0)
@@ -87,7 +91,7 @@ export default function GamePlayPage() {
 
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
-      <SpotlightRush key={gameKey} callbacks={callbacks()} />
+      <SpotlightRush key={gameKey} callbacks={callbacks()} character={character} />
       <GameUI
         score={score}
         lives={lives}
@@ -106,5 +110,13 @@ export default function GamePlayPage() {
         />
       )}
     </div>
+  )
+}
+
+export default function GamePlayPage() {
+  return (
+    <Suspense fallback={<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",color:"#444",fontFamily:"var(--font-oswald),sans-serif",letterSpacing:"0.15em"}}>LOADING...</div>}>
+      <GamePlayInner />
+    </Suspense>
   )
 }
