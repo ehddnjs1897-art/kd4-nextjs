@@ -47,6 +47,9 @@ export const metadata: Metadata = {
   ],
   robots: { index: true, follow: true },
   alternates: { canonical: 'https://kd4.club' },
+  verification: {
+    other: { 'naver-site-verification': '55356c87afb0497963a7979c98e2cdf68ac09044' },
+  },
   metadataBase: new URL('https://kd4.club'),
   icons: {
     icon: '/favicon.ico',
