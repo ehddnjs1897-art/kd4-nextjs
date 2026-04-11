@@ -16,17 +16,13 @@ export async function POST() {
   }
 
   // 현재 역할 + 이름 조회
-  const { data: profile, error: profileErr } = await supabase
+  const { data: profile } = await supabaseAdmin
     .from('profiles')
     .select('role, name')
     .eq('id', user.id)
     .maybeSingle()
 
-  if (profileErr || !profile) {
-    return NextResponse.json({ error: '프로필을 찾을 수 없습니다.' }, { status: 404 })
-  }
-
-  const currentRole = profile.role as string
+  const currentRole = (profile?.role ?? 'user') as string
 
   // 이미 신청했거나 승인된 경우
   if (currentRole !== 'user') {
@@ -36,11 +32,18 @@ export async function POST() {
     })
   }
 
-  // crew_pending으로 업데이트
+  // 프로필 없으면 먼저 생성 후 crew_pending으로 upsert
   const { error: updateErr } = await supabaseAdmin
     .from('profiles')
-    .update({ role: 'crew_pending' })
-    .eq('id', user.id)
+    .upsert(
+      {
+        id: user.id,
+        name: profile?.name ?? user.user_metadata?.name ?? user.email?.split('@')[0] ?? null,
+        email: user.email ?? null,
+        role: 'crew_pending',
+      },
+      { onConflict: 'id' }
+    )
 
   if (updateErr) {
     console.error('[POST /api/crew-request] 업데이트 오류:', updateErr.message)
@@ -48,7 +51,7 @@ export async function POST() {
   }
 
   // 관리자에게 이메일 알림 (실패해도 신청은 완료)
-  const applicantName = profile.name ?? user.email?.split('@')[0] ?? '(이름 없음)'
+  const applicantName = profile?.name ?? user.user_metadata?.name ?? user.email?.split('@')[0] ?? '(이름 없음)'
   const applicantEmail = user.email ?? '(이메일 없음)'
   notifyCrewRequest(applicantName, applicantEmail, user.id).catch(console.error)
 
