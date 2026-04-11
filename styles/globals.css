@@ -1982,14 +1982,5 @@ main {
   text-align: center;
   background: var(--bg);
   position: relative;
-}
-.hero-intro-section::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 1px;
-  height: 60px;
-  background: linear-gradient(to bottom, transparent, var(--gold));
+  z-index: 2;
 }
