@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin
+Disallow: /auth/
+Disallow: /dashboard
+Disallow: /api/
+
+Sitemap: https://kd4.club/sitemap.xml

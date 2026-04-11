@@ -439,8 +439,23 @@ export default function HomePage() {
     return () => observer.disconnect()
   }, [])
 
+  // FAQ → FAQPage JSON-LD
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: FAQ_ITEMS.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  }
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       {/* ── 1. HERO ──────────────────────────────────────────────────────────── */}
       <section
         id="hero"

@@ -5,6 +5,7 @@ import '../styles/globals.css'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import FloatingCTA from '@/components/layout/FloatingCTA'
+import JsonLd from '@/components/seo/JsonLd'
 
 const notoSansKR = Noto_Sans_KR({
   subsets: ['latin'],
@@ -32,15 +33,27 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: 'KD4 액팅 스튜디오',
-  description: '마이즈너 테크닉 기반 연기 훈련 · 포트폴리오 제작 · 캐스팅 연계. 현장에서 통하는 배우를 만듭니다.',
+  title: {
+    default: 'KD4 액팅 스튜디오 | 서울 신촌 마이즈너 테크닉 연기학원',
+    template: '%s | KD4 액팅 스튜디오',
+  },
+  description:
+    '서울 신촌 마이즈너 테크닉 기반 연기학원. 연기 훈련부터 출연영상 포트폴리오 제작, 캐스팅 연계까지. 배우지망생 입문부터 현역 배우 심화 훈련. KD4 액팅 스튜디오.',
+  keywords: [
+    '연기학원', '마이즈너 테크닉', '신촌 연기학원', '배우 포트폴리오',
+    '출연영상 제작', '캐스팅 연계', '연기 입문', '배우 훈련',
+    '이바나 처벅 테크닉', '카메라 연기', '오디션 준비',
+    'KD4', 'KD4 액팅 스튜디오', '서울 연기학원',
+  ],
+  robots: { index: true, follow: true },
+  alternates: { canonical: 'https://kd4.club' },
   metadataBase: new URL('https://kd4.club'),
   icons: {
     icon: '/favicon.ico',
   },
   openGraph: {
-    title: 'KD4 액팅 스튜디오',
-    description: '마이즈너 테크닉 기반 연기 훈련 · 포트폴리오 제작 · 캐스팅 연계. 현장에서 통하는 배우를 만듭니다.',
+    title: 'KD4 액팅 스튜디오 | 서울 신촌 마이즈너 테크닉 연기학원',
+    description: '서울 신촌 마이즈너 테크닉 기반 연기학원. 연기 훈련부터 출연영상 포트폴리오 제작, 캐스팅 연계까지.',
     url: 'https://kd4.club',
     siteName: 'KD4 액팅 스튜디오',
     images: [
@@ -69,6 +82,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
+      <head>
+        <JsonLd />
+      </head>
       <body
         className={`${notoSansKR.variable} ${notoSerifKR.variable} ${oswald.variable}`}
       >
