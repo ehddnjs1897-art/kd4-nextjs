@@ -642,7 +642,7 @@ ul, ol { list-style: none; }
 }
 
 .class-card:hover {
-  border-color: rgba(196,165,90,0.4);
+  border-color: var(--gold);
   transform: translateY(-4px);
 }
 
@@ -1700,7 +1700,7 @@ ul, ol { list-style: none; }
   transition: border-color 0.2s, transform 0.2s;
 }
 .stats-card:hover {
-  border-color: rgba(196,165,90,0.4);
+  border-color: var(--gold);
   transform: translateY(-2px);
 }
 .stats-icon-wrap {
@@ -1952,6 +1952,7 @@ main {
   display: flex;
   white-space: nowrap;
   will-change: transform;
+  width: max-content;
 }
 .hero-marquee h1 {
   font-family: 'Satoshi', var(--font-display), sans-serif;
@@ -1972,7 +1973,7 @@ main {
   100% { transform: translateX(-50%); }
 }
 .hero-marquee-inner {
-  animation: marqueeScroll 4s linear infinite;
+  animation: marqueeScroll 48s linear infinite;
 }
 
 /* ═══ HERO INTRO SECTION (카피 + CTA, Stats 위) ═══ */

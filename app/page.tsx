@@ -529,21 +529,7 @@ export default function HomePage() {
       tl.from('.hero-scroll-indicator', { opacity: 0, duration: 0.5 }, '-=0.4')
     }
 
-    /* === MARQUEE: CSS auto-scroll + 스크롤 시 추가 이동 === */
-    // CSS animation이 기본 자동 스크롤 담당
-    // GSAP ScrollTrigger는 스크롤 시 추가 xPercent 이동 (속도감 부여)
-    if (marqueeInnerRef.current) {
-      gsap.to(marqueeInnerRef.current, {
-        x: -200,
-        ease: "none",
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 0.3,
-        },
-      })
-    }
+    /* === MARQUEE: CSS animation 단독 처리 (GSAP 충돌 방지) === */
 
     /* === 스크롤 인디케이터 반복 === */
     gsap.to('.hero-scroll-indicator', {
@@ -709,9 +695,9 @@ export default function HomePage() {
         {/* 마퀴 빅네임 (하단) */}
         <div className="hero-marquee" ref={marqueeRef} style={{ zIndex: 10, paddingBottom: "clamp(40px, 8vh, 80px)" }}>
           <div className="hero-marquee-inner" ref={marqueeInnerRef}>
-            {[0, 1].map((copy) => (
+            {[0, 1, 2, 3].map((copy) => (
               <h1 key={copy}>
-                KD4 액팅 스튜디오 - KD4 액팅 스튜디오 -{" "}
+                KD4 액팅 스튜디오 -{" "}
               </h1>
             ))}
           </div>
