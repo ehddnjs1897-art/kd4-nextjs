@@ -93,7 +93,7 @@ export default function ContactForm() {
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       {/* 이름 + 연락처 */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+      <div className="contact-form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
         <div>
           <label style={labelStyle}>이름 <span style={{ color: 'var(--gold)' }}>*</span></label>
           <input style={inputStyle} type="text" placeholder="홍길동" value={form.name} onChange={set('name')} required />

@@ -1854,3 +1854,36 @@ a[role="button"]:active {
 .casting-marquee:hover .marquee-track {
   animation-play-state: paused;
 }
+
+/* ============================================================
+   UX 개선 — focus, 터치타겟, FloatingCTA 여백, 폼 반응형
+   ============================================================ */
+
+/* 입력필드 포커스 스타일 (접근성) */
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 2px rgba(0,102,255,0.15);
+}
+
+/* FloatingCTA가 하단 콘텐츠 가리지 않도록 페이지 여백 */
+main {
+  padding-bottom: 80px;
+}
+
+/* Contact 폼 모바일 1열 */
+@media (max-width: 480px) {
+  .contact-form-row {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* 필터 버튼 터치 타겟 확대 (모바일) */
+@media (max-width: 768px) {
+  .filter-section a,
+  .filter-section button {
+    min-height: 38px;
+    padding: 8px 16px !important;
+  }
+}
