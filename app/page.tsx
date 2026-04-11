@@ -871,7 +871,7 @@ export default function HomePage() {
           >
             <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", justifyContent: "center" }}>
               <span style={{ fontSize: "1.1rem" }}>🌸</span>
-              <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--gold)" }}>
+              <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "#ffffff" }}>
                 봄맞이 스페셜 — 첫 달 10만원 할인
               </span>
               <span style={{ fontSize: "0.78rem", color: "var(--gray)" }}>·</span>
