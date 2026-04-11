@@ -509,36 +509,38 @@ export default function HomePage() {
   useGSAP(() => {
     const ease = "cubic-bezier(.7, 0, .3, 1)" as any
 
-    /* === PRELOADER: 인사말 순환 → 커튼 업 === */
+    /* === PRELOADER: 인사말 순환 → 커튼 업 (빠르게) === */
     const greetings = document.querySelectorAll('.greeting-word')
     const preloader = preloaderRef.current
     if (preloader && greetings.length) {
       const tl = gsap.timeline()
       greetings.forEach((word, i) => {
-        tl.to(word, { opacity: 1, duration: 0.25, delay: i === 0 ? 0.15 : 0 })
-          .to(word, { opacity: 0, duration: 0.15, delay: 0.2 })
+        tl.to(word, { opacity: 1, duration: 0.15, delay: i === 0 ? 0.1 : 0 })
+          .to(word, { opacity: 0, duration: 0.1, delay: 0.15 })
       })
       tl.to(preloader, {
         yPercent: -100,
-        duration: 0.8,
+        duration: 0.7,
         ease: "power3.inOut",
-        delay: 0.05,
+        delay: 0.02,
       })
       // 히어로 요소 입장
       tl.from('.hero-subtitle', { y: 40, opacity: 0, duration: 0.7, ease: "power2.out" }, '-=0.3')
       tl.from('.hero-scroll-indicator', { opacity: 0, duration: 0.5 }, '-=0.4')
     }
 
-    /* === MARQUEE: 스크롤 연동 가로 이동 === */
+    /* === MARQUEE: CSS auto-scroll + 스크롤 시 추가 이동 === */
+    // CSS animation이 기본 자동 스크롤 담당
+    // GSAP ScrollTrigger는 스크롤 시 추가 xPercent 이동 (속도감 부여)
     if (marqueeInnerRef.current) {
       gsap.to(marqueeInnerRef.current, {
-        xPercent: -15,
+        x: -200,
         ease: "none",
         scrollTrigger: {
-          trigger: marqueeRef.current,
-          start: "top bottom",
+          trigger: heroRef.current,
+          start: "top top",
           end: "bottom top",
-          scrub: 0.5,
+          scrub: 0.3,
         },
       })
     }
@@ -600,12 +602,13 @@ export default function HomePage() {
       />
       {/* ── PRELOADER (Dennis Snellenberg style) ──────────────────────────── */}
       <div className="preloader" ref={preloaderRef}>
-        {["Hello", "Bonjour", "안녕하세요", "Hola", "KD4"].map((word, i) => (
+        {["Hello", "Bonjour", "안녕하세요", "Hola", "배우들의 아지트"].map((word, i) => (
           <span
             key={i}
             className="greeting-word"
             style={{
-              color: i === 4 ? "var(--gold)" : "#ffffff",
+              color: "#ffffff",
+              fontSize: i === 4 ? "clamp(1.8rem, 4vw, 3.5rem)" : undefined,
             }}
           >
             {word}
@@ -668,7 +671,7 @@ export default function HomePage() {
           <div className="hero-marquee-inner" ref={marqueeInnerRef}>
             {[0, 1].map((copy) => (
               <h1 key={copy}>
-                KD4 — ACTING STUDIO — KD4 — ACTING STUDIO —{" "}
+                KD4 액팅 스튜디오 — KD4 액팅 스튜디오 —{" "}
               </h1>
             ))}
           </div>
@@ -707,6 +710,7 @@ export default function HomePage() {
             fontFamily: "var(--font-display)",
             textTransform: "uppercase",
             marginBottom: "32px",
+            animation: "shimmerTag 6s linear infinite",
           }}
         >
           배우들의 아지트
