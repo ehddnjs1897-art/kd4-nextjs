@@ -200,14 +200,15 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             position: "absolute",
             top: "12px",
             right: "12px",
-            padding: "4px 10px",
+            padding: "6px 14px",
             background: "#e74c3c",
             color: "#fff",
-            fontSize: "0.7rem",
-            fontWeight: 700,
-            borderRadius: "4px",
-            letterSpacing: "0.03em",
-            animation: "subtlePulse 2s ease-in-out infinite",
+            fontSize: "0.85rem",
+            fontWeight: 800,
+            borderRadius: "6px",
+            letterSpacing: "0.04em",
+            animation: "subtlePulse 1.5s ease-in-out infinite",
+            boxShadow: "0 2px 12px rgba(231,76,60,0.4)",
             zIndex: 1,
           }}
         >
@@ -516,27 +517,25 @@ export default function HomePage() {
     if (preloader && greetings.length) {
       const tl = gsap.timeline()
 
-      // Phase 1: 인사말 초고속 순환 (화이트 배경 + 검은 글씨)
+      // Phase 1: 인사말 순환 (화이트 배경 + 검은 글씨)
       greetings.forEach((word, i) => {
-        tl.to(word, { opacity: 1, duration: 0.06, delay: i === 0 ? 0.05 : 0 })
-          .to(word, { opacity: 0, duration: 0.04, delay: 0.06 })
+        tl.to(word, { opacity: 1, duration: 0.08, delay: i === 0 ? 0.07 : 0 })
+          .to(word, { opacity: 0, duration: 0.06, delay: 0.08 })
       })
 
       // Phase 2: 다크 라운드 커브가 아래에서 올라오며 화이트를 덮음
       if (roundedDiv) {
         tl.to(roundedDiv, {
-          height: "120%",
-          duration: 0.8,
+          height: "130%",
+          duration: 0.7,
           ease: "power2.inOut",
         })
       }
 
-      // Phase 3: 프리로더 전체 위로 슬라이드 (다크 화면 노출)
-      tl.to(preloader, {
-        yPercent: -100,
-        duration: 0.6,
-        ease: "power3.inOut",
-      }, '-=0.2')
+      // Phase 3: 프리로더 전체 즉시 제거 (커브가 다 덮은 후)
+      tl.set(preloader, {
+        display: "none",
+      })
 
       // Phase 4: 히어로 요소 입장
       tl.from('.hero-subtitle', { y: 30, opacity: 0, duration: 0.6, ease: "power2.out" }, '-=0.2')
@@ -602,6 +601,20 @@ export default function HomePage() {
         },
       })
     })
+
+    /* === 캐스팅 마퀴: 스크롤 연동 가속 === */
+    document.querySelectorAll('.marquee-track').forEach((track) => {
+      gsap.to(track, {
+        x: -200,
+        ease: "none",
+        scrollTrigger: {
+          trigger: track.parentElement,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 0.5,
+        },
+      })
+    })
   })
 
   /* ── 기존 섹션 리빌 (IntersectionObserver) ── */
@@ -643,13 +656,7 @@ export default function HomePage() {
       {/* ── PRELOADER (Dennis Snellenberg style — 화이트 배경) ──────────── */}
       <div className="preloader" ref={preloaderRef}>
         {["Hello", "Bonjour", "안녕하세요", "Hola", "배우들의 아지트"].map((word, i) => (
-          <span
-            key={i}
-            className="greeting-word"
-            style={{
-              fontSize: i === 4 ? "clamp(1.8rem, 4vw, 3.5rem)" : undefined,
-            }}
-          >
+          <span key={i} className="greeting-word">
             {word}
           </span>
         ))}
@@ -884,12 +891,12 @@ export default function HomePage() {
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", justifyContent: "center" }}>
-              <span style={{ fontSize: "1.1rem" }}>🌸</span>
-              <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "#ffffff" }}>
+              <span style={{ fontSize: "1.4rem" }}>🌸</span>
+              <span style={{ fontSize: "1.15rem", fontWeight: 700, color: "#ffffff" }}>
                 봄맞이 스페셜 — 첫 달 10만원 할인
               </span>
-              <span style={{ fontSize: "0.78rem", color: "var(--gray)" }}>·</span>
-              <span style={{ fontSize: "0.82rem", color: "var(--gold-light)", fontWeight: 600 }}>
+              <span style={{ fontSize: "1rem", color: "var(--gray)" }}>·</span>
+              <span style={{ fontSize: "1.05rem", color: "#e74c3c", fontWeight: 700, animation: "subtlePulse 1.5s ease-in-out infinite" }}>
                 마감임박
               </span>
             </div>

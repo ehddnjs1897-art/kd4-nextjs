@@ -44,22 +44,22 @@ export default function CountdownTimer() {
 }
 
 const digitStyle: React.CSSProperties = {
-  background: 'rgba(255,255,255,0.12)',
-  border: '1px solid rgba(255,255,255,0.2)',
-  borderRadius: '4px',
-  padding: '4px 8px',
-  fontSize: '0.9rem',
-  fontWeight: 700,
+  background: 'rgba(255,255,255,0.15)',
+  border: '1px solid rgba(255,255,255,0.25)',
+  borderRadius: '6px',
+  padding: '6px 10px',
+  fontSize: '1.2rem',
+  fontWeight: 800,
   color: '#ffffff',
   letterSpacing: '0.06em',
   lineHeight: 1,
-  minWidth: '32px',
+  minWidth: '40px',
   textAlign: 'center',
 }
 
 const colonStyle: React.CSSProperties = {
-  fontSize: '0.9rem',
-  fontWeight: 700,
-  color: 'rgba(255,255,255,0.5)',
+  fontSize: '1.2rem',
+  fontWeight: 800,
+  color: 'rgba(255,255,255,0.6)',
   lineHeight: 1,
 }

@@ -1986,7 +1986,7 @@ main {
   100% { transform: translateX(-50%); }
 }
 .hero-marquee-inner {
-  animation: marqueeScroll 37s linear infinite;
+  animation: marqueeScroll 25s linear infinite;
 }
 
 /* ═══ HERO INTRO SECTION (카피 + CTA, Stats 위) ═══ */
