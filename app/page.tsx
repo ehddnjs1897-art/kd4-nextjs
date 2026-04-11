@@ -13,6 +13,49 @@ const HeroScene = dynamic(() => import("@/components/hero/HeroScene"), {
   ssr: false,
 });
 
+// ─── 후기 마퀴 데이터 ────────────────────────────────────────────────────────
+
+const REVIEW_ITEMS = [
+  { text: "연기를 다시 즐길 수 있게 되었습니다", author: "수강생 J" },
+  { text: "마이즈너 테크닉을 처음 접했습니다. 진짜 연기가 뭔지 발견했습니다", author: "수강생 H" },
+  { text: "단순한 클래스 이상의 경험, 연기에 대한 마음을 다시 채울 수 있는 소중한 시간", author: "수강생 S" },
+  { text: "형식적으로 흘러가기 쉬운데, KD4는 정말 달랐습니다", author: "수강생 M" },
+  { text: "막 시작해서 방향을 찾고 있는 분들께 꼭 추천드리고 싶습니다", author: "수강생 K" },
+]
+
+const REVIEW_ITEMS_2 = [
+  { text: "긴장 없이 연기를 순수하게 느낄 수 있었고, 그 시간이 저에게 큰 위로가 되었습니다", author: "수강생 Y" },
+  { text: "한 사람 한 사람에게 디테일한 피드백을 주신다는 점이 가장 좋았습니다", author: "수강생 L" },
+  { text: "처음 만난 분들과도 자연스럽게 이야기를 나눌 수 있었고, 서로의 경험을 공유하는 느낌", author: "수강생 P" },
+  { text: "이런 좋은 프로그램을 받을 수 있게 해주셔서 감사드립니다", author: "수강생 W" },
+  { text: "지금 이 순간, 진짜 감정에 솔직하게 느끼는 것. 그게 마이즈너의 핵심이었습니다", author: "수강생 D" },
+]
+
+const reviewCardStyle: React.CSSProperties = {
+  flex: "0 0 auto",
+  width: "340px",
+  padding: "20px 24px",
+  background: "var(--bg2)",
+  border: "1px solid var(--border)",
+  borderRadius: "10px",
+  marginRight: "12px",
+}
+
+const reviewTextStyle: React.CSSProperties = {
+  fontSize: "0.88rem",
+  color: "var(--white)",
+  lineHeight: 1.6,
+  marginBottom: "10px",
+  fontStyle: "italic",
+}
+
+const reviewAuthorStyle: React.CSSProperties = {
+  fontSize: "0.75rem",
+  color: "var(--gold)",
+  fontWeight: 600,
+  letterSpacing: "0.04em",
+}
+
 // ─── FAQ 아코디언 ──────────────────────────────────────────────────────────────
 
 const FAQ_ITEMS = [
@@ -1531,6 +1574,63 @@ export default function HomePage() {
                     </p>
                   )}
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 8.5 REVIEWS MARQUEE ─────────────────────────────────────────────── */}
+      <section
+        style={{
+          padding: "48px 0",
+          borderTop: "1px solid var(--border)",
+          background: "var(--bg)",
+          overflow: "hidden",
+        }}
+      >
+        <p
+          style={{
+            textAlign: "center",
+            fontFamily: "var(--font-display)",
+            fontSize: "0.72rem",
+            letterSpacing: "0.3em",
+            color: "var(--gold)",
+            marginBottom: "8px",
+          }}
+        >
+          REAL REVIEWS
+        </p>
+        <h2
+          style={{
+            textAlign: "center",
+            fontSize: "clamp(1.2rem, 3vw, 1.6rem)",
+            fontWeight: 700,
+            marginBottom: "32px",
+          }}
+        >
+          오픈클래스 참여 후기
+        </h2>
+
+        {/* 1행: 왼쪽으로 */}
+        <div className="review-marquee" style={{ marginBottom: "12px" }}>
+          <div className="review-marquee-track">
+            {[...REVIEW_ITEMS, ...REVIEW_ITEMS].map((r, i) => (
+              <div key={i} style={reviewCardStyle}>
+                <p style={reviewTextStyle}>&ldquo;{r.text}&rdquo;</p>
+                <p style={reviewAuthorStyle}>— {r.author}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 2행: 오른쪽으로 */}
+        <div className="review-marquee reverse">
+          <div className="review-marquee-track">
+            {[...REVIEW_ITEMS_2, ...REVIEW_ITEMS_2].map((r, i) => (
+              <div key={i} style={reviewCardStyle}>
+                <p style={reviewTextStyle}>&ldquo;{r.text}&rdquo;</p>
+                <p style={reviewAuthorStyle}>— {r.author}</p>
               </div>
             ))}
           </div>

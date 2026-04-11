@@ -1887,3 +1887,38 @@ main {
     padding: 8px 16px !important;
   }
 }
+
+/* ============================================================
+   후기 마퀴 — myclaw.ai 스타일 무한 스크롤
+   ============================================================ */
+
+.review-marquee {
+  overflow: hidden;
+  width: 100%;
+  mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+
+.review-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: reviewScroll 35s linear infinite;
+}
+
+.review-marquee.reverse .review-marquee-track {
+  animation: reviewScrollReverse 40s linear infinite;
+}
+
+.review-marquee:hover .review-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes reviewScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes reviewScrollReverse {
+  0%   { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
