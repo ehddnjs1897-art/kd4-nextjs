@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { CLASSES } from "@/lib/classes";
+import CountdownTimer from "@/components/ui/CountdownTimer";
 import { CASTING_PHOTOS } from "@/lib/casting-photos"
 import ContactForm from "@/components/contact/ContactForm";
 
@@ -683,7 +684,7 @@ export default function HomePage() {
                 animationDelay: "1.25s",
               }}
             >
-              ~ 5월까지 10만원 할인 중
+              🌸 봄맞이 스페셜 — 첫 달 10만원 할인
             </p>
 
             {/* CTA 버튼 */}
@@ -848,29 +849,32 @@ export default function HomePage() {
             </h2>
           </div>
 
-          {/* 마감 임박 + 할인 배너 */}
+          {/* 봄맞이 스페셜 이벤트 배너 + 카운트다운 */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              gap: "12px",
-              padding: "14px 24px",
+              gap: "16px",
+              padding: "16px 24px",
               marginBottom: "28px",
-              background: "rgba(231,76,60,0.08)",
+              background: "linear-gradient(135deg, rgba(231,76,60,0.1) 0%, rgba(0,102,255,0.08) 100%)",
               border: "1px solid rgba(231,76,60,0.25)",
               borderRadius: "var(--radius)",
               flexWrap: "wrap",
             }}
           >
-            <span style={{ fontSize: "1.1rem" }}>🔥</span>
-            <span style={{ fontSize: "0.88rem", fontWeight: 700, color: "#ff6b6b" }}>
-              5월 한정 즉시 수강 10만원 할인
-            </span>
-            <span style={{ fontSize: "0.78rem", color: "var(--gray)" }}>·</span>
-            <span style={{ fontSize: "0.82rem", color: "var(--gold)", fontWeight: 600 }}>
-              잔여 3자리
-            </span>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", justifyContent: "center" }}>
+              <span style={{ fontSize: "1.1rem" }}>🌸</span>
+              <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "#ff6b6b" }}>
+                봄맞이 스페셜 — 첫 달 10만원 할인
+              </span>
+              <span style={{ fontSize: "0.78rem", color: "var(--gray)" }}>·</span>
+              <span style={{ fontSize: "0.82rem", color: "#ff6b6b", fontWeight: 600 }}>
+                마감임박
+              </span>
+            </div>
+            <CountdownTimer />
           </div>
 
           {/* 반응형 그리드: 모바일 1열 / 태블릿 2열 / PC 3열 */}

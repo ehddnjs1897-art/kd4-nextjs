@@ -1,31 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
-
-/** 오늘 자정까지 남은 시간 계산 */
-function getTimeLeft() {
-  const now = new Date()
-  const midnight = new Date(now)
-  midnight.setHours(24, 0, 0, 0)
-  const diff = midnight.getTime() - now.getTime()
-  const h = Math.floor(diff / 3_600_000)
-  const m = Math.floor((diff % 3_600_000) / 60_000)
-  const s = Math.floor((diff % 60_000) / 1_000)
-  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
-}
 
 /** 배우DB · 커뮤니티 · 대본분석 · 인증 페이지에서는 CTA 표시 안 함 */
 const HIDE_ON: string[] = ['/actors', '/board', '/ai-tools', '/auth', '/dashboard', '/admin']
 
 export default function FloatingCTA() {
   const pathname = usePathname()
-  const [countdown, setCountdown] = useState(getTimeLeft())
-
-  useEffect(() => {
-    const id = setInterval(() => setCountdown(getTimeLeft()), 1_000)
-    return () => clearInterval(id)
-  }, [])
 
   const isHidden = HIDE_ON.some((prefix) => pathname.startsWith(prefix))
   if (isHidden) return null
@@ -67,7 +48,7 @@ export default function FloatingCTA() {
         <img src="/icons/kakao.png" alt="카카오톡" width={28} height={28} style={{ objectFit: 'contain' }} />
       </a>
 
-      {/* 수강신청 바 + 카운트다운 */}
+      {/* 수강신청 바 */}
       <div
         style={{
           position: 'fixed',
@@ -91,7 +72,7 @@ export default function FloatingCTA() {
             color: '#ffffff',
             fontFamily: 'var(--font-sans)',
             fontWeight: 900,
-            fontSize: 'clamp(0.72rem, 2.8vw, 0.9rem)',
+            fontSize: 'clamp(0.8rem, 3.2vw, 1rem)',
             letterSpacing: '0.01em',
             textDecoration: 'none',
             borderRadius: '14px',
@@ -109,20 +90,7 @@ export default function FloatingCTA() {
             e.currentTarget.style.transform = 'translateY(0)'
           }}
         >
-          <span style={{ fontSize: '0.9em' }}>⏱</span>
-          <span>5월 한정 10만원 할인</span>
-          <span style={{
-            fontFamily: 'var(--font-display)',
-            fontVariantNumeric: 'tabular-nums',
-            background: 'rgba(0,0,0,0.2)',
-            padding: '2px 8px',
-            borderRadius: '6px',
-            fontSize: '0.85em',
-            letterSpacing: '0.08em',
-          }}>
-            {countdown}
-          </span>
-          <span>→ 수강신청</span>
+          지금 신청하면 10만원 즉시 할인 → 수강신청하기
         </a>
       </div>
     </>

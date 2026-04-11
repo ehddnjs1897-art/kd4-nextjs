@@ -54,7 +54,7 @@ export const CLASSES: ClassItem[] = [
     course: "4개월 코스",
     price: "250,000",
     originalPrice: "350,000",
-    promoLabel: "5월 한정 10만원 할인",
+    promoLabel: "🌸 봄맞이 스페셜 · 첫 달 10만원 할인",
     remainingSeats: 3,
     instructor: "권동원 대표",
     highlight: true
@@ -77,7 +77,7 @@ export const CLASSES: ClassItem[] = [
     course: "3개월 코스",
     price: "300,000",
     originalPrice: "400,000",
-    promoLabel: "5월 한정 10만원 할인",
+    promoLabel: "🌸 봄맞이 스페셜 · 첫 달 10만원 할인",
     remainingSeats: 2,
     highlight: true
   },
