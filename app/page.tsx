@@ -509,34 +509,38 @@ export default function HomePage() {
   useGSAP(() => {
     const ease = "cubic-bezier(.7, 0, .3, 1)" as any
 
-    /* === PRELOADER: 인사말 순환 → 라운드 커브 트랜지션 (Dennis 스타일) === */
+    /* === PRELOADER: Dennis Snellenberg 스타일 트랜지션 === */
     const greetings = document.querySelectorAll('.greeting-word')
     const preloader = preloaderRef.current
     const roundedDiv = preloader?.querySelector('.rounded-div') as HTMLElement
     if (preloader && greetings.length) {
       const tl = gsap.timeline()
-      // 인사말 빠르게 순환
+
+      // Phase 1: 인사말 초고속 순환 (화이트 배경 + 검은 글씨)
       greetings.forEach((word, i) => {
-        tl.to(word, { opacity: 1, duration: 0.12, delay: i === 0 ? 0.1 : 0 })
-          .to(word, { opacity: 0, duration: 0.08, delay: 0.12 })
+        tl.to(word, { opacity: 1, duration: 0.06, delay: i === 0 ? 0.05 : 0 })
+          .to(word, { opacity: 0, duration: 0.04, delay: 0.06 })
       })
-      // 라운드 커브가 먼저 올라오고
+
+      // Phase 2: 다크 라운드 커브가 아래에서 올라오며 화이트를 덮음
       if (roundedDiv) {
         tl.to(roundedDiv, {
-          height: "150%",
-          duration: 0.6,
+          height: "120%",
+          duration: 0.8,
           ease: "power2.inOut",
-        }, '-=0.1')
+        })
       }
-      // 프리로더 전체가 위로 슬라이드
+
+      // Phase 3: 프리로더 전체 위로 슬라이드 (다크 화면 노출)
       tl.to(preloader, {
         yPercent: -100,
-        duration: 0.7,
+        duration: 0.6,
         ease: "power3.inOut",
-      }, '-=0.3')
-      // 히어로 요소 입장
-      tl.from('.hero-subtitle', { y: 40, opacity: 0, duration: 0.7, ease: "power2.out" }, '-=0.3')
-      tl.from('.hero-scroll-indicator', { opacity: 0, duration: 0.5 }, '-=0.4')
+      }, '-=0.2')
+
+      // Phase 4: 히어로 요소 입장
+      tl.from('.hero-subtitle', { y: 30, opacity: 0, duration: 0.6, ease: "power2.out" }, '-=0.2')
+      tl.from('.hero-scroll-indicator', { opacity: 0, duration: 0.4 }, '-=0.3')
     }
 
     /* === MARQUEE: CSS animation 단독 처리 (GSAP 충돌 방지) === */
