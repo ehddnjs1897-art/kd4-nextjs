@@ -39,30 +39,26 @@ const reviewCardStyle: React.CSSProperties = {
   border: "1px solid var(--border)",
   borderRadius: "12px",
   marginRight: "14px",
-  display: "flex",
-  gap: "16px",
-  alignItems: "flex-start",
 }
 
 const reviewEmojiStyle: React.CSSProperties = {
-  fontSize: "2.2rem",
+  fontSize: "3rem",
   lineHeight: 1,
-  flexShrink: 0,
+  display: "block",
+  marginBottom: "14px",
 }
 
 const reviewTextStyle: React.CSSProperties = {
   fontSize: "0.88rem",
   color: "var(--white)",
-  lineHeight: 1.6,
-  marginBottom: "8px",
-  fontStyle: "italic",
+  lineHeight: 1.7,
+  marginBottom: "14px",
 }
 
 const reviewAuthorStyle: React.CSSProperties = {
-  fontSize: "0.75rem",
-  color: "var(--gold)",
-  fontWeight: 600,
-  letterSpacing: "0.04em",
+  fontSize: "0.78rem",
+  color: "var(--gray)",
+  letterSpacing: "0.02em",
 }
 
 // ─── FAQ 아코디언 ──────────────────────────────────────────────────────────────
@@ -421,7 +417,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             {cls.promoLabel && (
               <p style={{
                 fontSize: "0.7rem",
-                color: "#e74c3c",
+                color: "var(--gold)",
                 fontWeight: 600,
                 marginTop: "4px",
               }}>
@@ -725,12 +721,12 @@ export default function HomePage() {
               style={{
                 display: "inline-block",
                 padding: "6px 16px",
-                background: "rgba(231,76,60,0.12)",
-                border: "1px solid rgba(231,76,60,0.3)",
+                background: "rgba(0,102,255,0.1)",
+                border: "1px solid var(--gold)",
                 borderRadius: "20px",
                 fontSize: "0.78rem",
                 fontWeight: 600,
-                color: "#ff6b6b",
+                color: "var(--gold)",
                 marginBottom: "20px",
                 animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
                 animationDelay: "1.25s",
@@ -910,19 +906,19 @@ export default function HomePage() {
               gap: "16px",
               padding: "16px 24px",
               marginBottom: "28px",
-              background: "linear-gradient(135deg, rgba(231,76,60,0.1) 0%, rgba(0,102,255,0.08) 100%)",
-              border: "1px solid rgba(231,76,60,0.25)",
+              background: "rgba(0,102,255,0.06)",
+              border: "1px solid rgba(0,102,255,0.25)",
               borderRadius: "var(--radius)",
               flexWrap: "wrap",
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", justifyContent: "center" }}>
               <span style={{ fontSize: "1.1rem" }}>🌸</span>
-              <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "#ff6b6b" }}>
+              <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--gold)" }}>
                 봄맞이 스페셜 — 첫 달 10만원 할인
               </span>
               <span style={{ fontSize: "0.78rem", color: "var(--gray)" }}>·</span>
-              <span style={{ fontSize: "0.82rem", color: "#ff6b6b", fontWeight: 600 }}>
+              <span style={{ fontSize: "0.82rem", color: "var(--gold-light)", fontWeight: 600 }}>
                 마감임박
               </span>
             </div>
@@ -1665,10 +1661,7 @@ export default function HomePage() {
             {[...REVIEW_ITEMS, ...REVIEW_ITEMS].map((r, i) => (
               <div key={i} style={reviewCardStyle}>
                 <span style={reviewEmojiStyle}>{r.emoji}</span>
-                <div>
-                  <p style={reviewTextStyle}>&ldquo;{r.text}&rdquo;</p>
-                  <p style={reviewAuthorStyle}>{r.author}</p>
-                </div>
+                <p style={reviewTextStyle}>&ldquo;{r.text}&rdquo; <span style={reviewAuthorStyle}>— {r.author}</span></p>
               </div>
             ))}
           </div>
@@ -1680,10 +1673,7 @@ export default function HomePage() {
             {[...REVIEW_ITEMS_2, ...REVIEW_ITEMS_2].map((r, i) => (
               <div key={i} style={reviewCardStyle}>
                 <span style={reviewEmojiStyle}>{r.emoji}</span>
-                <div>
-                  <p style={reviewTextStyle}>&ldquo;{r.text}&rdquo;</p>
-                  <p style={reviewAuthorStyle}>{r.author}</p>
-                </div>
+                <p style={reviewTextStyle}>&ldquo;{r.text}&rdquo; <span style={reviewAuthorStyle}>— {r.author}</span></p>
               </div>
             ))}
           </div>
