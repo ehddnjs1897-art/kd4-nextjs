@@ -162,15 +162,14 @@ export default function AboutPage() {
 
         {/* YouTube 임베드 — 자동재생, 음소거, 루프 */}
         <div style={{
-          marginTop: '40px',
-          borderRadius: '10px',
+          marginTop: '48px',
+          borderRadius: '4px',
           overflow: 'hidden',
-          aspectRatio: '16/9',
-          width: '100%',
-          maxWidth: '900px',
-          margin: '40px auto 0',
+          aspectRatio: '21/9',
+          width: '100vw',
+          maxWidth: '100vw',
+          marginLeft: 'calc(-50vw + 50%)',
           background: '#000',
-          border: '1px solid var(--border)',
         }}>
           <iframe
             src="https://www.youtube.com/embed/tB7f4VnC6rM?autoplay=1&mute=1&loop=1&playlist=tB7f4VnC6rM&controls=1&rel=0&modestbranding=1"
