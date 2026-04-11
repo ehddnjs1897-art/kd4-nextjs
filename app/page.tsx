@@ -16,36 +16,45 @@ const HeroScene = dynamic(() => import("@/components/hero/HeroScene"), {
 // ─── 후기 마퀴 데이터 ────────────────────────────────────────────────────────
 
 const REVIEW_ITEMS = [
-  { text: "연기를 다시 즐길 수 있게 되었습니다", author: "조*솔", emoji: "🥹" },
-  { text: "마이즈너 테크닉을 처음 접했습니다. 진짜 연기가 뭔지 발견했습니다", author: "김*현", emoji: "🔥" },
-  { text: "단순한 클래스 이상의 경험, 연기에 대한 마음을 다시 채울 수 있는 소중한 시간", author: "이*정", emoji: "✨" },
-  { text: "형식적으로 흘러가기 쉬운데, KD4는 정말 달랐습니다", author: "박*우", emoji: "💯" },
-  { text: "막 시작해서 방향을 찾고 있는 분들께 꼭 추천드리고 싶습니다", author: "최*민", emoji: "👏" },
+  { text: "연기를 다시 즐길 수 있게 되었습니다", author: "조*솔", emoji: "😊" },
+  { text: "마이즈너 테크닉을 처음 접했습니다. 진짜 연기가 뭔지 발견했습니다", author: "김*현", emoji: "😲" },
+  { text: "단순한 클래스 이상의 경험, 연기에 대한 마음을 다시 채울 수 있는 소중한 시간", author: "이*정", emoji: "🥹" },
+  { text: "형식적으로 흘러가기 쉬운데, KD4는 정말 달랐습니다", author: "박*우", emoji: "😤" },
+  { text: "막 시작해서 방향을 찾고 있는 분들께 꼭 추천드리고 싶습니다", author: "최*민", emoji: "😄" },
 ]
 
 const REVIEW_ITEMS_2 = [
-  { text: "긴장 없이 연기를 순수하게 느낄 수 있었고, 그 시간이 저에게 큰 위로가 되었습니다", author: "한*아", emoji: "🌸" },
-  { text: "한 사람 한 사람에게 디테일한 피드백을 주신다는 점이 가장 좋았습니다", author: "정*석", emoji: "🎯" },
-  { text: "처음 만난 분들과도 자연스럽게 이야기를 나눌 수 있었고, 서로의 경험을 공유하는 느낌", author: "김*안", emoji: "🤝" },
-  { text: "이런 좋은 프로그램을 받을 수 있게 해주셔서 감사드립니다", author: "윤*호", emoji: "🙏" },
-  { text: "지금 이 순간, 진짜 감정에 솔직하게 느끼는 것. 그게 마이즈너의 핵심이었습니다", author: "서*린", emoji: "🎭" },
+  { text: "긴장 없이 연기를 순수하게 느낄 수 있었고, 그 시간이 저에게 큰 위로가 되었습니다", author: "한*아", emoji: "😌" },
+  { text: "한 사람 한 사람에게 디테일한 피드백을 주신다는 점이 가장 좋았습니다", author: "정*석", emoji: "😍" },
+  { text: "처음 만난 분들과도 자연스럽게 이야기를 나눌 수 있었고, 서로의 경험을 공유하는 느낌", author: "김*안", emoji: "🤗" },
+  { text: "이런 좋은 프로그램을 받을 수 있게 해주셔서 감사드립니다", author: "윤*호", emoji: "😭" },
+  { text: "지금 이 순간, 진짜 감정에 솔직하게 느끼는 것. 그게 마이즈너의 핵심이었습니다", author: "서*린", emoji: "🥺" },
 ]
 
 const reviewCardStyle: React.CSSProperties = {
   flex: "0 0 auto",
-  width: "340px",
-  padding: "20px 24px",
+  width: "360px",
+  padding: "24px 28px",
   background: "var(--bg2)",
   border: "1px solid var(--border)",
-  borderRadius: "10px",
-  marginRight: "12px",
+  borderRadius: "12px",
+  marginRight: "14px",
+  display: "flex",
+  gap: "16px",
+  alignItems: "flex-start",
+}
+
+const reviewEmojiStyle: React.CSSProperties = {
+  fontSize: "2.2rem",
+  lineHeight: 1,
+  flexShrink: 0,
 }
 
 const reviewTextStyle: React.CSSProperties = {
   fontSize: "0.88rem",
   color: "var(--white)",
   lineHeight: 1.6,
-  marginBottom: "10px",
+  marginBottom: "8px",
   fontStyle: "italic",
 }
 
@@ -1655,9 +1664,9 @@ export default function HomePage() {
           <div className="review-marquee-track">
             {[...REVIEW_ITEMS, ...REVIEW_ITEMS].map((r, i) => (
               <div key={i} style={reviewCardStyle}>
-                <p style={reviewTextStyle}>&ldquo;{r.text}&rdquo;</p>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <span style={{ fontSize: "1.4rem" }}>{r.emoji}</span>
+                <span style={reviewEmojiStyle}>{r.emoji}</span>
+                <div>
+                  <p style={reviewTextStyle}>&ldquo;{r.text}&rdquo;</p>
                   <p style={reviewAuthorStyle}>{r.author}</p>
                 </div>
               </div>
@@ -1670,9 +1679,9 @@ export default function HomePage() {
           <div className="review-marquee-track">
             {[...REVIEW_ITEMS_2, ...REVIEW_ITEMS_2].map((r, i) => (
               <div key={i} style={reviewCardStyle}>
-                <p style={reviewTextStyle}>&ldquo;{r.text}&rdquo;</p>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <span style={{ fontSize: "1.4rem" }}>{r.emoji}</span>
+                <span style={reviewEmojiStyle}>{r.emoji}</span>
+                <div>
+                  <p style={reviewTextStyle}>&ldquo;{r.text}&rdquo;</p>
                   <p style={reviewAuthorStyle}>{r.author}</p>
                 </div>
               </div>
