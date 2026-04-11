@@ -139,6 +139,28 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
         />
       )}
 
+      {/* 잔여석 뱃지 */}
+      {cls.remainingSeats != null && (
+        <span
+          style={{
+            position: "absolute",
+            top: "12px",
+            right: "12px",
+            padding: "4px 10px",
+            background: "#e74c3c",
+            color: "#fff",
+            fontSize: "0.7rem",
+            fontWeight: 700,
+            borderRadius: "4px",
+            letterSpacing: "0.03em",
+            animation: "subtlePulse 2s ease-in-out infinite",
+            zIndex: 1,
+          }}
+        >
+          잔여 {cls.remainingSeats}석
+        </span>
+      )}
+
       <div style={{ padding: "28px 24px 24px", flex: 1 }}>
         {/* step 뱃지 */}
         <span
@@ -305,13 +327,34 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
         >
           <div>
             <span style={{ fontSize: "0.65rem", color: "var(--gray)", letterSpacing: "0.06em" }}>월 수강료</span>
-            <p style={{ display: "flex", alignItems: "baseline", gap: "2px", marginTop: "2px" }}>
+
+            {/* 할인 전 원가 (취소선) */}
+            {cls.originalPrice && (
+              <p style={{ margin: "4px 0 0", lineHeight: 1 }}>
+                <span style={{ fontSize: "0.78rem", color: "var(--gray)", textDecoration: "line-through" }}>
+                  ₩{cls.originalPrice}
+                </span>
+                <span style={{
+                  marginLeft: "8px",
+                  fontSize: "0.68rem",
+                  fontWeight: 700,
+                  color: "#e74c3c",
+                  padding: "2px 6px",
+                  background: "rgba(231,76,60,0.12)",
+                  borderRadius: "3px",
+                }}>
+                  -10만원
+                </span>
+              </p>
+            )}
+
+            <p style={{ display: "flex", alignItems: "baseline", gap: "2px", marginTop: cls.originalPrice ? "2px" : "2px" }}>
               <span
                 style={{
                   fontFamily: "var(--font-display)",
                   fontSize: "clamp(1.8rem, 4vw, 2.2rem)",
                   fontWeight: 900,
-                  color: "var(--white)",
+                  color: cls.originalPrice ? "#4ade80" : "var(--white)",
                   lineHeight: 1,
                   letterSpacing: "-0.02em",
                 }}
@@ -320,6 +363,18 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
               </span>
               <span style={{ fontSize: "0.7rem", color: "var(--gray)", marginLeft: "2px" }}>/월</span>
             </p>
+
+            {/* 프로모션 라벨 */}
+            {cls.promoLabel && (
+              <p style={{
+                fontSize: "0.7rem",
+                color: "#e74c3c",
+                fontWeight: 600,
+                marginTop: "4px",
+              }}>
+                {cls.promoLabel}
+              </p>
+            )}
           </div>
           {cls.instructor && (
             <span
@@ -597,6 +652,25 @@ export default function HomePage() {
               <span style={{ display: "block", width: "36px", height: "1px", background: "var(--gold)" }} />
             </div>
 
+            {/* 할인 뱃지 */}
+            <p
+              style={{
+                display: "inline-block",
+                padding: "6px 16px",
+                background: "rgba(231,76,60,0.12)",
+                border: "1px solid rgba(231,76,60,0.3)",
+                borderRadius: "20px",
+                fontSize: "0.78rem",
+                fontWeight: 600,
+                color: "#ff6b6b",
+                marginBottom: "20px",
+                animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
+                animationDelay: "1.25s",
+              }}
+            >
+              ~ 5월까지 10만원 할인 중
+            </p>
+
             {/* CTA 버튼 */}
             <div
               style={{
@@ -757,6 +831,31 @@ export default function HomePage() {
             <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700 }}>
               클래스
             </h2>
+          </div>
+
+          {/* 마감 임박 + 할인 배너 */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "12px",
+              padding: "14px 24px",
+              marginBottom: "28px",
+              background: "rgba(231,76,60,0.08)",
+              border: "1px solid rgba(231,76,60,0.25)",
+              borderRadius: "var(--radius)",
+              flexWrap: "wrap",
+            }}
+          >
+            <span style={{ fontSize: "1.1rem" }}>🔥</span>
+            <span style={{ fontSize: "0.88rem", fontWeight: 700, color: "#ff6b6b" }}>
+              5월 한정 즉시 수강 10만원 할인
+            </span>
+            <span style={{ fontSize: "0.78rem", color: "var(--gray)" }}>·</span>
+            <span style={{ fontSize: "0.82rem", color: "var(--gold)", fontWeight: 600 }}>
+              잔여 3자리
+            </span>
           </div>
 
           {/* 반응형 그리드: 모바일 1열 / 태블릿 2열 / PC 3열 */}

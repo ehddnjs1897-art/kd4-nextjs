@@ -11,6 +11,9 @@ export interface ClassItem {
   capacity: string;
   course?: string;
   price: string;
+  originalPrice?: string;       // 할인 전 원가 (할인 중일 때만)
+  promoLabel?: string;           // "5월 한정 10만원 할인" 등
+  remainingSeats?: number;       // 잔여석 뱃지 (null이면 표시 안 함)
   instructor?: string;
   highlight?: boolean;
 }
@@ -49,7 +52,10 @@ export const CLASSES: ClassItem[] = [
     duration: "4시간",
     capacity: "8명",
     course: "4개월 코스",
-    price: "350,000",
+    price: "250,000",
+    originalPrice: "350,000",
+    promoLabel: "5월 한정 10만원 할인",
+    remainingSeats: 3,
     instructor: "권동원 대표",
     highlight: true
   },
@@ -69,7 +75,10 @@ export const CLASSES: ClassItem[] = [
     duration: "4시간",
     capacity: "6명",
     course: "3개월 코스",
-    price: "400,000",
+    price: "300,000",
+    originalPrice: "400,000",
+    promoLabel: "5월 한정 10만원 할인",
+    remainingSeats: 2,
     highlight: true
   },
   {
