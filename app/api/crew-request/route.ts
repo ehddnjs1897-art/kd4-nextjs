@@ -1,11 +1,11 @@
 /**
  * POST /api/crew-request
- * 로그인한 회원이 KD4 크루 접근 신청 → role을 'crew_pending'으로 변경
- * 이미 crew/crew_pending/editor/admin인 경우 무시
+ * 로그인한 회원이 KD4 크루 접근 신청 → role을 'crew_pending'으로 변경 + 관리자 이메일 발송
  */
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
+import { notifyCrewRequest } from '@/lib/email'
 
 export async function POST() {
   const supabase = await createClient()
@@ -15,12 +15,12 @@ export async function POST() {
     return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   }
 
-  // 현재 역할 확인
+  // 현재 역할 + 이름 조회
   const { data: profile, error: profileErr } = await supabase
     .from('profiles')
-    .select('role')
+    .select('role, name')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
 
   if (profileErr || !profile) {
     return NextResponse.json({ error: '프로필을 찾을 수 없습니다.' }, { status: 404 })
@@ -46,6 +46,11 @@ export async function POST() {
     console.error('[POST /api/crew-request] 업데이트 오류:', updateErr.message)
     return NextResponse.json({ error: '신청 처리 중 오류가 발생했습니다.' }, { status: 500 })
   }
+
+  // 관리자에게 이메일 알림 (실패해도 신청은 완료)
+  const applicantName = profile.name ?? user.email?.split('@')[0] ?? '(이름 없음)'
+  const applicantEmail = user.email ?? '(이메일 없음)'
+  notifyCrewRequest(applicantName, applicantEmail, user.id).catch(console.error)
 
   return NextResponse.json({ success: true, role: 'crew_pending' })
 }

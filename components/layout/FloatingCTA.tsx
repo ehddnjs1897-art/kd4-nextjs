@@ -69,27 +69,25 @@ export default function FloatingCTA() {
             justifyContent: 'center',
             gap: '8px',
             height: '48px',
-            background: '#4A7FFF',
+            background: 'var(--gold)',
             color: '#ffffff',
             fontFamily: 'var(--font-sans)',
-            fontWeight: 700,
-            fontSize: 'clamp(0.68rem, 2.9vw, 0.9rem)',
+            fontWeight: 900,
+            fontSize: 'clamp(0.8rem, 3.2vw, 1rem)',
             letterSpacing: '0.01em',
             textDecoration: 'none',
             borderRadius: '14px',
-            boxShadow: '0 4px 20px rgba(74,127,255,0.45)',
-            transition: 'background 0.2s, transform 0.15s, box-shadow 0.2s',
+            boxShadow: '0 4px 20px rgba(0,87,255,0.45)',
+            transition: 'opacity 0.2s, transform 0.15s',
             whiteSpace: 'nowrap',
           }}
           onMouseEnter={e => {
-            e.currentTarget.style.background = '#3A6FEF'
+            e.currentTarget.style.opacity = '0.88'
             e.currentTarget.style.transform = 'translateY(-1px)'
-            e.currentTarget.style.boxShadow = '0 6px 24px rgba(74,127,255,0.55)'
           }}
           onMouseLeave={e => {
-            e.currentTarget.style.background = '#4A7FFF'
+            e.currentTarget.style.opacity = '1'
             e.currentTarget.style.transform = 'translateY(0)'
-            e.currentTarget.style.boxShadow = '0 4px 20px rgba(74,127,255,0.45)'
           }}
         >
           지금 신청하면 10만원 즉시 할인 → 수강신청하기

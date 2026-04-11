@@ -212,7 +212,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
               color: "var(--gold)",
               marginBottom: "16px",
               padding: "6px 10px",
-              background: "rgba(59,91,219,0.08)",
+              background: "rgba(0,87,255,0.08)",
               borderRadius: "2px",
               borderLeft: "2px solid var(--gold)",
             }}
@@ -381,6 +381,7 @@ export default function HomePage() {
 
         {/* 우상단 인증 뱃지 */}
         <div
+          className="hero-badge-wrap"
           style={{
             position: "absolute",
             top: "88px",
@@ -391,6 +392,7 @@ export default function HomePage() {
           }}
         >
           <div
+            className="badge-inner"
             style={{
               display: "flex",
               flexDirection: "column",
@@ -405,8 +407,9 @@ export default function HomePage() {
               boxShadow: "0 0 20px rgba(255,255,255,0.08), inset 0 1px 0 rgba(255,255,255,0.15)",
             }}
           >
-            <span style={{ fontSize: "1.4rem", lineHeight: 1 }}>🏆</span>
+            <span className="badge-emoji" style={{ fontSize: "1.4rem", lineHeight: 1 }}>🏆</span>
             <span
+              className="badge-title"
               style={{
                 fontFamily: "var(--font-sans)",
                 fontSize: "0.82rem",
@@ -419,6 +422,7 @@ export default function HomePage() {
               신촌 대표 액팅 스쿨
             </span>
             <span
+              className="badge-sub"
               style={{
                 fontFamily: "var(--font-sans)",
                 fontSize: "0.6rem",
@@ -468,7 +472,7 @@ export default function HomePage() {
                 color: "var(--gold)",
                 textTransform: "uppercase",
                 marginBottom: "20px",
-                textShadow: "0 0 30px rgba(59,91,219,0.8)",
+                textShadow: "0 0 30px rgba(0,87,255,0.8)",
                 animation: "heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both",
                 animationDelay: "0.2s",
               }}
@@ -623,7 +627,7 @@ export default function HomePage() {
               padding: "20px 24px",
               display: "flex",
               justifyContent: "center",
-              borderTop: "1px solid rgba(59,91,219,0.25)",
+              borderTop: "1px solid rgba(0,87,255,0.25)",
               background: "rgba(0,0,0,0.3)",
               backdropFilter: "blur(4px)",
             }}
@@ -754,27 +758,28 @@ export default function HomePage() {
                 {
                   num: "01",
                   step: "STEP 01",
-                  title: "아메리칸 액팅\n메소드 트레이닝",
+                  title: "연기 메소드 훈련",
                   desc: "마이즈너 테크닉 · 이바나 처벅 테크닉 기반의 심층 연기 훈련",
                   icon: "🎭",
                 },
                 {
                   num: "02",
                   step: "STEP 02",
-                  title: "포트폴리오\n제작",
+                  title: "포트폴리오 제작",
                   desc: "전문 영화팀과 함께 제작하는 출연영상으로 실전 포트폴리오 완성",
                   icon: "🎬",
                 },
                 {
                   num: "03",
                   step: "STEP 03",
-                  title: "캐스팅\n연계",
+                  title: "캐스팅 연계",
                   desc: "캐스팅 디렉터·조감독과 직접 연결되는 실전 캐스팅 지원",
                   icon: "🌟",
                 },
               ].map((s, i) => (
                 <div key={s.num} style={{ display: 'contents' }}>
                   <div
+                    className="step-card"
                     style={{
                       position: "relative",
                       background: "var(--bg3)",
@@ -795,7 +800,7 @@ export default function HomePage() {
                         fontFamily: "var(--font-display)",
                         fontSize: "5.5rem",
                         fontWeight: 700,
-                        color: "rgba(59,91,219,0.07)",
+                        color: "rgba(0,87,255,0.07)",
                         lineHeight: 1,
                         userSelect: "none",
                         pointerEvents: "none",
@@ -930,7 +935,7 @@ export default function HomePage() {
                   {[
                     "프로 배우 400명+ 액팅 코칭",
                     "유익액터스 대표",
-                    "영화 경쟁선 제작·주연",
+                    "영화 경계선 제작·주연",
                     "K-웹드라마 어워드 연기상 수상",
                     "LG 크리에이터 특별상",
                     "Youtube 2000만뷰+",
@@ -1446,7 +1451,7 @@ export default function HomePage() {
         style={{
           padding: "120px 24px",
           background:
-            "radial-gradient(ellipse at center, rgba(59,91,219,0.08) 0%, var(--bg) 70%)",
+            "radial-gradient(ellipse at center, rgba(0,87,255,0.08) 0%, var(--bg) 70%)",
           borderTop: "1px solid var(--border)",
           textAlign: "center",
         }}
@@ -1505,8 +1510,8 @@ export default function HomePage() {
                 padding: "18px 52px",
                 background: "var(--gold)",
                 color: "#0a0a0a",
-                fontWeight: 700,
-                fontSize: "1rem",
+                fontWeight: 900,
+                fontSize: "1.15rem",
                 letterSpacing: "0.08em",
                 borderRadius: "var(--radius)",
               }}
@@ -1522,8 +1527,8 @@ export default function HomePage() {
                 padding: "18px 52px",
                 border: "1px solid var(--gold)",
                 color: "var(--gold)",
-                fontWeight: 600,
-                fontSize: "1rem",
+                fontWeight: 900,
+                fontSize: "1.15rem",
                 letterSpacing: "0.08em",
                 borderRadius: "var(--radius)",
               }}
@@ -1536,37 +1541,39 @@ export default function HomePage() {
           <div
             style={{
               display: "flex",
-              gap: "24px",
+              gap: "16px 24px",
               justifyContent: "center",
               flexWrap: "wrap",
             }}
           >
-            <a
-              href="tel:010-8564-0244"
-              style={{
-                fontSize: "0.82rem",
-                color: "var(--gray)",
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-              }}
-            >
-              <span style={{ color: "var(--gold)" }}>전화</span>
-              010-8564-0244
-            </a>
-            <a
-              href="mailto:uikactors@gmail.com"
-              style={{
-                fontSize: "0.82rem",
-                color: "var(--gray)",
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-              }}
-            >
-              <span style={{ color: "var(--gold)" }}>이메일</span>
-              uikactors@gmail.com
-            </a>
+            {[
+              { label: "전화", text: "010-8564-0244", href: "tel:010-8564-0244" },
+              { label: "이메일", text: "uikactors@gmail.com", href: "mailto:uikactors@gmail.com" },
+              { label: "인스타", text: "@kd4actingstudio", href: "https://www.instagram.com/kd4actingstudio" },
+              { label: "카카오", text: "KD4 채널", href: "https://pf.kakao.com/_ximxdqn" },
+              { label: "블로그", text: "네이버 블로그", href: "https://blog.naver.com/kd4actingstudio" },
+              { label: "유튜브", text: "YouTube", href: "https://www.youtube.com/@kd4actingstudio" },
+            ].map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                target={item.href.startsWith("http") ? "_blank" : undefined}
+                rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                style={{
+                  fontSize: "0.82rem",
+                  color: "var(--gray)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  transition: "color 0.2s",
+                }}
+                onMouseEnter={e => (e.currentTarget.style.color = "var(--gold)")}
+                onMouseLeave={e => (e.currentTarget.style.color = "var(--gray)")}
+              >
+                <span style={{ color: "var(--gold)", fontSize: "0.72rem", letterSpacing: "0.05em" }}>{item.label}</span>
+                {item.text}
+              </a>
+            ))}
           </div>
         </div>
       </section>

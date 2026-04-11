@@ -395,11 +395,12 @@ export default function Navbar() {
             background: 'rgba(10, 10, 10, 0.99)',
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
+            overflowY: 'auto',
+            paddingTop: '72px',
+            paddingBottom: '32px',
           }}
         >
-          <nav style={{ width: '100%', padding: '0 32px' }}>
+          <nav style={{ width: '100%', padding: '0 32px', flex: 1 }}>
             <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
               {/* 공개 링크 */}
               {publicLinks.map(link => (
@@ -494,27 +495,48 @@ export default function Navbar() {
               )}
             </ul>
 
-            <a
-              href="https://forms.gle/68E7yFFFoDiPCRwD9"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={closeMobile}
-              style={{
-                display: 'block',
-                marginTop: '32px',
-                padding: '16px',
-                background: 'var(--gold)',
-                color: '#0a0a0a',
-                fontFamily: 'var(--font-sans)',
-                fontSize: '1rem',
-                fontWeight: 700,
-                borderRadius: 'var(--radius)',
-                textAlign: 'center',
-                letterSpacing: '0.08em',
-              }}
-            >
-              수강신청
-            </a>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '32px' }}>
+              <a
+                href="https://forms.gle/68E7yFFFoDiPCRwD9"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={closeMobile}
+                style={{
+                  display: 'block',
+                  padding: '16px',
+                  background: 'var(--gold)',
+                  color: '#0a0a0a',
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '1rem',
+                  fontWeight: 700,
+                  borderRadius: 'var(--radius)',
+                  textAlign: 'center',
+                  letterSpacing: '0.08em',
+                }}
+              >
+                수강신청 하기
+              </a>
+              <a
+                href="https://pf.kakao.com/_ximxdqn"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={closeMobile}
+                style={{
+                  display: 'block',
+                  padding: '15px',
+                  background: '#FEE500',
+                  color: '#191919',
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '1.1rem',
+                  fontWeight: 900,
+                  borderRadius: 'var(--radius)',
+                  textAlign: 'center',
+                  letterSpacing: '0.06em',
+                }}
+              >
+                카카오로 문의하기
+              </a>
+            </div>
           </nav>
         </div>
       )}

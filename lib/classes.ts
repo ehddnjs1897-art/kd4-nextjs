@@ -24,7 +24,6 @@ export const CLASSES: ClassItem[] = [
     subtitle: "감정 해방 / 연기 입문",
     note: "연기 경험 없어도 OK · 취미 참여 환영",
     bullets: [
-      "마이즈너 테크닉 기초 / 이바나 처벅 테크닉 입문",
       "감정 해방 훈련 / 충동·본능 회복",
       "독백 / 장면연기",
       "소수정예"
@@ -103,11 +102,10 @@ export const CLASSES: ClassItem[] = [
       "시나리오 전달",
       "현장 촬영"
     ],
-    schedule: "1개월",
+    schedule: "상시",
     duration: "영상 제작 전용",
     capacity: "소수정예",
-    course: "1개월",
-    price: "문의"
+    price: "400,000"
   },
   {
     step: "STEP 3",
