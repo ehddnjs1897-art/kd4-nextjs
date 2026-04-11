@@ -306,3 +306,52 @@ CREATE POLICY "actor_photos_own_delete" ON storage.objects
     bucket_id = 'actor-photos'
     AND auth.uid() IS NOT NULL
   );
+
+-- ============================================
+-- 10. GAME_SCORES (OFF THE PLASTIC 게임)
+-- ============================================
+CREATE TABLE IF NOT EXISTS game_scores (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  score INT NOT NULL CHECK (score >= 0),
+  duration_ms INT NOT NULL CHECK (duration_ms > 0),
+  stage INT DEFAULT 1,
+  items_collected INT DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_game_scores_score ON game_scores(score DESC);
+CREATE INDEX idx_game_scores_weekly ON game_scores(created_at, score DESC);
+
+ALTER TABLE game_scores ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "game_scores_public_read" ON game_scores
+  FOR SELECT USING (TRUE);
+
+CREATE POLICY "game_scores_auth_insert" ON game_scores
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+-- ============================================
+-- 11. GAME_PRIZES (게임 상품)
+-- ============================================
+CREATE TABLE IF NOT EXISTS game_prizes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  period_start DATE NOT NULL,
+  period_type TEXT CHECK (period_type IN ('weekly', 'monthly')),
+  rank INT NOT NULL,
+  prize_type TEXT NOT NULL,
+  prize_description TEXT,
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'claimed', 'delivered')),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE game_prizes ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "game_prizes_public_read" ON game_prizes
+  FOR SELECT USING (TRUE);
+
+CREATE POLICY "game_prizes_admin_write" ON game_prizes
+  FOR ALL USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
