@@ -1,7 +1,7 @@
 // KD4 캐스팅현황 사진 목록
 // Supabase Storage: casting 버킷 사용
 
-const BASE = 'https://qudyncopszvcbnwgrwbd.supabase.co/storage/v1/object/public/casting'
+const BASE = `${process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'https://qudyncopszvcbnwgrwbd.supabase.co'}/storage/v1/object/public/casting`
 
 export const CASTING_PHOTOS: { url: string; name: string; work?: string }[] = [
   { url: `${BASE}/kwondongwon-1.png`, name: '권동원' },

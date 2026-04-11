@@ -195,11 +195,49 @@ export default function Footer() {
                   uikactors@gmail.com
                 </a>
               </li>
-              <li style={{ color: 'var(--gray-light)', fontSize: '0.85rem' }}>
-                @kd4actingstudio
+              <li>
+                <a
+                  href="https://www.instagram.com/kd4actingstudio"
+                  target="_blank" rel="noopener noreferrer"
+                  style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--gray-light)')}
+                >
+                  @kd4actingstudio
+                </a>
               </li>
-              <li style={{ color: 'var(--gray-light)', fontSize: '0.85rem' }}>
-                카카오채널: KD4 액팅 스튜디오
+              <li>
+                <a
+                  href="https://pf.kakao.com/_ximxdqn"
+                  target="_blank" rel="noopener noreferrer"
+                  style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--gray-light)')}
+                >
+                  카카오채널: KD4 액팅 스튜디오
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://blog.naver.com/kd4actingstudio"
+                  target="_blank" rel="noopener noreferrer"
+                  style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--gray-light)')}
+                >
+                  네이버 블로그
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.youtube.com/@kd4actingstudio"
+                  target="_blank" rel="noopener noreferrer"
+                  style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--gray-light)')}
+                >
+                  YouTube
+                </a>
               </li>
             </ul>
           </div>

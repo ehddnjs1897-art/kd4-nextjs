@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import LogoutButton from '@/components/layout/LogoutButton'
 import CrewRequestButton from '@/components/dashboard/CrewRequestButton'
+import ProfileEditForm from '@/components/dashboard/ProfileEditForm'
 
 type UserRole = 'user' | 'crew_pending' | 'crew' | 'actor' | 'editor' | 'director' | 'admin'
 
@@ -83,38 +84,15 @@ export default async function DashboardPage() {
         </div>
 
         <div style={styles.layout} className="dashboard-layout">
-          {/* ---- 내 정보 카드 ---- */}
+          {/* ---- 내 정보 카드 (수정 포함) ---- */}
           <section style={styles.card}>
-            <h2 style={styles.cardTitle}>내 정보</h2>
-
-            <div style={styles.avatarRow}>
-              <div style={styles.avatar}>{name.charAt(0).toUpperCase()}</div>
-              <div>
-                <p style={styles.userName}>{name}</p>
-                <span style={styles.roleBadge}>{ROLE_LABEL[role]}</span>
-              </div>
-            </div>
-
-            <dl style={styles.infoList}>
-              <div style={styles.infoRow}>
-                <dt style={styles.infoKey}>이메일</dt>
-                <dd style={styles.infoVal}>{email}</dd>
-              </div>
-              {profile?.phone && (
-                <div style={styles.infoRow}>
-                  <dt style={styles.infoKey}>전화번호</dt>
-                  <dd style={styles.infoVal}>{profile.phone}</dd>
-                </div>
-              )}
-              <div style={styles.infoRow}>
-                <dt style={styles.infoKey}>가입일</dt>
-                <dd style={styles.infoVal}>{formatDate(createdAt)}</dd>
-              </div>
-              <div style={styles.infoRow}>
-                <dt style={styles.infoKey}>역할</dt>
-                <dd style={styles.infoVal}>{ROLE_LABEL[role]}</dd>
-              </div>
-            </dl>
+            <ProfileEditForm
+              initialName={name}
+              initialPhone={profile?.phone || ''}
+              email={email}
+              role={role}
+              createdAt={createdAt}
+            />
           </section>
 
           {/* ---- 우측 사이드 ---- */}

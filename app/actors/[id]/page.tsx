@@ -6,11 +6,11 @@ import ActorTabs from '@/components/actors/ActorTabs'
 import ShareButton from '@/components/actors/ShareButton'
 import ProfilePhotoWrapper from '@/components/actors/ProfilePhotoWrapper'
 
-type UserRole = 'user' | 'actor' | 'editor' | 'director' | 'admin'
+type UserRole = 'user' | 'actor' | 'crew_pending' | 'crew' | 'editor' | 'director' | 'admin'
 
 /** 배우DB 열람 가능 여부 */
 function canViewActorDb(role: UserRole | null): boolean {
-  return role === 'editor' || role === 'director' || role === 'admin'
+  return role === 'editor' || role === 'director' || role === 'admin' || role === 'crew'
 }
 
 /** 연락처 등 전체 정보 열람 (디렉터/관리자만) */
@@ -22,7 +22,7 @@ function isDirectorOrAdmin(role: UserRole | null): boolean {
 interface Actor {
   id: string
   name: string
-  gender: 'M' | 'F'
+  gender: '남' | '여' | null
   age_group: string
   height: number | null
   weight: number | null
@@ -133,30 +133,13 @@ export default async function ActorDetailPage({
     .from('profiles')
     .select('role')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
 
-  const role = (profile?.role ?? 'actor') as UserRole
+  const role = (profile?.role ?? 'user') as UserRole
 
-  // actor(미승인) / user → 접근 불가
+  // 권한 없음 → 로그인/회원가입 페이지로
   if (!canViewActorDb(role)) {
-    return (
-      <div style={styles.page}>
-        <div className="container">
-          <div style={styles.deniedBox}>
-            <p style={styles.deniedIcon}>🔒</p>
-            <h1 style={styles.deniedTitle}>열람 권한 없음</h1>
-            <p style={styles.deniedDesc}>
-              배우 DB는 KD4 소속 배우 또는{' '}
-              <strong style={{ color: 'var(--gold)' }}>디렉터 회원</strong>만 열람할 수 있습니다.
-            </p>
-            <div style={styles.deniedBtns}>
-              <Link href="/auth/signup" style={styles.btnPrimary}>디렉터 회원으로 가입</Link>
-              <Link href="/actors" style={styles.btnSecondary}>목록으로</Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
+    redirect(`/auth/login?next=/actors/${id}`)
   }
 
   /* ---- 데이터 fetch (디렉터/관리자만 여기 도달) ---- */
@@ -191,7 +174,8 @@ export default async function ActorDetailPage({
             <div style={styles.profileInfo}>
               <h1 style={styles.actorName}>{actor.name}</h1>
               <p style={styles.actorSubName}>
-                {actor.gender === 'M' ? '남자 배우' : '여자 배우'} · {actor.age_group}
+                {actor.gender === '남' ? '남자 배우' : actor.gender === '여' ? '여자 배우' : '배우'}
+                {actor.age_group ? ` · ${actor.age_group}` : ''}
               </p>
 
               <dl style={styles.specList}>

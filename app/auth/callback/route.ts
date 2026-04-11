@@ -46,9 +46,10 @@ export async function GET(request: Request) {
     const memberType = user.user_metadata?.member_type
     const initialRole = memberType === 'director' ? 'director' : 'actor'
 
+    // ignoreDuplicates: false → role을 항상 올바르게 덮어씀
     await supabase.from('profiles').upsert(
       { id: user.id, name: name || null, email: user.email ?? null, phone: phone || null, role: initialRole },
-      { onConflict: 'id', ignoreDuplicates: true }
+      { onConflict: 'id' }
     )
 
     if (memberType !== 'director' && name && phone) {
@@ -86,7 +87,6 @@ export async function GET(request: Request) {
   const memberType = user.user_metadata?.member_type // 이메일 가입 시에만 존재
 
   // ── OAuth(구글/카카오) 신규 가입 감지 ─────────────────────────────────
-  // member_type이 없는 OAuth 유저이고, 가입한 지 60초 이내 → 회원 유형 미설정
   const provider = user.app_metadata?.provider ?? 'email'
   const isOAuth = provider === 'google' || provider === 'kakao'
 
@@ -95,7 +95,7 @@ export async function GET(request: Request) {
     .from('profiles')
     .select('id, role')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
 
   const isNewUser = isOAuth && !existingProfile &&
     (Date.now() - new Date(user.created_at).getTime() < 60_000)
@@ -104,13 +104,18 @@ export async function GET(request: Request) {
   if (isNewUser) {
     await supabase.from('profiles').upsert(
       { id: user.id, name: name || null, email: user.email ?? null, role: 'actor' },
-      { onConflict: 'id', ignoreDuplicates: true }
+      { onConflict: 'id' }
     )
     return NextResponse.redirect(`${origin}/auth/setup`)
   }
 
-  // ── 일반 이메일 가입 or 기존 OAuth 재로그인 ──────────────────────────
-  const initialRole = memberType === 'director' ? 'director' : (existingProfile?.role ?? 'actor')
+  // ── 이메일 가입 콜백 or 기존 OAuth 재로그인 ──────────────────────────
+  // member_type이 있으면(이메일 가입) role을 우선 적용, 없으면(OAuth 재로그인) 기존 role 유지
+  const initialRole = memberType === 'director'
+    ? 'director'
+    : memberType === 'actor'
+      ? 'actor'
+      : (existingProfile?.role ?? 'actor')
 
   const { error: upsertErr } = await supabase.from('profiles').upsert(
     {
@@ -120,7 +125,7 @@ export async function GET(request: Request) {
       phone: phone || null,
       role: initialRole,
     },
-    { onConflict: 'id', ignoreDuplicates: true }
+    { onConflict: 'id' }
   )
 
   if (upsertErr) {
@@ -130,10 +135,7 @@ export async function GET(request: Request) {
   // 배우 회원만 배우 DB 자동 매칭
   if (memberType !== 'director' && name && phone) {
     try {
-      const result = await matchActorOnSignup(user.id, name, phone)
-      if (result.matched) {
-        console.log(`[auth/callback] 배우 매칭 성공: ${user.id} → ${result.actorId}`)
-      }
+      await matchActorOnSignup(user.id, name, phone)
     } catch (e) {
       console.error('[auth/callback] 배우 매칭 오류:', e)
     }

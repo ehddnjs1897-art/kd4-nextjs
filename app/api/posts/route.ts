@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 
 // GET /api/posts?category=일반&page=1&limit=20
 export async function GET(request: NextRequest) {
@@ -60,16 +61,28 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '올바른 카테고리를 선택해주세요.' }, { status: 400 })
   }
 
-  // 작성자 이름 조회 (profiles 테이블)
-  const { data: profile } = await supabase
+  // 작성자 이름 조회 (admin 클라이언트 → RLS 우회)
+  const { data: profile } = await supabaseAdmin
     .from('profiles')
     .select('name')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
 
   const authorName = profile?.name ?? user.email?.split('@')[0] ?? '익명'
 
-  const { data, error } = await supabase
+  // 프로필이 없으면 먼저 생성 (author_id FK 오류 방지)
+  if (!profile) {
+    const { error: upsertErr } = await supabaseAdmin.from('profiles').upsert(
+      { id: user.id, name: authorName, email: user.email ?? null },
+      { onConflict: 'id' }
+    )
+    if (upsertErr) {
+      console.error('[POST /api/posts] profile upsert error:', upsertErr)
+    }
+  }
+
+  // 게시글 insert (admin → RLS 정책 무관하게 저장)
+  const { data, error } = await supabaseAdmin
     .from('posts')
     .insert({
       title: title.trim(),
@@ -82,7 +95,8 @@ export async function POST(request: NextRequest) {
     .single()
 
   if (error) {
-    return NextResponse.json({ error: '게시글 작성 중 오류가 발생했습니다.' }, { status: 500 })
+    console.error('[POST /api/posts] insert error:', error)
+    return NextResponse.json({ error: error.message ?? '게시글 작성 중 오류가 발생했습니다.' }, { status: 500 })
   }
 
   return NextResponse.json({ id: data.id }, { status: 201 })

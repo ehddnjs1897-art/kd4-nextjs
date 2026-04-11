@@ -55,7 +55,7 @@ export default function SignupPage() {
       metadata.affiliation = affiliation
     }
 
-    const { error: authError } = await supabase.auth.signUp({
+    const { data: signUpData, error: authError } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -77,6 +77,23 @@ export default function SignupPage() {
       }
       setLoading(false)
       return
+    }
+
+    // 이메일 인증 OFF 상태: signUp이 즉시 세션을 반환 → 콜백 없이 바로 로그인됨
+    // → 이 경우 profiles에 올바른 role을 직접 upsert해야 함
+    const userId = signUpData?.user?.id
+    if (userId && signUpData?.session) {
+      const initialRole = memberType === 'director' ? 'director' : 'actor'
+      await supabase.from('profiles').upsert(
+        {
+          id: userId,
+          name: name || null,
+          email: email || null,
+          phone: memberType === 'actor' ? (phone || null) : null,
+          role: initialRole,
+        },
+        { onConflict: 'id' }
+      )
     }
 
     setStep('success')

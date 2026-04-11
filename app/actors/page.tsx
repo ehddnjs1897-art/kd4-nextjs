@@ -66,10 +66,9 @@ const AGE_OPTIONS: { value: AgeFilter; label: string }[] = [
   { value: '50대 이상', label: '50대+' },
 ]
 
-/** 배우DB 열람 가능 여부 (배우 회원 이상) */
+/** 배우DB 열람 가능 여부 */
 function canViewActorDb(role: UserRole | null): boolean {
-  return role === 'editor' || role === 'director' || role === 'admin'
-  // actor(미승인 배우) / user(구형) 는 열람 불가
+  return role === 'editor' || role === 'director' || role === 'admin' || role === 'crew'
 }
 
 /** 연락처 등 전체 정보 열람 (디렉터/관리자만) */
@@ -94,34 +93,12 @@ export default async function ActorsPage({ searchParams }: PageProps) {
     .from('profiles')
     .select('role')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
+  const role = (profile?.role ?? 'user') as UserRole
 
-  const role = (profile?.role ?? 'actor') as UserRole
-
-  // 배우 회원 / 일반 회원 → 접근 불가 안내
+  // 권한 없음 → 로그인/회원가입 페이지로
   if (!canViewActorDb(role)) {
-    return (
-      <div style={styles.page}>
-        <div className="container">
-          <div style={styles.deniedBox}>
-            <p style={styles.deniedIcon}>🔒</p>
-            <h1 style={styles.deniedTitle}>열람 권한 없음</h1>
-            <p style={styles.deniedDesc}>
-              배우 DB는 KD4 소속 배우 또는<br />
-              <strong style={{ color: 'var(--gold)' }}>디렉터 회원</strong>만 열람할 수 있습니다.
-            </p>
-            <div style={styles.deniedBtns}>
-              <Link href="/auth/signup" style={styles.btnPrimary}>
-                디렉터 회원으로 가입
-              </Link>
-              <Link href="/" style={styles.btnSecondary}>
-                홈으로
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
+    redirect('/auth/login?next=/actors')
   }
 
   /* ---- 데이터 fetch (디렉터/관리자만 여기 도달) ---- */
@@ -385,7 +362,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   imageWrap: {
     position: 'relative',
-    aspectRatio: '16/9',
+    aspectRatio: '3/4',
     overflow: 'hidden',
     background: 'var(--bg3)',
   },

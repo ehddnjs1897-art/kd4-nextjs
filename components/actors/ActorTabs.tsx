@@ -342,13 +342,13 @@ const styles: Record<string, React.CSSProperties> = {
   },
   photoGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-    gap: 8,
+    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+    gap: 10,
   },
   /* 배우 회원: CSS background-image 방식 (img 태그 없음) */
   photoItem: {
     position: 'relative',
-    aspectRatio: '9/16',
+    aspectRatio: '16/9',
     borderRadius: 4,
     overflow: 'hidden',
     background: 'var(--bg3)',
