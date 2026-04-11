@@ -1613,11 +1613,11 @@ ul, ol { list-style: none; }
 .shimmer-tag {
   background: linear-gradient(
     90deg,
-    var(--gold) 0%,
-    #f0d080 25%,
-    var(--gold-light) 50%,
-    #f0d080 75%,
-    var(--gold) 100%
+    #0066FF 0%,
+    #66aaff 25%,
+    #ffffff 50%,
+    #66aaff 75%,
+    #0066FF 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -1957,7 +1957,7 @@ main {
 }
 .hero-marquee h1 {
   font-family: 'Satoshi', var(--font-display), sans-serif;
-  font-size: max(9em, 15vw);
+  font-size: max(6em, 10vw);
   font-weight: 700;
   color: #ffffff;
   line-height: 1;
@@ -1974,7 +1974,7 @@ main {
   100% { transform: translateX(-50%); }
 }
 .hero-marquee-inner {
-  animation: marqueeScroll 20s linear infinite;
+  animation: marqueeScroll 4s linear infinite;
 }
 
 /* ═══ HERO INTRO SECTION (카피 + CTA, Stats 위) ═══ */

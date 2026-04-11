@@ -525,7 +525,8 @@ export default function HomePage() {
         delay: 0.02,
       })
       // 히어로 요소 입장
-      tl.from('.hero-subtitle', { y: 40, opacity: 0, duration: 0.7, ease: "power2.out" }, '-=0.3')
+      tl.to('.hero-logo-wrap', { opacity: 1, duration: 0.8, ease: "power2.out" }, '-=0.4')
+      tl.from('.hero-subtitle', { y: 40, opacity: 0, duration: 0.7, ease: "power2.out" }, '-=0.5')
       tl.from('.hero-scroll-indicator', { opacity: 0, duration: 0.5 }, '-=0.4')
     }
 
@@ -633,6 +634,35 @@ export default function HomePage() {
       >
         {/* Three.js 배경 */}
         <HeroScene />
+
+        {/* 중앙 로고 (Dennis의 인물사진 위치) */}
+        <div
+          className="hero-logo-wrap"
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -55%)",
+            zIndex: 5,
+            width: "clamp(200px, 30vw, 400px)",
+            height: "clamp(200px, 30vw, 400px)",
+            opacity: 0,
+          }}
+        >
+          <Image
+            src="/images/kd4-logo-hero.png"
+            alt="KD4 Acting Studio"
+            width={800}
+            height={800}
+            priority
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
+              filter: "brightness(1.1)",
+            }}
+          />
+        </div>
 
         {/* 오른쪽 하단 서브타이틀 */}
         <div
