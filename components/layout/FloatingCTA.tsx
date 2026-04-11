@@ -77,7 +77,8 @@ export default function FloatingCTA() {
             letterSpacing: '0.01em',
             textDecoration: 'none',
             borderRadius: '14px',
-            boxShadow: '0 4px 20px rgba(0,87,255,0.45)',
+            boxShadow: '0 4px 20px rgba(0,102,255,0.45)',
+            animation: 'subtlePulse 2.5s ease-in-out infinite',
             transition: 'opacity 0.2s, transform 0.15s',
             whiteSpace: 'nowrap',
           }}

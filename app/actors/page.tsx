@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
-type UserRole = 'user' | 'actor' | 'editor' | 'director' | 'admin'
+type UserRole = 'user' | 'actor' | 'crew_pending' | 'crew' | 'editor' | 'director' | 'admin'
 
 interface Actor {
   id: string

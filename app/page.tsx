@@ -333,6 +333,31 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             </span>
           )}
         </div>
+
+        {/* CTA 버튼 */}
+        <a
+          href="https://pf.kakao.com/_ximxdqn"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="class-card-cta"
+          style={{
+            display: "block",
+            textAlign: "center",
+            padding: "12px 0",
+            marginTop: "14px",
+            background: "var(--gold)",
+            color: "#0a0a0a",
+            fontWeight: 700,
+            fontSize: "0.88rem",
+            fontFamily: "var(--font-display)",
+            letterSpacing: "0.06em",
+            borderRadius: "var(--radius)",
+            textDecoration: "none",
+            transition: "opacity 0.2s",
+          }}
+        >
+          상담받기
+        </a>
       </div>
     </div>
   );
@@ -714,6 +739,63 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── 5. CLASSES ───────────────────────────────────────────────────────── */}
+      <section id="classes" className="section" style={{ background: "var(--bg)" }}>
+        <div className="container">
+          <div style={{ textAlign: "center", marginBottom: "60px" }}>
+            <p
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "0.75rem",
+                letterSpacing: "0.3em",
+                color: "var(--gold)",
+                marginBottom: "12px",
+              }}
+            >
+              CURRICULUM
+            </p>
+            <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700 }}>
+              클래스
+            </h2>
+          </div>
+
+          {/* 반응형 그리드: 모바일 1열 / 태블릿 2열 / PC 3열 */}
+          <div
+            className="classes-grid"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 320px), 1fr))",
+              gap: "16px",
+            }}
+          >
+            {CLASSES.map((cls, i) => (
+              <ClassCard key={i} cls={cls} />
+            ))}
+          </div>
+
+          <div style={{ textAlign: "center", marginTop: "48px" }}>
+            <a
+              href="https://forms.gle/68E7yFFFoDiPCRwD9"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-block",
+                padding: "16px 48px",
+                background: "var(--gold)",
+                color: "#0a0a0a",
+                fontWeight: 700,
+                fontSize: "0.9rem",
+                letterSpacing: "0.08em",
+                borderRadius: "var(--radius)",
+              }}
+            >
+              수강신청 하기
+            </a>
+          </div>
+        </div>
+      </section>
+
+
       {/* ── 3. ABOUT ─────────────────────────────────────────────────────────── */}
       <section id="about" className="section" style={{ background: "var(--bg)" }}>
         <div className="container">
@@ -1047,61 +1129,6 @@ export default function HomePage() {
             />
 
           </div>{/* end director-grid */}
-        </div>
-      </section>
-
-      {/* ── 5. CLASSES ───────────────────────────────────────────────────────── */}
-      <section id="classes" className="section" style={{ background: "var(--bg)" }}>
-        <div className="container">
-          <div style={{ textAlign: "center", marginBottom: "60px" }}>
-            <p
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "0.75rem",
-                letterSpacing: "0.3em",
-                color: "var(--gold)",
-                marginBottom: "12px",
-              }}
-            >
-              CURRICULUM
-            </p>
-            <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700 }}>
-              클래스
-            </h2>
-          </div>
-
-          {/* 반응형 그리드: 모바일 1열 / 태블릿 2열 / PC 3열 */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 320px), 1fr))",
-              gap: "16px",
-            }}
-          >
-            {CLASSES.map((cls, i) => (
-              <ClassCard key={i} cls={cls} />
-            ))}
-          </div>
-
-          <div style={{ textAlign: "center", marginTop: "48px" }}>
-            <a
-              href="https://forms.gle/68E7yFFFoDiPCRwD9"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: "inline-block",
-                padding: "16px 48px",
-                background: "var(--gold)",
-                color: "#0a0a0a",
-                fontWeight: 700,
-                fontSize: "0.9rem",
-                letterSpacing: "0.08em",
-                borderRadius: "var(--radius)",
-              }}
-            >
-              수강신청 하기
-            </a>
-          </div>
         </div>
       </section>
 
