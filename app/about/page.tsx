@@ -159,6 +159,25 @@ export default function AboutPage() {
           플라스틱처럼 굳어버린 연기 패턴에서 벗어나,
           상대방에게 반응하는 살아있는 연기를 훈련합니다.
         </p>
+
+        {/* YouTube 임베드 */}
+        <div style={{
+          marginTop: '40px',
+          borderRadius: '10px',
+          overflow: 'hidden',
+          aspectRatio: '16/9',
+          maxWidth: '680px',
+          background: '#000',
+          border: '1px solid var(--border)',
+        }}>
+          <iframe
+            src="https://www.youtube.com/embed/tB7f4VnC6rM"
+            title="KD4 연기하지 않는 연기"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
+          />
+        </div>
       </section>
 
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />

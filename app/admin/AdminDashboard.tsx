@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type {
   AdminProfile,
   AdminActor,
@@ -70,6 +70,17 @@ interface Props {
 
 export default function AdminDashboard({ profiles, actors, posts, applications }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>('users')
+  const [approvedMsg, setApprovedMsg] = useState<string | null>(null)
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const approved = params.get('approved')
+    if (approved) {
+      setApprovedMsg(`✓ ${approved} 님이 KD4 크루로 승인되었습니다.`)
+      // URL 파라미터 정리
+      window.history.replaceState({}, '', '/admin')
+    }
+  }, [])
 
   // 로컬 상태 (API 호출 후 낙관적 업데이트)
   const [localProfiles, setLocalProfiles] = useState(profiles)
@@ -181,6 +192,25 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
           <p style={s.eyebrow}>ADMIN</p>
           <h1 style={s.pageTitle}>관리자 대시보드</h1>
         </div>
+
+        {/* 승인 완료 알림 */}
+        {approvedMsg && (
+          <div style={{
+            padding: '12px 18px',
+            background: 'rgba(74,222,128,0.1)',
+            border: '1px solid rgba(74,222,128,0.3)',
+            borderRadius: 8,
+            color: '#4ade80',
+            fontSize: '0.9rem',
+            marginBottom: 20,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+            <span>{approvedMsg}</span>
+            <button onClick={() => setApprovedMsg(null)} style={{ background: 'none', border: 'none', color: '#4ade80', cursor: 'pointer', fontSize: '1.1rem' }}>×</button>
+          </div>
+        )}
 
         {/* 통계 카드 */}
         <div style={s.statsRow}>

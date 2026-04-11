@@ -22,7 +22,7 @@ async function getUserProfile(userId: string): Promise<UserProfile | null> {
     .from('profiles')
     .select('id, name, email, phone, role, created_at')
     .eq('id', userId)
-    .single()
+    .maybeSingle()
 
   if (error || !data) return null
   return data as UserProfile

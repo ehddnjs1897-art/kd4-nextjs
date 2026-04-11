@@ -52,7 +52,7 @@ export async function notifyNewDirector(name: string, email: string, affiliation
 
 /** KD4 크루 신청 관리자 알림 */
 export async function notifyCrewRequest(name: string, email: string, userId: string) {
-  const approveUrl = `${SITE_URL}/admin?action=approve&uid=${userId}`
+  const approveUrl = `${SITE_URL}/api/admin/approve-crew?uid=${userId}`
   const html = `
     <div style="font-family:sans-serif;max-width:480px;margin:0 auto">
       <h2 style="color:#3b5bdb">👥 KD4 크루 신청 알림</h2>
