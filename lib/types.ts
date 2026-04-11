@@ -78,3 +78,28 @@ export interface ApiError {
   error: string
   status: number
 }
+
+// ─── 게임 관련 (OFF THE PLASTIC) ────────────────────────────────────────────
+
+export interface GameScore {
+  id: string
+  user_id: string
+  score: number
+  duration_ms: number
+  stage: number
+  items_collected: number
+  created_at: string
+  profiles?: { name: string | null }
+}
+
+export interface GamePrize {
+  id: string
+  user_id: string
+  period_start: string
+  period_type: 'weekly' | 'monthly'
+  rank: number
+  prize_type: string
+  prize_description: string | null
+  status: 'pending' | 'claimed' | 'delivered'
+  created_at: string
+}
