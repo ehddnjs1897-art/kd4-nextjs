@@ -707,7 +707,7 @@ export default function HomePage() {
         </div>
 
         {/* 마퀴 빅네임 (하단) */}
-        <div className="hero-marquee" ref={marqueeRef} style={{ zIndex: 10, paddingBottom: "clamp(60px, 15vh, 140px)" }}>
+        <div className="hero-marquee" ref={marqueeRef} style={{ zIndex: 10, position: "absolute", bottom: "50%", transform: "translateY(50%)", width: "100%" }}>
           <div className="hero-marquee-inner" ref={marqueeInnerRef}>
             {[0, 1, 2, 3].map((copy) => (
               <h1 key={copy}>
