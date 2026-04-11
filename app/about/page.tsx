@@ -160,18 +160,20 @@ export default function AboutPage() {
           상대방에게 반응하는 살아있는 연기를 훈련합니다.
         </p>
 
-        {/* YouTube 임베드 */}
+        {/* YouTube 임베드 — 자동재생, 음소거, 루프 */}
         <div style={{
           marginTop: '40px',
           borderRadius: '10px',
           overflow: 'hidden',
           aspectRatio: '16/9',
-          maxWidth: '680px',
+          width: '100%',
+          maxWidth: '900px',
+          margin: '40px auto 0',
           background: '#000',
           border: '1px solid var(--border)',
         }}>
           <iframe
-            src="https://www.youtube.com/embed/tB7f4VnC6rM"
+            src="https://www.youtube.com/embed/tB7f4VnC6rM?autoplay=1&mute=1&loop=1&playlist=tB7f4VnC6rM&controls=1&rel=0&modestbranding=1"
             title="KD4 연기하지 않는 연기"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen

@@ -1825,44 +1825,7 @@ fontWeight: 800,
             </a>
           </div>
 
-          {/* 연락처 */}
-          <div
-            style={{
-              display: "flex",
-              gap: "16px 24px",
-              justifyContent: "center",
-              flexWrap: "wrap",
-            }}
-          >
-            {[
-              { label: "전화", text: "010-8564-0244", href: "tel:010-8564-0244" },
-              { label: "이메일", text: "uikactors@gmail.com", href: "mailto:uikactors@gmail.com" },
-              { label: "인스타", text: "@kd4actingstudio", href: "https://www.instagram.com/kd4actingstudio" },
-              { label: "카카오", text: "KD4 채널", href: "https://pf.kakao.com/_ximxdqn" },
-              { label: "블로그", text: "네이버 블로그", href: "https://blog.naver.com/kd4actingstudio" },
-              { label: "유튜브", text: "YouTube", href: "https://www.youtube.com/@kd4actingstudio" },
-            ].map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                target={item.href.startsWith("http") ? "_blank" : undefined}
-                rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                style={{
-                  fontSize: "0.82rem",
-                  color: "var(--gray)",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  transition: "color 0.2s",
-                }}
-                onMouseEnter={e => (e.currentTarget.style.color = "var(--gold)")}
-                onMouseLeave={e => (e.currentTarget.style.color = "var(--gray)")}
-              >
-                <span style={{ color: "var(--gold)", fontSize: "0.72rem", letterSpacing: "0.05em" }}>{item.label}</span>
-                {item.text}
-              </a>
-            ))}
-          </div>
+          {/* 연락처 — 삭제: Footer에 이미 있으므로 중복 제거 */}
         </div>
       </section>
     </>
