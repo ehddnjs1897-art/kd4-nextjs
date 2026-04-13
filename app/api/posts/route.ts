@@ -73,11 +73,20 @@ export async function POST(request: NextRequest) {
   // 프로필이 없으면 먼저 생성 (author_id FK 오류 방지)
   if (!profile) {
     const { error: upsertErr } = await supabaseAdmin.from('profiles').upsert(
-      { id: user.id, name: authorName, email: user.email ?? null },
+      {
+        id: user.id,
+        name: authorName,
+        email: user.email ?? null,
+        role: 'user',
+      },
       { onConflict: 'id' }
     )
     if (upsertErr) {
       console.error('[POST /api/posts] profile upsert error:', upsertErr)
+      return NextResponse.json(
+        { error: '프로필 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' },
+        { status: 500 }
+      )
     }
   }
 
