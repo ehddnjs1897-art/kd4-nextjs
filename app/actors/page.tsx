@@ -169,21 +169,24 @@ export default async function ActorsPage({ searchParams }: PageProps) {
           <div style={styles.grid}>
             {actors.map((actor) => (
               <Link key={actor.id} href={`/actors/${actor.id}`} style={styles.card}>
+                {/* 좌측: 사진 */}
                 <div style={styles.imageWrap}>
                   <Image
                     src={thumbnailUrl(actor.drive_photo_id)}
                     alt={actor.name}
                     fill
-                    sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
+                    sizes="160px"
                     style={{ objectFit: 'cover', objectPosition: 'center top' }}
                     unoptimized={!!actor.drive_photo_id}
                   />
-                  <div style={styles.cardOverlay}>
-                    <span style={styles.cardName}>{actor.name}</span>
-                    <span style={styles.cardMeta}>
-                      {actor.gender ?? ''}{actor.gender && actor.age_group ? ' · ' : ''}{actor.age_group ?? ''}
-                    </span>
-                  </div>
+                </div>
+                {/* 우측: 이름·정보 */}
+                <div style={styles.cardInfo}>
+                  <span style={styles.cardName}>{actor.name}</span>
+                  <span style={styles.cardMeta}>
+                    {actor.gender ?? ''}{actor.gender && actor.age_group ? ' · ' : ''}{actor.age_group ?? ''}
+                  </span>
+                  <span style={styles.cardArrow}>→</span>
                 </div>
               </Link>
             ))}
@@ -340,45 +343,49 @@ const styles: Record<string, React.CSSProperties> = {
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-    gap: 16,
+    gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+    gap: 10,
   },
   card: {
-    display: 'block',
+    display: 'flex',
+    flexDirection: 'row',
     textDecoration: 'none',
     borderRadius: 8,
     overflow: 'hidden',
     background: 'var(--bg2)',
     border: '1px solid var(--border)',
-    transition: 'transform 0.25s, border-color 0.25s',
+    height: 130,
+    transition: 'border-color 0.2s, background 0.2s',
   },
   imageWrap: {
     position: 'relative',
-    aspectRatio: '3/4',
-    overflow: 'hidden',
+    width: 95,
+    flexShrink: 0,
     background: 'var(--bg3)',
   },
-  cardOverlay: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: '32px 14px 14px',
-    background: 'linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 60%, transparent 100%)',
+  cardInfo: {
     display: 'flex',
     flexDirection: 'column',
-    gap: 2,
+    justifyContent: 'flex-end',
+    padding: '14px 16px',
+    flex: 1,
+    gap: 4,
   },
   cardName: {
     fontFamily: 'var(--font-display)',
-    fontSize: '1rem',
-    fontWeight: 600,
+    fontSize: '1.05rem',
+    fontWeight: 700,
     color: 'var(--white)',
-    letterSpacing: '0.03em',
+    letterSpacing: '0.04em',
   },
   cardMeta: {
-    fontSize: '0.72rem',
-    color: 'rgba(240,240,240,0.7)',
+    fontSize: '0.75rem',
+    color: 'var(--gray)',
+  },
+  cardArrow: {
+    fontSize: '0.8rem',
+    color: 'var(--gold)',
+    marginTop: 6,
   },
   emptyState: {
     textAlign: 'center',
