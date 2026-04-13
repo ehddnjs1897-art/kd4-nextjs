@@ -107,3 +107,13 @@ lib/storage.ts에 R2 구현 추가 (TODO 표시됨)
 - Three.js HeroScene: dynamic(import, {ssr: false}) 필수
 - 이미지 업로드: 클라이언트에서 5MB 사전 체크
 - 배우 편집: server에서 actor_id 본인 여부 반드시 검증
+
+## AI 워크플로 규칙 (Sonnet + Opus)
+- 기본 작업: Sonnet으로 진행
+- 아래 상황에서는 Opus 서브에이전트를 스폰해서 검토 후 진행:
+  - 새로운 DB 스키마 설계 / 기존 스키마 변경
+  - 인증·권한 관련 로직 (auth, RLS, role 체계)
+  - 배포 전략 / 환경변수 구조 변경
+  - 기존 코드 대규모 리팩토링
+  - 사용자가 "opus 검토해줘" 요청 시
+- Opus 검토 결과를 사용자에게 보여준 후 승인받고 진행

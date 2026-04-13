@@ -6,6 +6,7 @@ import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import FloatingCTA from '@/components/layout/FloatingCTA'
 import JsonLd from '@/components/seo/JsonLd'
+import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
 
 const notoSansKR = Noto_Sans_KR({
   subsets: ['latin'],
@@ -88,6 +89,7 @@ export default function RootLayout({
     <html lang="ko">
       <head>
         <JsonLd />
+        <GoogleAnalytics />
       </head>
       <body
         className={`${notoSansKR.variable} ${notoSerifKR.variable} ${oswald.variable}`}

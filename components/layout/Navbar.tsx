@@ -8,12 +8,12 @@ import { createClient } from '@/lib/supabase/client'
 const publicLinks = [
   { label: '스튜디오 소개', href: '/about' },
   { label: '클래스', href: '/#classes' },
-  { label: '배우 DB', href: '/actors' },
 ]
 
 const crewLinks = [
-  { label: '커뮤니티', href: '/board' },
-  { label: '대본 분석', href: '/ai-tools' },
+  { label: '배우 DB', href: '/actors', public: true },
+  { label: '커뮤니티', href: '/board', public: false },
+  { label: '대본 분석', href: '/ai-tools', public: false },
 ]
 
 type UserRole = 'user' | 'crew_pending' | 'crew' | 'editor' | 'admin' | null
@@ -281,7 +281,7 @@ export default function Navbar() {
                       <Link
                         key={item.label}
                         href={item.href}
-                        onClick={e => handleCrewLinkClick(e, item.href)}
+                        onClick={item.public ? undefined : (e => handleCrewLinkClick(e, item.href))}
                         style={{
                           display: 'block',
                           padding: '10px 16px',
@@ -473,7 +473,9 @@ export default function Navbar() {
                         <Link
                           key={item.label}
                           href={item.href}
-                          onClick={e => { handleCrewLinkClick(e, item.href); if (isLoggedIn) closeMobile() }}
+                          onClick={item.public
+                            ? closeMobile
+                            : (e => { handleCrewLinkClick(e, item.href); if (isLoggedIn) closeMobile() })}
                           style={{
                             display: 'block',
                             padding: '14px 16px',

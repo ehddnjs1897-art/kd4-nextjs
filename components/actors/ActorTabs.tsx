@@ -33,6 +33,8 @@ interface Actor {
   email: string | null
   phone: string | null
   instagram: string | null
+  drive_photo_id: string | null
+  profile_photo: string | null
   actor_photos: ActorPhoto[]
   actor_videos: ActorVideo[]
   actor_filmography: FilmoEntry[]
@@ -68,14 +70,21 @@ function downloadUrl(drivePhotoId: string) {
 export default function ActorTabs({ actor, canViewContact, imageProtected }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>('photos')
 
+  // 메인 프로필 이미지를 1페이지로, actor_photos를 추가 페이지로
+  const mainPhotoUrl = actor.profile_photo
+    ?? (actor.drive_photo_id ? `https://drive.google.com/thumbnail?id=${actor.drive_photo_id}&sz=w1200` : null)
+
+  const sortedPhotos = [...actor.actor_photos].sort((a, b) => a.sort_order - b.sort_order)
+
+  // 갤러리 총 페이지 수 (메인 + actor_photos)
+  const totalPhotoCount = (mainPhotoUrl ? 1 : 0) + sortedPhotos.length
+
   const tabs: { key: Tab; label: string; count?: number }[] = [
-    { key: 'photos', label: '사진 갤러리', count: actor.actor_photos.length },
+    { key: 'photos', label: '프로필', count: totalPhotoCount },
     { key: 'videos', label: '영상', count: actor.actor_videos.length },
     { key: 'filmography', label: '필모그래피', count: actor.actor_filmography.length },
     { key: 'contact', label: '연락처' },
   ]
-
-  const sortedPhotos = [...actor.actor_photos].sort((a, b) => a.sort_order - b.sort_order)
 
   return (
     <div>
@@ -98,7 +107,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected }: Pro
         ))}
       </div>
 
-      {/* ---- 사진 갤러리 ---- */}
+      {/* ---- 프로필 갤러리 (1페이지 = 메인, 2페이지+ = actor_photos) ---- */}
       {activeTab === 'photos' && (
         <div>
           {imageProtected && (
@@ -107,47 +116,90 @@ export default function ActorTabs({ actor, canViewContact, imageProtected }: Pro
             </p>
           )}
 
-          {sortedPhotos.length === 0 ? (
-            <p style={styles.empty}>등록된 사진이 없습니다.</p>
+          {totalPhotoCount === 0 ? (
+            <p style={styles.empty}>등록된 프로필이 없습니다.</p>
           ) : (
             <div style={styles.photoGrid}>
-              {sortedPhotos.map((photo) =>
+              {/* 1페이지: 메인 프로필 이미지 */}
+              {mainPhotoUrl && (
                 imageProtected ? (
-                  /* 배우 회원: <img> 태그 없이 CSS background-image 렌더링
-                     → 브라우저 우클릭 "이미지 저장" 메뉴 자체가 뜨지 않음 */
+                  <div
+                    style={{
+                      ...styles.photoItem,
+                      backgroundImage: `url("${mainPhotoUrl}")`,
+                      backgroundSize: 'contain',
+                      backgroundPosition: 'center',
+                      backgroundRepeat: 'no-repeat',
+                    }}
+                    onContextMenu={(e) => e.preventDefault()}
+                    onDragStart={(e) => e.preventDefault()}
+                  >
+                    <div style={styles.photoOverlay} />
+                    <span style={styles.pageLabel}>01</span>
+                  </div>
+                ) : (
+                  <div style={styles.photoItemDirector}>
+                    <div style={{ ...styles.photoItem, position: 'relative' }}>
+                      <Image
+                        src={mainPhotoUrl}
+                        alt={`${actor.name} 프로필 1페이지`}
+                        fill
+                        sizes="(max-width:640px) 100vw, 50vw"
+                        style={{ objectFit: 'contain', objectPosition: 'center' }}
+                        unoptimized
+                      />
+                      <span style={styles.pageLabel}>01</span>
+                    </div>
+                    {actor.drive_photo_id && (
+                      <a
+                        href={downloadUrl(actor.drive_photo_id)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={styles.downloadBtn}
+                      >
+                        ↓ 프로필 저장
+                      </a>
+                    )}
+                  </div>
+                )
+              )}
+
+              {/* 2페이지+: actor_photos */}
+              {sortedPhotos.map((photo, idx) =>
+                imageProtected ? (
                   <div
                     key={photo.id}
                     style={{
                       ...styles.photoItem,
                       backgroundImage: `url("${thumbUrl(photo.drive_photo_id)}")`,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center top',
+                      backgroundSize: 'contain',
+                      backgroundPosition: 'center',
+                      backgroundRepeat: 'no-repeat',
                     }}
                     onContextMenu={(e) => e.preventDefault()}
                     onDragStart={(e) => e.preventDefault()}
                   >
-                    {/* 투명 오버레이: 클릭 드래그 차단 */}
                     <div style={styles.photoOverlay} />
+                    <span style={styles.pageLabel}>{String(idx + 2).padStart(2, '0')}</span>
                   </div>
                 ) : (
-                  /* 디렉터: 일반 이미지 + 다운로드 버튼 */
                   <div key={photo.id} style={styles.photoItemDirector}>
-                    <div style={styles.photoItem}>
+                    <div style={{ ...styles.photoItem, position: 'relative' }}>
                       <Image
                         src={thumbUrl(photo.drive_photo_id)}
-                        alt={photo.caption || actor.name}
+                        alt={photo.caption || `${actor.name} ${idx + 2}페이지`}
                         fill
-                        sizes="(max-width:640px) 50vw, 33vw"
-                        style={{ objectFit: 'cover', objectPosition: 'center top' }}
+                        sizes="(max-width:640px) 100vw, 50vw"
+                        style={{ objectFit: 'contain', objectPosition: 'center' }}
                         unoptimized
                       />
+                      <span style={styles.pageLabel}>{String(idx + 2).padStart(2, '0')}</span>
                     </div>
                     <a
                       href={downloadUrl(photo.drive_photo_id)}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={styles.downloadBtn}
-                      title="이미지 다운로드"
                     >
                       ↓ 저장
                     </a>
@@ -342,16 +394,17 @@ const styles: Record<string, React.CSSProperties> = {
   },
   photoGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-    gap: 10,
+    gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))',
+    gap: 14,
   },
-  /* 배우 회원: CSS background-image 방식 (img 태그 없음) */
+  /* 프로필 슬라이드: landscape 비율 */
   photoItem: {
     position: 'relative',
-    aspectRatio: '16/9',
-    borderRadius: 4,
+    aspectRatio: '3/2',
+    borderRadius: 6,
     overflow: 'hidden',
     background: 'var(--bg3)',
+    border: '1px solid var(--border)',
     userSelect: 'none',
     WebkitUserSelect: 'none',
   },
@@ -362,11 +415,24 @@ const styles: Record<string, React.CSSProperties> = {
     zIndex: 1,
     cursor: 'default',
   },
+  /* 페이지 번호 뱃지 */
+  pageLabel: {
+    position: 'absolute',
+    top: 10,
+    right: 12,
+    zIndex: 2,
+    fontSize: '0.7rem',
+    fontWeight: 700,
+    color: 'rgba(196,165,90,0.9)',
+    fontFamily: 'var(--font-display)',
+    letterSpacing: '0.1em',
+    pointerEvents: 'none',
+  },
   /* 디렉터: 이미지 + 다운로드 버튼 묶음 */
   photoItemDirector: {
     display: 'flex',
     flexDirection: 'column',
-    gap: 4,
+    gap: 6,
   },
   downloadBtn: {
     display: 'block',

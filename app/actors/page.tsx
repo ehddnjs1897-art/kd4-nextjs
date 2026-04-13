@@ -109,6 +109,16 @@ export default async function ActorsPage({ searchParams }: PageProps) {
 
   return (
     <div style={styles.page}>
+      <style>{`
+        @media (max-width: 640px) {
+          .actors-grid { grid-template-columns: 1fr !important; }
+          .actor-card:hover { transform: none !important; }
+        }
+        .actor-card:hover {
+          border-color: rgba(196,165,90,0.5) !important;
+          transform: translateY(-2px);
+        }
+      `}</style>
       <div className="container">
         {/* 페이지 헤더 */}
         <div style={styles.header}>
@@ -166,27 +176,24 @@ export default async function ActorsPage({ searchParams }: PageProps) {
             <Link href="/actors" style={styles.resetLink}>필터 초기화</Link>
           </div>
         ) : (
-          <div style={styles.grid}>
+          <div style={styles.grid} className="actors-grid">
             {actors.map((actor) => (
-              <Link key={actor.id} href={`/actors/${actor.id}`} style={styles.card}>
-                {/* 좌측: 사진 */}
+              <Link key={actor.id} href={`/actors/${actor.id}`} style={styles.card} className="actor-card">
                 <div style={styles.imageWrap}>
                   <Image
                     src={thumbnailUrl(actor.drive_photo_id)}
                     alt={actor.name}
                     fill
-                    sizes="160px"
+                    sizes="(max-width:640px) 100vw, 50vw"
                     style={{ objectFit: 'cover', objectPosition: 'center top' }}
                     unoptimized={!!actor.drive_photo_id}
                   />
-                </div>
-                {/* 우측: 이름·정보 */}
-                <div style={styles.cardInfo}>
-                  <span style={styles.cardName}>{actor.name}</span>
-                  <span style={styles.cardMeta}>
-                    {actor.gender ?? ''}{actor.gender && actor.age_group ? ' · ' : ''}{actor.age_group ?? ''}
-                  </span>
-                  <span style={styles.cardArrow}>→</span>
+                  <div style={styles.cardOverlay}>
+                    <span style={styles.cardName}>{actor.name}</span>
+                    <span style={styles.cardMeta}>
+                      {actor.gender ?? ''}{actor.gender && actor.age_group ? ' · ' : ''}{actor.age_group ?? ''}
+                    </span>
+                  </div>
                 </div>
               </Link>
             ))}
@@ -343,49 +350,46 @@ const styles: Record<string, React.CSSProperties> = {
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-    gap: 10,
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: 12,
   },
   card: {
-    display: 'flex',
-    flexDirection: 'row',
+    display: 'block',
     textDecoration: 'none',
     borderRadius: 8,
     overflow: 'hidden',
-    background: 'var(--bg2)',
     border: '1px solid var(--border)',
-    height: 130,
-    transition: 'border-color 0.2s, background 0.2s',
-  },
-  imageWrap: {
+    transition: 'border-color 0.2s, transform 0.2s',
+    aspectRatio: '3/2',
     position: 'relative',
-    width: 95,
-    flexShrink: 0,
     background: 'var(--bg3)',
   },
-  cardInfo: {
+  imageWrap: {
+    position: 'absolute',
+    inset: 0,
+    background: 'var(--bg3)',
+  },
+  cardOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: '40px 18px 16px',
+    background: 'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 60%, transparent 100%)',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'flex-end',
-    padding: '14px 16px',
-    flex: 1,
-    gap: 4,
+    gap: 3,
   },
   cardName: {
     fontFamily: 'var(--font-display)',
-    fontSize: '1.05rem',
+    fontSize: '1.1rem',
     fontWeight: 700,
     color: 'var(--white)',
     letterSpacing: '0.04em',
   },
   cardMeta: {
     fontSize: '0.75rem',
-    color: 'var(--gray)',
-  },
-  cardArrow: {
-    fontSize: '0.8rem',
-    color: 'var(--gold)',
-    marginTop: 6,
+    color: 'rgba(255,255,255,0.65)',
   },
   emptyState: {
     textAlign: 'center',
