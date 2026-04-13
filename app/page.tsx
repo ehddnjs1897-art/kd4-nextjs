@@ -134,13 +134,21 @@ function FaqAccordion() {
               <span>{item.q}</span>
               <span
                 style={{
-                  color: "var(--gold)",
-                  fontSize: "1.4rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "50%",
+                  background: isOpen ? "var(--gold)" : "rgba(0,102,255,0.12)",
+                  color: isOpen ? "#ffffff" : "var(--gold)",
+                  fontSize: "1.5rem",
                   lineHeight: 1,
                   flexShrink: 0,
-                  transition: "transform 0.3s cubic-bezier(.4,0,.2,1)",
+                  transition: "transform 0.3s cubic-bezier(.4,0,.2,1), background 0.3s, color 0.3s",
                   transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
-                  fontWeight: 300,
+                  fontWeight: 400,
+                  border: `1.5px solid ${isOpen ? "var(--gold)" : "rgba(0,102,255,0.3)"}`,
                 }}
               >
                 +
@@ -469,7 +477,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             padding: "12px 0",
             marginTop: "14px",
             background: "var(--gold)",
-            color: "#0a0a0a",
+            color: "#ffffff",
             fontWeight: 700,
             fontSize: "0.88rem",
             fontFamily: "var(--font-display)",
@@ -477,6 +485,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             borderRadius: "var(--radius)",
             textDecoration: "none",
             transition: "opacity 0.2s",
+            boxShadow: "0 4px 16px rgba(0,102,255,0.25)",
           }}
         >
           상담받기
@@ -792,9 +801,10 @@ export default function HomePage() {
           <a
             href="#classes"
             style={{
-              padding: "14px 32px", background: "var(--gold)", color: "#0a0a0a",
+              padding: "14px 32px", background: "var(--gold)", color: "#ffffff",
               fontWeight: 700, fontSize: "0.85rem", letterSpacing: "0.08em",
               borderRadius: "var(--radius)", display: "inline-block", transition: "opacity var(--transition)",
+              boxShadow: "0 4px 20px rgba(0,102,255,0.3)",
             }}
           >
             클래스 둘러보기
@@ -802,7 +812,7 @@ export default function HomePage() {
           <Link
             href="/actors"
             style={{
-              padding: "14px 32px", border: "1px solid var(--gold)", color: "var(--gold)",
+              padding: "14px 32px", border: "1px solid rgba(255,255,255,0.4)", color: "#ffffff",
               fontWeight: 600, fontSize: "0.85rem", letterSpacing: "0.08em",
               borderRadius: "var(--radius)", display: "inline-block",
               background: "rgba(0,0,0,0.4)", backdropFilter: "blur(4px)", transition: "background var(--transition)",
