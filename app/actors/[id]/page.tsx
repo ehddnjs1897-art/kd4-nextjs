@@ -1,7 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 import ActorTabs from '@/components/actors/ActorTabs'
 import ShareButton from '@/components/actors/ShareButton'
 import ProfilePhotoWrapper from '@/components/actors/ProfilePhotoWrapper'
@@ -59,10 +60,9 @@ interface FilmoEntry {
   production: string | null
 }
 
-/* ---- 데이터 fetch ---- */
+/* ---- 데이터 fetch (admin 클라이언트로 공개 조회) ---- */
 async function getActor(id: string): Promise<Actor | null> {
-  const supabase = await createClient()
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('actors')
     .select(
       `
@@ -74,6 +74,7 @@ async function getActor(id: string): Promise<Actor | null> {
     `
     )
     .eq('id', id)
+    .eq('is_public', true)
     .single()
 
   if (error || !data) return null
@@ -117,32 +118,24 @@ export default async function ActorDetailPage({
 }) {
   const { id } = await params
 
-  /* ---- 인증 & 역할 확인 ---- */
+  /* ---- 비로그인도 접근 가능 (공개 페이지) ---- */
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // 비로그인 → 로그인 페이지
-  if (!user) {
-    redirect(`/auth/login?next=/actors/${id}`)
+  // 역할 조회 (로그인 시에만, 비로그인은 null)
+  let role: UserRole | null = null
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle()
+    role = (profile?.role ?? 'user') as UserRole
   }
 
-  // 역할 조회
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .maybeSingle()
-
-  const role = (profile?.role ?? 'user') as UserRole
-
-  // 권한 없음 → 로그인/회원가입 페이지로
-  if (!canViewActorDb(role)) {
-    redirect(`/auth/login?next=/actors/${id}`)
-  }
-
-  /* ---- 데이터 fetch (디렉터/관리자만 여기 도달) ---- */
+  /* ---- 데이터 fetch ---- */
   const actor = await getActor(id)
   if (!actor) notFound()
 

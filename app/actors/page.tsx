@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
@@ -77,31 +76,24 @@ function isDirectorOrAdmin(role: UserRole | null): boolean {
 }
 
 export default async function ActorsPage({ searchParams }: PageProps) {
-  /* ---- 인증 확인 ---- */
+  /* ---- 비로그인도 접근 가능 (공개 페이지) ---- */
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // 비로그인 → 로그인 페이지로
-  if (!user) {
-    redirect('/auth/login?next=/actors')
+  // 역할 조회 (로그인 시에만)
+  let role: UserRole | null = null
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle()
+    role = (profile?.role ?? 'user') as UserRole
   }
 
-  // 역할 조회
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .maybeSingle()
-  const role = (profile?.role ?? 'user') as UserRole
-
-  // 권한 없음 → 로그인/회원가입 페이지로
-  if (!canViewActorDb(role)) {
-    redirect('/auth/login?next=/actors')
-  }
-
-  /* ---- 데이터 fetch (디렉터/관리자만 여기 도달) ---- */
+  /* ---- 데이터 fetch ---- */
   const params = await searchParams
   const gender = params.gender ?? 'all'
   const ageGroup = params.ageGroup ?? 'all'

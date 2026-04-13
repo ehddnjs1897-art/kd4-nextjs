@@ -8,10 +8,10 @@ import { createClient } from '@/lib/supabase/client'
 const publicLinks = [
   { label: '스튜디오 소개', href: '/about' },
   { label: '클래스', href: '/#classes' },
+  { label: '배우 DB', href: '/actors' },
 ]
 
 const crewLinks = [
-  { label: '배우 DB', href: '/actors' },
   { label: '커뮤니티', href: '/board' },
   { label: '대본 분석', href: '/ai-tools' },
 ]
