@@ -25,7 +25,7 @@ export async function POST() {
   const currentRole = (profile?.role ?? 'user') as string
 
   // 이미 신청했거나 승인된 경우
-  if (currentRole !== 'user') {
+  if (currentRole !== 'user' && currentRole !== 'member') {
     return NextResponse.json({
       message: '이미 신청되었거나 크루 권한이 있습니다.',
       role: currentRole,

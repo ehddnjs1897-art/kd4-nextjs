@@ -99,65 +99,78 @@ function FaqAccordion() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-      {FAQ_ITEMS.map((item, i) => (
-        <div
-          key={i}
-          style={{
-            background: "var(--bg2)",
-            border: "1px solid var(--border)",
-            borderRadius: "var(--radius)",
-            overflow: "hidden",
-          }}
-        >
-          <button
-            onClick={() => setOpenIndex(openIndex === i ? null : i)}
+    <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+      {FAQ_ITEMS.map((item, i) => {
+        const isOpen = openIndex === i;
+        return (
+          <div
+            key={i}
             style={{
-              width: "100%",
-              padding: "20px 24px",
-              textAlign: "left",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: "16px",
-              color: "var(--white)",
-              fontSize: "0.95rem",
-              fontWeight: 500,
-              background: "none",
-              cursor: "pointer",
-              transition: "color var(--transition)",
+              background: isOpen ? "var(--bg3)" : "var(--bg2)",
+              border: `1px solid ${isOpen ? "var(--gold)" : "var(--border)"}`,
+              borderRadius: "8px",
+              overflow: "hidden",
+              transition: "border-color 0.3s, background 0.3s",
             }}
           >
-            <span>{item.q}</span>
-            <span
+            <button
+              onClick={() => setOpenIndex(isOpen ? null : i)}
               style={{
-                color: "var(--gold)",
-                fontSize: "1.2rem",
-                lineHeight: 1,
-                flexShrink: 0,
-                transition: "transform var(--transition)",
-                transform: openIndex === i ? "rotate(45deg)" : "rotate(0deg)",
+                width: "100%",
+                padding: "22px 24px",
+                textAlign: "left",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: "16px",
+                color: isOpen ? "#ffffff" : "var(--white)",
+                fontSize: "1rem",
+                fontWeight: 600,
+                background: "none",
+                cursor: "pointer",
+                transition: "color 0.2s",
               }}
             >
-              +
-            </span>
-          </button>
-          {openIndex === i && (
+              <span>{item.q}</span>
+              <span
+                style={{
+                  color: "var(--gold)",
+                  fontSize: "1.4rem",
+                  lineHeight: 1,
+                  flexShrink: 0,
+                  transition: "transform 0.3s cubic-bezier(.4,0,.2,1)",
+                  transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
+                  fontWeight: 300,
+                }}
+              >
+                +
+              </span>
+            </button>
             <div
               style={{
-                padding: "0 24px 20px",
-                color: "var(--gray-light)",
-                fontSize: "0.9rem",
-                lineHeight: 1.7,
-                borderTop: "1px solid var(--border)",
-                paddingTop: "16px",
+                maxHeight: isOpen ? "200px" : "0px",
+                overflow: "hidden",
+                transition: "max-height 0.4s cubic-bezier(.4,0,.2,1), padding 0.3s",
+                padding: isOpen ? "0 24px 20px" : "0 24px 0",
               }}
             >
-              {item.a}
+              <div
+                style={{
+                  color: "var(--gray-light)",
+                  fontSize: "0.92rem",
+                  lineHeight: 1.7,
+                  borderTop: "1px solid var(--border)",
+                  paddingTop: "16px",
+                  opacity: isOpen ? 1 : 0,
+                  transition: "opacity 0.3s 0.1s",
+                }}
+              >
+                {item.a}
+              </div>
             </div>
-          )}
-        </div>
-      ))}
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -946,11 +959,12 @@ export default function HomePage() {
                   display: "inline-block",
                   padding: "14px 40px",
                   background: "var(--gold)",
-                  color: "#0a0a0a",
+                  color: "#ffffff",
                   fontWeight: 700,
                   fontSize: "0.9rem",
                   letterSpacing: "0.06em",
                   borderRadius: "var(--radius)",
+                  boxShadow: "0 4px 20px rgba(0,102,255,0.3)",
                 }}
               >
                 수강신청 하기
@@ -962,8 +976,8 @@ export default function HomePage() {
                 style={{
                   display: "inline-block",
                   padding: "14px 40px",
-                  border: "1px solid var(--gold)",
-                  color: "var(--gold)",
+                  border: "1px solid rgba(255,255,255,0.4)",
+                  color: "#ffffff",
                   fontWeight: 600,
                   fontSize: "0.9rem",
                   letterSpacing: "0.06em",
@@ -1775,11 +1789,12 @@ export default function HomePage() {
                 display: "inline-block",
                 padding: "18px 52px",
                 background: "var(--gold)",
-                color: "#0a0a0a",
-fontWeight: 800,
+                color: "#ffffff",
+                fontWeight: 800,
                 fontSize: "1.15rem",
                 letterSpacing: "0.08em",
                 borderRadius: "var(--radius)",
+                boxShadow: "0 6px 28px rgba(0,102,255,0.35)",
               }}
             >
               수강신청 하기
@@ -1791,9 +1806,9 @@ fontWeight: 800,
               style={{
                 display: "inline-block",
                 padding: "18px 52px",
-                border: "1px solid var(--gold)",
-                color: "var(--gold)",
-fontWeight: 800,
+                border: "1px solid rgba(255,255,255,0.4)",
+                color: "#ffffff",
+                fontWeight: 800,
                 fontSize: "1.15rem",
                 letterSpacing: "0.08em",
                 borderRadius: "var(--radius)",
