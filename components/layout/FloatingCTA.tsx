@@ -61,9 +61,11 @@ export default function FloatingCTA() {
         }}
       >
         <a
-          href="https://forms.gle/68E7yFFFoDiPCRwD9"
-          target="_blank"
-          rel="noopener noreferrer"
+          href="#contact"
+          onClick={(e) => {
+            e.preventDefault()
+            document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+          }}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -79,7 +81,6 @@ export default function FloatingCTA() {
             textDecoration: 'none',
             borderRadius: '14px',
             boxShadow: '0 4px 20px rgba(0,102,255,0.45)',
-            animation: 'subtlePulse 2.5s ease-in-out infinite',
             transition: 'opacity 0.2s, transform 0.15s',
             whiteSpace: 'nowrap',
           }}

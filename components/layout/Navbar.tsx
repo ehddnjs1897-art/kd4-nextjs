@@ -315,9 +315,11 @@ export default function Navbar() {
           {/* ── CTA + 햄버거 ── */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <a
-              href="https://forms.gle/68E7yFFFoDiPCRwD9"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#contact"
+              onClick={(e) => {
+                e.preventDefault()
+                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+              }}
               className="desktop-cta"
               style={{
                 display: 'inline-block',
@@ -499,10 +501,12 @@ export default function Navbar() {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '32px' }}>
               <a
-                href="https://forms.gle/68E7yFFFoDiPCRwD9"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={closeMobile}
+                href="#contact"
+                onClick={(e) => {
+                  e.preventDefault()
+                  closeMobile()
+                  setTimeout(() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }), 100)
+                }}
                 style={{
                   display: 'block',
                   padding: '16px',

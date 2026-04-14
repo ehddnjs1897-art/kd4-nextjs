@@ -187,7 +187,7 @@ function FaqAccordion() {
 // ─── 클래스 카드 ───────────────────────────────────────────────────────────────
 
 function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
-  const [priceVisible, setPriceVisible] = useState(false)
+  const [priceVisible, setPriceVisible] = useState(true)
   return (
     <div
       style={{
@@ -491,6 +491,18 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
           </div>
         </div>
 
+        {cls.instructor && (
+          <p style={{
+            fontSize: '0.78rem',
+            color: 'var(--gray)',
+            textAlign: 'center',
+            padding: '0 24px 8px',
+            letterSpacing: '0.03em',
+          }}>
+            {cls.instructor}
+          </p>
+        )}
+
         {/* CTA 버튼 */}
         <a
           href="#contact"
@@ -734,7 +746,7 @@ export default function HomePage() {
         style={{
           position: "relative",
           width: "100%",
-          height: "100vh",
+          height: "100svh",
           minHeight: "600px",
           overflow: "hidden",
           display: "flex",
@@ -796,7 +808,6 @@ export default function HomePage() {
             bottom: "12px",
             left: "50%",
             transform: "translateX(-50%)",
-            zIndex: 10,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -917,328 +928,6 @@ export default function HomePage() {
               </p>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* ── 5. CLASSES ───────────────────────────────────────────────────────── */}
-      <section id="classes" className="section" style={{ background: "var(--bg)" }}>
-        <div className="container">
-          <div style={{ textAlign: "center", marginBottom: "60px" }}>
-            <h2
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "clamp(1.8rem, 4vw, 2.6rem)",
-                fontWeight: 700,
-                letterSpacing: "0.2em",
-                color: "var(--white)",
-              }}
-            >
-              CURRICULUM
-            </h2>
-          </div>
-
-          {/* 봄맞이 스페셜 이벤트 배너 + 카운트다운 */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "16px",
-              padding: "16px 24px",
-              marginBottom: "28px",
-              background: "rgba(0,102,255,0.06)",
-              border: "1px solid rgba(0,102,255,0.25)",
-              borderRadius: "var(--radius)",
-              flexWrap: "wrap",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", justifyContent: "center" }}>
-              <span style={{ fontSize: "1.4rem" }}>🌸</span>
-              <span style={{ fontSize: "1.15rem", fontWeight: 700, color: "#ffffff" }}>
-                봄맞이 스페셜 — 첫 달 10만원 할인
-              </span>
-              <span style={{ fontSize: "1rem", color: "var(--gray)" }}>·</span>
-              <span style={{ fontSize: "1.05rem", color: "#e74c3c", fontWeight: 700, animation: "subtlePulse 1.5s ease-in-out infinite" }}>
-                마감임박
-              </span>
-            </div>
-            <CountdownTimer />
-          </div>
-
-          {/* STEP 1 - 신규 멤버 */}
-          <div style={{ marginBottom: "48px" }}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", marginBottom: "32px", gap: "10px", padding: "28px 32px", border: "1px solid rgba(74,222,128,0.4)", borderRadius: "12px", background: "rgba(74,222,128,0.04)", boxShadow: "0 0 24px rgba(74,222,128,0.08)" }}>
-              <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.25em", color: "#4ade80", fontFamily: "var(--font-display)", margin: 0 }}>STEP 1</p>
-              <h3 style={{ fontSize: "clamp(1.8rem, 4vw, 2.4rem)", fontWeight: 800, color: "#ffffff", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>A 코스</h3>
-              <p style={{ fontSize: "clamp(0.9rem, 2vw, 1rem)", color: "#4ade80", fontWeight: 600, margin: 0, letterSpacing: "0.04em" }}>신규 멤버 신청가능</p>
-            </div>
-            <div
-              className="classes-grid"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 320px), 1fr))",
-                gap: "16px",
-              }}
-            >
-              {CLASSES.filter(c => c.isNewMemberOpen).map((cls, i) => (
-                <ClassCard key={i} cls={cls} />
-              ))}
-            </div>
-          </div>
-
-          {[
-            { label: "STEP 2", title: "B 코스", desc: "STEP1 수료 후 참여할 수 있는 클래스입니다.", open: step2Open, setOpen: setStep2Open, filter: "step2" },
-            { label: "STEP 3", title: "C 코스", desc: "STEP2 수료 후 참여할 수 있는 클래스입니다.", open: step3Open, setOpen: setStep3Open, filter: "step3" },
-            { label: "EXTRA",  title: "별도 코스", desc: "별도로 운영되는 클래스입니다.", open: extraOpen, setOpen: setExtraOpen, filter: "extra" },
-          ].map(({ label, title, desc, open, setOpen, filter }) => (
-            <div key={filter} style={{ marginBottom: "16px" }}>
-              <button
-                onClick={() => setOpen((o: boolean) => !o)}
-                style={{
-                  display: "flex", flexDirection: "column", alignItems: "center",
-                  width: "100%", background: open ? "rgba(255,255,255,0.03)" : "none",
-                  border: "1px solid var(--border)", borderRadius: "12px",
-                  cursor: "pointer", padding: "24px 32px",
-                  marginBottom: open ? "20px" : "0", textAlign: "center", gap: "8px",
-                  transition: "border-color 0.2s, background 0.2s",
-                  boxShadow: open ? "0 0 20px rgba(255,255,255,0.04)" : "none",
-                }}
-              >
-                <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.25em", color: "#4ade80", fontFamily: "var(--font-display)", margin: 0 }}>{label}</p>
-                <h3 style={{ fontSize: "clamp(1.8rem, 4vw, 2.4rem)", fontWeight: 800, color: "var(--gray-light)", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>{title}</h3>
-                <p style={{ fontSize: "0.8rem", color: "var(--gray)", margin: 0 }}>{desc}</p>
-                <span style={{ fontSize: "0.85rem", color: "var(--gray)", transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.3s", display: "inline-block", marginTop: "4px" }}>▼</span>
-              </button>
-              {open && (
-                <div className="classes-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 300px), 1fr))", gap: "12px", opacity: 0.75 }}>
-                  {CLASSES.filter(c => c.category === filter).map((cls, i) => (
-                    <ClassCard key={i} cls={cls} />
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-
-          {/* 클래스 하단 CTA 영역 */}
-          <div
-            style={{
-              marginTop: "48px",
-              padding: "40px 32px",
-              background: "linear-gradient(135deg, rgba(0,102,255,0.06) 0%, rgba(0,0,0,0) 100%)",
-              border: "1px solid var(--border)",
-              borderRadius: "12px",
-              textAlign: "center",
-            }}
-          >
-            <p style={{ fontSize: "0.75rem", letterSpacing: "0.25em", color: "var(--gold)", fontFamily: "var(--font-display)", marginBottom: "12px" }}>
-              START YOUR JOURNEY
-            </p>
-            <h3 style={{ fontSize: "clamp(1.2rem, 3vw, 1.6rem)", fontWeight: 700, color: "var(--white)", marginBottom: "8px" }}>
-              어떤 클래스가 맞는지 모르겠다면?
-            </h3>
-            <p style={{ fontSize: "0.88rem", color: "var(--gray)", marginBottom: "28px", lineHeight: 1.6 }}>
-              방문 상담을 통해 나에게 맞는 클래스를 안내받으세요.
-            </p>
-            <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
-              <a
-                href="https://forms.gle/68E7yFFFoDiPCRwD9"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: "inline-block",
-                  padding: "14px 40px",
-                  background: "var(--gold)",
-                  color: "#ffffff",
-                  fontWeight: 700,
-                  fontSize: "0.9rem",
-                  letterSpacing: "0.06em",
-                  borderRadius: "var(--radius)",
-                  boxShadow: "0 4px 20px rgba(0,102,255,0.3)",
-                }}
-              >
-                방문상담 신청
-              </a>
-              <a
-                href="https://pf.kakao.com/_ximxdqn"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => pixel.contact()}
-                style={{
-                  display: "inline-block",
-                  padding: "14px 40px",
-                  border: "1px solid rgba(255,255,255,0.4)",
-                  color: "#ffffff",
-                  fontWeight: 600,
-                  fontSize: "0.9rem",
-                  letterSpacing: "0.06em",
-                  borderRadius: "var(--radius)",
-                }}
-              >
-                카카오 상담
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
-      {/* ── 3. ABOUT ─────────────────────────────────────────────────────────── */}
-      <section id="about" className="section" style={{ background: "var(--bg)" }}>
-        <div className="container">
-          <div style={{ maxWidth: "720px", margin: "0 auto", textAlign: "center" }}>
-            <p
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "0.75rem",
-                letterSpacing: "0.3em",
-                color: "var(--gold)",
-                marginBottom: "16px",
-              }}
-            >
-              ALL IN ONE SYSTEM
-            </p>
-            <h2
-              style={{
-                fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
-                fontWeight: 700,
-                marginBottom: "16px",
-                lineHeight: 1.2,
-              }}
-            >
-              배우지망생 →{" "}
-              <span style={{ color: "var(--gold)" }}>진짜 배우</span>
-            </h2>
-            <p
-              style={{
-                color: "var(--gray-light)",
-                fontSize: "0.95rem",
-                marginBottom: "48px",
-                lineHeight: 1.7,
-              }}
-            >
-              연기 훈련부터 캐스팅까지, 배우 액셀러레이팅 시스템
-            </p>
-
-
-            {/* 3단계 — 진행 느낌 */}
-            <div className="steps-journey">
-              {[
-                {
-                  num: "01",
-                  step: "STEP 01",
-                  title: "연기 메소드 훈련",
-                  desc: "마이즈너 테크닉 · 이바나 처벅 테크닉 기반의 심층 연기 훈련",
-                  icon: "🎭",
-                },
-                {
-                  num: "02",
-                  step: "STEP 02",
-                  title: "포트폴리오 제작",
-                  desc: "전문 영화팀과 함께 제작하는 출연영상으로 실전 포트폴리오 완성",
-                  icon: "🎬",
-                },
-                {
-                  num: "03",
-                  step: "STEP 03",
-                  title: "캐스팅 연계",
-                  desc: "캐스팅 디렉터·조감독과 직접 연결되는 실전 캐스팅 지원",
-                  icon: "🌟",
-                },
-              ].map((s, i) => (
-                <div key={s.num} style={{ display: 'contents' }}>
-                  <div
-                    className="step-card"
-                    style={{
-                      position: "relative",
-                      background: "var(--bg3)",
-                      border: "1px solid var(--border)",
-                      borderRadius: "8px",
-                      padding: "56px 36px 48px",
-                      textAlign: "left",
-                      overflow: "hidden",
-                      transition: "border-color var(--transition)",
-                    }}
-                  >
-                    {/* 대형 배경 숫자 */}
-                    <span
-                      style={{
-                        position: "absolute",
-                        top: "12px",
-                        right: "24px",
-                        fontFamily: "var(--font-display)",
-                        fontSize: "5.5rem",
-                        fontWeight: 700,
-                        color: "rgba(0,87,255,0.07)",
-                        lineHeight: 1,
-                        userSelect: "none",
-                        pointerEvents: "none",
-                      }}
-                    >
-                      {s.num}
-                    </span>
-
-                    {/* STEP 라벨 */}
-                    <p
-                      style={{
-                        fontFamily: "var(--font-display)",
-                        fontSize: "1rem",
-                        letterSpacing: "0.2em",
-                        fontWeight: 600,
-                        color: "var(--gold)",
-                        marginBottom: "16px",
-                      }}
-                    >
-                      {s.step}
-                    </p>
-
-                    {/* 이모지 아이콘 */}
-                    <div className="step-icon-glow">
-                      <span style={{ position: "relative", zIndex: 1 }}>{s.icon}</span>
-                    </div>
-
-                    {/* 제목 */}
-                    <h3
-                      style={{
-                        fontSize: "1rem",
-                        fontWeight: 700,
-                        marginBottom: "12px",
-                        lineHeight: 1.4,
-                        whiteSpace: "pre-line",
-                      }}
-                    >
-                      {s.title}
-                    </h3>
-
-                    {/* 설명 */}
-                    <p
-                      style={{
-                        fontSize: "0.82rem",
-                        color: "var(--gray)",
-                        lineHeight: 1.7,
-                      }}
-                    >
-                      {s.desc}
-                    </p>
-                  </div>
-
-                  {/* 화살표 (마지막 제외) */}
-                  {i < 2 && (
-                    <div key={`arrow-${i}`} className="step-journey-arrow">
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <path
-                          d="M4 10h12M11 5l5 5-5 5"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 
@@ -1415,6 +1104,227 @@ export default function HomePage() {
             />
 
           </div>{/* end director-grid */}
+        </div>
+      </section>
+
+      {/* ── 3. ABOUT ─────────────────────────────────────────────────────────── */}
+      <section id="about" className="section" style={{ background: "var(--bg)" }}>
+        <div className="container">
+          <div style={{ maxWidth: "720px", margin: "0 auto", textAlign: "center" }}>
+            <p
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "0.75rem",
+                letterSpacing: "0.3em",
+                color: "var(--gold)",
+                marginBottom: "16px",
+              }}
+            >
+              ALL IN ONE SYSTEM
+            </p>
+            <h2
+              style={{
+                fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
+                fontWeight: 700,
+                marginBottom: "16px",
+                lineHeight: 1.2,
+              }}
+            >
+              배우지망생 →{" "}
+              <span style={{ color: "var(--gold)" }}>진짜 배우</span>
+            </h2>
+            <p
+              style={{
+                color: "var(--gray-light)",
+                fontSize: "0.95rem",
+                marginBottom: "48px",
+                lineHeight: 1.7,
+              }}
+            >
+              연기 훈련부터 캐스팅까지, 배우 액셀러레이팅 시스템
+            </p>
+
+
+            {/* 3단계 — 진행 느낌 */}
+            <div className="steps-journey">
+              {[
+                {
+                  num: "01",
+                  step: "STEP 01",
+                  title: "연기 메소드 훈련",
+                  desc: "마이즈너 테크닉 · 이바나 처벅 테크닉 기반의 심층 연기 훈련",
+                  icon: "🎭",
+                },
+                {
+                  num: "02",
+                  step: "STEP 02",
+                  title: "포트폴리오 제작",
+                  desc: "전문 영화팀과 함께 제작하는 출연영상으로 실전 포트폴리오 완성",
+                  icon: "🎬",
+                },
+                {
+                  num: "03",
+                  step: "STEP 03",
+                  title: "캐스팅 연계",
+                  desc: "캐스팅 디렉터·조감독과 직접 연결되는 실전 캐스팅 지원",
+                  icon: "🌟",
+                },
+              ].map((s, i) => (
+                <div key={s.num} style={{ display: 'contents' }}>
+                  <div
+                    className="step-card"
+                    style={{
+                      position: "relative",
+                      background: "var(--bg3)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "8px",
+                      padding: "56px 36px 48px",
+                      textAlign: "left",
+                      overflow: "hidden",
+                      transition: "border-color var(--transition)",
+                    }}
+                  >
+                    {/* 대형 배경 숫자 */}
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: "12px",
+                        right: "24px",
+                        fontFamily: "var(--font-display)",
+                        fontSize: "5.5rem",
+                        fontWeight: 700,
+                        color: "rgba(0,87,255,0.07)",
+                        lineHeight: 1,
+                        userSelect: "none",
+                        pointerEvents: "none",
+                      }}
+                    >
+                      {s.num}
+                    </span>
+
+                    {/* STEP 라벨 */}
+                    <p
+                      style={{
+                        fontFamily: "var(--font-display)",
+                        fontSize: "1rem",
+                        letterSpacing: "0.2em",
+                        fontWeight: 600,
+                        color: "var(--gold)",
+                        marginBottom: "16px",
+                      }}
+                    >
+                      {s.step}
+                    </p>
+
+                    {/* 이모지 아이콘 */}
+                    <div className="step-icon-glow">
+                      <span style={{ position: "relative", zIndex: 1 }}>{s.icon}</span>
+                    </div>
+
+                    {/* 제목 */}
+                    <h3
+                      style={{
+                        fontSize: "1rem",
+                        fontWeight: 700,
+                        marginBottom: "12px",
+                        lineHeight: 1.4,
+                        whiteSpace: "pre-line",
+                      }}
+                    >
+                      {s.title}
+                    </h3>
+
+                    {/* 설명 */}
+                    <p
+                      style={{
+                        fontSize: "0.82rem",
+                        color: "var(--gray)",
+                        lineHeight: 1.7,
+                      }}
+                    >
+                      {s.desc}
+                    </p>
+                  </div>
+
+                  {/* 화살표 (마지막 제외) */}
+                  {i < 2 && (
+                    <div key={`arrow-${i}`} className="step-journey-arrow">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path
+                          d="M4 10h12M11 5l5 5-5 5"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 8. CASTING ───────────────────────────────────────────────────────── */}
+      <section
+        id="casting"
+        className="section"
+        style={{ background: "var(--bg2)", borderTop: "1px solid var(--border)", paddingBottom: "80px" }}
+      >
+        <div className="container">
+          <div style={{ textAlign: "center", marginBottom: "48px" }}>
+            <p
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "0.75rem",
+                letterSpacing: "0.3em",
+                color: "var(--gold)",
+                marginBottom: "12px",
+              }}
+            >
+              CASTING RESULTS
+            </p>
+            <h2 style={{ fontSize: "clamp(1.6rem, 4vw, 2.4rem)", fontWeight: 700 }}>
+              KD4 캐스팅현황
+            </h2>
+            <p style={{ color: "var(--gray)", fontSize: "0.9rem", marginTop: "12px" }}>
+              KD4 배우들의 실제 캐스팅 결과입니다
+            </p>
+          </div>
+        </div>
+
+        {/* 마퀴 — 컨테이너 밖으로 full-width */}
+        <div className="marquee-wrap">
+          <div className="marquee-track">
+            {[...CASTING_PHOTOS, ...CASTING_PHOTOS].map((photo, i) => (
+              <div
+                key={i}
+                style={{
+                  flexShrink: 0,
+                  width: "200px",
+                  marginRight: "16px",
+                  borderRadius: "8px",
+                  overflow: "hidden",
+                  background: "var(--bg3)",
+                  border: "1px solid var(--border)",
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={photo.url}
+                  alt={photo.name}
+                  style={{
+                    width: "100%",
+                    aspectRatio: "9 / 16",
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -1634,63 +1544,162 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 8. CASTING ───────────────────────────────────────────────────────── */}
-      <section
-        id="casting"
-        className="section"
-        style={{ background: "var(--bg2)", borderTop: "1px solid var(--border)", paddingBottom: "80px" }}
-      >
+      {/* ── 5. CLASSES ───────────────────────────────────────────────────────── */}
+      <section id="classes" className="section" style={{ background: "var(--bg)" }}>
         <div className="container">
-          <div style={{ textAlign: "center", marginBottom: "48px" }}>
-            <p
+          <div style={{ textAlign: "center", marginBottom: "60px" }}>
+            <h2
               style={{
                 fontFamily: "var(--font-display)",
-                fontSize: "0.75rem",
-                letterSpacing: "0.3em",
-                color: "var(--gold)",
-                marginBottom: "12px",
+                fontSize: "clamp(1.8rem, 4vw, 2.6rem)",
+                fontWeight: 700,
+                letterSpacing: "0.2em",
+                color: "var(--white)",
               }}
             >
-              CASTING RESULTS
-            </p>
-            <h2 style={{ fontSize: "clamp(1.6rem, 4vw, 2.4rem)", fontWeight: 700 }}>
-              KD4 캐스팅현황
+              CURRICULUM
             </h2>
-            <p style={{ color: "var(--gray)", fontSize: "0.9rem", marginTop: "12px" }}>
-              KD4 배우들의 실제 캐스팅 결과입니다
-            </p>
           </div>
-        </div>
 
-        {/* 마퀴 — 컨테이너 밖으로 full-width */}
-        <div className="marquee-wrap">
-          <div className="marquee-track">
-            {[...CASTING_PHOTOS, ...CASTING_PHOTOS].map((photo, i) => (
-              <div
-                key={i}
+          {/* 봄맞이 스페셜 이벤트 배너 + 카운트다운 */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "16px",
+              padding: "16px 24px",
+              marginBottom: "28px",
+              background: "rgba(0,102,255,0.06)",
+              border: "1px solid rgba(0,102,255,0.25)",
+              borderRadius: "var(--radius)",
+              flexWrap: "wrap",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", justifyContent: "center" }}>
+              <span style={{ fontSize: "1.4rem" }}>🌸</span>
+              <span style={{ fontSize: "1.15rem", fontWeight: 700, color: "#ffffff" }}>
+                봄맞이 스페셜 — 첫 달 10만원 할인
+              </span>
+              <span style={{ fontSize: "1rem", color: "var(--gray)" }}>·</span>
+              <span style={{ fontSize: "1.05rem", color: "#e74c3c", fontWeight: 700, animation: "subtlePulse 1.5s ease-in-out infinite" }}>
+                마감임박
+              </span>
+            </div>
+            <CountdownTimer />
+          </div>
+
+          {/* STEP 1 - 신규 멤버 */}
+          <div style={{ marginBottom: "48px" }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", marginBottom: "32px", gap: "10px", padding: "28px 32px", border: "1px solid rgba(74,222,128,0.4)", borderRadius: "12px", background: "rgba(74,222,128,0.04)", boxShadow: "0 0 24px rgba(74,222,128,0.08)" }}>
+              <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.25em", color: "#4ade80", fontFamily: "var(--font-display)", margin: 0 }}>STEP 1</p>
+              <h3 style={{ fontSize: "clamp(1.8rem, 4vw, 2.4rem)", fontWeight: 800, color: "#ffffff", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>A 코스</h3>
+              <p style={{ fontSize: "clamp(0.9rem, 2vw, 1rem)", color: "#4ade80", fontWeight: 600, margin: 0, letterSpacing: "0.04em" }}>신규 멤버 신청가능</p>
+            </div>
+            <div
+              className="classes-grid"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 320px), 1fr))",
+                gap: "16px",
+              }}
+            >
+              {CLASSES.filter(c => c.isNewMemberOpen).map((cls, i) => (
+                <ClassCard key={i} cls={cls} />
+              ))}
+            </div>
+          </div>
+
+          {[
+            { label: "STEP 2", title: "B 코스", desc: "STEP1 수료 후 참여할 수 있는 클래스입니다.", open: step2Open, setOpen: setStep2Open, filter: "step2" },
+            { label: "STEP 3", title: "C 코스", desc: "STEP2 수료 후 참여할 수 있는 클래스입니다.", open: step3Open, setOpen: setStep3Open, filter: "step3" },
+            { label: "EXTRA",  title: "별도 코스", desc: "별도로 운영되는 클래스입니다.", open: extraOpen, setOpen: setExtraOpen, filter: "extra" },
+          ].map(({ label, title, desc, open, setOpen, filter }) => (
+            <div key={filter} style={{ marginBottom: "16px" }}>
+              <button
+                onClick={() => setOpen((o: boolean) => !o)}
                 style={{
-                  flexShrink: 0,
-                  width: "200px",
-                  marginRight: "16px",
-                  borderRadius: "8px",
-                  overflow: "hidden",
-                  background: "var(--bg3)",
-                  border: "1px solid var(--border)",
+                  display: "flex", flexDirection: "column", alignItems: "center",
+                  width: "100%", background: open ? "rgba(255,255,255,0.03)" : "none",
+                  border: "1px solid var(--border)", borderRadius: "12px",
+                  cursor: "pointer", padding: "24px 32px",
+                  marginBottom: open ? "20px" : "0", textAlign: "center", gap: "8px",
+                  transition: "border-color 0.2s, background 0.2s",
+                  boxShadow: open ? "0 0 20px rgba(255,255,255,0.04)" : "none",
                 }}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={photo.url}
-                  alt={photo.name}
-                  style={{
-                    width: "100%",
-                    aspectRatio: "9 / 16",
-                    objectFit: "cover",
-                    display: "block",
-                  }}
-                />
-              </div>
-            ))}
+                <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.25em", color: "#4ade80", fontFamily: "var(--font-display)", margin: 0 }}>{label}</p>
+                <h3 style={{ fontSize: "clamp(1.8rem, 4vw, 2.4rem)", fontWeight: 800, color: "var(--gray-light)", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>{title}</h3>
+                <p style={{ fontSize: "0.8rem", color: "var(--gray)", margin: 0 }}>{desc}</p>
+                <span style={{ fontSize: "0.85rem", color: "var(--gray)", transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.3s", display: "inline-block", marginTop: "4px" }}>▼</span>
+              </button>
+              {open && (
+                <div className="classes-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 300px), 1fr))", gap: "12px", opacity: 0.75 }}>
+                  {CLASSES.filter(c => c.category === filter).map((cls, i) => (
+                    <ClassCard key={i} cls={cls} />
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+
+          {/* 클래스 하단 CTA 영역 */}
+          <div
+            style={{
+              marginTop: "48px",
+              padding: "40px 32px",
+              background: "linear-gradient(135deg, rgba(0,102,255,0.06) 0%, rgba(0,0,0,0) 100%)",
+              border: "1px solid var(--border)",
+              borderRadius: "12px",
+              textAlign: "center",
+            }}
+          >
+            <p style={{ fontSize: "0.75rem", letterSpacing: "0.25em", color: "var(--gold)", fontFamily: "var(--font-display)", marginBottom: "12px" }}>
+              START YOUR JOURNEY
+            </p>
+            <h3 style={{ fontSize: "clamp(1.2rem, 3vw, 1.6rem)", fontWeight: 700, color: "var(--white)", marginBottom: "8px" }}>
+              어떤 클래스가 맞는지 모르겠다면?
+            </h3>
+            <p style={{ fontSize: "0.88rem", color: "var(--gray)", marginBottom: "28px", lineHeight: 1.6 }}>
+              방문 상담을 통해 나에게 맞는 클래스를 안내받으세요.
+            </p>
+            <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
+              <a
+                href="#contact"
+                onClick={(e) => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }) }}
+                style={{
+                  display: "inline-block",
+                  padding: "14px 40px",
+                  background: "var(--gold)",
+                  color: "#ffffff",
+                  fontWeight: 700,
+                  fontSize: "0.9rem",
+                  letterSpacing: "0.06em",
+                  borderRadius: "var(--radius)",
+                  boxShadow: "0 4px 20px rgba(0,102,255,0.3)",
+                }}
+              >
+                방문상담 신청
+              </a>
+              <a
+                href="https://pf.kakao.com/_ximxdqn"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => pixel.contact()}
+                style={{
+                  display: "inline-block",
+                  padding: "14px 40px",
+                  border: "1px solid rgba(255,255,255,0.4)",
+                  color: "#ffffff",
+                  fontWeight: 600,
+                  fontSize: "0.9rem",
+                  letterSpacing: "0.06em",
+                  borderRadius: "var(--radius)",
+                }}
+              >
+                카카오 상담
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -1724,7 +1733,7 @@ export default function HomePage() {
             marginBottom: "32px",
           }}
         >
-          오픈클래스 참여 후기
+          수강생 후기
         </h2>
 
         {/* 1행: 왼쪽으로 */}
@@ -1862,9 +1871,8 @@ export default function HomePage() {
             }}
           >
             <a
-              href="https://forms.gle/68E7yFFFoDiPCRwD9"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#contact"
+              onClick={(e) => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }) }}
               style={{
                 display: "inline-block",
                 padding: "18px 52px",

@@ -27,19 +27,38 @@ const labelStyle: React.CSSProperties = {
   display: 'block',
 }
 
+const SOURCE_OPTIONS = [
+  '인스타그램',
+  '네이버 블로그',
+  '액터길드',
+  '필름메이커스',
+  'OTR',
+  '네이버·구글 검색',
+  'AI 추천',
+  '지인소개',
+  '리플레이 단톡방',
+  '기타',
+]
+
+const INQUIRY_OPTIONS = [
+  { value: '방문 상담', label: '방문 상담' },
+  { value: '바로 수강신청 (첫 달 10만원 할인)', label: '바로 수강신청 (첫 달 10만원 할인)' },
+  { value: '무료 오픈클래스', label: '무료 오픈클래스' },
+]
+
 export default function ContactForm() {
   const [form, setForm] = useState({
     name: '',
     phone: '',
-    email: '',
     class_name: '',
-    motivation: '',
+    source: '',
+    inquiry_type: '',
   })
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
 
-  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm(f => ({ ...f, [k]: e.target.value }))
 
   async function handleSubmit(e: React.FormEvent) {
@@ -51,13 +70,20 @@ export default function ContactForm() {
     setLoading(true)
     setError('')
 
+    // 유입경로 + 문의유형을 motivation에 결합
+    const motivationParts = [
+      form.source && `유입경로: ${form.source}`,
+      form.inquiry_type && `문의유형: ${form.inquiry_type}`,
+    ].filter(Boolean)
+    const motivation = motivationParts.length > 0 ? motivationParts.join(' / ') : null
+
     const supabase = createClient()
     const { error: dbError } = await supabase.from('applications').insert({
       name: form.name,
       phone: form.phone,
-      email: form.email || null,
+      email: null,
       class_name: form.class_name || null,
-      motivation: form.motivation || null,
+      motivation,
       status: '대기',
     })
 
@@ -77,9 +103,9 @@ export default function ContactForm() {
         record: {
           name: form.name,
           phone: form.phone,
-          email: form.email || null,
+          email: null,
           class_name: form.class_name || null,
-          motivation: form.motivation || null,
+          motivation,
           status: '대기',
           created_at: new Date().toISOString(),
         }
@@ -104,7 +130,10 @@ export default function ContactForm() {
           접수가 완료되었습니다
         </p>
         <p style={{ color: 'var(--gray-light)', fontSize: '0.9rem', lineHeight: 1.7 }}>
-          빠른 시일 내에 연락드리겠습니다.
+          <strong style={{ color: 'var(--white)' }}>24시간 이내</strong> 카카오톡으로 연락드립니다.<br />
+          긴급하시면{' '}
+          <a href="https://pf.kakao.com/_ximxdqn" target="_blank" rel="noopener noreferrer"
+            style={{ color: 'var(--gold)', textDecoration: 'underline' }}>카카오 채널</a>로 문의해주세요.
         </p>
       </div>
     )
@@ -124,10 +153,19 @@ export default function ContactForm() {
         </div>
       </div>
 
-      {/* 이메일 */}
+      {/* KD4를 어떻게 알게 되셨나요 */}
       <div>
-        <label style={labelStyle}>이메일</label>
-        <input style={inputStyle} type="email" placeholder="example@email.com" value={form.email} onChange={set('email')} />
+        <label style={labelStyle}>KD4를 어떻게 알게 되셨나요?</label>
+        <select
+          style={{ ...inputStyle, cursor: 'pointer' }}
+          value={form.source}
+          onChange={set('source')}
+        >
+          <option value="">선택해 주세요</option>
+          {SOURCE_OPTIONS.map(opt => (
+            <option key={opt} value={opt}>{opt}</option>
+          ))}
+        </select>
       </div>
 
       {/* 관심 클래스 */}
@@ -139,22 +177,50 @@ export default function ContactForm() {
           onChange={set('class_name')}
         >
           <option value="">선택 안 함</option>
-          {CLASSES.map(c => (
+          {CLASSES.filter(c => c.isNewMemberOpen).map(c => (
             <option key={c.nameKo} value={c.nameKo}>{c.nameKo}</option>
           ))}
         </select>
       </div>
 
-      {/* 문의 내용 */}
+      {/* 문의 유형 */}
       <div>
-        <label style={labelStyle}>문의 내용</label>
-        <textarea
-          style={{ ...inputStyle, minHeight: '120px', resize: 'vertical' }}
-          placeholder="궁금한 점이나 상담 내용을 자유롭게 적어주세요."
-          value={form.motivation}
-          onChange={set('motivation')}
-        />
+        <label style={labelStyle}>무엇을 원하시나요?</label>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {INQUIRY_OPTIONS.map(opt => (
+            <label
+              key={opt.value}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '12px 16px',
+                background: form.inquiry_type === opt.value ? 'rgba(0,102,255,0.12)' : 'var(--bg3)',
+                border: form.inquiry_type === opt.value ? '1px solid var(--gold)' : '1px solid var(--border)',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                fontSize: '0.9rem',
+                color: form.inquiry_type === opt.value ? 'var(--white)' : 'var(--gray-light)',
+              }}
+            >
+              <input
+                type="radio"
+                name="inquiry_type"
+                value={opt.value}
+                checked={form.inquiry_type === opt.value}
+                onChange={set('inquiry_type')}
+                style={{ accentColor: 'var(--gold)', width: '16px', height: '16px', flexShrink: 0 }}
+              />
+              {opt.label}
+            </label>
+          ))}
+        </div>
       </div>
+
+      <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.75rem', margin: '-8px 0' }}>
+        개인정보는 상담 목적 외 사용되지 않습니다.
+      </p>
 
       {error && (
         <p style={{ color: '#f87171', fontSize: '0.85rem', margin: 0 }}>{error}</p>
@@ -165,7 +231,7 @@ export default function ContactForm() {
         disabled={loading}
         style={{
           background: 'var(--gold)',
-          color: '#0a0a0a',
+          color: '#ffffff',
           border: 'none',
           borderRadius: '6px',
           padding: '14px 0',
@@ -178,7 +244,7 @@ export default function ContactForm() {
           transition: 'opacity 0.2s',
         }}
       >
-        {loading ? '전송 중...' : '상담 접수하기'}
+        {loading ? '전송 중...' : '24시간 이내 회신받기'}
       </button>
     </form>
   )
