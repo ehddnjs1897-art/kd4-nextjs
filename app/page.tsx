@@ -956,29 +956,27 @@ export default function HomePage() {
 
           {/* 신규 신청 가능 */}
           <div style={{ marginBottom: "56px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "32px" }}>
-              <div>
-                <p style={{
-                  fontSize: "0.72rem",
-                  fontWeight: 700,
-                  letterSpacing: "0.2em",
-                  color: "#4ade80",
-                  marginBottom: "6px",
-                  fontFamily: "var(--font-display)",
-                }}>
-                  ● OPEN
-                </p>
-                <h3 style={{
-                  fontSize: "clamp(1.4rem, 3vw, 1.9rem)",
-                  fontWeight: 800,
-                  color: "#ffffff",
-                  letterSpacing: "-0.01em",
-                  lineHeight: 1.1,
-                }}>
-                  신규멤버 신청가능
-                </h3>
-              </div>
-              <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(74,222,128,0.3), transparent)" }} />
+            <div style={{ textAlign: "center", marginBottom: "32px" }}>
+              <p style={{
+                fontSize: "0.72rem",
+                fontWeight: 700,
+                letterSpacing: "0.2em",
+                color: "#4ade80",
+                marginBottom: "8px",
+                fontFamily: "var(--font-display)",
+              }}>
+                ● OPEN
+              </p>
+              <h3 style={{
+                fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)",
+                fontWeight: 800,
+                color: "#ffffff",
+                letterSpacing: "-0.01em",
+                lineHeight: 1.1,
+                fontFamily: "var(--font-serif)",
+              }}>
+                신규멤버 신청가능
+              </h3>
             </div>
             <div
               className="classes-grid"
@@ -1000,45 +998,46 @@ export default function HomePage() {
               onClick={() => setProcessOpen(o => !o)}
               style={{
                 display: "flex",
+                flexDirection: "column",
                 alignItems: "center",
-                gap: "16px",
                 width: "100%",
                 background: "none",
                 border: "none",
                 cursor: "pointer",
                 padding: "0",
                 marginBottom: processOpen ? "32px" : "0",
-                textAlign: "left",
+                textAlign: "center",
+                gap: "10px",
               }}
             >
-              <div>
-                <p style={{
-                  fontSize: "0.72rem",
-                  fontWeight: 700,
-                  letterSpacing: "0.2em",
-                  color: "var(--gray)",
-                  marginBottom: "6px",
-                  fontFamily: "var(--font-display)",
-                }}>
-                  STEP UP
-                </p>
-                <h3 style={{
-                  fontSize: "clamp(1.4rem, 3vw, 1.9rem)",
-                  fontWeight: 800,
-                  color: "var(--gray-light)",
-                  letterSpacing: "-0.01em",
-                  lineHeight: 1.1,
-                }}>
-                  NEXT CLASS
-                </h3>
-              </div>
-              <div style={{ flex: 1, height: "1px", background: "var(--border)" }} />
+              <p style={{
+                fontSize: "0.72rem",
+                fontWeight: 700,
+                letterSpacing: "0.2em",
+                color: "var(--gray)",
+                fontFamily: "var(--font-display)",
+                margin: 0,
+              }}>
+                STEP UP
+              </p>
+              <h3 style={{
+                fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)",
+                fontWeight: 800,
+                color: "var(--gray-light)",
+                letterSpacing: "-0.01em",
+                lineHeight: 1.1,
+                fontFamily: "var(--font-serif)",
+                margin: 0,
+              }}>
+                NEXT CLASS
+              </h3>
               <span style={{
-                fontSize: "1.1rem",
+                fontSize: "0.9rem",
                 color: "var(--gray)",
                 transform: processOpen ? "rotate(180deg)" : "rotate(0deg)",
                 transition: "transform 0.25s",
                 display: "inline-block",
+                marginTop: "4px",
               }}>▼</span>
             </button>
 
