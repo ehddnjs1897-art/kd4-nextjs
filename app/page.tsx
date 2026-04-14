@@ -258,14 +258,13 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
           {cls.isHobby && (
             <span style={{
               display: "inline-block",
-              padding: "3px 10px",
-              background: "rgba(196,165,90,0.15)",
-              border: "1px solid rgba(196,165,90,0.4)",
+              padding: "2px 8px",
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid var(--border)",
               borderRadius: "2px",
-              fontSize: "0.7rem",
-              letterSpacing: "0.08em",
-              color: "var(--gold)",
-              fontWeight: 600,
+              fontSize: "0.68rem",
+              letterSpacing: "0.06em",
+              color: "var(--gray)",
             }}>
               취미반
             </span>
@@ -530,7 +529,9 @@ export default function HomePage() {
   const marqueeRef = useRef<HTMLDivElement>(null)
   const marqueeInnerRef = useRef<HTMLDivElement>(null)
   const mainRef = useRef<HTMLElement>(null)
-  const [processOpen, setProcessOpen] = useState(false)
+  const [step2Open, setStep2Open] = useState(false)
+  const [step3Open, setStep3Open] = useState(false)
+  const [extraOpen, setExtraOpen] = useState(false)
 
   /* ── Lenis 부드러운 스크롤 ── */
   useEffect(() => {
@@ -954,29 +955,18 @@ export default function HomePage() {
             <CountdownTimer />
           </div>
 
-          {/* 신규 신청 가능 */}
+          {/* STEP 1 - 신규 멤버 */}
           <div style={{ marginBottom: "56px" }}>
-            <div style={{ textAlign: "center", marginBottom: "32px" }}>
-              <p style={{
-                fontSize: "0.72rem",
-                fontWeight: 700,
-                letterSpacing: "0.2em",
-                color: "#4ade80",
-                marginBottom: "8px",
-                fontFamily: "var(--font-display)",
-              }}>
-                ● OPEN
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", marginBottom: "32px", gap: "8px" }}>
+              <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.2em", color: "#4ade80", fontFamily: "var(--font-display)", margin: 0 }}>
+                STEP 1
               </p>
-              <h3 style={{
-                fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)",
-                fontWeight: 800,
-                color: "#ffffff",
-                letterSpacing: "-0.01em",
-                lineHeight: 1.1,
-                fontFamily: "var(--font-serif)",
-              }}>
-                신규멤버 신청가능
+              <h3 style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)", fontWeight: 800, color: "#ffffff", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>
+                STEP1 CLASS
               </h3>
+              <p style={{ fontSize: "0.85rem", color: "#4ade80", fontWeight: 600, margin: 0 }}>
+                신규 멤버 신청가능
+              </p>
             </div>
             <div
               className="classes-grid"
@@ -992,74 +982,60 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* 이후 프로세스 */}
+          {/* STEP 2 CLASS 토글 */}
+          <div style={{ marginBottom: "24px" }}>
+            <button
+              onClick={() => setStep2Open(o => !o)}
+              style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", background: "none", border: "none", cursor: "pointer", padding: "0", marginBottom: step2Open ? "32px" : "0", textAlign: "center", gap: "8px" }}
+            >
+              <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.2em", color: "var(--gray)", fontFamily: "var(--font-display)", margin: 0 }}>STEP 2</p>
+              <h3 style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)", fontWeight: 800, color: "var(--gray-light)", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>STEP 2 CLASS</h3>
+              <span style={{ fontSize: "0.9rem", color: "var(--gray)", transform: step2Open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s", display: "inline-block" }}>▼</span>
+            </button>
+            {step2Open && (
+              <div className="classes-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 300px), 1fr))", gap: "12px", opacity: 0.75 }}>
+                {CLASSES.filter(c => c.category === "step2").map((cls, i) => (
+                  <ClassCard key={i} cls={cls} />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* STEP 3 CLASS 토글 */}
+          <div style={{ marginBottom: "24px" }}>
+            <button
+              onClick={() => setStep3Open(o => !o)}
+              style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", background: "none", border: "none", cursor: "pointer", padding: "0", marginBottom: step3Open ? "32px" : "0", textAlign: "center", gap: "8px" }}
+            >
+              <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.2em", color: "var(--gray)", fontFamily: "var(--font-display)", margin: 0 }}>STEP 3</p>
+              <h3 style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)", fontWeight: 800, color: "var(--gray-light)", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>STEP 3 CLASS</h3>
+              <span style={{ fontSize: "0.9rem", color: "var(--gray)", transform: step3Open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s", display: "inline-block" }}>▼</span>
+            </button>
+            {step3Open && (
+              <div className="classes-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 300px), 1fr))", gap: "12px", opacity: 0.75 }}>
+                {CLASSES.filter(c => c.category === "step3").map((cls, i) => (
+                  <ClassCard key={i} cls={cls} />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* 별도 클래스 토글 */}
           <div>
             <button
-              onClick={() => setProcessOpen(o => !o)}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                width: "100%",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                padding: "0",
-                marginBottom: processOpen ? "32px" : "0",
-                textAlign: "center",
-                gap: "10px",
-              }}
+              onClick={() => setExtraOpen(o => !o)}
+              style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", background: "none", border: "none", cursor: "pointer", padding: "0", marginBottom: extraOpen ? "32px" : "0", textAlign: "center", gap: "8px" }}
             >
-              <p style={{
-                fontSize: "0.72rem",
-                fontWeight: 700,
-                letterSpacing: "0.2em",
-                color: "var(--gray)",
-                fontFamily: "var(--font-display)",
-                margin: 0,
-              }}>
-                STEP UP
-              </p>
-              <h3 style={{
-                fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)",
-                fontWeight: 800,
-                color: "var(--gray-light)",
-                letterSpacing: "-0.01em",
-                lineHeight: 1.1,
-                fontFamily: "var(--font-serif)",
-                margin: 0,
-              }}>
-                NEXT CLASS
-              </h3>
-              <span style={{
-                fontSize: "0.9rem",
-                color: "var(--gray)",
-                transform: processOpen ? "rotate(180deg)" : "rotate(0deg)",
-                transition: "transform 0.25s",
-                display: "inline-block",
-                marginTop: "4px",
-              }}>▼</span>
+              <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.2em", color: "var(--gray)", fontFamily: "var(--font-display)", margin: 0 }}>EXTRA</p>
+              <h3 style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)", fontWeight: 800, color: "var(--gray-light)", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>별도 클래스</h3>
+              <span style={{ fontSize: "0.9rem", color: "var(--gray)", transform: extraOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s", display: "inline-block" }}>▼</span>
             </button>
-
-            {processOpen && (
-              <>
-                <p style={{ fontSize: "0.82rem", color: "var(--gray)", marginBottom: "20px", lineHeight: 1.6 }}>
-                  수강 후 단계적으로 참여할 수 있는 클래스입니다.
-                </p>
-                <div
-                  className="classes-grid"
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 300px), 1fr))",
-                    gap: "12px",
-                    opacity: 0.75,
-                  }}
-                >
-                  {CLASSES.filter(c => !c.isNewMemberOpen).map((cls, i) => (
-                    <ClassCard key={i} cls={cls} />
-                  ))}
-                </div>
-              </>
+            {extraOpen && (
+              <div className="classes-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 300px), 1fr))", gap: "12px", opacity: 0.75 }}>
+                {CLASSES.filter(c => c.category === "extra").map((cls, i) => (
+                  <ClassCard key={i} cls={cls} />
+                ))}
+              </div>
             )}
           </div>
 

@@ -18,6 +18,7 @@ export interface ClassItem {
   highlight?: boolean;
   isNewMemberOpen?: boolean;    // 신규 신청 가능 클래스
   isHobby?: boolean;            // 취미반 딱지
+  category?: "step2" | "step3" | "extra"; // 이후 클래스 분류
 }
 
 export const CLASSES: ClassItem[] = [
@@ -65,7 +66,7 @@ export const CLASSES: ClassItem[] = [
     isNewMemberOpen: true,
   },
   {
-    step: "STEP 2",
+    step: "STEP 1",
     nameKo: "출연영상 클래스",
     nameEn: "Intensive Class",
     quote: "실제 영화 현장의 퀄리티로 당신의 포트폴리오를 만듭니다.",
@@ -88,8 +89,9 @@ export const CLASSES: ClassItem[] = [
     isNewMemberOpen: true,
   },
   {
-    step: "STEP 2 수료자",
+    step: "STEP 2",
     nameKo: "출연영상 심화 클래스",
+    category: "step2",
     nameEn: "Advanced Class",
     quote: "수료자만 선택할 수 있는 두 가지 트랙",
     bullets: [
@@ -105,8 +107,9 @@ export const CLASSES: ClassItem[] = [
     price: "450,000"
   },
   {
-    step: "STEP 2 수료자",
+    step: "STEP 2",
     nameKo: "출연영상 1달 완성 클래스",
+    category: "step2",
     nameEn: "1 Month Film Class",
     quote: "수업 없이 영상만 — 1개월 완성",
     subtitle: "1month · 영상만 제작",
@@ -124,6 +127,7 @@ export const CLASSES: ClassItem[] = [
   {
     step: "STEP 3",
     nameKo: "액터스 리더 클래스",
+    category: "step3",
     nameEn: "Actor's Leader Class",
     quote: "KD4가 엄선한 정예 멤버 10명, 캐스팅 전폭 지원",
     bullets: [
@@ -138,8 +142,9 @@ export const CLASSES: ClassItem[] = [
     price: "200,000"
   },
   {
-    step: "별도",
+    step: "STEP 3",
     nameKo: "오디션 클래스",
+    category: "step3",
     nameEn: "Audition Class",
     quote: "캐스팅 디렉터의 시선을 멈추게 할 독백 만들기",
     bullets: [
@@ -156,6 +161,7 @@ export const CLASSES: ClassItem[] = [
   {
     step: "별도",
     nameKo: "움직임 클래스",
+    category: "extra",
     nameEn: "Movement Class",
     quote: "몸과 마음의 연동",
     bullets: [
@@ -171,6 +177,7 @@ export const CLASSES: ClassItem[] = [
   {
     step: "별도",
     nameKo: "개인 레슨",
+    category: "extra",
     nameEn: "Personal Class",
     quote: "나만을 위한 집중 훈련",
     bullets: [
