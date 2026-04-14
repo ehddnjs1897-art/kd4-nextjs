@@ -246,11 +246,13 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             style={{
               display: "inline-block",
               padding: "3px 10px",
-              border: "1px solid var(--border)",
+              background: "rgba(74,222,128,0.08)",
+              border: "1px solid rgba(74,222,128,0.35)",
               borderRadius: "2px",
               fontSize: "0.7rem",
               letterSpacing: "0.1em",
-              color: "var(--gray)",
+              color: "#4ade80",
+              fontWeight: 700,
             }}
           >
             {cls.step}
@@ -957,13 +959,10 @@ export default function HomePage() {
 
           {/* STEP 1 - 신규 멤버 */}
           <div style={{ marginBottom: "56px" }}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", marginBottom: "32px", gap: "12px" }}>
-              <h3 style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)", fontWeight: 800, color: "#ffffff", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>
-                STEP1 CLASS
-              </h3>
-              <p style={{ fontSize: "clamp(1rem, 2.5vw, 1.3rem)", color: "#4ade80", fontWeight: 700, margin: 0, letterSpacing: "0.02em" }}>
-                신규 멤버 신청가능
-              </p>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", marginBottom: "32px", gap: "8px" }}>
+              <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.2em", color: "#4ade80", fontFamily: "var(--font-display)", margin: 0 }}>STEP 1</p>
+              <h3 style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)", fontWeight: 800, color: "#ffffff", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>A 코스</h3>
+              <p style={{ fontSize: "clamp(0.9rem, 2vw, 1.1rem)", color: "#4ade80", fontWeight: 700, margin: 0, letterSpacing: "0.02em" }}>신규 멤버 신청가능</p>
             </div>
             <div
               className="classes-grid"
@@ -979,71 +978,30 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* STEP 2 CLASS 토글 */}
-          <div style={{ marginBottom: "16px" }}>
-            <button
-              onClick={() => setStep2Open(o => !o)}
-              style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", background: step2Open ? "rgba(255,255,255,0.04)" : "none", border: "1px solid var(--border)", borderRadius: "10px", cursor: "pointer", padding: "20px 28px", marginBottom: step2Open ? "20px" : "0", transition: "background 0.2s" }}
-            >
-              <div style={{ textAlign: "left" }}>
-                <p style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.2em", color: "var(--gray)", fontFamily: "var(--font-display)", margin: "0 0 4px 0" }}>STEP 2</p>
-                <h3 style={{ fontSize: "clamp(1.2rem, 2.5vw, 1.6rem)", fontWeight: 800, color: "var(--gray-light)", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: "0 0 4px 0" }}>STEP 2 CLASS</h3>
-                <p style={{ fontSize: "0.78rem", color: "var(--gray)", margin: 0 }}>STEP1 수료 후 참여할 수 있는 클래스입니다.</p>
-              </div>
-              <span style={{ fontSize: "1rem", color: "var(--gray)", transform: step2Open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s", display: "inline-block", flexShrink: 0, marginLeft: "16px" }}>▼</span>
-            </button>
-            {step2Open && (
-              <div className="classes-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 300px), 1fr))", gap: "12px", opacity: 0.75 }}>
-                {CLASSES.filter(c => c.category === "step2").map((cls, i) => (
-                  <ClassCard key={i} cls={cls} />
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* STEP 3 CLASS 토글 */}
-          <div style={{ marginBottom: "16px" }}>
-            <button
-              onClick={() => setStep3Open(o => !o)}
-              style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", background: step3Open ? "rgba(255,255,255,0.04)" : "none", border: "1px solid var(--border)", borderRadius: "10px", cursor: "pointer", padding: "20px 28px", marginBottom: step3Open ? "20px" : "0", transition: "background 0.2s" }}
-            >
-              <div style={{ textAlign: "left" }}>
-                <p style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.2em", color: "var(--gray)", fontFamily: "var(--font-display)", margin: "0 0 4px 0" }}>STEP 3</p>
-                <h3 style={{ fontSize: "clamp(1.2rem, 2.5vw, 1.6rem)", fontWeight: 800, color: "var(--gray-light)", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: "0 0 4px 0" }}>STEP 3 CLASS</h3>
-                <p style={{ fontSize: "0.78rem", color: "var(--gray)", margin: 0 }}>STEP1 수료 후 참여할 수 있는 클래스입니다.</p>
-              </div>
-              <span style={{ fontSize: "1rem", color: "var(--gray)", transform: step3Open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s", display: "inline-block", flexShrink: 0, marginLeft: "16px" }}>▼</span>
-            </button>
-            {step3Open && (
-              <div className="classes-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 300px), 1fr))", gap: "12px", opacity: 0.75 }}>
-                {CLASSES.filter(c => c.category === "step3").map((cls, i) => (
-                  <ClassCard key={i} cls={cls} />
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* 별도 클래스 토글 */}
-          <div>
-            <button
-              onClick={() => setExtraOpen(o => !o)}
-              style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", background: extraOpen ? "rgba(255,255,255,0.04)" : "none", border: "1px solid var(--border)", borderRadius: "10px", cursor: "pointer", padding: "20px 28px", marginBottom: extraOpen ? "20px" : "0", transition: "background 0.2s" }}
-            >
-              <div style={{ textAlign: "left" }}>
-                <p style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.2em", color: "var(--gray)", fontFamily: "var(--font-display)", margin: "0 0 4px 0" }}>EXTRA</p>
-                <h3 style={{ fontSize: "clamp(1.2rem, 2.5vw, 1.6rem)", fontWeight: 800, color: "var(--gray-light)", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: "0 0 4px 0" }}>별도 클래스</h3>
-                <p style={{ fontSize: "0.78rem", color: "var(--gray)", margin: 0 }}>STEP1 수료 후 참여할 수 있는 클래스입니다.</p>
-              </div>
-              <span style={{ fontSize: "1rem", color: "var(--gray)", transform: extraOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s", display: "inline-block", flexShrink: 0, marginLeft: "16px" }}>▼</span>
-            </button>
-            {extraOpen && (
-              <div className="classes-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 300px), 1fr))", gap: "12px", opacity: 0.75 }}>
-                {CLASSES.filter(c => c.category === "extra").map((cls, i) => (
-                  <ClassCard key={i} cls={cls} />
-                ))}
-              </div>
-            )}
-          </div>
+          {[
+            { label: "STEP 2", title: "B 코스", open: step2Open, setOpen: setStep2Open, filter: "step2" },
+            { label: "STEP 3", title: "C 코스", open: step3Open, setOpen: setStep3Open, filter: "step3" },
+            { label: "EXTRA",  title: "EXTRA 코스", open: extraOpen, setOpen: setExtraOpen, filter: "extra" },
+          ].map(({ label, title, open, setOpen, filter }) => (
+            <div key={filter} style={{ marginBottom: "24px" }}>
+              <button
+                onClick={() => setOpen((o: boolean) => !o)}
+                style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", background: "none", border: "none", cursor: "pointer", padding: "0", marginBottom: open ? "24px" : "0", textAlign: "center", gap: "8px" }}
+              >
+                <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.2em", color: "#4ade80", fontFamily: "var(--font-display)", margin: 0 }}>{label}</p>
+                <h3 style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)", fontWeight: 800, color: "var(--gray-light)", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>{title}</h3>
+                <p style={{ fontSize: "0.8rem", color: "var(--gray)", margin: 0 }}>STEP1 수료 후 참여할 수 있는 클래스입니다.</p>
+                <span style={{ fontSize: "0.9rem", color: "var(--gray)", transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s", display: "inline-block" }}>▼</span>
+              </button>
+              {open && (
+                <div className="classes-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 300px), 1fr))", gap: "12px", opacity: 0.75 }}>
+                  {CLASSES.filter(c => c.category === filter).map((cls, i) => (
+                    <ClassCard key={i} cls={cls} />
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
 
           {/* 클래스 하단 CTA 영역 */}
           <div
