@@ -956,21 +956,29 @@ export default function HomePage() {
 
           {/* 신규 신청 가능 */}
           <div style={{ marginBottom: "56px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" }}>
-              <span style={{
-                display: "inline-block",
-                padding: "4px 14px",
-                background: "rgba(74,222,128,0.1)",
-                border: "1px solid rgba(74,222,128,0.35)",
-                borderRadius: "4px",
-                fontSize: "0.72rem",
-                fontWeight: 700,
-                letterSpacing: "0.1em",
-                color: "#4ade80",
-              }}>
-                신규멤버 신청가능
-              </span>
-              <div style={{ flex: 1, height: "1px", background: "var(--border)" }} />
+            <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "32px" }}>
+              <div>
+                <p style={{
+                  fontSize: "0.72rem",
+                  fontWeight: 700,
+                  letterSpacing: "0.2em",
+                  color: "#4ade80",
+                  marginBottom: "6px",
+                  fontFamily: "var(--font-display)",
+                }}>
+                  ● OPEN
+                </p>
+                <h3 style={{
+                  fontSize: "clamp(1.4rem, 3vw, 1.9rem)",
+                  fontWeight: 800,
+                  color: "#ffffff",
+                  letterSpacing: "-0.01em",
+                  lineHeight: 1.1,
+                }}>
+                  신규멤버 신청가능
+                </h3>
+              </div>
+              <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(74,222,128,0.3), transparent)" }} />
             </div>
             <div
               className="classes-grid"
@@ -993,32 +1001,40 @@ export default function HomePage() {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "12px",
+                gap: "16px",
                 width: "100%",
                 background: "none",
                 border: "none",
                 cursor: "pointer",
                 padding: "0",
-                marginBottom: processOpen ? "24px" : "0",
+                marginBottom: processOpen ? "32px" : "0",
+                textAlign: "left",
               }}
             >
-              <span style={{
-                display: "inline-block",
-                padding: "4px 14px",
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid var(--border)",
-                borderRadius: "4px",
-                fontSize: "0.72rem",
-                fontWeight: 700,
-                letterSpacing: "0.1em",
-                color: "var(--gray)",
-                whiteSpace: "nowrap",
-              }}>
-                NEXT CLASS
-              </span>
+              <div>
+                <p style={{
+                  fontSize: "0.72rem",
+                  fontWeight: 700,
+                  letterSpacing: "0.2em",
+                  color: "var(--gray)",
+                  marginBottom: "6px",
+                  fontFamily: "var(--font-display)",
+                }}>
+                  STEP UP
+                </p>
+                <h3 style={{
+                  fontSize: "clamp(1.4rem, 3vw, 1.9rem)",
+                  fontWeight: 800,
+                  color: "var(--gray-light)",
+                  letterSpacing: "-0.01em",
+                  lineHeight: 1.1,
+                }}>
+                  NEXT CLASS
+                </h3>
+              </div>
               <div style={{ flex: 1, height: "1px", background: "var(--border)" }} />
               <span style={{
-                fontSize: "0.75rem",
+                fontSize: "1.1rem",
                 color: "var(--gray)",
                 transform: processOpen ? "rotate(180deg)" : "rotate(0deg)",
                 transition: "transform 0.25s",
