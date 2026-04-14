@@ -187,6 +187,7 @@ function FaqAccordion() {
 // ─── 클래스 카드 ───────────────────────────────────────────────────────────────
 
 function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
+  const [priceVisible, setPriceVisible] = React.useState(false)
   return (
     <div
       style={{
@@ -403,54 +404,69 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
           }}
         >
           <div>
-            <span style={{ fontSize: "0.65rem", color: "var(--gray)", letterSpacing: "0.06em" }}>월 수강료</span>
-
-            {/* 할인 전 원가 (취소선) */}
-            {cls.originalPrice && (
-              <p style={{ margin: "4px 0 0", lineHeight: 1 }}>
-                <span style={{ fontSize: "0.78rem", color: "var(--gray)", textDecoration: "line-through" }}>
-                  ₩{cls.originalPrice}
-                </span>
-                <span style={{
-                  marginLeft: "8px",
-                  fontSize: "0.68rem",
-                  fontWeight: 700,
-                  color: "#e74c3c",
-                  padding: "2px 6px",
-                  background: "rgba(231,76,60,0.12)",
-                  borderRadius: "3px",
-                }}>
-                  -10만원
-                </span>
-              </p>
-            )}
-
-            <p style={{ display: "flex", alignItems: "baseline", gap: "2px", marginTop: cls.originalPrice ? "2px" : "2px" }}>
-              <span
+            {!priceVisible ? (
+              <button
+                onClick={() => setPriceVisible(true)}
                 style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: "clamp(1.8rem, 4vw, 2.2rem)",
-                  fontWeight: 900,
-                  color: cls.originalPrice ? "#4ade80" : "var(--white)",
-                  lineHeight: 1,
-                  letterSpacing: "-0.02em",
+                  background: "none",
+                  border: "1px solid var(--border)",
+                  borderRadius: "6px",
+                  padding: "8px 16px",
+                  color: "var(--gray-light)",
+                  fontSize: "0.8rem",
+                  cursor: "pointer",
+                  letterSpacing: "0.04em",
+                  transition: "all 0.2s",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
                 }}
               >
-                ₩{cls.price}
-              </span>
-              <span style={{ fontSize: "0.7rem", color: "var(--gray)", marginLeft: "2px" }}>/월</span>
-            </p>
+                수강료 확인하기 <span style={{ fontSize: "0.7rem" }}>→</span>
+              </button>
+            ) : (
+              <>
+                <span style={{ fontSize: "0.65rem", color: "var(--gray)", letterSpacing: "0.06em" }}>월 수강료</span>
 
-            {/* 프로모션 라벨 */}
-            {cls.promoLabel && (
-              <p style={{
-                fontSize: "0.7rem",
-                color: "var(--gold)",
-                fontWeight: 600,
-                marginTop: "4px",
-              }}>
-                {cls.promoLabel}
-              </p>
+                {cls.originalPrice && (
+                  <p style={{ margin: "4px 0 0", lineHeight: 1 }}>
+                    <span style={{ fontSize: "0.78rem", color: "var(--gray)", textDecoration: "line-through" }}>
+                      ₩{cls.originalPrice}
+                    </span>
+                    <span style={{
+                      marginLeft: "8px",
+                      fontSize: "0.68rem",
+                      fontWeight: 700,
+                      color: "#e74c3c",
+                      padding: "2px 6px",
+                      background: "rgba(231,76,60,0.12)",
+                      borderRadius: "3px",
+                    }}>
+                      -10만원
+                    </span>
+                  </p>
+                )}
+
+                <p style={{ display: "flex", alignItems: "baseline", gap: "2px", marginTop: "2px" }}>
+                  <span style={{
+                    fontFamily: "var(--font-display)",
+                    fontSize: "clamp(1.8rem, 4vw, 2.2rem)",
+                    fontWeight: 900,
+                    color: cls.originalPrice ? "#4ade80" : "var(--white)",
+                    lineHeight: 1,
+                    letterSpacing: "-0.02em",
+                  }}>
+                    ₩{cls.price}
+                  </span>
+                  <span style={{ fontSize: "0.7rem", color: "var(--gray)", marginLeft: "2px" }}>/월</span>
+                </p>
+
+                {cls.promoLabel && (
+                  <p style={{ fontSize: "0.7rem", color: "var(--gold)", fontWeight: 600, marginTop: "4px" }}>
+                    {cls.promoLabel}
+                  </p>
+                )}
+              </>
             )}
           </div>
           {cls.instructor && (
