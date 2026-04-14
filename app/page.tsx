@@ -976,10 +976,10 @@ export default function HomePage() {
           </div>
 
           {[
-            { label: "STEP 2", title: "B 코스", open: step2Open, setOpen: setStep2Open, filter: "step2" },
-            { label: "STEP 3", title: "C 코스", open: step3Open, setOpen: setStep3Open, filter: "step3" },
-            { label: "별도",   title: "별도 코스", open: extraOpen, setOpen: setExtraOpen, filter: "extra" },
-          ].map(({ label, title, open, setOpen, filter }) => (
+            { label: "STEP 2", title: "B 코스", desc: "STEP1 수료 후 참여할 수 있는 클래스입니다.", open: step2Open, setOpen: setStep2Open, filter: "step2" },
+            { label: "STEP 3", title: "C 코스", desc: "STEP2 수료 후 참여할 수 있는 클래스입니다.", open: step3Open, setOpen: setStep3Open, filter: "step3" },
+            { label: "별도",   title: "별도 코스", desc: "별도로 운영되는 클래스입니다.", open: extraOpen, setOpen: setExtraOpen, filter: "extra" },
+          ].map(({ label, title, desc, open, setOpen, filter }) => (
             <div key={filter} style={{ marginBottom: "16px" }}>
               <button
                 onClick={() => setOpen((o: boolean) => !o)}
@@ -995,7 +995,7 @@ export default function HomePage() {
               >
                 <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.25em", color: "#4ade80", fontFamily: "var(--font-display)", margin: 0 }}>{label}</p>
                 <h3 style={{ fontSize: "clamp(1.8rem, 4vw, 2.4rem)", fontWeight: 800, color: "var(--gray-light)", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>{title}</h3>
-                <p style={{ fontSize: "0.8rem", color: "var(--gray)", margin: 0 }}>STEP1 수료 후 참여할 수 있는 클래스입니다.</p>
+                <p style={{ fontSize: "0.8rem", color: "var(--gray)", margin: 0 }}>{desc}</p>
                 <span style={{ fontSize: "0.85rem", color: "var(--gray)", transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.3s", display: "inline-block", marginTop: "4px" }}>▼</span>
               </button>
               {open && (
