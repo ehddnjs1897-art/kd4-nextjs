@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function POST(request: NextRequest) {
   const data = await request.json()
 
-  const webhookUrl = process.env.MAKE_WEBHOOK_URL
+  const webhookUrl = process.env.NEXT_PUBLIC_MAKE_WEBHOOK_URL
   if (webhookUrl) {
     await fetch(webhookUrl, {
       method: 'POST',
