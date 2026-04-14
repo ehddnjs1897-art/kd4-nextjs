@@ -424,21 +424,24 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
               <button
                 onClick={() => setPriceVisible(true)}
                 style={{
-                  background: "none",
-                  border: "1px solid var(--border)",
+                  background: "rgba(196,165,90,0.08)",
+                  border: "1px solid rgba(196,165,90,0.5)",
                   borderRadius: "6px",
-                  padding: "8px 16px",
-                  color: "var(--gray-light)",
-                  fontSize: "0.8rem",
+                  padding: "10px 18px",
+                  color: "var(--gold)",
+                  fontSize: "0.82rem",
+                  fontWeight: 600,
                   cursor: "pointer",
-                  letterSpacing: "0.04em",
+                  letterSpacing: "0.05em",
                   transition: "all 0.2s",
                   display: "flex",
                   alignItems: "center",
-                  gap: "6px",
+                  gap: "8px",
+                  boxShadow: "0 0 12px rgba(196,165,90,0.15)",
+                  animation: "subtlePulse 2s ease-in-out infinite",
                 }}
               >
-                수강료 확인하기 <span style={{ fontSize: "0.7rem" }}>→</span>
+                💰 수강료 확인하기 <span style={{ fontSize: "0.8rem" }}>→</span>
               </button>
             ) : (
               <>
