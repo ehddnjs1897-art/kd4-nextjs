@@ -491,7 +491,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             boxShadow: "0 4px 16px rgba(0,102,255,0.25)",
           }}
         >
-          수강신청
+          상담받기
         </a>
       </div>
     </div>
