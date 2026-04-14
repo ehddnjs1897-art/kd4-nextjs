@@ -958,11 +958,11 @@ export default function HomePage() {
           </div>
 
           {/* STEP 1 - 신규 멤버 */}
-          <div style={{ marginBottom: "56px" }}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", marginBottom: "32px", gap: "8px" }}>
-              <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.2em", color: "#4ade80", fontFamily: "var(--font-display)", margin: 0 }}>STEP 1</p>
-              <h3 style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)", fontWeight: 800, color: "#ffffff", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>A 코스</h3>
-              <p style={{ fontSize: "clamp(0.9rem, 2vw, 1.1rem)", color: "#4ade80", fontWeight: 700, margin: 0, letterSpacing: "0.02em" }}>신규 멤버 신청가능</p>
+          <div style={{ marginBottom: "48px" }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", marginBottom: "32px", gap: "10px", padding: "28px 32px", border: "1px solid rgba(74,222,128,0.4)", borderRadius: "12px", background: "rgba(74,222,128,0.04)", boxShadow: "0 0 24px rgba(74,222,128,0.08)" }}>
+              <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.25em", color: "#4ade80", fontFamily: "var(--font-display)", margin: 0 }}>STEP 1</p>
+              <h3 style={{ fontSize: "clamp(1.8rem, 4vw, 2.4rem)", fontWeight: 800, color: "#ffffff", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>A 코스</h3>
+              <p style={{ fontSize: "clamp(0.9rem, 2vw, 1rem)", color: "#4ade80", fontWeight: 600, margin: 0, letterSpacing: "0.04em" }}>신규 멤버 신청가능</p>
             </div>
             <div
               className="classes-grid"
@@ -981,17 +981,25 @@ export default function HomePage() {
           {[
             { label: "STEP 2", title: "B 코스", open: step2Open, setOpen: setStep2Open, filter: "step2" },
             { label: "STEP 3", title: "C 코스", open: step3Open, setOpen: setStep3Open, filter: "step3" },
-            { label: "EXTRA",  title: "EXTRA 코스", open: extraOpen, setOpen: setExtraOpen, filter: "extra" },
+            { label: "별도",   title: "별도 코스", open: extraOpen, setOpen: setExtraOpen, filter: "extra" },
           ].map(({ label, title, open, setOpen, filter }) => (
-            <div key={filter} style={{ marginBottom: "24px" }}>
+            <div key={filter} style={{ marginBottom: "16px" }}>
               <button
                 onClick={() => setOpen((o: boolean) => !o)}
-                style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", background: "none", border: "none", cursor: "pointer", padding: "0", marginBottom: open ? "24px" : "0", textAlign: "center", gap: "8px" }}
+                style={{
+                  display: "flex", flexDirection: "column", alignItems: "center",
+                  width: "100%", background: open ? "rgba(255,255,255,0.03)" : "none",
+                  border: "1px solid var(--border)", borderRadius: "12px",
+                  cursor: "pointer", padding: "24px 32px",
+                  marginBottom: open ? "20px" : "0", textAlign: "center", gap: "8px",
+                  transition: "border-color 0.2s, background 0.2s",
+                  boxShadow: open ? "0 0 20px rgba(255,255,255,0.04)" : "none",
+                }}
               >
-                <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.2em", color: "#4ade80", fontFamily: "var(--font-display)", margin: 0 }}>{label}</p>
-                <h3 style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)", fontWeight: 800, color: "var(--gray-light)", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>{title}</h3>
+                <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.25em", color: "#4ade80", fontFamily: "var(--font-display)", margin: 0 }}>{label}</p>
+                <h3 style={{ fontSize: "clamp(1.8rem, 4vw, 2.4rem)", fontWeight: 800, color: "var(--gray-light)", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>{title}</h3>
                 <p style={{ fontSize: "0.8rem", color: "var(--gray)", margin: 0 }}>STEP1 수료 후 참여할 수 있는 클래스입니다.</p>
-                <span style={{ fontSize: "0.9rem", color: "var(--gray)", transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s", display: "inline-block" }}>▼</span>
+                <span style={{ fontSize: "0.85rem", color: "var(--gray)", transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.3s", display: "inline-block", marginTop: "4px" }}>▼</span>
               </button>
               {open && (
                 <div className="classes-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 300px), 1fr))", gap: "12px", opacity: 0.75 }}>
