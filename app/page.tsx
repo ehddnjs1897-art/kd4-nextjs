@@ -495,9 +495,11 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
         <a
           href="#contact"
           className="class-card-cta"
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault()
             pixel.viewContent(cls.nameKo)   // Meta: ViewContent
             pixel.contact()                 // Meta: Contact
+            document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
           }}
           style={{
             display: "block",
