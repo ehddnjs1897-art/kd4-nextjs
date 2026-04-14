@@ -527,6 +527,7 @@ export default function HomePage() {
   const marqueeRef = useRef<HTMLDivElement>(null)
   const marqueeInnerRef = useRef<HTMLDivElement>(null)
   const mainRef = useRef<HTMLElement>(null)
+  const [processOpen, setProcessOpen] = useState(false)
 
   /* ── Lenis 부드러운 스크롤 ── */
   useEffect(() => {
@@ -984,7 +985,20 @@ export default function HomePage() {
 
           {/* 이후 프로세스 */}
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" }}>
+            <button
+              onClick={() => setProcessOpen(o => !o)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                width: "100%",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: "0",
+                marginBottom: processOpen ? "24px" : "0",
+              }}
+            >
               <span style={{
                 display: "inline-block",
                 padding: "4px 14px",
@@ -995,27 +1009,40 @@ export default function HomePage() {
                 fontWeight: 700,
                 letterSpacing: "0.1em",
                 color: "var(--gray)",
+                whiteSpace: "nowrap",
               }}>
                 이후 프로세스
               </span>
               <div style={{ flex: 1, height: "1px", background: "var(--border)" }} />
-            </div>
-            <p style={{ fontSize: "0.82rem", color: "var(--gray)", marginBottom: "20px", lineHeight: 1.6 }}>
-              수강 후 단계적으로 참여할 수 있는 클래스입니다.
-            </p>
-            <div
-              className="classes-grid"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 300px), 1fr))",
-                gap: "12px",
-                opacity: 0.75,
-              }}
-            >
-              {CLASSES.filter(c => !c.isNewMemberOpen).map((cls, i) => (
-                <ClassCard key={i} cls={cls} />
-              ))}
-            </div>
+              <span style={{
+                fontSize: "0.75rem",
+                color: "var(--gray)",
+                transform: processOpen ? "rotate(180deg)" : "rotate(0deg)",
+                transition: "transform 0.25s",
+                display: "inline-block",
+              }}>▼</span>
+            </button>
+
+            {processOpen && (
+              <>
+                <p style={{ fontSize: "0.82rem", color: "var(--gray)", marginBottom: "20px", lineHeight: 1.6 }}>
+                  수강 후 단계적으로 참여할 수 있는 클래스입니다.
+                </p>
+                <div
+                  className="classes-grid"
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 300px), 1fr))",
+                    gap: "12px",
+                    opacity: 0.75,
+                  }}
+                >
+                  {CLASSES.filter(c => !c.isNewMemberOpen).map((cls, i) => (
+                    <ClassCard key={i} cls={cls} />
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
           {/* 클래스 하단 CTA 영역 */}
