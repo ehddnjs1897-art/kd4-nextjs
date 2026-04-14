@@ -468,9 +468,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
 
         {/* CTA 버튼 */}
         <a
-          href="https://pf.kakao.com/_ximxdqn"
-          target="_blank"
-          rel="noopener noreferrer"
+          href="#contact"
           className="class-card-cta"
           onClick={() => {
             pixel.viewContent(cls.nameKo)   // Meta: ViewContent
@@ -493,7 +491,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             boxShadow: "0 4px 16px rgba(0,102,255,0.25)",
           }}
         >
-          상담받기
+          수강신청
         </a>
       </div>
     </div>
