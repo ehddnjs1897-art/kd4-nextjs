@@ -990,6 +990,7 @@ export default function HomePage() {
             >
               <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.2em", color: "var(--gray)", fontFamily: "var(--font-display)", margin: 0 }}>STEP 2</p>
               <h3 style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)", fontWeight: 800, color: "var(--gray-light)", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>STEP 2 CLASS</h3>
+              <p style={{ fontSize: "0.8rem", color: "var(--gray)", margin: 0 }}>STEP1 수료 후 참여할 수 있는 클래스입니다.</p>
               <span style={{ fontSize: "0.9rem", color: "var(--gray)", transform: step2Open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s", display: "inline-block" }}>▼</span>
             </button>
             {step2Open && (
@@ -1009,6 +1010,7 @@ export default function HomePage() {
             >
               <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.2em", color: "var(--gray)", fontFamily: "var(--font-display)", margin: 0 }}>STEP 3</p>
               <h3 style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)", fontWeight: 800, color: "var(--gray-light)", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>STEP 3 CLASS</h3>
+              <p style={{ fontSize: "0.8rem", color: "var(--gray)", margin: 0 }}>STEP1 수료 후 참여할 수 있는 클래스입니다.</p>
               <span style={{ fontSize: "0.9rem", color: "var(--gray)", transform: step3Open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s", display: "inline-block" }}>▼</span>
             </button>
             {step3Open && (
@@ -1028,6 +1030,7 @@ export default function HomePage() {
             >
               <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.2em", color: "var(--gray)", fontFamily: "var(--font-display)", margin: 0 }}>EXTRA</p>
               <h3 style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)", fontWeight: 800, color: "var(--gray-light)", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>별도 클래스</h3>
+              <p style={{ fontSize: "0.8rem", color: "var(--gray)", margin: 0 }}>STEP1 수료 후 참여할 수 있는 클래스입니다.</p>
               <span style={{ fontSize: "0.9rem", color: "var(--gray)", transform: extraOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s", display: "inline-block" }}>▼</span>
             </button>
             {extraOpen && (
