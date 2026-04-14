@@ -980,7 +980,7 @@ export default function HomePage() {
                   boxShadow: "0 4px 20px rgba(0,102,255,0.3)",
                 }}
               >
-                수강신청 하기
+                방문상담 신청
               </a>
               <a
                 href="https://pf.kakao.com/_ximxdqn"
