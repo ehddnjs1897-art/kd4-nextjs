@@ -440,7 +440,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
                   animation: "subtlePulse 2s ease-in-out infinite",
                 }}
               >
-                💰 수강료 확인하기 <span style={{ fontSize: "0.8rem" }}>→</span>
+                수강료 확인하기 <span style={{ fontSize: "0.8rem" }}>→</span>
               </button>
             ) : (
               <>
