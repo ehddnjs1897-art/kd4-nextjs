@@ -965,7 +965,7 @@ export default function HomePage() {
                 letterSpacing: "0.1em",
                 color: "#4ade80",
               }}>
-                신규 신청 가능
+                신규멤버 신청가능
               </span>
               <div style={{ flex: 1, height: "1px", background: "var(--border)" }} />
             </div>
@@ -1011,7 +1011,7 @@ export default function HomePage() {
                 color: "var(--gray)",
                 whiteSpace: "nowrap",
               }}>
-                이후 프로세스
+                NEXT CLASS
               </span>
               <div style={{ flex: 1, height: "1px", background: "var(--border)" }} />
               <span style={{
