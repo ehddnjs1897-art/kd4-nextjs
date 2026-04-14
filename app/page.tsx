@@ -913,19 +913,16 @@ export default function HomePage() {
       <section id="classes" className="section" style={{ background: "var(--bg)" }}>
         <div className="container">
           <div style={{ textAlign: "center", marginBottom: "60px" }}>
-            <p
+            <h2
               style={{
                 fontFamily: "var(--font-display)",
-                fontSize: "0.75rem",
-                letterSpacing: "0.3em",
-                color: "var(--gold)",
-                marginBottom: "12px",
+                fontSize: "clamp(1.8rem, 4vw, 2.6rem)",
+                fontWeight: 700,
+                letterSpacing: "0.2em",
+                color: "var(--white)",
               }}
             >
               CURRICULUM
-            </p>
-            <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700 }}>
-              클래스
             </h2>
           </div>
 
