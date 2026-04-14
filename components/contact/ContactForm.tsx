@@ -68,6 +68,26 @@ export default function ContactForm() {
     }
 
     pixel.lead()   // Meta Pixel: Lead 이벤트
+
+    // Fire-and-forget: Make.com → Google Sheets + SMS
+    if (process.env.NEXT_PUBLIC_MAKE_WEBHOOK_URL) {
+      fetch(process.env.NEXT_PUBLIC_MAKE_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          record: {
+            name: form.name,
+            phone: form.phone,
+            email: form.email || null,
+            class_name: form.class_name || null,
+            motivation: form.motivation || null,
+            status: '대기',
+            created_at: new Date().toISOString(),
+          }
+        })
+      }).catch(() => {})
+    }
+
     setDone(true)
     setLoading(false)
   }
