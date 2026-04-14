@@ -16,6 +16,8 @@ export interface ClassItem {
   remainingSeats?: number;       // 잔여석 뱃지 (null이면 표시 안 함)
   instructor?: string;
   highlight?: boolean;
+  isNewMemberOpen?: boolean;    // 신규 신청 가능 클래스
+  isHobby?: boolean;            // 취미반 딱지
 }
 
 export const CLASSES: ClassItem[] = [
@@ -35,7 +37,9 @@ export const CLASSES: ClassItem[] = [
     duration: "3시간",
     capacity: "6명",
     price: "250,000",
-    instructor: "박우진 리더"
+    instructor: "박우진 리더",
+    isNewMemberOpen: true,
+    isHobby: true,
   },
   {
     step: "STEP 1",
@@ -57,7 +61,8 @@ export const CLASSES: ClassItem[] = [
     promoLabel: "🌸 봄맞이 스페셜 · 첫 달 10만원 할인",
     remainingSeats: 3,
     instructor: "권동원 대표",
-    highlight: true
+    highlight: true,
+    isNewMemberOpen: true,
   },
   {
     step: "STEP 2",
@@ -79,7 +84,8 @@ export const CLASSES: ClassItem[] = [
     originalPrice: "400,000",
     promoLabel: "🌸 봄맞이 스페셜 · 첫 달 10만원 할인",
     remainingSeats: 2,
-    highlight: true
+    highlight: true,
+    isNewMemberOpen: true,
   },
   {
     step: "STEP 2 수료자",

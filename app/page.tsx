@@ -240,21 +240,37 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
       )}
 
       <div style={{ padding: "28px 24px 24px", flex: 1 }}>
-        {/* step 뱃지 */}
-        <span
-          style={{
-            display: "inline-block",
-            padding: "3px 10px",
-            border: "1px solid var(--border)",
-            borderRadius: "2px",
-            fontSize: "0.7rem",
-            letterSpacing: "0.1em",
-            color: "var(--gray)",
-            marginBottom: "16px",
-          }}
-        >
-          {cls.step}
-        </span>
+        {/* step 뱃지 + 취미반 뱃지 */}
+        <div style={{ display: "flex", gap: "8px", alignItems: "center", marginBottom: "16px", flexWrap: "wrap" }}>
+          <span
+            style={{
+              display: "inline-block",
+              padding: "3px 10px",
+              border: "1px solid var(--border)",
+              borderRadius: "2px",
+              fontSize: "0.7rem",
+              letterSpacing: "0.1em",
+              color: "var(--gray)",
+            }}
+          >
+            {cls.step}
+          </span>
+          {cls.isHobby && (
+            <span style={{
+              display: "inline-block",
+              padding: "3px 10px",
+              background: "rgba(196,165,90,0.15)",
+              border: "1px solid rgba(196,165,90,0.4)",
+              borderRadius: "2px",
+              fontSize: "0.7rem",
+              letterSpacing: "0.08em",
+              color: "var(--gold)",
+              fontWeight: 600,
+            }}>
+              취미반
+            </span>
+          )}
+        </div>
 
         {/* 인용구 */}
         <p
@@ -945,18 +961,72 @@ export default function HomePage() {
             <CountdownTimer />
           </div>
 
-          {/* 반응형 그리드: 모바일 1열 / 태블릿 2열 / PC 3열 */}
-          <div
-            className="classes-grid"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 320px), 1fr))",
-              gap: "16px",
-            }}
-          >
-            {CLASSES.map((cls, i) => (
-              <ClassCard key={i} cls={cls} />
-            ))}
+          {/* 신규 신청 가능 */}
+          <div style={{ marginBottom: "56px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" }}>
+              <span style={{
+                display: "inline-block",
+                padding: "4px 14px",
+                background: "rgba(74,222,128,0.1)",
+                border: "1px solid rgba(74,222,128,0.35)",
+                borderRadius: "4px",
+                fontSize: "0.72rem",
+                fontWeight: 700,
+                letterSpacing: "0.1em",
+                color: "#4ade80",
+              }}>
+                신규 신청 가능
+              </span>
+              <div style={{ flex: 1, height: "1px", background: "var(--border)" }} />
+            </div>
+            <div
+              className="classes-grid"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 320px), 1fr))",
+                gap: "16px",
+              }}
+            >
+              {CLASSES.filter(c => c.isNewMemberOpen).map((cls, i) => (
+                <ClassCard key={i} cls={cls} />
+              ))}
+            </div>
+          </div>
+
+          {/* 이후 프로세스 */}
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" }}>
+              <span style={{
+                display: "inline-block",
+                padding: "4px 14px",
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid var(--border)",
+                borderRadius: "4px",
+                fontSize: "0.72rem",
+                fontWeight: 700,
+                letterSpacing: "0.1em",
+                color: "var(--gray)",
+              }}>
+                이후 프로세스
+              </span>
+              <div style={{ flex: 1, height: "1px", background: "var(--border)" }} />
+            </div>
+            <p style={{ fontSize: "0.82rem", color: "var(--gray)", marginBottom: "20px", lineHeight: 1.6 }}>
+              수강 후 단계적으로 참여할 수 있는 클래스입니다.
+            </p>
+            <div
+              className="classes-grid"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 300px), 1fr))",
+                gap: "12px",
+                opacity: 0.75,
+              }}
+            >
+              {CLASSES.filter(c => !c.isNewMemberOpen).map((cls, i) => (
+                <ClassCard key={i} cls={cls} />
+              ))}
+            </div>
           </div>
 
           {/* 클래스 하단 CTA 영역 */}
