@@ -92,7 +92,6 @@ export const CLASSES: ClassItem[] = [
     nameKo: "출연영상 심화 클래스",
     nameEn: "Advanced Class",
     quote: "수료자만 선택할 수 있는 두 가지 트랙",
-    subtitle: "Advanced · 2개월",
     bullets: [
       "고급 장면 연기",
       "이바나 처벅 테크닉 심화",

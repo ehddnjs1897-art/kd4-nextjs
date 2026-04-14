@@ -187,7 +187,7 @@ function FaqAccordion() {
 // ─── 클래스 카드 ───────────────────────────────────────────────────────────────
 
 function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
-  const [priceVisible, setPriceVisible] = React.useState(false)
+  const [priceVisible, setPriceVisible] = useState(false)
   return (
     <div
       style={{
@@ -485,17 +485,6 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
               </>
             )}
           </div>
-          {cls.instructor && (
-            <span
-              style={{
-                fontSize: "0.75rem",
-                color: "var(--gray)",
-                textAlign: "right",
-              }}
-            >
-              {cls.instructor}
-            </span>
-          )}
         </div>
 
         {/* CTA 버튼 */}
