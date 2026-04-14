@@ -1609,16 +1609,6 @@ export default function HomePage() {
                     display: "block",
                   }}
                 />
-                <div style={{ padding: "10px 12px" }}>
-                  <p style={{ color: "var(--white)", fontSize: "0.82rem", fontWeight: 600 }}>
-                    {photo.name}
-                  </p>
-                  {photo.work && (
-                    <p style={{ color: "var(--gold)", fontSize: "0.72rem", marginTop: "2px" }}>
-                      {photo.work}
-                    </p>
-                  )}
-                </div>
               </div>
             ))}
           </div>
