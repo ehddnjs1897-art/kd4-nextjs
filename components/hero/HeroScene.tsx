@@ -221,10 +221,10 @@ export default function HeroScene() {
       };
 
       let isVisible = true;
+      let lastIdleFrame = 0;
+      const IDLE_INTERVAL = isMobile ? 1000 / 30 : 0; // 모바일 idle: 30fps 스로틀
 
       const animate = (ts: number) => {
-        animFrameId = requestAnimationFrame(animate);
-        if (!isVisible) return;
         if (!startTime) startTime = ts;
         const elapsed = ts - startTime;
 
@@ -238,21 +238,36 @@ export default function HeroScene() {
             revealed = true;
             phase = "idle";
           }
+          renderer.render(scene, camera);
+          if (isVisible) animFrameId = requestAnimationFrame(animate);
         } else {
-          const t2 = (ts - startTime - FLY_DUR) / 1000;
-          camera.position.x = Math.sin(t2 * 0.18) * 0.04;
-          camera.position.y = 1.53 + Math.sin(t2 * 0.27) * 0.015;
-          camera.lookAt(Math.sin(t2 * 0.12) * 0.03, 1.35, 0);
+          // idle 페이즈: 모바일에서 30fps로 스로틀
+          if (ts - lastIdleFrame >= IDLE_INTERVAL) {
+            lastIdleFrame = ts;
+            const t2 = (ts - startTime - FLY_DUR) / 1000;
+            camera.position.x = Math.sin(t2 * 0.18) * 0.04;
+            camera.position.y = 1.53 + Math.sin(t2 * 0.27) * 0.015;
+            camera.lookAt(Math.sin(t2 * 0.12) * 0.03, 1.35, 0);
+            renderer.render(scene, camera);
+          }
+          if (isVisible) animFrameId = requestAnimationFrame(animate);
         }
-
-        renderer.render(scene, camera);
       }
       animFrameId = requestAnimationFrame(animate);
 
-      // 모바일: 뷰포트 벗어나면 render 중지
+      // 뷰포트 밖으로 나가면 raf 완전 중단, 돌아오면 재시작
       const observer = new IntersectionObserver(
-        (entries) => { isVisible = entries[0].isIntersecting; },
-        { threshold: 0 }
+        (entries) => {
+          const nowVisible = entries[0].isIntersecting;
+          if (nowVisible && !isVisible) {
+            isVisible = true;
+            animFrameId = requestAnimationFrame(animate);
+          } else if (!nowVisible && isVisible) {
+            isVisible = false;
+            cancelAnimationFrame(animFrameId);
+          }
+        },
+        { threshold: 0, rootMargin: '100px' }
       );
       observer.observe(canvas);
 
@@ -280,10 +295,11 @@ export default function HeroScene() {
     <canvas
       ref={canvasRef}
       style={{
-        position: "fixed",
+        position: "absolute",
         inset: 0,
         zIndex: 0,
         display: "block",
+        pointerEvents: "none",
       }}
     />
   );

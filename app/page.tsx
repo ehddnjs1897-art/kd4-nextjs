@@ -537,27 +537,36 @@ export default function HomePage() {
   const [step3Open, setStep3Open] = useState(false)
   const [extraOpen, setExtraOpen] = useState(false)
 
-  /* ── Lenis 부드러운 스크롤 ── */
+  /* ── Lenis 부드러운 스크롤 (데스크톱 전용) ── */
   useEffect(() => {
+    // 터치 기기(모바일)에서는 iOS 네이티브 관성 스크롤이 훨씬 부드럽고
+    // Lenis가 JS로 가로채면 버퍼링·밀림이 생겨서 비활성화
+    const isTouchDevice = window.matchMedia('(pointer: coarse)').matches
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    if (isTouchDevice || prefersReduced) {
+      // 모바일: 네이티브 스크롤 + ScrollTrigger passive 연결
+      const onScroll = () => ScrollTrigger.update()
+      window.addEventListener('scroll', onScroll, { passive: true })
+      return () => window.removeEventListener('scroll', onScroll)
+    }
+
+    // 데스크톱: Lenis를 GSAP ticker에 통합 (raf 이중 실행 방지)
     let lenis: any
-    let rafId: number
     import('lenis').then((mod) => {
       const Lenis = mod.default
       lenis = new Lenis({
         duration: 1.2,
         easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         smoothWheel: true,
+        syncTouch: false,
       })
       lenis.on('scroll', ScrollTrigger.update)
-      function raf(time: number) {
-        lenis.raf(time)
-        rafId = requestAnimationFrame(raf)
-      }
-      rafId = requestAnimationFrame(raf)
+      gsap.ticker.add((time) => lenis.raf(time * 1000))
+      gsap.ticker.lagSmoothing(0)
     })
     return () => {
       if (lenis) lenis.destroy()
-      if (rafId) cancelAnimationFrame(rafId)
     }
   }, [])
 
