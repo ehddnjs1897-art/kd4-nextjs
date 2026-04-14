@@ -7,6 +7,7 @@ import Footer from '@/components/layout/Footer'
 import FloatingCTA from '@/components/layout/FloatingCTA'
 import JsonLd from '@/components/seo/JsonLd'
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
+import MetaPixel from '@/components/analytics/MetaPixel'
 
 const notoSansKR = Noto_Sans_KR({
   subsets: ['latin'],
@@ -90,6 +91,7 @@ export default function RootLayout({
       <head>
         <JsonLd />
         <GoogleAnalytics />
+        <MetaPixel />
       </head>
       <body
         className={`${notoSansKR.variable} ${notoSerifKR.variable} ${oswald.variable}`}

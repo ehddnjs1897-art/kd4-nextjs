@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { CLASSES } from '@/lib/classes'
+import { pixel } from '@/lib/meta-pixel'
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
@@ -66,6 +67,7 @@ export default function ContactForm() {
       return
     }
 
+    pixel.lead()   // Meta Pixel: Lead 이벤트
     setDone(true)
     setLoading(false)
   }

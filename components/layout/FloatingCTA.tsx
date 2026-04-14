@@ -1,6 +1,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
+import { pixel } from '@/lib/meta-pixel'
 
 /** 배우DB · 커뮤니티 · 대본분석 · 인증 페이지에서는 CTA 표시 안 함 */
 const HIDE_ON: string[] = ['/actors', '/board', '/ai-tools', '/auth', '/dashboard', '/admin']
@@ -19,6 +20,7 @@ export default function FloatingCTA() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="카카오 채널 상담"
+        onClick={() => pixel.contact()}
         style={{
           position: 'fixed',
           bottom: '84px',

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { pixel } from '@/lib/meta-pixel'
 
 const socialLinks = [
   {
@@ -99,6 +100,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 aria-label={s.label}
                 title={s.label}
+                onClick={s.label === '카카오 채널' ? () => pixel.contact() : undefined}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -210,6 +212,7 @@ export default function Footer() {
                 <a
                   href="https://pf.kakao.com/_ximxdqn"
                   target="_blank" rel="noopener noreferrer"
+                  onClick={() => pixel.contact()}
                   style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s' }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--gray-light)')}

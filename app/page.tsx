@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { CLASSES } from "@/lib/classes";
+import { pixel } from "@/lib/meta-pixel";
 import CountdownTimer from "@/components/ui/CountdownTimer";
 import { CASTING_PHOTOS } from "@/lib/casting-photos"
 import ContactForm from "@/components/contact/ContactForm";
@@ -471,6 +472,10 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
           target="_blank"
           rel="noopener noreferrer"
           className="class-card-cta"
+          onClick={() => {
+            pixel.viewContent(cls.nameKo)   // Meta: ViewContent
+            pixel.contact()                 // Meta: Contact
+          }}
           style={{
             display: "block",
             textAlign: "center",
@@ -983,6 +988,7 @@ export default function HomePage() {
                 href="https://pf.kakao.com/_ximxdqn"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => pixel.contact()}
                 style={{
                   display: "inline-block",
                   padding: "14px 40px",
@@ -1803,6 +1809,7 @@ export default function HomePage() {
               href="https://pf.kakao.com/_ximxdqn"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => pixel.contact()}
               style={{
                 display: "inline-block",
                 padding: "18px 52px",
