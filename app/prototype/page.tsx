@@ -9,7 +9,7 @@ gsap.registerPlugin(ScrollTrigger)
 
 /* ── 클래스 데이터 ── */
 const CLASSES = [
-  { step: 'STEP 1', name: '베이직 클래스', quote: '막혀있던 감정의 독을 터뜨리는 수업', price: '250,000' },
+  { step: 'STEP 1', name: '베이직 클래스', quote: '막혀있던 감정의 둑을 터뜨리는 수업', price: '250,000' },
   { step: 'STEP 1', name: '마이즈너 테크닉 정규', quote: '진짜 배우로 다시 태어나는 시간', price: '250,000', highlight: true },
   { step: 'STEP 2', name: '출연영상 클래스', quote: '실제 영화 현장의 퀄리티로', price: '300,000', highlight: true },
   { step: 'STEP 2', name: '출연영상 심화', quote: '수료자만 선택할 수 있는 트랙', price: '450,000' },

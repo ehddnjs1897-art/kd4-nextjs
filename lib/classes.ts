@@ -26,11 +26,12 @@ export const CLASSES: ClassItem[] = [
     step: "STEP 1",
     nameKo: "베이직 클래스",
     nameEn: "Basic Class",
-    quote: "막혀있던 감정의 독을 터뜨리는 수업",
+    quote: "막혀있던 감정의 둑을 터뜨리는 수업",
     subtitle: "감정 해방 / 연기 입문",
     note: "연기 경험 없어도 OK · 취미 참여 환영",
     bullets: [
       "감정 해방 훈련 / 충동·본능 회복",
+      "마이즈너 테크닉 기초 / 이바나 처벅 테크닉 입문",
       "독백 / 장면연기",
       "소수정예"
     ],
