@@ -1408,7 +1408,9 @@ ul, ol { list-style: none; }
   .hamburger { display: flex; }
   .section { padding: 70px 0; }
   .classes-grid { grid-template-columns: repeat(2, 1fr); }
-  .stats-grid { grid-template-columns: 1fr; gap: 32px; }
+  .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .stats-card { padding: 20px 8px; gap: 6px; border-radius: 12px; }
+  .stats-icon-wrap { width: 36px; height: 36px; border-radius: 10px; font-size: 1rem; }
   .about-steps { grid-template-columns: 1fr; }
   .ai-teaser { flex-direction: column; padding: 40px 28px; }
   .cta-card { padding: 40px 24px; }
@@ -1544,15 +1546,15 @@ ul, ol { list-style: none; }
 }
 @media (max-width: 520px) {
   .stats-card {
-    padding: 20px 8px;
-    gap: 8px;
-    border-radius: 12px;
+    padding: 14px 4px;
+    gap: 4px;
+    border-radius: 10px;
   }
   .stats-icon-wrap {
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-    font-size: 1.1rem;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    font-size: 0.9rem;
   }
 }
 

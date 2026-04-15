@@ -883,7 +883,7 @@ export default function HomePage() {
           background: "var(--bg2)",
           borderTop: "1px solid var(--border)",
           borderBottom: "1px solid var(--border)",
-          padding: "60px 0",
+          padding: "clamp(28px, 5vw, 60px) 0",
         }}
       >
         <div
