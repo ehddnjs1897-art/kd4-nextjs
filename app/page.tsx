@@ -1294,7 +1294,7 @@ export default function HomePage() {
                 {
                   num: "01",
                   step: "STEP 01",
-                  title: "연기 메소드 훈련",
+                  title: "아메리칸 액팅\n메소드 훈련",
                   desc: "마이즈너 테크닉 · 이바나 처벅 테크닉 기반의 심층 연기 훈련",
                   icon: "🎭",
                 },
@@ -1322,7 +1322,7 @@ export default function HomePage() {
                       border: "1px solid var(--border)",
                       borderRadius: "8px",
                       padding: "56px 36px 48px",
-                      textAlign: "left",
+                      textAlign: "center",
                       overflow: "hidden",
                       transition: "border-color var(--transition)",
                     }}
@@ -1349,7 +1349,7 @@ export default function HomePage() {
                     <p
                       style={{
                         fontFamily: "var(--font-display)",
-                        fontSize: "1rem",
+                        fontSize: "1.3rem",
                         letterSpacing: "0.2em",
                         fontWeight: 600,
                         color: "var(--gold)",
@@ -1360,7 +1360,7 @@ export default function HomePage() {
                     </p>
 
                     {/* 이모지 아이콘 */}
-                    <div className="step-icon-glow">
+                    <div className="step-icon-glow" style={{ margin: "0 auto 20px" }}>
                       <span style={{ position: "relative", zIndex: 1 }}>{s.icon}</span>
                     </div>
 

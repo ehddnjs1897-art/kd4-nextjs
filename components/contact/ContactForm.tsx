@@ -43,9 +43,9 @@ const SOURCE_OPTIONS = [
 ]
 
 const INQUIRY_OPTIONS = [
-  { value: '방문 상담',                           label: '방문 상담',     icon: '🌸', desc: '편하게 물어보세요' },
+  { value: '방문 상담',                           label: '방문 상담',     icon: '🌸', desc: '자세한 상담해드릴게요' },
   { value: '바로 수강신청 (첫 달 10만원 할인)',  label: '수강신청',      icon: '⚡', desc: '첫 달 10만원 할인' },
-  { value: '무료 오픈클래스',                    label: '오픈클래스',    icon: '🎁', desc: '부담없이 체험' },
+  { value: '무료 오픈클래스',                    label: '오픈클래스',    icon: '🎁', desc: '무료 체험 클래스 (대기 신청)' },
 ]
 
 export default function ContactForm() {
