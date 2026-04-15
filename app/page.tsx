@@ -491,18 +491,6 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
           </div>
         </div>
 
-        {cls.instructor && (
-          <p style={{
-            fontSize: '0.78rem',
-            color: 'var(--gray)',
-            textAlign: 'center',
-            padding: '0 24px 8px',
-            letterSpacing: '0.03em',
-          }}>
-            {cls.instructor}
-          </p>
-        )}
-
         {/* CTA 버튼 */}
         <a
           href="#contact"
