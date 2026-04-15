@@ -1890,6 +1890,17 @@ main {
   }
 }
 
+/* Contact inquiry 카드 — 초소형 화면에서도 3열 유지 (패딩 최소화) */
+@media (max-width: 360px) {
+  .inquiry-cards {
+    gap: 6px !important;
+  }
+  .inquiry-cards button {
+    padding: 12px 4px !important;
+    border-radius: 10px !important;
+  }
+}
+
 /* 필터 버튼 터치 타겟 확대 (모바일) */
 @media (max-width: 768px) {
   .filter-section a,

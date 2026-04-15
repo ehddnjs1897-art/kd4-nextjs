@@ -1792,18 +1792,19 @@ export default function HomePage() {
         style={{
           padding: "100px 24px",
           borderTop: "1px solid var(--border)",
-          background: "var(--bg2)",
+          background: "radial-gradient(ellipse at 50% 0%, rgba(0,87,255,0.06) 0%, var(--bg2) 65%)",
         }}
       >
-        <div className="container" style={{ maxWidth: "680px" }}>
-          <p style={{ fontFamily: "var(--font-display)", fontSize: "0.75rem", letterSpacing: "0.3em", color: "var(--gold)", marginBottom: "12px", textAlign: "center" }}>
-            CONTACT
+        <div className="container" style={{ maxWidth: "620px" }}>
+          <p style={{ fontSize: "1.6rem", textAlign: "center", marginBottom: "8px" }}>🌸</p>
+          <p style={{ fontFamily: "var(--font-display)", fontSize: "0.72rem", letterSpacing: "0.3em", color: "var(--gold)", marginBottom: "10px", textAlign: "center" }}>
+            START HERE
           </p>
-          <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.6rem, 4vw, 2.2rem)", fontWeight: 700, textAlign: "center", marginBottom: "12px" }}>
-            상담 접수
+          <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.5rem, 4vw, 2rem)", fontWeight: 700, textAlign: "center", marginBottom: "10px" }}>
+            첫 걸음, 어렵지 않아요
           </h2>
-          <p style={{ color: "var(--gray-light)", fontSize: "0.9rem", textAlign: "center", marginBottom: "48px", lineHeight: 1.7 }}>
-            궁금한 점을 남겨주시면 빠르게 연락드리겠습니다.
+          <p style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.88rem", textAlign: "center", marginBottom: "40px", lineHeight: 1.8 }}>
+            30초면 충분합니다. 24시간 이내 카카오로 연락드릴게요.
           </p>
           <ContactForm />
         </div>
