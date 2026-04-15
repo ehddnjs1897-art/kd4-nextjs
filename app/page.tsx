@@ -1294,7 +1294,7 @@ export default function HomePage() {
                 {
                   num: "01",
                   step: "STEP 01",
-                  title: "아메리칸 액팅\n메소드 훈련",
+                  title: "아메리칸 액팅 메소드\n트레이닝",
                   desc: "마이즈너 테크닉 · 이바나 처벅 테크닉 기반의 심층 연기 훈련",
                   icon: "🎭",
                 },
