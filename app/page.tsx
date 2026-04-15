@@ -850,7 +850,7 @@ export default function HomePage() {
           </p>
           <span style={{ display: "block", width: "36px", height: "1px", background: "var(--gold)" }} />
         </div>
-        <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
+        <div className="cta-buttons">
           <a
             href="#classes"
             style={{
@@ -887,12 +887,7 @@ export default function HomePage() {
         }}
       >
         <div
-          className="container"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "12px",
-          }}
+          className="container stats-grid"
         >
           {[
             { num: "300+", label: "배우 코칭", icon: "🎭" },
@@ -1862,13 +1857,8 @@ export default function HomePage() {
           </p>
 
           <div
-            style={{
-              display: "flex",
-              gap: "16px",
-              justifyContent: "center",
-              flexWrap: "wrap",
-              marginBottom: "48px",
-            }}
+            className="cta-buttons"
+            style={{ marginBottom: "48px" }}
           >
             <a
               href="#contact"

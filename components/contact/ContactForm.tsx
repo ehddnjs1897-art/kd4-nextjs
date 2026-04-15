@@ -96,6 +96,7 @@ export default function ContactForm() {
     pixel.lead()   // Meta Pixel: Lead 이벤트
 
     // Fire-and-forget: Make.com → Google Sheets + SMS (서버 경유)
+    // source/inquiry_type 분리 전송 → 구글시트 컬럼별 매핑 가능
     fetch('/api/notify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -105,6 +106,8 @@ export default function ContactForm() {
           phone: form.phone,
           email: null,
           class_name: form.class_name || null,
+          source: form.source || null,
+          inquiry_type: form.inquiry_type || null,
           motivation,
           status: '대기',
           created_at: new Date().toISOString(),
