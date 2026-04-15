@@ -1524,14 +1524,14 @@ ul, ol { list-style: none; }
     font-size: 1.1rem !important;
     margin: 0 auto 10px !important;
   }
-  /* 제목 — 한 줄 표시 */
+  /* 제목 — 두 줄 허용 */
   .step-card h3 {
     font-size: 0.65rem !important;
-    line-height: 1.2 !important;
+    line-height: 1.35 !important;
     margin-bottom: 0 !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
+    white-space: pre-line !important;
+    overflow: visible !important;
+    word-break: keep-all !important;
   }
   /* 설명 텍스트 숨김 */
   .step-card > p:last-of-type {
