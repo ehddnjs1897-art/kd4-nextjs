@@ -153,7 +153,10 @@ export default function ContactForm() {
 
       {/* 무엇을 원하시나요 — 카드형 택1 */}
       <div>
-        <label style={labelStyle}>무엇을 원하시나요?</label>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '8px' }}>
+          <label style={{ ...labelStyle, marginBottom: 0 }}>무엇을 원하시나요?</label>
+          <span style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.28)', letterSpacing: '0.02em' }}>택 1</span>
+        </div>
         <div className="inquiry-cards" style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
@@ -161,6 +164,8 @@ export default function ContactForm() {
         }}>
           {INQUIRY_OPTIONS.map(opt => {
             const selected = form.inquiry_type === opt.value
+            const anySelected = form.inquiry_type !== ''
+            const dimmed = anySelected && !selected
             return (
               <button
                 key={opt.value}
@@ -174,12 +179,13 @@ export default function ContactForm() {
                   gap: '6px',
                   padding: '16px 8px',
                   background: selected ? 'rgba(0,87,255,0.14)' : 'rgba(255,255,255,0.03)',
-                  border: selected ? '1.5px solid var(--gold)' : '1px solid rgba(255,255,255,0.1)',
+                  border: selected ? '1.5px solid var(--gold)' : '1px solid rgba(255,255,255,0.08)',
                   borderRadius: '14px',
                   cursor: 'pointer',
                   transition: 'all 0.18s ease',
                   textAlign: 'center',
                   boxShadow: selected ? '0 0 0 3px rgba(0,87,255,0.12)' : 'none',
+                  opacity: dimmed ? 0.38 : 1,
                 }}
               >
                 <span style={{ fontSize: '1.4rem', lineHeight: 1 }}>{opt.icon}</span>
@@ -297,7 +303,7 @@ export default function ContactForm() {
         onMouseEnter={e => { if (!loading) e.currentTarget.style.transform = 'translateY(-1px)' }}
         onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)' }}
       >
-        {loading ? '전송 중...' : '나에게 맞는 클래스 찾기 →'}
+        {loading ? '전송 중...' : '상담 접수'}
       </button>
     </form>
   )
