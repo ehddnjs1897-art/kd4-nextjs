@@ -45,7 +45,7 @@ function getLocalBusinessSchema() {
       'https://www.youtube.com/@kd4actingstudio',
     ],
     priceRange: '₩150,000 ~ ₩450,000',
-    image: `${SITE_URL}/og-image.png`,
+    image: `${SITE_URL}/og-image.jpg`,
     founder: {
       '@type': 'Person',
       name: '권동원',

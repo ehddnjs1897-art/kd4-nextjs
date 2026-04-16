@@ -6,6 +6,7 @@ import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import FloatingCTA from '@/components/layout/FloatingCTA'
 import JsonLd from '@/components/seo/JsonLd'
+import { FAQ_ITEMS } from '@/lib/faq-items'
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
 import MetaPixel from '@/components/analytics/MetaPixel'
 
@@ -89,7 +90,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
-        <JsonLd />
+        <JsonLd faqItems={FAQ_ITEMS} />
         <GoogleAnalytics />
         <MetaPixel />
       </head>
