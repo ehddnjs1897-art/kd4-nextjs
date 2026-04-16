@@ -15,14 +15,35 @@ function getTimeLeft() {
 }
 
 export default function CountdownTimer() {
-  const [time, setTime] = useState(getTimeLeft())
+  const [time, setTime] = useState<{ h: number; m: number; s: number } | null>(null)
 
   useEffect(() => {
+    setTime(getTimeLeft())
     const id = setInterval(() => setTime(getTimeLeft()), 1_000)
     return () => clearInterval(id)
   }, [])
 
   const pad = (n: number) => String(n).padStart(2, '0')
+
+  if (!time) {
+    return (
+      <div
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '4px',
+          fontFamily: 'var(--font-display)',
+          fontVariantNumeric: 'tabular-nums',
+        }}
+      >
+        <span style={digitStyle}>--</span>
+        <span style={colonStyle}>:</span>
+        <span style={digitStyle}>--</span>
+        <span style={colonStyle}>:</span>
+        <span style={digitStyle}>--</span>
+      </div>
+    )
+  }
 
   return (
     <div
@@ -44,13 +65,13 @@ export default function CountdownTimer() {
 }
 
 const digitStyle: React.CSSProperties = {
-  background: 'rgba(255,255,255,0.15)',
-  border: '1px solid rgba(255,255,255,0.25)',
+  background: 'rgba(17,17,17,0.05)',
+  border: '1px solid rgba(17,17,17,0.18)',
   borderRadius: '6px',
   padding: '6px 10px',
   fontSize: '1.2rem',
   fontWeight: 800,
-  color: '#ffffff',
+  color: '#111111',
   letterSpacing: '0.06em',
   lineHeight: 1,
   minWidth: '40px',
@@ -60,6 +81,6 @@ const digitStyle: React.CSSProperties = {
 const colonStyle: React.CSSProperties = {
   fontSize: '1.2rem',
   fontWeight: 800,
-  color: 'rgba(255,255,255,0.6)',
+  color: 'rgba(17,17,17,0.5)',
   lineHeight: 1,
 }
