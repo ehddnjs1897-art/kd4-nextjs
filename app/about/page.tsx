@@ -109,8 +109,8 @@ export default function AboutPage() {
             margin: '0 auto 16px',
           }}
         >
-          KD4 액팅 스튜디오는 아메리칸 액팅 메소드 훈련과 체계적인 성장 시스템으로<br />
-          현장에서 통하는 연기를 훈련합니다.
+          액팅 메소드 훈련과<br />
+          성장 시스템으로
         </p>
         <p
           style={{
@@ -465,7 +465,7 @@ export default function AboutPage() {
           }}
         >
           &ldquo;새는 알에서 나오기 위해 투쟁한다. 알은 새의 세계이다. 누구든지 태어나려고 하는 자는 하나의 세계를 파괴하여야 한다. 새는 신을 향해 날아간다.&rdquo;
-          &nbsp;&nbsp;<span style={{ fontStyle: 'normal', color: 'rgba(255,255,255,0.5)', fontSize: '0.85em' }}>— 헤르만 헤세, 데미안</span>
+          &nbsp;&nbsp;<span style={{ fontStyle: 'normal', color: '#15488A', fontSize: '0.85em' }}>— 헤르만 헤세, 데미안</span>
         </p>
       </section>
 
