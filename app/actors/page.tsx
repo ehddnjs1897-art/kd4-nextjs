@@ -2,8 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
-
-type UserRole = 'user' | 'actor' | 'crew_pending' | 'crew' | 'editor' | 'director' | 'admin'
+import { UserRole } from '@/lib/types'
 
 interface Actor {
   id: string
@@ -339,9 +338,9 @@ const styles: Record<string, React.CSSProperties> = {
   },
   filterBtnActive: {
     background: 'var(--gold)',
-    color: '#0a0a0a',
+    color: '#ffffff',
     border: '1px solid var(--gold)',
-    fontWeight: 600,
+    fontWeight: 700,
   },
   resultCount: {
     fontSize: '0.8rem',
