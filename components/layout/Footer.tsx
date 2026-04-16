@@ -157,8 +157,7 @@ export default function Footer() {
             </p>
             <p style={{ color: 'var(--gray-light)', fontSize: '0.85rem', lineHeight: 1.7 }}>
               서울시 서대문구 대현동 90-7<br />
-              아리움3차 1층 101호<br />
-              <span style={{ color: 'var(--gray)', fontSize: '0.8rem' }}>(신촌 대로)</span>
+              아리움3차 1층 101호
             </p>
           </div>
 

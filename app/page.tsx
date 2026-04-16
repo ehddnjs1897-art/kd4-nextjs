@@ -116,7 +116,7 @@ function FaqAccordion() {
                   height: "36px",
                   borderRadius: "50%",
                   background: isOpen ? "var(--gold)" : "rgba(21,72,138,0.12)",
-                  color: isOpen ? "#ffffff" : "var(--gold)",
+                  color: isOpen ? "#15488A" : "var(--gold)",
                   fontSize: "1.5rem",
                   lineHeight: 1,
                   flexShrink: 0,
@@ -1138,8 +1138,9 @@ export default function HomePage() {
                   icon: "🌟",
                 },
               ].map((s, i) => (
-                <div key={s.num} style={{ display: 'contents' }}>
+                <>
                   <div
+                    key={s.num}
                     className="step-card"
                     style={{
                       position: "relative",
@@ -1228,7 +1229,7 @@ export default function HomePage() {
                       </svg>
                     </div>
                   )}
-                </div>
+                </>
               ))}
             </div>
           </div>

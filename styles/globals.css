@@ -1471,20 +1471,18 @@ ul, ol { list-style: none; }
 
 /* === STEP PROGRESSION GRID === */
 .steps-journey {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr auto 1fr;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
   gap: 0;
-  align-items: stretch; /* 카드 세 개 높이 자동 일치 */
   margin-top: 48px;
 }
-/* 카드 자체도 flex column이 아니어도 stretch로 동일 높이 획득 */
 .steps-journey .step-card {
-  height: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
-/* 제목 영역 2줄 분량 예약 — 1줄 제목도 같은 위치에 서게 해서 시각적 일관성
-   (STEP 01만 "아메리칸 액팅 메소드 / 트레이닝" 2줄이라 예전엔 카드 높이 튀었음) */
+/* 제목 영역 2줄 분량 예약 — 모든 카드 제목이 같은 높이로 정렬 */
 .steps-journey .step-card h3 {
   min-height: 2.8em;
   display: flex;
