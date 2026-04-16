@@ -1968,8 +1968,9 @@ main {
   animation: heroTitleWallFade 11s linear forwards;
 }
 .hero-title-wall h1 {
-  font-family: 'Satoshi', var(--font-display), sans-serif;
-  font-weight: 800;
+  /* KoPubWorldDotum — 한글 전용 오픈소스 폰트 (모던 고딕) */
+  font-family: 'KoPubWorldDotum', 'KoPub World Dotum', 'KoPub Dotum', var(--font-display), sans-serif;
+  font-weight: 700;
   font-size: clamp(1.8rem, 6.2vw, 5.2rem);
   color: #15488A;
   margin: 0;
@@ -1978,6 +1979,7 @@ main {
   white-space: nowrap;
 }
 .hero-title-wall-sub {
+  /* 영문 서브타이틀 — Helvetica 유지 */
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 400; /* 볼드 제거 — 얇고 담담하게 */
   font-size: clamp(0.6rem, 1vw, 0.95rem);
