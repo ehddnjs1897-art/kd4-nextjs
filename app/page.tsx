@@ -192,12 +192,13 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
     <div
       style={{
         background: "var(--bg2)",
-        border: "1px solid var(--border)",
+        border: "1.5px solid #15488A",
         borderRadius: "var(--radius)",
         overflow: "hidden",
         display: "flex",
         flexDirection: "column",
         position: "relative",
+        cursor: "pointer",
       }}
     >
 
@@ -797,7 +798,7 @@ export default function HomePage() {
               letterSpacing: "0.05em",
             }}
           >
-            <span style={{ display: "block", color: "#111111", fontSize: "0.85em", opacity: 0.75 }}>Actor Acceleration System</span>
+            <span style={{ display: "block", color: "#111111", fontSize: "0.85em", opacity: 0.75 }}>Actor Accelerating System</span>
             연기하지 않는 연기
           </p>
         </div>
@@ -807,7 +808,7 @@ export default function HomePage() {
         <div className={`hero-title-wall-pos ${titleReady ? 'is-ready' : ''}`}>
           <div className="hero-title-wall" ref={heroTitleRef}>
             <h1>KD4 액팅 스튜디오</h1>
-            <p className="hero-title-wall-sub">ACTOR ACCELERATION SYSTEM · SINCE 2024</p>
+            <p className="hero-title-wall-sub">ACTOR ACCELERATING SYSTEM</p>
           </div>
         </div>
 
@@ -1276,6 +1277,7 @@ export default function HomePage() {
       {/* ── 3. ABOUT ─────────────────────────────────────────────────────────── */}
       <section id="about" className="section" style={{ background: "var(--bg)" }}>
         <div className="container">
+          {/* 헤더 영역은 중앙 정렬 720px 유지 (가독성) */}
           <div style={{ maxWidth: "720px", margin: "0 auto", textAlign: "center" }}>
             <p
               style={{
@@ -1309,9 +1311,10 @@ export default function HomePage() {
             >
               연기 훈련부터 캐스팅까지, 배우 액셀러레이팅 시스템
             </p>
+          </div>
 
-
-            {/* 3단계 — 진행 느낌 */}
+          {/* 3단계 — 진행 느낌 (컨테이너 전체 폭 사용해서 카드 크게) */}
+          <div style={{ maxWidth: "1080px", margin: "0 auto" }}>
             <div className="steps-journey">
               {[
                 {
