@@ -516,7 +516,8 @@ export default function HomePage() {
   const [step3Open, setStep3Open] = useState(false)
   const [extraOpen, setExtraOpen] = useState(false)
 
-  /* ── 히어로 타이틀: 서브 텍스트 가로폭을 h1과 동일하게 맞춤 (letter-spacing 자동 계산) ── */
+  /* ── 히어로 타이틀: 서브 텍스트 가로폭을 h1과 동일하게 맞춤
+       (offsetWidth 사용 → CSS 스케일 애니메이션 영향 없이 레이아웃 실측) ── */
   useEffect(() => {
     const adjust = () => {
       const container = heroTitleRef.current
@@ -524,20 +525,26 @@ export default function HomePage() {
       const h1 = container.querySelector('h1') as HTMLElement | null
       const sub = container.querySelector('.hero-title-wall-sub') as HTMLElement | null
       if (!h1 || !sub) return
-      // 초기화 후 측정
       sub.style.letterSpacing = '0'
-      const h1W = h1.getBoundingClientRect().width
-      const subW = sub.getBoundingClientRect().width
-      if (subW <= 0) return
+      // offsetWidth는 transform(scale) 영향 받지 않는 레이아웃 너비
+      const h1W = h1.offsetWidth
+      const subW = sub.offsetWidth
+      if (subW <= 0 || h1W <= 0) return
       const gap = h1W - subW
       const chars = Math.max(1, (sub.textContent || '').length - 1)
       const spacing = gap / chars
       sub.style.letterSpacing = `${Math.max(0, spacing)}px`
     }
-    // 폰트 로드 후, 그리고 리사이즈 시 재계산
+    // 초기 계산
     adjust()
+    // 폰트 로드 완료 후 재계산 (Helvetica가 늦게 잡히는 경우 대응)
     if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(() => adjust())
+      document.fonts.ready.then(() => {
+        // 폰트 적용되면 h1/sub 너비가 바뀌므로 다시
+        adjust()
+        // 한 번 더 안전하게 (폰트 렌더 완료 대기)
+        setTimeout(adjust, 100)
+      })
     }
     window.addEventListener('resize', adjust)
     return () => window.removeEventListener('resize', adjust)
@@ -749,10 +756,15 @@ export default function HomePage() {
           </p>
         </div>
 
-        {/* 뒷벽에 박히는 타이틀 — DOM/CSS로 선명하게, 달리줌과 동기화 */}
-        <div className="hero-title-wall" ref={heroTitleRef}>
-          <h1>KD4 액팅 스튜디오</h1>
-          <p className="hero-title-wall-sub">ACTOR ACCELERATION SYSTEM · SINCE 2024</p>
+        {/* 뒷벽에 박히는 타이틀 — DOM/CSS로 선명하게, 달리줌과 동기화
+             외부 wrapper = 포지셔닝 (translate(-50%, -50%))
+             내부 wrapper = 애니메이션 (scale + opacity)
+             두 트랜스폼이 서로 간섭하지 않도록 분리 */}
+        <div className="hero-title-wall-pos">
+          <div className="hero-title-wall" ref={heroTitleRef}>
+            <h1>KD4 액팅 스튜디오</h1>
+            <p className="hero-title-wall-sub">ACTOR ACCELERATION SYSTEM · SINCE 2024</p>
+          </div>
         </div>
 
         {/* 스크롤 인디케이터 */}
