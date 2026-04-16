@@ -69,7 +69,7 @@ export default function CrewRequestButton() {
           width: '100%',
           textAlign: 'center',
           background: loading ? 'rgba(196,165,90,0.4)' : 'var(--gold)',
-          color: '#0a0a0a',
+          color: '#ffffff',
           border: 'none',
           borderRadius: 6,
           padding: '11px 0',

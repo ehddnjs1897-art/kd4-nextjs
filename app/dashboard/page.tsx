@@ -332,7 +332,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'block',
     textAlign: 'center',
     background: 'var(--gold)',
-    color: '#0a0a0a',
+    color: '#ffffff',
     border: 'none',
     borderRadius: 6,
     padding: '11px 0',

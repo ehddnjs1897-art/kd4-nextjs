@@ -98,7 +98,7 @@ export default function BoardClient({
             style={{
               padding: '9px 22px',
               background: 'var(--gold)',
-              color: 'var(--bg)',
+              color: '#ffffff',
               borderRadius: 'var(--radius)',
               fontSize: '0.875rem',
               fontWeight: 600,

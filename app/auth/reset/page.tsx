@@ -177,7 +177,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   btnPrimary: {
     background: 'var(--gold)',
-    color: '#0a0a0a',
+    color: '#ffffff',
     border: 'none',
     borderRadius: 6,
     padding: '12px 0',
@@ -203,7 +203,7 @@ const styles: Record<string, React.CSSProperties> = {
   btnBack: {
     display: 'inline-block',
     background: 'var(--gold)',
-    color: '#0a0a0a',
+    color: '#ffffff',
     borderRadius: 6,
     padding: '11px 24px',
     fontSize: '0.88rem',
