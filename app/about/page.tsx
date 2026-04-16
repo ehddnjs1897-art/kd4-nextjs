@@ -458,7 +458,7 @@ export default function AboutPage() {
           style={{
             fontFamily: 'var(--font-serif)',
             fontSize: 'clamp(0.85rem, 1.8vw, 1rem)',
-            color: '#ffffff',
+            color: '#15488A',
             lineHeight: 1.6,
             letterSpacing: '0.02em',
             fontStyle: 'italic',
