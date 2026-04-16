@@ -1942,8 +1942,9 @@ main {
   .hero-title-card { animation: none; opacity: 1; }
 }
 
-/* ═══ HERO TITLE WALL — 뒷벽에 박히는 DOM 타이틀 (달리줌 동기화) ═══ */
-.hero-title-wall {
+/* ═══ HERO TITLE WALL — 뒷벽에 박히는 DOM 타이틀 (달리줌 동기화) ═══
+   포지셔닝(translate)과 애니메이션(scale)을 분리하여 서로 간섭 방지 */
+.hero-title-wall-pos {
   position: absolute;
   top: 42%;
   left: 50%;
@@ -1951,12 +1952,14 @@ main {
   z-index: 10;
   pointer-events: none;
   text-align: center;
-  /* h1 너비에 맞춰 shrink — 서브가 h1 너비 상속 */
   display: inline-block;
   width: max-content;
-  animation: heroTitleWallFade 11s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.hero-title-wall {
+  animation: heroTitleWallFade 11s cubic-bezier(0.33, 0, 0.4, 1) forwards;
   opacity: 0;
   will-change: opacity, transform, filter;
+  transform-origin: center center;
 }
 .hero-title-wall h1 {
   font-family: 'Satoshi', var(--font-display), sans-serif;
@@ -1970,7 +1973,7 @@ main {
 }
 .hero-title-wall-sub {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-weight: 600;
+  font-weight: 400; /* 볼드 제거 — 얇고 담담하게 */
   font-size: clamp(0.6rem, 1vw, 0.95rem);
   color: #15488A;
   margin: 16px 0 0;
@@ -1978,13 +1981,12 @@ main {
   text-transform: uppercase;
   display: block;
   white-space: nowrap;
-  /* JS가 letter-spacing 계산해서 h1 가로폭에 맞춤 */
+  /* JS가 letter-spacing 동적 계산해서 h1 가로폭에 맞춤 */
 }
 
 @keyframes heroTitleWallFade {
-  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.55); filter: blur(2px); }
-  50%  { opacity: 0.7; transform: translate(-50%, -50%) scale(0.82); filter: blur(0); }
-  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0); }
+  0%   { opacity: 0; transform: scale(0.48); filter: blur(6px); }
+  100% { opacity: 1; transform: scale(1); filter: blur(0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
