@@ -1942,6 +1942,55 @@ main {
   .hero-title-card { animation: none; opacity: 1; }
 }
 
+/* ═══ HERO TITLE WALL — 뒷벽에 박히는 DOM 타이틀 (달리줌 동기화) ═══ */
+.hero-title-wall {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  pointer-events: none;
+  text-align: center;
+  /* h1 너비에 맞춰 shrink — 서브가 h1 너비 상속 */
+  display: inline-block;
+  width: max-content;
+  animation: heroTitleWallFade 11s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  will-change: opacity, transform, filter;
+}
+.hero-title-wall h1 {
+  font-family: 'Satoshi', var(--font-display), sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.8rem, 6.2vw, 5.2rem);
+  color: #15488A;
+  margin: 0;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.hero-title-wall-sub {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 600;
+  font-size: clamp(0.6rem, 1vw, 0.95rem);
+  color: #15488A;
+  margin: 16px 0 0;
+  line-height: 1.2;
+  text-transform: uppercase;
+  display: block;
+  white-space: nowrap;
+  /* JS가 letter-spacing 계산해서 h1 가로폭에 맞춤 */
+}
+
+@keyframes heroTitleWallFade {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.55); filter: blur(2px); }
+  50%  { opacity: 0.7; transform: translate(-50%, -50%) scale(0.82); filter: blur(0); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-title-wall { animation: none; opacity: 1; }
+}
+
 /* ═══ HERO INTRO SECTION (카피 + CTA, Stats 위) ═══ */
 .hero-intro-section {
   padding: 80px 24px 60px;

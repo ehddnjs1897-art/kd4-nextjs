@@ -510,10 +510,38 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
 
 export default function HomePage() {
   const heroRef = useRef<HTMLElement>(null)
+  const heroTitleRef = useRef<HTMLDivElement>(null)
   const mainRef = useRef<HTMLElement>(null)
   const [step2Open, setStep2Open] = useState(false)
   const [step3Open, setStep3Open] = useState(false)
   const [extraOpen, setExtraOpen] = useState(false)
+
+  /* ── 히어로 타이틀: 서브 텍스트 가로폭을 h1과 동일하게 맞춤 (letter-spacing 자동 계산) ── */
+  useEffect(() => {
+    const adjust = () => {
+      const container = heroTitleRef.current
+      if (!container) return
+      const h1 = container.querySelector('h1') as HTMLElement | null
+      const sub = container.querySelector('.hero-title-wall-sub') as HTMLElement | null
+      if (!h1 || !sub) return
+      // 초기화 후 측정
+      sub.style.letterSpacing = '0'
+      const h1W = h1.getBoundingClientRect().width
+      const subW = sub.getBoundingClientRect().width
+      if (subW <= 0) return
+      const gap = h1W - subW
+      const chars = Math.max(1, (sub.textContent || '').length - 1)
+      const spacing = gap / chars
+      sub.style.letterSpacing = `${Math.max(0, spacing)}px`
+    }
+    // 폰트 로드 후, 그리고 리사이즈 시 재계산
+    adjust()
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => adjust())
+    }
+    window.addEventListener('resize', adjust)
+    return () => window.removeEventListener('resize', adjust)
+  }, [])
 
   /* ── Lenis 부드러운 스크롤 (데스크톱 전용) ── */
   useEffect(() => {
@@ -721,7 +749,11 @@ export default function HomePage() {
           </p>
         </div>
 
-        {/* 타이틀은 Three.js 씬 안에서 뒷벽에 렌더됨 (HeroScene.tsx) */}
+        {/* 뒷벽에 박히는 타이틀 — DOM/CSS로 선명하게, 달리줌과 동기화 */}
+        <div className="hero-title-wall" ref={heroTitleRef}>
+          <h1>KD4 액팅 스튜디오</h1>
+          <p className="hero-title-wall-sub">ACTOR ACCELERATION SYSTEM · SINCE 2024</p>
+        </div>
 
         {/* 스크롤 인디케이터 */}
         <div
