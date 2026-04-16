@@ -74,7 +74,6 @@ async function getActor(id: string): Promise<Actor | null> {
     `
     )
     .eq('id', id)
-    .eq('is_public', true)
     .single()
 
   if (error || !data) return null
