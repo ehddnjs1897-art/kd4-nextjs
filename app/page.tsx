@@ -516,38 +516,47 @@ export default function HomePage() {
   const [step3Open, setStep3Open] = useState(false)
   const [extraOpen, setExtraOpen] = useState(false)
 
-  /* ── 히어로 타이틀: 서브 텍스트 가로폭을 h1과 동일하게 맞춤
-       (offsetWidth 사용 → CSS 스케일 애니메이션 영향 없이 레이아웃 실측) ── */
+  /* ── 히어로 타이틀: 서브 가로폭을 h1과 일치시킨 후 "한 번만" 등장 ──
+       - 폰트 로드 대기 → 정확한 letter-spacing 계산 → 적용 → 등장
+       - 등장 이후에는 어떤 재조정도 없음 (리사이즈 리스너 제거) */
+  const [titleReady, setTitleReady] = useState(false)
   useEffect(() => {
-    const adjust = () => {
-      const container = heroTitleRef.current
-      if (!container) return
-      const h1 = container.querySelector('h1') as HTMLElement | null
-      const sub = container.querySelector('.hero-title-wall-sub') as HTMLElement | null
-      if (!h1 || !sub) return
+    let cancelled = false
+    const container = heroTitleRef.current
+    if (!container) return
+    const h1 = container.querySelector('h1') as HTMLElement | null
+    const sub = container.querySelector('.hero-title-wall-sub') as HTMLElement | null
+    if (!h1 || !sub) { setTitleReady(true); return }
+
+    const measureAndApply = () => {
       sub.style.letterSpacing = '0'
-      // offsetWidth는 transform(scale) 영향 받지 않는 레이아웃 너비
+      // offsetWidth: 레이아웃 실측 (transform/scale 영향 없음)
       const h1W = h1.offsetWidth
       const subW = sub.offsetWidth
       if (subW <= 0 || h1W <= 0) return
       const gap = h1W - subW
-      const chars = Math.max(1, (sub.textContent || '').length - 1)
+      // letter-spacing은 각 글자 뒤에 공간을 추가 — N개 글자 전체 길이를 늘리므로 divisor는 N
+      const chars = Math.max(1, (sub.textContent || '').length)
       const spacing = gap / chars
       sub.style.letterSpacing = `${Math.max(0, spacing)}px`
     }
-    // 초기 계산
-    adjust()
-    // 폰트 로드 완료 후 재계산 (Helvetica가 늦게 잡히는 경우 대응)
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(() => {
-        // 폰트 적용되면 h1/sub 너비가 바뀌므로 다시
-        adjust()
-        // 한 번 더 안전하게 (폰트 렌더 완료 대기)
-        setTimeout(adjust, 100)
+
+    const init = async () => {
+      // 모든 폰트(Satoshi 포함) 로드 대기
+      try {
+        if (document.fonts && document.fonts.ready) {
+          await document.fonts.ready
+        }
+      } catch {}
+      if (cancelled) return
+      measureAndApply()
+      // 레이아웃 안정 후 등장 (한 프레임 대기 → 적용값 확정)
+      requestAnimationFrame(() => {
+        if (!cancelled) setTitleReady(true)
       })
     }
-    window.addEventListener('resize', adjust)
-    return () => window.removeEventListener('resize', adjust)
+    init()
+    return () => { cancelled = true }
   }, [])
 
   /* ── Lenis 부드러운 스크롤 (데스크톱 전용) ── */
@@ -757,10 +766,8 @@ export default function HomePage() {
         </div>
 
         {/* 뒷벽에 박히는 타이틀 — DOM/CSS로 선명하게, 달리줌과 동기화
-             외부 wrapper = 포지셔닝 (translate(-50%, -50%))
-             내부 wrapper = 애니메이션 (scale + opacity)
-             두 트랜스폼이 서로 간섭하지 않도록 분리 */}
-        <div className="hero-title-wall-pos">
+             측정 완료 전(titleReady=false)에는 비가시 — letter-spacing 적용 후 등장 */}
+        <div className={`hero-title-wall-pos ${titleReady ? 'is-ready' : ''}`}>
           <div className="hero-title-wall" ref={heroTitleRef}>
             <h1>KD4 액팅 스튜디오</h1>
             <p className="hero-title-wall-sub">ACTOR ACCELERATION SYSTEM · SINCE 2024</p>
