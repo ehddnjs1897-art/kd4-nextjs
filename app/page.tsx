@@ -510,8 +510,6 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
 
 export default function HomePage() {
   const heroRef = useRef<HTMLElement>(null)
-  const marqueeRef = useRef<HTMLDivElement>(null)
-  const marqueeInnerRef = useRef<HTMLDivElement>(null)
   const mainRef = useRef<HTMLElement>(null)
   const [step2Open, setStep2Open] = useState(false)
   const [step3Open, setStep3Open] = useState(false)
@@ -723,11 +721,7 @@ export default function HomePage() {
           </p>
         </div>
 
-        {/* 중앙 타이틀 카드 — 달리줌과 동기화되어 페이드아웃 */}
-        <div className="hero-title-card" ref={marqueeRef}>
-          <h1>KD4 액팅 스튜디오</h1>
-          <span className="hero-title-card-sub">Actor Acceleration System · Since 2024</span>
-        </div>
+        {/* 타이틀은 Three.js 씬 안에서 뒷벽에 렌더됨 (HeroScene.tsx) */}
 
         {/* 스크롤 인디케이터 */}
         <div

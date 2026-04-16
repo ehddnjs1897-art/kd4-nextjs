@@ -39,7 +39,7 @@ export default function HeroScene() {
       const loader = new THREE.TextureLoader();
       const woodTex = loader.load("/textures/wood.JPG");
       woodTex.wrapS = woodTex.wrapT = THREE.RepeatWrapping;
-      woodTex.repeat.set(4, 6); // 판자 크기 느낌 — 타일링 반복
+      woodTex.repeat.set(4, 10); // 판자 크기 느낌 — 타일링 반복 (연장된 바닥에 맞춤)
       woodTex.anisotropy = 8;
       // 색 공간 보정 (sRGB → 실제 톤 유지)
       if ("colorSpace" in woodTex) {
@@ -57,13 +57,13 @@ export default function HeroScene() {
         metalness: 0.02,
       });
 
-      // 바닥 — 실제 공간처럼 아담한 사이즈 (22×28)
+      // 바닥 — 카메라 시작점(z=22)까지 덮도록 넉넉하게 연장 (22×48, z=0 중심)
       const floor = new THREE.Mesh(
-        new THREE.PlaneGeometry(22, 28),
+        new THREE.PlaneGeometry(22, 48),
         floorMat
       );
       floor.rotation.x = -Math.PI / 2;
-      floor.position.set(0, 0, -6);
+      floor.position.set(0, 0, 0);
       scene.add(floor);
 
       // ── WALLS (웜그레이 톤 — 배경과 이어지도록) ──────────────────────
@@ -84,35 +84,69 @@ export default function HeroScene() {
       doorHint.position.set(0, 1.6, -19.98);
       scene.add(doorHint);
 
-      // 왼쪽 벽 — 톤 살짝 낮춰서 배경과 구분
+      // ── 뒷벽 타이틀 (달리줌과 함께 페이드인, 벽에 박히는 연출) ──────────
+      const titleCanvas = document.createElement("canvas");
+      titleCanvas.width = 2048;
+      titleCanvas.height = 512;
+      const tctx = titleCanvas.getContext("2d")!;
+      // 배경 투명
+      tctx.clearRect(0, 0, 2048, 512);
+      // 메인 타이틀
+      tctx.fillStyle = "#15488A"; // 네이비
+      tctx.font = "700 210px 'Satoshi', 'Pretendard', system-ui, sans-serif";
+      tctx.textAlign = "center";
+      tctx.textBaseline = "middle";
+      tctx.fillText("KD4 액팅 스튜디오", 1024, 220);
+      // 서브
+      tctx.fillStyle = "rgba(21, 72, 138, 0.55)";
+      tctx.font = "400 62px 'Satoshi', 'Pretendard', system-ui, sans-serif";
+      tctx.letterSpacing = "0.3em";
+      tctx.fillText("ACTOR ACCELERATION SYSTEM · SINCE 2024", 1024, 380);
+
+      const titleTex = new THREE.CanvasTexture(titleCanvas);
+      if ("colorSpace" in titleTex) {
+        (titleTex as any).colorSpace = THREE.SRGBColorSpace;
+      }
+      titleTex.anisotropy = 8;
+      const titleMat = new THREE.MeshBasicMaterial({
+        map: titleTex,
+        transparent: true,
+        opacity: 0, // 시작은 투명 — 달리줌 중 서서히 등장
+        depthWrite: false,
+      });
+      const titlePlane = new THREE.Mesh(
+        new THREE.PlaneGeometry(14, 3.5), // 벽 중앙에 맞게 약간 축소
+        titleMat
+      );
+      titlePlane.position.set(0, 3.7, -19.9); // 뒷벽 중앙 — 위쪽으로 이동
+      scene.add(titlePlane);
+
+      // 왼쪽 벽 — 톤 살짝 낮춰서 배경과 구분, 카메라 시작점까지 확장 (길이 48)
       const sideWallMat = new THREE.MeshStandardMaterial({
         color: 0xD6CFBE, roughness: 0.95, side: THREE.DoubleSide,
       });
-      const wallL = new THREE.Mesh(new THREE.PlaneGeometry(28, 5.5), sideWallMat);
+      const wallL = new THREE.Mesh(new THREE.PlaneGeometry(48, 5.5), sideWallMat);
       wallL.rotation.y = Math.PI / 2;
-      wallL.position.set(-11, 2.75, -6);
+      wallL.position.set(-11, 2.75, 0);
       scene.add(wallL);
 
       // 오른쪽 벽
-      const wallR = new THREE.Mesh(new THREE.PlaneGeometry(28, 5.5), sideWallMat.clone());
+      const wallR = new THREE.Mesh(new THREE.PlaneGeometry(48, 5.5), sideWallMat.clone());
       wallR.rotation.y = -Math.PI / 2;
-      wallR.position.set(11, 2.75, -6);
+      wallR.position.set(11, 2.75, 0);
       scene.add(wallR);
 
-      // ── 사이드 벽 디테일: 베이스보드 + 허리선 몰딩 + 장식 패널 ─────────
-      // 다크 우드 걸레받이 (바닥 경계 명확하게)
+      // ── 사이드 벽 디테일: 베이스보드 + 허리선 몰딩 ─────────────────────
+      // 다크 우드 걸레받이 (바닥 경계 명확하게) — 연장된 벽 길이(48)에 맞춤
       const baseboardMat = new THREE.MeshStandardMaterial({
         color: 0x3E2E1F, roughness: 0.6, metalness: 0.05,
       });
-      // 왼쪽 걸레받이
-      const baseL = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.18, 28), baseboardMat);
-      baseL.position.set(-10.98, 0.09, -6);
+      const baseL = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.18, 48), baseboardMat);
+      baseL.position.set(-10.98, 0.09, 0);
       scene.add(baseL);
-      // 오른쪽 걸레받이
-      const baseR = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.18, 28), baseboardMat);
-      baseR.position.set(10.98, 0.09, -6);
+      const baseR = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.18, 48), baseboardMat);
+      baseR.position.set(10.98, 0.09, 0);
       scene.add(baseR);
-      // 뒷벽 걸레받이
       const baseB = new THREE.Mesh(new THREE.BoxGeometry(22, 0.18, 0.04), baseboardMat);
       baseB.position.set(0, 0.09, -19.98);
       scene.add(baseB);
@@ -121,62 +155,49 @@ export default function HeroScene() {
       const trimMat = new THREE.MeshStandardMaterial({
         color: 0xC8BFA8, roughness: 0.6, metalness: 0.08,
       });
-      const trimL = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.05, 28), trimMat);
-      trimL.position.set(-10.97, 1.35, -6);
+      const trimL = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.05, 48), trimMat);
+      trimL.position.set(-10.97, 1.35, 0);
       scene.add(trimL);
-      const trimR = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.05, 28), trimMat);
-      trimR.position.set(10.97, 1.35, -6);
+      const trimR = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.05, 48), trimMat);
+      trimR.position.set(10.97, 1.35, 0);
       scene.add(trimR);
 
-      // 장식 프레임 패널 — 액자/거울처럼 보이는 짙은 프레임 (사이드별 2개씩)
-      const frameMat = new THREE.MeshStandardMaterial({
-        color: 0x5A4A38, roughness: 0.5, metalness: 0.15,
-      });
-      const panelInnerMat = new THREE.MeshStandardMaterial({
-        color: 0xCFC5AD, roughness: 0.85,
-      });
-      const addFramedPanel = (side: "L" | "R", z: number) => {
-        const x = side === "L" ? -10.95 : 10.95;
-        const ry = side === "L" ? Math.PI / 2 : -Math.PI / 2;
-        // 외곽 프레임
-        const frame = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 3.0), frameMat);
-        frame.rotation.y = ry;
-        frame.position.set(x, 3.0, z);
-        scene.add(frame);
-        // 내부 패널 (살짝 안쪽)
-        const inner = new THREE.Mesh(new THREE.PlaneGeometry(2.1, 2.7), panelInnerMat);
-        inner.rotation.y = ry;
-        inner.position.set(side === "L" ? -10.94 : 10.94, 3.0, z);
-        scene.add(inner);
-      };
-      // 왼쪽 사이드 2개
-      addFramedPanel("L", -2);
-      addFramedPanel("L", -12);
-      // 오른쪽 사이드 2개
-      addFramedPanel("R", -2);
-      addFramedPanel("R", -12);
+      // ── 크라운 몰딩 (천장-벽 경계) — 다크한 실선으로 명확하게 ─────────
+      const crownMat = new THREE.MeshBasicMaterial({ color: 0x2A251E });
+      // 왼쪽 벽 상단
+      const crownL = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.08, 48), crownMat);
+      crownL.position.set(-10.95, 5.46, 0);
+      scene.add(crownL);
+      // 오른쪽 벽 상단
+      const crownR = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.08, 48), crownMat);
+      crownR.position.set(10.95, 5.46, 0);
+      scene.add(crownR);
+      // 뒷벽 상단
+      const crownB = new THREE.Mesh(new THREE.BoxGeometry(22, 0.08, 0.05), crownMat);
+      crownB.position.set(0, 5.46, -19.95);
+      scene.add(crownB);
 
-      // ── CEILING (웜그레이 톤) ─────────────────────────────────────────
+      // ── CEILING (웜그레이 톤) — 카메라 시작점까지 연장 ───────────────
       const ceil = new THREE.Mesh(
-        new THREE.PlaneGeometry(22, 28),
-        new THREE.MeshStandardMaterial({ color: 0xDDD5C3, roughness: 1 })
+        new THREE.PlaneGeometry(22, 48),
+        new THREE.MeshStandardMaterial({ color: 0xC9C0AC, roughness: 1 })
       );
       ceil.rotation.x = Math.PI / 2;
-      ceil.position.set(0, 5.5, -6);
+      ceil.position.set(0, 5.5, 0);
       scene.add(ceil);
 
       // T-bar 격자 (드롭 천장 느낌) — 얇은 금속 레일
       const tbarMat = new THREE.MeshStandardMaterial({ color: 0xBDBAB0, roughness: 0.5, metalness: 0.4 });
-      // 가로 레일
-      for (let z = 4; z > -18; z -= 4) {
+      // 가로 레일 — 연장된 천장에 맞춰 더 많이
+      for (let z = 20; z > -20; z -= 4) {
         const rail = new THREE.Mesh(new THREE.BoxGeometry(22, 0.03, 0.04), tbarMat);
         rail.position.set(0, 5.48, z);
         scene.add(rail);
       }
-      // 세로 레일
+      // 세로 레일 — 연장된 천장 전체
       [-7, 0, 7].forEach((x) => {
-        const rail = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.03, 28), tbarMat);
-        rail.position.set(x, 5.48, -6);
+        const rail = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.03, 48), tbarMat);
+        rail.position.set(x, 5.48, 0);
         scene.add(rail);
       });
 
@@ -266,7 +287,7 @@ export default function HeroScene() {
       // ── CAMERA ANIMATION — 슬로우 달리 줌 ──────────────────────────────
       // 달리 줌 = 카메라는 앞으로 이동하면서 FOV 살짝 넓어짐 (히치콕 Vertigo 효과의 서브틀한 버전)
       let startTime: number | null = null;
-      const TOTAL = 7500; // 7.5초 — 천천히
+      const TOTAL = 11000; // 11초 — 더 천천히
 
       // 부드럽고 시네마틱한 이징
       const easeInOutCubic = (t: number): number =>
@@ -291,7 +312,12 @@ export default function HeroScene() {
           camera.fov = 50 + 5 * e;
           camera.updateProjectionMatrix();
           camera.lookAt(0, 0.6 + 1.0 * e, -6);
+
+          // 타이틀 페이드인 — 달리줌 20%~95% 구간에서 아주 천천히 등장
+          const titleFade = t < 0.2 ? 0 : t > 0.95 ? 1 : (t - 0.2) / 0.75;
+          titleMat.opacity = titleFade;
         } else {
+          titleMat.opacity = 1;
           if (ts - lastIdleFrame >= IDLE_INTERVAL) {
             lastIdleFrame = ts;
             const t2 = (elapsed - TOTAL) / 1000;
