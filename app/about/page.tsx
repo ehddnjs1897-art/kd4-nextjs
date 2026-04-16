@@ -493,7 +493,7 @@ export default function AboutPage() {
               display: 'inline-block',
               padding: '14px 32px',
               background: 'var(--gold)',
-              color: '#0a0a0a',
+              color: '#ffffff',
               fontFamily: 'var(--font-sans)',
               fontSize: '0.95rem',
               fontWeight: 700,

@@ -52,7 +52,7 @@ export default function NotFound() {
             style={{
               padding: '12px 28px',
               background: 'var(--gold)',
-              color: '#0a0a0a',
+              color: '#ffffff',
               fontWeight: 700,
               fontSize: '0.88rem',
               borderRadius: 'var(--radius)',

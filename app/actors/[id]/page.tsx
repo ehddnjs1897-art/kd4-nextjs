@@ -274,7 +274,7 @@ const styles: Record<string, React.CSSProperties> = {
   btnPrimary: {
     display: 'block',
     background: 'var(--gold)',
-    color: '#0a0a0a',
+    color: '#ffffff',
     borderRadius: 6,
     padding: '12px 0',
     fontSize: '0.9rem',

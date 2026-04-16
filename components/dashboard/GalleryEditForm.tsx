@@ -107,7 +107,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   btnPrimary: {
     background: 'var(--gold)',
-    color: '#0a0a0a',
+    color: '#ffffff',
   },
   btnGhost: {
     background: 'transparent',

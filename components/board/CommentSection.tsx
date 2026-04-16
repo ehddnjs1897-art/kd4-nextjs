@@ -262,7 +262,7 @@ export default function CommentSection({
               display: 'inline-block',
               padding: '8px 20px',
               background: 'var(--gold)',
-              color: 'var(--bg)',
+              color: '#ffffff',
               borderRadius: 'var(--radius)',
               fontSize: '0.85rem',
               fontWeight: 600,
