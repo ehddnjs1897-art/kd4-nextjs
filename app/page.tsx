@@ -185,7 +185,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             right: "12px",
             padding: "6px 14px",
             background: "#C73E3E",
-            color: "#15488A",
+            color: "#ffffff",
             fontSize: "0.85rem",
             fontWeight: 800,
             borderRadius: "6px",
