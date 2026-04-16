@@ -509,7 +509,6 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
 // ─── 메인 페이지 ───────────────────────────────────────────────────────────────
 
 export default function HomePage() {
-  const preloaderRef = useRef<HTMLDivElement>(null)
   const heroRef = useRef<HTMLElement>(null)
   const marqueeRef = useRef<HTMLDivElement>(null)
   const marqueeInnerRef = useRef<HTMLDivElement>(null)
@@ -555,37 +554,13 @@ export default function HomePage() {
   useGSAP(() => {
     const ease = "cubic-bezier(.7, 0, .3, 1)" as any
 
-    /* === PRELOADER: Dennis Snellenberg 스타일 트랜지션 === */
-    const greetings = document.querySelectorAll('.greeting-word')
-    const preloader = preloaderRef.current
-    const roundedDiv = preloader?.querySelector('.rounded-div') as HTMLElement
-    if (preloader && greetings.length) {
-      const tl = gsap.timeline()
-
-      // Phase 1: 인사말 순환 (화이트 배경 + 검은 글씨) — 천천히 읽히도록
-      greetings.forEach((word, i) => {
-        tl.to(word, { opacity: 1, duration: 0.4, delay: i === 0 ? 0.15 : 0, ease: "power2.out" })
-          .to(word, { opacity: 0, duration: 0.35, delay: 0.6, ease: "power2.in" })
-      })
-
-      // Phase 2: 다크 라운드 커브가 아래에서 올라오며 화이트를 덮음
-      if (roundedDiv) {
-        tl.to(roundedDiv, {
-          height: "130%",
-          duration: 0.7,
-          ease: "power2.inOut",
-        })
-      }
-
-      // Phase 3: 프리로더 전체 즉시 제거 (커브가 다 덮은 후)
-      tl.set(preloader, {
-        display: "none",
-      })
-
-      // Phase 4: 히어로 요소 입장 (유리 통과 후 등장 — 3초 딜레이)
-      tl.from('.hero-subtitle', { y: 30, opacity: 0, duration: 0.8, ease: "power2.out", delay: 3.5 })
-      tl.from('.hero-scroll-indicator', { opacity: 0, duration: 0.4 }, '-=0.3')
-    }
+    /* === HERO 요소 입장 (달리줌 중반에 맞춰 등장) === */
+    gsap.from('.hero-subtitle', {
+      y: 30, opacity: 0, duration: 0.8, ease: "power2.out", delay: 3.5,
+    })
+    gsap.from('.hero-scroll-indicator', {
+      opacity: 0, duration: 0.4, delay: 4.0,
+    })
 
     /* === MARQUEE: CSS animation 단독 처리 (GSAP 충돌 방지) === */
 
@@ -698,16 +673,6 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      {/* ── PRELOADER (Dennis Snellenberg style — 화이트 배경) ──────────── */}
-      <div className="preloader" ref={preloaderRef}>
-        {["안녕하세요", "Hello", "배우들의 아지트"].map((word, i) => (
-          <span key={i} className="greeting-word">
-            {word}
-          </span>
-        ))}
-        <div className="rounded-div" />
-      </div>
-
       {/* ── 1. HERO (Dennis Snellenberg style) ───────────────────────────────── */}
       <section
         id="hero"
