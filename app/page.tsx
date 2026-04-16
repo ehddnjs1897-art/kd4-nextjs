@@ -825,7 +825,7 @@ export default function HomePage() {
           <a
             href="#classes"
             style={{
-              padding: "14px 32px", background: "var(--navy)", color: "#15488A",
+              padding: "14px 32px", background: "var(--navy)", color: "#ffffff",
               fontWeight: 700, fontSize: "0.85rem", letterSpacing: "0.08em",
               borderRadius: "var(--radius)", display: "inline-block", transition: "opacity var(--transition)",
               boxShadow: "0 4px 14px rgba(21,72,138,0.2)",
