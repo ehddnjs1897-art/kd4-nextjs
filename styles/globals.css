@@ -1472,15 +1472,28 @@ ul, ol { list-style: none; }
   display: grid;
   grid-template-columns: 1fr auto 1fr auto 1fr;
   gap: 0;
-  align-items: start;
+  align-items: stretch; /* 카드 세 개 높이 자동 일치 */
   margin-top: 48px;
+}
+/* 카드 자체도 flex column이 아니어도 stretch로 동일 높이 획득 */
+.steps-journey .step-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+/* 제목 영역 2줄 분량 예약 — 1줄 제목도 같은 위치에 서게 해서 시각적 일관성
+   (STEP 01만 "아메리칸 액팅 메소드 / 트레이닝" 2줄이라 예전엔 카드 높이 튀었음) */
+.steps-journey .step-card h3 {
+  min-height: 2.8em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .step-journey-arrow {
   display: flex;
-  align-items: flex-start;
+  align-items: center; /* 카드 중앙 높이에 화살표 정렬 */
   justify-content: center;
-  padding: 0 8px;
-  margin-top: 56px;
+  padding: 0 12px;
   color: var(--gold);
   opacity: 0.4;
 }
@@ -1713,16 +1726,16 @@ ul, ol { list-style: none; }
    인터랙션 이펙트 — 카드, 버튼, 호버, 클릭
    ============================================================ */
 
-/* 클래스 카드 호버: 살짝 떠오르기 + 네이비 테두리 */
+/* 클래스 카드 호버: 살짝 떠오르기 + 네이비 테두리 진하게 */
 #classes .classes-grid > div {
-  transition: transform 0.28s cubic-bezier(0.22,1,0.36,1),
-              border-color 0.28s,
-              box-shadow 0.28s;
+  transition: transform 0.2s ease,
+              border-color 0.2s ease,
+              box-shadow 0.2s ease;
 }
 #classes .classes-grid > div:hover {
-  transform: translateY(-4px);
-  border-color: var(--navy) !important;
-  box-shadow: 0 8px 24px rgba(21,72,138,0.12);
+  transform: translateY(-2px);
+  border-color: var(--navy-deep) !important;
+  box-shadow: 0 6px 20px rgba(21,72,138,0.18);
 }
 
 /* 클래스 카드 CTA 버튼 호버 */
@@ -1958,14 +1971,15 @@ main {
 .hero-title-wall {
   /* 초기 상태: 비가시 (letter-spacing 계산 전에는 등장하지 않음) */
   opacity: 0;
-  transform: scale(0.72);
+  transform: scale(1);
   will-change: opacity, transform;
   transform-origin: center center;
 }
-/* 측정 완료 시(is-ready 클래스 부여 순간) 애니메이션 1회만 실행 */
+/* 측정 완료 시(is-ready 클래스 부여 순간) 애니메이션 1회만 실행
+   — 최초에 또렷하게 나타나 있다가 달리줌이 진행되며 서서히 페이드아웃
+   — 카메라가 뒷벽으로 다가가는 느낌과 맞춰 아주 미세한 스케일업 동반 */
 .hero-title-wall-pos.is-ready .hero-title-wall {
-  /* linear = 처음부터 끝까지 완전 균일 속도 — 중간에 튀는 느낌 없이 하나의 움직임 */
-  animation: heroTitleWallFade 11s linear forwards;
+  animation: heroTitleWallFade 11s cubic-bezier(.4, 0, .2, 1) forwards;
 }
 .hero-title-wall h1 {
   /* KoPubWorldDotum — 한글 전용 오픈소스 폰트 (모던 고딕) */
@@ -1981,8 +1995,8 @@ main {
 .hero-title-wall-sub {
   /* 영문 서브타이틀 — Helvetica 유지 */
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-weight: 400; /* 볼드 제거 — 얇고 담담하게 */
-  font-size: clamp(0.6rem, 1vw, 0.95rem);
+  font-weight: 500; /* 글자수가 짧아 letter-spacing이 더 벌어지므로 살짝 두껍게 */
+  font-size: clamp(0.72rem, 1.15vw, 1.05rem);
   color: #15488A;
   margin: 16px 0 0;
   line-height: 1.2;
@@ -1993,10 +2007,13 @@ main {
 }
 
 @keyframes heroTitleWallFade {
-  /* 블러 제거 — 블러가 사라지는 순간 시각적 '튐'이 생겨서 단일 움직임 느낌을 깸
-     스케일 범위도 축소 (0.72 → 1) — 움직임은 부드럽고 절제된 성장 */
-  0%   { opacity: 0; transform: scale(0.72); }
-  100% { opacity: 1; transform: scale(1); }
+  /* 최초에 또렷하게 보이다가 달리줌 진행에 맞춰 서서히 사라짐
+     — 스케일 1 → 1.18: 카메라가 다가오며 타이틀도 커지는 원근감 유지
+     — 35~80% 구간에서 실제 페이드 발생, 앞뒤는 유지 */
+  0%    { opacity: 1; transform: scale(1); }
+  35%   { opacity: 1; transform: scale(1.04); }
+  80%   { opacity: 0; transform: scale(1.16); }
+  100%  { opacity: 0; transform: scale(1.18); }
 }
 
 @media (prefers-reduced-motion: reduce) {
