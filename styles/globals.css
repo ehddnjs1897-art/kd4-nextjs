@@ -1879,7 +1879,7 @@ main {
   left: -10%;
   width: 120%;
   height: 0;
-  background: var(--bg);
+  background: #0A0A0A;
   border-radius: 50% 50% 0 0 / 100% 100% 0 0;
   z-index: 1;
   will-change: height;
@@ -1895,38 +1895,51 @@ main {
   z-index: 2;
 }
 
-/* ═══ HERO MARQUEE (Dennis Snellenberg style) ═══ */
-.hero-marquee {
-  overflow: hidden;
-  width: 100%;
-}
-.hero-marquee-inner {
-  display: flex;
-  white-space: nowrap;
-  will-change: transform;
-  width: max-content;
-}
-.hero-marquee h1 {
-  font-family: 'Satoshi', var(--font-display), sans-serif;
-  font-size: max(6em, 10vw);
-  font-weight: 700;
-  color: #111111;
-  line-height: 1;
-  margin: 0;
-  padding: 0 3vw;
+/* ═══ HERO TITLE CARD — 중앙 정지 타이틀 + 달리줌 동기 페이드 ═══ */
+.hero-title-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  text-align: center;
   pointer-events: none;
-  flex-shrink: 0;
+  /* 시작: 0초 후 0.8초간 서서히 나타남, 4.5초부터 2.5초간 페이드아웃 */
+  animation: heroTitleSequence 7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
+  will-change: opacity, transform, filter;
+}
+.hero-title-card h1 {
+  font-family: 'Satoshi', var(--font-display), sans-serif;
+  font-size: clamp(1.6rem, 5.5vw, 4.8rem);
+  font-weight: 700;
+  color: var(--navy, #15488A);
+  line-height: 1;
+  margin: 0 0 18px;
   letter-spacing: 0.02em;
-  opacity: 0.85;
+  text-shadow: 0 2px 20px rgba(255, 248, 232, 0.4);
+  white-space: nowrap;
+}
+.hero-title-card-sub {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(0.7rem, 1.3vw, 0.9rem);
+  font-weight: 400;
+  letter-spacing: 0.35em;
+  color: rgba(21, 72, 138, 0.65);
+  text-transform: uppercase;
 }
 
-/* ═══ MARQUEE AUTO-SCROLL ANIMATION ═══ */
-@keyframes marqueeScroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+@keyframes heroTitleSequence {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(1.08); filter: blur(4px); }
+  10%  { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0); }
+  55%  { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0); }
+  80%  { opacity: 0.25; transform: translate(-50%, -55%) scale(0.96); filter: blur(1.5px); }
+  100% { opacity: 0; transform: translate(-50%, -60%) scale(0.92); filter: blur(3px); visibility: hidden; }
 }
-.hero-marquee-inner {
-  animation: marqueeScroll 25s linear infinite;
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-title-card { animation: none; opacity: 1; }
 }
 
 /* ═══ HERO INTRO SECTION (카피 + CTA, Stats 위) ═══ */

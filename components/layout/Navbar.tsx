@@ -51,6 +51,10 @@ export default function Navbar() {
 
   /* ── 인증 상태 & 역할 fetch ── */
   useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      setAuthLoaded(true)
+      return
+    }
     const supabase = createClient()
 
     const fetchRole = async () => {
@@ -130,31 +134,19 @@ export default function Navbar() {
           }}
         >
           {/* ── 로고 ── */}
-          <Link href="/" style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
-            <span
+          <Link href="/" style={{ display: 'flex', alignItems: 'center' }}>
+            <img
+              src="/heart logo.png"
+              alt="KD4 Acting Studio"
               style={{
-                fontFamily: 'var(--font-display), Oswald, sans-serif',
-                fontSize: '1.6rem',
-                fontWeight: 700,
-                color: 'var(--gold)',
-                letterSpacing: '0.05em',
+                height: '44px',
+                width: 'auto',
+                objectFit: 'contain',
+                background: '#D5D0C8',
+                borderRadius: '6px',
+                padding: '4px 8px',
               }}
-            >
-              KD4
-            </span>
-            <span
-              style={{
-                fontFamily: 'var(--font-display), Oswald, sans-serif',
-                fontSize: '0.55rem',
-                fontWeight: 400,
-                color: '#111111',
-                letterSpacing: '0.22em',
-                textTransform: 'uppercase',
-                marginTop: '6px',
-              }}
-            >
-              Acting Studio
-            </span>
+            />
           </Link>
 
           {/* ── Desktop Nav ── */}

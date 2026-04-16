@@ -562,10 +562,10 @@ export default function HomePage() {
     if (preloader && greetings.length) {
       const tl = gsap.timeline()
 
-      // Phase 1: 인사말 순환 (화이트 배경 + 검은 글씨)
+      // Phase 1: 인사말 순환 (화이트 배경 + 검은 글씨) — 천천히 읽히도록
       greetings.forEach((word, i) => {
-        tl.to(word, { opacity: 1, duration: 0.08, delay: i === 0 ? 0.07 : 0 })
-          .to(word, { opacity: 0, duration: 0.06, delay: 0.08 })
+        tl.to(word, { opacity: 1, duration: 0.4, delay: i === 0 ? 0.15 : 0, ease: "power2.out" })
+          .to(word, { opacity: 0, duration: 0.35, delay: 0.6, ease: "power2.in" })
       })
 
       // Phase 2: 다크 라운드 커브가 아래에서 올라오며 화이트를 덮음
@@ -582,8 +582,8 @@ export default function HomePage() {
         display: "none",
       })
 
-      // Phase 4: 히어로 요소 입장
-      tl.from('.hero-subtitle', { y: 30, opacity: 0, duration: 0.6, ease: "power2.out" }, '-=0.2')
+      // Phase 4: 히어로 요소 입장 (유리 통과 후 등장 — 3초 딜레이)
+      tl.from('.hero-subtitle', { y: 30, opacity: 0, duration: 0.8, ease: "power2.out", delay: 3.5 })
       tl.from('.hero-scroll-indicator', { opacity: 0, duration: 0.4 }, '-=0.3')
     }
 
@@ -753,20 +753,15 @@ export default function HomePage() {
               letterSpacing: "0.05em",
             }}
           >
-            <span style={{ display: "block", color: "#111111", fontSize: "0.85em", opacity: 0.75 }}>Meisner Technique</span>
+            <span style={{ display: "block", color: "#111111", fontSize: "0.85em", opacity: 0.75 }}>Actor Acceleration System</span>
             연기하지 않는 연기
           </p>
         </div>
 
-        {/* 마퀴 빅네임 (하단) */}
-        <div className="hero-marquee" ref={marqueeRef} style={{ zIndex: 10, position: "absolute", bottom: "50%", transform: "translateY(50%)", width: "100%" }}>
-          <div className="hero-marquee-inner" ref={marqueeInnerRef}>
-            {[0, 1, 2, 3].map((copy) => (
-              <h1 key={copy}>
-                KD4 액팅 스튜디오 -{" "}
-              </h1>
-            ))}
-          </div>
+        {/* 중앙 타이틀 카드 — 달리줌과 동기화되어 페이드아웃 */}
+        <div className="hero-title-card" ref={marqueeRef}>
+          <h1>KD4 액팅 스튜디오</h1>
+          <span className="hero-title-card-sub">Actor Acceleration System · Since 2024</span>
         </div>
 
         {/* 스크롤 인디케이터 */}
