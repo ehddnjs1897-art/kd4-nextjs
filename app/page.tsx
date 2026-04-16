@@ -517,8 +517,10 @@ export default function HomePage() {
   const [extraOpen, setExtraOpen] = useState(false)
 
   /* ── 히어로 타이틀: 서브 가로폭을 h1과 일치시킨 후 "한 번만" 등장 ──
-       - 폰트 로드 대기 → 정확한 letter-spacing 계산 → 적용 → 등장
-       - 등장 이후에는 어떤 재조정도 없음 (리사이즈 리스너 제거) */
+       - KoPub·Helvetica 명시 로드 → offsetWidth 실측 → letter-spacing 1차 계산
+       - 1차 적용 후 실제 폭 재측정 → 오차(브라우저별 trailing letter-spacing 차이) 보정
+       - 등장 이후에는 어떤 재조정도 없음 (리사이즈 리스너 제거)
+       - 데스크톱에서 KoPub이 뒤늦게 적용돼서 h1 폭만 커지는 이슈 방지 */
   const [titleReady, setTitleReady] = useState(false)
   useEffect(() => {
     let cancelled = false
@@ -534,25 +536,43 @@ export default function HomePage() {
       const h1W = h1.offsetWidth
       const subW = sub.offsetWidth
       if (subW <= 0 || h1W <= 0) return
-      const gap = h1W - subW
-      // letter-spacing은 각 글자 뒤에 공간을 추가 — N개 글자 전체 길이를 늘리므로 divisor는 N
       const chars = Math.max(1, (sub.textContent || '').length)
-      const spacing = gap / chars
-      sub.style.letterSpacing = `${Math.max(0, spacing)}px`
+      // 1차 추정 — letter-spacing이 N개 글자에 각각 공간을 추가한다고 가정
+      const initialSpacing = (h1W - subW) / chars
+      sub.style.letterSpacing = `${Math.max(0, initialSpacing)}px`
+      // 2차 보정 — 실제 적용 후 남은 오차를 추가 분배 (trailing letter-spacing 브라우저 차이 대응)
+      const actualW = sub.offsetWidth
+      const delta = h1W - actualW
+      if (Math.abs(delta) > 0.3) {
+        const corrected = initialSpacing + delta / chars
+        sub.style.letterSpacing = `${Math.max(0, corrected)}px`
+      }
     }
 
     const init = async () => {
-      // 모든 폰트(Satoshi 포함) 로드 대기
+      // 폰트 파일을 실제 크기로 명시 로드 — KoPub가 늦게 적용되는 데스크톱 이슈 방지
       try {
-        if (document.fonts && document.fonts.ready) {
-          await document.fonts.ready
+        if (document.fonts) {
+          const h1Size = parseFloat(getComputedStyle(h1).fontSize) || 48
+          const subSize = parseFloat(getComputedStyle(sub).fontSize) || 14
+          await Promise.all([
+            document.fonts.load(`700 ${h1Size}px KoPubWorldDotum`).catch(() => {}),
+            document.fonts.load(`400 ${subSize}px "Helvetica Neue"`).catch(() => {}),
+          ])
+          if (document.fonts.ready) await document.fonts.ready
         }
       } catch {}
       if (cancelled) return
-      measureAndApply()
-      // 레이아웃 안정 후 등장 (한 프레임 대기 → 적용값 확정)
+      // double rAF — 폰트 적용 후 레이아웃 안정화 대기
       requestAnimationFrame(() => {
-        if (!cancelled) setTitleReady(true)
+        if (cancelled) return
+        requestAnimationFrame(() => {
+          if (cancelled) return
+          measureAndApply()
+          requestAnimationFrame(() => {
+            if (!cancelled) setTitleReady(true)
+          })
+        })
       })
     }
     init()
@@ -732,6 +752,23 @@ export default function HomePage() {
       >
         {/* Three.js 배경 */}
         <HeroScene />
+
+        {/* 상단 페이드 — 네비바 영역이 3D 천장/스포트라이트와 겹치지 않도록 자연스럽게 마스킹
+             네비바 뒤로 beige 톤이 은은하게 내려와서 공간감을 유지하면서 어두운 오브젝트 가려줌 */}
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: "140px",
+            background:
+              "linear-gradient(to bottom, var(--bg) 0%, rgba(240,240,232,0.85) 38%, rgba(240,240,232,0.35) 72%, transparent 100%)",
+            zIndex: 5,
+            pointerEvents: "none",
+          }}
+        />
 
         {/* 오른쪽 하단 서브타이틀 */}
         <div
