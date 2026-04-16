@@ -211,7 +211,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             right: "12px",
             padding: "6px 14px",
             background: "#C73E3E",
-            color: "#fff",
+            color: "#15488A",
             fontSize: "0.85rem",
             fontWeight: 800,
             borderRadius: "6px",
@@ -489,7 +489,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             padding: "12px 0",
             marginTop: "14px",
             background: "var(--gold)",
-            color: "#ffffff",
+            color: "#15488A",
             fontWeight: 700,
             fontSize: "0.88rem",
             fontFamily: "var(--font-display)",
@@ -866,7 +866,7 @@ export default function HomePage() {
           <a
             href="#classes"
             style={{
-              padding: "14px 32px", background: "var(--navy)", color: "#ffffff",
+              padding: "14px 32px", background: "var(--navy)", color: "#15488A",
               fontWeight: 700, fontSize: "0.85rem", letterSpacing: "0.08em",
               borderRadius: "var(--radius)", display: "inline-block", transition: "opacity var(--transition)",
               boxShadow: "0 4px 14px rgba(21,72,138,0.2)",
@@ -1065,7 +1065,7 @@ export default function HomePage() {
                   display: "inline-block",
                   padding: "14px 40px",
                   background: "var(--gold)",
-                  color: "#ffffff",
+                  color: "#15488A",
                   fontWeight: 700,
                   fontSize: "0.9rem",
                   letterSpacing: "0.06em",
@@ -1817,7 +1817,7 @@ export default function HomePage() {
           <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.5rem, 4vw, 2rem)", fontWeight: 700, textAlign: "center", marginBottom: "10px" }}>
             첫 걸음, 어렵지 않아요
           </h2>
-          <p style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.88rem", textAlign: "center", marginBottom: "40px", lineHeight: 1.8 }}>
+          <p style={{ color: "#15488A", fontSize: "0.88rem", textAlign: "center", marginBottom: "40px", lineHeight: 1.8 }}>
             30초면 충분합니다. 24시간 이내 카카오로 연락드릴게요.
           </p>
           <ContactForm />
@@ -1882,7 +1882,7 @@ export default function HomePage() {
                 display: "inline-block",
                 padding: "18px 52px",
                 background: "var(--gold)",
-                color: "#ffffff",
+                color: "#15488A",
                 fontWeight: 800,
                 fontSize: "1.15rem",
                 letterSpacing: "0.08em",

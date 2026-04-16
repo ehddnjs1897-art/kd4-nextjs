@@ -9,8 +9,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import GalleryEditForm from '@/components/dashboard/GalleryEditForm'
-
-type UserRole = 'user' | 'editor' | 'admin'
+import { UserRole } from '@/lib/types'
 
 interface Profile {
   role: UserRole

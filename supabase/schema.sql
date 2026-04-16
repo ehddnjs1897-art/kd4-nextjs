@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   name TEXT,
   phone TEXT,
-  role TEXT DEFAULT 'member' CHECK (role IN ('member', 'editor', 'admin')),
+  role TEXT DEFAULT 'member' CHECK (role IN ('member', 'actor', 'crew_pending', 'crew', 'editor', 'director', 'admin')),
   actor_id UUID,  -- actors 테이블 참조 (순환 참조 방지위해 FK 나중에 추가)
   matched_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW()
@@ -206,7 +206,7 @@ CREATE TABLE IF NOT EXISTS posts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   content TEXT,
-  category TEXT DEFAULT '일반' CHECK (category IN ('일반', '공지', '질문', '자유')),
+  category TEXT DEFAULT '일반' CHECK (category IN ('일반', '공지', '질문', '자유', '수업')),
   author_id UUID REFERENCES profiles(id),
   author_name TEXT,
   views INT DEFAULT 0,
@@ -355,3 +355,13 @@ CREATE POLICY "game_prizes_admin_write" ON game_prizes
   FOR ALL USING (
     EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
   );
+
+-- ============================================
+-- 12. 조회수 atomic increment 함수
+-- ============================================
+CREATE OR REPLACE FUNCTION increment_views(post_id UUID)
+RETURNS VOID LANGUAGE plpgsql SECURITY DEFINER AS $$
+BEGIN
+  UPDATE posts SET views = views + 1 WHERE id = post_id;
+END;
+$$;

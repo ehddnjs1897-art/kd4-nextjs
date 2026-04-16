@@ -21,11 +21,8 @@ export async function GET(
     return NextResponse.json({ error: '게시글을 찾을 수 없습니다.' }, { status: 404 })
   }
 
-  // 조회수 증가 (race condition 무시)
-  await supabase
-    .from('posts')
-    .update({ views: (post.views ?? 0) + 1 })
-    .eq('id', id)
+  // 조회수 증가 (SQL로 atomic increment — race condition 방지)
+  await supabase.rpc('increment_views', { post_id: id })
 
   return NextResponse.json({ ...post, views: (post.views ?? 0) + 1 })
 }

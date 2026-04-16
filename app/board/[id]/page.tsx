@@ -73,11 +73,8 @@ export default async function PostDetailPage({ params }: { params: Params }) {
     notFound()
   }
 
-  // 조회수 증가 (서버 컴포넌트에서 직접 increment)
-  await supabase
-    .from('posts')
-    .update({ views: (post.views ?? 0) + 1 })
-    .eq('id', id)
+  // 조회수 증가 (SQL로 atomic increment — race condition 방지)
+  await supabase.rpc('increment_views', { post_id: id })
 
   // 현재 로그인 유저
   const { data: { user } } = await supabase.auth.getUser()

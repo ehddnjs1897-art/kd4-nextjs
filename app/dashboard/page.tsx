@@ -4,8 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import LogoutButton from '@/components/layout/LogoutButton'
 import CrewRequestButton from '@/components/dashboard/CrewRequestButton'
 import ProfileEditForm from '@/components/dashboard/ProfileEditForm'
-
-type UserRole = 'user' | 'crew_pending' | 'crew' | 'actor' | 'editor' | 'director' | 'admin'
+import { UserRole } from '@/lib/types'
 
 interface UserProfile {
   id: string
@@ -38,6 +37,7 @@ function formatDate(isoStr: string) {
 
 const ROLE_LABEL: Record<UserRole, string> = {
   user: '일반 회원',
+  member: '회원',
   crew_pending: 'KD4 크루 (승인 대기)',
   crew: 'KD4 크루',
   actor: '배우 회원 (승인 대기)',

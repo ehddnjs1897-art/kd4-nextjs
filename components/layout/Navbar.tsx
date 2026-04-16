@@ -154,7 +154,7 @@ export default function Navbar() {
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '2rem',
+              gap: '3rem',
               listStyle: 'none',
               margin: 0,
               padding: 0,

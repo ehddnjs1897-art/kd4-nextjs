@@ -81,16 +81,17 @@ export default function SignupPage() {
 
     // 이메일 인증 OFF 상태: signUp이 즉시 세션을 반환 → 콜백 없이 바로 로그인됨
     // → 이 경우 profiles에 올바른 role을 직접 upsert해야 함
+    // 프로필 업데이트 (role은 DB 기본값 'member' 유지 — 관리자만 변경 가능)
     const userId = signUpData?.user?.id
     if (userId && signUpData?.session) {
-      const initialRole = memberType === 'director' ? 'director' : 'actor'
       await supabase.from('profiles').upsert(
         {
           id: userId,
           name: name || null,
           email: email || null,
           phone: memberType === 'actor' ? (phone || null) : null,
-          role: initialRole,
+          // role 필드 제거: 클라이언트에서 역할 조작 방지
+          // member_type은 auth.users의 user_metadata에 보관됨
         },
         { onConflict: 'id' }
       )

@@ -73,8 +73,6 @@ export default function AIToolsPage() {
 
   if (!authChecked) return null
 
-  const apiKey = process.env.NEXT_PUBLIC_GEMINI_KEY
-
   async function handleAnalyze() {
     if (!scriptText.trim()) {
       setError('대본을 입력해주세요.')
@@ -91,85 +89,20 @@ export default function AIToolsPage() {
     setLoading(true)
 
     try {
-      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`
-
-      const prompt = `
-당신은 전문 연기 코치입니다. 아래 대본을 "${characterName}" 캐릭터의 관점에서 5가지 연기 메소드로 분석해주세요.
-
-대본:
-${scriptText}
-
-다음 JSON 형식으로 응답하세요:
-{
-  "utaHagen": {
-    "title": "Uta Hagen 분석",
-    "items": [
-      { "label": "Who am I?", "content": "..." },
-      { "label": "What are the circumstances?", "content": "..." },
-      { "label": "What are my relationships?", "content": "..." },
-      { "label": "What do I want?", "content": "..." },
-      { "label": "What is in my way?", "content": "..." },
-      { "label": "What do I do?", "content": "..." }
-    ]
-  },
-  "ivanaChubbuck": {
-    "title": "Ivana Chubbuck 분석",
-    "items": [
-      { "label": "Overriding goal", "content": "..." },
-      { "label": "Scene objective", "content": "..." },
-      { "label": "Obstacles", "content": "..." },
-      { "label": "Substitution", "content": "..." },
-      { "label": "Actions/tools", "content": "..." }
-    ]
-  },
-  "meisner": {
-    "title": "Meisner 테크닉 분석",
-    "items": [
-      { "label": "주의의 초점 (Living truthfully)", "content": "..." },
-      { "label": "감정적 준비", "content": "..." },
-      { "label": "상대배우와의 반응", "content": "..." },
-      { "label": "충동과 본능", "content": "..." }
-    ]
-  },
-  "lineByLine": {
-    "title": "대사별 노트",
-    "lines": [
-      { "line": "대사 텍스트", "note": "..." }
-    ]
-  },
-  "onSetSummary": {
-    "title": "현장 요약시트",
-    "content": "..."
-  }
-}
-`
-
-      const body = {
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 8192,
-          responseMimeType: 'application/json',
-        },
-      }
-
-      const res = await fetch(endpoint, {
+      // 서버 API를 통해 Gemini 호출 (API 키 서버에만 보관)
+      const res = await fetch('/api/ai', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ scriptText, characterName }),
       })
 
+      const data = await res.json()
+
       if (!res.ok) {
-        const errData = await res.json().catch(() => ({}))
-        const msg =
-          (errData as { error?: { message?: string } })?.error?.message ||
-          `API 오류 (상태 코드: ${res.status})`
-        throw new Error(msg)
+        throw new Error(data.error || `API 오류 (${res.status})`)
       }
 
-      const data = await res.json()
-      const text: string =
-        data?.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
+      const text: string = data.text ?? ''
 
       try {
         const parsed: AnalysisResult = JSON.parse(text)
@@ -194,40 +127,7 @@ ${scriptText}
     setCharacterName('')
   }
 
-  // API KEY 미설정
-  if (!apiKey) {
-    return (
-      <div style={s.page}>
-        <div className="container">
-          <div style={s.header}>
-            <p style={s.eyebrow}>AI TOOLS</p>
-            <h1 style={s.pageTitle}>AI 대본 분석</h1>
-          </div>
-          <div style={s.noKeyBox}>
-            <div style={s.noKeyIcon}>⚠</div>
-            <h2 style={s.noKeyTitle}>API 키가 설정되지 않았습니다</h2>
-            <p style={s.noKeyDesc}>
-              이 기능을 사용하려면 Gemini API 키를 환경변수에 설정해야 합니다.
-            </p>
-            <div style={s.codeBlock}>
-              <code>NEXT_PUBLIC_GEMINI_KEY=your_gemini_api_key</code>
-            </div>
-            <p style={s.noKeySubDesc}>
-              <a
-                href="https://aistudio.google.com/app/apikey"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={s.link}
-              >
-                Google AI Studio
-              </a>
-              에서 무료로 발급받을 수 있습니다.
-            </p>
-          </div>
-        </div>
-      </div>
-    )
-  }
+  // API 키는 서버에서 관리 — 클라이언트 체크 불필요
 
   return (
     <div style={s.page}>

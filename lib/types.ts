@@ -2,6 +2,10 @@
  * 공유 타입 정의 — DB 스키마 기준
  */
 
+// ─── 사용자 역할 ─────────────────────────────────────────────────────────────
+
+export type UserRole = 'user' | 'member' | 'actor' | 'crew_pending' | 'crew' | 'editor' | 'director' | 'admin'
+
 // ─── 배우 관련 ───────────────────────────────────────────────────────────────
 
 export interface Actor {

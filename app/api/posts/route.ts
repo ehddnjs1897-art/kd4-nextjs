@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '내용을 입력해주세요.' }, { status: 400 })
   }
 
-  const validCategories = ['질문', '자유', '수업', '공지']
+  const validCategories = ['일반', '공지', '질문', '자유', '수업']
   if (!validCategories.includes(category)) {
     return NextResponse.json({ error: '올바른 카테고리를 선택해주세요.' }, { status: 400 })
   }

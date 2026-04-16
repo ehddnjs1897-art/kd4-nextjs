@@ -6,8 +6,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 import ActorTabs from '@/components/actors/ActorTabs'
 import ShareButton from '@/components/actors/ShareButton'
 import ProfilePhotoWrapper from '@/components/actors/ProfilePhotoWrapper'
-
-type UserRole = 'user' | 'actor' | 'crew_pending' | 'crew' | 'editor' | 'director' | 'admin'
+import { UserRole } from '@/lib/types'
 
 /** 배우DB 열람 가능 여부 */
 function canViewActorDb(role: UserRole | null): boolean {

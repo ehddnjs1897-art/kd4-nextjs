@@ -37,11 +37,10 @@ export default function SetupPage() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { router.replace('/auth/login'); return }
 
-    // profiles.role 업데이트
-    const { error: updateErr } = await supabase
-      .from('profiles')
-      .update({ role: memberType })
-      .eq('id', user.id)
+    // member_type은 user_metadata에만 저장 (role은 관리자만 변경 가능)
+    const { error: updateErr } = await supabase.auth.updateUser({
+      data: { member_type: memberType }
+    })
 
     if (updateErr) {
       setError('저장 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.')
