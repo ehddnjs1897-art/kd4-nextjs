@@ -1956,11 +1956,16 @@ main {
   width: max-content;
 }
 .hero-title-wall {
-  /* linear = 처음부터 끝까지 완전 균일 속도 — 중간에 튀는 느낌 없이 하나의 움직임 */
-  animation: heroTitleWallFade 11s linear forwards;
+  /* 초기 상태: 비가시 (letter-spacing 계산 전에는 등장하지 않음) */
   opacity: 0;
+  transform: scale(0.72);
   will-change: opacity, transform;
   transform-origin: center center;
+}
+/* 측정 완료 시(is-ready 클래스 부여 순간) 애니메이션 1회만 실행 */
+.hero-title-wall-pos.is-ready .hero-title-wall {
+  /* linear = 처음부터 끝까지 완전 균일 속도 — 중간에 튀는 느낌 없이 하나의 움직임 */
+  animation: heroTitleWallFade 11s linear forwards;
 }
 .hero-title-wall h1 {
   font-family: 'Satoshi', var(--font-display), sans-serif;
