@@ -86,40 +86,67 @@ export default function HeroScene() {
 
       // ── 뒷벽 타이틀 (달리줌과 함께 페이드인, 벽에 박히는 연출) ──────────
       const titleCanvas = document.createElement("canvas");
-      titleCanvas.width = 2048;
-      titleCanvas.height = 512;
+      titleCanvas.width = 4096;  // 고해상도로 선명하게
+      titleCanvas.height = 1024;
       const tctx = titleCanvas.getContext("2d")!;
-      // 배경 투명
-      tctx.clearRect(0, 0, 2048, 512);
-      // 메인 타이틀
+      tctx.clearRect(0, 0, 4096, 1024);
+      // 텍스트 렌더 품질 설정
+      tctx.imageSmoothingEnabled = true;
+      (tctx as any).imageSmoothingQuality = "high";
+
+      // 메인 타이틀 — 선명하고 굵게
       tctx.fillStyle = "#15488A"; // 네이비
-      tctx.font = "700 210px 'Satoshi', 'Pretendard', system-ui, sans-serif";
+      tctx.font = "800 420px 'Satoshi', 'Pretendard', system-ui, -apple-system, sans-serif";
       tctx.textAlign = "center";
       tctx.textBaseline = "middle";
-      tctx.fillText("KD4 액팅 스튜디오", 1024, 220);
-      // 서브
-      tctx.fillStyle = "rgba(21, 72, 138, 0.55)";
-      tctx.font = "400 62px 'Satoshi', 'Pretendard', system-ui, sans-serif";
-      tctx.letterSpacing = "0.3em";
-      tctx.fillText("ACTOR ACCELERATION SYSTEM · SINCE 2024", 1024, 380);
+      tctx.fillText("KD4 액팅 스튜디오", 2048, 430);
+
+      // 서브 — 진하고 명료하게 (불투명도 ↑, 굵기 ↑, 크기 ↑)
+      tctx.fillStyle = "#15488A"; // 풀 네이비, 투명도 제거로 또렷하게
+      tctx.font = "600 110px 'Satoshi', 'Pretendard', system-ui, -apple-system, sans-serif";
+      (tctx as any).letterSpacing = "0.28em";
+      tctx.fillText("ACTOR ACCELERATION SYSTEM · SINCE 2024", 2048, 760);
 
       const titleTex = new THREE.CanvasTexture(titleCanvas);
       if ("colorSpace" in titleTex) {
         (titleTex as any).colorSpace = THREE.SRGBColorSpace;
       }
-      titleTex.anisotropy = 8;
+      // 선명도 강화 — 거리별 뭉개짐 방지
+      titleTex.anisotropy = 16;
+      titleTex.minFilter = THREE.LinearFilter;  // 밉맵 블러 제거
+      titleTex.magFilter = THREE.LinearFilter;
+      titleTex.generateMipmaps = false;
+      titleTex.needsUpdate = true;
+
       const titleMat = new THREE.MeshBasicMaterial({
         map: titleTex,
         transparent: true,
-        opacity: 0, // 시작은 투명 — 달리줌 중 서서히 등장
+        opacity: 0, // 시작은 투명 — 달리줌 시작과 동시에 서서히 등장
         depthWrite: false,
       });
       const titlePlane = new THREE.Mesh(
-        new THREE.PlaneGeometry(14, 3.5), // 벽 중앙에 맞게 약간 축소
+        new THREE.PlaneGeometry(14, 3.5),
         titleMat
       );
-      titlePlane.position.set(0, 3.7, -19.9); // 뒷벽 중앙 — 위쪽으로 이동
+      titlePlane.position.set(0, 3.7, -19.9); // 뒷벽 중앙 — 위쪽
       scene.add(titlePlane);
+
+      // 폰트 로드 완료 후 캔버스 재렌더 (폰트 늦게 로드되면 fallback으로 그려지는 문제 해결)
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => {
+          tctx.clearRect(0, 0, 4096, 1024);
+          tctx.fillStyle = "#15488A";
+          tctx.font = "800 420px 'Satoshi', 'Pretendard', system-ui, -apple-system, sans-serif";
+          tctx.textAlign = "center";
+          tctx.textBaseline = "middle";
+          tctx.fillText("KD4 액팅 스튜디오", 2048, 430);
+          tctx.fillStyle = "#15488A";
+          tctx.font = "600 110px 'Satoshi', 'Pretendard', system-ui, -apple-system, sans-serif";
+          (tctx as any).letterSpacing = "0.28em";
+          tctx.fillText("ACTOR ACCELERATION SYSTEM · SINCE 2024", 2048, 760);
+          titleTex.needsUpdate = true;
+        });
+      }
 
       // 왼쪽 벽 — 톤 살짝 낮춰서 배경과 구분, 카메라 시작점까지 확장 (길이 48)
       const sideWallMat = new THREE.MeshStandardMaterial({
@@ -313,8 +340,8 @@ export default function HeroScene() {
           camera.updateProjectionMatrix();
           camera.lookAt(0, 0.6 + 1.0 * e, -6);
 
-          // 타이틀 페이드인 — 달리줌 20%~95% 구간에서 아주 천천히 등장
-          const titleFade = t < 0.2 ? 0 : t > 0.95 ? 1 : (t - 0.2) / 0.75;
+          // 타이틀 페이드인 — 달리줌 시작(t=0)부터 95%까지 서서히 등장
+          const titleFade = t > 0.95 ? 1 : t / 0.95;
           titleMat.opacity = titleFade;
         } else {
           titleMat.opacity = 1;
