@@ -1956,9 +1956,10 @@ main {
   width: max-content;
 }
 .hero-title-wall {
-  animation: heroTitleWallFade 11s cubic-bezier(0.33, 0, 0.4, 1) forwards;
+  /* linear = 처음부터 끝까지 완전 균일 속도 — 중간에 튀는 느낌 없이 하나의 움직임 */
+  animation: heroTitleWallFade 11s linear forwards;
   opacity: 0;
-  will-change: opacity, transform, filter;
+  will-change: opacity, transform;
   transform-origin: center center;
 }
 .hero-title-wall h1 {
@@ -1985,8 +1986,10 @@ main {
 }
 
 @keyframes heroTitleWallFade {
-  0%   { opacity: 0; transform: scale(0.48); filter: blur(6px); }
-  100% { opacity: 1; transform: scale(1); filter: blur(0); }
+  /* 블러 제거 — 블러가 사라지는 순간 시각적 '튐'이 생겨서 단일 움직임 느낌을 깸
+     스케일 범위도 축소 (0.72 → 1) — 움직임은 부드럽고 절제된 성장 */
+  0%   { opacity: 0; transform: scale(0.72); }
+  100% { opacity: 1; transform: scale(1); }
 }
 
 @media (prefers-reduced-motion: reduce) {
