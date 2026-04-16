@@ -7,11 +7,11 @@ import { pixel } from '@/lib/meta-pixel'
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
-  background: 'rgba(255,255,255,0.04)',
-  border: '1px solid rgba(255,255,255,0.1)',
+  background: '#ffffff',
+  border: '1px solid var(--border)',
   borderRadius: '14px',
   padding: '14px 18px',
-  color: 'var(--white)',
+  color: '#111111',
   fontSize: '0.95rem',
   fontFamily: 'inherit',
   fontWeight: 400,
@@ -22,11 +22,11 @@ const inputStyle: React.CSSProperties = {
 
 const labelStyle: React.CSSProperties = {
   fontSize: '0.78rem',
-  color: 'rgba(255,255,255,0.5)',
+  color: 'var(--gray)',
   letterSpacing: '0.02em',
   marginBottom: '8px',
   display: 'block',
-  fontWeight: 400,
+  fontWeight: 500,
 }
 
 const SOURCE_OPTIONS = [
@@ -66,8 +66,8 @@ export default function ContactForm() {
 
   const focusStyle = (field: string): React.CSSProperties => ({
     ...inputStyle,
-    borderColor: focusedField === field ? 'var(--gold)' : 'rgba(255,255,255,0.1)',
-    background: focusedField === field ? 'rgba(0,87,255,0.06)' : 'rgba(255,255,255,0.04)',
+    borderColor: focusedField === field ? 'var(--navy)' : 'var(--border)',
+    background: focusedField === field ? 'rgba(21,72,138,0.04)' : '#ffffff',
   })
 
   async function handleSubmit(e: React.FormEvent) {
@@ -128,21 +128,21 @@ export default function ContactForm() {
   if (done) {
     return (
       <div style={{
-        background: 'rgba(0,87,255,0.06)',
-        border: '1px solid rgba(0,87,255,0.2)',
+        background: 'rgba(21,72,138,0.06)',
+        border: '1px solid rgba(21,72,138,0.2)',
         borderRadius: '20px',
         padding: '48px 32px',
         textAlign: 'center',
       }}>
         <p style={{ fontSize: '2.4rem', marginBottom: '16px' }}>🌸</p>
-        <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.2rem', fontWeight: 600, marginBottom: '10px', color: 'var(--white)' }}>
+        <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.2rem', fontWeight: 600, marginBottom: '10px', color: '#111111' }}>
           접수 완료!
         </p>
-        <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem', lineHeight: 1.8 }}>
-          <strong style={{ color: 'var(--white)' }}>24시간 이내</strong> 카카오톡으로 연락드립니다.<br />
+        <p style={{ color: 'var(--gray)', fontSize: '0.9rem', lineHeight: 1.8 }}>
+          <strong style={{ color: '#111111' }}>24시간 이내</strong> 카카오톡으로 연락드립니다.<br />
           급하시면{' '}
           <a href="https://pf.kakao.com/_ximxdqn" target="_blank" rel="noopener noreferrer"
-            style={{ color: 'var(--gold)', textDecoration: 'underline' }}>카카오 채널</a>로 바로 문의해주세요.
+            style={{ color: 'var(--navy)', textDecoration: 'underline' }}>카카오 채널</a>로 바로 문의해주세요.
         </p>
       </div>
     )
@@ -155,7 +155,7 @@ export default function ContactForm() {
       <div>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '8px' }}>
           <label style={{ ...labelStyle, marginBottom: 0 }}>무엇을 원하시나요?</label>
-          <span style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.28)', letterSpacing: '0.02em' }}>택 1</span>
+          <span style={{ fontSize: '0.68rem', color: 'var(--gray-light)', letterSpacing: '0.02em' }}>택 1</span>
         </div>
         <div className="inquiry-cards" style={{
           display: 'grid',
@@ -178,21 +178,21 @@ export default function ContactForm() {
                   justifyContent: 'center',
                   gap: '6px',
                   padding: '16px 8px',
-                  background: selected ? 'rgba(0,87,255,0.14)' : 'rgba(255,255,255,0.03)',
-                  border: selected ? '1.5px solid var(--gold)' : '1px solid rgba(255,255,255,0.08)',
+                  background: selected ? 'rgba(21,72,138,0.08)' : '#ffffff',
+                  border: selected ? '1.5px solid var(--navy)' : '1px solid var(--border)',
                   borderRadius: '14px',
                   cursor: 'pointer',
                   transition: 'all 0.18s ease',
                   textAlign: 'center',
-                  boxShadow: selected ? '0 0 0 3px rgba(0,87,255,0.12)' : 'none',
-                  opacity: dimmed ? 0.38 : 1,
+                  boxShadow: selected ? '0 0 0 3px rgba(21,72,138,0.08)' : 'none',
+                  opacity: dimmed ? 0.5 : 1,
                 }}
               >
                 <span style={{ fontSize: '1.4rem', lineHeight: 1 }}>{opt.icon}</span>
                 <span style={{
                   fontSize: '0.78rem',
                   fontWeight: selected ? 700 : 500,
-                  color: selected ? 'var(--white)' : 'rgba(255,255,255,0.55)',
+                  color: selected ? '#111111' : 'var(--gray)',
                   letterSpacing: '0.01em',
                   lineHeight: 1.3,
                 }}>
@@ -200,7 +200,7 @@ export default function ContactForm() {
                 </span>
                 <span style={{
                   fontSize: '0.66rem',
-                  color: selected ? 'var(--gold)' : 'rgba(255,255,255,0.3)',
+                  color: selected ? 'var(--navy)' : 'var(--gray-light)',
                   lineHeight: 1.2,
                   whiteSpace: 'pre-line',
                   textAlign: 'center',
@@ -216,7 +216,7 @@ export default function ContactForm() {
       {/* 이름 + 연락처 */}
       <div className="contact-form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
         <div>
-          <label style={labelStyle}>이름 <span style={{ color: 'var(--gold)' }}>*</span></label>
+          <label style={labelStyle}>이름 <span style={{ color: 'var(--navy)' }}>*</span></label>
           <input
             style={focusStyle('name')}
             type="text"
@@ -229,7 +229,7 @@ export default function ContactForm() {
           />
         </div>
         <div>
-          <label style={labelStyle}>연락처 <span style={{ color: 'var(--gold)' }}>*</span></label>
+          <label style={labelStyle}>연락처 <span style={{ color: 'var(--navy)' }}>*</span></label>
           <input
             style={focusStyle('phone')}
             type="tel"
@@ -262,7 +262,7 @@ export default function ContactForm() {
 
       {/* 관심 클래스 */}
       <div>
-        <label style={labelStyle}>관심 클래스 <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.7rem' }}>(선택)</span></label>
+        <label style={labelStyle}>관심 클래스 <span style={{ color: 'var(--gray-light)', fontSize: '0.7rem' }}>(선택)</span></label>
         <select
           style={{ ...focusStyle('class_name'), cursor: 'pointer' }}
           value={form.class_name}
@@ -277,19 +277,19 @@ export default function ContactForm() {
         </select>
       </div>
 
-      <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: '0.72rem', margin: '-6px 0', lineHeight: 1.5 }}>
+      <p style={{ color: 'var(--gray-light)', fontSize: '0.72rem', margin: '-6px 0', lineHeight: 1.5 }}>
         개인정보는 상담 목적 외 사용되지 않으며, 언제든 삭제 요청 가능합니다.
       </p>
 
       {error && (
-        <p style={{ color: '#f87171', fontSize: '0.85rem', margin: 0 }}>{error}</p>
+        <p style={{ color: '#C73E3E', fontSize: '0.85rem', margin: 0 }}>{error}</p>
       )}
 
       <button
         type="submit"
         disabled={loading}
         style={{
-          background: loading ? 'rgba(0,87,255,0.5)' : 'var(--gold)',
+          background: loading ? 'rgba(21,72,138,0.5)' : 'var(--navy)',
           color: '#ffffff',
           border: 'none',
           borderRadius: '14px',
@@ -300,7 +300,7 @@ export default function ContactForm() {
           letterSpacing: '0.03em',
           cursor: loading ? 'not-allowed' : 'pointer',
           transition: 'opacity 0.2s, transform 0.15s',
-          boxShadow: loading ? 'none' : '0 6px 24px rgba(0,87,255,0.3)',
+          boxShadow: loading ? 'none' : '0 6px 20px rgba(21,72,138,0.25)',
         }}
         onMouseEnter={e => { if (!loading) e.currentTarget.style.transform = 'translateY(-1px)' }}
         onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)' }}

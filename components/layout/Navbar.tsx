@@ -109,10 +109,12 @@ export default function Navbar() {
           right: 0,
           zIndex: 1000,
           transition: 'background 0.3s ease, border-color 0.3s ease',
-          background: scrolled ? 'rgba(10, 10, 10, 0.96)' : 'transparent',
+          background: scrolled ? 'rgba(240, 240, 232, 0.96)' : 'transparent',
+          backdropFilter: scrolled ? 'blur(10px)' : 'none',
+          WebkitBackdropFilter: scrolled ? 'blur(10px)' : 'none',
           willChange: 'background',
           borderBottom: scrolled
-            ? '1px solid rgba(196, 165, 90, 0.15)'
+            ? '1px solid rgba(210, 210, 200, 0.6)'
             : '1px solid transparent',
         }}
       >
@@ -145,7 +147,7 @@ export default function Navbar() {
                 fontFamily: 'var(--font-display), Oswald, sans-serif',
                 fontSize: '0.55rem',
                 fontWeight: 400,
-                color: '#ffffff',
+                color: '#111111',
                 letterSpacing: '0.22em',
                 textTransform: 'uppercase',
                 marginTop: '6px',
@@ -173,14 +175,14 @@ export default function Navbar() {
                 <Link
                   href={link.href}
                   style={{
-                    color: '#ffffff',
+                    color: '#111111',
                     fontFamily: 'var(--font-sans)',
                     fontSize: '0.875rem',
                     fontWeight: 500,
                     transition: 'color 0.2s',
                   }}
-                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
-                  onMouseLeave={e => (e.currentTarget.style.color = '#ffffff')}
+                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--navy)')}
+                  onMouseLeave={e => (e.currentTarget.style.color = '#111111')}
                 >
                   {link.label}
                 </Link>
@@ -202,7 +204,7 @@ export default function Navbar() {
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer',
-                    color: crewDropOpen ? 'var(--gold)' : '#ffffff',
+                    color: crewDropOpen ? 'var(--navy)' : '#111111',
                     fontFamily: 'var(--font-sans)',
                     fontSize: '0.875rem',
                     fontWeight: 600,
@@ -210,9 +212,9 @@ export default function Navbar() {
                     padding: '4px 0',
                     letterSpacing: '0.02em',
                   }}
-                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
+                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--navy)')}
                   onMouseLeave={e => {
-                    if (!crewDropOpen) e.currentTarget.style.color = '#ffffff'
+                    if (!crewDropOpen) e.currentTarget.style.color = '#111111'
                   }}
                   aria-haspopup="true"
                   aria-expanded={crewDropOpen}
@@ -243,13 +245,12 @@ export default function Navbar() {
                       top: 'calc(100% + 10px)',
                       left: '50%',
                       transform: 'translateX(-50%)',
-                      background: 'rgba(17,17,17,0.98)',
-                      border: '1px solid rgba(196,165,90,0.2)',
+                      background: '#E8E8DF',
+                      border: '1px solid rgba(21,72,138,0.2)',
                       borderRadius: '8px',
                       padding: '8px',
                       minWidth: '150px',
-                      boxShadow: '0 8px 32px rgba(0,0,0,0.6)',
-                      backdropFilter: 'blur(8px)',
+                      boxShadow: '0 8px 24px rgba(21,72,138,0.12)',
                       zIndex: 10,
                     }}
                   >
@@ -263,7 +264,7 @@ export default function Navbar() {
                       height: 0,
                       borderLeft: '5px solid transparent',
                       borderRight: '5px solid transparent',
-                      borderBottom: '5px solid rgba(196,165,90,0.2)',
+                      borderBottom: '5px solid rgba(21,72,138,0.2)',
                     }} />
                     <div style={{
                       position: 'absolute',
@@ -274,7 +275,7 @@ export default function Navbar() {
                       height: 0,
                       borderLeft: '5px solid transparent',
                       borderRight: '5px solid transparent',
-                      borderBottom: '5px solid rgba(17,17,17,0.98)',
+                      borderBottom: '5px solid #E8E8DF',
                     }} />
 
                     {crewLinks.map(item => (
@@ -294,8 +295,8 @@ export default function Navbar() {
                           textDecoration: 'none',
                         }}
                         onMouseEnter={e => {
-                          e.currentTarget.style.background = 'rgba(196,165,90,0.1)'
-                          e.currentTarget.style.color = 'var(--gold)'
+                          e.currentTarget.style.background = 'rgba(21,72,138,0.08)'
+                          e.currentTarget.style.color = 'var(--navy)'
                         }}
                         onMouseLeave={e => {
                           e.currentTarget.style.background = 'transparent'
@@ -359,7 +360,7 @@ export default function Navbar() {
                 display: 'block',
                 width: '22px',
                 height: '2px',
-                background: 'var(--white)',
+                background: '#111111',
                 borderRadius: '1px',
                 transition: 'transform 0.25s, opacity 0.25s',
                 transform: mobileOpen ? 'translateY(7px) rotate(45deg)' : 'none',
@@ -368,7 +369,7 @@ export default function Navbar() {
                 display: 'block',
                 width: '22px',
                 height: '2px',
-                background: 'var(--white)',
+                background: '#111111',
                 borderRadius: '1px',
                 transition: 'opacity 0.25s',
                 opacity: mobileOpen ? 0 : 1,
@@ -377,7 +378,7 @@ export default function Navbar() {
                 display: 'block',
                 width: '22px',
                 height: '2px',
-                background: 'var(--white)',
+                background: '#111111',
                 borderRadius: '1px',
                 transition: 'transform 0.25s, opacity 0.25s',
                 transform: mobileOpen ? 'translateY(-7px) rotate(-45deg)' : 'none',
@@ -394,7 +395,7 @@ export default function Navbar() {
             position: 'fixed',
             inset: 0,
             zIndex: 999,
-            background: 'rgba(10, 10, 10, 0.99)',
+            background: 'var(--bg)',
             display: 'flex',
             flexDirection: 'column',
             overflowY: 'auto',
@@ -413,7 +414,7 @@ export default function Navbar() {
                     style={{
                       display: 'block',
                       padding: '22px 0',
-                      color: 'var(--white)',
+                      color: '#111111',
                       fontFamily: 'var(--font-display), Oswald, sans-serif',
                       fontSize: '1.5rem',
                       fontWeight: 400,
@@ -439,7 +440,7 @@ export default function Navbar() {
                       background: 'none',
                       border: 'none',
                       cursor: 'pointer',
-                      color: mobileCrewOpen ? 'var(--gold)' : 'var(--white)',
+                      color: mobileCrewOpen ? 'var(--navy)' : '#111111',
                       fontFamily: 'var(--font-display), Oswald, sans-serif',
                       fontSize: '1.5rem',
                       fontWeight: 400,
@@ -468,7 +469,7 @@ export default function Navbar() {
                   {mobileCrewOpen && (
                     <div style={{
                       paddingBottom: '12px',
-                      borderTop: '1px solid rgba(196,165,90,0.15)',
+                      borderTop: '1px solid rgba(21,72,138,0.15)',
                       marginTop: '-4px',
                     }}>
                       {crewLinks.map(item => (
@@ -487,7 +488,7 @@ export default function Navbar() {
                             fontWeight: 400,
                             letterSpacing: '0.03em',
                             textDecoration: 'none',
-                            borderBottom: '1px solid rgba(255,255,255,0.04)',
+                            borderBottom: '1px solid rgba(17,17,17,0.06)',
                           }}
                         >
                           {item.label}
@@ -510,8 +511,8 @@ export default function Navbar() {
                 style={{
                   display: 'block',
                   padding: '16px',
-                  background: 'var(--gold)',
-                  color: '#0a0a0a',
+                  background: 'var(--navy)',
+                  color: '#ffffff',
                   fontFamily: 'var(--font-sans)',
                   fontSize: '1rem',
                   fontWeight: 700,

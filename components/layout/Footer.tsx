@@ -39,7 +39,7 @@ export default function Footer() {
   return (
     <footer
       style={{
-        background: 'var(--bg)',
+        background: 'var(--bg3)',
         borderTop: '1px solid var(--border)',
         padding: '64px 0 40px',
       }}
@@ -80,7 +80,7 @@ export default function Footer() {
                 fontFamily: 'var(--font-display), Oswald, sans-serif',
                 fontSize: '0.55rem',
                 fontWeight: 400,
-                color: '#ffffff',
+                color: '#111111',
                 letterSpacing: '0.22em',
                 textTransform: 'uppercase',
                 marginTop: '6px',
@@ -113,9 +113,9 @@ export default function Footer() {
                   transition: 'color 0.2s, border-color 0.2s, background 0.2s',
                 }}
                 onMouseEnter={e => {
-                  e.currentTarget.style.color = 'var(--gold)'
-                  e.currentTarget.style.borderColor = 'var(--gold)'
-                  e.currentTarget.style.background = 'rgba(196,165,90,0.08)'
+                  e.currentTarget.style.color = 'var(--navy)'
+                  e.currentTarget.style.borderColor = 'var(--navy)'
+                  e.currentTarget.style.background = 'rgba(21,72,138,0.06)'
                 }}
                 onMouseLeave={e => {
                   e.currentTarget.style.color = 'var(--gray)'

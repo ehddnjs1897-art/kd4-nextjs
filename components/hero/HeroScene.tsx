@@ -23,10 +23,10 @@ export default function HeroScene() {
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
       renderer.toneMappingExposure = 0.9;
 
-      // ── Scene ─────────────────────────────────────────────────────────────
+      // ── Scene ─ 웜그레이 스튜디오 톤 ───────────────────────────────────────
       const scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x020202);
-      scene.fog = new THREE.FogExp2(0x020202, 0.072);
+      scene.background = new THREE.Color(0xF0F0E8);
+      scene.fog = new THREE.FogExp2(0xF0F0E8, 0.055);
 
       // ── Camera ────────────────────────────────────────────────────────────
       const camera = new THREE.PerspectiveCamera(
@@ -38,12 +38,12 @@ export default function HeroScene() {
       camera.position.set(0, 1.65, 18);
       camera.lookAt(0, 1.4, 0);
 
-      // ── FLOOR ─────────────────────────────────────────────────────────────
+      // ── FLOOR ─ 웜그레이 바닥 ────────────────────────────────────────────
       const floorGeo = new THREE.PlaneGeometry(10, 80, 20, 80);
       const floorMat = new THREE.MeshStandardMaterial({
-        color: 0x0d0c0a,
-        roughness: 0.92,
-        metalness: 0.08,
+        color: 0xCFCFC3,
+        roughness: 0.95,
+        metalness: 0.03,
       });
       const floor = new THREE.Mesh(floorGeo, floorMat);
       floor.rotation.x = -Math.PI / 2;
@@ -51,12 +51,12 @@ export default function HeroScene() {
       floor.receiveShadow = true;
       scene.add(floor);
 
-      // Floor gold line grid
+      // Floor navy line grid
       const addFloorLine = (z: number) => {
         const lg = new THREE.PlaneGeometry(10, 0.02);
         const lm = new THREE.MeshBasicMaterial({
-          color: 0x0057FF,
-          opacity: 0.18,
+          color: 0x15488A,
+          opacity: 0.22,
           transparent: true,
         });
         const l = new THREE.Mesh(lg, lm);
@@ -69,8 +69,8 @@ export default function HeroScene() {
       // Center aisle line
       const aisleGeo = new THREE.PlaneGeometry(0.06, 80);
       const aisleMat = new THREE.MeshBasicMaterial({
-        color: 0x0057FF,
-        opacity: 0.3,
+        color: 0x15488A,
+        opacity: 0.35,
         transparent: true,
       });
       const aisle = new THREE.Mesh(aisleGeo, aisleMat);
@@ -81,7 +81,7 @@ export default function HeroScene() {
       // ── CEILING ───────────────────────────────────────────────────────────
       const ceilGeo = new THREE.PlaneGeometry(10, 80);
       const ceilMat = new THREE.MeshStandardMaterial({
-        color: 0x080808,
+        color: 0xE8E8DF,
         roughness: 1,
         metalness: 0,
       });
@@ -91,12 +91,12 @@ export default function HeroScene() {
       ceil.receiveShadow = true;
       scene.add(ceil);
 
-      // ── WALLS ─────────────────────────────────────────────────────────────
+      // ── WALLS ─ 웜그레이 벽 ──────────────────────────────────────────────
       const wallGeo = new THREE.PlaneGeometry(80, 4.2);
       const wallMat = new THREE.MeshStandardMaterial({
-        color: 0x0c0b09,
+        color: 0xDEDED4,
         roughness: 0.95,
-        metalness: 0.04,
+        metalness: 0.02,
       });
 
       // Left wall
@@ -115,18 +115,18 @@ export default function HeroScene() {
 
       // Back wall
       const backGeo = new THREE.PlaneGeometry(10, 4.2);
-      const backMat = new THREE.MeshStandardMaterial({ color: 0x100e0a, roughness: 0.9 });
+      const backMat = new THREE.MeshStandardMaterial({ color: 0xCAC9BD, roughness: 0.9 });
       const backWall = new THREE.Mesh(backGeo, backMat);
       backWall.position.set(0, 2.1, -58);
       scene.add(backWall);
 
-      // ── GOLD WALL TRIM STRIPS ─────────────────────────────────────────────
+      // ── NAVY WALL TRIM STRIPS ─────────────────────────────────────────────
       const addWallTrim = (side: "L" | "R", zStart: number, zEnd: number, y: number) => {
         const len = Math.abs(zEnd - zStart);
         const trimGeo = new THREE.PlaneGeometry(0.04, len);
         const trimMat = new THREE.MeshBasicMaterial({
-          color: 0x0057FF,
-          opacity: 0.35,
+          color: 0x15488A,
+          opacity: 0.4,
           transparent: true,
         });
         const trim = new THREE.Mesh(trimGeo, trimMat);
@@ -144,9 +144,9 @@ export default function HeroScene() {
         (["L", "R"] as const).forEach((side) => {
           const colGeo = new THREE.BoxGeometry(0.06, 4.2, 0.06);
           const colMat = new THREE.MeshStandardMaterial({
-            color: 0x1a1608,
-            metalness: 0.3,
-            roughness: 0.6,
+            color: 0xB8B8AC,
+            metalness: 0.15,
+            roughness: 0.7,
           });
           const col = new THREE.Mesh(colGeo, colMat);
           col.position.set(side === "L" ? -4.96 : 4.96, 2.1, z);
@@ -154,9 +154,9 @@ export default function HeroScene() {
 
           const accentGeo = new THREE.BoxGeometry(0.08, 0.06, 0.08);
           const accentMat = new THREE.MeshStandardMaterial({
-            color: 0x0057FF,
-            metalness: 0.7,
-            roughness: 0.3,
+            color: 0x15488A,
+            metalness: 0.5,
+            roughness: 0.4,
           });
           [0.4, 2.1, 3.8].forEach((ay) => {
             const accent = new THREE.Mesh(accentGeo, accentMat);
@@ -168,7 +168,7 @@ export default function HeroScene() {
 
       // ── CEILING TRACK ─────────────────────────────────────────────────────
       const trackGeo = new THREE.BoxGeometry(0.08, 0.08, 55);
-      const trackMat = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.8 });
+      const trackMat = new THREE.MeshStandardMaterial({ color: 0x888878, metalness: 0.5 });
       const track = new THREE.Mesh(trackGeo, trackMat);
       track.position.set(0, 4.14, -20);
       scene.add(track);
@@ -177,32 +177,32 @@ export default function HeroScene() {
       const addCeilingSpot = (z: number, intensity: number) => {
         const fix = new THREE.Mesh(
           new THREE.CylinderGeometry(0.12, 0.08, 0.22, 8),
-          new THREE.MeshStandardMaterial({ color: 0x1a1a1a, metalness: 0.9 })
+          new THREE.MeshStandardMaterial({ color: 0x888878, metalness: 0.7 })
         );
         fix.position.set(0, 4.1, z);
         scene.add(fix);
 
-        const spot = new THREE.SpotLight(0xfff4e0, intensity, 14, Math.PI / 5, 0.4, 1.5);
+        const spot = new THREE.SpotLight(0xfff8ec, intensity, 14, Math.PI / 5, 0.4, 1.5);
         spot.position.set(0, 4.05, z);
         spot.target.position.set(0, 0, z);
         spot.castShadow = true;
         scene.add(spot);
         scene.add(spot.target);
       };
-      for (let z = 1; z > -52; z -= 7) addCeilingSpot(z, 1.4);
+      for (let z = 1; z > -52; z -= 7) addCeilingSpot(z, 0.85);
 
-      // Stage spotlight (gold)
-      const stageSpot = new THREE.SpotLight(0x0057FF, 8, 30, Math.PI / 9, 0.35, 1.2);
+      // Stage spotlight (navy accent)
+      const stageSpot = new THREE.SpotLight(0x15488A, 4, 30, Math.PI / 9, 0.35, 1.2);
       stageSpot.position.set(0, 4, -45);
       stageSpot.target.position.set(0, 0, -55);
       scene.add(stageSpot);
       scene.add(stageSpot.target);
 
-      // Ambient light
-      scene.add(new THREE.AmbientLight(0x0a0805, 1.8));
+      // Ambient light — 밝은 웜톤
+      scene.add(new THREE.AmbientLight(0xf5f3ea, 2.2));
 
       // Camera fill light
-      const camLight = new THREE.PointLight(0xfff0d0, 0.6, 8);
+      const camLight = new THREE.PointLight(0xfff6e8, 0.4, 8);
       camLight.position.set(0, 2.5, 16);
       scene.add(camLight);
 

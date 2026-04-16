@@ -124,7 +124,7 @@ function FaqAccordion() {
                 justifyContent: "space-between",
                 alignItems: "center",
                 gap: "16px",
-                color: isOpen ? "#ffffff" : "var(--white)",
+                color: isOpen ? "var(--navy)" : "#111111",
                 fontSize: "1rem",
                 fontWeight: 600,
                 background: "none",
@@ -141,7 +141,7 @@ function FaqAccordion() {
                   width: "36px",
                   height: "36px",
                   borderRadius: "50%",
-                  background: isOpen ? "var(--gold)" : "rgba(0,102,255,0.12)",
+                  background: isOpen ? "var(--gold)" : "rgba(21,72,138,0.12)",
                   color: isOpen ? "#ffffff" : "var(--gold)",
                   fontSize: "1.5rem",
                   lineHeight: 1,
@@ -149,7 +149,7 @@ function FaqAccordion() {
                   transition: "transform 0.3s cubic-bezier(.4,0,.2,1), background 0.3s, color 0.3s",
                   transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
                   fontWeight: 400,
-                  border: `1.5px solid ${isOpen ? "var(--gold)" : "rgba(0,102,255,0.3)"}`,
+                  border: `1.5px solid ${isOpen ? "var(--gold)" : "rgba(21,72,138,0.3)"}`,
                 }}
               >
                 +
@@ -192,9 +192,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
     <div
       style={{
         background: "var(--bg2)",
-        border: cls.highlight
-          ? "1px solid var(--gold)"
-          : "1px solid var(--border)",
+        border: "1px solid var(--border)",
         borderRadius: "var(--radius)",
         overflow: "hidden",
         display: "flex",
@@ -202,19 +200,6 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
         position: "relative",
       }}
     >
-      {/* 상단 골드 선 (highlight 카드) */}
-      {cls.highlight && (
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: "3px",
-            background: "var(--gold)",
-          }}
-        />
-      )}
 
       {/* 잔여석 뱃지 */}
       {cls.remainingSeats != null && (
@@ -224,14 +209,12 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             top: "12px",
             right: "12px",
             padding: "6px 14px",
-            background: "#e74c3c",
+            background: "#C73E3E",
             color: "#fff",
             fontSize: "0.85rem",
             fontWeight: 800,
             borderRadius: "6px",
             letterSpacing: "0.04em",
-            animation: "subtlePulse 1.5s ease-in-out infinite",
-            boxShadow: "0 2px 12px rgba(231,76,60,0.4)",
             zIndex: 1,
           }}
         >
@@ -246,12 +229,12 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             style={{
               display: "inline-block",
               padding: "3px 10px",
-              background: "rgba(74,222,128,0.08)",
-              border: "1px solid rgba(74,222,128,0.35)",
+              background: "rgba(21,72,138,0.08)",
+              border: "1px solid rgba(21,72,138,0.35)",
               borderRadius: "2px",
               fontSize: "0.7rem",
               letterSpacing: "0.1em",
-              color: "#4ade80",
+              color: "#15488A",
               fontWeight: 700,
             }}
           >
@@ -329,7 +312,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
               color: "var(--gold)",
               marginBottom: "16px",
               padding: "6px 10px",
-              background: "rgba(0,87,255,0.08)",
+              background: "rgba(21,72,138,0.08)",
               borderRadius: "2px",
               borderLeft: "2px solid var(--gold)",
             }}
@@ -425,8 +408,8 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
               <button
                 onClick={() => setPriceVisible(true)}
                 style={{
-                  background: "rgba(196,165,90,0.08)",
-                  border: "1px solid rgba(196,165,90,0.5)",
+                  background: "rgba(21,72,138,0.08)",
+                  border: "1px solid rgba(21,72,138,0.5)",
                   borderRadius: "6px",
                   padding: "10px 18px",
                   color: "var(--gold)",
@@ -438,8 +421,6 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
                   display: "flex",
                   alignItems: "center",
                   gap: "8px",
-                  boxShadow: "0 0 12px rgba(196,165,90,0.15)",
-                  animation: "subtlePulse 2s ease-in-out infinite",
                 }}
               >
                 수강료 확인하기 <span style={{ fontSize: "0.8rem" }}>→</span>
@@ -457,9 +438,9 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
                       marginLeft: "8px",
                       fontSize: "0.68rem",
                       fontWeight: 700,
-                      color: "#e74c3c",
+                      color: "#C73E3E",
                       padding: "2px 6px",
-                      background: "rgba(231,76,60,0.12)",
+                      background: "rgba(199,62,62,0.12)",
                       borderRadius: "3px",
                     }}>
                       -10만원
@@ -472,7 +453,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
                     fontFamily: "var(--font-display)",
                     fontSize: "clamp(1.8rem, 4vw, 2.2rem)",
                     fontWeight: 900,
-                    color: cls.originalPrice ? "#4ade80" : "var(--white)",
+                    color: cls.originalPrice ? "#15488A" : "var(--white)",
                     lineHeight: 1,
                     letterSpacing: "-0.02em",
                   }}>
@@ -515,7 +496,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             borderRadius: "var(--radius)",
             textDecoration: "none",
             transition: "opacity 0.2s",
-            boxShadow: "0 4px 16px rgba(0,102,255,0.25)",
+            boxShadow: "0 4px 16px rgba(21,72,138,0.25)",
           }}
         >
           상담받기
@@ -758,7 +739,7 @@ export default function HomePage() {
           }}
         >
           <div className="hero-arrow" style={{ marginBottom: "16px", textAlign: "right" }}>
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="1">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(17,17,17,0.45)" strokeWidth="1">
               <path d="M7 7l10 10M17 7v10H7" />
             </svg>
           </div>
@@ -767,12 +748,12 @@ export default function HomePage() {
               fontFamily: "var(--font-display)",
               fontSize: "clamp(1rem, 2vw, 1.5rem)",
               fontWeight: 300,
-              color: "#ffffff",
+              color: "#111111",
               lineHeight: 1.5,
               letterSpacing: "0.05em",
             }}
           >
-            <span style={{ display: "block", color: "rgba(255,255,255,0.35)", fontSize: "0.85em" }}>Meisner Technique</span>
+            <span style={{ display: "block", color: "var(--navy)", fontSize: "0.85em", opacity: 0.75 }}>Meisner Technique</span>
             연기하지 않는 연기
           </p>
         </div>
@@ -803,8 +784,8 @@ export default function HomePage() {
             opacity: 0,
           }}
         >
-          <span style={{ fontSize: "0.6rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.4)" }}>SCROLL</span>
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5">
+          <span style={{ fontSize: "0.6rem", letterSpacing: "0.2em", color: "rgba(17,17,17,0.5)" }}>SCROLL</span>
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="rgba(17,17,17,0.5)" strokeWidth="1.5">
             <path d="M8 3v10M3 9l5 5 5-5" />
           </svg>
         </div>
@@ -825,7 +806,7 @@ export default function HomePage() {
         >
           배우들의 아지트
         </p>
-        <p style={{ fontSize: "clamp(0.88rem, 1.8vw, 1.05rem)", color: "#ffffff", letterSpacing: "0.02em", marginBottom: "6px" }}>
+        <p style={{ fontSize: "clamp(0.88rem, 1.8vw, 1.05rem)", color: "#111111", letterSpacing: "0.02em", marginBottom: "6px" }}>
           우리는 양산형 배우를 찍어내는 공장식 학원을 거부합니다.
         </p>
         <p style={{ fontSize: "clamp(0.88rem, 1.8vw, 1.05rem)", color: "var(--gold)", fontWeight: 600, letterSpacing: "0.02em", marginBottom: "32px" }}>
@@ -842,10 +823,10 @@ export default function HomePage() {
           <a
             href="#classes"
             style={{
-              padding: "14px 32px", background: "var(--gold)", color: "#ffffff",
+              padding: "14px 32px", background: "var(--navy)", color: "#ffffff",
               fontWeight: 700, fontSize: "0.85rem", letterSpacing: "0.08em",
               borderRadius: "var(--radius)", display: "inline-block", transition: "opacity var(--transition)",
-              boxShadow: "0 4px 20px rgba(0,102,255,0.3)",
+              boxShadow: "0 4px 14px rgba(21,72,138,0.2)",
             }}
           >
             클래스 둘러보기
@@ -853,10 +834,10 @@ export default function HomePage() {
           <Link
             href="/actors"
             style={{
-              padding: "14px 32px", border: "1px solid rgba(255,255,255,0.4)", color: "#ffffff",
+              padding: "14px 32px", border: "1px solid rgba(17,17,17,0.35)", color: "#111111",
               fontWeight: 600, fontSize: "0.85rem", letterSpacing: "0.08em",
               borderRadius: "var(--radius)", display: "inline-block",
-              background: "rgba(0,0,0,0.4)", backdropFilter: "blur(4px)", transition: "background var(--transition)",
+              background: "rgba(255,255,255,0.35)", backdropFilter: "blur(4px)", transition: "background var(--transition)",
             }}
           >
             배우 DB
@@ -940,19 +921,19 @@ export default function HomePage() {
               gap: "16px",
               padding: "16px 24px",
               marginBottom: "28px",
-              background: "rgba(0,102,255,0.06)",
-              border: "1px solid rgba(0,102,255,0.25)",
+              background: "rgba(21,72,138,0.06)",
+              border: "1px solid rgba(21,72,138,0.25)",
               borderRadius: "var(--radius)",
               flexWrap: "wrap",
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", justifyContent: "center" }}>
               <span style={{ fontSize: "1.4rem" }}>🌸</span>
-              <span style={{ fontSize: "1.15rem", fontWeight: 700, color: "#ffffff" }}>
+              <span style={{ fontSize: "1.15rem", fontWeight: 700, color: "#111111" }}>
                 봄맞이 스페셜 — 첫 달 10만원 할인
               </span>
               <span style={{ fontSize: "1rem", color: "var(--gray)" }}>·</span>
-              <span style={{ fontSize: "1.05rem", color: "#e74c3c", fontWeight: 700, animation: "subtlePulse 1.5s ease-in-out infinite" }}>
+              <span style={{ fontSize: "1.05rem", color: "#C73E3E", fontWeight: 700 }}>
                 마감임박
               </span>
             </div>
@@ -961,10 +942,10 @@ export default function HomePage() {
 
           {/* STEP 1 - 신규 멤버 */}
           <div style={{ marginBottom: "48px" }}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", marginBottom: "32px", gap: "10px", padding: "28px 32px", border: "1px solid rgba(74,222,128,0.4)", borderRadius: "12px", background: "rgba(74,222,128,0.04)", boxShadow: "0 0 24px rgba(74,222,128,0.08)" }}>
-              <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.25em", color: "#4ade80", fontFamily: "var(--font-display)", margin: 0 }}>STEP 1</p>
-              <h3 style={{ fontSize: "clamp(1.8rem, 4vw, 2.4rem)", fontWeight: 800, color: "#ffffff", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>A 코스</h3>
-              <p style={{ fontSize: "clamp(0.9rem, 2vw, 1rem)", color: "#4ade80", fontWeight: 600, margin: 0, letterSpacing: "0.04em" }}>신규 멤버 신청가능</p>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", marginBottom: "32px", gap: "10px", padding: "28px 32px", border: "1px solid rgba(21,72,138,0.35)", borderRadius: "12px", background: "rgba(21,72,138,0.04)" }}>
+              <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.25em", color: "var(--navy)", fontFamily: "var(--font-display)", margin: 0 }}>STEP 1</p>
+              <h3 style={{ fontSize: "clamp(1.8rem, 4vw, 2.4rem)", fontWeight: 800, color: "#111111", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>A 코스</h3>
+              <p style={{ fontSize: "clamp(0.9rem, 2vw, 1rem)", color: "var(--navy)", fontWeight: 600, margin: 0, letterSpacing: "0.04em" }}>신규 멤버 신청가능</p>
             </div>
             <div
               className="classes-grid"
@@ -998,7 +979,7 @@ export default function HomePage() {
                   boxShadow: open ? "0 0 20px rgba(255,255,255,0.04)" : "none",
                 }}
               >
-                <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.25em", color: "#4ade80", fontFamily: "var(--font-display)", margin: 0 }}>{label}</p>
+                <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.25em", color: "#15488A", fontFamily: "var(--font-display)", margin: 0 }}>{label}</p>
                 <h3 style={{ fontSize: "clamp(1.8rem, 4vw, 2.4rem)", fontWeight: 800, color: "var(--gray-light)", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>{title}</h3>
                 <p style={{ fontSize: "0.8rem", color: "var(--gray)", margin: 0 }}>{desc}</p>
                 <span style={{ fontSize: "0.85rem", color: "var(--gray)", transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.3s", display: "inline-block", marginTop: "4px" }}>▼</span>
@@ -1018,7 +999,7 @@ export default function HomePage() {
             style={{
               marginTop: "48px",
               padding: "40px 32px",
-              background: "linear-gradient(135deg, rgba(0,102,255,0.06) 0%, rgba(0,0,0,0) 100%)",
+              background: "linear-gradient(135deg, rgba(21,72,138,0.06) 0%, rgba(0,0,0,0) 100%)",
               border: "1px solid var(--border)",
               borderRadius: "12px",
               textAlign: "center",
@@ -1046,7 +1027,7 @@ export default function HomePage() {
                   fontSize: "0.9rem",
                   letterSpacing: "0.06em",
                   borderRadius: "var(--radius)",
-                  boxShadow: "0 4px 20px rgba(0,102,255,0.3)",
+                  boxShadow: "0 4px 20px rgba(21,72,138,0.3)",
                 }}
               >
                 방문상담 신청
@@ -1059,8 +1040,8 @@ export default function HomePage() {
                 style={{
                   display: "inline-block",
                   padding: "14px 40px",
-                  border: "1px solid rgba(255,255,255,0.4)",
-                  color: "#ffffff",
+                  border: "1px solid rgba(17,17,17,0.35)",
+                  color: "#111111",
                   fontWeight: 600,
                   fontSize: "0.9rem",
                   letterSpacing: "0.06em",
@@ -1336,7 +1317,7 @@ export default function HomePage() {
                         fontFamily: "var(--font-display)",
                         fontSize: "5.5rem",
                         fontWeight: 700,
-                        color: "rgba(0,87,255,0.07)",
+                        color: "rgba(21,72,138,0.07)",
                         lineHeight: 1,
                         userSelect: "none",
                         pointerEvents: "none",
@@ -1517,7 +1498,7 @@ export default function HomePage() {
                         borderBottom: "1px solid var(--border)",
                         fontWeight: i === 1 ? 700 : 400,
                         background:
-                          i === 1 ? "rgba(196,165,90,0.06)" : "transparent",
+                          i === 1 ? "rgba(21,72,138,0.06)" : "transparent",
                       }}
                     >
                       {h}
@@ -1572,7 +1553,7 @@ export default function HomePage() {
                         fontWeight: 500,
                         textAlign: "center",
                         borderBottom: "1px solid var(--border)",
-                        background: "rgba(196,165,90,0.04)",
+                        background: "rgba(21,72,138,0.04)",
                       }}
                     >
                       {row.kd4}
@@ -1655,7 +1636,7 @@ export default function HomePage() {
                     fontFamily: "var(--font-display)",
                     fontSize: "3rem",
                     fontWeight: 700,
-                    color: "rgba(196,165,90,0.12)",
+                    color: "rgba(21,72,138,0.12)",
                     lineHeight: 1,
                     marginBottom: "16px",
                   }}
@@ -1780,7 +1761,7 @@ export default function HomePage() {
         style={{
           padding: "100px 24px",
           borderTop: "1px solid var(--border)",
-          background: "radial-gradient(ellipse at 50% 0%, rgba(0,87,255,0.06) 0%, var(--bg2) 65%)",
+          background: "radial-gradient(ellipse at 50% 0%, rgba(21,72,138,0.06) 0%, var(--bg2) 65%)",
         }}
       >
         <div className="container" style={{ maxWidth: "620px" }}>
@@ -1804,7 +1785,7 @@ export default function HomePage() {
         style={{
           padding: "120px 24px",
           background:
-            "radial-gradient(ellipse at center, rgba(0,87,255,0.08) 0%, var(--bg) 70%)",
+            "radial-gradient(ellipse at center, rgba(21,72,138,0.08) 0%, var(--bg) 70%)",
           borderTop: "1px solid var(--border)",
           textAlign: "center",
         }}
@@ -1861,7 +1842,7 @@ export default function HomePage() {
                 fontSize: "1.15rem",
                 letterSpacing: "0.08em",
                 borderRadius: "var(--radius)",
-                boxShadow: "0 6px 28px rgba(0,102,255,0.35)",
+                boxShadow: "0 6px 18px rgba(21,72,138,0.2)",
               }}
             >
               수강신청 하기
@@ -1874,8 +1855,8 @@ export default function HomePage() {
               style={{
                 display: "inline-block",
                 padding: "18px 52px",
-                border: "1px solid rgba(255,255,255,0.4)",
-                color: "#ffffff",
+                border: "1px solid rgba(17,17,17,0.35)",
+                color: "#111111",
                 fontWeight: 800,
                 fontSize: "1.15rem",
                 letterSpacing: "0.08em",

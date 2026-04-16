@@ -72,7 +72,7 @@ export default function FloatingCTA() {
             justifyContent: 'center',
             gap: '8px',
             height: '48px',
-            background: 'var(--gold)',
+            background: 'var(--navy)',
             color: '#ffffff',
             fontFamily: 'var(--font-sans)',
             fontWeight: 900,
@@ -80,7 +80,7 @@ export default function FloatingCTA() {
             letterSpacing: '0.01em',
             textDecoration: 'none',
             borderRadius: '14px',
-            boxShadow: '0 4px 20px rgba(0,102,255,0.45)',
+            boxShadow: '0 4px 16px rgba(21,72,138,0.25)',
             transition: 'opacity 0.2s, transform 0.15s',
             whiteSpace: 'nowrap',
           }}

@@ -11,14 +11,20 @@
   --bg: #F0F0E8;
   --bg2: #E8E8DF;
   --bg3: #DEDED4;
+  --bg-deep: #2A2F3A;
   --gold: #15488A;
   --gold-light: #1E5BA8;
+  --navy: #15488A;
+  --navy-light: #1E5BA8;
+  --navy-deep: #0F3364;
   --blue: #15488A;
-  --white: #1A1A1A;
-  --secondary: rgba(26,26,26,0.85);
+  --white: #111111;
+  --black: #111111;
+  --secondary: rgba(17,17,17,0.85);
   --gray: #6B6660;
   --gray-light: #4A4A4A;
   --border: #D2D2C8;
+  --border-strong: #B8B8AC;
   --font-serif: 'KoPubWorldBatang', 'KoPub World Batang', 'KoPub Batang', 'Noto Serif KR', Georgia, serif;
   --font-sans: 'KoPubWorldDotum', 'KoPub World Dotum', 'KoPub Dotum', Helvetica, 'Helvetica Neue', Arial, sans-serif;
   --font-display: 'KoPubWorldDotum', 'KoPub World Dotum', Helvetica, 'Helvetica Neue', Arial, sans-serif;
@@ -41,9 +47,13 @@ html {
 body {
   font-family: var(--font-sans);
   background: var(--bg);
-  color: var(--white);
+  color: #111111;
   line-height: 1.6;
   overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, p, span, li, div, label, a, button {
+  color: inherit;
 }
 
 a { color: inherit; text-decoration: none; }
@@ -197,7 +207,7 @@ ul, ol { list-style: none; }
   position: absolute;
   left: 0; right: 0;
   height: clamp(40px, 7vh, 72px);
-  background: #000;
+  background: var(--bg);
   z-index: 5;
   transition: height 1.8s cubic-bezier(0.77,0,0.18,1);
 }
@@ -233,7 +243,7 @@ ul, ol { list-style: none; }
   position: absolute;
   inset: 0;
   z-index: 3;
-  background: radial-gradient(ellipse 85% 85% at 50% 50%, transparent 40%, rgba(0,0,0,0.6) 100%);
+  background: radial-gradient(ellipse 85% 85% at 50% 50%, transparent 45%, rgba(210,210,200,0.35) 100%);
   pointer-events: none;
 }
 
@@ -241,19 +251,9 @@ ul, ol { list-style: none; }
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: radial-gradient(ellipse 38% 55% at 50% 0%, rgba(21,72,138,0.09) 0%, transparent 70%);
+  background: radial-gradient(ellipse 38% 55% at 50% 0%, rgba(21,72,138,0.06) 0%, transparent 70%);
   pointer-events: none;
-  will-change: opacity;
-  animation: spotPulse 4s ease-in-out infinite;
-}
-
-@keyframes spotPulse {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 1; }
-}
-
-@media (max-width: 768px) {
-  .hero-spotlight { animation: none; opacity: 0.85; }
+  opacity: 0.85;
 }
 
 .hero-content {
@@ -315,7 +315,7 @@ ul, ol { list-style: none; }
   font-size: clamp(0.8rem, 1.6vw, 1.05rem);
   font-weight: 300;
   letter-spacing: 0.2em;
-  color: rgba(240,239,233,0.6);
+  color: rgba(17,17,17,0.7);
   margin-bottom: 36px;
   opacity: 0;
   transition: opacity 1s ease 2s;
@@ -561,7 +561,7 @@ ul, ol { list-style: none; }
 .hamburger span {
   width: 22px;
   height: 2px;
-  background: var(--white);
+  background: #111111;
   display: block;
   transition: 0.3s;
 }
@@ -733,7 +733,7 @@ ul, ol { list-style: none; }
 
 .class-card-footer {
   padding: 16px 24px;
-  background: rgba(0,0,0,0.3);
+  background: rgba(21,72,138,0.04);
   border-top: 1px solid var(--border);
 }
 
@@ -1595,107 +1595,48 @@ ul, ol { list-style: none; }
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
 }
 
-/* === SHIMMER TEXT ANIMATION === (연속 순환, 느린 속도) */
-@keyframes shimmerText {
-  0%   { background-position: -200% center; }
-  100% { background-position:  200% center; }
-}
+/* === SHIMMER TEXT — 펄스 제거, 단색 네이비 === */
 .shimmer-text {
-  background: linear-gradient(
-    90deg,
-    var(--white) 0%,
-    var(--gold) 30%,
-    #fff 50%,
-    var(--gold) 70%,
-    var(--white) 100%
-  );
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  will-change: background-position;
-  animation: shimmerText 15s linear infinite;
+  color: var(--navy);
 }
 
-/* === 배우들의 아지트 shimmer === */
-@keyframes shimmerTag {
-  0%   { background-position: 200% center; }
-  100% { background-position: -200% center; }
-}
+/* === 배우들의 아지트 tag — 단색 네이비 === */
 .shimmer-tag {
-  background: linear-gradient(
-    90deg,
-    #0066FF 0%,
-    #66aaff 25%,
-    #ffffff 50%,
-    #66aaff 75%,
-    #0066FF 100%
-  );
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  will-change: background-position;
+  color: var(--navy);
+  -webkit-text-fill-color: var(--navy);
 }
 
-@media (max-width: 768px) {
-  .shimmer-text {
-    animation: shimmerText 15s linear infinite;
-    background-position: 0% center;
-  }
-}
-
-/* === ICON GLOW BOX === */
+/* === ICON BOX — glow 제거 === */
 .icon-glow-box {
   position: relative;
   width: 52px;
   height: 52px;
   border-radius: 12px;
+  background: rgba(21,72,138,0.08);
+  border: 1px solid rgba(21,72,138,0.2);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
-  overflow: hidden;
-}
-.icon-glow-box::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 12px;
-  background: radial-gradient(circle at 50% 30%, rgba(21,72,138,0.5) 0%, transparent 70%);
-  filter: blur(8px);
 }
 .icon-glow-box-inner {
   position: relative;
   z-index: 1;
 }
 
-/* === STEP CARD GLOW ICON === */
+/* === STEP CARD ICON — glow 제거, 심플 박스 === */
 .step-icon-glow {
   position: relative;
   width: 52px;
   height: 52px;
   border-radius: 12px;
-  background: rgba(0,87,255,0.15);
-  border: 1px solid rgba(0,87,255,0.3);
+  background: rgba(21,72,138,0.08);
+  border: 1px solid rgba(21,72,138,0.2);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
   margin-bottom: 20px;
-  overflow: hidden;
-}
-.step-icon-glow::before {
-  content: '';
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40px;
-  height: 40px;
-  background: rgba(0,87,255,0.6);
-  border-radius: 50%;
-  filter: blur(16px);
 }
 
 /* === STATS CARD === */
@@ -1721,24 +1662,11 @@ ul, ol { list-style: none; }
   height: 52px;
   border-radius: 14px;
   background: rgba(21,72,138,0.08);
-  border: 1px solid rgba(21,72,138,0.18);
+  border: 1px solid rgba(21,72,138,0.2);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.4rem;
-  overflow: hidden;
-}
-.stats-icon-wrap::before {
-  content: '';
-  position: absolute;
-  top: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 36px;
-  height: 36px;
-  background: rgba(21,72,138,0.45);
-  border-radius: 50%;
-  filter: blur(14px);
 }
 
 
@@ -1788,22 +1716,21 @@ ul, ol { list-style: none; }
    인터랙션 이펙트 — 카드, 버튼, 호버, 클릭
    ============================================================ */
 
-/* 클래스 카드 호버: 살짝 떠오르기 + 골드 테두리 발광 */
+/* 클래스 카드 호버: 살짝 떠오르기 + 네이비 테두리 */
 #classes .classes-grid > div {
   transition: transform 0.28s cubic-bezier(0.22,1,0.36,1),
               border-color 0.28s,
               box-shadow 0.28s;
 }
 #classes .classes-grid > div:hover {
-  transform: translateY(-6px);
-  border-color: var(--gold) !important;
-  box-shadow: 0 12px 40px rgba(0,102,255,0.15), 0 0 0 1px var(--gold);
+  transform: translateY(-4px);
+  border-color: var(--navy) !important;
+  box-shadow: 0 8px 24px rgba(21,72,138,0.12);
 }
 
 /* 클래스 카드 CTA 버튼 호버 */
 .class-card-cta:hover {
-  opacity: 0.85;
-  transform: scale(1.02);
+  opacity: 0.88;
 }
 .class-card-cta:active {
   transform: scale(0.97);
@@ -1811,28 +1738,22 @@ ul, ol { list-style: none; }
 
 /* 스텝 카드 호버 */
 .step-card:hover {
-  border-color: var(--gold) !important;
-  transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(0,102,255,0.12);
+  border-color: var(--navy) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(21,72,138,0.08);
 }
 
 /* FAQ 아코디언 호버 */
 .faq-item:hover {
-  border-color: rgba(0,102,255,0.3) !important;
+  border-color: rgba(21,72,138,0.3) !important;
 }
 
 /* 배우 카드 호버 */
 #actors .grid a:hover,
 .actors-grid a:hover {
-  transform: translateY(-4px);
-  border-color: var(--gold) !important;
-  box-shadow: 0 8px 30px rgba(0,102,255,0.15);
-}
-
-/* 범용 버튼 클릭 바운스 */
-button:active,
-a[role="button"]:active {
-  transform: scale(0.96);
+  transform: translateY(-2px);
+  border-color: var(--navy) !important;
+  box-shadow: 0 6px 18px rgba(21,72,138,0.1);
 }
 
 /* 네비게이션 링크 호버 언더라인 애니메이션 */
@@ -1846,7 +1767,7 @@ a[role="button"]:active {
   left: 50%;
   width: 0;
   height: 2px;
-  background: var(--gold);
+  background: var(--navy);
   transition: width 0.3s, left 0.3s;
 }
 .nav-link-anim:hover::after {
@@ -1854,14 +1775,12 @@ a[role="button"]:active {
   left: 0;
 }
 
-/* 부드러운 펄스 (강조 CTA) */
-@keyframes subtlePulse {
-  0%, 100% { box-shadow: 0 4px 20px rgba(0,102,255,0.35); }
-  50%      { box-shadow: 0 4px 30px rgba(0,102,255,0.55); }
-}
+/* subtlePulse: 애니메이션 제거 — 정적 상태만 */
 .pulse-cta {
-  animation: subtlePulse 2.5s ease-in-out infinite;
+  box-shadow: 0 4px 16px rgba(21,72,138,0.2);
 }
+
+/* 잔여석/할인용 빨간 펄스는 페이지에서 개별적으로 제거됨 */
 
 /* 캐스팅 마퀴 호버 일시정지 */
 .casting-marquee:hover .marquee-track {
@@ -1876,8 +1795,8 @@ a[role="button"]:active {
 input:focus,
 textarea:focus,
 select:focus {
-  border-color: var(--gold) !important;
-  box-shadow: 0 0 0 2px rgba(0,102,255,0.15);
+  border-color: var(--navy) !important;
+  box-shadow: 0 0 0 2px rgba(21,72,138,0.15);
 }
 
 /* FloatingCTA가 하단 콘텐츠 가리지 않도록 페이지 여백 */
@@ -1945,12 +1864,12 @@ main {
   100% { transform: translateX(0); }
 }
 
-/* ═══ PRELOADER (Dennis Snellenberg style) ═══ */
+/* ═══ PRELOADER — 웜그레이 배경 + 네이비 커브 ═══ */
 .preloader {
   position: fixed;
   inset: 0;
   z-index: 999;
-  background: #ffffff !important;
+  background: var(--bg) !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1963,7 +1882,7 @@ main {
   left: -10%;
   width: 120%;
   height: 0;
-  background: #0a0a0a;
+  background: var(--bg);
   border-radius: 50% 50% 0 0 / 100% 100% 0 0;
   z-index: 1;
   will-change: height;
@@ -1973,7 +1892,7 @@ main {
   font-family: 'Satoshi', var(--font-display), sans-serif;
   font-weight: 500;
   font-size: clamp(2rem, 5vw, 4rem);
-  color: #1a1a1a !important;
+  color: #111111 !important;
   opacity: 0;
   letter-spacing: 0.05em;
   z-index: 2;
@@ -1994,13 +1913,14 @@ main {
   font-family: 'Satoshi', var(--font-display), sans-serif;
   font-size: max(6em, 10vw);
   font-weight: 700;
-  color: #ffffff;
+  color: var(--navy);
   line-height: 1;
   margin: 0;
   padding: 0 3vw;
   pointer-events: none;
   flex-shrink: 0;
   letter-spacing: 0.02em;
+  opacity: 0.85;
 }
 
 /* ═══ MARQUEE AUTO-SCROLL ANIMATION ═══ */
@@ -2027,7 +1947,7 @@ main {
   .navbar.scrolled {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-    background: rgba(10, 10, 10, 0.98);
+    background: rgba(240, 240, 232, 0.98);
   }
   /* overflow-x: clip은 합성 레이어를 만들지 않아 스크롤 성능 개선 */
   body {
