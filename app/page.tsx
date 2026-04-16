@@ -753,7 +753,7 @@ export default function HomePage() {
               letterSpacing: "0.05em",
             }}
           >
-            <span style={{ display: "block", color: "var(--navy)", fontSize: "0.85em", opacity: 0.75 }}>Meisner Technique</span>
+            <span style={{ display: "block", color: "#111111", fontSize: "0.85em", opacity: 0.75 }}>Meisner Technique</span>
             연기하지 않는 연기
           </p>
         </div>
@@ -801,7 +801,7 @@ export default function HomePage() {
             fontFamily: "var(--font-display)",
             textTransform: "uppercase",
             marginBottom: "32px",
-            animation: "shimmerTag 6s linear infinite",
+            /* animation 제거됨 */
           }}
         >
           배우들의 아지트

@@ -315,7 +315,7 @@ ul, ol { list-style: none; }
   font-size: clamp(0.8rem, 1.6vw, 1.05rem);
   font-weight: 300;
   letter-spacing: 0.2em;
-  color: rgba(17,17,17,0.7);
+  color: #111111;
   margin-bottom: 36px;
   opacity: 0;
   transition: opacity 1s ease 2s;
@@ -649,7 +649,7 @@ ul, ol { list-style: none; }
 }
 
 .class-card.highlight {
-  border-color: rgba(21,72,138,0.4);
+  border-color: var(--border);
 }
 
 .class-card-header {
@@ -1450,10 +1450,7 @@ ul, ol { list-style: none; }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes heroPulse {
-  0%, 100% { opacity: 0.55; }
-  50%       { opacity: 0.9; }
-}
+/* heroPulse 제거됨 */
 
 /* === SCROLL REVEAL === */
 .reveal-section {
@@ -1913,7 +1910,7 @@ main {
   font-family: 'Satoshi', var(--font-display), sans-serif;
   font-size: max(6em, 10vw);
   font-weight: 700;
-  color: var(--navy);
+  color: #111111;
   line-height: 1;
   margin: 0;
   padding: 0 3vw;
