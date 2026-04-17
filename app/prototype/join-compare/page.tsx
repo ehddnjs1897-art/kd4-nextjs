@@ -148,6 +148,96 @@ const CHANGES = [
     after: '전부 제거 — KoPub + keep-all 반응형 자연 흐름',
     impact: 'Medium',
   },
+  /* ───── Round 2 개선 ───── */
+  {
+    Icon: Palette,
+    category: 'Round 2 · 디자인',
+    label: 'Hero 강조색 톤 교체',
+    before: '#7BB3FF 하늘색 (딥네이비와 톤 충돌, 싸구려 느낌)',
+    after: '흰색 텍스트 + 웜그레이 언더라인',
+    impact: 'Critical',
+  },
+  {
+    Icon: Palette,
+    category: 'Round 2 · 아이콘',
+    label: 'strokeWidth 3단계 통일',
+    before: '1 / 1.3 / 1.8 / 2 / 2.2 / 2.5 — 6종 혼재',
+    after: '장식 1.3 · 본문 1.8 · 강조 2.2',
+    impact: 'High',
+  },
+  {
+    Icon: Palette,
+    category: 'Round 2 · 토큰',
+    label: 'navy-tint 투명도 변수화',
+    before: 'rgba(21,72,138,0.04~0.25) 알파값 6종 혼재',
+    after: '--navy-tint-1/2/3 3단계 변수',
+    impact: 'Medium',
+  },
+  {
+    Icon: MessageSquare,
+    category: 'Round 2 · 카피',
+    label: '환불 조건 구체화',
+    before: '"첫 2주 불만족 시 전액 환불" (립서비스 느낌)',
+    after: '"출석 2회 이후 카카오로 요청 시 즉시 환불"',
+    impact: 'High',
+  },
+  {
+    Icon: MessageSquare,
+    category: 'Round 2 · UX',
+    label: '전화번호 안심 문구',
+    before: '없음 (스팸 공포 유발)',
+    after: '"카카오톡으로만 연락드립니다 · 광고 전화 없음"',
+    impact: 'High',
+  },
+  {
+    Icon: MessageSquare,
+    category: 'Round 2 · sticky',
+    label: 'StickyTopBar CTA 문구',
+    before: '"상담" (2글자 스캔 안 됨)',
+    after: '"무료상담"',
+    impact: 'Medium',
+  },
+  {
+    Icon: Gauge,
+    category: 'Round 2 · CTA',
+    label: 'CTA 밀도 조정',
+    before: '6회 (Director · Proof 인라인 CTA 중복)',
+    after: '5회 (Director 인라인 CTA 제거)',
+    impact: 'Low',
+  },
+  /* ───── Round 3 개선 ───── */
+  {
+    Icon: Eye,
+    category: 'Round 3 · 치명',
+    label: 'Hero 강사 사진 가시성',
+    before: 'opacity 0.42 + grayscale 0.3 + 92% 오버레이 → 얼굴 안 보임',
+    after: 'opacity 0.62 + grayscale 0.2 + 단계별 35→85% 그라디언트',
+    impact: 'Critical',
+  },
+  {
+    Icon: TrendingUp,
+    category: 'Round 3 · 가격',
+    label: '코스 총액 병기',
+    before: '"25만원/월"만 노출 → 상담 시 쇼크',
+    after: '"4개월 총 1,000,000원 · 분납 상담 가능" 추가',
+    impact: 'Critical',
+  },
+  {
+    Icon: Sparkles,
+    category: 'Round 3 · Success',
+    label: '폼 제출 완료 화면',
+    before: '🌸 이모지 + "24시간 이내" 한 줄만',
+    after: 'CheckCircle 아이콘 + 접수번호(KD-YYMMDD-XXXX) + 화자 명시 + 리드마그넷 PDF CTA',
+    impact: 'Critical',
+  },
+  {
+    Icon: MessageSquare,
+    category: 'Round 3 · 메인',
+    label: 'kd4.club "첫 걸음 어렵지 않아요"',
+    before: 'AI 티 나는 추상 카피',
+    after: '"무료 상담으로 먼저 시작하세요"',
+    impact: 'Medium',
+  },
 ]
 
 const SCORES = [
@@ -163,6 +253,7 @@ const IMPACT_COLOR: Record<string, { bg: string; fg: string }> = {
   Critical: { bg: 'var(--accent-red-soft)', fg: 'var(--accent-red)' },
   High: { bg: 'rgba(21,72,138,0.1)', fg: 'var(--navy)' },
   Medium: { bg: 'rgba(107,102,96,0.1)', fg: 'var(--gray-light)' },
+  Low: { bg: 'rgba(107,102,96,0.05)', fg: 'var(--gray)' },
 }
 
 export default function JoinComparePage() {
