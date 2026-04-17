@@ -1702,7 +1702,7 @@ export default function HomePage() {
             marginBottom: "32px",
           }}
         >
-          수강생 후기
+          KD4 배우 이야기
         </h2>
 
         {/* 1행: 왼쪽으로 */}

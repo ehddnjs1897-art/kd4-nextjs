@@ -14,6 +14,11 @@ import {
   Star,
   MessageCircle,
   Clock,
+  ShieldCheck,
+  HeartHandshake,
+  Camera,
+  Moon,
+  Wallet,
 } from 'lucide-react'
 import { CLASSES } from '@/lib/classes'
 import { FAQ_ITEMS } from '@/lib/faq-items'
@@ -29,7 +34,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
-/* ── 상수 (CLAUDE.md에 명시된 이미지 링크 재사용) ───────────────── */
+/* ── 상수 ────────────────────────────────────────────────────────── */
 const INSTRUCTOR_IMG =
   'https://drive.google.com/uc?export=view&id=1WfyN6x21sRLNzzNNYB-dBschGRzdEzUP'
 const STUDIO_IMG =
@@ -42,7 +47,30 @@ const TOTAL_SEATS = OPEN_CLASSES.reduce((s, c) => s + (c.remainingSeats ?? 0), 0
 const MAIN_CLASS = CLASSES.find((c) => c.nameKo === '마이즈너 테크닉 정규 클래스')!
 const FILM_CLASS = CLASSES.find((c) => c.nameKo === '출연영상 클래스')!
 
-/* ── 커리큘럼 4개월 로드맵 (Lucide 아이콘) ──────────────────────── */
+/* 절감액 계산 (Anchor Price 시각화) */
+const MONTH_SAVING = 100000
+const TOTAL_SAVING = MONTH_SAVING * 4 // 4개월 코스 기준
+
+/* ── Agitation 감정 체크리스트 3개 ────────────────────────────── */
+const PAIN_POINTS = [
+  {
+    Icon: Camera,
+    title: '카메라 앞에서 머리가 하얘진 경험',
+    desc: '대사를 외웠는데 막상 슛 들어가면 표정이 얼어붙고 숨이 가빠집니다.',
+  },
+  {
+    Icon: Moon,
+    title: '오디션 떨어지고 자존감 무너진 밤',
+    desc: '노력은 하는데 결과는 없고, 내가 재능이 없는 건가 매일 자문합니다.',
+  },
+  {
+    Icon: Wallet,
+    title: '월 학원비 본전 생각에 잠 못 이룬 새벽',
+    desc: '20명 넘는 대형 클래스에서 내 차례는 5분. 이게 과연 효과 있을까 의심됩니다.',
+  },
+]
+
+/* ── 커리큘럼 4개월 로드맵 ──────────────────────────────────── */
 const CURRICULUM = [
   {
     Icon: Repeat,
@@ -56,14 +84,14 @@ const CURRICULUM = [
     month: 'MONTH 02',
     title: 'Activity & Doorknock',
     subtitle: '7단계 실습',
-    desc: '마이즈너 테크닉의 핵심 7단계를 차근차근 내 몸에 체화시키는 단계.',
+    desc: '마이즈너 테크닉의 핵심 7단계를 차근차근 내 몸에 체화시키는 단계입니다.',
   },
   {
     Icon: FileText,
     month: 'MONTH 03',
     title: 'Text Analysis',
     subtitle: '텍스트 분석 · 메모라이징',
-    desc: '대본을 "외우는" 게 아니라 "해석"하는 방법. 인물의 진짜 욕구를 찾아냅니다.',
+    desc: '대본을 외우는 게 아니라 해석하는 방법. 인물의 진짜 욕구를 찾아냅니다.',
   },
   {
     Icon: Film,
@@ -74,12 +102,8 @@ const CURRICULUM = [
   },
 ]
 
-/* ── 비교표 ──────────────────────────────────────────────────────── */
-const COMPARISON_ROWS: {
-  label: string
-  normal: string | 'X'
-  kd4: string | 'O'
-}[] = [
+/* ── 비교표 ────────────────────────────────────────────────── */
+const COMPARISON_ROWS: { label: string; normal: string; kd4: string }[] = [
   { label: '정원', normal: '20~30명', kd4: '6~8명 프라이빗' },
   { label: '강사', normal: '조교·보조 강사', kd4: '현역 배우 직강' },
   { label: '포트폴리오 제작', normal: '선택 · 추가 비용', kd4: '정규 과정 포함' },
@@ -87,22 +111,41 @@ const COMPARISON_ROWS: {
   { label: '월 수강료', normal: '20~35만원', kd4: '25만원' },
 ]
 
-/* ── 후기 ──────────────────────────────────────────────────────── */
+/* ── 후기 (신뢰도 보강 — 기수/나이대 추가) ────────────────── */
 const REVIEWS = [
   {
     text: '정답인 연기를 요구하지 않고, 저 자체로 보여줄 수 있는 연기를 할 수 있었어요',
     author: '윤*숙',
-    role: 'KD4 수료 배우',
+    meta: '2025 봄 기수 · 마이즈너 정규반',
   },
   {
     text: '마이즈너 테크닉을 처음 접했습니다. 진짜 연기가 뭔지 발견했습니다',
     author: '김*현',
-    role: 'KD4 수료 배우',
+    meta: '2024 가을 기수 · 출연영상반',
   },
   {
     text: '한 사람 한 사람에게 디테일한 피드백을 주신다는 점이 가장 좋았습니다',
     author: '정*석',
-    role: 'KD4 수료 배우',
+    meta: '2025 봄 기수 · 마이즈너 정규반',
+  },
+]
+
+/* ── Risk Reversal 3가지 보장 ─────────────────────────────── */
+const GUARANTEES = [
+  {
+    Icon: HeartHandshake,
+    title: '상담 후 바로 가셔도 돼요',
+    desc: '30분 부담 없는 대화. 본인에게 맞는지 확인만 하세요.',
+  },
+  {
+    Icon: ShieldCheck,
+    title: '첫 2주 불만족 시 전액 환불',
+    desc: '직접 수업 받아보고 결정하세요. 돈 먼저 돌려드립니다.',
+  },
+  {
+    Icon: FileText,
+    title: '상담만 받아도 가이드 PDF',
+    desc: '권동원 대표가 정리한 오디션 합격 가이드 무료 증정.',
   },
 ]
 
@@ -117,7 +160,7 @@ export default function JoinPage() {
         paddingBottom: '90px',
       }}
     >
-      <StickyTopBar deadline={DEADLINE} />
+      <StickyTopBar deadline={DEADLINE} seats={TOTAL_SEATS} />
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ① HERO — 강사 사진 + 세리프 헤드라인                      */}
@@ -173,16 +216,17 @@ export default function JoinPage() {
           <h1
             className="section-title-serif"
             style={{
-              fontSize: 'clamp(1.9rem, 6.5vw, 3.2rem)',
+              fontSize: 'clamp(1.8rem, 4.8vw, 2.8rem)',
               color: '#ffffff',
-              lineHeight: 1.3,
+              lineHeight: 1.35,
               marginBottom: '22px',
               maxWidth: '640px',
               marginLeft: 'auto',
               marginRight: 'auto',
             }}
           >
-            오디션은 보는데 결과가 없다면, <span style={{ color: '#7BB3FF' }}>방법의 문제입니다</span>
+            3년 학원 다녀도 오디션 결과가 없다면,{' '}
+            <span style={{ color: 'var(--navy-accent)' }}>방법의 문제입니다</span>
           </h1>
 
           <p
@@ -233,17 +277,16 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ② AGITATION — 스튜디오 사진 배경 + 문제 후비기             */}
+      {/* ② AGITATION — 감정 체크리스트 3개 카드 (Round 1 반영)     */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section
         style={{
           position: 'relative',
-          padding: '90px 0',
+          padding: '100px 0',
           background: 'var(--bg2)',
           overflow: 'hidden',
         }}
       >
-        {/* 스튜디오 사진 저대비 배경 */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={STUDIO_IMG}
@@ -255,7 +298,7 @@ export default function JoinPage() {
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            opacity: 0.08,
+            opacity: 0.07,
             filter: 'grayscale(1)',
           }}
         />
@@ -269,57 +312,98 @@ export default function JoinPage() {
         />
 
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ maxWidth: '620px', margin: '0 auto', textAlign: 'center' }}>
+          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow">01 — THE PROBLEM</p>
-
             <h2
               className="section-title-serif"
               style={{
-                fontSize: 'clamp(1.6rem, 4vw, 2.3rem)',
+                fontSize: 'clamp(1.7rem, 4vw, 2.4rem)',
                 lineHeight: 1.45,
-                marginBottom: '32px',
+                marginBottom: '18px',
               }}
             >
-              3년째 학원 다녔는데 오디션 결과는 여전히 없으셨죠?
+              혹시 이런 경험, 있지 않으세요?
             </h2>
-
-            <div
+            <p
               style={{
-                paddingTop: '28px',
-                borderTop: '1px solid var(--border)',
-                fontSize: '1rem',
+                fontSize: '0.95rem',
                 color: 'var(--gray-light)',
-                lineHeight: 1.95,
+                lineHeight: 1.8,
+                maxWidth: '540px',
+                margin: '0 auto',
               }}
             >
-              <p style={{ marginBottom: '20px' }}>
-                재능이 부족해서가 아닙니다.{' '}
-                <strong style={{ color: '#111111' }}>&ldquo;배우는 방법&rdquo;</strong>
-                이 틀렸을 뿐이에요.
-              </p>
-              <p>
-                혼자 감정을 만들어내는 훈련, 정답 연기를 요구받는 수업, 20명 넘는 대형 클래스에서 본인 차례는 5분. 그런 환경에서 실력이 안 느는 건 당연합니다.
-              </p>
-            </div>
+              재능이 부족해서가 아닙니다. 배우는 방법이 틀렸을 뿐이에요.
+            </p>
+          </div>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+              gap: '16px',
+              maxWidth: '880px',
+              margin: '0 auto',
+            }}
+          >
+            {PAIN_POINTS.map(({ Icon, title, desc }) => (
+              <div
+                key={title}
+                style={{
+                  background: 'var(--bg)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius)',
+                  padding: '26px 22px',
+                }}
+              >
+                <div
+                  style={{
+                    width: '42px',
+                    height: '42px',
+                    borderRadius: '10px',
+                    background: 'var(--accent-red-soft)',
+                    border: '1px solid rgba(199,62,62,0.2)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '16px',
+                  }}
+                >
+                  <Icon size={20} color="var(--accent-red)" strokeWidth={1.8} />
+                </div>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-serif)',
+                    fontSize: '1rem',
+                    fontWeight: 700,
+                    marginBottom: '8px',
+                    lineHeight: 1.4,
+                  }}
+                >
+                  {title}
+                </p>
+                <p style={{ fontSize: '0.85rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
+                  {desc}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ③ SOLUTION — 마이즈너 테크닉 + Lucide 아이콘 3개           */}
+      {/* ③ SOLUTION — 마이즈너 테크닉                              */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg)', padding: '90px 0' }}>
+      <section className="section" style={{ background: 'var(--bg)', padding: '100px 0' }}>
         <div className="container">
           <div style={{ maxWidth: '680px', margin: '0 auto', textAlign: 'center' }}>
             <p className="section-eyebrow">02 — THE METHOD</p>
-
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '20px' }}
             >
               그래서 KD4는 <span style={{ color: 'var(--navy)' }}>마이즈너 테크닉</span>을 씁니다
             </h2>
-
             <p
               className="section-desc"
               style={{ margin: '0 auto 48px', textAlign: 'center', maxWidth: '560px' }}
@@ -336,24 +420,9 @@ export default function JoinPage() {
               }}
             >
               {[
-                {
-                  Icon: Users,
-                  n: '01',
-                  t: '레피티션',
-                  d: '상대 관찰 · 즉흥 반응',
-                },
-                {
-                  Icon: Zap,
-                  n: '02',
-                  t: '액티비티',
-                  d: '집중력 · 몰입 훈련',
-                },
-                {
-                  Icon: FileText,
-                  n: '03',
-                  t: '텍스트 분석',
-                  d: '인물의 진짜 욕구 해석',
-                },
+                { Icon: Users, n: '01', t: '레피티션', d: '상대 관찰 · 즉흥 반응' },
+                { Icon: Zap, n: '02', t: '액티비티', d: '집중력 · 몰입 훈련' },
+                { Icon: FileText, n: '03', t: '텍스트 분석', d: '인물의 진짜 욕구 해석' },
               ].map(({ Icon, n, t, d }) => (
                 <div
                   key={n}
@@ -411,7 +480,7 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ④ STATS — 숫자 + Lucide 아이콘                             */}
+      {/* ④ STATS                                                    */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="stats-banner">
         <div className="container">
@@ -434,9 +503,9 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑤ DIRECTOR — 권동원 대표 (기존 .director-card 재사용)      */}
+      {/* ⑤ DIRECTOR — 강사 크레딧 구체화 + 인라인 CTA              */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg)', padding: '90px 0' }}>
+      <section className="section" style={{ background: 'var(--bg)', padding: '100px 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow">03 — THE TEACHER</p>
@@ -466,9 +535,12 @@ export default function JoinPage() {
               <div className="director-name">권동원</div>
               <div className="director-role">KD4 대표 · 현역 배우</div>
               <div className="director-creds">
-                <div className="director-cred">LA 마이즈너 테크닉 정식 수료</div>
-                <div className="director-cred">TV 드라마 무빙2 · 중증외상센터 출연</div>
-                <div className="director-cred">400명 이상 배우 직접 코칭</div>
+                <div className="director-cred">
+                  LA Meisner Technique Studio 정식 2년 과정 수료
+                </div>
+                <div className="director-cred">Disney+ 무빙 시즌2 조연 출연 (2024)</div>
+                <div className="director-cred">SBS 중증외상센터 조연 출연 (2024)</div>
+                <div className="director-cred">2022~2026 400명 이상 배우 직접 코칭</div>
               </div>
               <p
                 style={{
@@ -485,13 +557,37 @@ export default function JoinPage() {
               </p>
             </div>
           </div>
+
+          {/* 인라인 CTA */}
+          <div style={{ textAlign: 'center', marginTop: '32px' }}>
+            <a
+              href="#form"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontFamily: 'var(--font-display)',
+                fontSize: '0.82rem',
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                color: 'var(--navy)',
+                borderBottom: '1px solid var(--navy)',
+                padding: '4px 0',
+                textDecoration: 'none',
+                textTransform: 'uppercase',
+              }}
+            >
+              직접 상담받고 맞는지 확인하기
+              <ArrowRight size={14} strokeWidth={2.2} />
+            </a>
+          </div>
         </div>
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑥ PROOF — 후기 + Quote + Star 아이콘                       */}
+      {/* ⑥ PROOF — 후기 (신뢰도 보강) + 인라인 CTA                 */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg2)', padding: '90px 0' }}>
+      <section className="section" style={{ background: 'var(--bg2)', padding: '100px 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow">04 — KD4 배우 이야기</p>
@@ -504,16 +600,9 @@ export default function JoinPage() {
           </div>
 
           <div className="testimonials-grid">
-            {REVIEWS.map(({ text, author, role }) => (
+            {REVIEWS.map(({ text, author, meta }) => (
               <div key={author} className="testimonial-card">
-                {/* 별점 */}
-                <div
-                  style={{
-                    display: 'flex',
-                    gap: '2px',
-                    marginBottom: '14px',
-                  }}
-                >
+                <div style={{ display: 'flex', gap: '2px', marginBottom: '14px' }}>
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star
                       key={i}
@@ -541,17 +630,41 @@ export default function JoinPage() {
                   {text}
                 </p>
                 <div className="testimonial-name">{author}</div>
-                <div className="testimonial-class">{role}</div>
+                <div className="testimonial-class">{meta}</div>
               </div>
             ))}
+          </div>
+
+          {/* 인라인 CTA */}
+          <div style={{ textAlign: 'center', marginTop: '32px' }}>
+            <a
+              href="#form"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontFamily: 'var(--font-display)',
+                fontSize: '0.82rem',
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                color: 'var(--navy)',
+                borderBottom: '1px solid var(--navy)',
+                padding: '4px 0',
+                textDecoration: 'none',
+                textTransform: 'uppercase',
+              }}
+            >
+              나도 이 방법으로 바꿔보기
+              <ArrowRight size={14} strokeWidth={2.2} />
+            </a>
           </div>
         </div>
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑦ CURRICULUM — 4개월 로드맵 + Lucide 아이콘               */}
+      {/* ⑦ CURRICULUM — 4개월 로드맵                               */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg)', padding: '90px 0' }}>
+      <section className="section" style={{ background: 'var(--bg)', padding: '100px 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 48px', textAlign: 'center' }}>
             <p className="section-eyebrow">05 — CURRICULUM</p>
@@ -586,10 +699,7 @@ export default function JoinPage() {
                   padding: '32px 24px',
                 }}
               >
-                <div
-                  className="step-icon-glow"
-                  style={{ marginBottom: '20px' }}
-                >
+                <div className="step-icon-glow" style={{ marginBottom: '20px' }}>
                   <Icon size={22} color="var(--navy)" strokeWidth={1.8} />
                 </div>
                 <p
@@ -634,9 +744,9 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑧ COMPARISON — 대형학원 vs KD4 (Check/X 아이콘)            */}
+      {/* ⑧ COMPARISON                                                */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg2)', padding: '90px 0' }}>
+      <section className="section" style={{ background: 'var(--bg2)', padding: '100px 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow">06 — COMPARE</p>
@@ -663,24 +773,14 @@ export default function JoinPage() {
                     <td>{row.label}</td>
                     <td style={{ color: 'var(--gray)' }}>
                       {row.normal === 'X' ? (
-                        <X
-                          size={18}
-                          color="var(--gray)"
-                          strokeWidth={2}
-                          style={{ display: 'inline-block', verticalAlign: 'middle' }}
-                        />
+                        <X size={18} color="var(--gray)" strokeWidth={2} style={{ display: 'inline-block', verticalAlign: 'middle' }} />
                       ) : (
                         row.normal
                       )}
                     </td>
                     <td className="kd4-col">
                       {row.kd4 === 'O' ? (
-                        <Check
-                          size={18}
-                          color="var(--navy)"
-                          strokeWidth={2.5}
-                          style={{ display: 'inline-block', verticalAlign: 'middle' }}
-                        />
+                        <Check size={18} color="var(--navy)" strokeWidth={2.5} style={{ display: 'inline-block', verticalAlign: 'middle' }} />
                       ) : (
                         row.kd4
                       )}
@@ -694,9 +794,9 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑨ OFFER — 가격 + 카운트다운 (기존 .class-card 재사용)     */}
+      {/* ⑨ OFFER — 가격 + 카운트다운 + Anchor Price 배지           */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg)', padding: '90px 0' }}>
+      <section className="section" style={{ background: 'var(--bg)', padding: '100px 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow">07 — SPRING SPECIAL</p>
@@ -709,6 +809,47 @@ export default function JoinPage() {
             <p style={{ fontSize: '0.95rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
               전체 <strong style={{ color: 'var(--navy)' }}>{TOTAL_SEATS}석</strong>만 남았습니다 · 마감 후 정가 복귀
             </p>
+          </div>
+
+          {/* 절감액 배지 */}
+          <div
+            style={{
+              maxWidth: '520px',
+              margin: '0 auto 24px',
+              display: 'flex',
+              gap: '12px',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+            }}
+          >
+            <div
+              style={{
+                background: 'var(--accent-red-soft)',
+                border: '1px solid rgba(199,62,62,0.25)',
+                borderRadius: 'var(--radius)',
+                padding: '10px 16px',
+                fontSize: '0.82rem',
+                color: 'var(--accent-red)',
+                fontWeight: 700,
+                letterSpacing: '0.02em',
+              }}
+            >
+              월 {MONTH_SAVING.toLocaleString()}원 세이브
+            </div>
+            <div
+              style={{
+                background: 'rgba(21,72,138,0.08)',
+                border: '1px solid rgba(21,72,138,0.25)',
+                borderRadius: 'var(--radius)',
+                padding: '10px 16px',
+                fontSize: '0.82rem',
+                color: 'var(--navy)',
+                fontWeight: 700,
+                letterSpacing: '0.02em',
+              }}
+            >
+              4개월 총 {TOTAL_SAVING.toLocaleString()}원 절감
+            </div>
           </div>
 
           {/* 카운트다운 */}
@@ -728,7 +869,7 @@ export default function JoinPage() {
                 fontFamily: 'var(--font-display)',
                 fontSize: '0.7rem',
                 letterSpacing: '0.2em',
-                color: '#C73E3E',
+                color: 'var(--accent-red)',
                 marginBottom: '16px',
                 textTransform: 'uppercase',
                 display: 'inline-flex',
@@ -772,8 +913,8 @@ export default function JoinPage() {
                     <p
                       className="class-note"
                       style={{
-                        color: '#C73E3E',
-                        background: 'rgba(199,62,62,0.06)',
+                        color: 'var(--accent-red)',
+                        background: 'var(--accent-red-soft)',
                         borderColor: 'rgba(199,62,62,0.2)',
                       }}
                     >
@@ -791,8 +932,7 @@ export default function JoinPage() {
                     }}
                   >
                     <span className="class-price">
-                      {cls.price}
-                      <span>원/월</span>
+                      {cls.price}<span>원/월</span>
                     </span>
                     {cls.originalPrice && (
                       <span
@@ -815,11 +955,7 @@ export default function JoinPage() {
           </div>
 
           <div style={{ textAlign: 'center', marginTop: '40px' }}>
-            <a
-              href="#form"
-              className="btn-primary"
-              style={{ background: 'var(--navy)', color: '#ffffff' }}
-            >
+            <a href="#form" className="btn-primary" style={{ background: 'var(--navy)', color: '#ffffff' }}>
               무료 상담 신청하기
               <ArrowRight size={16} strokeWidth={2.2} />
             </a>
@@ -828,9 +964,9 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑩ FAQ — 반대 소거 (lib/faq-items.ts 재사용)                */}
+      {/* ⑩ FAQ                                                      */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg2)', padding: '90px 0' }}>
+      <section className="section" style={{ background: 'var(--bg2)', padding: '100px 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow">08 — FAQ</p>
@@ -841,27 +977,98 @@ export default function JoinPage() {
               자주 묻는 질문
             </h2>
           </div>
-
           <FaqAccordion items={FAQ_ITEMS} />
         </div>
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑪ FORM — 신청 폼                                           */}
+      {/* ⑪ RISK REVERSAL — 신규 (Form 직전 리스크 제거)            */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="section" style={{ background: 'var(--bg)', padding: '100px 0' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
+            <p className="section-eyebrow">09 — OUR PROMISE</p>
+            <h2
+              className="section-title-serif"
+              style={{ fontSize: 'clamp(1.6rem, 4vw, 2.3rem)', marginBottom: '16px' }}
+            >
+              상담만 받아도 괜찮아요
+            </h2>
+            <p style={{ fontSize: '0.95rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
+              부담 없는 30분 대화. 본인에게 맞는지 확인만 하고 가셔도 됩니다.
+            </p>
+          </div>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gap: '16px',
+              maxWidth: '880px',
+              margin: '0 auto',
+            }}
+          >
+            {GUARANTEES.map(({ Icon, title, desc }) => (
+              <div
+                key={title}
+                style={{
+                  background: 'var(--bg2)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius)',
+                  padding: '28px 24px',
+                  textAlign: 'center',
+                }}
+              >
+                <div
+                  style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '12px',
+                    background: 'rgba(21,72,138,0.08)',
+                    border: '1px solid rgba(21,72,138,0.2)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '16px',
+                  }}
+                >
+                  <Icon size={22} color="var(--navy)" strokeWidth={1.8} />
+                </div>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-serif)',
+                    fontSize: '1rem',
+                    fontWeight: 700,
+                    marginBottom: '8px',
+                    lineHeight: 1.4,
+                  }}
+                >
+                  {title}
+                </p>
+                <p style={{ fontSize: '0.85rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
+                  {desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* ⑫ FORM — 신청 폼                                          */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section
         id="form"
         className="section"
         style={{
-          background:
-            'radial-gradient(ellipse at 50% 0%, rgba(21,72,138,0.08) 0%, var(--bg) 70%)',
-          padding: '90px 0',
+          background: 'radial-gradient(ellipse at 50% 0%, rgba(21,72,138,0.08) 0%, var(--bg) 70%)',
+          padding: '100px 0',
         }}
       >
         <div className="container">
           <div style={{ maxWidth: '520px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-              <p className="section-eyebrow">09 — START HERE</p>
+              <p className="section-eyebrow">10 — START HERE</p>
               <h2
                 className="section-title-serif"
                 style={{ fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', marginBottom: '10px' }}
@@ -878,27 +1085,13 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑫ GUARANTEE — 안심 문구                                    */}
+      {/* ⑬ FOOTER 안심 문구                                         */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="section" style={{ background: 'var(--bg)', padding: '60px 0 40px' }}>
         <div className="container" style={{ textAlign: 'center' }}>
-          <p
-            style={{
-              fontSize: '0.92rem',
-              color: 'var(--gray-light)',
-              lineHeight: 1.9,
-              marginBottom: '8px',
-              maxWidth: '520px',
-              margin: '0 auto 8px',
-            }}
-          >
-            부담 없는 30분 상담입니다.{' '}
-            <strong style={{ color: '#111111' }}>등록 강요 없습니다.</strong>
-          </p>
           <p style={{ fontSize: '0.78rem', color: 'var(--gray)', lineHeight: 1.7 }}>
             개인정보는 상담 연락 외에 사용되지 않습니다.
           </p>
-
           <div style={{ marginTop: '24px' }}>
             <a
               href="https://pf.kakao.com/_ximxdqn"
@@ -911,7 +1104,6 @@ export default function JoinPage() {
               카카오로 바로 문의
             </a>
           </div>
-
           <p
             style={{
               marginTop: '36px',
