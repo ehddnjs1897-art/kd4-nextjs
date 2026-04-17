@@ -248,29 +248,19 @@ export default function ContactForm() {
 
       {/* 마이즈너 테크닉 경험 여부 */}
       <div>
-        <label style={{ ...labelStyle, marginBottom: '8px' }}>마이즈너 테크닉 경험 여부</label>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {['6개월 이상 훈련 했다.', '몇 번 해봤다.', '처음이다.'].map((opt) => (
-            <button
-              key={opt}
-              type="button"
-              onClick={() => setMaiznerExp(opt)}
-              style={{
-                padding: '10px 16px',
-                border: `1.5px solid ${maiznerExp === opt ? '#15488A' : 'var(--border)'}`,
-                borderRadius: '8px',
-                background: maiznerExp === opt ? '#15488A' : '#ffffff',
-                color: maiznerExp === opt ? '#fff' : '#333',
-                textAlign: 'left',
-                cursor: 'pointer',
-                fontSize: '0.9rem',
-                transition: 'all 0.15s',
-              }}
-            >
-              {opt}
-            </button>
-          ))}
-        </div>
+        <label style={labelStyle}>마이즈너 테크닉 경험 여부 <span style={{ color: 'var(--gray-light)', fontSize: '0.7rem' }}>(선택)</span></label>
+        <select
+          style={{ ...focusStyle('meisner'), cursor: 'pointer' }}
+          value={maiznerExp}
+          onChange={(e) => setMaiznerExp(e.target.value)}
+          onFocus={() => setFocusedField('meisner')}
+          onBlur={() => setFocusedField(null)}
+        >
+          <option value="">선택 안 함</option>
+          <option value="처음이다.">처음이다.</option>
+          <option value="몇 번 해봤다.">몇 번 해봤다.</option>
+          <option value="6개월 이상 훈련 했다.">6개월 이상 훈련 했다.</option>
+        </select>
       </div>
 
       {/* 관심 클래스 */}
