@@ -43,10 +43,9 @@ const SOURCE_OPTIONS = [
 ]
 
 const INQUIRY_OPTIONS = [
-  { value: '방문 상담',                           label: '방문 상담',     icon: '🌸', desc: '자세한 상담' },
-  { value: '바로 수강신청 (첫 달 10만원 할인)',  label: '수강신청',      icon: '⚡', desc: '첫 달 10만원 할인' },
-  { value: '무료 오픈클래스',                    label: '오픈클래스',    icon: '🎬', desc: '무료 체험 클래스\n(대기 신청)' },
-  { value: '신규 멤버 혜택',                     label: '신규 멤버 혜택', icon: '🎁', desc: '첫 달 혜택 안내' },
+  { value: '방문 상담',                           label: '방문 상담',  icon: '😊', desc: '자세한 상담' },
+  { value: '바로 수강신청 (첫 달 10만원 할인)',  label: '수강신청',   icon: '🌸', desc: '웰컴 첫 달, 10만원 할인\n(마이즈너 정규, 출연영상)' },
+  { value: '무료 오픈클래스',                    label: '오픈클래스', icon: '🎁', desc: '무료 체험 클래스\n(대기 신청)' },
 ]
 
 export default function ContactForm() {
