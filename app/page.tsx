@@ -463,7 +463,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             padding: "12px 0",
             marginTop: "14px",
             background: "var(--gold)",
-            color: "#15488A",
+            color: "#ffffff",
             fontWeight: 700,
             fontSize: "0.88rem",
             fontFamily: "var(--font-display)",
@@ -1839,7 +1839,9 @@ export default function HomePage() {
               href="#contact"
               onClick={(e) => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }) }}
               style={{
-                display: "inline-block",
+                display: "inline-flex",
+                flexDirection: "column",
+                alignItems: "center",
                 padding: "18px 52px",
                 background: "var(--gold)",
                 color: "#ffffff",
@@ -1848,9 +1850,11 @@ export default function HomePage() {
                 letterSpacing: "0.08em",
                 borderRadius: "var(--radius)",
                 boxShadow: "0 6px 18px rgba(21,72,138,0.2)",
+                lineHeight: 1.3,
               }}
             >
-              수강신청 하기
+              <span>수강신청</span>
+              <span style={{ fontSize: "0.78rem", fontWeight: 600, letterSpacing: "0.04em", opacity: 0.9 }}>(봄 맞이 웰컴, 10만원 즉시 할인)</span>
             </a>
             <a
               href="https://pf.kakao.com/_ximxdqn"
