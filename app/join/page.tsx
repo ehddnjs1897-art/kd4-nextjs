@@ -135,17 +135,17 @@ const GUARANTEES = [
   {
     Icon: HeartHandshake,
     title: '상담 후 바로 가셔도 돼요',
-    desc: '30분 부담 없는 대화. 본인에게 맞는지 확인만 하세요.',
+    desc: '30분 부담 없는 대화. 본인에게 맞는지 확인만 하고 가세요.',
   },
   {
     Icon: ShieldCheck,
     title: '첫 2주 불만족 시 전액 환불',
-    desc: '직접 수업 받아보고 결정하세요. 돈 먼저 돌려드립니다.',
+    desc: '출석 2회 이후 카카오로 요청하시면 즉시 환불 처리됩니다.',
   },
   {
     Icon: FileText,
     title: '상담만 받아도 가이드 PDF',
-    desc: '권동원 대표가 정리한 오디션 합격 가이드 무료 증정.',
+    desc: '권동원 대표가 정리한 오디션 합격 가이드 무료로 드립니다.',
   },
 ]
 
@@ -226,7 +226,15 @@ export default function JoinPage() {
             }}
           >
             3년 학원 다녀도 오디션 결과가 없다면,{' '}
-            <span style={{ color: 'var(--navy-accent)' }}>방법의 문제입니다</span>
+            <span
+              style={{
+                color: '#ffffff',
+                borderBottom: '2px solid var(--navy-accent)',
+                paddingBottom: '2px',
+              }}
+            >
+              방법의 문제입니다
+            </span>
           </h1>
 
           <p
@@ -269,7 +277,7 @@ export default function JoinPage() {
                 color: 'rgba(255,255,255,0.9)',
               }}
             >
-              <MessageCircle size={14} strokeWidth={2} />
+              <MessageCircle size={14} strokeWidth={2.2} />
               카카오 문의
             </a>
           </div>
@@ -557,30 +565,6 @@ export default function JoinPage() {
               </p>
             </div>
           </div>
-
-          {/* 인라인 CTA */}
-          <div style={{ textAlign: 'center', marginTop: '32px' }}>
-            <a
-              href="#form"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontFamily: 'var(--font-display)',
-                fontSize: '0.82rem',
-                fontWeight: 600,
-                letterSpacing: '0.08em',
-                color: 'var(--navy)',
-                borderBottom: '1px solid var(--navy)',
-                padding: '4px 0',
-                textDecoration: 'none',
-                textTransform: 'uppercase',
-              }}
-            >
-              직접 상담받고 맞는지 확인하기
-              <ArrowRight size={14} strokeWidth={2.2} />
-            </a>
-          </div>
         </div>
       </section>
 
@@ -609,7 +593,7 @@ export default function JoinPage() {
                       size={14}
                       color="#F59E0B"
                       fill="#F59E0B"
-                      strokeWidth={1}
+                      strokeWidth={1.3}
                     />
                   ))}
                 </div>
@@ -773,14 +757,14 @@ export default function JoinPage() {
                     <td>{row.label}</td>
                     <td style={{ color: 'var(--gray)' }}>
                       {row.normal === 'X' ? (
-                        <X size={18} color="var(--gray)" strokeWidth={2} style={{ display: 'inline-block', verticalAlign: 'middle' }} />
+                        <X size={18} color="var(--gray)" strokeWidth={2.2} style={{ display: 'inline-block', verticalAlign: 'middle' }} />
                       ) : (
                         row.normal
                       )}
                     </td>
                     <td className="kd4-col">
                       {row.kd4 === 'O' ? (
-                        <Check size={18} color="var(--navy)" strokeWidth={2.5} style={{ display: 'inline-block', verticalAlign: 'middle' }} />
+                        <Check size={18} color="var(--navy)" strokeWidth={2.2} style={{ display: 'inline-block', verticalAlign: 'middle' }} />
                       ) : (
                         row.kd4
                       )}
@@ -877,7 +861,7 @@ export default function JoinPage() {
                 gap: '6px',
               }}
             >
-              <Clock size={13} strokeWidth={2} />
+              <Clock size={13} strokeWidth={1.8} />
               할인 마감까지
             </p>
             <CountdownTimer deadline={DEADLINE} />
@@ -1100,7 +1084,7 @@ export default function JoinPage() {
               className="btn-outline"
               style={{ borderColor: 'var(--navy)', color: 'var(--navy)' }}
             >
-              <MessageCircle size={14} strokeWidth={2} />
+              <MessageCircle size={14} strokeWidth={2.2} />
               카카오로 바로 문의
             </a>
           </div>

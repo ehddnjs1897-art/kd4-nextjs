@@ -26,28 +26,29 @@ export default function FloatingCTA() {
           bottom: '84px',
           right: '20px',
           zIndex: 901,
-          width: '52px',
-          height: '52px',
+          width: '46px',
+          height: '46px',
           borderRadius: '50%',
           background: '#FEE500',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+          boxShadow: '0 3px 12px rgba(21,72,138,0.22)',
+          border: '1px solid rgba(0,0,0,0.06)',
           transition: 'transform 0.2s, box-shadow 0.2s',
           textDecoration: 'none',
         }}
         onMouseEnter={e => {
-          e.currentTarget.style.transform = 'scale(1.1)'
-          e.currentTarget.style.boxShadow = '0 6px 24px rgba(0,0,0,0.5)'
+          e.currentTarget.style.transform = 'scale(1.08)'
+          e.currentTarget.style.boxShadow = '0 5px 16px rgba(21,72,138,0.32)'
         }}
         onMouseLeave={e => {
           e.currentTarget.style.transform = 'scale(1)'
-          e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.4)'
+          e.currentTarget.style.boxShadow = '0 3px 12px rgba(21,72,138,0.22)'
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/icons/kakao.png" alt="카카오톡" width={28} height={28} style={{ objectFit: 'contain' }} />
+        <img src="/icons/kakao.png" alt="카카오톡" width={22} height={22} style={{ objectFit: 'contain' }} />
       </a>
 
       {/* 수강신청 바 */}

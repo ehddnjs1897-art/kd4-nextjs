@@ -96,8 +96,8 @@ export default function StickyTopBar({
           marginLeft: 'auto',
         }}
       >
-        상담
-        <ArrowRight size={11} strokeWidth={2.5} />
+        무료상담
+        <ArrowRight size={11} strokeWidth={2.2} />
       </a>
     </div>
   )

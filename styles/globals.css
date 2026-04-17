@@ -18,9 +18,14 @@
   --navy-light: #1E5BA8;
   --navy-deep: #0F3364;
   --blue: #15488A;
-  --navy-accent: #7BB3FF;
+  --navy-accent: #E8E8DF;       /* Hero 강조용 — 웜그레이로 교체 (네이비와 톤 충돌 해결) */
+  --navy-tint-1: rgba(21,72,138,0.06);  /* 가벼운 배경 */
+  --navy-tint-2: rgba(21,72,138,0.1);   /* 아이콘 배경 */
+  --navy-tint-3: rgba(21,72,138,0.2);   /* 테두리 */
   --accent-red: #C73E3E;
   --accent-red-soft: rgba(199,62,62,0.08);
+  --card-min-sm: 240px;
+  --card-min-md: 280px;
   --white: #111111;
   --black: #111111;
   --secondary: rgba(17,17,17,0.85);

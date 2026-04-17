@@ -521,18 +521,24 @@ export default function Navbar() {
                 rel="noopener noreferrer"
                 onClick={closeMobile}
                 style={{
-                  display: 'block',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
                   padding: '15px',
-                  background: '#FEE500',
-                  color: '#191919',
+                  background: 'transparent',
+                  border: '1px solid var(--navy)',
+                  color: 'var(--navy)',
                   fontFamily: 'var(--font-sans)',
-                  fontSize: '1.1rem',
-                  fontWeight: 900,
+                  fontSize: '1rem',
+                  fontWeight: 700,
                   borderRadius: 'var(--radius)',
                   textAlign: 'center',
                   letterSpacing: '0.06em',
                 }}
               >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/icons/kakao.png" alt="" width={18} height={18} style={{ objectFit: 'contain' }} />
                 카카오로 문의하기
               </a>
             </div>

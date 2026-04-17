@@ -159,7 +159,19 @@ export default function JoinForm() {
         onBlur={() => setFocused(null)}
         style={inputStyle('phone')}
         required
+        aria-describedby="phone-hint"
       />
+      <p
+        id="phone-hint"
+        style={{
+          fontSize: '0.72rem',
+          color: '#6B6660',
+          margin: '-4px 0 0 4px',
+          letterSpacing: '0.01em',
+        }}
+      >
+        카카오톡으로만 연락드립니다 · 광고 전화 없음
+      </p>
 
       {/* 희망 클래스 */}
       <div style={{ position: 'relative' }}>
