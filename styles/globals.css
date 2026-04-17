@@ -2020,12 +2020,27 @@ main {
   .hero-title-wall { animation: none; opacity: 1; }
 }
 
-/* 가로 모드에서 타이틀이 하단으로 밀리는 현상 방지 — 수직 중앙 고정 */
-@media (orientation: landscape) and (max-height: 500px) {
+/* 가로 모드에서 타이틀이 하단으로 밀리는 현상 방지 — 뒷벽 중앙(40%) 고정 */
+@media (orientation: landscape) {
   .hero-title-wall-pos {
-    top: 50%;
+    top: 40%;
+    left: 50%;
     transform: translate(-50%, -50%);
+    bottom: auto;
   }
+}
+
+/* 바닥 안개(미스트) 오버레이 — 스튜디오 몽환적 분위기 */
+#hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 45%;
+  background: linear-gradient(to top, rgba(232,228,216,0.72) 0%, rgba(232,228,216,0.28) 45%, transparent 100%);
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* ═══ HERO INTRO SECTION (카피 + CTA, Stats 위) ═══ */
