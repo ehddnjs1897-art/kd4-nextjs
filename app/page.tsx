@@ -1778,7 +1778,7 @@ export default function HomePage() {
             첫 걸음, 어렵지 않아요
           </h2>
           <p style={{ color: "#15488A", fontSize: "0.88rem", textAlign: "center", marginBottom: "40px", lineHeight: 1.8 }}>
-            30초면 충분합니다. 24시간 이내 카카오로 연락드릴게요.
+            24시간 이내 연락드릴게요.
           </p>
           <ContactForm />
         </div>
