@@ -35,13 +35,12 @@ export default function CountdownTimer({ deadline, compact = false }: Props) {
 
   if (!time) return null
 
-  /* ── 컴팩트 모드: sticky 바 인라인 ─────────────────────────── */
+  /* ── 컴팩트 모드: sticky 바 인라인 (색상은 부모에서 상속) ────── */
   if (compact) {
     return (
       <span style={{
-        fontFamily: 'monospace',
+        fontFamily: 'var(--font-display)',
         fontWeight: 700,
-        color: '#FEE500',
         fontSize: '0.82rem',
         letterSpacing: '0.05em',
       }}>

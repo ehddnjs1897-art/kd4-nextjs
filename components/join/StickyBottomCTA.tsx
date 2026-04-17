@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react'
 
 /**
- * 모바일 전용 하단 고정 CTA.
- * 폼(#form)이 뷰포트에 들어오면 자동으로 숨겨진다.
+ * 하단 고정 CTA — kd4.club 톤 일관성 유지.
+ * 폼(#form)이 뷰포트에 들어오면 자동으로 숨겨짐.
  */
 export default function StickyBottomCTA() {
   const [hidden, setHidden] = useState(false)
@@ -32,25 +32,32 @@ export default function StickyBottomCTA() {
         right: 0,
         zIndex: 98,
         padding: '12px 20px',
-        background: '#15488A',
-        boxShadow: '0 -4px 24px rgba(0,0,0,0.25)',
+        background: 'var(--bg2)',
+        borderTop: '1px solid var(--border)',
+        boxShadow: '0 -4px 20px rgba(21,72,138,0.08)',
       }}
     >
       <a
         href="#form"
+        className="pulse-cta"
         style={{
-          display: 'block',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px',
           maxWidth: '480px',
           margin: '0 auto',
           padding: '15px',
-          background: '#ffffff',
-          color: '#15488A',
-          fontWeight: 800,
-          fontSize: '1rem',
-          borderRadius: '12px',
+          background: 'var(--navy)',
+          color: '#ffffff',
+          fontFamily: 'var(--font-display)',
+          fontWeight: 600,
+          fontSize: '0.9rem',
+          letterSpacing: '0.12em',
+          textTransform: 'uppercase',
+          borderRadius: 'var(--radius)',
           textAlign: 'center',
           textDecoration: 'none',
-          letterSpacing: '0.03em',
         }}
       >
         무료 상담 신청하기 →

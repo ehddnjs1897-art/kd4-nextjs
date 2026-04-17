@@ -2,7 +2,7 @@
 
 import CountdownTimer from '@/components/ui/CountdownTimer'
 
-/** /join 랜딩 전용 — 항상 상단에 고정되는 긴급 바 */
+/** /join 랜딩 전용 — kd4.club 톤 일관성 유지. 노란색 사용 안 함. */
 export default function StickyTopBar({ deadline }: { deadline: string }) {
   return (
     <div
@@ -10,53 +10,59 @@ export default function StickyTopBar({ deadline }: { deadline: string }) {
         position: 'sticky',
         top: 0,
         zIndex: 99,
-        background: '#0d0d0d',
-        padding: '9px 16px',
+        background: 'var(--bg2)',
+        borderBottom: '1px solid var(--border)',
+        padding: '10px 16px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '10px',
+        gap: '12px',
         flexWrap: 'wrap',
+        fontFamily: 'var(--font-sans)',
       }}
     >
       {/* 잔여석 */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
         <span
           style={{
-            width: '8px',
-            height: '8px',
+            width: '7px',
+            height: '7px',
             borderRadius: '50%',
-            background: '#ef4444',
+            background: '#C73E3E',
             display: 'inline-block',
-            boxShadow: '0 0 5px #ef4444',
           }}
         />
-        <span style={{ fontSize: '0.79rem', color: '#ffffff', fontWeight: 700 }}>
+        <span style={{ fontSize: '0.78rem', color: '#111111', fontWeight: 600 }}>
           잔여석{' '}
-          <span style={{ color: '#FEE500' }}>5석</span>
+          <strong style={{ color: 'var(--navy)' }}>5석</strong>
         </span>
       </div>
 
-      <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.75rem' }}>|</span>
+      <span style={{ color: 'var(--border-strong)', fontSize: '0.72rem' }}>|</span>
 
       {/* 카운트다운 */}
-      <span style={{ fontSize: '0.77rem', color: 'rgba(255,255,255,0.7)' }}>봄맞이 마감까지</span>
-      <CountdownTimer deadline={deadline} compact />
+      <span style={{ fontSize: '0.76rem', color: 'var(--gray-light)' }}>봄맞이 할인 마감까지</span>
+      <span style={{ color: 'var(--navy)', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.82rem' }}>
+        <CountdownTimer deadline={deadline} compact />
+      </span>
 
-      <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.75rem' }}>|</span>
+      <span style={{ color: 'var(--border-strong)', fontSize: '0.72rem' }}>|</span>
 
       {/* CTA */}
       <a
         href="#form"
         style={{
-          background: '#15488A',
+          background: 'var(--navy)',
           color: '#ffffff',
-          padding: '5px 14px',
-          borderRadius: '20px',
-          fontSize: '0.77rem',
-          fontWeight: 700,
+          padding: '6px 14px',
+          borderRadius: 'var(--radius)',
+          fontFamily: 'var(--font-display)',
+          fontSize: '0.75rem',
+          fontWeight: 600,
+          letterSpacing: '0.08em',
           textDecoration: 'none',
           whiteSpace: 'nowrap',
+          textTransform: 'uppercase',
         }}
       >
         무료 상담 →

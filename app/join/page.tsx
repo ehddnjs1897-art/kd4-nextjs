@@ -1,9 +1,11 @@
 import type { Metadata } from 'next'
 import { CLASSES } from '@/lib/classes'
+import { FAQ_ITEMS } from '@/lib/faq-items'
 import JoinForm from '@/components/contact/JoinForm'
 import CountdownTimer from '@/components/ui/CountdownTimer'
 import StickyTopBar from '@/components/join/StickyTopBar'
 import StickyBottomCTA from '@/components/join/StickyBottomCTA'
+import FaqAccordion from '@/components/join/FaqAccordion'
 
 export const metadata: Metadata = {
   title: '무료 상담 신청 | KD4 액팅 스튜디오',
@@ -22,50 +24,61 @@ const TOTAL_SEATS = OPEN_CLASSES.reduce((s, c) => s + (c.remainingSeats ?? 0), 0
 const MAIN_CLASS = CLASSES.find((c) => c.nameKo === '마이즈너 테크닉 정규 클래스')!
 const FILM_CLASS = CLASSES.find((c) => c.nameKo === '출연영상 클래스')!
 
-/* ── 실제 후기 (app/page.tsx REVIEW_ITEMS 선별) ─────────────────── */
+/* ── 커리큘럼 4개월 로드맵 ────────────────────────────────────────── */
+const CURRICULUM = [
+  {
+    month: 'MONTH 01',
+    title: 'Repetition',
+    subtitle: '레피티션 훈련',
+    desc: '상대방의 말·표정·행동을 있는 그대로 관찰하고 즉각 반응하는 훈련. 정답 연기를 버립니다.',
+  },
+  {
+    month: 'MONTH 02',
+    title: 'Activity & Doorknock',
+    subtitle: '7단계 실습',
+    desc: '마이즈너 테크닉의 핵심 구조 7단계를 차근차근 내 몸에 체화시키는 단계.',
+  },
+  {
+    month: 'MONTH 03',
+    title: 'Text Analysis',
+    subtitle: '텍스트 분석 · 메모라이징',
+    desc: '대본을 "외우는" 게 아니라 "해석"하는 방법. 인물의 진짜 욕구를 찾아냅니다.',
+  },
+  {
+    month: 'MONTH 04',
+    title: 'Final Portfolio',
+    subtitle: '출연영상 촬영',
+    desc: '전문 영화팀과 함께하는 최종 장면 촬영. 오디션 제출용 포트폴리오 완성.',
+  },
+]
+
+/* ── 비교표 ──────────────────────────────────────────────────────── */
+const COMPARISON_ROWS = [
+  { label: '정원', normal: '20~30명', kd4: '6~8명 프라이빗' },
+  { label: '강사', normal: '조교·보조 강사', kd4: '현역 배우 직강' },
+  { label: '포트폴리오 제작', normal: '선택 · 추가 비용', kd4: '정규 과정 포함' },
+  { label: '캐스팅 연계', normal: 'X', kd4: 'O' },
+  { label: '월 수강료', normal: '20~35만원', kd4: '25만원' },
+]
+
+/* ── 후기 (app/page.tsx REVIEW_ITEMS 선별) ────────────────────────── */
 const REVIEWS = [
   {
     text: '정답인 연기를 요구하지 않고, 저 자체로 보여줄 수 있는 연기를 할 수 있었어요',
     author: '윤*숙',
-    emoji: '🎭',
+    role: 'KD4 수료 배우',
   },
   {
     text: '마이즈너 테크닉을 처음 접했습니다. 진짜 연기가 뭔지 발견했습니다',
     author: '김*현',
-    emoji: '😲',
+    role: 'KD4 수료 배우',
   },
   {
     text: '한 사람 한 사람에게 디테일한 피드백을 주신다는 점이 가장 좋았습니다',
     author: '정*석',
-    emoji: '😍',
+    role: 'KD4 수료 배우',
   },
 ]
-
-/* ── 레이아웃 공통 스타일 ─────────────────────────────────────────── */
-const container: React.CSSProperties = {
-  maxWidth: '520px',
-  margin: '0 auto',
-  padding: '0 20px',
-}
-
-const sectionLabel: React.CSSProperties = {
-  fontFamily: 'var(--font-display)',
-  fontSize: '0.7rem',
-  letterSpacing: '0.28em',
-  color: '#15488A',
-  textTransform: 'uppercase',
-  textAlign: 'center',
-  marginBottom: '10px',
-}
-
-const sectionTitle: React.CSSProperties = {
-  fontFamily: 'var(--font-serif)',
-  fontSize: 'clamp(1.35rem, 4vw, 1.7rem)',
-  fontWeight: 700,
-  color: '#111111',
-  textAlign: 'center',
-  marginBottom: '24px',
-}
 
 /* ══════════════════════════════════════════════════════════════════ */
 
@@ -73,28 +86,25 @@ export default function JoinPage() {
   return (
     <div
       style={{
-        background: '#F0F0E8',
-        minHeight: '100svh',
-        fontFamily: 'var(--font-sans)',
-        paddingBottom: '80px',
+        background: 'var(--bg)',
+        color: '#111111',
+        paddingBottom: '90px',
       }}
     >
-
-      {/* ① Sticky 상단 바 — 항상 노출 */}
+      {/* ① Sticky 상단 바 */}
       <StickyTopBar deadline={DEADLINE} />
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ② 히어로 — MasterClass 스타일 (강사 사진 + 강한 카피)      */}
+      {/* ② HERO — 강사 사진 + 세리프 헤드라인                        */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section
         style={{
           position: 'relative',
+          minHeight: '560px',
           overflow: 'hidden',
-          minHeight: '520px',
-          background: '#0d1520',
+          background: 'var(--bg-deep)',
         }}
       >
-        {/* 강사 사진 (배경) */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={INSTRUCTOR_IMG}
@@ -105,164 +115,79 @@ export default function JoinPage() {
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            objectPosition: 'center 15%',
-            opacity: 0.45,
+            objectPosition: 'center 18%',
+            opacity: 0.4,
+            filter: 'grayscale(0.4)',
           }}
         />
-        {/* 그라디언트 오버레이 */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
             background:
-              'linear-gradient(160deg, rgba(5,10,20,0.5) 0%, rgba(5,10,35,0.88) 100%)',
+              'linear-gradient(160deg, rgba(15,20,35,0.55) 0%, rgba(15,20,35,0.9) 100%)',
           }}
         />
 
-        {/* 콘텐츠 */}
         <div
+          className="container"
           style={{
             position: 'relative',
             zIndex: 1,
-            padding: 'clamp(64px, 12vw, 100px) 20px clamp(52px, 10vw, 80px)',
+            padding: 'clamp(72px, 14vw, 120px) 24px clamp(60px, 10vw, 90px)',
             textAlign: 'center',
-            maxWidth: '520px',
-            margin: '0 auto',
           }}
         >
-          {/* 브랜드 */}
           <p
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: '0.72rem',
-              fontWeight: 700,
-              letterSpacing: '0.35em',
-              color: 'rgba(255,255,255,0.55)',
-              textTransform: 'uppercase',
-              marginBottom: '20px',
-            }}
+            className="section-eyebrow"
+            style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '20px' }}
           >
-            KD4 ACTING STUDIO
+            KD4 ACTING STUDIO · 무료 상담
           </p>
 
-          {/* 할인 배지 */}
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '6px 16px',
-              background: 'rgba(254,229,0,0.12)',
-              border: '1px solid rgba(254,229,0,0.35)',
-              borderRadius: '999px',
-              marginBottom: '22px',
-            }}
-          >
-            <span style={{ fontSize: '0.9rem' }}>🌸</span>
-            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#FEE500', letterSpacing: '0.03em' }}>
-              봄맞이 스페셜 · 첫 달 10만원 할인
-            </span>
-            <span
-              style={{
-                fontSize: '0.72rem',
-                fontWeight: 700,
-                color: '#ef4444',
-                background: 'rgba(239,68,68,0.15)',
-                borderRadius: '4px',
-                padding: '2px 7px',
-              }}
-            >
-              잔여석 {TOTAL_SEATS}석
-            </span>
-          </div>
-
-          {/* 메인 헤드라인 */}
           <h1
+            className="section-title-serif"
             style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: 'clamp(1.9rem, 7vw, 3rem)',
-              fontWeight: 700,
+              fontSize: 'clamp(1.9rem, 6.5vw, 3.2rem)',
               color: '#ffffff',
-              lineHeight: 1.22,
-              marginBottom: '18px',
-              letterSpacing: '-0.01em',
+              lineHeight: 1.25,
+              marginBottom: '22px',
+              maxWidth: '600px',
+              marginLeft: 'auto',
+              marginRight: 'auto',
             }}
           >
-            오디션은 보는데<br />결과가 없다면,<br />
+            오디션은 보는데 결과가 없다면,<br />
             <span style={{ color: '#7BB3FF' }}>방법의 문제입니다</span>
           </h1>
 
-          {/* 서브카피 */}
           <p
             style={{
-              fontSize: 'clamp(0.9rem, 2.8vw, 1.05rem)',
-              color: 'rgba(255,255,255,0.75)',
-              lineHeight: 1.65,
-              marginBottom: '32px',
+              fontSize: 'clamp(0.9rem, 2.4vw, 1rem)',
+              color: 'rgba(255,255,255,0.72)',
+              lineHeight: 1.7,
+              marginBottom: '36px',
+              maxWidth: '460px',
+              marginLeft: 'auto',
+              marginRight: 'auto',
             }}
           >
-            소수정예 마이즈너 클래스 · 서울 신촌 · 6~8명 프라이빗 스튜디오
+            서울 신촌 · 6~8명 소수정예 마이즈너 테크닉 정규 클래스
           </p>
 
-          {/* 숫자 배지 3개 */}
+          {/* CTA 버튼 */}
           <div
             style={{
               display: 'flex',
+              gap: '12px',
               justifyContent: 'center',
-              gap: '10px',
-              marginBottom: '36px',
               flexWrap: 'wrap',
             }}
           >
-            {[
-              { num: '400+', label: '배우 코칭' },
-              { num: '3년+', label: '스튜디오 운영' },
-              { num: '6~8명', label: '소수정예 정원' },
-            ].map(({ num, label }) => (
-              <div
-                key={num}
-                style={{
-                  background: 'rgba(255,255,255,0.08)',
-                  border: '1px solid rgba(255,255,255,0.18)',
-                  borderRadius: '10px',
-                  padding: '10px 18px',
-                  textAlign: 'center',
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: '1.3rem',
-                    fontWeight: 700,
-                    color: '#ffffff',
-                  }}
-                >
-                  {num}
-                </div>
-                <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.6)', marginTop: '2px' }}>
-                  {label}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* CTA 버튼 */}
-          <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <a
               href="#form"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                background: '#15488A',
-                color: '#ffffff',
-                padding: '16px 28px',
-                borderRadius: '12px',
-                fontWeight: 800,
-                fontSize: '1rem',
-                textDecoration: 'none',
-                letterSpacing: '0.03em',
-              }}
+              className="btn-primary"
+              style={{ background: 'var(--navy)', color: '#ffffff' }}
             >
               무료 상담 신청하기 →
             </a>
@@ -270,195 +195,173 @@ export default function JoinPage() {
               href="https://pf.kakao.com/_ximxdqn"
               target="_blank"
               rel="noopener noreferrer"
+              className="btn-outline"
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                background: '#FEE500',
-                color: '#111111',
-                padding: '16px 24px',
-                borderRadius: '12px',
-                fontWeight: 700,
-                fontSize: '0.95rem',
-                textDecoration: 'none',
+                borderColor: 'rgba(255,255,255,0.4)',
+                color: 'rgba(255,255,255,0.9)',
               }}
             >
-              💬 카카오 문의
+              카카오 문의
             </a>
           </div>
         </div>
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ③ 마이즈너 테크닉 한 줄 설명 — 네이비 바                   */}
+      {/* ③ AGITATION — 문제 후비기                                  */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section style={{ background: '#15488A', padding: '18px 20px', textAlign: 'center' }}>
-        <p
-          style={{
-            maxWidth: '520px',
-            margin: '0 auto',
-            fontSize: 'clamp(0.82rem, 2.5vw, 0.95rem)',
-            color: 'rgba(255,255,255,0.9)',
-            lineHeight: 1.65,
-          }}
-        >
-          <strong style={{ color: '#ffffff' }}>마이즈너 테크닉이란?</strong>
-          {' '}— 혼자 감정을 만드는 게 아니라, 상대에게 집중해{' '}
-          <em>순간 반응하는</em> 연기 훈련법
-        </p>
-      </section>
+      <section className="section" style={{ background: 'var(--bg2)', padding: '80px 0' }}>
+        <div className="container">
+          <div style={{ maxWidth: '620px', margin: '0 auto', textAlign: 'center' }}>
+            <p className="section-eyebrow">01 — THE PROBLEM</p>
 
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ④ 이런 분들께 — Class101 스타일 체크리스트                 */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section
-        style={{
-          padding: 'clamp(40px, 8vw, 60px) 20px',
-          background: '#F0F0E8',
-          borderBottom: '1px solid #D2D2C8',
-        }}
-      >
-        <div style={container}>
-          <p style={sectionLabel}>FOR YOU</p>
-          <h2 style={sectionTitle}>이런 분이라면, KD4가 딱 맞습니다</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {[
-              '오디션은 보는데 합격이 안 된다',
-              '학원 다니는데 실력이 안 느는 것 같다',
-              '카메라 앞에서 어색하고 뻣뻣해진다',
-              '진짜 배우가 되고 싶은데 방향을 모르겠다',
-            ].map((text) => (
-              <div
-                key={text}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  background: '#ffffff',
-                  border: '1px solid #D2D2C8',
-                  borderRadius: '12px',
-                  padding: '16px 18px',
-                }}
-              >
-                <div
-                  style={{
-                    width: '22px',
-                    height: '22px',
-                    borderRadius: '50%',
-                    background: '#15488A',
-                    color: '#ffffff',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.75rem',
-                    fontWeight: 700,
-                    flexShrink: 0,
-                  }}
-                >
-                  ✓
-                </div>
-                <p style={{ fontSize: '0.95rem', color: '#111111', fontWeight: 500, margin: 0 }}>
-                  {text}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑤ 배우면 이렇게 됩니다 — Coloso 결과물 섹션               */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section
-        style={{
-          padding: 'clamp(40px, 8vw, 60px) 20px',
-          background: '#E8E8DF',
-          borderBottom: '1px solid #D2D2C8',
-        }}
-      >
-        <div style={container}>
-          <p style={sectionLabel}>RESULTS</p>
-          <h2 style={sectionTitle}>KD4에서 3개월 후 달라지는 것</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            {[
-              {
-                icon: '🎭',
-                title: '마이즈너 테크닉 체화',
-                desc: '감정을 억지로 만들지 않아도 상대 반응에 자연스럽게 몰입되는 연기가 나옵니다.',
-              },
-              {
-                icon: '🎬',
-                title: '출연영상 포트폴리오 완성',
-                desc: '전문 영화팀과 함께 촬영한 포트폴리오. 오디션에 바로 제출 가능한 퀄리티입니다.',
-              },
-              {
-                icon: '🌟',
-                title: '캐스팅 연계 기회',
-                desc: '실제 드라마·영화 캐스팅 디렉터에게 프로필을 직접 전달합니다.',
-              },
-            ].map(({ icon, title, desc }) => (
-              <div
-                key={title}
-                style={{
-                  display: 'flex',
-                  gap: '16px',
-                  background: '#F0F0E8',
-                  border: '1px solid #D2D2C8',
-                  borderRadius: '16px',
-                  padding: '20px',
-                }}
-              >
-                <span style={{ fontSize: '1.8rem', flexShrink: 0, lineHeight: 1.2 }}>{icon}</span>
-                <div>
-                  <p style={{ fontSize: '0.98rem', fontWeight: 700, color: '#111111', margin: 0 }}>
-                    {title}
-                  </p>
-                  <p style={{ fontSize: '0.88rem', color: '#4A4A4A', lineHeight: 1.65, margin: '6px 0 0' }}>
-                    {desc}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑥ 강사 소개 — MasterClass 스타일                          */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section
-        style={{
-          padding: 'clamp(40px, 8vw, 60px) 20px',
-          background: '#F0F0E8',
-          borderBottom: '1px solid #D2D2C8',
-        }}
-      >
-        <div style={container}>
-          <p style={sectionLabel}>YOUR INSTRUCTOR</p>
-          <div
-            style={{
-              background: '#E8E8DF',
-              border: '1px solid #D2D2C8',
-              borderRadius: '20px',
-              overflow: 'hidden',
-            }}
-          >
-            {/* 강사 사진 */}
-            <div
+            <h2
+              className="section-title-serif"
               style={{
-                position: 'relative',
-                paddingTop: '56%',
-                background: '#0d1520',
-                overflow: 'hidden',
+                fontSize: 'clamp(1.6rem, 4vw, 2.3rem)',
+                lineHeight: 1.35,
+                marginBottom: '28px',
               }}
             >
+              3년째 학원 다녔는데<br />
+              오디션 결과는 여전히 없으셨죠?
+            </h2>
+
+            <div
+              style={{
+                paddingTop: '24px',
+                borderTop: '1px solid var(--border)',
+                fontSize: '1rem',
+                color: 'var(--gray-light)',
+                lineHeight: 1.85,
+              }}
+            >
+              재능이 부족해서가 아닙니다.<br />
+              <strong style={{ color: '#111111' }}>"배우는 방법"</strong>이 틀렸을 뿐이에요.
+              <br /><br />
+              혼자 감정을 만들어내는 훈련, 정답 연기를 요구받는 수업,<br />
+              20명 넘는 대형 클래스에서 본인 차례는 5분.<br />
+              — 그런 환경에서 실력이 안 느는 건 당연합니다.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* ④ SOLUTION — 마이즈너 테크닉 설명                         */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="section" style={{ background: 'var(--bg)', padding: '90px 0' }}>
+        <div className="container">
+          <div style={{ maxWidth: '680px', margin: '0 auto', textAlign: 'center' }}>
+            <p className="section-eyebrow">02 — THE METHOD</p>
+
+            <h2
+              className="section-title-serif"
+              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '24px' }}
+            >
+              그래서 KD4는 <span style={{ color: 'var(--navy)' }}>마이즈너 테크닉</span>을 씁니다
+            </h2>
+
+            <p className="section-desc" style={{ margin: '0 auto 40px', textAlign: 'center' }}>
+              혼자 감정을 만드는 연기가 아닙니다.<br />
+              상대에게 집중하고, 그 순간 반응하는 — 가장 자연스러운 연기 훈련법.
+            </p>
+
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gap: '16px',
+                textAlign: 'left',
+              }}
+            >
+              {[
+                { n: '01', t: '레피티션', d: '상대 관찰 · 즉흥 반응' },
+                { n: '02', t: '액티비티', d: '집중력 · 몰입 훈련' },
+                { n: '03', t: '텍스트 분석', d: '인물의 진짜 욕구 해석' },
+              ].map(({ n, t, d }) => (
+                <div
+                  key={n}
+                  style={{
+                    background: 'var(--bg2)',
+                    border: '1px solid var(--border)',
+                    borderRadius: 'var(--radius)',
+                    padding: '24px 22px',
+                  }}
+                >
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-display)',
+                      fontSize: '0.72rem',
+                      letterSpacing: '0.2em',
+                      color: 'var(--navy)',
+                      marginBottom: '12px',
+                    }}
+                  >
+                    {n}
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-serif)',
+                      fontSize: '1.1rem',
+                      fontWeight: 700,
+                      marginBottom: '6px',
+                    }}
+                  >
+                    {t}
+                  </p>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--gray-light)', lineHeight: 1.6 }}>
+                    {d}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* ⑤ STATS — 숫자로 말하는 권위                              */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="stats-banner">
+        <div className="container">
+          <div className="stats-grid">
+            {[
+              { num: '400+', label: '누적 코칭 배우' },
+              { num: '3년+', label: '스튜디오 운영' },
+              { num: '6~8명', label: '소수정예 정원' },
+            ].map(({ num, label }) => (
+              <div key={num} className="stats-card">
+                <div className="stat-num">{num}</div>
+                <div className="stat-label">{label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* ⑥ DIRECTOR — 권동원 대표 (기존 .director-card 재사용)     */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="section" style={{ background: 'var(--bg)', padding: '90px 0' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
+            <p className="section-eyebrow">03 — THE TEACHER</p>
+            <h2
+              className="section-title-serif"
+              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)' }}
+            >
+              현장에서 일하는 배우가 가르칩니다
+            </h2>
+          </div>
+
+          <div className="director-card" style={{ maxWidth: '720px', margin: '0 auto' }}>
+            <div className="director-photo">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={INSTRUCTOR_IMG}
                 alt="권동원 대표"
                 style={{
-                  position: 'absolute',
-                  inset: 0,
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
@@ -466,123 +369,134 @@ export default function JoinPage() {
                 }}
               />
             </div>
-
-            {/* 텍스트 */}
-            <div style={{ padding: '24px 22px' }}>
-              <p style={{ fontSize: '1.15rem', fontWeight: 700, color: '#111111', marginBottom: '3px' }}>
-                권동원
-              </p>
-              <p style={{ fontSize: '0.82rem', color: '#15488A', fontWeight: 600, marginBottom: '16px' }}>
-                현역 배우 · KD4 액팅 스튜디오 대표
-              </p>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '18px' }}>
-                {[
-                  'LA 마이즈너 테크닉 정식 수료',
-                  'TV 드라마 무빙2 · 중증외상센터 출연',
-                  '400명+ 배우 직접 코칭',
-                ].map((item) => (
-                  <div key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-                    <span style={{ color: '#15488A', flexShrink: 0, fontWeight: 700 }}>·</span>
-                    <p style={{ fontSize: '0.9rem', color: '#333333', margin: 0, lineHeight: 1.5 }}>{item}</p>
-                  </div>
-                ))}
+            <div style={{ flex: 1 }}>
+              <div className="director-name">권동원</div>
+              <div className="director-role">KD4 대표 · 현역 배우</div>
+              <div className="director-creds">
+                <div className="director-cred">LA 마이즈너 테크닉 정식 수료</div>
+                <div className="director-cred">TV 드라마 무빙2 · 중증외상센터 출연</div>
+                <div className="director-cred">400명 이상 배우 직접 코칭</div>
               </div>
-
-              <div
+              <p
                 style={{
-                  borderLeft: '3px solid #15488A',
+                  marginTop: '22px',
                   paddingLeft: '14px',
+                  borderLeft: '2px solid var(--navy)',
                   fontStyle: 'italic',
                   fontSize: '0.92rem',
-                  color: '#4A4A4A',
-                  lineHeight: 1.7,
+                  color: 'var(--gray-light)',
+                  lineHeight: 1.75,
                 }}
               >
-                &ldquo;직접 현장에서 일하는 배우가<br />
-                학원 선생님이 아닌 동료로서 가르칩니다&rdquo;
-              </div>
+                학원 선생님이 아닌, 같이 현장에서 일하는 동료로서 가르칩니다.
+                이론만이 아니라 지금 촬영장에서 통하는 연기를 공유해요.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑦ KD4 배우 이야기 — 3개 후기 카드                        */}
+      {/* ⑦ PROOF — 후기 (기존 .testimonial-card 재사용)            */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section
-        style={{
-          padding: 'clamp(40px, 8vw, 60px) 20px',
-          background: '#E8E8DF',
-          borderBottom: '1px solid #D2D2C8',
-        }}
-      >
-        <div style={container}>
-          <p style={sectionLabel}>KD4 배우 이야기</p>
-          <h2 style={{ ...sectionTitle, marginBottom: '20px' }}>실제 수강 후기</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {REVIEWS.map(({ text, author, emoji }) => (
+      <section className="section" style={{ background: 'var(--bg2)', padding: '90px 0' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
+            <p className="section-eyebrow">04 — KD4 배우 이야기</p>
+            <h2
+              className="section-title-serif"
+              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)' }}
+            >
+              이미 방법을 바꾼 사람들
+            </h2>
+          </div>
+
+          <div className="testimonials-grid">
+            {REVIEWS.map(({ text, author, role }) => (
+              <div key={author} className="testimonial-card">
+                <p className="testimonial-quote">{text}</p>
+                <div className="testimonial-name">{author}</div>
+                <div className="testimonial-class">{role}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* ⑧ CURRICULUM — 4개월 주차별 로드맵                        */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="section" style={{ background: 'var(--bg)', padding: '90px 0' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 48px', textAlign: 'center' }}>
+            <p className="section-eyebrow">05 — CURRICULUM</p>
+            <h2
+              className="section-title-serif"
+              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '16px' }}
+            >
+              4개월 주차별 로드맵
+            </h2>
+            <p className="section-desc" style={{ margin: '0 auto', textAlign: 'center' }}>
+              추상적인 약속이 아닌, 매달 구체적으로 무엇을 배우는지.
+            </p>
+          </div>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+              gap: '16px',
+              maxWidth: '1080px',
+              margin: '0 auto',
+            }}
+          >
+            {CURRICULUM.map(({ month, title, subtitle, desc }) => (
               <div
-                key={author}
+                key={month}
+                className="step-card"
                 style={{
-                  background: '#F0F0E8',
-                  border: '1px solid #D2D2C8',
-                  borderRadius: '14px',
-                  padding: '20px 20px 18px',
-                  position: 'relative',
+                  background: 'var(--bg2)',
+                  border: '1px solid var(--border)',
+                  borderRadius: '8px',
+                  padding: '32px 24px',
+                  transition: 'border-color var(--transition)',
                 }}
               >
-                {/* 별점 */}
-                <div style={{ fontSize: '0.9rem', color: '#F59E0B', marginBottom: '10px' }}>★★★★★</div>
-                {/* 따옴표 장식 */}
-                <span
-                  style={{
-                    position: 'absolute',
-                    top: '8px',
-                    right: '16px',
-                    fontFamily: 'var(--font-serif)',
-                    fontSize: '2.8rem',
-                    color: 'rgba(21,72,138,0.1)',
-                    lineHeight: 1,
-                    userSelect: 'none',
-                  }}
-                >
-                  &rdquo;
-                </span>
-
                 <p
                   style={{
-                    fontSize: '0.93rem',
-                    color: '#111111',
-                    lineHeight: 1.72,
+                    fontFamily: 'var(--font-display)',
+                    fontSize: '0.7rem',
+                    letterSpacing: '0.2em',
+                    color: 'var(--navy)',
+                    marginBottom: '18px',
+                  }}
+                >
+                  {month}
+                </p>
+                <h3
+                  style={{
+                    fontFamily: 'var(--font-serif)',
+                    fontSize: '1.15rem',
+                    fontWeight: 700,
+                    marginBottom: '6px',
+                    lineHeight: 1.3,
+                  }}
+                >
+                  {title}
+                </h3>
+                <p
+                  style={{
+                    fontSize: '0.82rem',
+                    color: 'var(--navy)',
                     marginBottom: '14px',
                     fontWeight: 500,
                   }}
                 >
-                  {text}
+                  {subtitle}
                 </p>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div
-                    style={{
-                      width: '30px',
-                      height: '30px',
-                      borderRadius: '50%',
-                      background: 'rgba(21,72,138,0.1)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '0.9rem',
-                      flexShrink: 0,
-                    }}
-                  >
-                    {emoji}
-                  </div>
-                  <div>
-                    <p style={{ fontSize: '0.8rem', fontWeight: 700, color: '#111111', margin: 0 }}>{author}</p>
-                    <p style={{ fontSize: '0.72rem', color: '#6B6660', margin: 0 }}>KD4 수료 배우</p>
-                  </div>
-                </div>
+                <p style={{ fontSize: '0.85rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
+                  {desc}
+                </p>
               </div>
             ))}
           </div>
@@ -590,223 +504,252 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑧ 가격 공개 + 카운트다운 — Coloso 스타일                  */}
+      {/* ⑨ COMPARISON — 대형학원 vs KD4                            */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section
-        style={{
-          padding: 'clamp(40px, 8vw, 60px) 20px',
-          background: 'radial-gradient(ellipse at 50% 0%, rgba(21,72,138,0.1) 0%, #F0F0E8 70%)',
-          borderBottom: '1px solid #D2D2C8',
-        }}
-      >
-        <div style={container}>
-          <p style={sectionLabel}>SPRING SPECIAL</p>
-          <h2 style={{ ...sectionTitle, marginBottom: '6px' }}>봄맞이 스페셜 혜택</h2>
-          <p style={{ fontSize: '0.85rem', color: '#6B6660', textAlign: 'center', marginBottom: '24px' }}>
-            {TOTAL_SEATS}석만 남았습니다. 마감 후 정가 복귀.
-          </p>
-
-          {/* 클래스 카드 2개 */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
-            {[MAIN_CLASS, FILM_CLASS].map((cls) => (
-              <div
-                key={cls.nameKo}
-                style={{
-                  background: '#ffffff',
-                  border: cls.highlight ? '2px solid #15488A' : '1px solid #D2D2C8',
-                  borderRadius: '16px',
-                  padding: '20px 20px 18px',
-                }}
-              >
-                {/* 클래스명 */}
-                <p style={{ fontSize: '0.82rem', fontWeight: 700, color: '#15488A', marginBottom: '4px' }}>
-                  {cls.step} · {cls.nameKo}
-                </p>
-                {/* 할인가 */}
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '8px' }}>
-                  <span
-                    style={{
-                      fontFamily: 'var(--font-display)',
-                      fontSize: '1.6rem',
-                      fontWeight: 700,
-                      color: '#111111',
-                    }}
-                  >
-                    {cls.price}원<span style={{ fontSize: '0.9rem', color: '#6B6660', fontWeight: 400 }}>/월</span>
-                  </span>
-                  {cls.originalPrice && (
-                    <span style={{ fontSize: '0.85rem', color: '#9CA3AF', textDecoration: 'line-through' }}>
-                      {cls.originalPrice}원
-                    </span>
-                  )}
-                  {cls.promoLabel && (
-                    <span
-                      style={{
-                        fontSize: '0.72rem',
-                        fontWeight: 700,
-                        color: '#C73E3E',
-                        background: 'rgba(199,62,62,0.1)',
-                        borderRadius: '4px',
-                        padding: '2px 7px',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      10만원 할인
-                    </span>
-                  )}
-                </div>
-                {/* 잔여석 */}
-                {cls.remainingSeats !== undefined && (
-                  <p style={{ fontSize: '0.78rem', color: '#C73E3E', fontWeight: 600, margin: 0 }}>
-                    ⚠️ 잔여석 {cls.remainingSeats}석
-                  </p>
-                )}
-                {/* 포함 내용 */}
-                <div style={{ marginTop: '10px', display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                  {cls.bullets.slice(0, 2).map((b) => (
-                    <span
-                      key={b}
-                      style={{
-                        fontSize: '0.72rem',
-                        color: '#4A4A4A',
-                        background: '#F0F0E8',
-                        borderRadius: '6px',
-                        padding: '3px 8px',
-                      }}
-                    >
-                      {b}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
+      <section className="section" style={{ background: 'var(--bg2)', padding: '90px 0' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
+            <p className="section-eyebrow">06 — COMPARE</p>
+            <h2
+              className="section-title-serif"
+              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)' }}
+            >
+              대형 학원 vs KD4
+            </h2>
           </div>
 
-          {/* 카운트다운 타이머 */}
+          <div className="comparison-wrap" style={{ maxWidth: '720px', margin: '0 auto' }}>
+            <table className="comparison-table">
+              <thead>
+                <tr>
+                  <th style={{ textAlign: 'left' }}></th>
+                  <th>대형 학원</th>
+                  <th className="kd4-col">KD4</th>
+                </tr>
+              </thead>
+              <tbody>
+                {COMPARISON_ROWS.map((row) => (
+                  <tr key={row.label}>
+                    <td>{row.label}</td>
+                    <td style={{ color: 'var(--gray)' }}>
+                      {row.normal === 'X' ? <span className="comparison-x">×</span> : row.normal}
+                    </td>
+                    <td className="kd4-col">
+                      {row.kd4 === 'O' ? <span className="comparison-check">✓</span> : row.kd4}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* ⑩ OFFER — 가격 + 카운트다운 (기존 .class-card 재사용)     */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="section" style={{ background: 'var(--bg)', padding: '90px 0' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
+            <p className="section-eyebrow">07 — SPRING SPECIAL</p>
+            <h2
+              className="section-title-serif"
+              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
+            >
+              봄맞이 스페셜 혜택
+            </h2>
+            <p style={{ fontSize: '0.95rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
+              전체 <strong style={{ color: 'var(--navy)' }}>{TOTAL_SEATS}석</strong>만 남았습니다 · 마감 후 정가 복귀
+            </p>
+          </div>
+
+          {/* 카운트다운 */}
           <div
             style={{
-              background: '#ffffff',
-              border: '1px solid #D2D2C8',
-              borderRadius: '14px',
-              padding: '20px',
+              background: 'var(--bg2)',
+              border: '1px solid var(--border)',
+              borderRadius: 'var(--radius)',
+              padding: '28px 20px',
+              maxWidth: '520px',
+              margin: '0 auto 28px',
               textAlign: 'center',
-              marginBottom: '20px',
             }}
           >
-            <p style={{ fontSize: '0.8rem', color: '#C73E3E', fontWeight: 600, marginBottom: '14px' }}>
-              ⏰ 봄맞이 할인 마감까지
+            <p
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: '0.7rem',
+                letterSpacing: '0.2em',
+                color: '#C73E3E',
+                marginBottom: '16px',
+                textTransform: 'uppercase',
+              }}
+            >
+              할인 마감까지
             </p>
             <CountdownTimer deadline={DEADLINE} />
           </div>
 
-          {/* CTA */}
-          <a
-            href="#form"
+          {/* 클래스 카드 2개 */}
+          <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: '#15488A',
-              color: '#ffffff',
-              padding: '18px 24px',
-              borderRadius: '14px',
-              fontWeight: 800,
-              fontSize: '1.05rem',
-              textDecoration: 'none',
-              letterSpacing: '0.04em',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gap: '20px',
+              maxWidth: '720px',
+              margin: '0 auto',
             }}
           >
-            무료 상담 신청하기 — 부담 없는 30분
-          </a>
+            {[MAIN_CLASS, FILM_CLASS].map((cls) => (
+              <div key={cls.nameKo} className="class-card">
+                <div className="class-card-header">
+                  <p className="class-step">{cls.step}</p>
+                  <p className="class-name-ko">{cls.nameKo}</p>
+                  <p className="class-name-en">{cls.nameEn}</p>
+                </div>
+                <div className="class-card-body">
+                  {cls.quote && <p className="class-quote">{cls.quote}</p>}
+                  <div className="class-bullets">
+                    {cls.bullets.slice(0, 3).map((b) => (
+                      <div key={b} className="class-bullet">
+                        {b}
+                      </div>
+                    ))}
+                  </div>
+                  {cls.remainingSeats !== undefined && (
+                    <p
+                      className="class-note"
+                      style={{ color: '#C73E3E', background: 'rgba(199,62,62,0.06)', borderColor: 'rgba(199,62,62,0.2)' }}
+                    >
+                      잔여석 {cls.remainingSeats}석
+                    </p>
+                  )}
+                </div>
+                <div className="class-card-footer">
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px', marginBottom: '6px' }}>
+                    <span className="class-price">
+                      {cls.price}<span>원/월</span>
+                    </span>
+                    {cls.originalPrice && (
+                      <span
+                        style={{
+                          fontSize: '0.82rem',
+                          color: 'var(--gray)',
+                          textDecoration: 'line-through',
+                        }}
+                      >
+                        {cls.originalPrice}원
+                      </span>
+                    )}
+                  </div>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--gray)' }}>
+                    {cls.schedule} · {cls.duration} · 정원 {cls.capacity}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <div style={{ textAlign: 'center', marginTop: '40px' }}>
+            <a href="#form" className="btn-primary" style={{ background: 'var(--navy)', color: '#ffffff' }}>
+              무료 상담 신청하기 →
+            </a>
+          </div>
         </div>
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑨ 신청 폼                                                  */}
+      {/* ⑪ FAQ — 반대 소거 (기존 .faq-item 재사용)                 */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="section" style={{ background: 'var(--bg2)', padding: '90px 0' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
+            <p className="section-eyebrow">08 — FAQ</p>
+            <h2
+              className="section-title-serif"
+              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)' }}
+            >
+              자주 묻는 질문
+            </h2>
+          </div>
+
+          <FaqAccordion items={FAQ_ITEMS} />
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* ⑫ FORM — 신청 폼                                           */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section
         id="form"
+        className="section"
         style={{
-          padding: 'clamp(40px, 8vw, 60px) 20px',
-          background: 'radial-gradient(ellipse at 50% 0%, rgba(21,72,138,0.08) 0%, #E8E8DF 65%)',
-          borderBottom: '1px solid #D2D2C8',
+          background: 'radial-gradient(ellipse at 50% 0%, rgba(21,72,138,0.08) 0%, var(--bg) 70%)',
+          padding: '90px 0',
         }}
       >
-        <div style={container}>
-          <p style={sectionLabel}>START HERE</p>
-          <h2
-            style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: 'clamp(1.4rem, 4vw, 1.8rem)',
-              fontWeight: 700,
-              color: '#111111',
-              textAlign: 'center',
-              marginBottom: '6px',
-            }}
-          >
-            무료 상담 신청하기
-          </h2>
-          <p
-            style={{
-              fontSize: '0.88rem',
-              color: '#6B6660',
-              textAlign: 'center',
-              marginBottom: '28px',
-              lineHeight: 1.6,
-            }}
-          >
-            30초면 충분해요. 24시간 이내 카카오로 연락드립니다.
-          </p>
-          <JoinForm />
+        <div className="container">
+          <div style={{ maxWidth: '520px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+              <p className="section-eyebrow">09 — START HERE</p>
+              <h2
+                className="section-title-serif"
+                style={{ fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', marginBottom: '10px' }}
+              >
+                무료 상담 신청하기
+              </h2>
+              <p style={{ fontSize: '0.9rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
+                30초면 충분해요. 24시간 이내 카카오로 연락드립니다.
+              </p>
+            </div>
+            <JoinForm />
+          </div>
         </div>
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑩ 안심 문구 + 카카오 바로가기                              */}
+      {/* ⑬ GUARANTEE — 안심 문구                                    */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section
-        style={{
-          padding: 'clamp(28px, 6vw, 40px) 20px',
-          background: '#F0F0E8',
-          textAlign: 'center',
-        }}
-      >
-        <div style={container}>
-          <p style={{ fontSize: '0.88rem', color: '#4A4A4A', lineHeight: 1.8, marginBottom: '8px' }}>
-            부담 없는 30분 상담이에요.{' '}
+      <section className="section" style={{ background: 'var(--bg)', padding: '60px 0 40px' }}>
+        <div className="container" style={{ textAlign: 'center' }}>
+          <p
+            style={{
+              fontSize: '0.92rem',
+              color: 'var(--gray-light)',
+              lineHeight: 1.9,
+              marginBottom: '8px',
+              maxWidth: '520px',
+              margin: '0 auto 8px',
+            }}
+          >
+            부담 없는 30분 상담입니다.{' '}
             <strong style={{ color: '#111111' }}>등록 강요 없습니다.</strong>
           </p>
-          <p style={{ fontSize: '0.75rem', color: '#6B6660', lineHeight: 1.7 }}>
+          <p style={{ fontSize: '0.78rem', color: 'var(--gray)', lineHeight: 1.7 }}>
             개인정보는 상담 연락 외에 사용되지 않습니다.
           </p>
 
-          <a
-            href="https://pf.kakao.com/_ximxdqn"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              marginTop: '20px',
-              padding: '10px 20px',
-              background: '#FEE500',
-              borderRadius: '10px',
-              fontSize: '0.85rem',
-              fontWeight: 700,
-              color: '#111111',
-              textDecoration: 'none',
-            }}
-          >
-            <span>💬</span> 카카오로 바로 문의하기
-          </a>
+          <div style={{ marginTop: '24px' }}>
+            <a
+              href="https://pf.kakao.com/_ximxdqn"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-outline"
+              style={{ borderColor: 'var(--navy)', color: 'var(--navy)' }}
+            >
+              카카오로 바로 문의
+            </a>
+          </div>
 
           <p
             style={{
-              marginTop: '32px',
+              marginTop: '36px',
+              fontFamily: 'var(--font-display)',
               fontSize: '0.72rem',
-              color: '#B8B8AC',
-              letterSpacing: '0.1em',
+              color: 'var(--gray)',
+              letterSpacing: '0.25em',
+              textTransform: 'uppercase',
             }}
           >
             KD4 ACTING STUDIO · 서울 서대문구 신촌
@@ -814,9 +757,8 @@ export default function JoinPage() {
         </div>
       </section>
 
-      {/* ⑪ Sticky 하단 CTA (폼 도달 시 자동 숨김) */}
+      {/* ⑭ Sticky 하단 CTA — 폼 도달 시 자동 숨김 */}
       <StickyBottomCTA />
-
     </div>
   )
 }
