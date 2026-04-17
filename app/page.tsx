@@ -1640,7 +1640,7 @@ export default function HomePage() {
                   display: "inline-block",
                   padding: "14px 40px",
                   background: "var(--gold)",
-                  color: "#15488A",
+                  color: "#ffffff",
                   fontWeight: 700,
                   fontSize: "0.9rem",
                   letterSpacing: "0.06em",
