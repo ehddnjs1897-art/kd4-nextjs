@@ -1775,7 +1775,7 @@ export default function HomePage() {
             START HERE
           </p>
           <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.5rem, 4vw, 2rem)", fontWeight: 700, textAlign: "center", marginBottom: "10px" }}>
-            첫 걸음, 어렵지 않아요
+            무료 상담으로 먼저 시작하세요
           </h2>
           <p style={{ color: "#15488A", fontSize: "0.88rem", textAlign: "center", marginBottom: "40px", lineHeight: 1.8 }}>
             24시간 이내 연락드릴게요.

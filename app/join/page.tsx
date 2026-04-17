@@ -176,25 +176,27 @@ export default function JoinPage() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={INSTRUCTOR_IMG}
-          alt="권동원 대표"
+          alt="권동원 대표 — KD4 액팅 스튜디오"
           style={{
             position: 'absolute',
             inset: 0,
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            objectPosition: 'center 18%',
-            opacity: 0.42,
-            filter: 'grayscale(0.3)',
+            objectPosition: 'center 15%',
+            opacity: 0.62,
+            filter: 'grayscale(0.2)',
           }}
         />
+        {/* 상단은 가볍게, 하단은 진하게 — 얼굴이 보이면서 텍스트도 읽히도록 */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
             background:
-              'linear-gradient(160deg, rgba(15,20,35,0.55) 0%, rgba(15,20,35,0.92) 100%)',
+              'linear-gradient(180deg, rgba(15,20,35,0.35) 0%, rgba(15,20,35,0.55) 45%, rgba(15,20,35,0.85) 100%)',
           }}
+          aria-hidden="true"
         />
 
         <div
@@ -913,6 +915,7 @@ export default function JoinPage() {
                       alignItems: 'baseline',
                       gap: '10px',
                       marginBottom: '6px',
+                      flexWrap: 'wrap',
                     }}
                   >
                     <span className="class-price">
@@ -930,6 +933,21 @@ export default function JoinPage() {
                       </span>
                     )}
                   </div>
+                  {/* 코스 총액 병기 — Round 3 반영 */}
+                  {cls.course && (() => {
+                    const months = parseInt(cls.course.match(/\d+/)?.[0] ?? '1')
+                    const monthly = parseInt(cls.price.replace(/,/g, ''))
+                    const total = monthly * months
+                    return (
+                      <p style={{ fontSize: '0.78rem', color: 'var(--gray-light)', marginBottom: '6px' }}>
+                        {cls.course} 총{' '}
+                        <strong style={{ color: 'var(--navy)' }}>
+                          {total.toLocaleString()}원
+                        </strong>
+                        {' '}· 분납 상담 가능
+                      </p>
+                    )
+                  })()}
                   <p style={{ fontSize: '0.75rem', color: 'var(--gray)' }}>
                     {cls.schedule} · {cls.duration} · 정원 {cls.capacity}
                   </p>

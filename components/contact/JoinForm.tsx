@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { MessageCircle, FileText, CheckCircle } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { CLASSES } from '@/lib/classes'
 import { pixel } from '@/lib/meta-pixel'
@@ -22,6 +23,7 @@ export default function JoinForm() {
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
+  const [ticketNo, setTicketNo] = useState('')
   const [focused, setFocused] = useState<string | null>(null)
 
   const inputStyle = (field: string): React.CSSProperties => ({
@@ -90,6 +92,12 @@ export default function JoinForm() {
       }),
     }).catch(() => {})
 
+    /* 간단한 접수번호 생성 (UX용) — KD 연-월-일-4자리 */
+    const now = new Date()
+    const ymd = `${String(now.getFullYear()).slice(2)}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`
+    const rand = Math.floor(Math.random() * 9000 + 1000)
+    setTicketNo(`KD-${ymd}-${rand}`)
+
     setDone(true)
     setLoading(false)
   }
@@ -99,37 +107,112 @@ export default function JoinForm() {
       <div
         style={{
           background: 'rgba(21,72,138,0.06)',
-          border: '1px solid rgba(21,72,138,0.2)',
-          borderRadius: '20px',
-          padding: '48px 28px',
+          border: '1px solid rgba(21,72,138,0.25)',
+          borderRadius: '16px',
+          padding: '40px 28px',
           textAlign: 'center',
         }}
       >
-        <p style={{ fontSize: '2.6rem', marginBottom: '14px' }}>🌸</p>
+        <div
+          style={{
+            width: '56px',
+            height: '56px',
+            borderRadius: '50%',
+            background: 'rgba(21,72,138,0.1)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: '18px',
+          }}
+        >
+          <CheckCircle size={28} color="#15488A" strokeWidth={1.8} />
+        </div>
         <p
           style={{
             fontFamily: 'var(--font-serif)',
-            fontSize: '1.2rem',
+            fontSize: '1.3rem',
             fontWeight: 700,
-            marginBottom: '10px',
+            marginBottom: '8px',
             color: '#111111',
           }}
         >
-          접수 완료!
+          접수 완료되었습니다
         </p>
-        <p style={{ color: '#6B6660', fontSize: '0.92rem', lineHeight: 1.8 }}>
-          <strong style={{ color: '#111111' }}>24시간 이내</strong> 카카오톡으로 연락드립니다.
-          <br />
+
+        {/* 접수번호 */}
+        <p
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: '0.78rem',
+            color: '#6B6660',
+            letterSpacing: '0.1em',
+            marginBottom: '20px',
+          }}
+        >
+          접수번호 <strong style={{ color: '#15488A' }}>{ticketNo}</strong>
+        </p>
+
+        {/* 다음 안내 */}
+        <div
+          style={{
+            background: '#ffffff',
+            border: '1px solid #D2D2C8',
+            borderRadius: '12px',
+            padding: '18px 20px',
+            marginBottom: '20px',
+            textAlign: 'left',
+          }}
+        >
+          <p style={{ fontSize: '0.88rem', color: '#111', lineHeight: 1.75, marginBottom: '10px' }}>
+            <strong>24시간 이내</strong>{' '}
+            <strong style={{ color: '#15488A' }}>권동원 대표</strong>가 직접 카카오톡으로 연락드립니다.
+          </p>
+          <p style={{ fontSize: '0.82rem', color: '#6B6660', lineHeight: 1.7 }}>
+            30분 상담 예약 일정을 잡은 뒤, 스튜디오에서 만나 뵙거나 비대면 상담으로 진행합니다.
+          </p>
+        </div>
+
+        {/* 리드마그넷 — 가이드 PDF */}
+        <a
+          href="https://pf.kakao.com/_ximxdqn"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            background: '#15488A',
+            color: '#ffffff',
+            padding: '12px 20px',
+            borderRadius: '10px',
+            fontSize: '0.88rem',
+            fontWeight: 600,
+            textDecoration: 'none',
+            marginBottom: '10px',
+          }}
+        >
+          <FileText size={15} strokeWidth={2} />
+          오디션 합격 가이드 받기
+        </a>
+
+        <p style={{ fontSize: '0.78rem', color: '#6B6660', marginTop: '14px', lineHeight: 1.7 }}>
           급하시면{' '}
           <a
             href="https://pf.kakao.com/_ximxdqn"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: '#15488A', textDecoration: 'underline' }}
+            style={{
+              color: '#15488A',
+              textDecoration: 'underline',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '3px',
+            }}
           >
+            <MessageCircle size={12} strokeWidth={2.2} />
             카카오 채널
           </a>
-          로 바로 문의해주세요.
+          로 먼저 문의하셔도 됩니다.
         </p>
       </div>
     )
