@@ -2020,6 +2020,14 @@ main {
   .hero-title-wall { animation: none; opacity: 1; }
 }
 
+/* 가로 모드에서 타이틀이 하단으로 밀리는 현상 방지 — 수직 중앙 고정 */
+@media (orientation: landscape) and (max-height: 500px) {
+  .hero-title-wall-pos {
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
 /* ═══ HERO INTRO SECTION (카피 + CTA, Stats 위) ═══ */
 .hero-intro-section {
   padding: 80px 24px 60px;

@@ -45,15 +45,15 @@ export default function HeroScene() {
         canvas.height = 2048;
         const ctx = canvas.getContext("2d")!;
 
-        // 배경 = 어두운 이음새 색
-        ctx.fillStyle = "#2E241A";
+        // 배경 = 이음새 색 (밝아진 바닥에 맞게 조정)
+        ctx.fillStyle = "#4A3A2C";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // 차분한 웜 미드톤 팔레트 (채도 낮춤)
+        // 밝은 웜 미드톤 팔레트 (더 밝게 조정)
         const plankTones = [
-          "#7E6B55", "#6E5D49", "#7A6754", "#665645",
-          "#827062", "#75634F", "#6B5A46", "#80705E",
-          "#705F4C", "#78685A",
+          "#C4A882", "#B89A72", "#BEA47E", "#A88E6E",
+          "#C8AC88", "#B69870", "#AC8E68", "#C2A480",
+          "#B09474", "#BAA07C",
         ];
 
         const plankW = 82; // 판자 가로폭 (픽셀)
@@ -114,11 +114,11 @@ export default function HeroScene() {
       // 바닥이 22×48 — 반복 횟수 낮춰서 타일링 패턴 티 안나게
       woodTex.repeat.set(1.5, 3);
 
-      // 살짝만 틴트 — 텍스처가 이미 톤 다운 돼있어서 흰색에 가까운 중립톤
+      // 밝은 톤 — 텍스처와 곱해져 더 밝은 우드 바닥으로
       const floorMat = new THREE.MeshStandardMaterial({
         map: woodTex,
-        color: 0xB8AD9A, // 은은한 웜그레이 톤 (텍스처 색과 곱해짐)
-        roughness: 0.88,
+        color: 0xD8CCB8, // 밝은 웜베이지 (텍스처 색과 곱해져 밝아짐)
+        roughness: 0.85,
         metalness: 0.02,
       });
 
@@ -207,10 +207,10 @@ export default function HeroScene() {
       crownB.position.set(0, 5.46, -19.95);
       scene.add(crownB);
 
-      // ── CEILING (웜그레이 톤) — 카메라 시작점까지 연장 ───────────────
+      // ── CEILING (밝은 웜그레이) — 카메라 시작점까지 연장 ─────────────
       const ceil = new THREE.Mesh(
         new THREE.PlaneGeometry(22, 48),
-        new THREE.MeshStandardMaterial({ color: 0xC9C0AC, roughness: 1 })
+        new THREE.MeshStandardMaterial({ color: 0xF0EDE4, roughness: 1 })
       );
       ceil.rotation.x = Math.PI / 2;
       ceil.position.set(0, 5.5, 0);
@@ -304,99 +304,6 @@ export default function HeroScene() {
       addSpot(1);
       addSpot(-4);
       addSpot(-10);
-
-      // ── 올리브 나무 (좌우 사이드 화분) ──────────────────────────────────
-      // 실버세이지 녹색 잎 + 얇은 트렁크 + 테라코타 화분 — 공간에 숨결 추가
-      const olivePotMat = new THREE.MeshStandardMaterial({
-        color: 0x8A5A3E, // 테라코타
-        roughness: 0.9,
-        metalness: 0.02,
-      });
-      const oliveTrunkMat = new THREE.MeshStandardMaterial({
-        color: 0x5C4A38, // 차분한 올리브 목피
-        roughness: 0.95,
-        metalness: 0.02,
-      });
-      const oliveLeafMat = new THREE.MeshStandardMaterial({
-        color: 0x8FA07A, // 실버세이지 그린 (올리브 잎 특유의 은녹)
-        roughness: 0.85,
-        metalness: 0.04,
-        flatShading: true, // 저폴리 느낌으로 잎 클러스터 더 자연스럽게
-      });
-
-      const addOliveTree = (x: number, z: number, scale: number = 1) => {
-        const group = new THREE.Group();
-
-        // 화분 크기도 나무 크기에 비례 — 작은 묘목은 작은 화분
-        const pot = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.28 * scale, 0.22 * scale, 0.36 * scale, 12),
-          olivePotMat
-        );
-        pot.position.y = 0.18 * scale;
-        group.add(pot);
-
-        const soil = new THREE.Mesh(
-          new THREE.CircleGeometry(0.26 * scale, 12),
-          new THREE.MeshBasicMaterial({ color: 0x2A1F15 })
-        );
-        soil.rotation.x = -Math.PI / 2;
-        soil.position.y = 0.361 * scale;
-        group.add(soil);
-
-        // 트렁크 — 자연스러운 기울기
-        const trunkHeight = 1.1 * scale;
-        const trunk = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.04 * scale, 0.055 * scale, trunkHeight, 8),
-          oliveTrunkMat
-        );
-        trunk.position.y = 0.36 * scale + trunkHeight * 0.5;
-        trunk.rotation.z = (Math.random() - 0.5) * 0.12;
-        trunk.rotation.x = (Math.random() - 0.5) * 0.08;
-        group.add(trunk);
-
-        // 잎 클러스터 — 개수·위치·크기 모두 랜덤 (3~6개) → 복제 느낌 제거
-        const foliageBase = 0.36 * scale + trunkHeight;
-        const clusterCount = 3 + Math.floor(Math.random() * 4); // 3~6
-        for (let i = 0; i < clusterCount; i++) {
-          const t = i / Math.max(1, clusterCount - 1); // 0~1 진행도
-          // 아래에서 위로 점점 작아지는 수관 형태
-          const yPos = foliageBase + (t * 0.75 - 0.1) * scale;
-          const offX = (Math.random() - 0.5) * 0.32 * scale;
-          const offZ = (Math.random() - 0.5) * 0.32 * scale;
-          // 위로 갈수록 작아지고, 전체 개수에 따라 크기 조정
-          const radiusBase = (0.3 + Math.random() * 0.22) * scale;
-          const r = radiusBase * (1 - t * 0.35);
-
-          const foliage = new THREE.Mesh(
-            new THREE.IcosahedronGeometry(r, 1),
-            oliveLeafMat
-          );
-          foliage.position.set(offX, yPos, offZ);
-          // 살짝 눌린 타원 + 랜덤 회전으로 실루엣 다양화
-          foliage.scale.set(
-            1 + (Math.random() - 0.5) * 0.2,
-            0.82 + Math.random() * 0.12,
-            1 + (Math.random() - 0.5) * 0.2
-          );
-          foliage.rotation.y = Math.random() * Math.PI;
-          group.add(foliage);
-        }
-
-        group.position.set(x, 0, z);
-        // 그룹 전체 랜덤 회전 — 각 나무가 다른 방향을 바라보게
-        group.rotation.y = Math.random() * Math.PI * 2;
-        scene.add(group);
-      };
-
-      // ── 배치: 배우들의 성장 서사 ──
-      // 카메라가 z=22 → z=3.8로 진입하며 지나가는 순서대로 작은→큰 나무가 등장
-      // 좌 3그루 (세 단계 세분: 묘목·성장·원숙) + 우 2그루 (시작·완성 대비)
-      // 비대칭이지만 우측의 가장 큰 나무가 좌측 세 그루의 시각적 무게를 균형잡음
-      addOliveTree(-9.3, 10, 0.45);    // 좌1: 갓 심은 묘목 — 입문 단계
-      addOliveTree(9.2, 5, 0.62);      // 우1: 어린 나무 — 첫 성장
-      addOliveTree(-9.1, -1, 0.9);     // 좌2: 자라는 중 — 본격 훈련
-      addOliveTree(9.4, -9, 1.35);     // 우2: 우측의 완성체 — 원숙한 배우
-      addOliveTree(-9.4, -14, 1.15);   // 좌3: 뒷배경의 큰 나무 — 깊이감
 
       // ── AMBIENT ───────────────────────────────────────────────────────────
       // 웜그레이 톤 ambient — 과한 주황빛 방지
