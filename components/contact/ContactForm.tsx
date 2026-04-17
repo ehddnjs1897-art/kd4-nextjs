@@ -56,6 +56,7 @@ export default function ContactForm() {
     source: '',
     inquiry_type: '',
   })
+  const [maiznerExp, setMaiznerExp] = useState('')
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
@@ -82,6 +83,7 @@ export default function ContactForm() {
     const motivationParts = [
       form.source && `유입경로: ${form.source}`,
       form.inquiry_type && `문의유형: ${form.inquiry_type}`,
+      maiznerExp && `마이즈너경험: ${maiznerExp}`,
     ].filter(Boolean)
     const motivation = motivationParts.length > 0 ? motivationParts.join(' / ') : null
 
@@ -244,21 +246,31 @@ export default function ContactForm() {
         </div>
       </div>
 
-      {/* KD4를 어떻게 알게 되셨나요 */}
+      {/* 마이즈너 테크닉 경험 여부 */}
       <div>
-        <label style={labelStyle}>KD4를 어떻게 알게 되셨나요?</label>
-        <select
-          style={{ ...focusStyle('source'), cursor: 'pointer' }}
-          value={form.source}
-          onChange={set('source')}
-          onFocus={() => setFocusedField('source')}
-          onBlur={() => setFocusedField(null)}
-        >
-          <option value="">선택해 주세요</option>
-          {SOURCE_OPTIONS.map(opt => (
-            <option key={opt} value={opt}>{opt}</option>
+        <label style={{ ...labelStyle, marginBottom: '8px' }}>마이즈너 테크닉 경험 여부</label>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {['6개월 이상 훈련 했다.', '몇 번 해봤다.', '처음이다.'].map((opt) => (
+            <button
+              key={opt}
+              type="button"
+              onClick={() => setMaiznerExp(opt)}
+              style={{
+                padding: '10px 16px',
+                border: `1.5px solid ${maiznerExp === opt ? '#15488A' : 'var(--border)'}`,
+                borderRadius: '8px',
+                background: maiznerExp === opt ? '#15488A' : '#ffffff',
+                color: maiznerExp === opt ? '#fff' : '#333',
+                textAlign: 'left',
+                cursor: 'pointer',
+                fontSize: '0.9rem',
+                transition: 'all 0.15s',
+              }}
+            >
+              {opt}
+            </button>
           ))}
-        </select>
+        </div>
       </div>
 
       {/* 관심 클래스 */}
@@ -274,6 +286,23 @@ export default function ContactForm() {
           <option value="">아직 모르겠어요</option>
           {CLASSES.filter(c => c.isNewMemberOpen).map(c => (
             <option key={c.nameKo} value={c.nameKo}>{c.nameKo}</option>
+          ))}
+        </select>
+      </div>
+
+      {/* KD4를 어떻게 알게 되셨나요 */}
+      <div>
+        <label style={labelStyle}>KD4를 어떻게 알게 되셨나요?</label>
+        <select
+          style={{ ...focusStyle('source'), cursor: 'pointer' }}
+          value={form.source}
+          onChange={set('source')}
+          onFocus={() => setFocusedField('source')}
+          onBlur={() => setFocusedField(null)}
+        >
+          <option value="">선택해 주세요</option>
+          {SOURCE_OPTIONS.map(opt => (
+            <option key={opt} value={opt}>{opt}</option>
           ))}
         </select>
       </div>
