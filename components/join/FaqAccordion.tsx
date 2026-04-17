@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { ChevronDown } from 'lucide-react'
 
 interface FaqItem {
   q: string
@@ -23,7 +24,16 @@ export default function FaqAccordion({ items }: { items: FaqItem[] }) {
               aria-expanded={isOpen}
             >
               <span>{item.q}</span>
-              <span className="faq-arrow">▾</span>
+              <ChevronDown
+                size={18}
+                strokeWidth={2}
+                style={{
+                  color: 'var(--navy)',
+                  flexShrink: 0,
+                  transition: 'transform 0.25s',
+                  transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                }}
+              />
             </button>
             <div className="faq-answer">{item.a}</div>
           </div>

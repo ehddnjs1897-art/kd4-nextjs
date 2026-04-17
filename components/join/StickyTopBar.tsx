@@ -1,5 +1,6 @@
 'use client'
 
+import { ArrowRight } from 'lucide-react'
 import CountdownTimer from '@/components/ui/CountdownTimer'
 
 /** /join 랜딩 전용 — kd4.club 톤 일관성 유지. 노란색 사용 안 함. */
@@ -63,9 +64,13 @@ export default function StickyTopBar({ deadline }: { deadline: string }) {
           textDecoration: 'none',
           whiteSpace: 'nowrap',
           textTransform: 'uppercase',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '4px',
         }}
       >
-        무료 상담 →
+        무료 상담
+        <ArrowRight size={12} strokeWidth={2.5} />
       </a>
     </div>
   )

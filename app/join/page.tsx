@@ -1,4 +1,20 @@
 import type { Metadata } from 'next'
+import {
+  Users,
+  Calendar,
+  UserCheck,
+  Repeat,
+  Zap,
+  FileText,
+  Film,
+  Check,
+  X,
+  ArrowRight,
+  Quote,
+  Star,
+  MessageCircle,
+  Clock,
+} from 'lucide-react'
 import { CLASSES } from '@/lib/classes'
 import { FAQ_ITEMS } from '@/lib/faq-items'
 import JoinForm from '@/components/contact/JoinForm'
@@ -13,9 +29,11 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
-/* ── 상수 ─────────────────────────────────────────────────────────── */
+/* ── 상수 (CLAUDE.md에 명시된 이미지 링크 재사용) ───────────────── */
 const INSTRUCTOR_IMG =
   'https://drive.google.com/uc?export=view&id=1WfyN6x21sRLNzzNNYB-dBschGRzdEzUP'
+const STUDIO_IMG =
+  'https://drive.google.com/uc?export=view&id=1by0ZDO3J5yS-44McKbmAPixjPtI3xWNr'
 const DEADLINE = '2026-04-30T23:59:59'
 
 /* ── lib/classes.ts 데이터 재사용 ─────────────────────────────────── */
@@ -24,27 +42,31 @@ const TOTAL_SEATS = OPEN_CLASSES.reduce((s, c) => s + (c.remainingSeats ?? 0), 0
 const MAIN_CLASS = CLASSES.find((c) => c.nameKo === '마이즈너 테크닉 정규 클래스')!
 const FILM_CLASS = CLASSES.find((c) => c.nameKo === '출연영상 클래스')!
 
-/* ── 커리큘럼 4개월 로드맵 ────────────────────────────────────────── */
+/* ── 커리큘럼 4개월 로드맵 (Lucide 아이콘) ──────────────────────── */
 const CURRICULUM = [
   {
+    Icon: Repeat,
     month: 'MONTH 01',
     title: 'Repetition',
     subtitle: '레피티션 훈련',
-    desc: '상대방의 말·표정·행동을 있는 그대로 관찰하고 즉각 반응하는 훈련. 정답 연기를 버립니다.',
+    desc: '상대방의 말·표정·행동을 그대로 관찰하고 즉각 반응하는 훈련. 정답 연기를 버립니다.',
   },
   {
+    Icon: Zap,
     month: 'MONTH 02',
     title: 'Activity & Doorknock',
     subtitle: '7단계 실습',
-    desc: '마이즈너 테크닉의 핵심 구조 7단계를 차근차근 내 몸에 체화시키는 단계.',
+    desc: '마이즈너 테크닉의 핵심 7단계를 차근차근 내 몸에 체화시키는 단계.',
   },
   {
+    Icon: FileText,
     month: 'MONTH 03',
     title: 'Text Analysis',
     subtitle: '텍스트 분석 · 메모라이징',
     desc: '대본을 "외우는" 게 아니라 "해석"하는 방법. 인물의 진짜 욕구를 찾아냅니다.',
   },
   {
+    Icon: Film,
     month: 'MONTH 04',
     title: 'Final Portfolio',
     subtitle: '출연영상 촬영',
@@ -53,7 +75,11 @@ const CURRICULUM = [
 ]
 
 /* ── 비교표 ──────────────────────────────────────────────────────── */
-const COMPARISON_ROWS = [
+const COMPARISON_ROWS: {
+  label: string
+  normal: string | 'X'
+  kd4: string | 'O'
+}[] = [
   { label: '정원', normal: '20~30명', kd4: '6~8명 프라이빗' },
   { label: '강사', normal: '조교·보조 강사', kd4: '현역 배우 직강' },
   { label: '포트폴리오 제작', normal: '선택 · 추가 비용', kd4: '정규 과정 포함' },
@@ -61,7 +87,7 @@ const COMPARISON_ROWS = [
   { label: '월 수강료', normal: '20~35만원', kd4: '25만원' },
 ]
 
-/* ── 후기 (app/page.tsx REVIEW_ITEMS 선별) ────────────────────────── */
+/* ── 후기 ──────────────────────────────────────────────────────── */
 const REVIEWS = [
   {
     text: '정답인 연기를 요구하지 않고, 저 자체로 보여줄 수 있는 연기를 할 수 있었어요',
@@ -91,11 +117,10 @@ export default function JoinPage() {
         paddingBottom: '90px',
       }}
     >
-      {/* ① Sticky 상단 바 */}
       <StickyTopBar deadline={DEADLINE} />
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ② HERO — 강사 사진 + 세리프 헤드라인                        */}
+      {/* ① HERO — 강사 사진 + 세리프 헤드라인                      */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section
         style={{
@@ -116,8 +141,8 @@ export default function JoinPage() {
             height: '100%',
             objectFit: 'cover',
             objectPosition: 'center 18%',
-            opacity: 0.4,
-            filter: 'grayscale(0.4)',
+            opacity: 0.42,
+            filter: 'grayscale(0.3)',
           }}
         />
         <div
@@ -125,7 +150,7 @@ export default function JoinPage() {
             position: 'absolute',
             inset: 0,
             background:
-              'linear-gradient(160deg, rgba(15,20,35,0.55) 0%, rgba(15,20,35,0.9) 100%)',
+              'linear-gradient(160deg, rgba(15,20,35,0.55) 0%, rgba(15,20,35,0.92) 100%)',
           }}
         />
 
@@ -150,22 +175,21 @@ export default function JoinPage() {
             style={{
               fontSize: 'clamp(1.9rem, 6.5vw, 3.2rem)',
               color: '#ffffff',
-              lineHeight: 1.25,
+              lineHeight: 1.3,
               marginBottom: '22px',
-              maxWidth: '600px',
+              maxWidth: '640px',
               marginLeft: 'auto',
               marginRight: 'auto',
             }}
           >
-            오디션은 보는데 결과가 없다면,<br />
-            <span style={{ color: '#7BB3FF' }}>방법의 문제입니다</span>
+            오디션은 보는데 결과가 없다면, <span style={{ color: '#7BB3FF' }}>방법의 문제입니다</span>
           </h1>
 
           <p
             style={{
               fontSize: 'clamp(0.9rem, 2.4vw, 1rem)',
               color: 'rgba(255,255,255,0.72)',
-              lineHeight: 1.7,
+              lineHeight: 1.75,
               marginBottom: '36px',
               maxWidth: '460px',
               marginLeft: 'auto',
@@ -175,7 +199,6 @@ export default function JoinPage() {
             서울 신촌 · 6~8명 소수정예 마이즈너 테크닉 정규 클래스
           </p>
 
-          {/* CTA 버튼 */}
           <div
             style={{
               display: 'flex',
@@ -189,7 +212,8 @@ export default function JoinPage() {
               className="btn-primary"
               style={{ background: 'var(--navy)', color: '#ffffff' }}
             >
-              무료 상담 신청하기 →
+              무료 상담 신청하기
+              <ArrowRight size={16} strokeWidth={2.2} />
             </a>
             <a
               href="https://pf.kakao.com/_ximxdqn"
@@ -201,6 +225,7 @@ export default function JoinPage() {
                 color: 'rgba(255,255,255,0.9)',
               }}
             >
+              <MessageCircle size={14} strokeWidth={2} />
               카카오 문의
             </a>
           </div>
@@ -208,10 +233,42 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ③ AGITATION — 문제 후비기                                  */}
+      {/* ② AGITATION — 스튜디오 사진 배경 + 문제 후비기             */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg2)', padding: '80px 0' }}>
-        <div className="container">
+      <section
+        style={{
+          position: 'relative',
+          padding: '90px 0',
+          background: 'var(--bg2)',
+          overflow: 'hidden',
+        }}
+      >
+        {/* 스튜디오 사진 저대비 배경 */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={STUDIO_IMG}
+          alt=""
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            opacity: 0.08,
+            filter: 'grayscale(1)',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background:
+              'linear-gradient(to bottom, var(--bg2) 0%, rgba(232,232,223,0.85) 40%, var(--bg2) 100%)',
+          }}
+        />
+
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <div style={{ maxWidth: '620px', margin: '0 auto', textAlign: 'center' }}>
             <p className="section-eyebrow">01 — THE PROBLEM</p>
 
@@ -219,36 +276,37 @@ export default function JoinPage() {
               className="section-title-serif"
               style={{
                 fontSize: 'clamp(1.6rem, 4vw, 2.3rem)',
-                lineHeight: 1.35,
-                marginBottom: '28px',
+                lineHeight: 1.45,
+                marginBottom: '32px',
               }}
             >
-              3년째 학원 다녔는데<br />
-              오디션 결과는 여전히 없으셨죠?
+              3년째 학원 다녔는데 오디션 결과는 여전히 없으셨죠?
             </h2>
 
             <div
               style={{
-                paddingTop: '24px',
+                paddingTop: '28px',
                 borderTop: '1px solid var(--border)',
                 fontSize: '1rem',
                 color: 'var(--gray-light)',
-                lineHeight: 1.85,
+                lineHeight: 1.95,
               }}
             >
-              재능이 부족해서가 아닙니다.<br />
-              <strong style={{ color: '#111111' }}>"배우는 방법"</strong>이 틀렸을 뿐이에요.
-              <br /><br />
-              혼자 감정을 만들어내는 훈련, 정답 연기를 요구받는 수업,<br />
-              20명 넘는 대형 클래스에서 본인 차례는 5분.<br />
-              — 그런 환경에서 실력이 안 느는 건 당연합니다.
+              <p style={{ marginBottom: '20px' }}>
+                재능이 부족해서가 아닙니다.{' '}
+                <strong style={{ color: '#111111' }}>&ldquo;배우는 방법&rdquo;</strong>
+                이 틀렸을 뿐이에요.
+              </p>
+              <p>
+                혼자 감정을 만들어내는 훈련, 정답 연기를 요구받는 수업, 20명 넘는 대형 클래스에서 본인 차례는 5분. 그런 환경에서 실력이 안 느는 건 당연합니다.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ④ SOLUTION — 마이즈너 테크닉 설명                         */}
+      {/* ③ SOLUTION — 마이즈너 테크닉 + Lucide 아이콘 3개           */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="section" style={{ background: 'var(--bg)', padding: '90px 0' }}>
         <div className="container">
@@ -257,14 +315,16 @@ export default function JoinPage() {
 
             <h2
               className="section-title-serif"
-              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '24px' }}
+              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '20px' }}
             >
               그래서 KD4는 <span style={{ color: 'var(--navy)' }}>마이즈너 테크닉</span>을 씁니다
             </h2>
 
-            <p className="section-desc" style={{ margin: '0 auto 40px', textAlign: 'center' }}>
-              혼자 감정을 만드는 연기가 아닙니다.<br />
-              상대에게 집중하고, 그 순간 반응하는 — 가장 자연스러운 연기 훈련법.
+            <p
+              className="section-desc"
+              style={{ margin: '0 auto 48px', textAlign: 'center', maxWidth: '560px' }}
+            >
+              혼자 감정을 만드는 연기가 아닙니다. 상대에게 집중하고 그 순간 반응하는, 가장 자연스러운 연기 훈련법입니다.
             </p>
 
             <div
@@ -276,26 +336,56 @@ export default function JoinPage() {
               }}
             >
               {[
-                { n: '01', t: '레피티션', d: '상대 관찰 · 즉흥 반응' },
-                { n: '02', t: '액티비티', d: '집중력 · 몰입 훈련' },
-                { n: '03', t: '텍스트 분석', d: '인물의 진짜 욕구 해석' },
-              ].map(({ n, t, d }) => (
+                {
+                  Icon: Users,
+                  n: '01',
+                  t: '레피티션',
+                  d: '상대 관찰 · 즉흥 반응',
+                },
+                {
+                  Icon: Zap,
+                  n: '02',
+                  t: '액티비티',
+                  d: '집중력 · 몰입 훈련',
+                },
+                {
+                  Icon: FileText,
+                  n: '03',
+                  t: '텍스트 분석',
+                  d: '인물의 진짜 욕구 해석',
+                },
+              ].map(({ Icon, n, t, d }) => (
                 <div
                   key={n}
                   style={{
                     background: 'var(--bg2)',
                     border: '1px solid var(--border)',
                     borderRadius: 'var(--radius)',
-                    padding: '24px 22px',
+                    padding: '26px 24px',
                   }}
                 >
+                  <div
+                    style={{
+                      width: '44px',
+                      height: '44px',
+                      borderRadius: '10px',
+                      background: 'rgba(21,72,138,0.08)',
+                      border: '1px solid rgba(21,72,138,0.2)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginBottom: '18px',
+                    }}
+                  >
+                    <Icon size={20} color="var(--navy)" strokeWidth={1.8} />
+                  </div>
                   <p
                     style={{
                       fontFamily: 'var(--font-display)',
-                      fontSize: '0.72rem',
+                      fontSize: '0.7rem',
                       letterSpacing: '0.2em',
                       color: 'var(--navy)',
-                      marginBottom: '12px',
+                      marginBottom: '8px',
                     }}
                   >
                     {n}
@@ -321,17 +411,20 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑤ STATS — 숫자로 말하는 권위                              */}
+      {/* ④ STATS — 숫자 + Lucide 아이콘                             */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="stats-banner">
         <div className="container">
           <div className="stats-grid">
             {[
-              { num: '400+', label: '누적 코칭 배우' },
-              { num: '3년+', label: '스튜디오 운영' },
-              { num: '6~8명', label: '소수정예 정원' },
-            ].map(({ num, label }) => (
+              { Icon: Users, num: '400+', label: '누적 코칭 배우' },
+              { Icon: Calendar, num: '3년+', label: '스튜디오 운영' },
+              { Icon: UserCheck, num: '6~8명', label: '소수정예 정원' },
+            ].map(({ Icon, num, label }) => (
               <div key={num} className="stats-card">
+                <div className="stats-icon-wrap">
+                  <Icon size={22} color="var(--navy)" strokeWidth={1.8} />
+                </div>
                 <div className="stat-num">{num}</div>
                 <div className="stat-label">{label}</div>
               </div>
@@ -341,7 +434,7 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑥ DIRECTOR — 권동원 대표 (기존 .director-card 재사용)     */}
+      {/* ⑤ DIRECTOR — 권동원 대표 (기존 .director-card 재사용)      */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="section" style={{ background: 'var(--bg)', padding: '90px 0' }}>
         <div className="container">
@@ -385,11 +478,10 @@ export default function JoinPage() {
                   fontStyle: 'italic',
                   fontSize: '0.92rem',
                   color: 'var(--gray-light)',
-                  lineHeight: 1.75,
+                  lineHeight: 1.8,
                 }}
               >
-                학원 선생님이 아닌, 같이 현장에서 일하는 동료로서 가르칩니다.
-                이론만이 아니라 지금 촬영장에서 통하는 연기를 공유해요.
+                학원 선생님이 아닌, 같이 현장에서 일하는 동료로서 가르칩니다. 이론만이 아니라 지금 촬영장에서 통하는 연기를 공유해요.
               </p>
             </div>
           </div>
@@ -397,7 +489,7 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑦ PROOF — 후기 (기존 .testimonial-card 재사용)            */}
+      {/* ⑥ PROOF — 후기 + Quote + Star 아이콘                       */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="section" style={{ background: 'var(--bg2)', padding: '90px 0' }}>
         <div className="container">
@@ -414,7 +506,40 @@ export default function JoinPage() {
           <div className="testimonials-grid">
             {REVIEWS.map(({ text, author, role }) => (
               <div key={author} className="testimonial-card">
-                <p className="testimonial-quote">{text}</p>
+                {/* 별점 */}
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: '2px',
+                    marginBottom: '14px',
+                  }}
+                >
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star
+                      key={i}
+                      size={14}
+                      color="#F59E0B"
+                      fill="#F59E0B"
+                      strokeWidth={1}
+                    />
+                  ))}
+                </div>
+                <Quote
+                  size={24}
+                  color="var(--navy)"
+                  strokeWidth={1.3}
+                  style={{ opacity: 0.25, marginBottom: '8px' }}
+                />
+                <p
+                  style={{
+                    fontSize: '0.92rem',
+                    lineHeight: 1.85,
+                    color: 'var(--gray-light)',
+                    marginBottom: '20px',
+                  }}
+                >
+                  {text}
+                </p>
                 <div className="testimonial-name">{author}</div>
                 <div className="testimonial-class">{role}</div>
               </div>
@@ -424,7 +549,7 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑧ CURRICULUM — 4개월 주차별 로드맵                        */}
+      {/* ⑦ CURRICULUM — 4개월 로드맵 + Lucide 아이콘               */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="section" style={{ background: 'var(--bg)', padding: '90px 0' }}>
         <div className="container">
@@ -437,7 +562,7 @@ export default function JoinPage() {
               4개월 주차별 로드맵
             </h2>
             <p className="section-desc" style={{ margin: '0 auto', textAlign: 'center' }}>
-              추상적인 약속이 아닌, 매달 구체적으로 무엇을 배우는지.
+              추상적인 약속이 아니라, 매달 구체적으로 무엇을 배우는지 공개합니다.
             </p>
           </div>
 
@@ -450,7 +575,7 @@ export default function JoinPage() {
               margin: '0 auto',
             }}
           >
-            {CURRICULUM.map(({ month, title, subtitle, desc }) => (
+            {CURRICULUM.map(({ Icon, month, title, subtitle, desc }) => (
               <div
                 key={month}
                 className="step-card"
@@ -459,16 +584,21 @@ export default function JoinPage() {
                   border: '1px solid var(--border)',
                   borderRadius: '8px',
                   padding: '32px 24px',
-                  transition: 'border-color var(--transition)',
                 }}
               >
+                <div
+                  className="step-icon-glow"
+                  style={{ marginBottom: '20px' }}
+                >
+                  <Icon size={22} color="var(--navy)" strokeWidth={1.8} />
+                </div>
                 <p
                   style={{
                     fontFamily: 'var(--font-display)',
                     fontSize: '0.7rem',
                     letterSpacing: '0.2em',
                     color: 'var(--navy)',
-                    marginBottom: '18px',
+                    marginBottom: '12px',
                   }}
                 >
                   {month}
@@ -494,7 +624,7 @@ export default function JoinPage() {
                 >
                   {subtitle}
                 </p>
-                <p style={{ fontSize: '0.85rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
+                <p style={{ fontSize: '0.85rem', color: 'var(--gray-light)', lineHeight: 1.75 }}>
                   {desc}
                 </p>
               </div>
@@ -504,7 +634,7 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑨ COMPARISON — 대형학원 vs KD4                            */}
+      {/* ⑧ COMPARISON — 대형학원 vs KD4 (Check/X 아이콘)            */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="section" style={{ background: 'var(--bg2)', padding: '90px 0' }}>
         <div className="container">
@@ -532,10 +662,28 @@ export default function JoinPage() {
                   <tr key={row.label}>
                     <td>{row.label}</td>
                     <td style={{ color: 'var(--gray)' }}>
-                      {row.normal === 'X' ? <span className="comparison-x">×</span> : row.normal}
+                      {row.normal === 'X' ? (
+                        <X
+                          size={18}
+                          color="var(--gray)"
+                          strokeWidth={2}
+                          style={{ display: 'inline-block', verticalAlign: 'middle' }}
+                        />
+                      ) : (
+                        row.normal
+                      )}
                     </td>
                     <td className="kd4-col">
-                      {row.kd4 === 'O' ? <span className="comparison-check">✓</span> : row.kd4}
+                      {row.kd4 === 'O' ? (
+                        <Check
+                          size={18}
+                          color="var(--navy)"
+                          strokeWidth={2.5}
+                          style={{ display: 'inline-block', verticalAlign: 'middle' }}
+                        />
+                      ) : (
+                        row.kd4
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -546,7 +694,7 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑩ OFFER — 가격 + 카운트다운 (기존 .class-card 재사용)     */}
+      {/* ⑨ OFFER — 가격 + 카운트다운 (기존 .class-card 재사용)     */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="section" style={{ background: 'var(--bg)', padding: '90px 0' }}>
         <div className="container">
@@ -583,14 +731,18 @@ export default function JoinPage() {
                 color: '#C73E3E',
                 marginBottom: '16px',
                 textTransform: 'uppercase',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
               }}
             >
+              <Clock size={13} strokeWidth={2} />
               할인 마감까지
             </p>
             <CountdownTimer deadline={DEADLINE} />
           </div>
 
-          {/* 클래스 카드 2개 */}
+          {/* 클래스 카드 */}
           <div
             style={{
               display: 'grid',
@@ -619,16 +771,28 @@ export default function JoinPage() {
                   {cls.remainingSeats !== undefined && (
                     <p
                       className="class-note"
-                      style={{ color: '#C73E3E', background: 'rgba(199,62,62,0.06)', borderColor: 'rgba(199,62,62,0.2)' }}
+                      style={{
+                        color: '#C73E3E',
+                        background: 'rgba(199,62,62,0.06)',
+                        borderColor: 'rgba(199,62,62,0.2)',
+                      }}
                     >
                       잔여석 {cls.remainingSeats}석
                     </p>
                   )}
                 </div>
                 <div className="class-card-footer">
-                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px', marginBottom: '6px' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'baseline',
+                      gap: '10px',
+                      marginBottom: '6px',
+                    }}
+                  >
                     <span className="class-price">
-                      {cls.price}<span>원/월</span>
+                      {cls.price}
+                      <span>원/월</span>
                     </span>
                     {cls.originalPrice && (
                       <span
@@ -650,17 +814,21 @@ export default function JoinPage() {
             ))}
           </div>
 
-          {/* CTA */}
           <div style={{ textAlign: 'center', marginTop: '40px' }}>
-            <a href="#form" className="btn-primary" style={{ background: 'var(--navy)', color: '#ffffff' }}>
-              무료 상담 신청하기 →
+            <a
+              href="#form"
+              className="btn-primary"
+              style={{ background: 'var(--navy)', color: '#ffffff' }}
+            >
+              무료 상담 신청하기
+              <ArrowRight size={16} strokeWidth={2.2} />
             </a>
           </div>
         </div>
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑪ FAQ — 반대 소거 (기존 .faq-item 재사용)                 */}
+      {/* ⑩ FAQ — 반대 소거 (lib/faq-items.ts 재사용)                */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="section" style={{ background: 'var(--bg2)', padding: '90px 0' }}>
         <div className="container">
@@ -679,13 +847,14 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑫ FORM — 신청 폼                                           */}
+      {/* ⑪ FORM — 신청 폼                                           */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section
         id="form"
         className="section"
         style={{
-          background: 'radial-gradient(ellipse at 50% 0%, rgba(21,72,138,0.08) 0%, var(--bg) 70%)',
+          background:
+            'radial-gradient(ellipse at 50% 0%, rgba(21,72,138,0.08) 0%, var(--bg) 70%)',
           padding: '90px 0',
         }}
       >
@@ -709,7 +878,7 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑬ GUARANTEE — 안심 문구                                    */}
+      {/* ⑫ GUARANTEE — 안심 문구                                    */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="section" style={{ background: 'var(--bg)', padding: '60px 0 40px' }}>
         <div className="container" style={{ textAlign: 'center' }}>
@@ -738,6 +907,7 @@ export default function JoinPage() {
               className="btn-outline"
               style={{ borderColor: 'var(--navy)', color: 'var(--navy)' }}
             >
+              <MessageCircle size={14} strokeWidth={2} />
               카카오로 바로 문의
             </a>
           </div>
@@ -757,7 +927,6 @@ export default function JoinPage() {
         </div>
       </section>
 
-      {/* ⑭ Sticky 하단 CTA — 폼 도달 시 자동 숨김 */}
       <StickyBottomCTA />
     </div>
   )
