@@ -2,9 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Noto_Sans_KR, Noto_Serif_KR, Oswald } from 'next/font/google'
 import Script from 'next/script'
 import '../styles/globals.css'
-import Navbar from '@/components/layout/Navbar'
-import Footer from '@/components/layout/Footer'
-import FloatingCTA from '@/components/layout/FloatingCTA'
+import ConditionalShell from '@/components/layout/ConditionalShell'
 import JsonLd from '@/components/seo/JsonLd'
 import { FAQ_ITEMS } from '@/lib/faq-items'
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
@@ -97,10 +95,7 @@ export default function RootLayout({
       <body
         className={`${notoSansKR.variable} ${notoSerifKR.variable} ${oswald.variable}`}
       >
-        <Navbar />
-        <main style={{ paddingBottom: '88px' }}>{children}</main>
-        <Footer />
-        <FloatingCTA />
+        <ConditionalShell>{children}</ConditionalShell>
         <Script
           src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
           strategy="afterInteractive"
