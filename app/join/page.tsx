@@ -41,32 +41,34 @@ const STUDIO_IMG =
   'https://drive.google.com/uc?export=view&id=1by0ZDO3J5yS-44McKbmAPixjPtI3xWNr'
 const DEADLINE = '2026-04-30T23:59:59'
 
+/* 마이즈너 소개 영상 YouTube ID — 없으면 스튜디오 사진으로 대체 */
+const MEISNER_VIDEO_ID = '' // 예: 'dQw4w9WgXcQ'
+
 /* ── lib/classes.ts 데이터 재사용 ─────────────────────────────────── */
 const OPEN_CLASSES = CLASSES.filter((c) => c.isNewMemberOpen && c.highlight)
 const TOTAL_SEATS = OPEN_CLASSES.reduce((s, c) => s + (c.remainingSeats ?? 0), 0)
 const MAIN_CLASS = CLASSES.find((c) => c.nameKo === '마이즈너 테크닉 정규 클래스')!
 const FILM_CLASS = CLASSES.find((c) => c.nameKo === '출연영상 클래스')!
 
-/* 절감액 계산 (Anchor Price 시각화) */
+/* 봄할인: 첫 달만 적용 */
 const MONTH_SAVING = 100000
-const TOTAL_SAVING = MONTH_SAVING * 4 // 4개월 코스 기준
 
 /* ── Agitation 감정 체크리스트 3개 ────────────────────────────── */
 const PAIN_POINTS = [
   {
     Icon: Camera,
     title: '카메라 앞에서 머리가 하얘진 경험',
-    desc: '대사를 외웠는데 막상 슛 들어가면 표정이 얼어붙고 숨이 가빠집니다.',
+    desc: '대사는 다 외웠는데, 슛 들어가는 순간 아무것도 안 나와요. 분명 집에선 됐는데.',
   },
   {
     Icon: Moon,
     title: '오디션 떨어지고 자존감 무너진 밤',
-    desc: '노력은 하는데 결과는 없고, 내가 재능이 없는 건가 매일 자문합니다.',
+    desc: '떨어지고 집에 오는 길이 제일 힘들어요. 재능이 없나, 생각 안 하려 해도 자꾸 해요.',
   },
   {
     Icon: Wallet,
     title: '월 학원비 본전 생각에 잠 못 이룬 새벽',
-    desc: '20명 넘는 대형 클래스에서 내 차례는 5분. 이게 과연 효과 있을까 의심됩니다.',
+    desc: '한 반에 20명인데 내 순서는 5분. 매달 돈 내면서 이게 맞나 싶어요.',
   },
 ]
 
@@ -76,29 +78,29 @@ const CURRICULUM = [
     Icon: Repeat,
     month: 'MONTH 01',
     title: 'Repetition',
-    subtitle: '레피티션 훈련',
-    desc: '상대방의 말·표정·행동을 그대로 관찰하고 즉각 반응하는 훈련. 정답 연기를 버립니다.',
+    subtitle: '레피티션',
+    desc: '상대를 보고 느끼는 그대로 반응하는 훈련. "정답 연기"를 내려놓는 것부터 시작해요.',
   },
   {
     Icon: Zap,
     month: 'MONTH 02',
     title: 'Activity & Doorknock',
     subtitle: '7단계 실습',
-    desc: '마이즈너 테크닉의 핵심 7단계를 차근차근 내 몸에 체화시키는 단계입니다.',
+    desc: '마이즈너 테크닉의 핵심인 Activity & Doorknock 7단계. 몸이 먼저 알아채는 연기를 만들어요.',
   },
   {
     Icon: FileText,
     month: 'MONTH 03',
-    title: 'Text Analysis',
+    title: 'Text & Memorizing',
     subtitle: '텍스트 분석 · 메모라이징',
-    desc: '대본을 외우는 게 아니라 해석하는 방법. 인물의 진짜 욕구를 찾아냅니다.',
+    desc: '대본을 외우는 게 아니라 읽는 법. 인물이 진짜 원하는 게 뭔지 찾아내는 단계예요.',
   },
   {
     Icon: Film,
     month: 'MONTH 04',
-    title: 'Final Portfolio',
-    subtitle: '출연영상 촬영',
-    desc: '전문 영화팀과 함께하는 최종 장면 촬영. 오디션 제출용 포트폴리오 완성.',
+    title: 'Emotional Freedom',
+    subtitle: '감정 해방 · 충동과 본능',
+    desc: '연기하려 하지 않아도 장면이 살아나는 경험. 충동과 본능을 회복하는 마지막 단계예요.',
   },
 ]
 
@@ -135,17 +137,17 @@ const GUARANTEES = [
   {
     Icon: HeartHandshake,
     title: '상담 후 바로 가셔도 돼요',
-    desc: '30분 부담 없는 대화. 본인에게 맞는지 확인만 하고 가세요.',
+    desc: '30분 편하게 이야기 나눠보고, 아니다 싶으면 그냥 가셔도 됩니다. 등록 권유 없어요.',
   },
   {
     Icon: ShieldCheck,
-    title: '첫 2주 불만족 시 전액 환불',
-    desc: '출석 2회 이후 카카오로 요청하시면 즉시 환불 처리됩니다.',
+    title: '첫 수업 듣고 아니면 전액 환불',
+    desc: '첫 수업 듣고 맞지 않는다고 느끼시면 카카오로 말씀해 주세요. 군말 없이 전액 돌려드립니다.',
   },
   {
     Icon: FileText,
     title: '상담만 받아도 가이드 PDF',
-    desc: '권동원 대표가 정리한 오디션 합격 가이드 무료로 드립니다.',
+    desc: '권동원 대표가 직접 쓴 오디션 합격 가이드, 오시는 분 모두 무료로 드려요.',
   },
 ]
 
@@ -430,9 +432,9 @@ export default function JoinPage() {
               }}
             >
               {[
-                { Icon: Users, n: '01', t: '레피티션', d: '상대 관찰 · 즉흥 반응' },
-                { Icon: Zap, n: '02', t: '액티비티', d: '집중력 · 몰입 훈련' },
-                { Icon: FileText, n: '03', t: '텍스트 분석', d: '인물의 진짜 욕구 해석' },
+                { Icon: Users, n: '01', t: '레피티션', d: '상대를 보고 느끼는 그대로 반응해요. 만들어낸 감정이 아니라, 진짜 일어난 감정.' },
+                { Icon: Zap, n: '02', t: '액티비티', d: '집중할 과제를 주고 연기를 잊게 해요. 몸이 먼저 반응하면 연기는 저절로 따라와요.' },
+                { Icon: FileText, n: '03', t: '텍스트 분석', d: '대사를 외우는 게 아니라 읽는 법을 배워요. 인물이 왜 이 말을 하는지부터 찾아요.' },
               ].map(({ Icon, n, t, d }) => (
                 <div
                   key={n}
@@ -486,6 +488,103 @@ export default function JoinPage() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* ③.5 MEISNER VIDEO / PHOTO                                  */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section style={{ background: 'var(--bg-deep)', padding: '0' }}>
+        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+          {MEISNER_VIDEO_ID ? (
+            <div
+              style={{
+                position: 'relative',
+                paddingBottom: '56.25%',
+                height: 0,
+                overflow: 'hidden',
+              }}
+            >
+              <iframe
+                src={`https://www.youtube.com/embed/${MEISNER_VIDEO_ID}?rel=0&modestbranding=1`}
+                title="마이즈너 테크닉 소개"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  border: 'none',
+                }}
+              />
+            </div>
+          ) : (
+            <div style={{ position: 'relative', overflow: 'hidden', minHeight: '380px' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={STUDIO_IMG}
+                alt="KD4 액팅 스튜디오 — 마이즈너 테크닉 수업"
+                style={{
+                  width: '100%',
+                  height: '380px',
+                  objectFit: 'cover',
+                  objectPosition: 'center 40%',
+                  display: 'block',
+                }}
+              />
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'linear-gradient(180deg, rgba(10,15,30,0.25) 0%, rgba(10,15,30,0.72) 100%)',
+                  display: 'flex',
+                  alignItems: 'flex-end',
+                  padding: '40px 36px',
+                }}
+              >
+                <div>
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-display)',
+                      fontSize: '0.7rem',
+                      letterSpacing: '0.25em',
+                      color: 'rgba(255,255,255,0.55)',
+                      marginBottom: '10px',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    Meisner Technique
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-serif)',
+                      fontSize: 'clamp(1.1rem, 3vw, 1.5rem)',
+                      color: '#ffffff',
+                      lineHeight: 1.55,
+                      maxWidth: '520px',
+                    }}
+                  >
+                    "연기는 상대방에게 사는 것이다"
+                    <span
+                      style={{
+                        display: 'block',
+                        fontSize: '0.78rem',
+                        color: 'rgba(255,255,255,0.5)',
+                        fontFamily: 'var(--font-sans)',
+                        fontStyle: 'normal',
+                        marginTop: '8px',
+                        letterSpacing: '0.05em',
+                      }}
+                    >
+                      — Sanford Meisner
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -820,7 +919,7 @@ export default function JoinPage() {
                 letterSpacing: '0.02em',
               }}
             >
-              월 {MONTH_SAVING.toLocaleString()}원 세이브
+              첫 달 {MONTH_SAVING.toLocaleString()}원 할인
             </div>
             <div
               style={{
@@ -834,7 +933,7 @@ export default function JoinPage() {
                 letterSpacing: '0.02em',
               }}
             >
-              4개월 총 {TOTAL_SAVING.toLocaleString()}원 절감
+              이후 정가 복귀 · 마감 후 신청 불가
             </div>
           </div>
 
@@ -933,11 +1032,14 @@ export default function JoinPage() {
                       </span>
                     )}
                   </div>
-                  {/* 코스 총액 병기 — Round 3 반영 */}
+                  {/* 코스 총액 — 첫 달 할인가 + 나머지 정가 합산 */}
                   {cls.course && (() => {
                     const months = parseInt(cls.course.match(/\d+/)?.[0] ?? '1')
-                    const monthly = parseInt(cls.price.replace(/,/g, ''))
-                    const total = monthly * months
+                    const discounted = parseInt(cls.price.replace(/,/g, ''))
+                    const regular = cls.originalPrice
+                      ? parseInt(cls.originalPrice.replace(/,/g, ''))
+                      : discounted
+                    const total = discounted + regular * (months - 1)
                     return (
                       <p style={{ fontSize: '0.78rem', color: 'var(--gray-light)', marginBottom: '6px' }}>
                         {cls.course} 총{' '}
