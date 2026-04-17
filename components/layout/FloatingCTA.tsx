@@ -93,7 +93,7 @@ export default function FloatingCTA() {
             e.currentTarget.style.transform = 'translateY(0)'
           }}
         >
-          지금 신청하면 10만원 즉시 할인 → 수강신청하기
+          수강신청
         </a>
       </div>
     </>
