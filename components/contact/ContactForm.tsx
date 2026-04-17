@@ -190,18 +190,19 @@ export default function ContactForm() {
               >
                 <span style={{ fontSize: '1.4rem', lineHeight: 1 }}>{opt.icon}</span>
                 <span style={{
-                  fontSize: '0.78rem',
+                  fontSize: '0.72rem',
                   fontWeight: selected ? 700 : 500,
                   color: selected ? '#111111' : 'var(--gray)',
                   letterSpacing: '0.01em',
                   lineHeight: 1.3,
+                  whiteSpace: 'nowrap',
                 }}>
                   {opt.label}
                 </span>
                 <span style={{
-                  fontSize: '0.66rem',
+                  fontSize: '0.6rem',
                   color: selected ? 'var(--navy)' : 'var(--gray-light)',
-                  lineHeight: 1.2,
+                  lineHeight: 1.3,
                   whiteSpace: 'pre-line',
                   textAlign: 'center',
                 }}>

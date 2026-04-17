@@ -1648,7 +1648,7 @@ export default function HomePage() {
                   boxShadow: "0 4px 20px rgba(21,72,138,0.3)",
                 }}
               >
-                방문상담 신청
+                상담신청
               </a>
               <a
                 href="https://pf.kakao.com/_ximxdqn"
