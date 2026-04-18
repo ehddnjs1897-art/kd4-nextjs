@@ -39,7 +39,7 @@ const INSTRUCTOR_IMG =
   'https://drive.google.com/uc?export=view&id=1WfyN6x21sRLNzzNNYB-dBschGRzdEzUP'
 const STUDIO_IMG =
   'https://drive.google.com/uc?export=view&id=1by0ZDO3J5yS-44McKbmAPixjPtI3xWNr'
-const DEADLINE = '2026-04-30T23:59:59'
+const DEADLINE = '2026-04-19T23:59:59'  // 하루 남음
 
 /* ── lib/classes.ts 데이터 재사용 ─────────────────────────────────── */
 const OPEN_CLASSES = CLASSES.filter((c) => c.isNewMemberOpen && c.highlight)
@@ -47,9 +47,8 @@ const TOTAL_SEATS = OPEN_CLASSES.reduce((s, c) => s + (c.remainingSeats ?? 0), 0
 const MAIN_CLASS = CLASSES.find((c) => c.nameKo === '마이즈너 테크닉 정규 클래스')!
 const FILM_CLASS = CLASSES.find((c) => c.nameKo === '출연영상 클래스')!
 
-/* 절감액 계산 (Anchor Price 시각화) */
-const MONTH_SAVING = 100000
-const TOTAL_SAVING = MONTH_SAVING * 4 // 4개월 코스 기준
+/* 첫 달 할인액 (Anchor Price 시각화) */
+const FIRST_MONTH_DISCOUNT = 100000
 
 /* ── Agitation 감정 체크리스트 3개 ────────────────────────────── */
 const PAIN_POINTS = [
@@ -793,18 +792,16 @@ export default function JoinPage() {
               봄맞이 스페셜 혜택
             </h2>
             <p style={{ fontSize: '0.95rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-              전체 <strong style={{ color: 'var(--navy)' }}>{TOTAL_SEATS}석</strong>만 남았습니다 · 마감 후 정가 복귀
+              잔여 <strong style={{ color: 'var(--navy)' }}>{TOTAL_SEATS}석</strong> · <strong style={{ color: 'var(--accent-red)' }}>첫 달만</strong> 10만원 할인 (2개월 차부터 정상가)
             </p>
           </div>
 
-          {/* 절감액 배지 */}
+          {/* 할인 배지 (첫 달만 할인) */}
           <div
             style={{
               maxWidth: '520px',
               margin: '0 auto 24px',
               display: 'flex',
-              gap: '12px',
-              flexWrap: 'wrap',
               justifyContent: 'center',
             }}
           >
@@ -813,28 +810,14 @@ export default function JoinPage() {
                 background: 'var(--accent-red-soft)',
                 border: '1px solid rgba(199,62,62,0.25)',
                 borderRadius: 'var(--radius)',
-                padding: '10px 16px',
-                fontSize: '0.82rem',
+                padding: '10px 20px',
+                fontSize: '0.88rem',
                 color: 'var(--accent-red)',
                 fontWeight: 700,
                 letterSpacing: '0.02em',
               }}
             >
-              월 {MONTH_SAVING.toLocaleString()}원 세이브
-            </div>
-            <div
-              style={{
-                background: 'rgba(21,72,138,0.08)',
-                border: '1px solid rgba(21,72,138,0.25)',
-                borderRadius: 'var(--radius)',
-                padding: '10px 16px',
-                fontSize: '0.82rem',
-                color: 'var(--navy)',
-                fontWeight: 700,
-                letterSpacing: '0.02em',
-              }}
-            >
-              4개월 총 {TOTAL_SAVING.toLocaleString()}원 절감
+              첫 달 {FIRST_MONTH_DISCOUNT.toLocaleString()}원 할인
             </div>
           </div>
 
@@ -909,35 +892,73 @@ export default function JoinPage() {
                   )}
                 </div>
                 <div className="class-card-footer">
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'baseline',
-                      gap: '10px',
-                      marginBottom: '6px',
-                      flexWrap: 'wrap',
-                    }}
-                  >
-                    <span className="class-price">
-                      {cls.price}<span>원/월</span>
+                  {/* 첫 달 할인가 (강조) */}
+                  <div style={{ marginBottom: '8px' }}>
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        fontFamily: 'var(--font-display)',
+                        fontSize: '0.68rem',
+                        letterSpacing: '0.12em',
+                        color: 'var(--accent-red)',
+                        fontWeight: 700,
+                        marginBottom: '4px',
+                      }}
+                    >
+                      첫 달
                     </span>
-                    {cls.originalPrice && (
-                      <span
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'baseline',
+                        gap: '10px',
+                        flexWrap: 'wrap',
+                      }}
+                    >
+                      <span className="class-price">
+                        {cls.price}<span>원</span>
+                      </span>
+                      {cls.originalPrice && (
+                        <span
+                          style={{
+                            fontSize: '0.82rem',
+                            color: 'var(--gray)',
+                            textDecoration: 'line-through',
+                          }}
+                        >
+                          {cls.originalPrice}원
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* 2개월 차부터 정상가 */}
+                  {cls.originalPrice && (() => {
+                    const months = parseInt(cls.course?.match(/\d+/)?.[0] ?? '1')
+                    if (months <= 1) return null
+                    return (
+                      <p
                         style={{
-                          fontSize: '0.82rem',
-                          color: 'var(--gray)',
-                          textDecoration: 'line-through',
+                          fontSize: '0.8rem',
+                          color: 'var(--gray-light)',
+                          marginBottom: '10px',
+                          paddingTop: '8px',
+                          borderTop: '1px dashed var(--border)',
                         }}
                       >
-                        {cls.originalPrice}원
-                      </span>
-                    )}
-                  </div>
-                  {/* 코스 총액 병기 — Round 3 반영 */}
+                        2~{months}개월 차 {cls.originalPrice}원/월 (정상가)
+                      </p>
+                    )
+                  })()}
+
+                  {/* 코스 총액 (첫달 할인 반영) */}
                   {cls.course && (() => {
                     const months = parseInt(cls.course.match(/\d+/)?.[0] ?? '1')
-                    const monthly = parseInt(cls.price.replace(/,/g, ''))
-                    const total = monthly * months
+                    const first = parseInt(cls.price.replace(/,/g, ''))
+                    const regular = cls.originalPrice
+                      ? parseInt(cls.originalPrice.replace(/,/g, ''))
+                      : first
+                    const total = first + regular * (months - 1)
                     return (
                       <p style={{ fontSize: '0.78rem', color: 'var(--gray-light)', marginBottom: '6px' }}>
                         {cls.course} 총{' '}
