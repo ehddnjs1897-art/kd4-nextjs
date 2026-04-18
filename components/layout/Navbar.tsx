@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 
 const publicLinks = [
   { label: '스튜디오 소개', href: '/about' },
-  { label: '클래스', href: '/#classes' },
+  { label: '클래스 소개', href: '/classes' },
 ]
 
 const crewLinks = [
@@ -307,12 +307,8 @@ export default function Navbar() {
 
           {/* ── CTA + 햄버거 ── */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <a
-              href="#contact"
-              onClick={(e) => {
-                e.preventDefault()
-                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
-              }}
+            <Link
+              href="/join"
               className="desktop-cta"
               style={{
                 display: 'inline-block',
@@ -326,12 +322,13 @@ export default function Navbar() {
                 letterSpacing: '0.04em',
                 transition: 'background 0.2s, opacity 0.2s',
                 whiteSpace: 'nowrap',
+                textDecoration: 'none',
               }}
               onMouseEnter={e => (e.currentTarget.style.background = 'var(--gold-light)')}
               onMouseLeave={e => (e.currentTarget.style.background = 'var(--gold)')}
             >
               수강신청
-            </a>
+            </Link>
 
             {/* 햄버거 */}
             <button
@@ -493,13 +490,9 @@ export default function Navbar() {
             </ul>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '32px' }}>
-              <a
-                href="#contact"
-                onClick={(e) => {
-                  e.preventDefault()
-                  closeMobile()
-                  setTimeout(() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }), 100)
-                }}
+              <Link
+                href="/join"
+                onClick={closeMobile}
                 style={{
                   display: 'block',
                   padding: '16px',
@@ -511,10 +504,11 @@ export default function Navbar() {
                   borderRadius: 'var(--radius)',
                   textAlign: 'center',
                   letterSpacing: '0.08em',
+                  textDecoration: 'none',
                 }}
               >
                 수강신청 하기
-              </a>
+              </Link>
               <a
                 href="https://pf.kakao.com/_ximxdqn"
                 target="_blank"

@@ -2,8 +2,8 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
-import { CLASSES } from "@/lib/classes";
+import { useEffect, useRef } from "react";
+
 import { pixel } from "@/lib/meta-pixel";
 import { CASTING_PHOTOS } from "@/lib/casting-photos"
 import { Users, Award, TrendingUp } from "lucide-react"
@@ -65,148 +65,12 @@ const reviewAuthorStyle: React.CSSProperties = {
   letterSpacing: "0.02em",
 }
 
-// ─── 클래스 카드 ───────────────────────────────────────────────────────────────
-
-function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
-  return (
-    <div
-      style={{
-        background: "var(--bg2)",
-        border: "1.5px solid var(--navy)",
-        borderRadius: "var(--radius)",
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <div style={{ padding: "28px 24px 24px", flex: 1 }}>
-        {/* step 뱃지 + 취미반 뱃지 */}
-        <div style={{ display: "flex", gap: "8px", alignItems: "center", marginBottom: "16px", flexWrap: "wrap" }}>
-          <span
-            style={{
-              display: "inline-block",
-              padding: "3px 10px",
-              background: "rgba(21,72,138,0.08)",
-              border: "1px solid rgba(21,72,138,0.35)",
-              borderRadius: "2px",
-              fontSize: "0.7rem",
-              letterSpacing: "0.1em",
-              color: "var(--navy)",
-              fontWeight: 700,
-            }}
-          >
-            {cls.step}
-          </span>
-          {cls.isHobby && (
-            <span style={{
-              display: "inline-block",
-              padding: "2px 8px",
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid var(--border)",
-              borderRadius: "2px",
-              fontSize: "0.68rem",
-              letterSpacing: "0.06em",
-              color: "var(--gray)",
-            }}>
-              취미반
-            </span>
-          )}
-        </div>
-
-        {/* 인용구 */}
-        <p
-          style={{
-            color: "var(--gold)",
-            fontSize: "0.85rem",
-            lineHeight: 1.5,
-            marginBottom: "12px",
-            fontStyle: "italic",
-          }}
-        >
-          &ldquo;{cls.quote}&rdquo;
-        </p>
-
-        {/* 클래스명 */}
-        <h3
-          style={{
-            fontSize: "1.15rem",
-            fontWeight: 700,
-            color: "var(--white)",
-            marginBottom: "4px",
-          }}
-        >
-          {cls.nameKo}
-        </h3>
-        <p
-          style={{
-            fontSize: "0.75rem",
-            color: "var(--gray)",
-            letterSpacing: "0.08em",
-            marginBottom: cls.note ? "12px" : "24px",
-          }}
-        >
-          {cls.nameEn}
-        </p>
-
-        {/* note — "연기 경험 없어도 OK" 등 핵심 1줄 */}
-        {cls.note && (
-          <p
-            style={{
-              fontSize: "0.78rem",
-              color: "var(--gold)",
-              marginBottom: "24px",
-              padding: "6px 10px",
-              background: "rgba(21,72,138,0.08)",
-              borderRadius: "2px",
-              borderLeft: "2px solid var(--gold)",
-            }}
-          >
-            {cls.note}
-          </p>
-        )}
-      </div>
-
-      {/* CTA */}
-      <div style={{ borderTop: "1px solid var(--border)", padding: "16px 24px" }}>
-        <a
-          href="/join"
-          className="class-card-cta"
-          onClick={() => {
-            pixel.viewContent(cls.nameKo)
-            pixel.contact()
-          }}
-          style={{
-            display: "block",
-            textAlign: "center",
-            padding: "12px 0",
-            background: "var(--gold)",
-            color: "#ffffff",
-            fontWeight: 700,
-            fontSize: "0.88rem",
-            fontFamily: "var(--font-display)",
-            letterSpacing: "0.06em",
-            borderRadius: "var(--radius)",
-            textDecoration: "none",
-            transition: "opacity 0.2s",
-            boxShadow: "0 4px 16px rgba(21,72,138,0.25)",
-          }}
-        >
-          가격·상세 보기 →
-        </a>
-      </div>
-    </div>
-  );
-}
-
 // ─── 메인 페이지 ───────────────────────────────────────────────────────────────
 
 export default function HomePage() {
   const heroRef = useRef<HTMLElement>(null)
   const heroTitleRef = useRef<HTMLDivElement>(null)
   const mainRef = useRef<HTMLElement>(null)
-  const [step2Open, setStep2Open] = useState(false)
-  const [step3Open, setStep3Open] = useState(false)
-  const [extraOpen, setExtraOpen] = useState(false)
 
   /* ── 히어로 타이틀: 서브 가로폭을 h1과 일치시킨 후 "한 번만" 등장 ──
        - KoPub·Helvetica 명시 로드 → offsetWidth 실측 → letter-spacing 1차 계산
@@ -1108,130 +972,75 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 5. CLASSES ───────────────────────────────────────────────────────── */}
+      {/* ── 5. CLASSES TEASER ────────────────────────────────────────────────── */}
       <section id="classes" className="section" style={{ background: "var(--bg)" }}>
         <div className="container">
-          <div style={{ textAlign: "center", marginBottom: "60px" }}>
-            <h2
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "clamp(1.8rem, 4vw, 2.6rem)",
-                fontWeight: 700,
-                letterSpacing: "0.2em",
-                color: "var(--white)",
-              }}
-            >
-              CURRICULUM
+          <div style={{ textAlign: "center", marginBottom: "48px" }}>
+            <p className="section-eyebrow">CURRICULUM</p>
+            <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700, color: "var(--white)", marginBottom: "12px" }}>
+              클래스 라인업
             </h2>
+            <p style={{ fontSize: "0.92rem", color: "var(--gray-light)", lineHeight: 1.7 }}>
+              베이직부터 액터스 리더까지 — 단계별 성장 시스템
+            </p>
           </div>
 
-          {/* STEP 1 - 신규 멤버 */}
-          <div style={{ marginBottom: "48px" }}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", marginBottom: "32px", gap: "10px", padding: "28px 32px", border: "1px solid rgba(21,72,138,0.35)", borderRadius: "12px", background: "rgba(21,72,138,0.04)" }}>
-              <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.25em", color: "var(--navy)", fontFamily: "var(--font-display)", margin: 0 }}>STEP 1</p>
-              <h3 style={{ fontSize: "clamp(1.8rem, 4vw, 2.4rem)", fontWeight: 800, color: "#111111", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>A 코스</h3>
-              <p style={{ fontSize: "clamp(0.9rem, 2vw, 1rem)", color: "var(--navy)", fontWeight: 600, margin: 0, letterSpacing: "0.04em" }}>신규 멤버 신청가능</p>
-            </div>
-            <div
-              className="classes-grid"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 320px), 1fr))",
-                gap: "16px",
-              }}
-            >
-              {CLASSES.filter(c => c.isNewMemberOpen).map((cls, i) => (
-                <ClassCard key={i} cls={cls} />
-              ))}
-            </div>
-          </div>
-
-          {[
-            { label: "STEP 2", title: "B 코스", desc: "STEP1 수료 후 참여할 수 있는 클래스입니다.", open: step2Open, setOpen: setStep2Open, filter: "step2" },
-            { label: "STEP 3", title: "C 코스", desc: "STEP2 수료 후 참여할 수 있는 클래스입니다.", open: step3Open, setOpen: setStep3Open, filter: "step3" },
-            { label: "EXTRA",  title: "별도 코스", desc: "별도로 운영되는 클래스입니다.", open: extraOpen, setOpen: setExtraOpen, filter: "extra" },
-          ].map(({ label, title, desc, open, setOpen, filter }) => (
-            <div key={filter} style={{ marginBottom: "16px" }}>
-              <button
-                onClick={() => setOpen((o: boolean) => !o)}
+          {/* 클래스 티어 3줄 */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "48px" }}>
+            {[
+              { step: "STEP 1", title: "A 코스 — 신규 신청 가능", items: "베이직 클래스 · 마이즈너 테크닉 정규 · 출연영상 클래스", open: true },
+              { step: "STEP 2", title: "B 코스 — STEP 1 수료 후", items: "출연영상 심화 · 1달 완성 클래스", open: false },
+              { step: "STEP 3 / EXTRA", title: "C 코스 · 별도", items: "액터스 리더 · 오디션 클래스 · 움직임 · 개인 레슨", open: false },
+            ].map(row => (
+              <div
+                key={row.step}
                 style={{
-                  display: "flex", flexDirection: "column", alignItems: "center",
-                  width: "100%", background: open ? "rgba(255,255,255,0.03)" : "none",
-                  border: "1px solid var(--border)", borderRadius: "12px",
-                  cursor: "pointer", padding: "24px 32px",
-                  marginBottom: open ? "20px" : "0", textAlign: "center", gap: "8px",
-                  transition: "border-color 0.2s, background 0.2s",
-                  boxShadow: open ? "0 0 20px rgba(255,255,255,0.04)" : "none",
+                  display: "flex", alignItems: "center", gap: "20px",
+                  padding: "20px 28px",
+                  background: row.open ? "rgba(21,72,138,0.05)" : "var(--bg2)",
+                  border: `1px solid ${row.open ? "rgba(21,72,138,0.3)" : "var(--border)"}`,
+                  borderRadius: "10px",
+                  flexWrap: "wrap",
                 }}
               >
-                <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.25em", color: "var(--navy)", fontFamily: "var(--font-display)", margin: 0 }}>{label}</p>
-                <h3 style={{ fontSize: "clamp(1.8rem, 4vw, 2.4rem)", fontWeight: 800, color: "var(--gray-light)", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>{title}</h3>
-                <p style={{ fontSize: "0.8rem", color: "var(--gray)", margin: 0 }}>{desc}</p>
-                <span style={{ fontSize: "0.85rem", color: "var(--gray)", transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.3s", display: "inline-block", marginTop: "4px" }}>▼</span>
-              </button>
-              {open && (
-                <div className="classes-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 300px), 1fr))", gap: "12px", opacity: 0.75 }}>
-                  {CLASSES.filter(c => c.category === filter).map((cls, i) => (
-                    <ClassCard key={i} cls={cls} />
-                  ))}
+                <span style={{
+                  fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.2em",
+                  color: row.open ? "var(--navy)" : "var(--gray)",
+                  fontFamily: "var(--font-display)", flexShrink: 0, minWidth: "72px",
+                }}>
+                  {row.step}
+                </span>
+                <div style={{ flex: 1 }}>
+                  <p style={{ fontSize: "0.88rem", fontWeight: 700, color: row.open ? "var(--white)" : "var(--gray-light)", marginBottom: "2px" }}>
+                    {row.title}
+                  </p>
+                  <p style={{ fontSize: "0.78rem", color: "var(--gray)", lineHeight: 1.5 }}>
+                    {row.items}
+                  </p>
                 </div>
-              )}
-            </div>
-          ))}
+                {row.open && (
+                  <span style={{
+                    fontSize: "0.7rem", padding: "3px 10px",
+                    background: "var(--accent-red)", color: "#fff",
+                    borderRadius: "4px", fontWeight: 700, flexShrink: 0,
+                  }}>
+                    모집중
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
 
-          {/* 클래스 하단 CTA 영역 */}
-          <div
-            style={{
-              marginTop: "48px",
-              padding: "40px 32px",
-              background: "linear-gradient(135deg, rgba(21,72,138,0.06) 0%, rgba(0,0,0,0) 100%)",
-              border: "1px solid var(--border)",
-              borderRadius: "12px",
-              textAlign: "center",
-            }}
-          >
-            <p style={{ fontSize: "0.75rem", letterSpacing: "0.25em", color: "var(--gold)", fontFamily: "var(--font-display)", marginBottom: "12px" }}>
-              START YOUR JOURNEY
-            </p>
-            <h3 style={{ fontSize: "clamp(1.2rem, 3vw, 1.6rem)", fontWeight: 700, color: "var(--white)", marginBottom: "8px" }}>
-              어떤 클래스가 맞는지 모르겠다면?
-            </h3>
-            <p style={{ fontSize: "0.88rem", color: "var(--gray)", marginBottom: "28px", lineHeight: 1.6 }}>
-              무료 상담을 통해 나에게 맞는 클래스를 안내받으세요.
-            </p>
-            <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
-              <Link
-                href="/join"
-                onClick={() => pixel.contact()}
-                className="btn-primary"
-                style={{
-                  background: "var(--navy)",
-                  color: "#ffffff",
-                  textDecoration: "none",
-                  boxShadow: "0 4px 20px rgba(21,72,138,0.3)",
-                }}
-              >
-                무료 상담 신청 →
-              </Link>
-              <a
-                href="https://pf.kakao.com/_ximxdqn"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => pixel.contact()}
-                style={{
-                  display: "inline-block",
-                  padding: "14px 40px",
-                  border: "1px solid rgba(17,17,17,0.35)",
-                  color: "#111111",
-                  fontWeight: 600,
-                  fontSize: "0.9rem",
-                  letterSpacing: "0.06em",
-                  borderRadius: "var(--radius)",
-                }}
-              >
-                카카오 상담
-              </a>
-            </div>
+          {/* CTA */}
+          <div style={{ textAlign: "center" }}>
+            <Link
+              href="/classes"
+              onClick={() => pixel.viewContent("classes")}
+              className="btn-primary"
+              style={{ background: "var(--navy)", color: "#ffffff", textDecoration: "none", marginRight: "12px" }}
+            >
+              전체 클래스 · 가격 보기 →
+            </Link>
           </div>
         </div>
       </section>
