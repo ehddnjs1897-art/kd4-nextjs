@@ -1,19 +1,11 @@
 'use client'
 
 import { ArrowRight } from 'lucide-react'
-import CountdownTimer from '@/components/ui/CountdownTimer'
 
-/**
- * /join 전용 상단 고정 바.
- * - lib/classes.ts 데이터 기반 잔여석(props)
- * - 모바일에서도 1줄로 떨어지도록 콘텐츠 간소화
- * - 노란색 사용 안 함 (kd4.club 톤 일관성)
- */
 export default function StickyTopBar({
-  deadline,
   seats,
 }: {
-  deadline: string
+  deadline?: string
   seats: number
 }) {
   return (
@@ -24,58 +16,53 @@ export default function StickyTopBar({
         zIndex: 99,
         background: 'var(--bg2)',
         borderBottom: '1px solid var(--border)',
-        padding: '9px 12px',
+        padding: '9px 16px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '10px',
+        gap: '12px',
         flexWrap: 'nowrap',
         overflow: 'hidden',
         fontFamily: 'var(--font-sans)',
         whiteSpace: 'nowrap',
       }}
     >
+      {/* 월 수강료 */}
+      <span style={{ fontSize: '0.76rem', color: 'var(--gray-light)', flexShrink: 0 }}>
+        월 수강료
+      </span>
+      <span
+        style={{
+          fontSize: '0.82rem',
+          fontWeight: 800,
+          color: 'var(--navy)',
+          fontFamily: 'var(--font-display)',
+          flexShrink: 0,
+          letterSpacing: '0.02em',
+        }}
+      >
+        ₩250,000~
+      </span>
+
+      <span style={{ color: 'var(--border)', fontSize: '0.72rem', flexShrink: 0 }}>|</span>
+
       {/* 잔여석 */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexShrink: 0 }}>
         <span
           style={{
             width: '6px',
             height: '6px',
             borderRadius: '50%',
             background: 'var(--accent-red)',
+            flexShrink: 0,
           }}
         />
-        <span style={{ fontSize: '0.76rem', color: '#111', fontWeight: 600 }}>
-          잔여석 <strong style={{ color: 'var(--navy)' }}>{seats}석</strong>
+        <span style={{ fontSize: '0.76rem', color: 'var(--white)', fontWeight: 600 }}>
+          잔여 <strong style={{ color: 'var(--navy)' }}>{seats}석</strong>
         </span>
       </div>
 
-      {/* 데스크탑 전용 중간 */}
-      <span
-        style={{
-          color: 'var(--border-strong)',
-          fontSize: '0.72rem',
-          flexShrink: 0,
-        }}
-        className="sticky-bar-divider"
-      >
-        |
-      </span>
-
-      {/* 카운트다운 */}
-      <span
-        style={{
-          color: 'var(--navy)',
-          fontFamily: 'var(--font-display)',
-          fontWeight: 700,
-          fontSize: '0.78rem',
-          flexShrink: 0,
-        }}
-      >
-        <CountdownTimer deadline={deadline} compact />
-      </span>
-
-      {/* CTA — 모바일 우선 */}
+      {/* CTA */}
       <a
         href="#form"
         style={{

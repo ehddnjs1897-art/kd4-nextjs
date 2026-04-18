@@ -68,7 +68,6 @@ const reviewAuthorStyle: React.CSSProperties = {
 // ─── 클래스 카드 ───────────────────────────────────────────────────────────────
 
 function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
-  const [priceVisible, setPriceVisible] = useState(true)
   return (
     <div
       style={{
@@ -78,32 +77,8 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
         overflow: "hidden",
         display: "flex",
         flexDirection: "column",
-        position: "relative",
-        cursor: "pointer",
       }}
     >
-
-      {/* 잔여석 뱃지 */}
-      {cls.remainingSeats != null && (
-        <span
-          style={{
-            position: "absolute",
-            top: "12px",
-            right: "12px",
-            padding: "6px 14px",
-            background: "var(--accent-red)",
-            color: "#ffffff",
-            fontSize: "0.85rem",
-            fontWeight: 800,
-            borderRadius: "6px",
-            letterSpacing: "0.04em",
-            zIndex: 1,
-          }}
-        >
-          잔여 {cls.remainingSeats}석
-        </span>
-      )}
-
       <div style={{ padding: "28px 24px 24px", flex: 1 }}>
         {/* step 뱃지 + 취미반 뱃지 */}
         <div style={{ display: "flex", gap: "8px", alignItems: "center", marginBottom: "16px", flexWrap: "wrap" }}>
@@ -167,32 +142,19 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             fontSize: "0.75rem",
             color: "var(--gray)",
             letterSpacing: "0.08em",
-            marginBottom: cls.subtitle || cls.note ? "12px" : "16px",
+            marginBottom: cls.note ? "12px" : "24px",
           }}
         >
           {cls.nameEn}
         </p>
 
-        {/* subtitle */}
-        {cls.subtitle && (
-          <p
-            style={{
-              fontSize: "0.8rem",
-              color: "var(--gray-light)",
-              marginBottom: cls.note ? "8px" : "16px",
-            }}
-          >
-            {cls.subtitle}
-          </p>
-        )}
-
-        {/* note (골드 강조) */}
+        {/* note — "연기 경험 없어도 OK" 등 핵심 1줄 */}
         {cls.note && (
           <p
             style={{
               fontSize: "0.78rem",
               color: "var(--gold)",
-              marginBottom: "16px",
+              marginBottom: "24px",
               padding: "6px 10px",
               background: "rgba(21,72,138,0.08)",
               borderRadius: "2px",
@@ -202,159 +164,10 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             {cls.note}
           </p>
         )}
-
-        {/* bullets */}
-        <ul
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "6px",
-            marginBottom: "20px",
-          }}
-        >
-          {cls.bullets.map((b, i) => (
-            <li
-              key={i}
-              style={{
-                fontSize: "0.82rem",
-                color: "var(--gray-light)",
-                lineHeight: 1.5,
-                paddingLeft: "14px",
-                position: "relative",
-              }}
-            >
-              <span
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  top: "0.45em",
-                  width: "5px",
-                  height: "1px",
-                  background: "var(--gold)",
-                  display: "inline-block",
-                }}
-              />
-              {b}
-            </li>
-          ))}
-        </ul>
       </div>
 
-      {/* 하단 정보 */}
-      <div
-        style={{
-          borderTop: "1px solid var(--border)",
-          padding: "16px 24px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "10px",
-        }}
-      >
-        {/* 스케줄 / 시간 / 정원 */}
-        <div
-          style={{
-            display: "flex",
-            gap: "16px",
-            flexWrap: "wrap",
-          }}
-        >
-          {[
-            { label: "일정", value: cls.schedule },
-            { label: "시간", value: cls.duration },
-            { label: "정원", value: cls.capacity },
-            ...(cls.course ? [{ label: "코스", value: cls.course }] : []),
-          ].map((info) => (
-            <div key={info.label}>
-              <span
-                style={{ fontSize: "0.68rem", color: "var(--gray)", display: "block" }}
-              >
-                {info.label}
-              </span>
-              <span style={{ fontSize: "0.82rem", color: "var(--gray-light)" }}>
-                {info.value}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* 가격 + 강사 */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-end",
-          }}
-        >
-          <div>
-            {!priceVisible ? (
-              <button
-                onClick={() => setPriceVisible(true)}
-                style={{
-                  background: "rgba(21,72,138,0.08)",
-                  border: "1px solid rgba(21,72,138,0.5)",
-                  borderRadius: "6px",
-                  padding: "10px 18px",
-                  color: "var(--gold)",
-                  fontSize: "0.82rem",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  letterSpacing: "0.05em",
-                  transition: "all 0.2s",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                }}
-              >
-                수강료 확인하기 <span style={{ fontSize: "0.8rem" }}>→</span>
-              </button>
-            ) : (
-              <>
-                <span style={{ fontSize: "0.65rem", color: "var(--gray)", letterSpacing: "0.06em" }}>월 수강료</span>
-
-                {cls.originalPrice && (
-                  <p style={{ margin: "4px 0 0", lineHeight: 1 }}>
-                    <span style={{ fontSize: "0.78rem", color: "var(--gray)", textDecoration: "line-through" }}>
-                      ₩{cls.originalPrice}
-                    </span>
-                    <span style={{
-                      marginLeft: "8px",
-                      fontSize: "0.68rem",
-                      fontWeight: 700,
-                      color: "var(--accent-red)",
-                      padding: "2px 6px",
-                      background: "rgba(199,62,62,0.12)",
-                      borderRadius: "3px",
-                    }}>
-                      -10만원
-                    </span>
-                  </p>
-                )}
-
-                <p style={{ display: "flex", alignItems: "baseline", gap: "2px", marginTop: "2px" }}>
-                  <span style={{
-                    fontFamily: "var(--font-display)",
-                    fontSize: "clamp(1.8rem, 4vw, 2.2rem)",
-                    fontWeight: 900,
-                    color: cls.originalPrice ? "var(--navy)" : "var(--white)",
-                    lineHeight: 1,
-                    letterSpacing: "-0.02em",
-                  }}>
-                    ₩{cls.price}
-                  </span>
-                  <span style={{ fontSize: "0.7rem", color: "var(--gray)", marginLeft: "2px" }}>/월</span>
-                </p>
-
-                {cls.promoLabel && (
-                  <p style={{ fontSize: "0.7rem", color: "var(--gold)", fontWeight: 600, marginTop: "4px" }}>
-                    {cls.promoLabel}
-                  </p>
-                )}
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* CTA 버튼 */}
+      {/* CTA */}
+      <div style={{ borderTop: "1px solid var(--border)", padding: "16px 24px" }}>
         <a
           href="/join"
           className="class-card-cta"
@@ -366,7 +179,6 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             display: "block",
             textAlign: "center",
             padding: "12px 0",
-            marginTop: "14px",
             background: "var(--gold)",
             color: "#ffffff",
             fontWeight: 700,
@@ -379,7 +191,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             boxShadow: "0 4px 16px rgba(21,72,138,0.25)",
           }}
         >
-          상세 보기 →
+          가격·상세 보기 →
         </a>
       </div>
     </div>
