@@ -7,16 +7,28 @@ import type {
   AdminPost,
   AdminApplication,
 } from './page'
+import ClassesTab from '@/components/admin/ClassesTab'
+import SchedulesTab from '@/components/admin/SchedulesTab'
+import EnrollmentsTab from '@/components/admin/EnrollmentsTab'
+import AttendanceTab from '@/components/admin/AttendanceTab'
+import SettlementsTab from '@/components/admin/SettlementsTab'
+import PaymentsTab from '@/components/admin/PaymentsTab'
 
 // ─── 탭 ──────────────────────────────────────────────────────────────────────
 
-type Tab = 'users' | 'actors' | 'posts' | 'applications'
+type Tab = 'users' | 'actors' | 'posts' | 'applications' | 'classes' | 'schedules' | 'enrollments' | 'attendance' | 'settlements' | 'payments'
 
 const TAB_LABELS: Record<Tab, string> = {
   users: '회원 관리',
   actors: '배우 목록',
   posts: '게시판 관리',
   applications: '수강신청',
+  classes: '클래스',
+  schedules: '스케줄',
+  enrollments: '수강 등록',
+  attendance: '출석',
+  settlements: '정산',
+  payments: '결제',
 }
 
 // ─── 유틸 ─────────────────────────────────────────────────────────────────────
@@ -379,6 +391,14 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
             </div>
           </section>
         )}
+
+        {/* ── 운영시스템 탭들 ── */}
+        {activeTab === 'classes' && <ClassesTab />}
+        {activeTab === 'schedules' && <SchedulesTab />}
+        {activeTab === 'enrollments' && <EnrollmentsTab />}
+        {activeTab === 'attendance' && <AttendanceTab />}
+        {activeTab === 'settlements' && <SettlementsTab />}
+        {activeTab === 'payments' && <PaymentsTab />}
 
         {/* ── 수강신청 목록 ── */}
         {activeTab === 'applications' && (

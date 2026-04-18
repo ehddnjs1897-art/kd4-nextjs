@@ -107,3 +107,143 @@ export interface GamePrize {
   status: 'pending' | 'claimed' | 'delivered'
   created_at: string
 }
+
+// ============================================
+// 운영시스템 타입
+// ============================================
+
+export interface ClassRow {
+  id: string
+  slug: string
+  step: string
+  category: 'step1' | 'step2' | 'step3' | 'extra' | null
+  name_ko: string
+  name_en: string | null
+  quote: string | null
+  subtitle: string | null
+  note: string | null
+  bullets: string[]
+  schedule_label: string | null
+  duration_label: string | null
+  capacity_label: string | null
+  capacity: number | null
+  course_label: string | null
+  price: number
+  original_price: number | null
+  promo_label: string | null
+  remaining_seats: number | null
+  is_highlight: boolean
+  is_new_member_open: boolean
+  is_hobby: boolean
+  is_active: boolean
+  sort_order: number
+  instructor_id: string | null
+  instructor_label: string | null
+  settlement_rate: number
+  created_at: string
+  updated_at: string
+}
+
+export interface ClassSchedule {
+  id: string
+  class_id: string
+  session_no: number | null
+  title: string | null
+  starts_at: string
+  ends_at: string
+  recurrence_rule: string | null
+  recurrence_parent_id: string | null
+  location: string
+  instructor_id: string | null
+  status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled'
+  note: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type EnrollmentStatus = 'pending' | 'active' | 'completed' | 'cancelled' | 'refunded'
+export type EnrollmentPaymentStatus = 'unpaid' | 'partial' | 'paid' | 'refunded'
+
+export interface Enrollment {
+  id: string
+  application_id: string | null
+  class_id: string
+  user_id: string | null
+  enrollee_name: string
+  enrollee_phone: string | null
+  enrollee_email: string | null
+  started_on: string
+  ends_on: string | null
+  price_at_enroll: number
+  discount_amount: number
+  status: EnrollmentStatus
+  payment_status: EnrollmentPaymentStatus
+  admin_note: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type AttendanceStatus = 'present' | 'late' | 'absent' | 'excused' | 'makeup'
+
+export interface AttendanceRecord {
+  id: string
+  schedule_id: string
+  enrollment_id: string
+  class_id: string | null
+  user_id: string | null
+  status: AttendanceStatus
+  makeup_for_schedule_id: string | null
+  checked_at: string
+  checked_by: string | null
+  note: string | null
+}
+
+export type SettlementStatus = 'draft' | 'approved' | 'paid' | 'disputed'
+
+export interface Settlement {
+  id: string
+  instructor_id: string
+  class_id: string | null
+  period_start: string
+  period_end: string
+  gross_revenue: number
+  settlement_rate: number
+  adjustments: number
+  payout_amount: number
+  session_count: number
+  attendance_count: number
+  calculation_snapshot: Record<string, unknown> | null
+  status: SettlementStatus
+  paid_at: string | null
+  paid_by: string | null
+  note: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type PaymentMethod = 'card' | 'transfer' | 'kakaopay' | 'tosspay' | 'naverpay' | 'cash' | 'other'
+export type PaymentType = 'payment' | 'installment' | 'refund' | 'partial_refund'
+export type PaymentTxStatus = 'pending' | 'completed' | 'failed' | 'cancelled'
+
+export interface Payment {
+  id: string
+  enrollment_id: string | null
+  user_id: string | null
+  class_id: string | null
+  amount: number
+  method: PaymentMethod | null
+  provider: string | null
+  provider_tx_id: string | null
+  receipt_url: string | null
+  type: PaymentType
+  status: PaymentTxStatus
+  paid_at: string | null
+  refunded_at: string | null
+  refund_reason: string | null
+  settlement_id: string | null
+  payer_name: string | null
+  payer_phone: string | null
+  memo: string | null
+  created_at: string
+  updated_at: string
+}
