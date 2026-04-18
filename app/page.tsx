@@ -334,7 +334,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
                     fontFamily: "var(--font-display)",
                     fontSize: "clamp(1.8rem, 4vw, 2.2rem)",
                     fontWeight: 900,
-                    color: cls.originalPrice ? "#15488A" : "var(--white)",
+                    color: cls.originalPrice ? "var(--navy)" : "var(--white)",
                     lineHeight: 1,
                     letterSpacing: "-0.02em",
                   }}>
