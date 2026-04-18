@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from "react";
 import { CLASSES } from "@/lib/classes";
 import { pixel } from "@/lib/meta-pixel";
 import { CASTING_PHOTOS } from "@/lib/casting-photos"
+import { Users, Award, TrendingUp } from "lucide-react"
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -729,10 +730,11 @@ export default function HomePage() {
           <Link
             href="/join"
             onClick={() => pixel.contact()}
+            className="btn-primary"
             style={{
-              padding: "14px 32px", background: "var(--navy)", color: "#ffffff",
-              fontWeight: 700, fontSize: "0.85rem", letterSpacing: "0.08em",
-              borderRadius: "var(--radius)", display: "inline-block", transition: "opacity var(--transition)",
+              background: "var(--navy)",
+              color: "#ffffff",
+              textDecoration: "none",
               boxShadow: "0 4px 14px rgba(21,72,138,0.2)",
             }}
           >
@@ -766,13 +768,13 @@ export default function HomePage() {
           className="container stats-grid"
         >
           {[
-            { num: "300+", label: "배우 코칭", icon: "🎭" },
-            { num: "3년+", label: "스튜디오 운영", icon: "⭐" },
-            { num: "70명+", label: "현재 수강배우", icon: "📈" },
-          ].map((stat) => (
-            <div key={stat.label} className="stats-card">
+            { num: "300+", label: "배우 코칭", Icon: Users },
+            { num: "3년+", label: "스튜디오 운영", Icon: Award },
+            { num: "70명+", label: "현재 수강배우", Icon: TrendingUp },
+          ].map(({ num, label, Icon }) => (
+            <div key={label} className="stats-card">
               <div className="stats-icon-wrap">
-                <span style={{ position: "relative", zIndex: 1 }}>{stat.icon}</span>
+                <Icon size={22} color="var(--navy)" strokeWidth={1.8} />
               </div>
               <p
                 style={{
@@ -784,7 +786,7 @@ export default function HomePage() {
                   whiteSpace: "nowrap",
                 }}
               >
-                {stat.num}
+                {num}
               </p>
               <p
                 style={{
@@ -795,7 +797,7 @@ export default function HomePage() {
                   lineHeight: 1.3,
                 }}
               >
-                {stat.label}
+                {label}
               </p>
             </div>
           ))}
@@ -818,17 +820,7 @@ export default function HomePage() {
           >
             {/* 텍스트 영역 */}
             <div>
-            <p
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "0.7rem",
-                letterSpacing: "0.3em",
-                color: "var(--gold)",
-                marginBottom: "8px",
-              }}
-            >
-              LEADER
-            </p>
+            <p className="section-eyebrow">LEADER</p>
             <h2
               style={{
                 fontSize: "clamp(1.6rem, 4vw, 2.4rem)",
@@ -984,13 +976,7 @@ export default function HomePage() {
           {/* 헤더 영역은 중앙 정렬 720px 유지 (가독성) */}
           <div style={{ maxWidth: "720px", margin: "0 auto", textAlign: "center" }}>
             <p
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "0.75rem",
-                letterSpacing: "0.3em",
-                color: "var(--gold)",
-                marginBottom: "16px",
-              }}
+              className="section-eyebrow"
             >
               ALL IN ONE SYSTEM
             </p>
@@ -1150,13 +1136,7 @@ export default function HomePage() {
         <div className="container">
           <div style={{ textAlign: "center", marginBottom: "48px" }}>
             <p
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "0.75rem",
-                letterSpacing: "0.3em",
-                color: "var(--gold)",
-                marginBottom: "12px",
-              }}
+              className="section-eyebrow"
             >
               CASTING RESULTS
             </p>
@@ -1236,13 +1216,7 @@ export default function HomePage() {
         <div className="container">
           <div style={{ textAlign: "center", marginBottom: "60px" }}>
             <p
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "0.75rem",
-                letterSpacing: "0.3em",
-                color: "var(--gold)",
-                marginBottom: "12px",
-              }}
+              className="section-eyebrow"
             >
               PROCESS
             </p>
@@ -1417,17 +1391,12 @@ export default function HomePage() {
               <Link
                 href="/join"
                 onClick={() => pixel.contact()}
+                className="btn-primary"
                 style={{
-                  display: "inline-block",
-                  padding: "14px 40px",
-                  background: "var(--gold)",
+                  background: "var(--navy)",
                   color: "#ffffff",
-                  fontWeight: 700,
-                  fontSize: "0.9rem",
-                  letterSpacing: "0.06em",
-                  borderRadius: "var(--radius)",
-                  boxShadow: "0 4px 20px rgba(21,72,138,0.3)",
                   textDecoration: "none",
+                  boxShadow: "0 4px 20px rgba(21,72,138,0.3)",
                 }}
               >
                 무료 상담 신청 →
@@ -1464,16 +1433,7 @@ export default function HomePage() {
           overflow: "hidden",
         }}
       >
-        <p
-          style={{
-            textAlign: "center",
-            fontFamily: "var(--font-display)",
-            fontSize: "0.72rem",
-            letterSpacing: "0.3em",
-            color: "var(--gold)",
-            marginBottom: "8px",
-          }}
-        >
+        <p className="section-eyebrow" style={{ textAlign: "center" }}>
           REAL REVIEWS
         </p>
         <h2
@@ -1524,17 +1484,7 @@ export default function HomePage() {
         }}
       >
         <div className="container">
-          <p
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "0.75rem",
-              letterSpacing: "0.3em",
-              color: "var(--gold)",
-              marginBottom: "16px",
-            }}
-          >
-            START NOW
-          </p>
+          <p className="section-eyebrow">START NOW</p>
           <h2
             className="shimmer-text"
             style={{
@@ -1566,17 +1516,12 @@ export default function HomePage() {
             <Link
               href="/join"
               onClick={() => pixel.contact()}
+              className="btn-primary"
               style={{
-                display: "inline-block",
-                padding: "18px 52px",
-                background: "var(--gold)",
+                background: "var(--navy)",
                 color: "#ffffff",
-                fontWeight: 800,
-                fontSize: "1.15rem",
-                letterSpacing: "0.08em",
-                borderRadius: "var(--radius)",
-                boxShadow: "0 6px 18px rgba(21,72,138,0.2)",
                 textDecoration: "none",
+                boxShadow: "0 6px 18px rgba(21,72,138,0.2)",
               }}
             >
               무료 상담 신청 →
