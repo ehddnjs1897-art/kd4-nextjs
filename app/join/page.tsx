@@ -863,7 +863,42 @@ export default function JoinPage() {
             }}
           >
             {[MAIN_CLASS, FILM_CLASS].map((cls) => (
-              <div key={cls.nameKo} className="class-card">
+              <div key={cls.nameKo} className="class-card" style={{ position: 'relative' }}>
+                {/* 잔여석 뱃지 — 우측 상단 */}
+                {cls.remainingSeats !== undefined && (
+                  <span
+                    style={{
+                      position: 'absolute',
+                      top: '12px',
+                      right: '12px',
+                      zIndex: 2,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      color: 'var(--accent-red)',
+                      background: 'var(--accent-red-soft)',
+                      border: '1px solid rgba(199,62,62,0.25)',
+                      borderRadius: '999px',
+                      padding: '4px 10px',
+                      letterSpacing: '0.02em',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: '5px',
+                        height: '5px',
+                        borderRadius: '50%',
+                        background: 'var(--accent-red)',
+                        display: 'inline-block',
+                      }}
+                    />
+                    잔여석 {cls.remainingSeats}석
+                  </span>
+                )}
+
                 <div className="class-card-header">
                   <p className="class-step">{cls.step}</p>
                   <p className="class-name-ko">{cls.nameKo}</p>
@@ -878,18 +913,6 @@ export default function JoinPage() {
                       </div>
                     ))}
                   </div>
-                  {cls.remainingSeats !== undefined && (
-                    <p
-                      className="class-note"
-                      style={{
-                        color: 'var(--accent-red)',
-                        background: 'var(--accent-red-soft)',
-                        borderColor: 'rgba(199,62,62,0.2)',
-                      }}
-                    >
-                      잔여석 {cls.remainingSeats}석
-                    </p>
-                  )}
                 </div>
                 <div className="class-card-footer">
                   {/* 첫 달 할인가 (강조) */}
@@ -959,14 +982,32 @@ export default function JoinPage() {
                       ? parseInt(cls.originalPrice.replace(/,/g, ''))
                       : first
                     const total = first + regular * (months - 1)
+                    const isFourMonths = months === 4
+                    const lumpSumDiscount = 50000
+                    const lumpSumPrice = total - lumpSumDiscount
                     return (
-                      <p style={{ fontSize: '0.78rem', color: 'var(--gray-light)', marginBottom: '6px' }}>
-                        {cls.course} 총{' '}
-                        <strong style={{ color: 'var(--navy)' }}>
-                          {total.toLocaleString()}원
-                        </strong>
-                        {' '}· 분납 상담 가능
-                      </p>
+                      <>
+                        <p style={{ fontSize: '0.78rem', color: 'var(--gray-light)', marginBottom: '6px' }}>
+                          {cls.course} 총{' '}
+                          <strong style={{ color: 'var(--navy)' }}>
+                            {total.toLocaleString()}원
+                          </strong>
+                          {' '}· 기본 월납
+                        </p>
+                        {isFourMonths && (
+                          <p
+                            style={{
+                              fontSize: '0.78rem',
+                              color: 'var(--accent-red)',
+                              marginBottom: '6px',
+                              fontWeight: 600,
+                            }}
+                          >
+                            일시불 결제 시 5만원 추가 할인 →{' '}
+                            <strong>{lumpSumPrice.toLocaleString()}원</strong>
+                          </p>
+                        )}
+                      </>
                     )
                   })()}
                   <p style={{ fontSize: '0.75rem', color: 'var(--gray)' }}>
