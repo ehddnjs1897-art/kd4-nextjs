@@ -23,7 +23,6 @@ import {
 import { CLASSES } from '@/lib/classes'
 import { FAQ_ITEMS } from '@/lib/faq-items'
 import JoinForm from '@/components/contact/JoinForm'
-import CountdownTimer from '@/components/ui/CountdownTimer'
 import StickyTopBar from '@/components/join/StickyTopBar'
 import StickyBottomCTA from '@/components/join/StickyBottomCTA'
 import FaqAccordion from '@/components/join/FaqAccordion'
@@ -406,7 +405,7 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ③ SOLUTION — 마이즈너 테크닉                              */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg)', padding: '100px 0' }}>
+      <section id="method" className="section" style={{ background: 'var(--bg)', padding: '100px 0' }}>
         <div className="container">
           <div style={{ maxWidth: '680px', margin: '0 auto', textAlign: 'center' }}>
             <p className="section-eyebrow">02 — THE METHOD</p>
@@ -937,11 +936,11 @@ export default function JoinPage() {
             </div>
           </div>
 
-          {/* 카운트다운 */}
+          {/* 잔여석 표시 */}
           <div
             style={{
               background: 'var(--bg2)',
-              border: '1px solid var(--border)',
+              border: '1px solid rgba(199,62,62,0.3)',
               borderRadius: 'var(--radius)',
               padding: '28px 20px',
               maxWidth: '520px',
@@ -955,7 +954,7 @@ export default function JoinPage() {
                 fontSize: '0.7rem',
                 letterSpacing: '0.2em',
                 color: 'var(--accent-red)',
-                marginBottom: '16px',
+                marginBottom: '12px',
                 textTransform: 'uppercase',
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -963,9 +962,23 @@ export default function JoinPage() {
               }}
             >
               <Clock size={13} strokeWidth={1.8} />
-              할인 마감까지
+              이번 기수 남은 자리
             </p>
-            <CountdownTimer deadline={DEADLINE} />
+            <p
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(2.2rem, 6vw, 3rem)',
+                fontWeight: 900,
+                color: 'var(--accent-red)',
+                lineHeight: 1,
+                marginBottom: '8px',
+              }}
+            >
+              {TOTAL_SEATS}자리
+            </p>
+            <p style={{ fontSize: '0.78rem', color: 'var(--gray)', letterSpacing: '0.04em' }}>
+              소수정예 7~8명 정원 · 마감 후 정가 복귀
+            </p>
           </div>
 
           {/* 클래스 카드 */}
@@ -1154,6 +1167,23 @@ export default function JoinPage() {
                 </p>
               </div>
             ))}
+          </div>
+
+          {/* 배우 갤러리 선택적 링크 — 신청 전 스튜디오 배우들 확인 */}
+          <div style={{ textAlign: 'center', marginTop: '36px' }}>
+            <a
+              href="/actors"
+              style={{
+                fontSize: '0.82rem',
+                color: 'var(--gray)',
+                textDecoration: 'none',
+                borderBottom: '1px solid var(--border)',
+                paddingBottom: '2px',
+                letterSpacing: '0.02em',
+              }}
+            >
+              수강 전 KD4 배우들을 먼저 보고 싶다면 → 배우 갤러리 보기
+            </a>
           </div>
         </div>
       </section>

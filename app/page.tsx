@@ -1,15 +1,11 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { CLASSES } from "@/lib/classes";
-import { FAQ_ITEMS } from "@/lib/faq-items";
 import { pixel } from "@/lib/meta-pixel";
-import CountdownTimer from "@/components/ui/CountdownTimer";
 import { CASTING_PHOTOS } from "@/lib/casting-photos"
-import ContactForm from "@/components/contact/ContactForm";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -68,96 +64,6 @@ const reviewAuthorStyle: React.CSSProperties = {
   letterSpacing: "0.02em",
 }
 
-// ─── FAQ 아코디언 ──────────────────────────────────────────────────────────────
-
-function FaqAccordion() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-      {FAQ_ITEMS.map((item, i) => {
-        const isOpen = openIndex === i;
-        return (
-          <div
-            key={i}
-            style={{
-              background: isOpen ? "var(--bg3)" : "var(--bg2)",
-              border: `1px solid ${isOpen ? "var(--gold)" : "var(--border)"}`,
-              borderRadius: "8px",
-              overflow: "hidden",
-              transition: "border-color 0.3s, background 0.3s",
-            }}
-          >
-            <button
-              onClick={() => setOpenIndex(isOpen ? null : i)}
-              style={{
-                width: "100%",
-                padding: "22px 24px",
-                textAlign: "left",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: "16px",
-                color: isOpen ? "var(--navy)" : "#111111",
-                fontSize: "1rem",
-                fontWeight: 600,
-                background: "none",
-                cursor: "pointer",
-                transition: "color 0.2s",
-              }}
-            >
-              <span>{item.q}</span>
-              <span
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
-                  background: isOpen ? "var(--gold)" : "rgba(21,72,138,0.12)",
-                  color: isOpen ? "#15488A" : "var(--gold)",
-                  fontSize: "1.5rem",
-                  lineHeight: 1,
-                  flexShrink: 0,
-                  transition: "transform 0.3s cubic-bezier(.4,0,.2,1), background 0.3s, color 0.3s",
-                  transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
-                  fontWeight: 400,
-                  border: `1.5px solid ${isOpen ? "var(--gold)" : "rgba(21,72,138,0.3)"}`,
-                }}
-              >
-                +
-              </span>
-            </button>
-            <div
-              style={{
-                maxHeight: isOpen ? "200px" : "0px",
-                overflow: "hidden",
-                transition: "max-height 0.4s cubic-bezier(.4,0,.2,1), padding 0.3s",
-                padding: isOpen ? "0 24px 20px" : "0 24px 0",
-              }}
-            >
-              <div
-                style={{
-                  color: "var(--gray-light)",
-                  fontSize: "0.92rem",
-                  lineHeight: 1.7,
-                  borderTop: "1px solid var(--border)",
-                  paddingTop: "16px",
-                  opacity: isOpen ? 1 : 0,
-                  transition: "opacity 0.3s 0.1s",
-                }}
-              >
-                {item.a}
-              </div>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
 // ─── 클래스 카드 ───────────────────────────────────────────────────────────────
 
 function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
@@ -166,7 +72,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
     <div
       style={{
         background: "var(--bg2)",
-        border: "1.5px solid #15488A",
+        border: "1.5px solid var(--navy)",
         borderRadius: "var(--radius)",
         overflow: "hidden",
         display: "flex",
@@ -184,7 +90,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             top: "12px",
             right: "12px",
             padding: "6px 14px",
-            background: "#C73E3E",
+            background: "var(--accent-red)",
             color: "#ffffff",
             fontSize: "0.85rem",
             fontWeight: 800,
@@ -209,7 +115,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
               borderRadius: "2px",
               fontSize: "0.7rem",
               letterSpacing: "0.1em",
-              color: "#15488A",
+              color: "var(--navy)",
               fontWeight: 700,
             }}
           >
@@ -413,7 +319,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
                       marginLeft: "8px",
                       fontSize: "0.68rem",
                       fontWeight: 700,
-                      color: "#C73E3E",
+                      color: "var(--accent-red)",
                       padding: "2px 6px",
                       background: "rgba(199,62,62,0.12)",
                       borderRadius: "3px",
@@ -449,13 +355,11 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
 
         {/* CTA 버튼 */}
         <a
-          href="#contact"
+          href="/join"
           className="class-card-cta"
-          onClick={(e) => {
-            e.preventDefault()
-            pixel.viewContent(cls.nameKo)   // Meta: ViewContent
-            pixel.contact()                 // Meta: Contact
-            document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+          onClick={() => {
+            pixel.viewContent(cls.nameKo)
+            pixel.contact()
           }}
           style={{
             display: "block",
@@ -474,7 +378,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             boxShadow: "0 4px 16px rgba(21,72,138,0.25)",
           }}
         >
-          상담받기
+          상세 보기 →
         </a>
       </div>
     </div>
@@ -822,8 +726,9 @@ export default function HomePage() {
           <span style={{ display: "block", width: "36px", height: "1px", background: "var(--gold)" }} />
         </div>
         <div className="cta-buttons">
-          <a
-            href="#classes"
+          <Link
+            href="/join"
+            onClick={() => pixel.contact()}
             style={{
               padding: "14px 32px", background: "var(--navy)", color: "#ffffff",
               fontWeight: 700, fontSize: "0.85rem", letterSpacing: "0.08em",
@@ -831,8 +736,8 @@ export default function HomePage() {
               boxShadow: "0 4px 14px rgba(21,72,138,0.2)",
             }}
           >
-            클래스 둘러보기
-          </a>
+            클래스 알아보기 →
+          </Link>
           <Link
             href="/actors"
             style={{
@@ -842,7 +747,7 @@ export default function HomePage() {
               background: "rgba(255,255,255,0.35)", backdropFilter: "blur(4px)", transition: "background var(--transition)",
             }}
           >
-            배우 DB
+            배우 갤러리
           </Link>
         </div>
       </section>
@@ -1297,130 +1202,34 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 6. COMPARISON ────────────────────────────────────────────────────── */}
-      <section
-        id="comparison"
-        className="section"
-        style={{ background: "var(--bg2)", borderTop: "1px solid var(--border)" }}
-      >
-        <div className="container">
-          <div style={{ textAlign: "center", marginBottom: "60px" }}>
-            <p
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "0.75rem",
-                letterSpacing: "0.3em",
-                color: "var(--gold)",
-                marginBottom: "12px",
-              }}
-            >
-              WHY KD4
-            </p>
-            <h2 style={{ fontSize: "clamp(1.6rem, 4vw, 2.4rem)", fontWeight: 700 }}>
-              KD4 vs 일반 학원
-            </h2>
-          </div>
-
-          <div style={{ overflowX: "auto" }}>
-            <table
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                minWidth: "480px",
-              }}
-            >
-              <thead>
-                <tr>
-                  {["항목", "KD4 액팅 스튜디오", "일반 학원"].map((h, i) => (
-                    <th
-                      key={h}
-                      style={{
-                        padding: "14px 20px",
-                        textAlign: i === 0 ? "left" : "center",
-                        fontSize: "0.75rem",
-                        letterSpacing: "0.08em",
-                        color: i === 1 ? "var(--gold)" : "var(--gray)",
-                        borderBottom: "1px solid var(--border)",
-                        fontWeight: i === 1 ? 700 : 400,
-                        background:
-                          i === 1 ? "rgba(21,72,138,0.06)" : "transparent",
-                      }}
-                    >
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  {
-                    item: "훈련 방식",
-                    kd4: "마이즈너·이바나처벅 테크닉",
-                    other: "입시식 주입 훈련",
-                  },
-                  {
-                    item: "클래스 규모",
-                    kd4: "소수정예 (6~10명)",
-                    other: "대형 클래스",
-                  },
-                  {
-                    item: "포트폴리오",
-                    kd4: "전문 영화팀 출연영상 제작",
-                    other: "없음 / 자체 촬영",
-                  },
-                  {
-                    item: "캐스팅 연계",
-                    kd4: "직접 캐스팅 연계",
-                    other: "이미지 단역 / 단역 연결",
-                  },
-                  {
-                    item: "커뮤니티",
-                    kd4: "배우 성장 네트워크",
-                    other: "없음",
-                  },
-                ].map((row, i) => (
-                  <tr key={i}>
-                    <td
-                      style={{
-                        padding: "16px 20px",
-                        fontSize: "0.82rem",
-                        color: "var(--gray)",
-                        borderBottom: "1px solid var(--border)",
-                      }}
-                    >
-                      {row.item}
-                    </td>
-                    <td
-                      style={{
-                        padding: "16px 20px",
-                        fontSize: "0.85rem",
-                        color: "var(--white)",
-                        fontWeight: 500,
-                        textAlign: "center",
-                        borderBottom: "1px solid var(--border)",
-                        background: "rgba(21,72,138,0.04)",
-                      }}
-                    >
-                      {row.kd4}
-                    </td>
-                    <td
-                      style={{
-                        padding: "16px 20px",
-                        fontSize: "0.82rem",
-                        color: "var(--gray)",
-                        textAlign: "center",
-                        borderBottom: "1px solid var(--border)",
-                      }}
-                    >
-                      {row.other}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+      {/* ── CASTING → /join 핸드오프 ─────────────────────────────────────────── */}
+      <div style={{ background: "var(--bg2)", borderTop: "1px solid var(--border)", padding: "0 24px 60px" }}>
+        <div className="container" style={{ maxWidth: "720px", textAlign: "center" }}>
+          <p style={{ fontSize: "0.82rem", color: "var(--gray)", marginBottom: "20px", lineHeight: 1.7 }}>
+            위 캐스팅 결과를 만들어낸 훈련 방식이 궁금하다면
+          </p>
+          <Link
+            href="/join#method"
+            onClick={() => pixel.contact()}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "14px 36px",
+              background: "var(--navy)",
+              color: "#ffffff",
+              fontWeight: 700,
+              fontSize: "0.9rem",
+              letterSpacing: "0.06em",
+              borderRadius: "var(--radius)",
+              textDecoration: "none",
+              boxShadow: "0 4px 16px rgba(21,72,138,0.2)",
+            }}
+          >
+            마이즈너 테크닉 알아보기 →
+          </Link>
         </div>
-      </section>
+      </div>
 
       {/* ── 7. HOW IT WORKS ──────────────────────────────────────────────────── */}
       <section id="how" className="section" style={{ background: "var(--bg)" }}>
@@ -1530,34 +1339,6 @@ export default function HomePage() {
             </h2>
           </div>
 
-          {/* 봄맞이 스페셜 이벤트 배너 + 카운트다운 */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "16px",
-              padding: "16px 24px",
-              marginBottom: "28px",
-              background: "rgba(21,72,138,0.06)",
-              border: "1px solid rgba(21,72,138,0.25)",
-              borderRadius: "var(--radius)",
-              flexWrap: "wrap",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", justifyContent: "center" }}>
-              <span style={{ fontSize: "1.4rem" }}>🌸</span>
-              <span style={{ fontSize: "1.15rem", fontWeight: 700, color: "#111111" }}>
-                봄맞이 스페셜 — 첫 달 10만원 할인
-              </span>
-              <span style={{ fontSize: "1rem", color: "var(--gray)" }}>·</span>
-              <span style={{ fontSize: "1.05rem", color: "#C73E3E", fontWeight: 700 }}>
-                마감임박
-              </span>
-            </div>
-            <CountdownTimer />
-          </div>
-
           {/* STEP 1 - 신규 멤버 */}
           <div style={{ marginBottom: "48px" }}>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", marginBottom: "32px", gap: "10px", padding: "28px 32px", border: "1px solid rgba(21,72,138,0.35)", borderRadius: "12px", background: "rgba(21,72,138,0.04)" }}>
@@ -1597,7 +1378,7 @@ export default function HomePage() {
                   boxShadow: open ? "0 0 20px rgba(255,255,255,0.04)" : "none",
                 }}
               >
-                <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.25em", color: "#15488A", fontFamily: "var(--font-display)", margin: 0 }}>{label}</p>
+                <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.25em", color: "var(--navy)", fontFamily: "var(--font-display)", margin: 0 }}>{label}</p>
                 <h3 style={{ fontSize: "clamp(1.8rem, 4vw, 2.4rem)", fontWeight: 800, color: "var(--gray-light)", letterSpacing: "-0.01em", lineHeight: 1.1, fontFamily: "var(--font-serif)", margin: 0 }}>{title}</h3>
                 <p style={{ fontSize: "0.8rem", color: "var(--gray)", margin: 0 }}>{desc}</p>
                 <span style={{ fontSize: "0.85rem", color: "var(--gray)", transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.3s", display: "inline-block", marginTop: "4px" }}>▼</span>
@@ -1630,12 +1411,12 @@ export default function HomePage() {
               어떤 클래스가 맞는지 모르겠다면?
             </h3>
             <p style={{ fontSize: "0.88rem", color: "var(--gray)", marginBottom: "28px", lineHeight: 1.6 }}>
-              방문 상담을 통해 나에게 맞는 클래스를 안내받으세요.
+              무료 상담을 통해 나에게 맞는 클래스를 안내받으세요.
             </p>
             <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
-              <a
-                href="#contact"
-                onClick={(e) => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }) }}
+              <Link
+                href="/join"
+                onClick={() => pixel.contact()}
                 style={{
                   display: "inline-block",
                   padding: "14px 40px",
@@ -1646,10 +1427,11 @@ export default function HomePage() {
                   letterSpacing: "0.06em",
                   borderRadius: "var(--radius)",
                   boxShadow: "0 4px 20px rgba(21,72,138,0.3)",
+                  textDecoration: "none",
                 }}
               >
-                상담신청
-              </a>
+                무료 상담 신청 →
+              </Link>
               <a
                 href="https://pf.kakao.com/_ximxdqn"
                 target="_blank"
@@ -1730,60 +1512,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 9. FAQ ──────────────────────────────────────────────────────────── */}
-      <section
-        id="faq"
-        className="section"
-        style={{ background: "var(--bg2)", borderTop: "1px solid var(--border)" }}
-      >
-        <div className="container">
-          <div style={{ textAlign: "center", marginBottom: "60px" }}>
-            <p
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "0.75rem",
-                letterSpacing: "0.3em",
-                color: "var(--gold)",
-                marginBottom: "12px",
-              }}
-            >
-              FAQ
-            </p>
-            <h2 style={{ fontSize: "clamp(1.6rem, 4vw, 2.4rem)", fontWeight: 700 }}>
-              자주 묻는 질문
-            </h2>
-          </div>
-
-          <div style={{ maxWidth: "720px", margin: "0 auto" }}>
-            <FaqAccordion />
-          </div>
-        </div>
-      </section>
-
-      {/* ── 11. CONTACT ─────────────────────────────────────────────────────── */}
-      <section
-        id="contact"
-        style={{
-          padding: "100px 24px",
-          borderTop: "1px solid var(--border)",
-          background: "radial-gradient(ellipse at 50% 0%, rgba(21,72,138,0.06) 0%, var(--bg2) 65%)",
-        }}
-      >
-        <div className="container" style={{ maxWidth: "620px" }}>
-          <p style={{ fontSize: "1.6rem", textAlign: "center", marginBottom: "8px" }}>🌸</p>
-          <p style={{ fontFamily: "var(--font-display)", fontSize: "0.72rem", letterSpacing: "0.3em", color: "var(--gold)", marginBottom: "10px", textAlign: "center" }}>
-            START HERE
-          </p>
-          <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.5rem, 4vw, 2rem)", fontWeight: 700, textAlign: "center", marginBottom: "10px" }}>
-            무료 상담으로 먼저 시작하세요
-          </h2>
-          <p style={{ color: "#15488A", fontSize: "0.88rem", textAlign: "center", marginBottom: "40px", lineHeight: 1.8 }}>
-            24시간 이내 연락드릴게요.
-          </p>
-          <ContactForm />
-        </div>
-      </section>
-
       {/* ── 12. CTA ──────────────────────────────────────────────────────────── */}
       <section
         id="cta"
@@ -1835,13 +1563,11 @@ export default function HomePage() {
             className="cta-buttons"
             style={{ marginBottom: "48px" }}
           >
-            <a
-              href="#contact"
-              onClick={(e) => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }) }}
+            <Link
+              href="/join"
+              onClick={() => pixel.contact()}
               style={{
-                display: "inline-flex",
-                flexDirection: "column",
-                alignItems: "center",
+                display: "inline-block",
                 padding: "18px 52px",
                 background: "var(--gold)",
                 color: "#ffffff",
@@ -1850,12 +1576,11 @@ export default function HomePage() {
                 letterSpacing: "0.08em",
                 borderRadius: "var(--radius)",
                 boxShadow: "0 6px 18px rgba(21,72,138,0.2)",
-                lineHeight: 1.3,
+                textDecoration: "none",
               }}
             >
-              <span>수강신청</span>
-              <span style={{ fontSize: "0.78rem", fontWeight: 600, letterSpacing: "0.04em", opacity: 0.9 }}>(봄 맞이 웰컴, 10만원 즉시 할인)</span>
-            </a>
+              무료 상담 신청 →
+            </Link>
             <a
               href="https://pf.kakao.com/_ximxdqn"
               target="_blank"
@@ -1875,8 +1600,6 @@ export default function HomePage() {
               카카오로 문의하기
             </a>
           </div>
-
-          {/* 연락처 — 삭제: Footer에 이미 있으므로 중복 제거 */}
         </div>
       </section>
     </>
