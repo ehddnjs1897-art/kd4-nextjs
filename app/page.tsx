@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from "react";
 import { CLASSES } from "@/lib/classes";
 
 import { pixel } from "@/lib/meta-pixel";
+import ContactForm from "@/components/contact/ContactForm";
 import { CASTING_PHOTOS } from "@/lib/casting-photos"
 import { Users, Award, TrendingUp } from "lucide-react"
 import { gsap } from "gsap";
@@ -1157,10 +1158,14 @@ export default function HomePage() {
               무료 상담을 통해 나에게 맞는 클래스를 안내받으세요.
             </p>
             <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
-              <Link href="/join" onClick={() => pixel.contact()} className="btn-primary"
-                style={{ background: "var(--navy)", color: "#ffffff", textDecoration: "none", boxShadow: "0 4px 20px rgba(21,72,138,0.3)" }}>
-                무료 상담 신청 →
-              </Link>
+              <a
+                href="#contact"
+                onClick={(e) => { e.preventDefault(); pixel.contact(); document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" }) }}
+                className="btn-primary"
+                style={{ background: "var(--navy)", color: "#ffffff", textDecoration: "none", boxShadow: "0 4px 20px rgba(21,72,138,0.3)", cursor: "pointer" }}
+              >
+                수강 상담 신청 →
+              </a>
               <a href="https://pf.kakao.com/_ximxdqn" target="_blank" rel="noopener noreferrer" onClick={() => pixel.contact()}
                 style={{ display: "inline-block", padding: "14px 40px", border: "1px solid rgba(17,17,17,0.35)", color: "#111111", fontWeight: 600, fontSize: "0.9rem", letterSpacing: "0.06em", borderRadius: "var(--radius)" }}>
                 카카오 상담
@@ -1215,6 +1220,42 @@ export default function HomePage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── 11b. CONTACT ────────────────────────────────────────────────────── */}
+      <section
+        id="contact"
+        style={{
+          padding: "80px 24px",
+          background: "var(--bg2)",
+          borderTop: "1px solid var(--border)",
+        }}
+      >
+        <div className="container" style={{ maxWidth: "640px" }}>
+          <p className="section-eyebrow">CONTACT</p>
+          <h2
+            style={{
+              fontSize: "clamp(1.6rem, 4vw, 2.4rem)",
+              fontWeight: 700,
+              color: "var(--white)",
+              marginBottom: "12px",
+              lineHeight: 1.2,
+            }}
+          >
+            무료 상담 신청
+          </h2>
+          <p
+            style={{
+              fontSize: "0.9rem",
+              color: "var(--gray)",
+              marginBottom: "40px",
+              lineHeight: 1.7,
+            }}
+          >
+            어떤 클래스가 맞는지 모르겠다면 — 부담 없이 문의하세요.
+          </p>
+          <ContactForm />
         </div>
       </section>
 
