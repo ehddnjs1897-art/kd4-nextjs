@@ -145,11 +145,21 @@ export default function JoinForm() {
             fontFamily: 'var(--font-serif)',
             fontSize: '1.3rem',
             fontWeight: 700,
-            marginBottom: '8px',
+            marginBottom: '6px',
             color: '#111111',
           }}
         >
-          접수 완료되었습니다
+          배우지망생 → <span style={{ color: '#15488A' }}>진짜 배우</span>
+        </p>
+        <p
+          style={{
+            fontSize: '0.9rem',
+            color: '#6B6660',
+            marginBottom: '10px',
+            lineHeight: 1.6,
+          }}
+        >
+          첫 걸음 접수 완료
         </p>
 
         {/* 접수번호 */}
@@ -355,7 +365,7 @@ export default function JoinForm() {
           fontFamily: 'inherit',
         }}
       >
-        {loading ? '신청 중...' : '무료 상담 신청하기 →'}
+        {loading ? '신청 중...' : '무료 상담 신청 →'}
       </button>
     </form>
   )

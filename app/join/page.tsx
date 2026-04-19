@@ -106,11 +106,11 @@ const CURRICULUM = [
 
 /* ── 비교표 ────────────────────────────────────────────────── */
 const COMPARISON_ROWS: { label: string; normal: string; kd4: string }[] = [
-  { label: '정원', normal: '20~30명', kd4: '6~8명 프라이빗' },
+  { label: '정원', normal: '20~30명', kd4: '6~8명 소수정예' },
   { label: '강사', normal: '조교·보조 강사', kd4: '현역 배우 직강' },
   { label: '포트폴리오 제작', normal: '선택 · 추가 비용', kd4: '정규 과정 포함' },
   { label: '캐스팅 연계', normal: 'X', kd4: 'O' },
-  { label: '월 수강료', normal: '20~35만원', kd4: '25만원' },
+  { label: '월 클래스 비용', normal: '20~35만원', kd4: '첫 달 25만원' },
 ]
 
 /* ── 후기 (신뢰도 보강 — 기수/나이대 추가) ────────────────── */
@@ -218,7 +218,7 @@ export default function JoinPage() {
             className="section-eyebrow"
             style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '20px' }}
           >
-            KD4 ACTING STUDIO · 무료 상담
+            ACTOR ACCELERATING SYSTEM · 무료 상담
           </p>
 
           <h1
@@ -247,6 +247,20 @@ export default function JoinPage() {
 
           <p
             style={{
+              fontSize: 'clamp(0.95rem, 2.6vw, 1.05rem)',
+              color: 'rgba(255,255,255,0.85)',
+              lineHeight: 1.5,
+              marginBottom: '10px',
+              fontFamily: 'var(--font-serif)',
+              fontStyle: 'italic',
+              letterSpacing: '0.02em',
+            }}
+          >
+            연기하지 않는 연기 — KD4 액팅 스튜디오
+          </p>
+
+          <p
+            style={{
               fontSize: 'clamp(0.9rem, 2.4vw, 1rem)',
               color: 'rgba(255,255,255,0.72)',
               lineHeight: 1.75,
@@ -270,11 +284,11 @@ export default function JoinPage() {
             <JoinCTALink
               href="#form"
               location="hero"
-              label="무료 상담 신청하기"
+              label="무료 상담 신청"
               className="btn-primary"
               style={{ background: 'var(--navy)', color: '#ffffff' }}
             >
-              무료 상담 신청하기
+              무료 상담 신청
               <ArrowRight size={16} strokeWidth={2.2} />
             </JoinCTALink>
             <JoinCTALink
@@ -282,7 +296,7 @@ export default function JoinPage() {
               kind="external"
               channel="kakao"
               location="hero"
-              label="카카오 문의"
+              label="카카오로 문의하기"
               className="btn-outline"
               style={{
                 borderColor: 'rgba(255,255,255,0.4)',
@@ -290,7 +304,7 @@ export default function JoinPage() {
               }}
             >
               <MessageCircle size={14} strokeWidth={2.2} />
-              카카오 문의
+              카카오로 문의하기
             </JoinCTALink>
           </div>
         </div>
@@ -350,10 +364,23 @@ export default function JoinPage() {
                 color: 'var(--gray-light)',
                 lineHeight: 1.8,
                 maxWidth: '540px',
-                margin: '0 auto',
+                margin: '0 auto 14px',
               }}
             >
               재능이 부족해서가 아닙니다. 배우는 방법이 틀렸을 뿐이에요.
+            </p>
+            <p
+              style={{
+                fontFamily: 'var(--font-serif)',
+                fontSize: '0.95rem',
+                color: 'var(--navy)',
+                lineHeight: 1.7,
+                maxWidth: '560px',
+                margin: '0 auto',
+                fontWeight: 600,
+              }}
+            >
+              — 우리는 양산형 배우를 찍어내는 공장식 학원을 거부합니다.
             </p>
           </div>
 
@@ -422,13 +449,26 @@ export default function JoinPage() {
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '20px' }}
             >
-              그래서 KD4는 <span style={{ color: 'var(--navy)' }}>마이즈너 테크닉</span>을 씁니다
+              그래서 KD4는 <span style={{ color: 'var(--navy)' }}>연기하지 않는 연기</span> — 마이즈너 테크닉
             </h2>
             <p
               className="section-desc"
-              style={{ margin: '0 auto 48px', textAlign: 'center', maxWidth: '560px' }}
+              style={{ margin: '0 auto 16px', textAlign: 'center', maxWidth: '560px' }}
             >
               혼자 감정을 만드는 연기가 아닙니다. 상대에게 집중하고 그 순간 반응하는, 가장 자연스러운 연기 훈련법입니다.
+            </p>
+            <p
+              style={{
+                margin: '0 auto 48px',
+                textAlign: 'center',
+                fontFamily: 'var(--font-display)',
+                fontSize: '0.78rem',
+                letterSpacing: '0.14em',
+                color: 'var(--navy)',
+                textTransform: 'uppercase',
+              }}
+            >
+              감정 해방 · 충동·본능 회복 · 연기하지 않는 연기
             </p>
 
             <div
@@ -506,7 +546,7 @@ export default function JoinPage() {
         <div className="container">
           <div className="stats-grid">
             {[
-              { Icon: Users, num: '400+', label: '누적 코칭 배우' },
+              { Icon: Users, num: '300+', label: '배우 코칭' },
               { Icon: Calendar, num: '3년+', label: '스튜디오 운영' },
               { Icon: UserCheck, num: '6~8명', label: '소수정예 정원' },
             ].map(({ Icon, num, label }) => (
@@ -556,11 +596,12 @@ export default function JoinPage() {
               <div className="director-role">KD4 대표 · 현역 배우</div>
               <div className="director-creds">
                 <div className="director-cred">
-                  LA Meisner Technique Studio 정식 2년 과정 수료
+                  LA Meisner Workshop 수료 · 한국 마이즈너테크닉 아카데미 수료
                 </div>
-                <div className="director-cred">Disney+ 무빙 시즌2 조연 출연 (2024)</div>
-                <div className="director-cred">SBS 중증외상센터 조연 출연 (2024)</div>
-                <div className="director-cred">2022~2026 400명 이상 배우 직접 코칭</div>
+                <div className="director-cred">유익액터스 대표 · 영화 경계선 제작·주연</div>
+                <div className="director-cred">Disney+ 무빙2 출연 (2026)</div>
+                <div className="director-cred">SBS 중증외상센터 출연 (2025)</div>
+                <div className="director-cred">프로 배우 400명+ 액팅 코칭 · Youtube 2000만뷰+</div>
               </div>
               <p
                 style={{
@@ -586,12 +627,12 @@ export default function JoinPage() {
       <section className="section" style={{ background: 'var(--bg2)', padding: '100px 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">04 — KD4 배우 이야기</p>
+            <p className="section-eyebrow">04 — REAL REVIEWS</p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)' }}
             >
-              이미 방법을 바꾼 사람들
+              KD4 배우 이야기
             </h2>
           </div>
 
@@ -636,7 +677,7 @@ export default function JoinPage() {
             <JoinCTALink
               href="#form"
               location="inline_proof"
-              label="나도 이 방법으로 바꿔보기"
+              label="나도 진짜 배우로 · 무료 상담 신청"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -652,7 +693,7 @@ export default function JoinPage() {
                 textTransform: 'uppercase',
               }}
             >
-              나도 이 방법으로 바꿔보기
+              나도 진짜 배우로 · 무료 상담 신청
               <ArrowRight size={14} strokeWidth={2.2} />
             </JoinCTALink>
           </div>
@@ -668,10 +709,22 @@ export default function JoinPage() {
             <p className="section-eyebrow">05 — CURRICULUM</p>
             <h2
               className="section-title-serif"
-              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '16px' }}
+              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '10px' }}
+            >
+              배우지망생 → <span style={{ color: 'var(--gold)' }}>진짜 배우</span>
+            </h2>
+            <p
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: '0.78rem',
+                letterSpacing: '0.18em',
+                color: 'var(--navy)',
+                marginBottom: '14px',
+                textTransform: 'uppercase',
+              }}
             >
               4개월 주차별 로드맵
-            </h2>
+            </p>
             <p className="section-desc" style={{ margin: '0 auto', textAlign: 'center' }}>
               추상적인 약속이 아니라, 매달 구체적으로 무엇을 배우는지 공개합니다.
             </p>
@@ -750,10 +803,13 @@ export default function JoinPage() {
             <p className="section-eyebrow">06 — COMPARE</p>
             <h2
               className="section-title-serif"
-              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)' }}
+              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
             >
-              대형 학원 vs KD4
+              공장식 학원 vs <span style={{ color: 'var(--navy)' }}>배우를 성장시키는 KD4</span>
             </h2>
+            <p style={{ fontSize: '0.9rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
+              같은 연기 수업이 아닙니다. 배우를 대하는 방식부터 다릅니다.
+            </p>
           </div>
 
           <div className="comparison-wrap" style={{ maxWidth: '720px', margin: '0 auto' }}>
@@ -802,10 +858,13 @@ export default function JoinPage() {
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
             >
-              봄맞이 스페셜 혜택
+              🌸 봄맞이 스페셜
             </h2>
             <p style={{ fontSize: '0.95rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-              잔여 <strong style={{ color: 'var(--navy)' }}>{TOTAL_SEATS}석</strong> · <strong style={{ color: 'var(--accent-red)' }}>첫 달만</strong> 10만원 할인 (2개월 차부터 정상가)
+              <strong style={{ color: 'var(--accent-red)' }}>첫 달 10만원 할인</strong> · 잔여 <strong style={{ color: 'var(--navy)' }}>{TOTAL_SEATS}석</strong>
+            </p>
+            <p style={{ fontSize: '0.82rem', color: 'var(--gray)', lineHeight: 1.7, marginTop: '6px' }}>
+              2개월 차부터 정상가 적용
             </p>
           </div>
 
@@ -908,7 +967,7 @@ export default function JoinPage() {
                         display: 'inline-block',
                       }}
                     />
-                    잔여석 {cls.remainingSeats}석
+                    잔여 {cls.remainingSeats}석
                   </span>
                 )}
 
@@ -1035,11 +1094,11 @@ export default function JoinPage() {
             <JoinCTALink
               href="#form"
               location="offer_bottom"
-              label="무료 상담 신청하기"
+              label="무료 상담 신청"
               className="btn-primary"
               style={{ background: 'var(--navy)', color: '#ffffff' }}
             >
-              무료 상담 신청하기
+              무료 상담 신청
               <ArrowRight size={16} strokeWidth={2.2} />
             </JoinCTALink>
           </div>
@@ -1156,10 +1215,10 @@ export default function JoinPage() {
                 className="section-title-serif"
                 style={{ fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', marginBottom: '10px' }}
               >
-                무료 상담 신청하기
+                무료 상담 신청
               </h2>
               <p style={{ fontSize: '0.9rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-                30초면 충분해요. 24시간 이내 카카오로 연락드립니다.
+                어떤 클래스가 맞는지 모르겠다면 — 부담 없이 문의하세요. 24시간 이내 카카오로 연락드립니다.
               </p>
             </div>
             <JoinForm />
@@ -1181,12 +1240,12 @@ export default function JoinPage() {
               kind="external"
               channel="kakao"
               location="footer"
-              label="카카오로 바로 문의"
+              label="카카오로 문의하기"
               className="btn-outline"
               style={{ borderColor: 'var(--navy)', color: 'var(--navy)' }}
             >
               <MessageCircle size={14} strokeWidth={2.2} />
-              카카오로 바로 문의
+              카카오로 문의하기
             </JoinCTALink>
           </div>
           <p

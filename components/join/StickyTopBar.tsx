@@ -28,9 +28,9 @@ export default function StickyTopBar({
         whiteSpace: 'nowrap',
       }}
     >
-      {/* 월 수강료 */}
+      {/* 첫 달 가격 (정상가 병기) */}
       <span style={{ fontSize: '0.76rem', color: 'var(--gray-light)', flexShrink: 0 }}>
-        월 수강료
+        첫 달
       </span>
       <span
         style={{
@@ -42,7 +42,17 @@ export default function StickyTopBar({
           letterSpacing: '0.02em',
         }}
       >
-        ₩250,000~
+        ₩250,000
+      </span>
+      <span
+        style={{
+          fontSize: '0.7rem',
+          color: 'var(--gray)',
+          textDecoration: 'line-through',
+          flexShrink: 0,
+        }}
+      >
+        ₩350,000
       </span>
 
       <span style={{ color: 'var(--border)', fontSize: '0.72rem', flexShrink: 0 }}>|</span>
@@ -66,7 +76,7 @@ export default function StickyTopBar({
       {/* CTA */}
       <a
         href="#form"
-        onClick={() => analytics.ctaClick('sticky_top', '무료상담')}
+        onClick={() => analytics.ctaClick('sticky_top', '무료 상담 신청')}
         style={{
           background: 'var(--navy)',
           color: '#ffffff',
@@ -85,7 +95,7 @@ export default function StickyTopBar({
           marginLeft: 'auto',
         }}
       >
-        무료상담
+        무료 상담 신청
         <ArrowRight size={11} strokeWidth={2.2} />
       </a>
     </div>
