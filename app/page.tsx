@@ -198,6 +198,25 @@ export default function HomePage() {
   const [step3Open, setStep3Open] = useState(false)
   const [extraOpen, setExtraOpen] = useState(false)
 
+  /**
+   * /#contact 해시로 진입 시 메인 로드 후 자동 스크롤
+   * (다른 페이지 Navbar/FloatingCTA → 메인 이동 → 여기로 도달)
+   */
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (window.location.hash !== '#contact') return
+    const tryScroll = (tries = 0) => {
+      const el = document.getElementById('contact')
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' })
+      } else if (tries < 20) {
+        setTimeout(() => tryScroll(tries + 1), 100)
+      }
+    }
+    const id = setTimeout(() => tryScroll(), 300) // 히어로 애니메이션 후
+    return () => clearTimeout(id)
+  }, [])
+
   /* ── 히어로 타이틀: 서브 가로폭을 h1과 일치시킨 후 "한 번만" 등장 ──
        - KoPub·Helvetica 명시 로드 → offsetWidth 실측 → letter-spacing 1차 계산
        - 1차 적용 후 실제 폭 재측정 → 오차(브라우저별 trailing letter-spacing 차이) 보정

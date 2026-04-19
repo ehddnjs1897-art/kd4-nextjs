@@ -1,6 +1,6 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { pixel } from '@/lib/meta-pixel'
 
 /** 배우DB · 커뮤니티 · 대본분석 · 인증 페이지에서는 CTA 표시 안 함 */
@@ -8,9 +8,22 @@ const HIDE_ON: string[] = ['/actors', '/board', '/ai-tools', '/auth', '/dashboar
 
 export default function FloatingCTA() {
   const pathname = usePathname()
+  const router = useRouter()
 
   const isHidden = HIDE_ON.some((prefix) => pathname.startsWith(prefix))
   if (isHidden) return null
+
+  /** 메인에 있으면 스무스 스크롤, 타 페이지면 /#contact 이동 */
+  const handleContactClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    pixel.contact()
+    const target = document.getElementById('contact')
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      router.push('/#contact')
+    }
+  }
 
   return (
     <>
@@ -62,11 +75,8 @@ export default function FloatingCTA() {
         }}
       >
         <a
-          href="#contact"
-          onClick={(e) => {
-            e.preventDefault()
-            document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
-          }}
+          href="/#contact"
+          onClick={handleContactClick}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -94,7 +104,7 @@ export default function FloatingCTA() {
             e.currentTarget.style.transform = 'translateY(0)'
           }}
         >
-          수강신청
+          상담 신청 →
         </a>
       </div>
     </>

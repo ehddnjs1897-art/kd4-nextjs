@@ -94,6 +94,21 @@ export default function Navbar() {
     }
   }
 
+  /**
+   * 상담 CTA — 메인(/)이면 스무스 스크롤, 타 페이지면 /#contact 네비게이트
+   * 모든 페이지에서 작동하도록 통일
+   */
+  const handleContactClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    closeMobile()
+    const target = document.getElementById('contact')
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      router.push('/#contact')
+    }
+  }
+
   /* ── 드롭다운 hover (딜레이로 떨림 방지) ── */
   const handleDropEnter = () => {
     if (hoverTimeout.current) clearTimeout(hoverTimeout.current)
@@ -307,8 +322,9 @@ export default function Navbar() {
 
           {/* ── CTA + 햄버거 ── */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <Link
-              href="/join"
+            <a
+              href="/#contact"
+              onClick={handleContactClick}
               className="desktop-cta"
               style={{
                 display: 'inline-block',
@@ -327,8 +343,8 @@ export default function Navbar() {
               onMouseEnter={e => (e.currentTarget.style.background = 'var(--gold-light)')}
               onMouseLeave={e => (e.currentTarget.style.background = 'var(--gold)')}
             >
-              수강신청
-            </Link>
+              상담 신청
+            </a>
 
             {/* 햄버거 */}
             <button
@@ -490,9 +506,9 @@ export default function Navbar() {
             </ul>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '32px' }}>
-              <Link
-                href="/join"
-                onClick={closeMobile}
+              <a
+                href="/#contact"
+                onClick={handleContactClick}
                 style={{
                   display: 'block',
                   padding: '16px',
@@ -507,8 +523,8 @@ export default function Navbar() {
                   textDecoration: 'none',
                 }}
               >
-                수강신청 하기
-              </Link>
+                상담 신청 →
+              </a>
               <a
                 href="https://pf.kakao.com/_ximxdqn"
                 target="_blank"
