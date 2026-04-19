@@ -1,6 +1,7 @@
 'use client'
 
 import { ArrowRight } from 'lucide-react'
+import { analytics } from '@/lib/analytics'
 
 export default function StickyTopBar({
   seats,
@@ -65,6 +66,7 @@ export default function StickyTopBar({
       {/* CTA */}
       <a
         href="#form"
+        onClick={() => analytics.ctaClick('sticky_top', '무료상담')}
         style={{
           background: 'var(--navy)',
           color: '#ffffff',

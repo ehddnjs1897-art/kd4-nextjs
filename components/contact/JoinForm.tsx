@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { MessageCircle, FileText, CheckCircle } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { CLASSES } from '@/lib/classes'
-import { pixel } from '@/lib/meta-pixel'
+import { analytics } from '@/lib/analytics'
 
 const MEISNER_OPTIONS = [
   { value: '', label: '마이즈너 경험 선택 (선택사항)' },
@@ -25,6 +25,16 @@ export default function JoinForm() {
   const [error, setError] = useState('')
   const [ticketNo, setTicketNo] = useState('')
   const [focused, setFocused] = useState<string | null>(null)
+  const [formStarted, setFormStarted] = useState(false)
+
+  /** 첫 필드 포커스 시 form_start 이벤트 1회 발화 */
+  function handleFieldFocus(field: string) {
+    setFocused(field)
+    if (!formStarted) {
+      analytics.formStart('join_form')
+      setFormStarted(true)
+    }
+  }
 
   const inputStyle = (field: string): React.CSSProperties => ({
     width: '100%',
@@ -73,7 +83,10 @@ export default function JoinForm() {
       return
     }
 
-    pixel.lead()
+    analytics.lead({
+      source: 'join_form_instagram_ad',
+      className: className || undefined,
+    })
 
     fetch('/api/notify', {
       method: 'POST',
@@ -226,7 +239,7 @@ export default function JoinForm() {
         placeholder="이름 *"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        onFocus={() => setFocused('name')}
+        onFocus={() => handleFieldFocus('name')}
         onBlur={() => setFocused(null)}
         style={inputStyle('name')}
         required
@@ -238,7 +251,7 @@ export default function JoinForm() {
         placeholder="연락처 * (010-0000-0000)"
         value={phone}
         onChange={(e) => setPhone(e.target.value)}
-        onFocus={() => setFocused('phone')}
+        onFocus={() => handleFieldFocus('phone')}
         onBlur={() => setFocused(null)}
         style={inputStyle('phone')}
         required
@@ -261,7 +274,7 @@ export default function JoinForm() {
         <select
           value={className}
           onChange={(e) => setClassName(e.target.value)}
-          onFocus={() => setFocused('class')}
+          onFocus={() => handleFieldFocus('class')}
           onBlur={() => setFocused(null)}
           style={{ ...inputStyle('class'), cursor: 'pointer' }}
         >
@@ -292,7 +305,7 @@ export default function JoinForm() {
         <select
           value={meisnerExp}
           onChange={(e) => setMeisnerExp(e.target.value)}
-          onFocus={() => setFocused('meisner')}
+          onFocus={() => handleFieldFocus('meisner')}
           onBlur={() => setFocused(null)}
           style={{ ...inputStyle('meisner'), cursor: 'pointer' }}
         >

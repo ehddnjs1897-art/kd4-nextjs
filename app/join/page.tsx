@@ -27,6 +27,9 @@ import CountdownTimer from '@/components/ui/CountdownTimer'
 import StickyTopBar from '@/components/join/StickyTopBar'
 import StickyBottomCTA from '@/components/join/StickyBottomCTA'
 import FaqAccordion from '@/components/join/FaqAccordion'
+import JoinCTALink from '@/components/join/JoinCTALink'
+import ScrollDepth from '@/components/analytics/ScrollDepth'
+import JoinPageView from '@/components/analytics/JoinPageView'
 
 export const metadata: Metadata = {
   title: '무료 상담 신청 | KD4 액팅 스튜디오',
@@ -161,6 +164,10 @@ export default function JoinPage() {
     >
       <StickyTopBar deadline={DEADLINE} seats={TOTAL_SEATS} />
 
+      {/* 분석: 랜딩 ViewContent + 스크롤 깊이 추적 (GA4 + Meta Pixel) */}
+      <JoinPageView />
+      <ScrollDepth />
+
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ① HERO — 강사 사진 + 세리프 헤드라인                      */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
@@ -260,18 +267,22 @@ export default function JoinPage() {
               flexWrap: 'wrap',
             }}
           >
-            <a
+            <JoinCTALink
               href="#form"
+              location="hero"
+              label="무료 상담 신청하기"
               className="btn-primary"
               style={{ background: 'var(--navy)', color: '#ffffff' }}
             >
               무료 상담 신청하기
               <ArrowRight size={16} strokeWidth={2.2} />
-            </a>
-            <a
+            </JoinCTALink>
+            <JoinCTALink
               href="https://pf.kakao.com/_ximxdqn"
-              target="_blank"
-              rel="noopener noreferrer"
+              kind="external"
+              channel="kakao"
+              location="hero"
+              label="카카오 문의"
               className="btn-outline"
               style={{
                 borderColor: 'rgba(255,255,255,0.4)',
@@ -280,7 +291,7 @@ export default function JoinPage() {
             >
               <MessageCircle size={14} strokeWidth={2.2} />
               카카오 문의
-            </a>
+            </JoinCTALink>
           </div>
         </div>
       </section>
@@ -622,8 +633,10 @@ export default function JoinPage() {
 
           {/* 인라인 CTA */}
           <div style={{ textAlign: 'center', marginTop: '32px' }}>
-            <a
+            <JoinCTALink
               href="#form"
+              location="inline_proof"
+              label="나도 이 방법으로 바꿔보기"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -641,7 +654,7 @@ export default function JoinPage() {
             >
               나도 이 방법으로 바꿔보기
               <ArrowRight size={14} strokeWidth={2.2} />
-            </a>
+            </JoinCTALink>
           </div>
         </div>
       </section>
@@ -1019,10 +1032,16 @@ export default function JoinPage() {
           </div>
 
           <div style={{ textAlign: 'center', marginTop: '40px' }}>
-            <a href="#form" className="btn-primary" style={{ background: 'var(--navy)', color: '#ffffff' }}>
+            <JoinCTALink
+              href="#form"
+              location="offer_bottom"
+              label="무료 상담 신청하기"
+              className="btn-primary"
+              style={{ background: 'var(--navy)', color: '#ffffff' }}
+            >
               무료 상담 신청하기
               <ArrowRight size={16} strokeWidth={2.2} />
-            </a>
+            </JoinCTALink>
           </div>
         </div>
       </section>
@@ -1157,16 +1176,18 @@ export default function JoinPage() {
             개인정보는 상담 연락 외에 사용되지 않습니다.
           </p>
           <div style={{ marginTop: '24px' }}>
-            <a
+            <JoinCTALink
               href="https://pf.kakao.com/_ximxdqn"
-              target="_blank"
-              rel="noopener noreferrer"
+              kind="external"
+              channel="kakao"
+              location="footer"
+              label="카카오로 바로 문의"
               className="btn-outline"
               style={{ borderColor: 'var(--navy)', color: 'var(--navy)' }}
             >
               <MessageCircle size={14} strokeWidth={2.2} />
               카카오로 바로 문의
-            </a>
+            </JoinCTALink>
           </div>
           <p
             style={{
