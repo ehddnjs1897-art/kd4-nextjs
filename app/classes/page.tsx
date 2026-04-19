@@ -1,12 +1,26 @@
 'use client'
 
-import Link from 'next/link'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { CLASSES } from '@/lib/classes'
 import { pixel } from '@/lib/meta-pixel'
 import { ArrowRight } from 'lucide-react'
 
+/**
+ * 상담 CTA — 어떤 페이지에서든 메인 #contact 섹션으로 이동
+ * /classes 는 독립 페이지라 앵커 스크롤 불가 → 항상 router.push('/#contact')
+ */
+function useContactNav() {
+  const router = useRouter()
+  return (e: React.MouseEvent) => {
+    e.preventDefault()
+    pixel.contact()
+    router.push('/#contact')
+  }
+}
+
 function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
+  const handleContact = useContactNav()
   return (
     <div
       style={{
@@ -129,8 +143,11 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
 
         {/* CTA */}
         <a
-          href="/join"
-          onClick={() => { pixel.viewContent(cls.nameKo); pixel.contact() }}
+          href="/#contact"
+          onClick={(e) => {
+            pixel.viewContent(cls.nameKo)
+            handleContact(e)
+          }}
           style={{
             display: 'block', textAlign: 'center', padding: '12px 0',
             background: 'var(--gold)', color: '#fff', fontWeight: 700,
@@ -139,7 +156,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             transition: 'opacity 0.2s', boxShadow: '0 4px 16px rgba(21,72,138,0.25)',
           }}
         >
-          무료 상담 신청 →
+          상담 신청 →
         </a>
       </div>
     </div>
@@ -150,6 +167,7 @@ export default function ClassesPage() {
   const [step2Open, setStep2Open] = useState(false)
   const [step3Open, setStep3Open] = useState(false)
   const [extraOpen, setExtraOpen] = useState(false)
+  const handleContact = useContactNav()
 
   return (
     <main style={{ paddingTop: '80px', background: 'var(--bg)', minHeight: '100vh' }}>
@@ -163,14 +181,14 @@ export default function ClassesPage() {
           <p style={{ fontSize: '0.95rem', color: 'var(--gray-light)', lineHeight: 1.7, maxWidth: '480px', margin: '0 auto 32px' }}>
             베이직부터 액터스 리더까지 — 가격, 일정, 커리큘럼을 한눈에 확인하세요.
           </p>
-          <Link
-            href="/join"
-            onClick={() => pixel.contact()}
+          <a
+            href="/#contact"
+            onClick={handleContact}
             className="btn-primary"
             style={{ background: 'var(--navy)', color: '#fff', textDecoration: 'none' }}
           >
             무료 상담 신청 <ArrowRight size={14} />
-          </Link>
+          </a>
         </div>
       </section>
 
@@ -238,14 +256,14 @@ export default function ClassesPage() {
               무료 상담을 통해 나에게 맞는 클래스를 안내받으세요.
             </p>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <Link
-                href="/join"
-                onClick={() => pixel.contact()}
+              <a
+                href="/#contact"
+                onClick={handleContact}
                 className="btn-primary"
                 style={{ background: 'var(--navy)', color: '#fff', textDecoration: 'none', boxShadow: '0 4px 20px rgba(21,72,138,0.3)' }}
               >
                 무료 상담 신청 →
-              </Link>
+              </a>
               <a
                 href="https://pf.kakao.com/_ximxdqn"
                 target="_blank"

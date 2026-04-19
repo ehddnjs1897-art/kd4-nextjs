@@ -170,9 +170,16 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
         </div>
 
         <a
-          href="/join"
+          href="/#contact"
           className="class-card-cta"
-          onClick={() => { pixel.viewContent(cls.nameKo); pixel.contact() }}
+          onClick={(e) => {
+            e.preventDefault()
+            pixel.viewContent(cls.nameKo)
+            pixel.contact()
+            const el = document.getElementById('contact')
+            if (el) el.scrollIntoView({ behavior: 'smooth' })
+            else window.location.href = '/#contact'
+          }}
           style={{
             display: "block", textAlign: "center", padding: "12px 0",
             background: "var(--gold)", color: "#ffffff", fontWeight: 700,
@@ -549,8 +556,7 @@ export default function HomePage() {
         </div>
         <div className="cta-buttons">
           <Link
-            href="/join"
-            onClick={() => pixel.contact()}
+            href="/classes"
             className="btn-primary"
             style={{
               background: "var(--navy)",
@@ -1319,9 +1325,15 @@ export default function HomePage() {
             className="cta-buttons"
             style={{ marginBottom: "48px" }}
           >
-            <Link
-              href="/join"
-              onClick={() => pixel.contact()}
+            <a
+              href="/#contact"
+              onClick={(e) => {
+                e.preventDefault()
+                pixel.contact()
+                const el = document.getElementById('contact')
+                if (el) el.scrollIntoView({ behavior: 'smooth' })
+                else window.location.href = '/#contact'
+              }}
               className="btn-primary"
               style={{
                 background: "var(--navy)",
@@ -1331,7 +1343,7 @@ export default function HomePage() {
               }}
             >
               무료 상담 신청 →
-            </Link>
+            </a>
             <a
               href="https://pf.kakao.com/_ximxdqn"
               target="_blank"
