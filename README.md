@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# KD4 액팅 스튜디오 — 웹사이트
 
-## Getting Started
+KD4 액팅 스튜디오 공식 웹사이트. 배우 프로필, 커뮤니티 게시판, AI 대본분석, 관리자 대시보드를 포함한다.
 
-First, run the development server:
+## 스택
+
+- Next.js (App Router) + TypeScript
+- Supabase (PostgreSQL + Auth + Storage)
+- Tailwind CSS
+- Vercel 배포
+
+## 로컬 실행
 
 ```bash
+npm install
+cp .env.local.example .env.local   # 환경변수 채우기 (아래 참고)
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+→ http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 환경변수 (.env.local)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
 
-## Learn More
+NEXT_PUBLIC_KAKAO_JS_KEY=
+KAKAO_CLIENT_ID=
+KAKAO_CLIENT_SECRET=
 
-To learn more about Next.js, take a look at the following resources:
+NEXT_PUBLIC_GEMINI_KEY=
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+STORAGE_PROVIDER=supabase   # r2로 바꾸면 Cloudflare R2 전환
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## DB 초기화
 
-## Deploy on Vercel
+1. Supabase 대시보드 → SQL Editor
+2. `supabase/schema.sql` 전체 실행
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 첫 관리자 계정
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. `/auth/signup` 에서 회원가입
+2. Supabase Table Editor → profiles → role 컬럼을 `admin` 으로 변경
+
+## 주요 경로
+
+| 경로 | 내용 |
+|---|---|
+| `/` | 랜딩 (11섹션) |
+| `/actors` | 배우 목록 + 갤러리 |
+| `/board` | 커뮤니티 게시판 |
+| `/ai-tools` | AI 대본분석 |
+| `/dashboard` | 마이페이지 + 편집 |
+| `/admin` | 관리자 전용 (role=admin) |
+| `/join` | 수강신청 |
+
+## 브랜드 규칙
+
+- "수강생" 금지 → "동료 배우", "KD4 배우"
+- 클래스 명칭은 `lib/classes.ts` 데이터 그대로 사용 (임의 수정 금지)
+- 베이직 클래스에는 "연기 경험 없어도 OK" 문구 필수
+
+## 개발 규칙
+
+- `supabaseAdmin` (service_role)은 서버 전용 — 클라이언트에서 import 금지
+- Three.js HeroScene: `dynamic(import, {ssr: false})` 필수
+- 이미지 업로드: 클라이언트에서 5MB 사전 체크
+- 배우 편집 API: `actor_id` 본인 여부 서버에서 검증 필수
+- 자세한 개발 가이드: `CLAUDE.md` 참고
