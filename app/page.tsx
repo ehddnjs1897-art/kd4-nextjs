@@ -555,18 +555,20 @@ export default function HomePage() {
           <span style={{ display: "block", width: "36px", height: "1px", background: "var(--gold)" }} />
         </div>
         <div className="cta-buttons">
-          <Link
-            href="/classes"
+          <a
+            href="#classes"
+            onClick={(e) => { e.preventDefault(); document.getElementById("classes")?.scrollIntoView({ behavior: "smooth" }) }}
             className="btn-primary"
             style={{
               background: "var(--navy)",
               color: "#ffffff",
               textDecoration: "none",
               boxShadow: "0 4px 14px rgba(21,72,138,0.2)",
+              cursor: "pointer",
             }}
           >
             클래스 알아보기 →
-          </Link>
+          </a>
           <Link
             href="/actors"
             style={{
