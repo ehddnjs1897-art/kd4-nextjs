@@ -233,7 +233,8 @@ export default function JoinPage() {
               marginRight: 'auto',
             }}
           >
-            오디션 결과가 없다면,{' '}
+            오디션 결과가 없다면,
+            <br />
             <span
               style={{
                 color: '#ffffff',
