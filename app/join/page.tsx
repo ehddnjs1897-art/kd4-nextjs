@@ -4,12 +4,15 @@ import {
   Users,
   Award,
   TrendingUp,
+  Flame,
+  Repeat,
+  Zap,
   FileText,
+  Film,
+  Handshake,
   Check,
   X,
   ArrowRight,
-  Quote,
-  Star,
   MessageCircle,
   Clock,
   ShieldCheck,
@@ -28,6 +31,8 @@ import FaqAccordion from '@/components/join/FaqAccordion'
 import JoinCTALink from '@/components/join/JoinCTALink'
 import ScrollDepth from '@/components/analytics/ScrollDepth'
 import JoinPageView from '@/components/analytics/JoinPageView'
+import ReviewGrid from '@/components/join/ReviewGrid'
+import type { ReviewItem } from '@/components/join/ReviewLightbox'
 
 export const metadata: Metadata = {
   title: '무료 상담 신청 | KD4 액팅 스튜디오',
@@ -69,35 +74,49 @@ const PAIN_POINTS = [
   },
 ]
 
-/* ── 커리큘럼 4개월 로드맵 ──────────────────────────────────── */
+/* ── 커리큘럼 6단계 로드맵 ─────────────────────────────────── */
 const CURRICULUM = [
   {
+    Icon: Flame,
+    step: 'STEP 01',
+    title: 'Emotional Release',
+    subtitle: '감정 해방 · 충동·본능 회복',
+    desc: '막혀있던 감정의 둑을 터뜨리는 첫 단계. 충동과 본능을 회복합니다.',
+  },
+  {
     Icon: Repeat,
-    month: 'MONTH 01',
+    step: 'STEP 02',
     title: 'Repetition',
     subtitle: '레피티션 훈련',
     desc: '상대방의 말·표정·행동을 그대로 관찰하고 즉각 반응하는 훈련. 정답 연기를 버립니다.',
   },
   {
     Icon: Zap,
-    month: 'MONTH 02',
-    title: 'Activity & Doorknock',
-    subtitle: '7단계 실습',
-    desc: '마이즈너 테크닉의 핵심 7단계를 차근차근 내 몸에 체화시키는 단계입니다.',
+    step: 'STEP 03',
+    title: 'Independent Activity',
+    subtitle: '인디펜던트 액티비티',
+    desc: '혼자 강렬한 과제에 몰입하며, 파트너의 문 두드림에도 진짜 반응을 유지합니다.',
   },
   {
     Icon: FileText,
-    month: 'MONTH 03',
+    step: 'STEP 04',
     title: 'Text Analysis',
     subtitle: '텍스트 분석 · 메모라이징',
     desc: '대본을 외우는 게 아니라 해석하는 방법. 인물의 진짜 욕구를 찾아냅니다.',
   },
   {
     Icon: Film,
-    month: 'MONTH 04',
+    step: 'STEP 05',
     title: 'Final Portfolio',
     subtitle: '출연영상 촬영',
     desc: '전문 영화팀과 함께하는 최종 장면 촬영. 오디션 제출용 포트폴리오 완성.',
+  },
+  {
+    Icon: Handshake,
+    step: 'AFTER COURSE',
+    title: 'Casting',
+    subtitle: '실전 캐스팅 연계',
+    desc: '인물조감독·캐스팅디렉터 오디션에 직접 연결. 수료 후에도 이어지는 지원입니다.',
   },
 ]
 
@@ -110,22 +129,61 @@ const COMPARISON_ROWS: { label: string; normal: string; kd4: string }[] = [
   { label: '월 클래스 비용', normal: '20~35만원', kd4: '첫 달 25만원' },
 ]
 
-/* ── 후기 (신뢰도 보강 — 기수/나이대 추가) ────────────────── */
-const REVIEWS = [
+/* ── 카톡 후기 6장 (하이브리드 B안: 썸네일 + 요약 + 라이트박스) ── */
+const REVIEWS: ReviewItem[] = [
   {
-    text: '정답인 연기를 요구하지 않고, 저 자체로 보여줄 수 있는 연기를 할 수 있었어요',
-    author: '윤*숙',
-    meta: '2025 봄 기수 · 마이즈너 정규반',
+    id: 'kang-yookyung',
+    image: '/reviews/review-01.jpg',
+    author: '강유경',
+    cohort: '마이즈너 정규반',
+    summary: '의식 깊은 곳 감정이 뱉어졌다',
+    fullQuote:
+      '내 의지로 만들어진 연기가 아니라 의식 깊은 곳에서 건드려진 감정이 자연스럽게 뱉어지는 경험을 했습니다.',
   },
   {
-    text: '마이즈너 테크닉을 처음 접했습니다. 진짜 연기가 뭔지 발견했습니다',
-    author: '김*현',
-    meta: '2024 가을 기수 · 출연영상반',
+    id: 'kim-gwangil',
+    image: '/reviews/review-02.jpg',
+    author: '김광일',
+    cohort: '마이즈너 정규반',
+    summary: "카메라 앞 '진짜로' 숨쉬는 법",
+    fullQuote:
+      '좀 더 솔직하고 진짜 내가 느끼고 있는 감정을 표현해내고 있었다. 카메라 앞에서든 무대 위에서든 꾸며진 가짜의 환경 속에서 조금이나마 더 진짜로 숨쉴 수 있는 방법의 물꼬를 터준 수업.',
   },
   {
-    text: '한 사람 한 사람에게 디테일한 피드백을 주신다는 점이 가장 좋았습니다',
-    author: '정*석',
-    meta: '2025 봄 기수 · 마이즈너 정규반',
+    id: 'han-gayoon',
+    image: '/reviews/review-03.jpg',
+    author: '한가윤',
+    cohort: '마이즈너 정규반',
+    summary: '안 보이던 업계의 길이 보였다',
+    fullQuote:
+      '실제 업계에 있으신 배우 권동원 대표님이 현재 업계가 어떻게 돌아가고 있는지 시스템을 현실적이고 구체적으로 설명해주셔서 안 보이던 길이 보입니다.',
+  },
+  {
+    id: 'heo-geon',
+    image: '/reviews/review-04.png',
+    author: '허건',
+    cohort: '마이즈너 정규반',
+    summary: '여러 워크샵 중 가장 의미있었다',
+    fullQuote:
+      '하나로 정하고 고정하는 연기가 아닌, 자유로운 탐구로 다양한 길을 열어가는 연기를 직접 경험해볼 수 있어서 나름 여러 연기 워크샵을 다녀봤지만 가장 의미있는 시간이었다.',
+  },
+  {
+    id: 'jo-mingun',
+    image: '/reviews/review-05.png',
+    author: '조민건',
+    cohort: '마이즈너 정규반',
+    summary: '대사 뱉자 색다른 감정이 휘몰아쳤다',
+    fullQuote:
+      '오늘은 허심탄회하게 제 마음을 다 드러낸 거 같아요. 그러고나서 다시 대사를 뱉어보니 색다른 감정들이 저를 휘몰아치게 하더라고요.',
+  },
+  {
+    id: 'kim-suji',
+    image: '/reviews/review-06.jpg',
+    author: '김수지',
+    cohort: '마이즈너 정규반',
+    summary: '5시간, 6명, 한 명 한 명 케어',
+    fullQuote:
+      '5시간 여 동안 거의 쉬지 않고 여섯 명을 한 명 한 명 집중해주셨고 프로필도 한 명 한 명 자세하게 봐주셨습니다! 학원에서 배울 수 없는 것들을 얻어간 귀중한 시간이었습니다!',
   },
 ]
 
@@ -138,13 +196,13 @@ const GUARANTEES = [
   },
   {
     Icon: ShieldCheck,
-    title: '첫 2주 불만족 시 전액 환불',
-    desc: '출석 2회 이후 카카오로 요청하시면 즉시 환불 처리됩니다.',
+    title: '첫 수업 이후 불만족 시 전액 환불',
+    desc: '한 번 수업을 경험해보시고 결정하셔도 됩니다.',
   },
   {
     Icon: FileText,
-    title: '상담만 받아도 가이드 PDF',
-    desc: '권동원 대표가 정리한 오디션 합격 가이드 무료로 드립니다.',
+    title: '상담만 받아도 프로필·출연영상 컨설팅',
+    desc: '캐스팅디렉터·에이전시 자료 전부 무료 제공.',
   },
 ]
 
@@ -338,7 +396,7 @@ export default function JoinPage() {
                 marginBottom: '18px',
               }}
             >
-              이런 장면, 익숙할지도
+              노력은 쌓이는데, 결과가 쌓이지 않습니다
             </h2>
             <p
               style={{
@@ -349,7 +407,7 @@ export default function JoinPage() {
                 margin: '0 auto',
               }}
             >
-              배우는 방식이 다르면, 결과도 달라집니다.
+              방법이 틀리면 연습은 제자리걸음입니다.
             </p>
           </div>
 
@@ -422,10 +480,88 @@ export default function JoinPage() {
             </h2>
             <p
               className="section-desc"
-              style={{ margin: '0 auto 40px', textAlign: 'center', maxWidth: '520px' }}
+              style={{ margin: '0 auto 32px', textAlign: 'center', maxWidth: '520px' }}
             >
               감정을 만드는 것이 아니라, 상대에게 반응하는 훈련법입니다.
             </p>
+
+            {/* Sanford Meisner 인용 블록 — 책 인용 + 사진 */}
+            <figure
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '20px',
+                background: 'var(--bg2)',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius)',
+                padding: 'clamp(28px, 5vw, 44px) clamp(24px, 4vw, 40px)',
+                marginBottom: '40px',
+                position: 'relative',
+              }}
+            >
+              {/* 사진 — 원형 크롭 */}
+              <div
+                style={{
+                  position: 'relative',
+                  width: 'clamp(72px, 12vw, 92px)',
+                  height: 'clamp(72px, 12vw, 92px)',
+                  borderRadius: '50%',
+                  overflow: 'hidden',
+                  border: '2px solid var(--navy)',
+                  flexShrink: 0,
+                  filter: 'grayscale(0.15)',
+                }}
+              >
+                <Image
+                  src="/images/meisner-group-theatre-1938.jpg"
+                  alt="Sanford Meisner — Group Theatre 1938"
+                  fill
+                  sizes="92px"
+                  style={{
+                    objectFit: 'cover',
+                    objectPosition: '58% 28%',
+                  }}
+                />
+              </div>
+
+              {/* 인용구 */}
+              <blockquote
+                style={{
+                  fontFamily: 'var(--font-serif)',
+                  fontStyle: 'italic',
+                  fontSize: 'clamp(1.05rem, 2.8vw, 1.35rem)',
+                  lineHeight: 1.55,
+                  color: 'var(--navy)',
+                  maxWidth: '560px',
+                  textAlign: 'center',
+                  margin: 0,
+                  letterSpacing: '0.01em',
+                }}
+              >
+                <span style={{ opacity: 0.35, fontSize: '1.4em', verticalAlign: '-0.15em', marginRight: '4px' }}>“</span>
+                Acting is living truthfully under imaginary circumstances.
+                <span style={{ opacity: 0.35, fontSize: '1.4em', verticalAlign: '-0.15em', marginLeft: '4px' }}>”</span>
+              </blockquote>
+
+              {/* 출처 */}
+              <figcaption
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: '0.72rem',
+                  letterSpacing: '0.12em',
+                  color: 'var(--gray)',
+                  textAlign: 'center',
+                  textTransform: 'uppercase',
+                  lineHeight: 1.8,
+                }}
+              >
+                — Sanford Meisner
+                <span style={{ display: 'block', fontSize: '0.68rem', opacity: 0.7, marginTop: '2px', textTransform: 'none', letterSpacing: '0.02em', fontStyle: 'italic' }}>
+                  Sanford Meisner on Acting (1987)
+                </span>
+              </figcaption>
+            </figure>
 
             {/* YouTube 영상 임베드 — 16:9 반응형 */}
             <div
@@ -468,8 +604,8 @@ export default function JoinPage() {
           <div className="stats-grid">
             {[
               { Icon: Users, num: '300+', label: '배우 코칭' },
-              { Icon: Calendar, num: '3년+', label: '스튜디오 운영' },
-              { Icon: UserCheck, num: '6~8명', label: '소수정예 정원' },
+              { Icon: Award, num: '3년+', label: '스튜디오 운영' },
+              { Icon: TrendingUp, num: '80명+', label: '현재 수강배우' },
             ].map(({ Icon, num, label }) => (
               <div key={num} className="stats-card">
                 <div className="stats-icon-wrap">
@@ -554,41 +690,7 @@ export default function JoinPage() {
             </h2>
           </div>
 
-          <div className="testimonials-grid">
-            {REVIEWS.map(({ text, author, meta }) => (
-              <div key={author} className="testimonial-card">
-                <div style={{ display: 'flex', gap: '2px', marginBottom: '14px' }}>
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star
-                      key={i}
-                      size={14}
-                      color="#F59E0B"
-                      fill="#F59E0B"
-                      strokeWidth={1.3}
-                    />
-                  ))}
-                </div>
-                <Quote
-                  size={24}
-                  color="var(--navy)"
-                  strokeWidth={1.3}
-                  style={{ opacity: 0.25, marginBottom: '8px' }}
-                />
-                <p
-                  style={{
-                    fontSize: '0.92rem',
-                    lineHeight: 1.85,
-                    color: 'var(--gray-light)',
-                    marginBottom: '20px',
-                  }}
-                >
-                  {text}
-                </p>
-                <div className="testimonial-name">{author}</div>
-                <div className="testimonial-class">{meta}</div>
-              </div>
-            ))}
-          </div>
+          <ReviewGrid reviews={REVIEWS} />
 
           {/* 인라인 CTA */}
           <div style={{ textAlign: 'center', marginTop: '32px' }}>
@@ -619,7 +721,7 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑦ CURRICULUM — 4개월 로드맵                               */}
+      {/* ⑦ CURRICULUM — 6단계 훈련 과정 (감정 해방 → 캐스팅 연계) */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="section" style={{ background: 'var(--bg)', padding: '100px 0' }}>
         <div className="container">
@@ -641,10 +743,10 @@ export default function JoinPage() {
                 textTransform: 'uppercase',
               }}
             >
-              4개월 주차별 로드맵
+              단계별 훈련 과정
             </p>
             <p className="section-desc" style={{ margin: '0 auto', textAlign: 'center' }}>
-              추상적인 약속이 아니라, 매달 구체적으로 무엇을 배우는지 공개합니다.
+              클래스마다 세부 구성은 다르며, 아래는 대표적인 훈련 흐름입니다.
             </p>
           </div>
 
@@ -657,9 +759,9 @@ export default function JoinPage() {
               margin: '0 auto',
             }}
           >
-            {CURRICULUM.map(({ Icon, month, title, subtitle, desc }) => (
+            {CURRICULUM.map(({ Icon, step, title, subtitle, desc }) => (
               <div
-                key={month}
+                key={step}
                 className="step-card"
                 style={{
                   background: 'var(--bg2)',
@@ -680,7 +782,7 @@ export default function JoinPage() {
                     marginBottom: '12px',
                   }}
                 >
-                  {month}
+                  {step}
                 </p>
                 <h3
                   style={{
@@ -779,7 +881,7 @@ export default function JoinPage() {
               🌸 봄맞이 스페셜
             </h2>
             <p style={{ fontSize: '0.95rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-              <strong style={{ color: 'var(--accent-red)' }}>첫 달 10만원 할인</strong> · 잔여 <strong style={{ color: 'var(--navy)' }}>{TOTAL_SEATS}석</strong>
+              <strong style={{ color: 'var(--accent-red)' }}>첫 달 10만원 할인</strong>
             </p>
             <p style={{ fontSize: '0.82rem', color: 'var(--gray)', lineHeight: 1.7, marginTop: '6px' }}>
               2개월 차부터 정상가 적용
@@ -972,7 +1074,6 @@ export default function JoinPage() {
                       ? parseInt(cls.originalPrice.replace(/,/g, ''))
                       : first
                     const total = first + regular * (months - 1)
-                    const isFourMonths = months === 4
                     const lumpSumDiscount = 50000
                     const lumpSumPrice = total - lumpSumDiscount
                     return (
@@ -982,21 +1083,19 @@ export default function JoinPage() {
                           <strong style={{ color: 'var(--navy)' }}>
                             {total.toLocaleString()}원
                           </strong>
-                          {' '}· 기본 월납
+                          {' '}· 기본 월납 (할부 가능)
                         </p>
-                        {isFourMonths && (
-                          <p
-                            style={{
-                              fontSize: '0.78rem',
-                              color: 'var(--accent-red)',
-                              marginBottom: '6px',
-                              fontWeight: 600,
-                            }}
-                          >
-                            일시불 결제 시 5만원 추가 할인 →{' '}
-                            <strong>{lumpSumPrice.toLocaleString()}원</strong>
-                          </p>
-                        )}
+                        <p
+                          style={{
+                            fontSize: '0.78rem',
+                            color: 'var(--accent-red)',
+                            marginBottom: '6px',
+                            fontWeight: 600,
+                          }}
+                        >
+                          한번에 결제 시 5만원 추가 할인 →{' '}
+                          <strong>{lumpSumPrice.toLocaleString()}원</strong>
+                        </p>
                       </>
                     )
                   })()}
