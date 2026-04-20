@@ -41,8 +41,8 @@ export const metadata: Metadata = {
 }
 
 /* ── 상수 ────────────────────────────────────────────────────────── */
-/* Hero 배경 이미지 — KD4 heart logo (브랜드 아이덴티티) */
-const HERO_IMG = '/heart-logo.png'
+/* Hero 배경 이미지 — KD4 text logo (브랜드 아이덴티티) */
+const HERO_IMG = '/text-logo.png'
 /* 강사 사진은 DIRECTOR.photo 참조 (/director.jpg) — Director 섹션용 */
 const STUDIO_IMG =
   'https://drive.google.com/uc?export=view&id=1by0ZDO3J5yS-44McKbmAPixjPtI3xWNr'
@@ -50,9 +50,14 @@ const DEADLINE = '2026-04-23T23:59:59'  // 3일 남음
 
 /* ── lib/classes.ts 데이터 재사용 ─────────────────────────────────── */
 const OPEN_CLASSES = CLASSES.filter((c) => c.isNewMemberOpen && c.highlight)
-const TOTAL_SEATS = OPEN_CLASSES.reduce((s, c) => s + (c.remainingSeats ?? 0), 0)
 const MAIN_CLASS = CLASSES.find((c) => c.nameKo === '마이즈너 테크닉 정규 클래스')!
 const FILM_CLASS = CLASSES.find((c) => c.nameKo === '출연영상 클래스')!
+
+/* Sticky 상단 모집 중 반 (기수 정보 포함) */
+const OPEN_COHORTS = [
+  { name: '마이즈너 정규', cohort: '3기', seats: MAIN_CLASS.remainingSeats ?? 0 },
+  { name: '출연영상', cohort: '19기', seats: FILM_CLASS.remainingSeats ?? 0 },
+]
 
 /* 첫 달 할인액 (Anchor Price 시각화) */
 const FIRST_MONTH_DISCOUNT = 100000
@@ -61,13 +66,13 @@ const FIRST_MONTH_DISCOUNT = 100000
 const PAIN_POINTS = [
   {
     Icon: Camera,
-    title: '슛 들어가면 굳는다',
-    desc: '대사는 외웠는데 첫 테이크부터 숨이 짧아집니다.',
+    title: '연습실과 현장은 다르다',
+    desc: '준비한 연기가 카메라 앞에선 무너집니다.',
   },
   {
     Icon: Moon,
-    title: '오디션 뒤 연락이 없다',
-    desc: '찍고, 보내고, 답은 오지 않습니다.',
+    title: '어렵게 잡은 오디션, 무소식',
+    desc: '매번 어렵게 받은 기회, 돌아오는 답은 없습니다.',
   },
   {
     Icon: HelpCircle,
@@ -97,21 +102,21 @@ const CURRICULUM = [
     step: 'STEP 03',
     title: 'Independent Activity',
     subtitle: '인디펜던트 액티비티',
-    desc: '혼자 강렬한 과제에 몰입하며, 파트너의 문 두드림에도 진짜 반응을 유지합니다.',
+    desc: '다양한 관계 상황을 설계해 연기의 본질을 경험하고, 어떤 현장에도 반응하는 연기 스펙트럼을 넓힙니다.',
   },
   {
     Icon: FileText,
     step: 'STEP 04',
     title: 'Text Analysis',
     subtitle: '텍스트 분석 · 메모라이징',
-    desc: '대본을 외우는 게 아니라 해석하는 방법. 인물의 진짜 욕구를 찾아냅니다.',
+    desc: '이바나 처벅 테크닉을 접목해 심리학적 근거로 분석하고, 살아있는 연기·존재하는 연기로 향합니다.',
   },
   {
     Icon: Film,
     step: 'STEP 05',
     title: 'Final Portfolio',
     subtitle: '출연영상 촬영',
-    desc: '전문 영화팀과 함께하는 최종 장면 촬영. 오디션 제출용 포트폴리오 완성.',
+    desc: '전문 영화팀과 함께하는 포트폴리오(출연영상) 촬영. 요즘 캐스팅은 전부 출연영상으로 진행됩니다.',
   },
   {
     Icon: Handshake,
@@ -205,8 +210,8 @@ const GUARANTEES = [
   },
   {
     Icon: FileText,
-    title: '상담만 받아도 프로필·출연영상 컨설팅',
-    desc: '캐스팅디렉터·에이전시 자료 전부 무료 제공.',
+    title: '상담만 받아도 배우 영업기밀 공개',
+    desc: '프로필·출연영상·캐스팅디렉터·에이전시 자료 전부 제공.',
   },
 ]
 
@@ -221,7 +226,7 @@ export default function JoinPage() {
         paddingBottom: '90px',
       }}
     >
-      <StickyTopBar deadline={DEADLINE} seats={TOTAL_SEATS} />
+      <StickyTopBar deadline={DEADLINE} cohorts={OPEN_COHORTS} />
 
       {/* 분석: 랜딩 ViewContent + 스크롤 깊이 추적 (GA4 + Meta Pixel) */}
       <JoinPageView />
@@ -534,13 +539,14 @@ export default function JoinPage() {
                 style={{
                   fontFamily: 'var(--font-serif)',
                   fontStyle: 'italic',
-                  fontSize: 'clamp(1.05rem, 2.8vw, 1.35rem)',
+                  fontSize: 'clamp(0.95rem, 2.4vw, 1.3rem)',
                   lineHeight: 1.55,
                   color: 'var(--navy)',
-                  maxWidth: '560px',
+                  maxWidth: '720px',
                   textAlign: 'center',
                   margin: 0,
                   letterSpacing: '0.01em',
+                  wordBreak: 'keep-all',
                 }}
               >
                 <span style={{ opacity: 0.35, fontSize: '1.4em', verticalAlign: '-0.15em', marginRight: '4px' }}>“</span>

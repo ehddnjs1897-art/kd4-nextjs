@@ -58,6 +58,7 @@ export default function ContactForm() {
     inquiry_type: '',
   })
   const [maiznerExp, setMaiznerExp] = useState('')
+  const [consent, setConsent] = useState(false)
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
@@ -74,8 +75,12 @@ export default function ContactForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!form.name || !form.phone) {
-      setError('이름과 연락처는 필수입니다.')
+    if (!form.name || !form.phone || !form.email) {
+      setError('이름 · 연락처 · 이메일은 필수입니다.')
+      return
+    }
+    if (!consent) {
+      setError('개인정보 수집·이용에 동의해 주세요.')
       return
     }
     setLoading(true)
@@ -247,12 +252,12 @@ export default function ContactForm() {
         </div>
       </div>
 
-      {/* 이메일 (뉴스레터 수신) */}
+      {/* 이메일 (뉴스레터 수신 · 필수) */}
       <div>
         <label style={labelStyle}>
-          이메일{' '}
+          이메일 <span style={{ color: 'var(--navy)' }}>*</span>{' '}
           <span style={{ color: 'var(--gray-light)', fontSize: '0.7rem' }}>
-            (선택 · 뉴스레터·연기 자료 수신)
+            (뉴스레터·연기 자료 수신)
           </span>
         </label>
         <input
@@ -263,6 +268,7 @@ export default function ContactForm() {
           onChange={set('email')}
           onFocus={() => setFocusedField('email')}
           onBlur={() => setFocusedField(null)}
+          required
         />
       </div>
 
@@ -317,9 +323,45 @@ export default function ContactForm() {
         </select>
       </div>
 
-      <p style={{ color: 'var(--gray-light)', fontSize: '0.72rem', margin: '-6px 0', lineHeight: 1.5 }}>
-        개인정보는 상담 목적 외 사용되지 않으며, 언제든 삭제 요청 가능합니다.
-      </p>
+      {/* 개인정보 수집·이용 동의 (필수) */}
+      <label
+        htmlFor="main-consent"
+        style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: '10px',
+          padding: '12px 14px',
+          background: consent ? 'rgba(21,72,138,0.04)' : '#ffffff',
+          border: `1px solid ${consent ? 'var(--navy)' : 'var(--border)'}`,
+          borderRadius: '12px',
+          cursor: 'pointer',
+          transition: 'background 0.15s, border-color 0.15s',
+          margin: '-4px 0',
+        }}
+      >
+        <input
+          id="main-consent"
+          type="checkbox"
+          checked={consent}
+          onChange={(e) => setConsent(e.target.checked)}
+          required
+          style={{
+            width: '18px',
+            height: '18px',
+            marginTop: '2px',
+            accentColor: 'var(--navy)',
+            cursor: 'pointer',
+            flexShrink: 0,
+          }}
+        />
+        <span style={{ fontSize: '0.78rem', color: '#111111', lineHeight: 1.55 }}>
+          <strong style={{ color: 'var(--navy)' }}>[필수]</strong> 개인정보 수집·이용에 동의합니다.
+          <br />
+          <span style={{ fontSize: '0.72rem', color: 'var(--gray-light)' }}>
+            수집 항목: 이름·연락처·이메일·희망 클래스 · 목적: 상담 연락·뉴스레터 발송 · 보관 3년 · 언제든 삭제 요청 가능
+          </span>
+        </span>
+      </label>
 
       {error && (
         <p style={{ color: '#C73E3E', fontSize: '0.85rem', margin: 0 }}>{error}</p>

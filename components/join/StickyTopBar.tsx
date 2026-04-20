@@ -4,17 +4,24 @@ import { useEffect, useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { analytics } from '@/lib/analytics'
 
+interface Cohort {
+  name: string
+  cohort: string
+  seats: number
+}
+
 /**
  * 상단 Sticky CTA — Hero 이후 스크롤 시 슬라이드다운 등장
  * - 초기 로드 시 숨김 (덜 공격적)
- * - 스크롤 300px 이후 노출 → Hero 대부분 지난 시점부터 따라다님
- * - 어떤 클래스 가격인지 상단 라벨에 명시 ("마이즈너 테크닉 정규반")
+ * - 스크롤 300px 이후 노출
+ * - 현재 모집 중인 반 2개 (마이즈너 정규 · 출연영상) 분류 표기
+ * - 가격은 본문 가격 카드에서 확인
  */
 export default function StickyTopBar({
-  seats,
+  cohorts,
 }: {
   deadline?: string
-  seats: number
+  cohorts: Cohort[]
 }) {
   const [visible, setVisible] = useState(false)
 
@@ -46,79 +53,85 @@ export default function StickyTopBar({
       }}
       aria-hidden={!visible}
     >
-      {/* 상단 라벨 — 어떤 클래스 가격인지 명시 */}
+      {/* 상단 라벨 — 현재 모집 중 안내 */}
       <p
         style={{
           fontFamily: 'var(--font-display)',
-          fontSize: '0.64rem',
+          fontSize: '0.62rem',
           letterSpacing: '0.12em',
           color: 'var(--navy)',
           textAlign: 'center',
           margin: '0 0 4px 0',
           textTransform: 'uppercase',
           fontWeight: 600,
-          opacity: 0.8,
+          opacity: 0.75,
         }}
       >
-        마이즈너 테크닉 정규반
+        모집 중
       </p>
 
-      {/* 가격 · 잔여석 · CTA 한 줄 */}
+      {/* 반별 정보 · CTA */}
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '10px',
-          flexWrap: 'nowrap',
-          overflow: 'hidden',
-          whiteSpace: 'nowrap',
+          gap: '8px',
+          flexWrap: 'wrap',
+          rowGap: '4px',
         }}
       >
-        {/* 첫 달 가격 */}
-        <span style={{ fontSize: '0.74rem', color: 'var(--gray-light)', flexShrink: 0 }}>
-          첫 달
-        </span>
-        <span
-          style={{
-            fontSize: '0.82rem',
-            fontWeight: 800,
-            color: 'var(--navy)',
-            fontFamily: 'var(--font-display)',
-            flexShrink: 0,
-            letterSpacing: '0.02em',
-          }}
-        >
-          ₩250,000
-        </span>
-        <span
-          style={{
-            fontSize: '0.7rem',
-            color: 'var(--gray)',
-            textDecoration: 'line-through',
-            flexShrink: 0,
-          }}
-        >
-          ₩350,000
-        </span>
-
-        <span style={{ color: 'var(--border)', fontSize: '0.72rem', flexShrink: 0 }}>|</span>
-
-        {/* 잔여석 */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexShrink: 0 }}>
-          <span
+        {cohorts.map((c, i) => (
+          <div
+            key={c.name}
             style={{
-              width: '6px',
-              height: '6px',
-              borderRadius: '50%',
-              background: 'var(--accent-red)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
               flexShrink: 0,
             }}
-          />
-          <span style={{ fontSize: '0.74rem', color: 'var(--gray-light)', fontWeight: 600 }}>
-            잔여 <strong style={{ color: 'var(--navy)' }}>{seats}석</strong>
-          </span>
-        </div>
+          >
+            <span
+              style={{
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                color: 'var(--navy)',
+                letterSpacing: '0.01em',
+              }}
+            >
+              {c.name} {c.cohort}
+            </span>
+            <span
+              style={{
+                width: '5px',
+                height: '5px',
+                borderRadius: '50%',
+                background: 'var(--accent-red)',
+                flexShrink: 0,
+              }}
+            />
+            <span
+              style={{
+                fontSize: '0.74rem',
+                color: 'var(--gray-light)',
+                fontWeight: 600,
+              }}
+            >
+              잔여 <strong style={{ color: 'var(--accent-red)' }}>{c.seats}석</strong>
+            </span>
+            {i < cohorts.length - 1 && (
+              <span
+                style={{
+                  color: 'var(--border)',
+                  fontSize: '0.7rem',
+                  marginLeft: '4px',
+                }}
+              >
+                |
+              </span>
+            )}
+          </div>
+        ))}
 
         {/* CTA */}
         <a
@@ -130,7 +143,7 @@ export default function StickyTopBar({
             padding: '5px 12px',
             borderRadius: 'var(--radius)',
             fontFamily: 'var(--font-display)',
-            fontSize: '0.73rem',
+            fontSize: '0.72rem',
             fontWeight: 600,
             letterSpacing: '0.06em',
             textDecoration: 'none',
@@ -139,7 +152,7 @@ export default function StickyTopBar({
             alignItems: 'center',
             gap: '4px',
             flexShrink: 0,
-            marginLeft: '6px',
+            marginLeft: '4px',
           }}
         >
           무료 상담 신청

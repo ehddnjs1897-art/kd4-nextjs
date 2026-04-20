@@ -6,21 +6,25 @@ import { createClient } from '@/lib/supabase/client'
 import { CLASSES } from '@/lib/classes'
 import { analytics } from '@/lib/analytics'
 
+/* 옵션 목록은 메인 ContactForm 과 동일하게 유지 */
 const MEISNER_OPTIONS = [
-  { value: '', label: '마이즈너 경험 선택 (선택사항)' },
-  { value: '처음이다', label: '처음이다' },
-  { value: '몇 번 해봤다', label: '몇 번 해봤다' },
-  { value: '6개월 이상 훈련했다', label: '6개월 이상 훈련했다' },
+  { value: '', label: '마이즈너 경험 선택' },
+  { value: '처음이다.', label: '처음이다.' },
+  { value: '몇 번 해봤다.', label: '몇 번 해봤다.' },
+  { value: '6개월 이상 훈련 했다.', label: '6개월 이상 훈련 했다.' },
 ]
 
 const SOURCE_OPTIONS = [
-  { value: '', label: 'KD4를 어떻게 알게 되셨나요? (선택사항)' },
+  { value: '', label: 'KD4를 어떻게 알게 되셨나요?' },
   { value: '인스타그램', label: '인스타그램' },
-  { value: '카카오톡 광고', label: '카카오톡 광고' },
   { value: '네이버 블로그', label: '네이버 블로그' },
+  { value: '액터길드', label: '액터길드' },
+  { value: '필름메이커스', label: '필름메이커스' },
+  { value: 'OTR', label: 'OTR' },
   { value: '네이버·구글 검색', label: '네이버·구글 검색' },
-  { value: '유튜브', label: '유튜브' },
-  { value: '지인 추천', label: '지인 추천' },
+  { value: 'AI 추천', label: 'AI 추천' },
+  { value: '지인소개', label: '지인소개' },
+  { value: '리플레이 단톡방', label: '리플레이 단톡방' },
   { value: '기타', label: '기타' },
 ]
 
@@ -33,6 +37,7 @@ export default function JoinForm() {
   const [source, setSource] = useState('')
   const [className, setClassName] = useState('')
   const [meisnerExp, setMeisnerExp] = useState('')
+  const [consent, setConsent] = useState(false)
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
@@ -66,8 +71,16 @@ export default function JoinForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!name || !phone) {
-      setError('이름과 연락처는 필수입니다.')
+    if (!name || !phone || !email) {
+      setError('이름 · 연락처 · 이메일은 필수입니다.')
+      return
+    }
+    if (!className || !meisnerExp || !source) {
+      setError('희망 클래스 · 마이즈너 경험 · 유입 경로를 모두 선택해 주세요.')
+      return
+    }
+    if (!consent) {
+      setError('개인정보 수집·이용에 동의해 주세요.')
       return
     }
     setLoading(true)
@@ -271,7 +284,7 @@ export default function JoinForm() {
       {/* 연락처 */}
       <input
         type="tel"
-        placeholder="연락처 * (010-0000-0000)"
+        placeholder="연락처 * 010-0000-0000"
         value={phone}
         onChange={(e) => setPhone(e.target.value)}
         onFocus={() => handleFieldFocus('phone')}
@@ -295,12 +308,13 @@ export default function JoinForm() {
       {/* 이메일 (선택 · 뉴스레터 수신용) */}
       <input
         type="email"
-        placeholder="이메일 (선택 · 뉴스레터·자료 발송)"
+        placeholder="이메일 * your@email.com"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         onFocus={() => handleFieldFocus('email')}
         onBlur={() => setFocused(null)}
         style={inputStyle('email')}
+        required
         aria-describedby="email-hint"
       />
       <p
@@ -323,8 +337,10 @@ export default function JoinForm() {
           onFocus={() => handleFieldFocus('class')}
           onBlur={() => setFocused(null)}
           style={{ ...inputStyle('class'), cursor: 'pointer' }}
+          required
+          aria-required="true"
         >
-          <option value="">희망 클래스 선택 (선택사항)</option>
+          <option value="">희망 클래스 선택 *</option>
           {OPEN_CLASSES.map((c) => (
             <option key={c.nameKo} value={c.nameKo}>
               {c.nameKo}
@@ -354,10 +370,12 @@ export default function JoinForm() {
           onFocus={() => handleFieldFocus('meisner')}
           onBlur={() => setFocused(null)}
           style={{ ...inputStyle('meisner'), cursor: 'pointer' }}
+          required
+          aria-required="true"
         >
           {MEISNER_OPTIONS.map((o) => (
             <option key={o.value} value={o.value}>
-              {o.label}
+              {o.label === '마이즈너 경험 선택' ? '마이즈너 경험 *' : o.label}
             </option>
           ))}
         </select>
@@ -384,10 +402,12 @@ export default function JoinForm() {
           onFocus={() => handleFieldFocus('source')}
           onBlur={() => setFocused(null)}
           style={{ ...inputStyle('source'), cursor: 'pointer' }}
+          required
+          aria-required="true"
         >
           {SOURCE_OPTIONS.map((o) => (
             <option key={o.value} value={o.value}>
-              {o.label}
+              {o.value === '' ? 'KD4를 어떻게 알게 되셨나요? *' : o.label}
             </option>
           ))}
         </select>
@@ -405,6 +425,51 @@ export default function JoinForm() {
           ▼
         </span>
       </div>
+
+      {/* 개인정보 수집·이용 동의 (필수) */}
+      <label
+        htmlFor="join-consent"
+        style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: '10px',
+          padding: '12px 14px',
+          background: consent ? 'rgba(21,72,138,0.04)' : '#ffffff',
+          border: `1px solid ${consent ? '#15488A' : '#D2D2C8'}`,
+          borderRadius: '12px',
+          cursor: 'pointer',
+          transition: 'background 0.15s, border-color 0.15s',
+        }}
+      >
+        <input
+          id="join-consent"
+          type="checkbox"
+          checked={consent}
+          onChange={(e) => setConsent(e.target.checked)}
+          required
+          style={{
+            width: '18px',
+            height: '18px',
+            marginTop: '2px',
+            accentColor: '#15488A',
+            cursor: 'pointer',
+            flexShrink: 0,
+          }}
+        />
+        <span
+          style={{
+            fontSize: '0.78rem',
+            color: '#111111',
+            lineHeight: 1.55,
+          }}
+        >
+          <strong style={{ color: '#15488A' }}>[필수]</strong> 개인정보 수집·이용에 동의합니다.
+          <br />
+          <span style={{ fontSize: '0.72rem', color: '#6B6660' }}>
+            수집 항목: 이름·연락처·이메일·희망 클래스 · 목적: 상담 연락·뉴스레터 발송 · 보관 3년 · 언제든 삭제 요청 가능
+          </span>
+        </span>
+      </label>
 
       {/* 에러 */}
       {error && (
