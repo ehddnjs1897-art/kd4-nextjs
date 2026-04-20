@@ -255,9 +255,9 @@ export default function JoinPage() {
         >
           <p
             className="section-eyebrow"
-            style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '20px' }}
+            style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '20px', wordBreak: 'keep-all' }}
           >
-            ACTOR ACCELERATING SYSTEM · 무료 상담
+            ACTOR ACCELERATING SYSTEM
           </p>
 
           <h1
@@ -342,7 +342,7 @@ export default function JoinPage() {
       <section
         style={{
           position: 'relative',
-          padding: '100px 0',
+          padding: 'clamp(64px, 12vw, 100px) 0',
           background: 'var(--bg2)',
           overflow: 'hidden',
         }}
@@ -454,7 +454,7 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ③ SOLUTION — 마이즈너 테크닉 (영상 임베드)                */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg)', padding: '100px 0' }}>
+      <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto', textAlign: 'center' }}>
             <p className="section-eyebrow">02 — THE METHOD</p>
@@ -610,7 +610,7 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑤ DIRECTOR — 강사 크레딧 구체화 + 인라인 CTA              */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg)', padding: '100px 0' }}>
+      <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow">03 — THE TEACHER</p>
@@ -666,7 +666,7 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑥ PROOF — 후기 (신뢰도 보강) + 인라인 CTA                 */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg2)', padding: '100px 0' }}>
+      <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow">04 — REAL REVIEWS</p>
@@ -721,7 +721,7 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑦ CURRICULUM — 6단계 훈련 과정 (감정 해방 → 캐스팅 연계) */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg)', padding: '100px 0' }}>
+      <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 48px', textAlign: 'center' }}>
             <p className="section-eyebrow">05 — CURRICULUM</p>
@@ -815,17 +815,16 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑧ COMPARISON                                                */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg2)', padding: '100px 0' }}>
+      <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow">06 — COMPARE</p>
             <h2
               className="section-title-serif"
               style={{
-                fontSize: 'clamp(1.7rem, 4vw, 2.5rem)',
+                fontSize: 'clamp(1.5rem, 4vw, 2.5rem)',
                 marginBottom: '14px',
                 wordBreak: 'keep-all',
-                whiteSpace: 'nowrap',
               }}
             >
               공장식 학원 vs <span style={{ color: 'var(--navy)' }}>KD4</span>
@@ -873,7 +872,7 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑨ OFFER — 가격 + 카운트다운 + Anchor Price 배지           */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg)', padding: '100px 0' }}>
+      <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow">07 — SPRING SPECIAL</p>
@@ -1128,7 +1127,7 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑩ FAQ                                                      */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg2)', padding: '100px 0' }}>
+      <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow">08 — FAQ</p>
@@ -1146,7 +1145,7 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑪ RISK REVERSAL — 신규 (Form 직전 리스크 제거)            */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg)', padding: '100px 0' }}>
+      <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow">09 — OUR PROMISE</p>
@@ -1224,7 +1223,7 @@ export default function JoinPage() {
         className="section"
         style={{
           background: 'radial-gradient(ellipse at 50% 0%, rgba(21,72,138,0.08) 0%, var(--bg) 70%)',
-          padding: '100px 0',
+          padding: 'clamp(64px, 12vw, 100px) 0',
         }}
       >
         <div className="container">

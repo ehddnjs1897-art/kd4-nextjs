@@ -296,7 +296,7 @@ export default function JoinForm() {
       <p
         id="phone-hint"
         style={{
-          fontSize: '0.72rem',
+          fontSize: '0.78rem',
           color: '#6B6660',
           margin: '-4px 0 0 4px',
           letterSpacing: '0.01em',
@@ -320,7 +320,7 @@ export default function JoinForm() {
       <p
         id="email-hint"
         style={{
-          fontSize: '0.72rem',
+          fontSize: '0.78rem',
           color: '#6B6660',
           margin: '-4px 0 0 4px',
           letterSpacing: '0.01em',
@@ -458,14 +458,14 @@ export default function JoinForm() {
         />
         <span
           style={{
-            fontSize: '0.78rem',
+            fontSize: '0.85rem',
             color: '#111111',
-            lineHeight: 1.55,
+            lineHeight: 1.6,
           }}
         >
           <strong style={{ color: '#15488A' }}>[필수]</strong> 개인정보 수집·이용에 동의합니다.
           <br />
-          <span style={{ fontSize: '0.72rem', color: '#6B6660' }}>
+          <span style={{ fontSize: '0.76rem', color: '#6B6660' }}>
             수집 항목: 이름·연락처·이메일·희망 클래스 · 목적: 상담 연락·뉴스레터 발송 · 보관 3년 · 언제든 삭제 요청 가능
           </span>
         </span>
