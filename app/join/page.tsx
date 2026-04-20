@@ -20,7 +20,7 @@ import {
   Moon,
   Wallet,
 } from 'lucide-react'
-import { CLASSES } from '@/lib/classes'
+import { CLASSES, DIRECTOR } from '@/lib/classes'
 import { FAQ_ITEMS } from '@/lib/faq-items'
 import JoinForm from '@/components/contact/JoinForm'
 import CountdownTimer from '@/components/ui/CountdownTimer'
@@ -507,7 +507,7 @@ export default function JoinPage() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={INSTRUCTOR_IMG}
-                alt="권동원 대표"
+                alt={`${DIRECTOR.name} 대표`}
                 style={{
                   width: '100%',
                   height: '100%',
@@ -517,16 +517,14 @@ export default function JoinPage() {
               />
             </div>
             <div style={{ flex: 1 }}>
-              <div className="director-name">권동원</div>
-              <div className="director-role">KD4 대표 · 현역 배우</div>
+              <div className="director-name">{DIRECTOR.name}</div>
+              <div className="director-role">{DIRECTOR.title}</div>
               <div className="director-creds">
-                <div className="director-cred">
-                  LA Meisner Workshop 수료 · 한국 마이즈너테크닉 아카데미 수료
-                </div>
-                <div className="director-cred">유익액터스 대표 · 영화 경계선 제작·주연</div>
-                <div className="director-cred">Disney+ 무빙2 출연 (2026)</div>
-                <div className="director-cred">SBS 중증외상센터 출연 (2025)</div>
-                <div className="director-cred">프로 배우 400명+ 액팅 코칭 · Youtube 2000만뷰+</div>
+                {DIRECTOR.highlights.map((line) => (
+                  <div key={line} className="director-cred">
+                    {line}
+                  </div>
+                ))}
               </div>
               <p
                 style={{
@@ -539,7 +537,7 @@ export default function JoinPage() {
                   lineHeight: 1.8,
                 }}
               >
-                학원 선생님이 아닌, 같이 현장에서 일하는 동료로서 가르칩니다. 이론만이 아니라 지금 촬영장에서 통하는 연기를 공유해요.
+                {DIRECTOR.quote}
               </p>
             </div>
           </div>

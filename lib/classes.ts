@@ -191,3 +191,88 @@ export const CLASSES: ClassItem[] = [
     price: "400,000"
   }
 ];
+
+/* ──────────────────────────────────────────────────────────────
+ * 권동원 대표 이력 템플릿
+ *  - kd4.club 메인(app/page.tsx L661-751)을 정답지로 삼음
+ *  - 필요할 때 언제든 DIRECTOR.xxx 로 참조
+ *    · profileFlat: 메인 PROFILE 섹션과 동일한 9줄 평탄 배열
+ *    · credentials: 그룹별 분류 (career/awards/channels/education)
+ *    · filmography: 드라마/영화/CF 분류
+ *    · highlights: Join 등 짧은 랜딩용 5줄 요약
+ *    · quote: 강사 인용문 (이탤릭 표시용)
+ *    · photo: public/director.jpg 로컬 경로
+ * ────────────────────────────────────────────────────────────── */
+
+export interface DirectorProfile {
+  name: string;
+  title: string;
+  photo: string;
+  quote: string;
+  credentials: {
+    career: string[];
+    awards: string[];
+    channels: string[];
+    education: string[];
+  };
+  filmography: {
+    drama: string[];
+    film: string[];
+    cf: string[];
+  };
+  profileFlat: string[];
+  highlights: string[];
+}
+
+export const DIRECTOR: DirectorProfile = {
+  name: "권동원",
+  title: "KD4 대표 · 현역 배우",
+  photo: "/director.jpg",
+  quote:
+    "학원 선생님이 아닌, 같이 현장에서 일하는 동료로서 가르칩니다. 이론만이 아니라 지금 촬영장에서 통하는 연기를 공유해요.",
+
+  credentials: {
+    career: ["유익액터스 대표", "경계선 제작·주연", "프로 배우 400명+ 액팅 코칭"],
+    awards: ["K-웹드라마 어워드 연기상 수상", "LG 크리에이터 특별상"],
+    channels: ["Youtube 2000만뷰+"],
+    education: [
+      "LA Meisner Workshop 수료",
+      "한국 마이즈너테크닉 아카데미 수료",
+      "건명원 / The Chora 졸업",
+    ],
+  },
+
+  filmography: {
+    drama: [
+      "무빙2 (2026)",
+      "나의 유죄 인간 (2026)",
+      "금쪽같은 내 스타 (2025)",
+      "중증외상센터 (2025)",
+      "세작 (2024)",
+    ],
+    film: ["경계선 (2025, 제작·주연)", "강철비2 (2021)"],
+    cf: ["MSD 제약 키트루다 (2025)", "현대 인증중고차 (2024)"],
+  },
+
+  // 메인 페이지 PROFILE 섹션 원본 순서 (평탄)
+  profileFlat: [
+    "프로 배우 400명+ 액팅 코칭",
+    "유익액터스 대표",
+    "경계선 제작·주연",
+    "K-웹드라마 어워드 연기상 수상",
+    "LG 크리에이터 특별상",
+    "Youtube 2000만뷰+",
+    "건명원 / The Chora 졸업",
+    "LA Meisner Workshop 수료",
+    "한국 마이즈너테크닉 아카데미 수료",
+  ],
+
+  // Join 등 짧은 랜딩용 하이라이트 5줄 (메인 이력을 축약·그룹핑)
+  highlights: [
+    "LA Meisner Workshop 수료 · 한국 마이즈너테크닉 아카데미 수료",
+    "유익액터스 대표 · 영화 경계선 제작·주연",
+    "K-웹드라마 어워드 연기상 수상 · LG 크리에이터 특별상",
+    "무빙2 (2026) · 중증외상센터 (2025)",
+    "프로 배우 400명+ 액팅 코칭 · Youtube 2000만뷰+",
+  ],
+};
