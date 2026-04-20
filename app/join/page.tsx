@@ -751,8 +751,9 @@ export default function JoinPage() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-              gap: '16px',
+              /* 3열 × 2행 고정 — 모바일도 한 화면에 6카드 보이게 */
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: 'clamp(6px, 1.5vw, 16px)',
               maxWidth: '1080px',
               margin: '0 auto',
             }}
@@ -765,19 +766,21 @@ export default function JoinPage() {
                   background: 'var(--bg2)',
                   border: '1px solid var(--border)',
                   borderRadius: '8px',
-                  padding: '32px 24px',
+                  padding: 'clamp(14px, 2.5vw, 32px) clamp(10px, 2vw, 24px)',
+                  wordBreak: 'keep-all',
+                  overflowWrap: 'break-word',
                 }}
               >
-                <div className="step-icon-glow" style={{ marginBottom: '20px' }}>
-                  <Icon size={22} color="var(--navy)" strokeWidth={1.8} />
+                <div className="step-icon-glow" style={{ marginBottom: 'clamp(10px, 2vw, 20px)' }}>
+                  <Icon size={20} color="var(--navy)" strokeWidth={1.8} />
                 </div>
                 <p
                   style={{
                     fontFamily: 'var(--font-display)',
-                    fontSize: '0.7rem',
-                    letterSpacing: '0.2em',
+                    fontSize: 'clamp(0.56rem, 1.6vw, 0.7rem)',
+                    letterSpacing: '0.16em',
                     color: 'var(--navy)',
-                    marginBottom: '12px',
+                    marginBottom: 'clamp(6px, 1.5vw, 12px)',
                   }}
                 >
                   {step}
@@ -785,9 +788,9 @@ export default function JoinPage() {
                 <h3
                   style={{
                     fontFamily: 'var(--font-serif)',
-                    fontSize: '1.15rem',
+                    fontSize: 'clamp(0.85rem, 2.4vw, 1.15rem)',
                     fontWeight: 700,
-                    marginBottom: '6px',
+                    marginBottom: '4px',
                     lineHeight: 1.3,
                   }}
                 >
@@ -795,15 +798,22 @@ export default function JoinPage() {
                 </h3>
                 <p
                   style={{
-                    fontSize: '0.82rem',
+                    fontSize: 'clamp(0.68rem, 1.9vw, 0.82rem)',
                     color: 'var(--navy)',
-                    marginBottom: '14px',
+                    marginBottom: 'clamp(8px, 1.8vw, 14px)',
                     fontWeight: 500,
+                    lineHeight: 1.4,
                   }}
                 >
                   {subtitle}
                 </p>
-                <p style={{ fontSize: '0.85rem', color: 'var(--gray-light)', lineHeight: 1.75 }}>
+                <p
+                  style={{
+                    fontSize: 'clamp(0.7rem, 1.85vw, 0.85rem)',
+                    color: 'var(--gray-light)',
+                    lineHeight: 1.6,
+                  }}
+                >
                   {desc}
                 </p>
               </div>
@@ -1163,8 +1173,9 @@ export default function JoinPage() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-              gap: '16px',
+              /* 3열 고정 — 모바일도 한 화면에 3카드 동시 보이게 */
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: 'clamp(6px, 1.5vw, 16px)',
               maxWidth: '880px',
               margin: '0 auto',
             }}
@@ -1176,37 +1187,45 @@ export default function JoinPage() {
                   background: 'var(--bg2)',
                   border: '1px solid var(--border)',
                   borderRadius: 'var(--radius)',
-                  padding: '28px 24px',
+                  padding: 'clamp(14px, 2.5vw, 28px) clamp(10px, 2vw, 24px)',
                   textAlign: 'center',
+                  wordBreak: 'keep-all',
+                  overflowWrap: 'break-word',
                 }}
               >
                 <div
                   style={{
-                    width: '48px',
-                    height: '48px',
+                    width: 'clamp(36px, 6vw, 48px)',
+                    height: 'clamp(36px, 6vw, 48px)',
                     borderRadius: '12px',
                     background: 'rgba(21,72,138,0.08)',
                     border: '1px solid rgba(21,72,138,0.2)',
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    marginBottom: '16px',
+                    marginBottom: 'clamp(10px, 2vw, 16px)',
                   }}
                 >
-                  <Icon size={22} color="var(--navy)" strokeWidth={1.8} />
+                  <Icon size={20} color="var(--navy)" strokeWidth={1.8} />
                 </div>
                 <p
                   style={{
                     fontFamily: 'var(--font-serif)',
-                    fontSize: '1rem',
+                    fontSize: 'clamp(0.82rem, 2.2vw, 1rem)',
                     fontWeight: 700,
-                    marginBottom: '8px',
+                    marginBottom: '6px',
                     lineHeight: 1.4,
                   }}
                 >
                   {title}
                 </p>
-                <p style={{ fontSize: '0.85rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
+                <p
+                  style={{
+                    fontSize: 'clamp(0.68rem, 1.85vw, 0.85rem)',
+                    color: 'var(--gray-light)',
+                    lineHeight: 1.6,
+                  }}
+                >
                   {desc}
                 </p>
               </div>
