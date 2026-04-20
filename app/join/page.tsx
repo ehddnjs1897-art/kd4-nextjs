@@ -19,7 +19,7 @@ import {
   HeartHandshake,
   Camera,
   Moon,
-  Wallet,
+  HelpCircle,
 } from 'lucide-react'
 import { CLASSES, DIRECTOR } from '@/lib/classes'
 import { FAQ_ITEMS } from '@/lib/faq-items'
@@ -41,10 +41,12 @@ export const metadata: Metadata = {
 }
 
 /* ── 상수 ────────────────────────────────────────────────────────── */
-/* 강사 사진은 DIRECTOR.photo 참조 (/director.jpg) */
+/* Hero 배경 이미지 — KD4 heart logo (브랜드 아이덴티티) */
+const HERO_IMG = '/heart-logo.png'
+/* 강사 사진은 DIRECTOR.photo 참조 (/director.jpg) — Director 섹션용 */
 const STUDIO_IMG =
   'https://drive.google.com/uc?export=view&id=1by0ZDO3J5yS-44McKbmAPixjPtI3xWNr'
-const DEADLINE = '2026-04-19T23:59:59'  // 하루 남음
+const DEADLINE = '2026-04-23T23:59:59'  // 3일 남음
 
 /* ── lib/classes.ts 데이터 재사용 ─────────────────────────────────── */
 const OPEN_CLASSES = CLASSES.filter((c) => c.isNewMemberOpen && c.highlight)
@@ -68,9 +70,9 @@ const PAIN_POINTS = [
     desc: '찍고, 보내고, 답은 오지 않습니다.',
   },
   {
-    Icon: Wallet,
-    title: '20명 중 내 차례 5분',
-    desc: '월 수강료 대비 피드백 시간이 너무 짧습니다.',
+    Icon: HelpCircle,
+    title: '내 연기의 문제를 모른다',
+    desc: '찍어놓고 봐도 뭐가 어색한지 감이 안 옵니다.',
   },
 ]
 
@@ -235,16 +237,15 @@ export default function JoinPage() {
         }}
       >
         <Image
-          src={DIRECTOR.photo}
-          alt={`${DIRECTOR.name} 대표 — KD4 액팅 스튜디오`}
+          src={HERO_IMG}
+          alt="KD4 액팅 스튜디오"
           fill
           priority
           sizes="100vw"
           style={{
             objectFit: 'cover',
-            objectPosition: 'center 15%',
-            opacity: 0.62,
-            filter: 'grayscale(0.2)',
+            objectPosition: 'center',
+            opacity: 0.9,
           }}
         />
         {/* 상단은 가볍게, 하단은 진하게 — 얼굴이 보이면서 텍스트도 읽히도록 */}
@@ -500,27 +501,28 @@ export default function JoinPage() {
                 position: 'relative',
               }}
             >
-              {/* 사진 — 원형 크롭 */}
+              {/* 사진 — Group Theatre 1938 단체 사진 (공개 도메인) */}
               <div
                 style={{
                   position: 'relative',
-                  width: 'clamp(72px, 12vw, 92px)',
-                  height: 'clamp(72px, 12vw, 92px)',
-                  borderRadius: '50%',
+                  width: 'clamp(240px, 50vw, 420px)',
+                  aspectRatio: '4 / 3',
+                  borderRadius: 'var(--radius)',
                   overflow: 'hidden',
-                  border: '2px solid var(--navy)',
+                  border: '1px solid var(--border)',
                   flexShrink: 0,
-                  filter: 'grayscale(0.15)',
+                  filter: 'grayscale(0.1)',
+                  boxShadow: '0 6px 24px rgba(21,72,138,0.12)',
                 }}
               >
                 <Image
                   src="/images/meisner-group-theatre-1938.jpg"
-                  alt="Sanford Meisner — Group Theatre 1938"
+                  alt="Sanford Meisner with the Group Theatre, 1938"
                   fill
-                  sizes="92px"
+                  sizes="(max-width: 768px) 80vw, 420px"
                   style={{
                     objectFit: 'cover',
-                    objectPosition: '58% 28%',
+                    objectPosition: 'center',
                   }}
                 />
               </div>
@@ -1227,7 +1229,7 @@ export default function JoinPage() {
         <div className="container">
           <div style={{ maxWidth: '520px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-              <p className="section-eyebrow">10 — START HERE</p>
+              <p className="section-eyebrow">10 — CONTACT</p>
               <h2
                 className="section-title-serif"
                 style={{ fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', marginBottom: '10px' }}

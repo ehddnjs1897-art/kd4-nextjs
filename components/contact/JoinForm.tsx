@@ -13,11 +13,24 @@ const MEISNER_OPTIONS = [
   { value: '6개월 이상 훈련했다', label: '6개월 이상 훈련했다' },
 ]
 
+const SOURCE_OPTIONS = [
+  { value: '', label: 'KD4를 어떻게 알게 되셨나요? (선택사항)' },
+  { value: '인스타그램', label: '인스타그램' },
+  { value: '카카오톡 광고', label: '카카오톡 광고' },
+  { value: '네이버 블로그', label: '네이버 블로그' },
+  { value: '네이버·구글 검색', label: '네이버·구글 검색' },
+  { value: '유튜브', label: '유튜브' },
+  { value: '지인 추천', label: '지인 추천' },
+  { value: '기타', label: '기타' },
+]
+
 const OPEN_CLASSES = CLASSES.filter((c) => c.isNewMemberOpen)
 
 export default function JoinForm() {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
+  const [email, setEmail] = useState('')
+  const [source, setSource] = useState('')
   const [className, setClassName] = useState('')
   const [meisnerExp, setMeisnerExp] = useState('')
   const [loading, setLoading] = useState(false)
@@ -61,7 +74,7 @@ export default function JoinForm() {
     setError('')
 
     const motivationParts = [
-      '유입경로: 인스타그램광고',
+      source ? `유입경로: ${source}` : '유입경로: /join 랜딩',
       className && `희망클래스: ${className}`,
       meisnerExp && `마이즈너경험: ${meisnerExp}`,
     ].filter(Boolean)
@@ -71,7 +84,7 @@ export default function JoinForm() {
     const { error: dbError } = await supabase.from('applications').insert({
       name,
       phone,
-      email: null,
+      email: email || null,
       class_name: className || null,
       motivation,
       status: '대기',
@@ -95,9 +108,9 @@ export default function JoinForm() {
         record: {
           name,
           phone,
-          email: null,
+          email: email || null,
           class_name: className || null,
-          source: '인스타그램광고',
+          source: source || '/join 랜딩',
           motivation,
           status: '대기',
           created_at: new Date().toISOString(),
@@ -279,6 +292,29 @@ export default function JoinForm() {
         카카오톡으로만 연락드립니다 · 광고 전화 없음
       </p>
 
+      {/* 이메일 (선택 · 뉴스레터 수신용) */}
+      <input
+        type="email"
+        placeholder="이메일 (선택 · 뉴스레터·자료 발송)"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        onFocus={() => handleFieldFocus('email')}
+        onBlur={() => setFocused(null)}
+        style={inputStyle('email')}
+        aria-describedby="email-hint"
+      />
+      <p
+        id="email-hint"
+        style={{
+          fontSize: '0.72rem',
+          color: '#6B6660',
+          margin: '-4px 0 0 4px',
+          letterSpacing: '0.01em',
+        }}
+      >
+        KD4 월간 뉴스레터·연기 자료 발송 용도 · 언제든 수신 거부
+      </p>
+
       {/* 희망 클래스 */}
       <div style={{ position: 'relative' }}>
         <select
@@ -320,6 +356,36 @@ export default function JoinForm() {
           style={{ ...inputStyle('meisner'), cursor: 'pointer' }}
         >
           {MEISNER_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
+        </select>
+        <span
+          style={{
+            position: 'absolute',
+            right: '16px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            pointerEvents: 'none',
+            color: '#6B6660',
+            fontSize: '0.8rem',
+          }}
+        >
+          ▼
+        </span>
+      </div>
+
+      {/* 유입 경로 */}
+      <div style={{ position: 'relative' }}>
+        <select
+          value={source}
+          onChange={(e) => setSource(e.target.value)}
+          onFocus={() => handleFieldFocus('source')}
+          onBlur={() => setFocused(null)}
+          style={{ ...inputStyle('source'), cursor: 'pointer' }}
+        >
+          {SOURCE_OPTIONS.map((o) => (
             <option key={o.value} value={o.value}>
               {o.label}
             </option>

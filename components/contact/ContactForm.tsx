@@ -52,6 +52,7 @@ export default function ContactForm() {
   const [form, setForm] = useState({
     name: '',
     phone: '',
+    email: '',
     class_name: '',
     source: '',
     inquiry_type: '',
@@ -91,7 +92,7 @@ export default function ContactForm() {
     const { error: dbError } = await supabase.from('applications').insert({
       name: form.name,
       phone: form.phone,
-      email: null,
+      email: form.email || null,
       class_name: form.class_name || null,
       motivation,
       status: '대기',
@@ -112,7 +113,7 @@ export default function ContactForm() {
         record: {
           name: form.name,
           phone: form.phone,
-          email: null,
+          email: form.email || null,
           class_name: form.class_name || null,
           source: form.source || null,
           inquiry_type: form.inquiry_type || null,
@@ -244,6 +245,25 @@ export default function ContactForm() {
             required
           />
         </div>
+      </div>
+
+      {/* 이메일 (뉴스레터 수신) */}
+      <div>
+        <label style={labelStyle}>
+          이메일{' '}
+          <span style={{ color: 'var(--gray-light)', fontSize: '0.7rem' }}>
+            (선택 · 뉴스레터·연기 자료 수신)
+          </span>
+        </label>
+        <input
+          style={focusStyle('email')}
+          type="email"
+          placeholder="your@email.com"
+          value={form.email}
+          onChange={set('email')}
+          onFocus={() => setFocusedField('email')}
+          onBlur={() => setFocusedField(null)}
+        />
       </div>
 
       {/* 마이즈너 테크닉 경험 여부 */}
