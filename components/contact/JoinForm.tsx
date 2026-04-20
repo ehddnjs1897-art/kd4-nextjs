@@ -213,11 +213,11 @@ export default function JoinForm() {
           }}
         >
           <p style={{ fontSize: '0.88rem', color: '#111', lineHeight: 1.75, marginBottom: '10px' }}>
-            <strong>24시간 이내</strong>{' '}
-            <strong style={{ color: '#15488A' }}>권동원 대표</strong>가 직접 카카오톡으로 연락드립니다.
+            문자를 남겨주시면 <strong>24시간 이내</strong> 연락드립니다.{' '}
+            <span style={{ color: '#6B6660', fontSize: '0.82rem' }}>(SMS 확인)</span>
           </p>
           <p style={{ fontSize: '0.82rem', color: '#6B6660', lineHeight: 1.7 }}>
-            30분 상담 예약 일정을 잡은 뒤, 스튜디오에서 만나 뵙거나 비대면 상담으로 진행합니다.
+            30분 상담 예약 일정을 잡은 뒤 상담을 진행합니다.
           </p>
         </div>
 
@@ -240,8 +240,8 @@ export default function JoinForm() {
             marginBottom: '10px',
           }}
         >
-          <FileText size={15} strokeWidth={2} />
-          오디션 합격 가이드 받기
+          <MessageCircle size={15} strokeWidth={2} />
+          카카오 상담받기
         </a>
 
         <p style={{ fontSize: '0.78rem', color: '#6B6660', marginTop: '14px', lineHeight: 1.7 }}>
