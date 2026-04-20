@@ -53,22 +53,22 @@ const FILM_CLASS = CLASSES.find((c) => c.nameKo === '출연영상 클래스')!
 /* 첫 달 할인액 (Anchor Price 시각화) */
 const FIRST_MONTH_DISCOUNT = 100000
 
-/* ── Agitation 감정 체크리스트 3개 ────────────────────────────── */
+/* ── Agitation 관찰형 체크리스트 3개 ────────────────────────── */
 const PAIN_POINTS = [
   {
     Icon: Camera,
-    title: '카메라 앞에서 머리가 하얘진 경험',
-    desc: '대사를 외웠는데 막상 슛 들어가면 표정이 얼어붙고 숨이 가빠집니다.',
+    title: '슛 들어가면 굳는다',
+    desc: '대사는 외웠는데 첫 테이크부터 숨이 짧아집니다.',
   },
   {
     Icon: Moon,
-    title: '오디션 떨어지고 자존감 무너진 밤',
-    desc: '노력은 하는데 결과는 없고, 내가 재능이 없는 건가 매일 자문합니다.',
+    title: '오디션 뒤 연락이 없다',
+    desc: '찍고, 보내고, 답은 오지 않습니다.',
   },
   {
     Icon: Wallet,
-    title: '월 학원비 본전 생각에 잠 못 이룬 새벽',
-    desc: '20명 넘는 대형 클래스에서 내 차례는 5분. 이게 과연 효과 있을까 의심됩니다.',
+    title: '20명 중 내 차례 5분',
+    desc: '월 수강료 대비 피드백 시간이 너무 짧습니다.',
   },
 ]
 
@@ -227,13 +227,13 @@ export default function JoinPage() {
               fontSize: 'clamp(1.8rem, 4.8vw, 2.8rem)',
               color: '#ffffff',
               lineHeight: 1.35,
-              marginBottom: '22px',
+              marginBottom: '28px',
               maxWidth: '640px',
               marginLeft: 'auto',
               marginRight: 'auto',
             }}
           >
-            3년 학원 다녀도 오디션 결과가 없다면,{' '}
+            오디션 결과가 없다면,{' '}
             <span
               style={{
                 color: '#ffffff',
@@ -247,20 +247,6 @@ export default function JoinPage() {
 
           <p
             style={{
-              fontSize: 'clamp(0.95rem, 2.6vw, 1.05rem)',
-              color: 'rgba(255,255,255,0.85)',
-              lineHeight: 1.5,
-              marginBottom: '10px',
-              fontFamily: 'var(--font-serif)',
-              fontStyle: 'italic',
-              letterSpacing: '0.02em',
-            }}
-          >
-            연기하지 않는 연기 — KD4 액팅 스튜디오
-          </p>
-
-          <p
-            style={{
               fontSize: 'clamp(0.9rem, 2.4vw, 1rem)',
               color: 'rgba(255,255,255,0.72)',
               lineHeight: 1.75,
@@ -270,7 +256,7 @@ export default function JoinPage() {
               marginRight: 'auto',
             }}
           >
-            서울 신촌 · 6~8명 소수정예 마이즈너 테크닉 정규 클래스
+            6~8명 소수정예 · 연기상 수상 배우 직강
           </p>
 
           <div
@@ -356,7 +342,7 @@ export default function JoinPage() {
                 marginBottom: '18px',
               }}
             >
-              혹시 이런 경험, 있지 않으세요?
+              이런 장면, 익숙할지도
             </h2>
             <p
               style={{
@@ -364,23 +350,10 @@ export default function JoinPage() {
                 color: 'var(--gray-light)',
                 lineHeight: 1.8,
                 maxWidth: '540px',
-                margin: '0 auto 14px',
-              }}
-            >
-              재능이 부족해서가 아닙니다. 배우는 방법이 틀렸을 뿐이에요.
-            </p>
-            <p
-              style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: '0.95rem',
-                color: 'var(--navy)',
-                lineHeight: 1.7,
-                maxWidth: '560px',
                 margin: '0 auto',
-                fontWeight: 600,
               }}
             >
-              — 우리는 양산형 배우를 찍어내는 공장식 학원을 거부합니다.
+              배우는 방식이 다르면, 결과도 달라집니다.
             </p>
           </div>
 
@@ -439,101 +412,53 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ③ SOLUTION — 마이즈너 테크닉                              */}
+      {/* ③ SOLUTION — 마이즈너 테크닉 (영상 임베드)                */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="section" style={{ background: 'var(--bg)', padding: '100px 0' }}>
         <div className="container">
-          <div style={{ maxWidth: '680px', margin: '0 auto', textAlign: 'center' }}>
+          <div style={{ maxWidth: '720px', margin: '0 auto', textAlign: 'center' }}>
             <p className="section-eyebrow">02 — THE METHOD</p>
             <h2
               className="section-title-serif"
-              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '20px' }}
+              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
             >
-              그래서 KD4는 <span style={{ color: 'var(--navy)' }}>연기하지 않는 연기</span> — 마이즈너 테크닉
+              <span style={{ color: 'var(--navy)' }}>마이즈너 테크닉</span>
             </h2>
             <p
               className="section-desc"
-              style={{ margin: '0 auto 16px', textAlign: 'center', maxWidth: '560px' }}
+              style={{ margin: '0 auto 40px', textAlign: 'center', maxWidth: '520px' }}
             >
-              혼자 감정을 만드는 연기가 아닙니다. 상대에게 집중하고 그 순간 반응하는, 가장 자연스러운 연기 훈련법입니다.
-            </p>
-            <p
-              style={{
-                margin: '0 auto 48px',
-                textAlign: 'center',
-                fontFamily: 'var(--font-display)',
-                fontSize: '0.78rem',
-                letterSpacing: '0.14em',
-                color: 'var(--navy)',
-                textTransform: 'uppercase',
-              }}
-            >
-              감정 해방 · 충동·본능 회복 · 연기하지 않는 연기
+              감정을 만드는 것이 아니라, 상대에게 반응하는 훈련법입니다.
             </p>
 
+            {/* YouTube 영상 임베드 — 16:9 반응형 */}
             <div
               style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                gap: '16px',
-                textAlign: 'left',
+                position: 'relative',
+                paddingBottom: '56.25%',
+                height: 0,
+                overflow: 'hidden',
+                borderRadius: 'var(--radius)',
+                boxShadow: '0 8px 28px rgba(21,72,138,0.12)',
+                border: '1px solid var(--border)',
+                background: 'var(--bg2)',
               }}
             >
-              {[
-                { Icon: Users, n: '01', t: '레피티션', d: '상대 관찰 · 즉흥 반응' },
-                { Icon: Zap, n: '02', t: '액티비티', d: '집중력 · 몰입 훈련' },
-                { Icon: FileText, n: '03', t: '텍스트 분석', d: '인물의 진짜 욕구 해석' },
-              ].map(({ Icon, n, t, d }) => (
-                <div
-                  key={n}
-                  style={{
-                    background: 'var(--bg2)',
-                    border: '1px solid var(--border)',
-                    borderRadius: 'var(--radius)',
-                    padding: '26px 24px',
-                  }}
-                >
-                  <div
-                    style={{
-                      width: '44px',
-                      height: '44px',
-                      borderRadius: '10px',
-                      background: 'rgba(21,72,138,0.08)',
-                      border: '1px solid rgba(21,72,138,0.2)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginBottom: '18px',
-                    }}
-                  >
-                    <Icon size={20} color="var(--navy)" strokeWidth={1.8} />
-                  </div>
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-display)',
-                      fontSize: '0.7rem',
-                      letterSpacing: '0.2em',
-                      color: 'var(--navy)',
-                      marginBottom: '8px',
-                    }}
-                  >
-                    {n}
-                  </p>
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-serif)',
-                      fontSize: '1.1rem',
-                      fontWeight: 700,
-                      marginBottom: '6px',
-                    }}
-                  >
-                    {t}
-                  </p>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--gray-light)', lineHeight: 1.6 }}>
-                    {d}
-                  </p>
-                </div>
-              ))}
+              <iframe
+                src="https://www.youtube.com/embed/6crvxRnBerk"
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  border: 0,
+                }}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title="마이즈너 테크닉 — KD4 액팅 스튜디오"
+                loading="lazy"
+              />
             </div>
           </div>
         </div>
