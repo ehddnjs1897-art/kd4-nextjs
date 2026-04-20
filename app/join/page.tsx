@@ -833,9 +833,14 @@ export default function JoinPage() {
             <p className="section-eyebrow">06 — COMPARE</p>
             <h2
               className="section-title-serif"
-              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
+              style={{
+                fontSize: 'clamp(1.7rem, 4vw, 2.5rem)',
+                marginBottom: '14px',
+                wordBreak: 'keep-all',
+                whiteSpace: 'nowrap',
+              }}
             >
-              공장식 학원 vs <span style={{ color: 'var(--navy)' }}>배우를 성장시키는 KD4</span>
+              공장식 학원 vs <span style={{ color: 'var(--navy)' }}>KD4</span>
             </h2>
             <p style={{ fontSize: '0.9rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
               같은 연기 수업이 아닙니다. 배우를 대하는 방식부터 다릅니다.

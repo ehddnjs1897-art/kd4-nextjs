@@ -113,6 +113,9 @@ ul, ol { list-style: none; }
   font-weight: 700;
   line-height: 1.2;
   margin-bottom: 20px;
+  /* 한국어 단어 중간 끊김 방지 (모바일 줄바꿈 안정화) */
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .section-desc {
