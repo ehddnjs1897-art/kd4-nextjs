@@ -599,7 +599,7 @@ export default function HomePage() {
           {[
             { num: "300+", label: "배우 코칭", Icon: Users },
             { num: "3년+", label: "스튜디오 운영", Icon: Award },
-            { num: "70명+", label: "현재 수강배우", Icon: TrendingUp },
+            { num: "80명+", label: "현재 수강배우", Icon: TrendingUp },
           ].map(({ num, label, Icon }) => (
             <div key={label} className="stats-card">
               <div className="stats-icon-wrap">

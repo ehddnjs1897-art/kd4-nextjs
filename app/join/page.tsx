@@ -1,12 +1,10 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import {
   Users,
-  Calendar,
-  UserCheck,
-  Repeat,
-  Zap,
+  Award,
+  TrendingUp,
   FileText,
-  Film,
   Check,
   X,
   ArrowRight,
@@ -38,8 +36,7 @@ export const metadata: Metadata = {
 }
 
 /* ── 상수 ────────────────────────────────────────────────────────── */
-const INSTRUCTOR_IMG =
-  'https://drive.google.com/uc?export=view&id=1WfyN6x21sRLNzzNNYB-dBschGRzdEzUP'
+/* 강사 사진은 DIRECTOR.photo 참조 (/director.jpg) */
 const STUDIO_IMG =
   'https://drive.google.com/uc?export=view&id=1by0ZDO3J5yS-44McKbmAPixjPtI3xWNr'
 const DEADLINE = '2026-04-19T23:59:59'  // 하루 남음
@@ -179,15 +176,13 @@ export default function JoinPage() {
           background: 'var(--bg-deep)',
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={INSTRUCTOR_IMG}
-          alt="권동원 대표 — KD4 액팅 스튜디오"
+        <Image
+          src={DIRECTOR.photo}
+          alt={`${DIRECTOR.name} 대표 — KD4 액팅 스튜디오`}
+          fill
+          priority
+          sizes="100vw"
           style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
             objectFit: 'cover',
             objectPosition: 'center 15%',
             opacity: 0.62,
@@ -504,14 +499,13 @@ export default function JoinPage() {
           </div>
 
           <div className="director-card" style={{ maxWidth: '720px', margin: '0 auto' }}>
-            <div className="director-photo">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={INSTRUCTOR_IMG}
+            <div className="director-photo" style={{ position: 'relative' }}>
+              <Image
+                src={DIRECTOR.photo}
                 alt={`${DIRECTOR.name} 대표`}
+                fill
+                sizes="(max-width: 768px) 100vw, 260px"
                 style={{
-                  width: '100%',
-                  height: '100%',
                   objectFit: 'cover',
                   objectPosition: 'center 15%',
                 }}
