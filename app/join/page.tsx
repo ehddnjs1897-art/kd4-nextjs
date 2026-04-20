@@ -382,19 +382,8 @@ export default function JoinPage() {
                 marginBottom: '18px',
               }}
             >
-              노력은 쌓이는데, 결과가 쌓이지 않습니다
+              노력은 쌓이는데,<br />전문 액팅코치가 배우의 성장을 촉진시킵니다.
             </h2>
-            <p
-              style={{
-                fontSize: '0.95rem',
-                color: 'var(--gray-light)',
-                lineHeight: 1.8,
-                maxWidth: '540px',
-                margin: '0 auto',
-              }}
-            >
-              방법이 틀리면 연습은 제자리걸음입니다.
-            </p>
           </div>
 
           <div
