@@ -694,10 +694,20 @@ export default function JoinPage() {
             <p className="section-eyebrow">04 — REAL REVIEWS</p>
             <h2
               className="section-title-serif"
-              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)' }}
+              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
             >
               KD4 배우 이야기
             </h2>
+            <p
+              style={{
+                fontSize: '0.95rem',
+                color: 'var(--gray-light)',
+                lineHeight: 1.7,
+                margin: 0,
+              }}
+            >
+              KD4를 거친 배우들의 솔직한 후기
+            </p>
           </div>
 
           <ReviewGrid reviews={REVIEWS} />
