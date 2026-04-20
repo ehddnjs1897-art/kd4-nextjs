@@ -210,7 +210,7 @@ const GUARANTEES = [
   },
   {
     Icon: FileText,
-    title: '상담만 받아도 배우 영업기밀 공개',
+    title: '상담만 받아도 영업기밀 공개',
     desc: '프로필·출연영상·캐스팅디렉터·에이전시 자료 전부 제공.',
   },
 ]
@@ -377,12 +377,14 @@ export default function JoinPage() {
             <h2
               className="section-title-serif"
               style={{
-                fontSize: 'clamp(1.7rem, 4vw, 2.4rem)',
+                fontSize: 'clamp(1.05rem, 3.3vw, 2.2rem)',
                 lineHeight: 1.45,
                 marginBottom: '18px',
+                wordBreak: 'keep-all',
+                whiteSpace: 'nowrap',
               }}
             >
-              노력은 쌓이는데,<br />전문 액팅코치가 배우의 성장을 촉진시킵니다.
+              전문 액팅코치가 배우의 성장을 촉진시킵니다
             </h2>
           </div>
 
@@ -602,13 +604,25 @@ export default function JoinPage() {
       <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">03 — THE TEACHER</p>
+            <p className="section-eyebrow">03 — THE LEADER</p>
             <h2
               className="section-title-serif"
-              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)' }}
+              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '12px' }}
             >
-              현장에서 일하는 배우가 가르칩니다
+              배우의 성장을 가이드합니다
             </h2>
+            <p
+              style={{
+                fontSize: 'clamp(0.82rem, 2.2vw, 0.98rem)',
+                color: 'var(--gray-light)',
+                lineHeight: 1.6,
+                margin: 0,
+                wordBreak: 'keep-all',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              전문 액팅코치가 배우의 성장을 촉진시킵니다.
+            </p>
           </div>
 
           <div className="director-card" style={{ maxWidth: '720px', margin: '0 auto' }}>
@@ -731,9 +745,6 @@ export default function JoinPage() {
               }}
             >
               단계별 훈련 과정
-            </p>
-            <p className="section-desc" style={{ margin: '0 auto', textAlign: 'center' }}>
-              클래스마다 세부 구성은 다르며, 아래는 대표적인 훈련 흐름입니다.
             </p>
           </div>
 
@@ -1162,9 +1173,9 @@ export default function JoinPage() {
           <div
             style={{
               display: 'grid',
-              /* 3열 고정 — 모바일도 한 화면에 3카드 동시 보이게 */
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: 'clamp(6px, 1.5vw, 16px)',
+              /* 모바일 1열 (세로) · 태블릿 이상 3열 — 카드는 컴팩트 */
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))',
+              gap: '12px',
               maxWidth: '880px',
               margin: '0 auto',
             }}
@@ -1176,34 +1187,38 @@ export default function JoinPage() {
                   background: 'var(--bg2)',
                   border: '1px solid var(--border)',
                   borderRadius: 'var(--radius)',
-                  padding: 'clamp(14px, 2.5vw, 28px) clamp(10px, 2vw, 24px)',
-                  textAlign: 'center',
+                  padding: '16px 18px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '14px',
+                  textAlign: 'left',
                   wordBreak: 'keep-all',
                   overflowWrap: 'break-word',
                 }}
               >
                 <div
                   style={{
-                    width: 'clamp(36px, 6vw, 48px)',
-                    height: 'clamp(36px, 6vw, 48px)',
-                    borderRadius: '12px',
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '10px',
                     background: 'rgba(21,72,138,0.08)',
                     border: '1px solid rgba(21,72,138,0.2)',
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    marginBottom: 'clamp(10px, 2vw, 16px)',
+                    flexShrink: 0,
                   }}
                 >
-                  <Icon size={20} color="var(--navy)" strokeWidth={1.8} />
+                  <Icon size={18} color="var(--navy)" strokeWidth={1.8} />
                 </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
                 <p
                   style={{
                     fontFamily: 'var(--font-serif)',
-                    fontSize: 'clamp(0.82rem, 2.2vw, 1rem)',
+                    fontSize: 'clamp(0.88rem, 2.3vw, 1rem)',
                     fontWeight: 700,
-                    marginBottom: '6px',
-                    lineHeight: 1.4,
+                    marginBottom: '4px',
+                    lineHeight: 1.35,
                   }}
                 >
                   {title}
@@ -1217,6 +1232,7 @@ export default function JoinPage() {
                 >
                   {desc}
                 </p>
+                </div>
               </div>
             ))}
           </div>
