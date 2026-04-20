@@ -240,31 +240,9 @@ export default function JoinPage() {
           position: 'relative',
           minHeight: '560px',
           overflow: 'hidden',
-          background: 'var(--bg-deep)',
+          background: 'var(--navy)',
         }}
       >
-        <Image
-          src={HERO_IMG}
-          alt="KD4 액팅 스튜디오"
-          fill
-          priority
-          sizes="100vw"
-          style={{
-            objectFit: 'cover',
-            objectPosition: 'center',
-            opacity: 0.9,
-          }}
-        />
-        {/* 상단은 가볍게, 하단은 진하게 — 얼굴이 보이면서 텍스트도 읽히도록 */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background:
-              'linear-gradient(180deg, rgba(15,20,35,0.35) 0%, rgba(15,20,35,0.55) 45%, rgba(15,20,35,0.85) 100%)',
-          }}
-          aria-hidden="true"
-        />
 
         <div
           className="container"
@@ -1274,7 +1252,7 @@ export default function JoinPage() {
       <section className="section" style={{ background: 'var(--bg)', padding: '60px 0 40px' }}>
         <div className="container" style={{ textAlign: 'center' }}>
           <p style={{ fontSize: '0.78rem', color: 'var(--gray)', lineHeight: 1.7 }}>
-            개인정보는 상담 연락 외에 사용되지 않습니다.
+            개인정보는 상담 연락과 뉴스레터 발송에만 사용됩니다.
           </p>
           <div style={{ marginTop: '24px' }}>
             <JoinCTALink
@@ -1290,18 +1268,91 @@ export default function JoinPage() {
               카카오로 문의하기
             </JoinCTALink>
           </div>
-          <p
+          {/* 채널 유입 링크 — 관심 있는 유저 리텐션 (폼 도달 후 하단이라 주의 분산 리스크 낮음) */}
+          <div
             style={{
-              marginTop: '36px',
-              fontFamily: 'var(--font-display)',
-              fontSize: '0.72rem',
-              color: 'var(--gray)',
-              letterSpacing: '0.25em',
-              textTransform: 'uppercase',
+              marginTop: '40px',
+              paddingTop: '28px',
+              borderTop: '1px solid var(--border)',
             }}
           >
-            KD4 ACTING STUDIO · 서울 서대문구 신촌
-          </p>
+            <p
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: '0.68rem',
+                color: 'var(--gray-light)',
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                marginBottom: '14px',
+              }}
+            >
+              관심이 더 있다면
+            </p>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: '10px',
+                flexWrap: 'wrap',
+                fontSize: 'clamp(0.78rem, 2.4vw, 0.88rem)',
+              }}
+            >
+              {[
+                { label: '인스타그램', href: 'https://www.instagram.com/kd4actingstudio' },
+                { label: '유튜브', href: 'https://www.youtube.com/@kd4actingstudio' },
+                { label: '블로그', href: 'https://blog.naver.com/kd4actingstudio' },
+                { label: '카카오 채널', href: 'https://pf.kakao.com/_ximxdqn' },
+              ].map((c, i, arr) => (
+                <span
+                  key={c.label}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '10px' }}
+                >
+                  <a
+                    href={c.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      color: 'var(--navy)',
+                      textDecoration: 'none',
+                      fontWeight: 600,
+                      padding: '2px 4px',
+                    }}
+                  >
+                    {c.label}
+                  </a>
+                  {i < arr.length - 1 && (
+                    <span style={{ color: 'var(--border)' }}>·</span>
+                  )}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* 주소 — 2줄 분리로 모바일 안정 */}
+          <div style={{ marginTop: '28px', textAlign: 'center' }}>
+            <p
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: '0.7rem',
+                color: 'var(--gray)',
+                letterSpacing: '0.18em',
+                textTransform: 'uppercase',
+                marginBottom: '4px',
+              }}
+            >
+              KD4 ACTING STUDIO
+            </p>
+            <p
+              style={{
+                fontSize: '0.74rem',
+                color: 'var(--gray-light)',
+                letterSpacing: '0.01em',
+              }}
+            >
+              서울시 서대문구 대현동 90-7 아리움3차 1F
+            </p>
+          </div>
         </div>
       </section>
 
