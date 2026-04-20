@@ -132,7 +132,7 @@ const COMPARISON_ROWS: { label: string; normal: string; kd4: string }[] = [
   { label: '1인 피드백 시간', normal: '회당 5~10분', kd4: '회당 30분+' },
   { label: '정원', normal: '15~25명', kd4: '6~8명' },
   { label: '수업 길이', normal: '1.5~2시간', kd4: '4시간' },
-  { label: '강사', normal: '전임 강사 중심', kd4: '현역 배우 직강' },
+  { label: '강사', normal: '전임 강사 중심', kd4: '전문 액팅코치' },
   { label: '포트폴리오 제작', normal: '별도 과정 · 유료', kd4: '정규 과정 포함' },
   { label: '캐스팅 수수료', normal: '10~30%', kd4: '수수료 없음 · 직접 연결' },
   { label: '월 수강료', normal: '월 45~55만원', kd4: '월 32~37만원 · 최대 약 30%↓' },
@@ -844,37 +844,37 @@ export default function JoinPage() {
             </p>
           </div>
 
-          <div className="comparison-wrap" style={{ maxWidth: '720px', margin: '0 auto' }}>
-            <table className="comparison-table">
-              <thead>
-                <tr>
-                  <th style={{ textAlign: 'left' }}></th>
-                  <th>대형 학원</th>
-                  <th className="kd4-col">KD4</th>
-                </tr>
-              </thead>
-              <tbody>
-                {COMPARISON_ROWS.map((row) => (
-                  <tr key={row.label}>
-                    <td>{row.label}</td>
-                    <td style={{ color: 'var(--gray)' }}>
-                      {row.normal === 'X' ? (
-                        <X size={18} color="var(--gray)" strokeWidth={2.2} style={{ display: 'inline-block', verticalAlign: 'middle' }} />
-                      ) : (
-                        row.normal
-                      )}
-                    </td>
-                    <td className="kd4-col">
-                      {row.kd4 === 'O' ? (
-                        <Check size={18} color="var(--navy)" strokeWidth={2.2} style={{ display: 'inline-block', verticalAlign: 'middle' }} />
-                      ) : (
-                        row.kd4
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div style={{ maxWidth: '480px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{
+              display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
+              padding: '6px 16px',
+              fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em',
+              color: 'var(--gray)', textAlign: 'center',
+            }}>
+              <span />
+              <span>대형 학원</span>
+              <span style={{ color: 'var(--navy)' }}>KD4</span>
+            </div>
+            {COMPARISON_ROWS.map((row) => (
+              <div key={row.label} style={{
+                display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
+                alignItems: 'center',
+                background: 'var(--bg)', border: '1px solid var(--border)',
+                borderRadius: '8px', padding: '14px 16px',
+              }}>
+                <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>{row.label}</span>
+                <span style={{ fontSize: '0.82rem', color: 'var(--gray)', textAlign: 'center' }}>
+                  {row.normal === 'X'
+                    ? <X size={16} color="var(--gray)" strokeWidth={2.2} style={{ display: 'inline-block', verticalAlign: 'middle' }} />
+                    : row.normal}
+                </span>
+                <span style={{ fontSize: '0.82rem', color: 'var(--navy)', fontWeight: 700, textAlign: 'center' }}>
+                  {row.kd4 === 'O'
+                    ? <Check size={16} color="var(--navy)" strokeWidth={2.2} style={{ display: 'inline-block', verticalAlign: 'middle' }} />
+                    : row.kd4}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
