@@ -1,10 +1,11 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 import { pixel } from '@/lib/meta-pixel'
 
-/** 배우DB · 커뮤니티 · 대본분석 · 인증 페이지에서는 CTA 표시 안 함 */
-const HIDE_ON: string[] = ['/actors', '/board', '/ai-tools', '/auth', '/dashboard', '/admin']
+/** 배우DB · 커뮤니티 · 대본분석 · 인증 · 상담신청 페이지에서는 CTA 표시 안 함 */
+const HIDE_ON: string[] = ['/actors', '/board', '/ai-tools', '/auth', '/dashboard', '/admin', '/join']
 
 export default function FloatingCTA() {
   const pathname = usePathname()
@@ -61,12 +62,9 @@ export default function FloatingCTA() {
           zIndex: 900,
         }}
       >
-        <a
-          href="#contact"
-          onClick={(e) => {
-            e.preventDefault()
-            document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
-          }}
+        <Link
+          href="/join"
+          onClick={() => pixel.contact()}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -94,8 +92,8 @@ export default function FloatingCTA() {
             e.currentTarget.style.transform = 'translateY(0)'
           }}
         >
-          수강신청
-        </a>
+          상담 신청 →
+        </Link>
       </div>
     </>
   )

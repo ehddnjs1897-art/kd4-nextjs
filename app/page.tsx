@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { CLASSES } from "@/lib/classes";
@@ -168,10 +169,9 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
           )}
         </div>
 
-        <a
-          href="/join"
+        <Link
+          href="/join#offer"
           className="class-card-cta"
-          onClick={() => { pixel.viewContent(cls.nameKo); pixel.contact() }}
           style={{
             display: "block", textAlign: "center", padding: "12px 0",
             background: "var(--gold)", color: "#ffffff", fontWeight: 700,
@@ -180,8 +180,8 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             transition: "opacity 0.2s", boxShadow: "0 4px 16px rgba(21,72,138,0.25)",
           }}
         >
-          상담 신청 →
-        </a>
+          자세히 보기 →
+        </Link>
       </div>
     </div>
   )
@@ -964,18 +964,17 @@ export default function HomePage() {
                   overflow: "hidden",
                   background: "var(--bg3)",
                   border: "1px solid var(--border)",
+                  position: "relative",
+                  aspectRatio: "9 / 16",
                 }}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={photo.url}
-                  alt={photo.name}
-                  style={{
-                    width: "100%",
-                    aspectRatio: "9 / 16",
-                    objectFit: "cover",
-                    display: "block",
-                  }}
+                  alt={i < CASTING_PHOTOS.length ? photo.name : ""}
+                  fill
+                  sizes="200px"
+                  style={{ objectFit: "cover" }}
+                  loading="lazy"
                 />
               </div>
             ))}
