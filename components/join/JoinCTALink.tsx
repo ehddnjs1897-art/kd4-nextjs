@@ -15,6 +15,7 @@ export default function JoinCTALink({
   label,
   kind = 'anchor',
   channel,
+  fireLead,
   className,
   style,
   children,
