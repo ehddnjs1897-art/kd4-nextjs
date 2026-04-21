@@ -864,10 +864,10 @@ export default function JoinPage() {
             }}
           >
             {([
-              { youtubeId: '7Q62XeyVLbc', genre: '드라마', subtitle: '단편 「여배우들」' },
-              { youtubeId: '4XTm59jydSA', genre: '스릴러', subtitle: '단편 「싸이코패스」' },
-              { youtubeId: 'Cr4-qwVDkBc', genre: '드라마', subtitle: '단편 「각자의 이유」' },
-            ] as const).map(({ youtubeId, genre, subtitle }) => (
+              { youtubeId: '7Q62XeyVLbc', genre: '드라마', subtitle: '단편 「여배우들」', cohort: '심화 1기' },
+              { youtubeId: '4XTm59jydSA', genre: '스릴러', subtitle: '단편 「싸이코패스」', cohort: '출연영상 3기' },
+              { youtubeId: 'Cr4-qwVDkBc', genre: '드라마', subtitle: '단편 「각자의 이유」', cohort: '심화 1기' },
+            ] as const).map(({ youtubeId, genre, subtitle, cohort }) => (
               <div key={youtubeId}>
                 {/* 장르 뱃지 */}
                 <div style={{ marginBottom: '10px' }}>
@@ -937,25 +937,36 @@ export default function JoinPage() {
                   {subtitle}
                 </p>
                 <p style={{ fontSize: '0.8rem', color: 'var(--gray-light)' }}>
-                  전문 영화팀 · 실제 포트폴리오
+                  {cohort}
                 </p>
               </div>
             ))}
           </div>
 
-          {/* CTA */}
-          <div style={{ textAlign: 'center', marginTop: '48px' }}>
-            <JoinCTALink
-              href="#form"
-              location="portfolio"
-              label="나도 이런 포트폴리오 만들기"
-              fireLead
-              className="btn-primary"
-              style={{ background: 'var(--navy)', color: '#ffffff' }}
+          {/* 플레이리스트 링크 */}
+          <div style={{ textAlign: 'center', marginTop: '40px' }}>
+            <a
+              href="https://youtube.com/playlist?list=PLMbZlnkLfP7iaE41p_g9dzGKp5eU9VZk2"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontFamily: 'var(--font-display)',
+                fontSize: '0.82rem',
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                color: 'var(--navy)',
+                borderBottom: '1px solid var(--navy)',
+                padding: '4px 0',
+                textDecoration: 'none',
+                textTransform: 'uppercase',
+              }}
             >
-              나도 이런 포트폴리오 만들기
-              <ArrowRight size={16} strokeWidth={2.2} />
-            </JoinCTALink>
+              출연영상 포트폴리오 전체 보기
+              <ArrowRight size={14} strokeWidth={2.2} />
+            </a>
           </div>
         </div>
       </section>
