@@ -864,9 +864,9 @@ export default function JoinPage() {
             }}
           >
             {([
-              { youtubeId: 'boOoD9X8q1Y', genre: '로맨스', subtitle: '단편 「숙취해소」' },
-              { youtubeId: '7xV5jSXG71s', genre: '드라마', subtitle: '단편 「기억」' },
-              { youtubeId: 'Jb5AMJ-cbJo', genre: '가족', subtitle: '단편 「엄마와 케이크」' },
+              { youtubeId: '7Q62XeyVLbc', genre: '드라마', subtitle: '단편 「여배우들」' },
+              { youtubeId: '4XTm59jydSA', genre: '스릴러', subtitle: '단편 「싸이코패스」' },
+              { youtubeId: 'Cr4-qwVDkBc', genre: '드라마', subtitle: '단편 「각자의 이유」' },
             ] as const).map(({ youtubeId, genre, subtitle }) => (
               <div key={youtubeId}>
                 {/* 장르 뱃지 */}
