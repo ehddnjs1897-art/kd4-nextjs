@@ -160,15 +160,6 @@ export default function ReviewGrid({ reviews }: { reviews: ReviewItem[] }) {
               >
                 — {r.author}
               </span>
-              <span
-                style={{
-                  fontSize: '0.72rem',
-                  color: 'var(--gray-light)',
-                  letterSpacing: '0.01em',
-                }}
-              >
-                {r.cohort}
-              </span>
             </div>
 
             {/* 라이트박스 힌트 */}

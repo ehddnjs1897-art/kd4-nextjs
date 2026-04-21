@@ -163,9 +163,6 @@ export default function ReviewLightbox({
             }}
           >
             <span style={{ fontWeight: 700, color: '#111111' }}>— {review.author}</span>
-            <span style={{ color: 'var(--gray-light)', fontSize: '0.76rem' }}>
-              {review.cohort}
-            </span>
           </figcaption>
         </figure>
       </div>

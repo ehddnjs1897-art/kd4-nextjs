@@ -143,7 +143,7 @@ const REVIEWS: ReviewItem[] = [
   {
     id: 'kang-yookyung',
     image: '/reviews/review-01.jpg',
-    author: '강유경',
+    author: '강*경',
     cohort: '마이즈너 정규반',
     summary: '의식 깊은 곳 감정이 뱉어졌다',
     fullQuote:
@@ -152,7 +152,7 @@ const REVIEWS: ReviewItem[] = [
   {
     id: 'kim-gwangil',
     image: '/reviews/review-02.jpg',
-    author: '김광일',
+    author: '김*일',
     cohort: '마이즈너 정규반',
     summary: "카메라 앞 '진짜로' 숨쉬는 법",
     fullQuote:
@@ -161,7 +161,7 @@ const REVIEWS: ReviewItem[] = [
   {
     id: 'han-gayoon',
     image: '/reviews/review-03.jpg',
-    author: '한가윤',
+    author: '한*윤',
     cohort: '마이즈너 정규반',
     summary: '안 보이던 업계의 길이 보였다',
     fullQuote:
@@ -170,7 +170,7 @@ const REVIEWS: ReviewItem[] = [
   {
     id: 'heo-geon',
     image: '/reviews/review-04.png',
-    author: '허건',
+    author: '허*',
     cohort: '마이즈너 정규반',
     summary: '여러 워크샵 중 가장 의미있었다',
     fullQuote:
@@ -179,7 +179,7 @@ const REVIEWS: ReviewItem[] = [
   {
     id: 'jo-mingun',
     image: '/reviews/review-05.png',
-    author: '조민건',
+    author: '조*건',
     cohort: '마이즈너 정규반',
     summary: '대사 뱉자 색다른 감정이 휘몰아쳤다',
     fullQuote:
@@ -188,7 +188,7 @@ const REVIEWS: ReviewItem[] = [
   {
     id: 'kim-suji',
     image: '/reviews/review-06.jpg',
-    author: '김수지',
+    author: '김*지',
     cohort: '마이즈너 정규반',
     summary: '5시간, 6명, 한 명 한 명 케어',
     fullQuote:
@@ -895,9 +895,6 @@ export default function JoinPage() {
             <p style={{ fontSize: '0.95rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
               <strong style={{ color: 'var(--accent-red)' }}>첫 달 10만원 할인</strong>
             </p>
-            <p style={{ fontSize: '0.82rem', color: 'var(--gray)', lineHeight: 1.7, marginTop: '6px' }}>
-              2개월 차부터 정상가 적용
-            </p>
           </div>
 
           {/* 할인 배지 (첫 달만 할인) */}
@@ -1059,24 +1056,6 @@ export default function JoinPage() {
                     </div>
                   </div>
 
-                  {/* 2개월 차부터 정상가 */}
-                  {cls.originalPrice && (() => {
-                    const months = parseInt(cls.course?.match(/\d+/)?.[0] ?? '1')
-                    if (months <= 1) return null
-                    return (
-                      <p
-                        style={{
-                          fontSize: '0.8rem',
-                          color: 'var(--gray-light)',
-                          marginBottom: '10px',
-                          paddingTop: '8px',
-                          borderTop: '1px dashed var(--border)',
-                        }}
-                      >
-                        2~{months}개월 차 {cls.originalPrice}원/월 (정상가)
-                      </p>
-                    )
-                  })()}
 
                   {/* 코스 총액 (첫달 할인 반영) */}
                   {cls.course && (() => {
@@ -1299,18 +1278,6 @@ export default function JoinPage() {
               borderTop: '1px solid var(--border)',
             }}
           >
-            <p
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: '0.68rem',
-                color: 'var(--gray-light)',
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                marginBottom: '14px',
-              }}
-            >
-              관심이 더 있다면
-            </p>
             <div
               style={{
                 display: 'flex',
