@@ -311,6 +311,7 @@ export default function JoinPage() {
               href="#form"
               location="hero"
               label="무료 상담 신청"
+              fireLead
               className="btn-primary"
               style={{ background: 'var(--navy)', color: '#ffffff' }}
             >
@@ -699,6 +700,7 @@ export default function JoinPage() {
               href="#form"
               location="inline_proof"
               label="나도 진짜 배우로 · 무료 상담 신청"
+              fireLead
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -1103,6 +1105,7 @@ export default function JoinPage() {
               href="#form"
               location="offer_bottom"
               label="무료 상담 신청"
+              fireLead
               className="btn-primary"
               style={{ background: 'var(--navy)', color: '#ffffff' }}
             >

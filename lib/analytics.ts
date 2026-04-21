@@ -86,6 +86,13 @@ export const analytics = {
     fbTrackCustom('CTAClick', { location, label })
   },
 
+  /** 신청 CTA 클릭 — 버튼 클릭 인텐트를 Lead로 집계 (Meta 광고 최적화용) */
+  ctaLead: (location: string, label?: string) => {
+    gaTrack('cta_click', { cta_location: location, cta_label: label, cta_type: 'lead' })
+    fbTrackCustom('CTAClick', { location, label })
+    fbTrack('Lead', { content_name: label ?? '무료 상담 신청', content_category: location, value: 0, currency: 'KRW' })
+  },
+
   /** 클래스 카드 조회 (ViewContent) */
   viewContent: (contentName: string) => {
     fbTrack('ViewContent', {

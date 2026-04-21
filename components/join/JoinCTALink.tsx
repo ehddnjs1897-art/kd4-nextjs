@@ -28,12 +28,18 @@ export default function JoinCTALink({
   kind?: 'anchor' | 'external'
   /** external 일 때 channel 구분 — kakao / phone */
   channel?: 'kakao' | 'phone'
+  /** true 이면 클릭 시 Meta Pixel Lead 이벤트도 함께 발화 (신청 CTA용) */
+  fireLead?: boolean
   className?: string
   style?: CSSProperties
   children: ReactNode
 }) {
   const handleClick = () => {
-    analytics.ctaClick(location, label)
+    if (fireLead) {
+      analytics.ctaLead(location, label)
+    } else {
+      analytics.ctaClick(location, label)
+    }
     if (kind === 'external' && channel) {
       analytics.contact(channel)
     }
