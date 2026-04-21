@@ -365,3 +365,411 @@ BEGIN
   UPDATE posts SET views = views + 1 WHERE id = post_id;
 END;
 $$;
+
+-- ============================================
+-- HELPER: auth.user_role() — RLS 성능 최적화
+-- ============================================
+CREATE OR REPLACE FUNCTION auth.user_role()
+RETURNS TEXT LANGUAGE sql STABLE SECURITY DEFINER
+SET search_path = public AS $$
+  SELECT role FROM profiles WHERE id = auth.uid()
+$$;
+
+-- ============================================
+-- 13. CLASSES (클래스 마스터)
+-- ============================================
+CREATE TABLE IF NOT EXISTS classes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug TEXT UNIQUE NOT NULL,
+  step TEXT NOT NULL,
+  category TEXT CHECK (category IN ('step1', 'step2', 'step3', 'extra')),
+  name_ko TEXT NOT NULL,
+  name_en TEXT,
+  quote TEXT,
+  subtitle TEXT,
+  note TEXT,
+  bullets TEXT[] DEFAULT ARRAY[]::TEXT[],
+  schedule_label TEXT,
+  duration_label TEXT,
+  capacity_label TEXT,
+  capacity INT,
+  course_label TEXT,
+  price BIGINT NOT NULL CHECK (price >= 0),
+  original_price BIGINT CHECK (original_price >= 0),
+  promo_label TEXT,
+  remaining_seats INT CHECK (remaining_seats >= 0),
+  is_highlight BOOLEAN DEFAULT FALSE,
+  is_new_member_open BOOLEAN DEFAULT FALSE,
+  is_hobby BOOLEAN DEFAULT FALSE,
+  is_active BOOLEAN DEFAULT TRUE,
+  sort_order INT DEFAULT 0,
+  instructor_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
+  instructor_label TEXT,
+  settlement_rate NUMERIC(5,2) DEFAULT 50.00 CHECK (settlement_rate BETWEEN 0 AND 100),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_classes_active_sort ON classes(is_active, sort_order);
+CREATE INDEX idx_classes_instructor ON classes(instructor_id);
+CREATE INDEX idx_classes_category ON classes(category);
+
+CREATE TRIGGER classes_updated_at
+  BEFORE UPDATE ON classes
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+ALTER TABLE classes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "classes_public_read" ON classes FOR SELECT USING (is_active = TRUE);
+CREATE POLICY "classes_admin_all" ON classes FOR ALL USING (auth.user_role() = 'admin');
+CREATE POLICY "classes_instructor_read" ON classes FOR SELECT USING (
+  instructor_id = auth.uid() AND auth.user_role() IN ('director', 'admin')
+);
+
+-- ============================================
+-- 14. CLASS_SCHEDULES (수업 일정)
+-- ============================================
+CREATE TABLE IF NOT EXISTS class_schedules (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  class_id UUID NOT NULL REFERENCES classes(id) ON DELETE CASCADE,
+  session_no INT,
+  title TEXT,
+  starts_at TIMESTAMPTZ NOT NULL,
+  ends_at TIMESTAMPTZ NOT NULL,
+  CHECK (ends_at > starts_at),
+  recurrence_rule TEXT,
+  recurrence_parent_id UUID REFERENCES class_schedules(id) ON DELETE SET NULL,
+  location TEXT DEFAULT 'KD4 스튜디오',
+  instructor_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
+  status TEXT DEFAULT 'scheduled' CHECK (status IN ('scheduled', 'in_progress', 'completed', 'cancelled')),
+  note TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_schedules_class ON class_schedules(class_id, starts_at);
+CREATE INDEX idx_schedules_starts_at ON class_schedules(starts_at);
+CREATE INDEX idx_schedules_instructor ON class_schedules(instructor_id, starts_at);
+
+CREATE TRIGGER class_schedules_updated_at
+  BEFORE UPDATE ON class_schedules
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+ALTER TABLE class_schedules ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "schedules_admin_all" ON class_schedules FOR ALL USING (auth.user_role() = 'admin');
+CREATE POLICY "schedules_instructor_rw" ON class_schedules FOR ALL USING (
+  (instructor_id = auth.uid() OR EXISTS (
+    SELECT 1 FROM classes c WHERE c.id = class_id AND c.instructor_id = auth.uid()
+  )) AND auth.user_role() IN ('director', 'admin')
+);
+CREATE POLICY "schedules_enrollee_read" ON class_schedules FOR SELECT USING (
+  EXISTS (
+    SELECT 1 FROM enrollments e
+    WHERE e.class_id = class_schedules.class_id
+      AND e.user_id = auth.uid()
+      AND e.status IN ('active', 'completed')
+  )
+);
+
+-- ============================================
+-- 15. ENROLLMENTS (수강 등록 — 동료 배우)
+-- ============================================
+CREATE TABLE IF NOT EXISTS enrollments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  application_id UUID REFERENCES applications(id) ON DELETE SET NULL,
+  class_id UUID NOT NULL REFERENCES classes(id) ON DELETE RESTRICT,
+  user_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
+  enrollee_name TEXT NOT NULL,
+  enrollee_phone TEXT,
+  enrollee_email TEXT,
+  started_on DATE NOT NULL,
+  ends_on DATE,
+  price_at_enroll BIGINT NOT NULL CHECK (price_at_enroll >= 0),
+  discount_amount BIGINT DEFAULT 0 CHECK (discount_amount >= 0),
+  CHECK (discount_amount <= price_at_enroll),
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'active', 'completed', 'cancelled', 'refunded')),
+  payment_status TEXT DEFAULT 'unpaid' CHECK (payment_status IN ('unpaid', 'partial', 'paid', 'refunded')),
+  admin_note TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE UNIQUE INDEX enrollments_unique_user ON enrollments(class_id, user_id, started_on) WHERE user_id IS NOT NULL;
+CREATE UNIQUE INDEX enrollments_unique_guest ON enrollments(class_id, enrollee_phone, started_on) WHERE user_id IS NULL AND enrollee_phone IS NOT NULL;
+CREATE UNIQUE INDEX enrollments_unique_application ON enrollments(application_id) WHERE application_id IS NOT NULL;
+
+CREATE INDEX idx_enrollments_class ON enrollments(class_id);
+CREATE INDEX idx_enrollments_user ON enrollments(user_id);
+CREATE INDEX idx_enrollments_status ON enrollments(status);
+
+CREATE TRIGGER enrollments_updated_at
+  BEFORE UPDATE ON enrollments
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+ALTER TABLE enrollments ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "enrollments_own_read" ON enrollments FOR SELECT USING (user_id = auth.uid());
+CREATE POLICY "enrollments_admin_all" ON enrollments FOR ALL USING (auth.user_role() = 'admin');
+CREATE POLICY "enrollments_instructor_read" ON enrollments FOR SELECT USING (
+  EXISTS (SELECT 1 FROM classes c WHERE c.id = class_id AND c.instructor_id = auth.uid())
+  AND auth.user_role() IN ('director', 'admin')
+);
+
+-- ============================================
+-- 16. ATTENDANCE (출석)
+-- ============================================
+CREATE TABLE IF NOT EXISTS attendance (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  schedule_id UUID NOT NULL REFERENCES class_schedules(id) ON DELETE CASCADE,
+  enrollment_id UUID NOT NULL REFERENCES enrollments(id) ON DELETE CASCADE,
+  class_id UUID REFERENCES classes(id) ON DELETE SET NULL,
+  user_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
+  status TEXT NOT NULL DEFAULT 'present' CHECK (status IN ('present', 'late', 'absent', 'excused', 'makeup')),
+  makeup_for_schedule_id UUID REFERENCES class_schedules(id) ON DELETE SET NULL,
+  checked_at TIMESTAMPTZ DEFAULT NOW(),
+  checked_by UUID REFERENCES profiles(id) ON DELETE SET NULL,
+  note TEXT,
+  UNIQUE (schedule_id, enrollment_id)
+);
+
+CREATE INDEX idx_attendance_schedule ON attendance(schedule_id);
+CREATE INDEX idx_attendance_enrollment ON attendance(enrollment_id);
+CREATE INDEX idx_attendance_user ON attendance(user_id, checked_at DESC);
+CREATE INDEX idx_attendance_class_status ON attendance(class_id, status);
+
+ALTER TABLE attendance ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "attendance_own_read" ON attendance FOR SELECT USING (user_id = auth.uid());
+CREATE POLICY "attendance_admin_all" ON attendance FOR ALL USING (auth.user_role() = 'admin');
+CREATE POLICY "attendance_instructor_all" ON attendance FOR ALL USING (
+  EXISTS (
+    SELECT 1 FROM class_schedules cs
+    WHERE cs.id = schedule_id
+      AND (cs.instructor_id = auth.uid() OR EXISTS (
+        SELECT 1 FROM classes c WHERE c.id = cs.class_id AND c.instructor_id = auth.uid()
+      ))
+  ) AND auth.user_role() IN ('director', 'admin')
+);
+
+-- ============================================
+-- 17. SETTLEMENTS (강사 정산)
+-- ============================================
+CREATE TABLE IF NOT EXISTS settlements (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  instructor_id UUID NOT NULL REFERENCES profiles(id) ON DELETE RESTRICT,
+  class_id UUID REFERENCES classes(id) ON DELETE SET NULL,
+  period_start DATE NOT NULL,
+  period_end DATE NOT NULL,
+  CHECK (period_end >= period_start),
+  gross_revenue BIGINT NOT NULL DEFAULT 0 CHECK (gross_revenue >= 0),
+  settlement_rate NUMERIC(5,2) NOT NULL CHECK (settlement_rate BETWEEN 0 AND 100),
+  adjustments BIGINT DEFAULT 0,
+  payout_amount BIGINT NOT NULL CHECK (payout_amount >= 0),
+  session_count INT DEFAULT 0,
+  attendance_count INT DEFAULT 0,
+  calculation_snapshot JSONB,
+  status TEXT DEFAULT 'draft' CHECK (status IN ('draft', 'approved', 'paid', 'disputed')),
+  paid_at TIMESTAMPTZ,
+  paid_by UUID REFERENCES profiles(id) ON DELETE SET NULL,
+  note TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE UNIQUE INDEX settlements_unique_class ON settlements(instructor_id, class_id, period_start, period_end) WHERE class_id IS NOT NULL;
+CREATE UNIQUE INDEX settlements_unique_all ON settlements(instructor_id, period_start, period_end) WHERE class_id IS NULL;
+CREATE INDEX idx_settlements_instructor_period ON settlements(instructor_id, period_start DESC);
+CREATE INDEX idx_settlements_status ON settlements(status);
+
+CREATE TRIGGER settlements_updated_at
+  BEFORE UPDATE ON settlements
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+ALTER TABLE settlements ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "settlements_admin_all" ON settlements FOR ALL USING (auth.user_role() = 'admin');
+CREATE POLICY "settlements_instructor_read" ON settlements FOR SELECT USING (
+  instructor_id = auth.uid() AND auth.user_role() IN ('director', 'admin')
+);
+
+-- ============================================
+-- 18. PAYMENTS (결제 내역)
+-- ============================================
+CREATE TABLE IF NOT EXISTS payments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  enrollment_id UUID REFERENCES enrollments(id) ON DELETE SET NULL,
+  user_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
+  class_id UUID REFERENCES classes(id) ON DELETE SET NULL,
+  amount BIGINT NOT NULL CHECK (amount <> 0),
+  method TEXT CHECK (method IN ('card', 'transfer', 'kakaopay', 'tosspay', 'naverpay', 'cash', 'other')),
+  provider TEXT,
+  provider_tx_id TEXT,
+  receipt_url TEXT,
+  type TEXT NOT NULL DEFAULT 'payment' CHECK (type IN ('payment', 'installment', 'refund', 'partial_refund')),
+  CHECK (
+    (type IN ('payment', 'installment') AND amount > 0) OR
+    (type IN ('refund', 'partial_refund') AND amount < 0)
+  ),
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'completed', 'failed', 'cancelled')),
+  paid_at TIMESTAMPTZ,
+  refunded_at TIMESTAMPTZ,
+  refund_reason TEXT,
+  settlement_id UUID REFERENCES settlements(id) ON DELETE SET NULL,
+  payer_name TEXT,
+  payer_phone TEXT,
+  memo TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE UNIQUE INDEX payments_provider_tx ON payments(provider, provider_tx_id) WHERE provider_tx_id IS NOT NULL;
+CREATE INDEX idx_payments_enrollment ON payments(enrollment_id);
+CREATE INDEX idx_payments_user ON payments(user_id, paid_at DESC);
+CREATE INDEX idx_payments_class ON payments(class_id, paid_at);
+CREATE INDEX idx_payments_status ON payments(status);
+CREATE INDEX idx_payments_settlement ON payments(settlement_id);
+
+CREATE TRIGGER payments_updated_at
+  BEFORE UPDATE ON payments
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+ALTER TABLE payments ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "payments_own_read" ON payments FOR SELECT USING (user_id = auth.uid());
+CREATE POLICY "payments_admin_all" ON payments FOR ALL USING (auth.user_role() = 'admin');
+CREATE POLICY "payments_instructor_read" ON payments FOR SELECT USING (
+  EXISTS (SELECT 1 FROM classes c WHERE c.id = class_id AND c.instructor_id = auth.uid())
+  AND auth.user_role() IN ('director', 'admin')
+);
+
+-- ============================================
+-- 19. 정산 자동 계산 함수
+-- ============================================
+CREATE OR REPLACE FUNCTION compute_settlement(
+  p_instructor_id UUID,
+  p_class_id UUID,
+  p_period_start DATE,
+  p_period_end DATE
+) RETURNS UUID LANGUAGE plpgsql SECURITY DEFINER AS $$
+DECLARE
+  v_gross BIGINT;
+  v_rate NUMERIC(5,2);
+  v_sessions INT;
+  v_attendance INT;
+  v_payout BIGINT;
+  v_id UUID;
+  v_snapshot JSONB;
+BEGIN
+  SELECT COALESCE(SUM(amount), 0) INTO v_gross
+  FROM payments
+  WHERE class_id = p_class_id AND status = 'completed'
+    AND paid_at::DATE BETWEEN p_period_start AND p_period_end
+    AND type IN ('payment', 'installment');
+
+  SELECT settlement_rate INTO v_rate FROM classes WHERE id = p_class_id;
+
+  SELECT COUNT(*) INTO v_sessions
+  FROM class_schedules
+  WHERE class_id = p_class_id AND status = 'completed'
+    AND starts_at::DATE BETWEEN p_period_start AND p_period_end;
+
+  SELECT COUNT(*) INTO v_attendance
+  FROM attendance a
+  JOIN class_schedules cs ON cs.id = a.schedule_id
+  WHERE cs.class_id = p_class_id
+    AND a.status IN ('present', 'late', 'makeup')
+    AND cs.starts_at::DATE BETWEEN p_period_start AND p_period_end;
+
+  v_payout := FLOOR(v_gross * v_rate / 100);
+  v_snapshot := jsonb_build_object(
+    'gross_revenue', v_gross,
+    'rate', v_rate,
+    'sessions', v_sessions,
+    'attendance', v_attendance,
+    'calculated_at', NOW()
+  );
+
+  INSERT INTO settlements (
+    instructor_id, class_id, period_start, period_end,
+    gross_revenue, settlement_rate, payout_amount,
+    session_count, attendance_count, status, calculation_snapshot
+  ) VALUES (
+    p_instructor_id, p_class_id, p_period_start, p_period_end,
+    v_gross, v_rate, v_payout, v_sessions, v_attendance, 'draft', v_snapshot
+  )
+  ON CONFLICT DO NOTHING
+  RETURNING id INTO v_id;
+
+  RETURN v_id;
+END;
+$$;
+
+-- ============================================
+-- 20. SEED: lib/classes.ts → classes 테이블
+-- ============================================
+INSERT INTO classes (
+  slug, step, category, name_ko, name_en, quote, subtitle, note, bullets,
+  schedule_label, duration_label, capacity_label, capacity, course_label,
+  price, original_price, promo_label, remaining_seats,
+  is_highlight, is_new_member_open, is_hobby, sort_order, instructor_label
+) VALUES
+(
+  'basic-class', 'STEP 1', 'step1', '베이직 클래스', 'Basic Class',
+  '막혀있던 감정의 둑을 터뜨리는 수업', '감정 해방 / 연기 입문',
+  '연기 경험 없어도 OK · 취미 참여 환영',
+  ARRAY['감정 해방 훈련 / 충동·본능 회복', '마이즈너 테크닉 기초 / 이바나 처벅 테크닉 입문', '독백 / 장면연기', '소수정예'],
+  '월 4회', '3시간', '6명', 6, NULL,
+  250000, NULL, NULL, NULL, FALSE, TRUE, TRUE, 10, '박우진 리더'
+),
+(
+  'meisner-class', 'STEP 1', 'step1', '마이즈너 테크닉 정규 클래스', 'Meisner Technique Class',
+  '진짜 배우로 다시 태어나는 시간', '마이즈너 테크닉 / 장면연기', NULL,
+  ARRAY['Repetition · Activity&door 7단계 실습', '메모라이징 / 마이즈너식 텍스트 분석', '감정 해방 / 충동·본능 회복 / 연기하지 않는 연기'],
+  '월 4회', '4시간', '8명', 8, '4개월 코스',
+  250000, 350000, '🌸 봄맞이 스페셜 · 첫 달 10만원 할인', 3, TRUE, TRUE, FALSE, 20, '권동원 대표'
+),
+(
+  'intensive-class', 'STEP 1', 'step1', '출연영상 클래스', 'Intensive Class',
+  '실제 영화 현장의 퀄리티로 당신의 포트폴리오를 만듭니다.', '마이즈너 테크닉 / 포트폴리오 제작', NULL,
+  ARRAY['마이즈너 / 이바나 처벅 테크닉', '맞춤형 시나리오 / 전문 영화팀 제작', '현직 배우 100여명 참여한 시그니처 클래스', '완성된 출연영상으로 캐스팅 연계'],
+  '월 4회', '4시간', '6명', 6, '3개월 코스',
+  300000, 400000, '🌸 봄맞이 스페셜 · 첫 달 10만원 할인', 2, TRUE, TRUE, FALSE, 30, NULL
+),
+(
+  'advanced-class', 'STEP 2', 'step2', '출연영상 심화 클래스', 'Advanced Class',
+  '수료자만 선택할 수 있는 두 가지 트랙', NULL, NULL,
+  ARRAY['고급 장면 연기', '이바나 처벅 테크닉 심화', '맞춤형 시나리오 / 전문 영화팀 제작', '캐스팅 연계'],
+  '월 4회', '4시간', '6명', 6, '2개월',
+  450000, NULL, NULL, NULL, FALSE, FALSE, FALSE, 40, NULL
+),
+(
+  '1month-film-class', 'STEP 2', 'step2', '출연영상 1달 완성 클래스', '1 Month Film Class',
+  '수업 없이 영상만 — 1개월 완성', '1month · 영상만 제작', NULL,
+  ARRAY['수업 없이 영상만 제작', '레퍼런스 취합', '시나리오 전달', '현장 촬영'],
+  '상시', '영상 제작 전용', '소수정예', NULL, NULL,
+  400000, NULL, NULL, NULL, FALSE, FALSE, FALSE, 50, NULL
+),
+(
+  'leader-class', 'STEP 3', 'step3', '액터스 리더 클래스', 'Actor''s Leader Class',
+  'KD4가 엄선한 정예 멤버 10명, 캐스팅 전폭 지원', NULL, NULL,
+  ARRAY['선별된 인원 참여 / 장면연기 Competition', '캐스팅 디렉터·조감독 비공식 오디션', '지속적 성장 지원'],
+  '월 4회', '3시간', '10명', 10, '5개월 시즌제',
+  200000, NULL, NULL, NULL, FALSE, FALSE, FALSE, 60, NULL
+),
+(
+  'audition-class', 'STEP 3', 'step3', '오디션 클래스', 'Audition Class',
+  '캐스팅 디렉터의 시선을 멈추게 할 독백 만들기', NULL, NULL,
+  ARRAY['오디션 독백 만들기 / 오디션 테크닉', '캐스팅 연계', '독백 영상 촬영 제공'],
+  '월 4회', '3시간', '6명', 6, NULL,
+  250000, NULL, NULL, NULL, FALSE, FALSE, FALSE, 70, '주세빈 강사'
+),
+(
+  'movement-class', '별도', 'extra', '움직임 클래스', 'Movement Class',
+  '몸과 마음의 연동', NULL, NULL,
+  ARRAY['바디컨디셔닝 / 이완된 몸', '감정 해방 / 마음과 몸의 연동'],
+  '월 3회', '3시간', '8명', 8, NULL,
+  150000, NULL, NULL, NULL, FALSE, FALSE, FALSE, 80, '고서현 리더'
+),
+(
+  'personal-class', '별도', 'extra', '개인 레슨', 'Personal Class',
+  '나만을 위한 집중 훈련', NULL, NULL,
+  ARRAY['오디션 준비 / 감정의 해방', '집중 연기 훈련 / 완전한 1:1 맞춤 지도'],
+  '월 4회', '2시간 (1:1)', '1:1', 1, NULL,
+  400000, NULL, NULL, NULL, FALSE, FALSE, FALSE, 90, NULL
+)
+ON CONFLICT (slug) DO NOTHING;
