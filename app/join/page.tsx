@@ -46,7 +46,7 @@ const HERO_IMG = '/text-logo.png'
 /* 강사 사진은 DIRECTOR.photo 참조 (/director.jpg) — Director 섹션용 */
 const STUDIO_IMG =
   'https://drive.google.com/uc?export=view&id=1by0ZDO3J5yS-44McKbmAPixjPtI3xWNr'
-const DEADLINE = '2026-04-23T23:59:59'  // 3일 남음
+const DEADLINE = '2026-05-20T23:59:59'  // 5월 모집 마감 (날짜 확정 시 업데이트)
 
 /* ── lib/classes.ts 데이터 재사용 ─────────────────────────────────── */
 const OPEN_CLASSES = CLASSES.filter((c) => c.isNewMemberOpen && c.highlight)
@@ -825,12 +825,147 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* ⑦.5 PORTFOLIO — 출연영상 결과물                            */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 48px', textAlign: 'center' }}>
+            <p className="section-eyebrow">06 — PORTFOLIO</p>
+            <h2
+              className="section-title-serif"
+              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
+            >
+              KD4 배우들의{' '}
+              <span style={{ color: 'var(--gold)' }}>실제 출연영상</span>
+            </h2>
+            <p
+              style={{
+                fontSize: '0.95rem',
+                color: 'var(--gray-light)',
+                lineHeight: 1.7,
+                maxWidth: '480px',
+                margin: '0 auto',
+              }}
+            >
+              전문 영화팀과 함께 제작한 포트폴리오입니다.
+              <br />
+              이 영상으로 캐스팅이 연결됩니다.
+            </p>
+          </div>
+
+          {/* 2-column video grid */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
+              gap: 'clamp(20px, 4vw, 36px)',
+              maxWidth: '880px',
+              margin: '0 auto',
+            }}
+          >
+            {([
+              { youtubeId: '4XTm59jydSA', genre: '스릴러', subtitle: '단편 「싸이코패스」' },
+              { youtubeId: 'GNFjTercKY4', genre: '드라마', subtitle: '단편 「한때 잘 나가던 모델」' },
+            ] as const).map(({ youtubeId, genre, subtitle }) => (
+              <div key={youtubeId}>
+                {/* 장르 뱃지 */}
+                <div style={{ marginBottom: '10px' }}>
+                  <span
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      fontFamily: 'var(--font-display)',
+                      fontSize: '0.68rem',
+                      fontWeight: 700,
+                      letterSpacing: '0.12em',
+                      textTransform: 'uppercase',
+                      color: 'var(--navy)',
+                      background: 'rgba(21,72,138,0.08)',
+                      border: '1px solid rgba(21,72,138,0.2)',
+                      borderRadius: '999px',
+                      padding: '4px 10px',
+                    }}
+                  >
+                    <Film size={11} strokeWidth={2} />
+                    {genre}
+                  </span>
+                </div>
+
+                {/* 영상 임베드 */}
+                <div
+                  style={{
+                    position: 'relative',
+                    paddingBottom: '56.25%',
+                    height: 0,
+                    overflow: 'hidden',
+                    borderRadius: 'var(--radius)',
+                    boxShadow: '0 8px 32px rgba(21,72,138,0.14)',
+                    border: '1px solid var(--border)',
+                    background: '#0a0a0a',
+                    marginBottom: '14px',
+                  }}
+                >
+                  <iframe
+                    src={`https://www.youtube.com/embed/${youtubeId}`}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      border: 0,
+                    }}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    title={`${genre} — ${subtitle}`}
+                    loading="lazy"
+                  />
+                </div>
+
+                {/* 캡션 */}
+                <p
+                  style={{
+                    fontFamily: 'var(--font-serif)',
+                    fontSize: '0.95rem',
+                    fontWeight: 700,
+                    marginBottom: '4px',
+                    color: '#111111',
+                  }}
+                >
+                  {subtitle}
+                </p>
+                <p style={{ fontSize: '0.8rem', color: 'var(--gray-light)' }}>
+                  전문 영화팀 · 실제 포트폴리오
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <div style={{ textAlign: 'center', marginTop: '48px' }}>
+            <JoinCTALink
+              href="#form"
+              location="portfolio"
+              label="나도 이런 포트폴리오 만들기"
+              fireLead
+              className="btn-primary"
+              style={{ background: 'var(--navy)', color: '#ffffff' }}
+            >
+              나도 이런 포트폴리오 만들기
+              <ArrowRight size={16} strokeWidth={2.2} />
+            </JoinCTALink>
+          </div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑧ COMPARISON                                                */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">06 — COMPARE</p>
+            <p className="section-eyebrow">07 — COMPARE</p>
             <h2
               className="section-title-serif"
               style={{
@@ -887,7 +1022,7 @@ export default function JoinPage() {
       <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">07 — SPRING SPECIAL</p>
+            <p className="section-eyebrow">08 — SPRING SPECIAL</p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
@@ -1122,7 +1257,7 @@ export default function JoinPage() {
       <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">08 — FAQ</p>
+            <p className="section-eyebrow">09 — FAQ</p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)' }}
@@ -1140,7 +1275,7 @@ export default function JoinPage() {
       <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">09 — OUR PROMISE</p>
+            <p className="section-eyebrow">10 — OUR PROMISE</p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.6rem, 4vw, 2.3rem)', marginBottom: '16px' }}
@@ -1235,7 +1370,7 @@ export default function JoinPage() {
         <div className="container">
           <div style={{ maxWidth: '520px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-              <p className="section-eyebrow">10 — CONTACT</p>
+              <p className="section-eyebrow">11 — CONTACT</p>
               <h2
                 className="section-title-serif"
                 style={{ fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', marginBottom: '10px' }}
