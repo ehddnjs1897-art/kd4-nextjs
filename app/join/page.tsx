@@ -287,13 +287,28 @@ export default function JoinPage() {
 
           <p
             style={{
-              fontSize: 'clamp(0.9rem, 2.4vw, 1rem)',
-              color: 'rgba(255,255,255,0.72)',
+              fontSize: 'clamp(0.95rem, 2.6vw, 1.05rem)',
+              color: 'rgba(255,255,255,0.86)',
+              lineHeight: 1.65,
+              marginBottom: '10px',
+              maxWidth: '520px',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              wordBreak: 'keep-all',
+            }}
+          >
+            틀에 박힌 연기, 공장식 수업에서 벗어나고 싶은 배우를 위한 스튜디오
+          </p>
+          <p
+            style={{
+              fontSize: 'clamp(0.8rem, 2vw, 0.88rem)',
+              color: 'rgba(255,255,255,0.50)',
               lineHeight: 1.75,
               marginBottom: '36px',
               maxWidth: '460px',
               marginLeft: 'auto',
               marginRight: 'auto',
+              letterSpacing: '0.03em',
             }}
           >
             6~8명 소수정예 · 연기상 수상 배우 직강
@@ -444,12 +459,69 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* ② COMPARE — 공장식 학원 vs KD4                           */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
+            <p className="section-eyebrow">02 — COMPARE</p>
+            <h2
+              className="section-title-serif"
+              style={{
+                fontSize: 'clamp(1.5rem, 4vw, 2.5rem)',
+                marginBottom: '14px',
+                wordBreak: 'keep-all',
+              }}
+            >
+              공장식 학원 vs <span style={{ color: 'var(--navy)' }}>KD4</span>
+            </h2>
+            <p style={{ fontSize: '0.9rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
+              같은 연기 수업이 아닙니다. 배우를 대하는 방식부터 다릅니다.
+            </p>
+          </div>
+
+          <div style={{ maxWidth: '480px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{
+              display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
+              padding: '6px 16px',
+              fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em',
+              color: 'var(--gray)', textAlign: 'center',
+            }}>
+              <span />
+              <span>대형 학원</span>
+              <span style={{ color: 'var(--navy)' }}>KD4</span>
+            </div>
+            {COMPARISON_ROWS.map((row) => (
+              <div key={row.label} style={{
+                display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
+                alignItems: 'center',
+                background: 'var(--bg2)', border: '1px solid var(--border)',
+                borderRadius: '8px', padding: '14px 16px',
+              }}>
+                <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>{row.label}</span>
+                <span style={{ fontSize: '0.82rem', color: 'var(--gray)', textAlign: 'center' }}>
+                  {row.normal === 'X'
+                    ? <X size={16} color="var(--gray)" strokeWidth={2.2} style={{ display: 'inline-block', verticalAlign: 'middle' }} />
+                    : row.normal}
+                </span>
+                <span style={{ fontSize: '0.82rem', color: 'var(--navy)', fontWeight: 700, textAlign: 'center' }}>
+                  {row.kd4 === 'O'
+                    ? <Check size={16} color="var(--navy)" strokeWidth={2.2} style={{ display: 'inline-block', verticalAlign: 'middle' }} />
+                    : row.kd4}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ③ SOLUTION — 마이즈너 테크닉 (영상 임베드)                */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto', textAlign: 'center' }}>
-            <p className="section-eyebrow">02 — THE METHOD</p>
+            <p className="section-eyebrow">03 — THE METHOD</p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
@@ -605,7 +677,7 @@ export default function JoinPage() {
       <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">03 — THE LEADER</p>
+            <p className="section-eyebrow">04 — THE LEADER</p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '12px' }}
@@ -673,7 +745,7 @@ export default function JoinPage() {
       <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">04 — REAL REVIEWS</p>
+            <p className="section-eyebrow">05 — REAL REVIEWS</p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
@@ -729,7 +801,7 @@ export default function JoinPage() {
       <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 48px', textAlign: 'center' }}>
-            <p className="section-eyebrow">05 — CURRICULUM</p>
+            <p className="section-eyebrow">06 — CURRICULUM</p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '10px' }}
@@ -830,7 +902,7 @@ export default function JoinPage() {
       <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 48px', textAlign: 'center' }}>
-            <p className="section-eyebrow">06 — PORTFOLIO</p>
+            <p className="section-eyebrow">07 — PORTFOLIO</p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
@@ -967,63 +1039,6 @@ export default function JoinPage() {
               출연영상 포트폴리오 전체 보기
               <ArrowRight size={14} strokeWidth={2.2} />
             </a>
-          </div>
-        </div>
-      </section>
-
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑧ COMPARISON                                                */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
-        <div className="container">
-          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">07 — COMPARE</p>
-            <h2
-              className="section-title-serif"
-              style={{
-                fontSize: 'clamp(1.5rem, 4vw, 2.5rem)',
-                marginBottom: '14px',
-                wordBreak: 'keep-all',
-              }}
-            >
-              공장식 학원 vs <span style={{ color: 'var(--navy)' }}>KD4</span>
-            </h2>
-            <p style={{ fontSize: '0.9rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-              같은 연기 수업이 아닙니다. 배우를 대하는 방식부터 다릅니다.
-            </p>
-          </div>
-
-          <div style={{ maxWidth: '480px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <div style={{
-              display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
-              padding: '6px 16px',
-              fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em',
-              color: 'var(--gray)', textAlign: 'center',
-            }}>
-              <span />
-              <span>대형 학원</span>
-              <span style={{ color: 'var(--navy)' }}>KD4</span>
-            </div>
-            {COMPARISON_ROWS.map((row) => (
-              <div key={row.label} style={{
-                display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
-                alignItems: 'center',
-                background: 'var(--bg)', border: '1px solid var(--border)',
-                borderRadius: '8px', padding: '14px 16px',
-              }}>
-                <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>{row.label}</span>
-                <span style={{ fontSize: '0.82rem', color: 'var(--gray)', textAlign: 'center' }}>
-                  {row.normal === 'X'
-                    ? <X size={16} color="var(--gray)" strokeWidth={2.2} style={{ display: 'inline-block', verticalAlign: 'middle' }} />
-                    : row.normal}
-                </span>
-                <span style={{ fontSize: '0.82rem', color: 'var(--navy)', fontWeight: 700, textAlign: 'center' }}>
-                  {row.kd4 === 'O'
-                    ? <Check size={16} color="var(--navy)" strokeWidth={2.2} style={{ display: 'inline-block', verticalAlign: 'middle' }} />
-                    : row.kd4}
-                </span>
-              </div>
-            ))}
           </div>
         </div>
       </section>
