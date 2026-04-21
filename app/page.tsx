@@ -992,18 +992,17 @@ export default function HomePage() {
                   overflow: "hidden",
                   background: "var(--bg3)",
                   border: "1px solid var(--border)",
+                  position: "relative",
+                  aspectRatio: "9 / 16",
                 }}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={photo.url}
-                  alt={photo.name}
-                  style={{
-                    width: "100%",
-                    aspectRatio: "9 / 16",
-                    objectFit: "cover",
-                    display: "block",
-                  }}
+                  alt={i < CASTING_PHOTOS.length ? photo.name : ""}
+                  fill
+                  sizes="200px"
+                  style={{ objectFit: "cover" }}
+                  loading="lazy"
                 />
               </div>
             ))}
