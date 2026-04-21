@@ -94,7 +94,7 @@ export default function JoinForm() {
     const motivation = motivationParts.join(' / ')
 
     const supabase = createClient()
-    const { error: dbError } = await supabase.from('applications').insert({
+    await supabase.from('applications').insert({
       name,
       phone,
       email: email || null,
@@ -102,12 +102,7 @@ export default function JoinForm() {
       motivation,
       status: '대기',
     })
-
-    if (dbError) {
-      setError('전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.')
-      setLoading(false)
-      return
-    }
+    // Supabase 오류(429 포함)는 무시 — notify(SMS)로 리드 보전
 
     analytics.lead({
       source: 'join_form_instagram_ad',

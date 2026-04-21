@@ -94,7 +94,7 @@ export default function ContactForm() {
     const motivation = motivationParts.length > 0 ? motivationParts.join(' / ') : null
 
     const supabase = createClient()
-    const { error: dbError } = await supabase.from('applications').insert({
+    await supabase.from('applications').insert({
       name: form.name,
       phone: form.phone,
       email: form.email || null,
@@ -102,12 +102,7 @@ export default function ContactForm() {
       motivation,
       status: '대기',
     })
-
-    if (dbError) {
-      setError('전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.')
-      setLoading(false)
-      return
-    }
+    // Supabase 오류(429 포함)는 무시 — notify(SMS)로 리드 보전
 
     pixel.lead()
 
