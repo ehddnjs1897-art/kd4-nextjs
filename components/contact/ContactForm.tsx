@@ -295,7 +295,7 @@ export default function ContactForm() {
           onBlur={() => setFocusedField(null)}
         >
           <option value="">아직 모르겠어요</option>
-          {CLASSES.filter(c => c.isNewMemberOpen).map(c => (
+          {CLASSES.filter(c => c.isNewMemberOpen && c.nameKo !== '베이직 클래스').map(c => (
             <option key={c.nameKo} value={c.nameKo}>{c.nameKo}</option>
           ))}
         </select>

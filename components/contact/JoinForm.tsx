@@ -28,7 +28,7 @@ const SOURCE_OPTIONS = [
   { value: '기타', label: '기타' },
 ]
 
-const OPEN_CLASSES = CLASSES.filter((c) => c.isNewMemberOpen)
+const OPEN_CLASSES = CLASSES.filter((c) => c.isNewMemberOpen && c.nameKo !== '베이직 클래스')
 
 export default function JoinForm() {
   const [name, setName] = useState('')
