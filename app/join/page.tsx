@@ -857,15 +857,16 @@ export default function JoinPage() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
-              gap: 'clamp(20px, 4vw, 36px)',
-              maxWidth: '880px',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
+              gap: 'clamp(16px, 3vw, 28px)',
+              maxWidth: '980px',
               margin: '0 auto',
             }}
           >
             {([
               { youtubeId: '4XTm59jydSA', genre: '스릴러', subtitle: '단편 「싸이코패스」' },
-              { youtubeId: 'GNFjTercKY4', genre: '드라마', subtitle: '단편 「한때 잘 나가던 모델」' },
+              { youtubeId: 'Cr4-qwVDkBc', genre: '드라마', subtitle: '단편 「각자의 이유」' },
+              { youtubeId: 'GNFjTercKY4', genre: '멜로', subtitle: '단편 「한때 잘 나가던 모델」' },
             ] as const).map(({ youtubeId, genre, subtitle }) => (
               <div key={youtubeId}>
                 {/* 장르 뱃지 */}
