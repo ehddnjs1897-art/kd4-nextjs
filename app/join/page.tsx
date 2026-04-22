@@ -272,7 +272,7 @@ export default function JoinPage() {
               marginRight: 'auto',
             }}
           >
-            오디션 결과가 없다면,
+            우리는 양산형 학원이 아닙니다.
             <br />
             <span
               style={{
@@ -281,7 +281,7 @@ export default function JoinPage() {
                 paddingBottom: '2px',
               }}
             >
-              방법의 문제입니다
+              배우를 성장시키는 &apos;KD4 액팅스튜디오&apos;입니다.
             </span>
           </h1>
 
@@ -297,7 +297,9 @@ export default function JoinPage() {
               wordBreak: 'keep-all',
             }}
           >
-            틀에 박힌 연기, 공장식 수업에서 벗어나고 싶은 배우를 위한 스튜디오
+            틀에 박힌 연기, 공장식 수업에서 벗어나고 싶은
+            <br />
+            배우를 위한 스튜디오
           </p>
           <p
             style={{
