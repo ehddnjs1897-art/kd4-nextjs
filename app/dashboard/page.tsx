@@ -27,25 +27,6 @@ async function getUserProfile(userId: string): Promise<UserProfile | null> {
   return data as UserProfile
 }
 
-function formatDate(isoStr: string) {
-  return new Date(isoStr).toLocaleDateString('ko-KR', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-}
-
-const ROLE_LABEL: Record<UserRole, string> = {
-  user: '일반 회원',
-  member: '회원',
-  crew_pending: 'KD4 크루 (승인 대기)',
-  crew: 'KD4 크루',
-  actor: '배우 회원 (승인 대기)',
-  editor: '배우 회원',
-  director: '디렉터 회원',
-  admin: '관리자',
-}
-
 export default async function DashboardPage() {
   /* ---- 인증 확인 ---- */
   const supabase = await createClient()
@@ -264,64 +245,6 @@ const styles: Record<string, React.CSSProperties> = {
     color: 'var(--gray)',
     lineHeight: 1.6,
     marginTop: -4,
-  },
-  avatarRow: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 16,
-  },
-  avatar: {
-    width: 52,
-    height: 52,
-    borderRadius: '50%',
-    background: 'rgba(196,165,90,0.15)',
-    border: '2px solid var(--gold)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontFamily: 'var(--font-display)',
-    fontSize: '1.3rem',
-    fontWeight: 700,
-    color: 'var(--gold)',
-    flexShrink: 0,
-  },
-  userName: {
-    fontFamily: 'var(--font-display)',
-    fontSize: '1.1rem',
-    fontWeight: 600,
-    color: 'var(--white)',
-    marginBottom: 4,
-  },
-  roleBadge: {
-    display: 'inline-block',
-    padding: '2px 10px',
-    background: 'rgba(196,165,90,0.1)',
-    border: '1px solid rgba(196,165,90,0.3)',
-    borderRadius: 12,
-    fontSize: '0.72rem',
-    color: 'var(--gold-light)',
-    letterSpacing: '0.04em',
-  },
-  infoList: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 12,
-  },
-  infoRow: {
-    display: 'grid',
-    gridTemplateColumns: '80px 1fr',
-    alignItems: 'baseline',
-    gap: 12,
-  },
-  infoKey: {
-    fontSize: '0.75rem',
-    color: 'var(--gray)',
-    letterSpacing: '0.05em',
-  },
-  infoVal: {
-    fontSize: '0.9rem',
-    color: 'var(--white)',
-    wordBreak: 'break-all',
   },
   sideCol: {
     display: 'flex',
