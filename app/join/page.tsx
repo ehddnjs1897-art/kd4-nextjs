@@ -228,7 +228,8 @@ export default function JoinPage() {
               marginRight: 'auto',
             }}
           >
-            3년 학원 다녀도 오디션 결과가 없다면,{' '}
+            우리는 양산형 학원이 아닙니다.
+            <br />
             <span
               style={{
                 color: '#ffffff',
@@ -236,14 +237,30 @@ export default function JoinPage() {
                 paddingBottom: '2px',
               }}
             >
-              방법의 문제입니다
+              배우를 성장시키는 &apos;KD4 액팅스튜디오&apos;입니다.
             </span>
           </h1>
 
           <p
             style={{
-              fontSize: 'clamp(0.9rem, 2.4vw, 1rem)',
-              color: 'rgba(255,255,255,0.72)',
+              fontSize: 'clamp(0.95rem, 2.6vw, 1.05rem)',
+              color: 'rgba(255,255,255,0.86)',
+              lineHeight: 1.65,
+              marginBottom: '10px',
+              maxWidth: '520px',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              wordBreak: 'keep-all',
+            }}
+          >
+            틀에 박힌 연기, 공장식 수업에서 벗어나고 싶은
+            <br />
+            배우를 위한 스튜디오
+          </p>
+          <p
+            style={{
+              fontSize: 'clamp(0.8rem, 2vw, 0.88rem)',
+              color: 'rgba(255,255,255,0.50)',
               lineHeight: 1.75,
               marginBottom: '36px',
               maxWidth: '460px',
