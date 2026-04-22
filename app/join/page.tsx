@@ -263,16 +263,19 @@ export default function JoinPage() {
           <h1
             className="section-title-serif"
             style={{
-              fontSize: 'clamp(1.8rem, 4.8vw, 2.8rem)',
+              fontSize: 'clamp(1.55rem, 4.2vw, 2.8rem)',
               color: '#ffffff',
-              lineHeight: 1.35,
+              lineHeight: 1.4,
               marginBottom: '28px',
               maxWidth: '640px',
               marginLeft: 'auto',
               marginRight: 'auto',
+              wordBreak: 'keep-all',
             }}
           >
             우리는 양산형 학원이 아닙니다.
+            <br />
+            배우를 성장시키는
             <br />
             <span
               style={{
@@ -281,7 +284,7 @@ export default function JoinPage() {
                 paddingBottom: '2px',
               }}
             >
-              배우를 성장시키는 &apos;KD4 액팅스튜디오&apos;입니다.
+              &apos;KD4 액팅 스튜디오&apos;입니다.
             </span>
           </h1>
 
