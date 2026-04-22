@@ -34,8 +34,12 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // 세션 갱신 (토큰 만료 시 자동 갱신)
-  await supabase.auth.getUser()
+  // 세션 갱신 — Supabase 429/네트워크 에러 시 그냥 통과 (무한 리다이렉트 방지)
+  try {
+    await supabase.auth.getUser()
+  } catch {
+    return NextResponse.next()
+  }
 
   return supabaseResponse
 }
