@@ -41,8 +41,6 @@ export const metadata: Metadata = {
 }
 
 /* ── 상수 ────────────────────────────────────────────────────────── */
-/* Hero 배경 이미지 — KD4 text logo (브랜드 아이덴티티) */
-const HERO_IMG = '/text-logo.png'
 /* 강사 사진은 DIRECTOR.photo 참조 (/director.jpg) — Director 섹션용 */
 const STUDIO_IMG =
   'https://drive.google.com/uc?export=view&id=1by0ZDO3J5yS-44McKbmAPixjPtI3xWNr'
@@ -285,6 +283,18 @@ export default function JoinPage() {
               KD4 액팅 스튜디오입니다.
             </span>
           </h1>
+
+          <p
+            style={{
+              fontSize: 'clamp(0.78rem, 2vw, 0.9rem)',
+              color: 'rgba(255,255,255,0.55)',
+              letterSpacing: '0.08em',
+              marginBottom: '18px',
+              fontStyle: 'italic',
+            }}
+          >
+            연기하지 않는 연기 — KD4 액팅 스튜디오
+          </p>
 
           <p
             style={{
