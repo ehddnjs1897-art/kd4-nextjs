@@ -60,6 +60,40 @@ const OPEN_COHORTS = [
 /* 첫 달 할인액 (Anchor Price 시각화) */
 const FIRST_MONTH_DISCOUNT = 100000
 
+/* ── 할인 혜택 목록 ─────────────────────────────────────────── */
+const DISCOUNTS = [
+  {
+    tag: '신규 멤버 웰컴',
+    title: '첫 달 10만원 할인',
+    desc: '또는 무료 오픈클래스 중 택1 · 신규 등록 시 적용',
+    isNew: false,
+  },
+  {
+    tag: '휴면 멤버 웰컴백',
+    title: '첫 달 5만원 할인',
+    desc: '6개월 이상 휴면 후 복귀 시 적용',
+    isNew: false,
+  },
+  {
+    tag: '출연영상·심화 클래스 할인',
+    title: '출연영상 · 심화 클래스 30% 할인',
+    desc: '출연영상 2회 이상 수강 배우 적용',
+    isNew: false,
+  },
+  {
+    tag: '지인 동반 할인',
+    title: '함께 등록 시 1+1 · 두 분 모두 3만원 할인',
+    desc: '지인과 동반 등록 시 두 분 각각 3만원씩 할인',
+    isNew: true,
+  },
+  {
+    tag: '출연영상 재수강 할인',
+    title: '2회차부터 각 3만원 할인',
+    desc: '회차당 40만원 → 37만원 · 3개월 간 (총 9만원 할인)',
+    isNew: true,
+  },
+]
+
 /* ── Agitation 관찰형 체크리스트 3개 ────────────────────────── */
 const PAIN_POINTS = [
   {
@@ -1116,6 +1150,81 @@ export default function JoinPage() {
               할인 마감까지
             </p>
             <CountdownTimer deadline={DEADLINE} />
+          </div>
+
+          {/* 할인 혜택 목록 */}
+          <div
+            style={{
+              maxWidth: '520px',
+              margin: '0 auto 36px',
+              background: 'var(--bg2)',
+              border: '1px solid var(--border)',
+              borderRadius: 'var(--radius)',
+              overflow: 'hidden',
+            }}
+          >
+            {DISCOUNTS.map(({ tag, title, desc, isNew }, i) => (
+              <div
+                key={tag}
+                style={{
+                  padding: '18px 20px',
+                  borderTop: i > 0 ? '1px solid var(--border)' : undefined,
+                }}
+              >
+                <div style={{ marginBottom: '6px' }}>
+                  <span
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      fontFamily: 'var(--font-display)',
+                      fontSize: '0.65rem',
+                      fontWeight: 700,
+                      letterSpacing: '0.08em',
+                      textTransform: 'uppercase',
+                      color: isNew ? '#ffffff' : 'var(--navy)',
+                      background: isNew ? 'var(--accent-red)' : 'rgba(21,72,138,0.1)',
+                      borderRadius: '4px',
+                      padding: '3px 8px',
+                    }}
+                  >
+                    {tag}
+                    {isNew && ' · NEW'}
+                  </span>
+                </div>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-serif)',
+                    fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)',
+                    fontWeight: 700,
+                    marginBottom: '3px',
+                    lineHeight: 1.3,
+                    wordBreak: 'keep-all',
+                  }}
+                >
+                  {title}
+                </p>
+                <p style={{ fontSize: '0.8rem', color: 'var(--gray-light)', lineHeight: 1.5 }}>
+                  {desc}
+                </p>
+              </div>
+            ))}
+            <div style={{ padding: '14px 20px', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
+              <JoinCTALink
+                href="#form"
+                location="offer_discount"
+                label="지금 신청하기"
+                fireLead
+                className="btn-primary"
+                style={{ background: 'var(--navy)', color: '#ffffff', width: '100%', justifyContent: 'center' }}
+              >
+                지금 신청하기
+                <ArrowRight size={15} strokeWidth={2.2} />
+              </JoinCTALink>
+              <p style={{ fontSize: '0.72rem', color: 'var(--gray)', marginTop: '8px' }}>
+                * 5월까지 · 선착순 마감 시 조기 종료
+              </p>
+            </div>
           </div>
 
           {/* 클래스 카드 */}
