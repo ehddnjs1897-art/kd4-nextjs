@@ -69,8 +69,8 @@ const PAIN_POINTS = [
   },
   {
     Icon: Moon,
-    title: '어렵게 잡은 오디션, 무소식',
-    desc: '매번 어렵게 받은 기회, 돌아오는 답은 없습니다.',
+    title: '카메라는 0.1mm의 감정도 잡아낸다',
+    desc: '무대 연기로 통하던 것들이 화면에선 과하게 보입니다.',
   },
   {
     Icon: HelpCircle,
