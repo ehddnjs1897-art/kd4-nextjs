@@ -83,6 +83,25 @@ export interface ApiError {
   status: number
 }
 
+// ─── 인사이트 ────────────────────────────────────────────────────────────────
+
+export type InsightSourceType = 'video' | 'blog' | 'article' | 'image' | 'other'
+export type InsightCategory = '연기' | '비즈니스' | '크리에이티브' | '디자인' | '기술' | '라이프' | '기타'
+
+export interface Insight {
+  id: string
+  url: string
+  title: string | null
+  description: string | null
+  image_url: string | null
+  memo: string | null
+  category: InsightCategory | null
+  tags: string[] | null
+  source_type: InsightSourceType | null
+  is_favorite: boolean
+  created_at: string
+}
+
 // ─── 게임 관련 (OFF THE PLASTIC) ────────────────────────────────────────────
 
 export interface GameScore {

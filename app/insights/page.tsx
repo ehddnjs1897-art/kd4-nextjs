@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import type { Insight } from '@/lib/types'
+import type { Insight, InsightSourceType } from '@/lib/types'
 
-const CATEGORIES = ['전체', '연기', '비즈니스', '크리에이티브', '기술', '라이프', '기타']
+const CATEGORIES = ['전체', '연기', '비즈니스', '크리에이티브', '디자인', '기술', '라이프', '기타']
 const SOURCE_TYPES = [
   { key: '전체', label: '전체' },
   { key: 'video', label: '영상' },
@@ -12,8 +12,6 @@ const SOURCE_TYPES = [
   { key: 'image', label: '이미지' },
   { key: 'other', label: '기타' },
 ]
-
-const BOOKMARKLET = `javascript:(function(){var u=location.href;var s=window.getSelection().toString();var m=s?s.slice(0,200):'';fetch('${typeof window !== 'undefined' ? window.location.origin : ''}/api/insights',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({url:u,memo:m})}).then(r=>r.json()).then(d=>{alert('저장됨: '+(d.title||u))}).catch(()=>alert('저장 실패'));})();`
 
 export default function InsightsPage() {
   const [insights, setInsights] = useState<Insight[]>([])
@@ -98,8 +96,8 @@ export default function InsightsPage() {
     setTotal((t: number) => t - 1)
   }
 
-  const sourceLabel = (t: string) =>
-    ({ video: '영상', blog: '블로그', article: '아티클', other: '기타', image: '이미지' } as Record<string, string>)[t] ?? t
+  const sourceLabel = (t: InsightSourceType | null) =>
+    ({ video: '영상', blog: '블로그', article: '아티클', other: '기타', image: '이미지' } as Record<InsightSourceType, string>)[t ?? 'other'] ?? '기타'
 
   const uploadFiles = async (files: FileList | File[]) => {
     const arr = Array.from(files).filter(f => f.type.startsWith('image/'))
@@ -225,27 +223,33 @@ export default function InsightsPage() {
         </div>
 
         {/* 필터 */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
-          {CATEGORIES.map(c => (
-            <button
-              key={c}
-              className={`filter-btn${filterCategory === c ? ' active' : ''}`}
-              onClick={() => setFilterCategory(c)}
-            >{c}</button>
-          ))}
+        <div style={{ marginBottom: 10 }}>
+          <div style={{ fontSize: 11, color: 'var(--gray)', marginBottom: 6 }}>카테고리</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {CATEGORIES.map(c => (
+              <button
+                key={c}
+                className={`filter-btn${filterCategory === c ? ' active' : ''}`}
+                onClick={() => setFilterCategory(c)}
+              >{c}</button>
+            ))}
+          </div>
         </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
-          {SOURCE_TYPES.map(s => (
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ fontSize: 11, color: 'var(--gray)', marginBottom: 6 }}>유형</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {SOURCE_TYPES.map(s => (
+              <button
+                key={s.key}
+                className={`filter-btn${filterSource === s.key ? ' active' : ''}`}
+                onClick={() => setFilterSource(s.key)}
+              >{s.label}</button>
+            ))}
             <button
-              key={s.key}
-              className={`filter-btn${filterSource === s.key ? ' active' : ''}`}
-              onClick={() => setFilterSource(s.key)}
-            >{s.label}</button>
-          ))}
-          <button
-            className={`filter-btn${filterFavorite ? ' active' : ''}`}
-            onClick={() => setFilterFavorite(v => !v)}
-          >★ 즐겨찾기</button>
+              className={`filter-btn${filterFavorite ? ' active' : ''}`}
+              onClick={() => setFilterFavorite(v => !v)}
+            >★ 즐겨찾기</button>
+          </div>
         </div>
 
         {/* 검색 */}
