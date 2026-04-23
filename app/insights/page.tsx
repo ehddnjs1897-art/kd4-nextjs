@@ -96,7 +96,17 @@ export default function InsightsPage() {
     setTotal((t: number) => t - 1)
   }
 
-  const sourceLabel = (t: InsightSourceType | null) =>
+  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null)
+
+  const changeCategory = async (insight: Insight, category: string) => {
+    setEditingCategoryId(null)
+    await fetch(`/api/insights/${insight.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ category }),
+    })
+    setInsights(prev => prev.map(i => i.id === insight.id ? { ...i, category: category as Insight['category'] } : i))
+  }
     ({ video: '영상', blog: '블로그', article: '아티클', other: '기타', image: '이미지' } as Record<InsightSourceType, string>)[t ?? 'other'] ?? '기타'
 
   const uploadFiles = async (files: FileList | File[]) => {
@@ -290,8 +300,35 @@ export default function InsightsPage() {
                   </div>
                 )}
                 <div style={{ padding: 14 }}>
-                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
-                    {insight.category && <span className="ins-tag">{insight.category}</span>}
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8, position: 'relative' }}>
+                    <span
+                      className="ins-tag"
+                      onClick={() => setEditingCategoryId(editingCategoryId === insight.id ? null : insight.id)}
+                      style={{ cursor: 'pointer', borderBottom: '1px dashed var(--gray)' }}
+                      title="클릭해서 카테고리 변경"
+                    >
+                      {insight.category ?? '기타'} ▾
+                    </span>
+                    {editingCategoryId === insight.id && (
+                      <div style={{
+                        position: 'absolute', top: '100%', left: 0, zIndex: 10,
+                        background: 'var(--bg2)', border: '1px solid var(--gold)',
+                        borderRadius: 8, padding: 6, display: 'flex', flexWrap: 'wrap', gap: 4, width: 220,
+                      }}>
+                        {CATEGORIES.filter(c => c !== '전체').map(c => (
+                          <button
+                            key={c}
+                            onClick={() => changeCategory(insight, c)}
+                            style={{
+                              padding: '3px 10px', borderRadius: 12, border: 'none', cursor: 'pointer', fontSize: 12,
+                              background: insight.category === c ? 'var(--gold)' : 'var(--bg3)',
+                              color: insight.category === c ? '#000' : 'var(--white)',
+                              fontWeight: insight.category === c ? 700 : 400,
+                            }}
+                          >{c}</button>
+                        ))}
+                      </div>
+                    )}
                     <span className="ins-tag">{sourceLabel(insight.source_type)}</span>
                     {insight.tags?.slice(0, 2).map(tag => (
                       <span key={tag} className="ins-tag">#{tag}</span>
