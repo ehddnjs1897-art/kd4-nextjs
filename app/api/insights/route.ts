@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync } from 'fs'
 import { join } from 'path'
 import { randomUUID } from 'crypto'
 
-const GEMINI_KEY = process.env.NEXT_PUBLIC_GEMINI_KEY
+const GEMINI_KEY = process.env.GEMINI_KEY ?? process.env.NEXT_PUBLIC_GEMINI_KEY
 const DATA_PATH = join(process.cwd(), 'data', 'insights.json')
 
 // 크롬 확장 프로그램 및 외부 호출 허용
