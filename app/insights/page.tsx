@@ -107,6 +107,8 @@ export default function InsightsPage() {
     })
     setInsights(prev => prev.map(i => i.id === insight.id ? { ...i, category: category as Insight['category'] } : i))
   }
+
+  const sourceLabel = (t: InsightSourceType | null) =>
     ({ video: '영상', blog: '블로그', article: '아티클', other: '기타', image: '이미지' } as Record<InsightSourceType, string>)[t ?? 'other'] ?? '기타'
 
   const uploadFiles = async (files: FileList | File[]) => {
