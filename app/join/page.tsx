@@ -286,18 +286,6 @@ export default function JoinPage() {
 
           <p
             style={{
-              fontSize: 'clamp(0.78rem, 2vw, 0.9rem)',
-              color: 'rgba(255,255,255,0.55)',
-              letterSpacing: '0.08em',
-              marginBottom: '18px',
-              fontStyle: 'italic',
-            }}
-          >
-            연기하지 않는 연기 — KD4 액팅 스튜디오
-          </p>
-
-          <p
-            style={{
               fontSize: 'clamp(0.95rem, 2.6vw, 1.05rem)',
               color: 'rgba(255,255,255,0.86)',
               lineHeight: 1.65,
