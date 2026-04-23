@@ -9,6 +9,7 @@ const SOURCE_TYPES = [
   { key: 'video', label: '영상' },
   { key: 'blog', label: '블로그' },
   { key: 'article', label: '아티클' },
+  { key: 'image', label: '이미지' },
   { key: 'other', label: '기타' },
 ]
 
@@ -23,6 +24,10 @@ export default function InsightsPage() {
   const [url, setUrl] = useState('')
   const [memo, setMemo] = useState('')
   const [showMemo, setShowMemo] = useState(false)
+  const [tab, setTab] = useState<'url' | 'image'>('url')
+  const [imageTitle, setImageTitle] = useState('')
+  const [dragOver, setDragOver] = useState(false)
+  const [uploading, setUploading] = useState(false)
 
   const [filterCategory, setFilterCategory] = useState('전체')
   const [filterSource, setFilterSource] = useState('전체')
@@ -93,7 +98,25 @@ export default function InsightsPage() {
     setTotal((t: number) => t - 1)
   }
 
-  const sourceLabel = (t: string) => ({ video: '영상', blog: '블로그', article: '아티클', other: '기타' })[t] ?? t
+  const sourceLabel = (t: string) =>
+    ({ video: '영상', blog: '블로그', article: '아티클', other: '기타', image: '이미지' } as Record<string, string>)[t] ?? t
+
+  const uploadFiles = async (files: FileList | File[]) => {
+    const arr = Array.from(files).filter(f => f.type.startsWith('image/'))
+    if (!arr.length) return
+    setUploading(true)
+    for (const file of arr) {
+      const fd = new FormData()
+      fd.append('file', file)
+      if (imageTitle) fd.append('title', imageTitle)
+      if (memo) fd.append('memo', memo)
+      await fetch('/api/insights/upload', { method: 'POST', body: fd })
+    }
+    setImageTitle('')
+    setMemo('')
+    await fetchInsights()
+    setUploading(false)
+  }
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--white)', fontFamily: 'var(--font-sans)' }}>
@@ -118,34 +141,86 @@ export default function InsightsPage() {
 
         {/* 입력 영역 */}
         <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 12, padding: 20, marginBottom: 28 }}>
-          <div style={{ display: 'flex', gap: 8, marginBottom: showMemo ? 10 : 0 }}>
-            <input
-              className="ins-input"
-              placeholder="링크 붙여넣기 (https://...)"
-              value={url}
-              onChange={e => setUrl(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && !saving && handleSave()}
-            />
-            <button className="ins-btn" onClick={handleSave} disabled={saving || !url.trim()}>
-              {saving ? '저장 중…' : '저장'}
-            </button>
-            <button
-              className="ins-btn-ghost"
-              onClick={() => setShowMemo(v => !v)}
-              style={{ fontSize: 13 }}
-            >
-              메모 {showMemo ? '▲' : '▼'}
-            </button>
+          {/* 탭 */}
+          <div style={{ display: 'flex', gap: 6, marginBottom: 14 }}>
+            <button className={`filter-btn${tab === 'url' ? ' active' : ''}`} onClick={() => setTab('url')}>🔗 링크</button>
+            <button className={`filter-btn${tab === 'image' ? ' active' : ''}`} onClick={() => setTab('image')}>🖼 이미지</button>
           </div>
-          {showMemo && (
-            <textarea
-              className="ins-input"
-              placeholder="짧은 메모 (예: 발성 참고, 후반 편집 아이디어) — AI가 3줄 요약으로 확장해줌"
-              value={memo}
-              onChange={e => setMemo(e.target.value)}
-              rows={2}
-              style={{ resize: 'vertical' }}
-            />
+
+          {tab === 'url' ? (
+            <>
+              <div style={{ display: 'flex', gap: 8, marginBottom: showMemo ? 10 : 0 }}>
+                <input
+                  className="ins-input"
+                  placeholder="링크 붙여넣기 (https://...)"
+                  value={url}
+                  onChange={e => setUrl(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && !saving && handleSave()}
+                />
+                <button className="ins-btn" onClick={handleSave} disabled={saving || !url.trim()}>
+                  {saving ? '저장 중…' : '저장'}
+                </button>
+                <button className="ins-btn-ghost" onClick={() => setShowMemo(v => !v)} style={{ fontSize: 13 }}>
+                  메모 {showMemo ? '▲' : '▼'}
+                </button>
+              </div>
+              {showMemo && (
+                <textarea
+                  className="ins-input"
+                  placeholder="짧은 메모 — AI가 3줄 요약으로 확장해줌"
+                  value={memo}
+                  onChange={e => setMemo(e.target.value)}
+                  rows={2}
+                  style={{ resize: 'vertical' }}
+                />
+              )}
+            </>
+          ) : (
+            <>
+              <div
+                onDragOver={e => { e.preventDefault(); setDragOver(true) }}
+                onDragLeave={() => setDragOver(false)}
+                onDrop={e => { e.preventDefault(); setDragOver(false); uploadFiles(e.dataTransfer.files) }}
+                onClick={() => document.getElementById('img-file-input')?.click()}
+                style={{
+                  border: `2px dashed ${dragOver ? 'var(--gold)' : 'var(--border)'}`,
+                  borderRadius: 10,
+                  padding: '32px 20px',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  color: dragOver ? 'var(--gold)' : 'var(--gray)',
+                  transition: 'all .15s',
+                  marginBottom: 10,
+                }}
+              >
+                {uploading ? '업로드 중…' : '여기에 이미지 드래그 또는 클릭해서 선택'}
+                <br />
+                <span style={{ fontSize: 11 }}>jpg / png / gif / webp · 최대 10MB · 여러 장 동시 가능</span>
+                <input
+                  id="img-file-input"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  style={{ display: 'none' }}
+                  onChange={e => e.target.files && uploadFiles(e.target.files)}
+                />
+              </div>
+              <input
+                className="ins-input"
+                placeholder="제목 (선택)"
+                value={imageTitle}
+                onChange={e => setImageTitle(e.target.value)}
+                style={{ marginBottom: 8 }}
+              />
+              <textarea
+                className="ins-input"
+                placeholder="메모 (선택) — 왜 저장했는지"
+                value={memo}
+                onChange={e => setMemo(e.target.value)}
+                rows={2}
+                style={{ resize: 'vertical' }}
+              />
+            </>
           )}
         </div>
 
