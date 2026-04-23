@@ -273,8 +273,6 @@ export default function JoinPage() {
               wordBreak: 'keep-all',
             }}
           >
-            우리는 양산형 학원이 아닙니다.
-            <br />
             배우를 성장시키는
             <br />
             <span
