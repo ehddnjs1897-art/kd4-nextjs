@@ -282,7 +282,7 @@ export default function JoinPage() {
                 paddingBottom: '2px',
               }}
             >
-              &apos;KD4 액팅 스튜디오&apos;입니다.
+              KD4 액팅 스튜디오입니다.
             </span>
           </h1>
 
