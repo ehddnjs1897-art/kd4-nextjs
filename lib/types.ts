@@ -127,18 +127,3 @@ export interface GamePrize {
   created_at: string
 }
 
-// ─── 인사이트 ────────────────────────────────────────────────────────────────
-
-export interface Insight {
-  id: string
-  url: string
-  title: string | null
-  description: string | null
-  image_url: string | null
-  memo: string | null
-  category: string | null
-  tags: string[] | null
-  source_type: 'video' | 'blog' | 'article' | 'other'
-  is_favorite: boolean
-  created_at: string
-}

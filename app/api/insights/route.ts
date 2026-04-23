@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { readFileSync, writeFileSync } from 'fs'
-import { join } from 'path'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 import { randomUUID } from 'crypto'
+import type { InsightSourceType, InsightCategory } from '@/lib/types'
 
 const GEMINI_KEY = process.env.GEMINI_KEY ?? process.env.NEXT_PUBLIC_GEMINI_KEY
-const DATA_PATH = join(process.cwd(), 'data', 'insights.json')
 
-// 크롬 확장 프로그램 및 외부 호출 허용
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
@@ -22,29 +20,6 @@ function withCors(res: NextResponse) {
   return res
 }
 
-// JSON 파일 기반 스토어
-function readAll(): Insight[] {
-  try { return JSON.parse(readFileSync(DATA_PATH, 'utf-8')) } catch { return [] }
-}
-function writeAll(data: Insight[]) {
-  writeFileSync(DATA_PATH, JSON.stringify(data, null, 2), 'utf-8')
-}
-
-interface Insight {
-  id: string
-  url: string
-  title: string | null
-  description: string | null
-  image_url: string | null
-  memo: string | null
-  category: string | null
-  tags: string[]
-  source_type: string | null
-  is_favorite: boolean
-  created_at: string
-}
-
-// og 메타데이터 추출
 async function fetchOgMeta(url: string) {
   try {
     const res = await fetch(url, {
@@ -52,16 +27,13 @@ async function fetchOgMeta(url: string) {
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; InsightsBot/1.0)' },
     })
     const html = await res.text()
-
     const getTag = (property: string) => {
       const m =
         html.match(new RegExp(`<meta[^>]+property=["']og:${property}["'][^>]+content=["']([^"']+)["']`, 'i')) ||
         html.match(new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:${property}["']`, 'i'))
       return m?.[1] ?? null
     }
-
     const titleTag = html.match(/<title[^>]*>([^<]+)<\/title>/i)
-
     return {
       title: getTag('title') ?? titleTag?.[1]?.trim() ?? null,
       description: getTag('description'),
@@ -72,7 +44,6 @@ async function fetchOgMeta(url: string) {
   }
 }
 
-// Gemini로 카테고리/태그/source_type 분류 + AI 3줄 요약
 async function classifyWithGemini(url: string, title: string | null, memo: string | null) {
   if (!GEMINI_KEY) return { category: '기타', tags: [], source_type: 'other', description: null }
 
@@ -125,24 +96,21 @@ export async function GET(request: NextRequest) {
   const limit = Math.min(100, parseInt(searchParams.get('limit') ?? '50', 10))
   const offset = parseInt(searchParams.get('offset') ?? '0', 10)
 
-  let items = readAll().sort(
-    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-  )
+  let query = supabaseAdmin
+    .from('insights')
+    .select('*', { count: 'exact' })
+    .order('created_at', { ascending: false })
 
-  if (category && category !== '전체') items = items.filter(i => i.category === category)
-  if (sourceType && sourceType !== '전체') items = items.filter(i => i.source_type === sourceType)
-  if (favorite === 'true') items = items.filter(i => i.is_favorite)
-  if (q) {
-    const lq = q.toLowerCase()
-    items = items.filter(i =>
-      [i.title, i.description, i.memo].some(f => f?.toLowerCase().includes(lq))
-    )
-  }
+  if (category && category !== '전체') query = query.eq('category', category)
+  if (sourceType && sourceType !== '전체') query = query.eq('source_type', sourceType)
+  if (favorite === 'true') query = query.eq('is_favorite', true)
+  if (q) query = query.or(`title.ilike.%${q}%,description.ilike.%${q}%,memo.ilike.%${q}%`)
 
-  const total = items.length
-  const data = items.slice(offset, offset + limit)
+  const { data, error, count } = await query.range(offset, offset + limit - 1)
 
-  return withCors(NextResponse.json({ data, total }))
+  if (error) return withCors(NextResponse.json({ error: error.message }, { status: 500 }))
+
+  return withCors(NextResponse.json({ data: data ?? [], total: count ?? 0 }))
 }
 
 // POST /api/insights
@@ -164,25 +132,23 @@ export async function POST(request: NextRequest) {
     classifyWithGemini(url, null, memo ?? null),
   ])
 
-  const finalDescription = ai.description ?? (memo ? `- ${memo}` : null)
-
-  const newItem: Insight = {
+  const newItem = {
     id: randomUUID(),
     url,
     title: og.title ?? url,
-    description: finalDescription,
+    description: ai.description ?? (memo ? `- ${memo}` : null),
     image_url: og.image_url ?? null,
     memo: memo ?? null,
-    category: ai.category ?? '기타',
-    tags: ai.tags ?? [],
-    source_type: ai.source_type ?? 'other',
+    category: (ai.category ?? '기타') as InsightCategory,
+    tags: (ai.tags ?? []) as string[],
+    source_type: (ai.source_type ?? 'other') as InsightSourceType,
     is_favorite: false,
     created_at: new Date().toISOString(),
   }
 
-  const all = readAll()
-  all.push(newItem)
-  writeAll(all)
+  const { data, error } = await supabaseAdmin.from('insights').insert(newItem).select().single()
 
-  return withCors(NextResponse.json(newItem, { status: 201 }))
+  if (error) return withCors(NextResponse.json({ error: error.message }, { status: 500 }))
+
+  return withCors(NextResponse.json(data, { status: 201 }))
 }

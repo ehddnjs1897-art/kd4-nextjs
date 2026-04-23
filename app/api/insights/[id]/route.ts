@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { readFileSync, writeFileSync } from 'fs'
-import { join } from 'path'
-
-const DATA_PATH = join(process.cwd(), 'data', 'insights.json')
+import { supabaseAdmin } from '@/lib/supabase/admin'
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -19,13 +16,6 @@ function withCors(res: NextResponse) {
   return res
 }
 
-function readAll(): Record<string, unknown>[] {
-  try { return JSON.parse(readFileSync(DATA_PATH, 'utf-8')) } catch { return [] }
-}
-function writeAll(data: unknown[]) {
-  writeFileSync(DATA_PATH, JSON.stringify(data, null, 2), 'utf-8')
-}
-
 // PATCH /api/insights/[id]
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -36,28 +26,30 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     return withCors(NextResponse.json({ error: '잘못된 요청' }, { status: 400 }))
   }
 
-  const all = readAll()
-  const idx = all.findIndex(i => i.id === id)
-  if (idx === -1) return withCors(NextResponse.json({ error: '없는 항목' }, { status: 404 }))
+  const updates: Record<string, unknown> = {}
+  if (typeof body.is_favorite === 'boolean') updates.is_favorite = body.is_favorite
+  if (typeof body.memo === 'string') updates.memo = body.memo
+  if (typeof body.category === 'string') updates.category = body.category
 
-  if (typeof body.is_favorite === 'boolean') all[idx].is_favorite = body.is_favorite
-  if (typeof body.memo === 'string') all[idx].memo = body.memo
-  if (typeof body.category === 'string') all[idx].category = body.category
+  const { data, error } = await supabaseAdmin
+    .from('insights')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single()
 
-  writeAll(all)
-  return withCors(NextResponse.json(all[idx]))
+  if (error) return withCors(NextResponse.json({ error: error.message }, { status: error.code === 'PGRST116' ? 404 : 500 }))
+
+  return withCors(NextResponse.json(data))
 }
 
 // DELETE /api/insights/[id]
 export async function DELETE(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
 
-  const all = readAll()
-  const filtered = all.filter(i => i.id !== id)
-  if (filtered.length === all.length) {
-    return withCors(NextResponse.json({ error: '없는 항목' }, { status: 404 }))
-  }
+  const { error } = await supabaseAdmin.from('insights').delete().eq('id', id)
 
-  writeAll(filtered)
+  if (error) return withCors(NextResponse.json({ error: error.message }, { status: 500 }))
+
   return withCors(NextResponse.json({ ok: true }))
 }

@@ -1,30 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs'
-import { join, extname } from 'path'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 import { randomUUID } from 'crypto'
 import type { InsightSourceType, InsightCategory } from '@/lib/types'
 
-const DATA_PATH = join(process.cwd(), 'data', 'insights.json')
-const UPLOAD_DIR = join(process.cwd(), 'public', 'uploads', 'insights')
-
-function readAll(): Record<string, unknown>[] {
-  try { return JSON.parse(readFileSync(DATA_PATH, 'utf-8')) } catch { return [] }
-}
-function writeAll(data: unknown[]) {
-  writeFileSync(DATA_PATH, JSON.stringify(data, null, 2), 'utf-8')
-}
+const BUCKET = 'insights'
 
 const ALLOWED_TYPES: Record<string, string> = {
-  'image/jpeg': '.jpg',
-  'image/png': '.png',
-  'image/gif': '.gif',
-  'image/webp': '.webp',
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/gif': 'gif',
+  'image/webp': 'webp',
 }
 
 export async function POST(request: NextRequest) {
   try {
-    if (!existsSync(UPLOAD_DIR)) mkdirSync(UPLOAD_DIR, { recursive: true })
-
     const formData = await request.formData()
     const file = formData.get('file') as File | null
     const memo = (formData.get('memo') as string | null) ?? ''
@@ -36,16 +25,23 @@ export async function POST(request: NextRequest) {
     if (!ext) return NextResponse.json({ error: 'jpg/png/gif/webp만 지원합니다.' }, { status: 400 })
     if (file.size > 10 * 1024 * 1024) return NextResponse.json({ error: '10MB 이하 파일만 가능합니다.' }, { status: 400 })
 
-    const filename = `${randomUUID()}${ext}`
-    writeFileSync(join(UPLOAD_DIR, filename), Buffer.from(await file.arrayBuffer()))
+    const filename = `${randomUUID()}.${ext}`
+    const buffer = Buffer.from(await file.arrayBuffer())
 
-    const imageUrl = `/uploads/insights/${filename}`
+    const { error: uploadError } = await supabaseAdmin.storage
+      .from(BUCKET)
+      .upload(filename, buffer, { contentType: file.type, upsert: false })
+
+    if (uploadError) return NextResponse.json({ error: `업로드 실패: ${uploadError.message}` }, { status: 500 })
+
+    const { data: { publicUrl } } = supabaseAdmin.storage.from(BUCKET).getPublicUrl(filename)
+
     const newItem = {
       id: randomUUID(),
-      url: imageUrl,
+      url: publicUrl,
       title: title || file.name.replace(/\.[^.]+$/, ''),
       description: memo || null,
-      image_url: imageUrl,
+      image_url: publicUrl,
       memo: memo || null,
       category: '디자인' as InsightCategory,
       tags: ['이미지', '레퍼런스'] as string[],
@@ -54,11 +50,18 @@ export async function POST(request: NextRequest) {
       created_at: new Date().toISOString(),
     }
 
-    const all = readAll()
-    all.push(newItem)
-    writeAll(all)
+    const { data, error: dbError } = await supabaseAdmin
+      .from('insights')
+      .insert(newItem)
+      .select()
+      .single()
 
-    return NextResponse.json(newItem, { status: 201 })
+    if (dbError) {
+      await supabaseAdmin.storage.from(BUCKET).remove([filename])
+      return NextResponse.json({ error: `DB 저장 실패: ${dbError.message}` }, { status: 500 })
+    }
+
+    return NextResponse.json(data, { status: 201 })
   } catch (e) {
     const msg = e instanceof Error ? e.message : '알 수 없는 오류'
     return NextResponse.json({ error: `업로드 실패: ${msg}` }, { status: 500 })

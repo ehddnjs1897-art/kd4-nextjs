@@ -378,7 +378,7 @@ CREATE TABLE IF NOT EXISTS insights (
   memo        TEXT,       -- 사용자가 입력한 짧은 메모
   category    TEXT,       -- AI 자동 분류
   tags        TEXT[],     -- AI 자동 태그
-  source_type TEXT DEFAULT 'other' CHECK (source_type IN ('video', 'blog', 'article', 'other')),
+  source_type TEXT DEFAULT 'other' CHECK (source_type IN ('video', 'blog', 'article', 'image', 'other')),
   is_favorite BOOLEAN DEFAULT false,
   created_at  TIMESTAMPTZ DEFAULT NOW()
 );
