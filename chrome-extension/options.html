@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>KD4 인사이트 설정</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif;
+      background: #1a1a1a;
+      color: #fff;
+      padding: 24px;
+      width: 360px;
+      margin: 0;
+    }
+    h1 { font-size: 16px; margin: 0 0 16px; }
+    label { display: block; font-size: 12px; color: #aaa; margin-bottom: 6px; }
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 12px;
+      background: #2a2a2a;
+      border: 1px solid #3a3a3a;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 13px;
+      font-family: monospace;
+    }
+    input:focus { outline: none; border-color: #d4af37; }
+    button {
+      margin-top: 12px;
+      width: 100%;
+      padding: 10px;
+      background: #d4af37;
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    button:hover { opacity: 0.9; }
+    .hint { font-size: 11px; color: #888; margin-top: 6px; line-height: 1.5; }
+    .status { margin-top: 10px; font-size: 12px; color: #4caf50; min-height: 16px; }
+  </style>
+</head>
+<body>
+  <h1>KD4 인사이트 설정</h1>
+
+  <label for="apiUrl">API URL</label>
+  <input id="apiUrl" type="url" placeholder="https://your-site.vercel.app" />
+  <div class="hint">
+    배포 URL을 입력하세요. 로컬 테스트: http://localhost:3000<br />
+    끝에 <code>/api/insights</code>는 자동으로 붙습니다.
+  </div>
+
+  <button id="save">저장</button>
+  <div class="status" id="status"></div>
+
+  <script src="options.js"></script>
+</body>
+</html>

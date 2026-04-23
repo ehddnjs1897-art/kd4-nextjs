@@ -3,6 +3,22 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 
 const GEMINI_KEY = process.env.NEXT_PUBLIC_GEMINI_KEY
 
+// 크롬 확장 프로그램 및 외부 호출 허용
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+}
+
+export function OPTIONS() {
+  return new NextResponse(null, { status: 204, headers: CORS_HEADERS })
+}
+
+function withCors(res: NextResponse) {
+  Object.entries(CORS_HEADERS).forEach(([k, v]) => res.headers.set(k, v))
+  return res
+}
+
 // og 메타데이터 추출
 async function fetchOgMeta(url: string) {
   try {
@@ -98,9 +114,9 @@ export async function GET(request: NextRequest) {
 
   const { data, error, count } = await query
 
-  if (error) return NextResponse.json({ error: '조회 오류' }, { status: 500 })
+  if (error) return withCors(NextResponse.json({ error: '조회 오류' }, { status: 500 }))
 
-  return NextResponse.json({ data, total: count })
+  return withCors(NextResponse.json({ data, total: count }))
 }
 
 // POST /api/insights
@@ -109,12 +125,12 @@ export async function POST(request: NextRequest) {
   try {
     body = await request.json()
   } catch {
-    return NextResponse.json({ error: '잘못된 요청' }, { status: 400 })
+    return withCors(NextResponse.json({ error: '잘못된 요청' }, { status: 400 }))
   }
 
   const { url, memo } = body
   if (!url || !url.startsWith('http')) {
-    return NextResponse.json({ error: 'URL을 입력해주세요.' }, { status: 400 })
+    return withCors(NextResponse.json({ error: 'URL을 입력해주세요.' }, { status: 400 }))
   }
 
   const [og, ai] = await Promise.all([
@@ -140,7 +156,7 @@ export async function POST(request: NextRequest) {
     .select('*')
     .single()
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) return withCors(NextResponse.json({ error: error.message }, { status: 500 }))
 
-  return NextResponse.json(data, { status: 201 })
+  return withCors(NextResponse.json(data, { status: 201 }))
 }

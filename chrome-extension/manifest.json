@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "KD4 인사이트 저장",
+  "version": "1.0.0",
+  "description": "우클릭 한 번으로 영상/블로그 링크를 인사이트 DB에 저장합니다.",
+  "permissions": [
+    "contextMenus",
+    "notifications",
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "http://localhost:3000/*",
+    "https://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  },
+  "action": {
+    "default_title": "인사이트 설정",
+    "default_icon": {
+      "128": "icon.png"
+    }
+  },
+  "icons": {
+    "128": "icon.png"
+  }
+}
