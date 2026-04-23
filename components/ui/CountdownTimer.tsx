@@ -62,7 +62,7 @@ export default function CountdownTimer({ deadline, compact = false }: Props) {
       {blocks.map(({ label, value }, i) => (
         <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <div style={{
-            background: '#15488A',
+            background: 'var(--navy)',
             color: '#ffffff',
             borderRadius: '8px',
             padding: '10px 14px',
@@ -80,7 +80,7 @@ export default function CountdownTimer({ deadline, compact = false }: Props) {
             <div style={{ fontSize: '0.62rem', opacity: 0.75, marginTop: '4px' }}>{label}</div>
           </div>
           {i < 3 && (
-            <span style={{ color: '#15488A', fontWeight: 700, fontSize: '1.4rem', marginBottom: '14px' }}>:</span>
+            <span style={{ color: 'var(--navy)', fontWeight: 700, fontSize: '1.4rem', marginBottom: '14px' }}>:</span>
           )}
         </div>
       ))}

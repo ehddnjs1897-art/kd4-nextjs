@@ -5,27 +5,11 @@ import { MessageCircle, FileText, CheckCircle } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { CLASSES } from '@/lib/classes'
 import { analytics } from '@/lib/analytics'
-
-/* 옵션 목록은 메인 ContactForm 과 동일하게 유지 */
-const MEISNER_OPTIONS = [
-  { value: '', label: '마이즈너 경험 선택' },
-  { value: '처음이다.', label: '처음이다.' },
-  { value: '몇 번 해봤다.', label: '몇 번 해봤다.' },
-  { value: '6개월 이상 훈련 했다.', label: '6개월 이상 훈련 했다.' },
-]
+import { SOURCE_VALUES, MEISNER_OPTIONS } from '@/lib/form-options'
 
 const SOURCE_OPTIONS = [
   { value: '', label: 'KD4를 어떻게 알게 되셨나요?' },
-  { value: '인스타그램', label: '인스타그램' },
-  { value: '네이버 블로그', label: '네이버 블로그' },
-  { value: '액터길드', label: '액터길드' },
-  { value: '필름메이커스', label: '필름메이커스' },
-  { value: 'OTR', label: 'OTR' },
-  { value: '네이버·구글 검색', label: '네이버·구글 검색' },
-  { value: 'AI 추천', label: 'AI 추천' },
-  { value: '지인소개', label: '지인소개' },
-  { value: '리플레이 단톡방', label: '리플레이 단톡방' },
-  { value: '기타', label: '기타' },
+  ...SOURCE_VALUES.map((v) => ({ value: v, label: v })),
 ]
 
 const OPEN_CLASSES = CLASSES.filter((c) => c.isNewMemberOpen && c.nameKo !== '베이직 클래스')
@@ -57,7 +41,7 @@ export default function JoinForm() {
   const inputStyle = (field: string): React.CSSProperties => ({
     width: '100%',
     background: '#ffffff',
-    border: `1px solid ${focused === field ? '#15488A' : '#D2D2C8'}`,
+    border: `1px solid ${focused === field ? 'var(--navy)' : 'var(--border)'}`,
     borderRadius: '12px',
     padding: '14px 18px',
     color: '#111111',
@@ -140,8 +124,8 @@ export default function JoinForm() {
     return (
       <div
         style={{
-          background: 'rgba(21,72,138,0.06)',
-          border: '1px solid rgba(21,72,138,0.25)',
+          background: 'var(--navy-tint-1)',
+          border: '1px solid var(--navy-tint-3)',
           borderRadius: '16px',
           padding: '40px 28px',
           textAlign: 'center',
@@ -152,14 +136,14 @@ export default function JoinForm() {
             width: '56px',
             height: '56px',
             borderRadius: '50%',
-            background: 'rgba(21,72,138,0.1)',
+            background: 'var(--navy-tint-2)',
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
             marginBottom: '18px',
           }}
         >
-          <CheckCircle size={28} color="#15488A" strokeWidth={1.8} />
+          <CheckCircle size={28} color="var(--navy)" strokeWidth={1.8} />
         </div>
         <p
           style={{
@@ -170,12 +154,12 @@ export default function JoinForm() {
             color: '#111111',
           }}
         >
-          배우지망생 → <span style={{ color: '#15488A' }}>진짜 배우</span>
+          배우지망생 → <span style={{ color: 'var(--navy)' }}>진짜 배우</span>
         </p>
         <p
           style={{
             fontSize: '0.9rem',
-            color: '#6B6660',
+            color: 'var(--gray)',
             marginBottom: '10px',
             lineHeight: 1.6,
           }}
@@ -188,19 +172,19 @@ export default function JoinForm() {
           style={{
             fontFamily: 'var(--font-display)',
             fontSize: '0.78rem',
-            color: '#6B6660',
+            color: 'var(--gray)',
             letterSpacing: '0.1em',
             marginBottom: '20px',
           }}
         >
-          접수번호 <strong style={{ color: '#15488A' }}>{ticketNo}</strong>
+          접수번호 <strong style={{ color: 'var(--navy)' }}>{ticketNo}</strong>
         </p>
 
         {/* 다음 안내 */}
         <div
           style={{
             background: '#ffffff',
-            border: '1px solid #D2D2C8',
+            border: '1px solid var(--border)',
             borderRadius: '12px',
             padding: '18px 20px',
             marginBottom: '20px',
@@ -209,9 +193,9 @@ export default function JoinForm() {
         >
           <p style={{ fontSize: '0.88rem', color: '#111', lineHeight: 1.75, marginBottom: '10px' }}>
             문자를 남겨주시면 <strong>24시간 이내</strong> 연락드립니다.{' '}
-            <span style={{ color: '#6B6660', fontSize: '0.82rem' }}>(SMS 확인)</span>
+            <span style={{ color: 'var(--gray)', fontSize: '0.82rem' }}>(SMS 확인)</span>
           </p>
-          <p style={{ fontSize: '0.82rem', color: '#6B6660', lineHeight: 1.7 }}>
+          <p style={{ fontSize: '0.82rem', color: 'var(--gray)', lineHeight: 1.7 }}>
             30분 상담 예약 일정을 잡은 뒤 상담을 진행합니다.
           </p>
         </div>
@@ -225,7 +209,7 @@ export default function JoinForm() {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
-            background: '#15488A',
+            background: 'var(--navy)',
             color: '#ffffff',
             padding: '12px 20px',
             borderRadius: '10px',
@@ -239,14 +223,14 @@ export default function JoinForm() {
           카카오 상담받기
         </a>
 
-        <p style={{ fontSize: '0.78rem', color: '#6B6660', marginTop: '14px', lineHeight: 1.7 }}>
+        <p style={{ fontSize: '0.78rem', color: 'var(--gray)', marginTop: '14px', lineHeight: 1.7 }}>
           급하시면{' '}
           <a
             href="https://pf.kakao.com/_ximxdqn"
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              color: '#15488A',
+              color: 'var(--navy)',
               textDecoration: 'underline',
               display: 'inline-flex',
               alignItems: 'center',
@@ -292,7 +276,7 @@ export default function JoinForm() {
         id="phone-hint"
         style={{
           fontSize: '0.78rem',
-          color: '#6B6660',
+          color: 'var(--gray)',
           margin: '-4px 0 0 4px',
           letterSpacing: '0.01em',
         }}
@@ -316,7 +300,7 @@ export default function JoinForm() {
         id="email-hint"
         style={{
           fontSize: '0.78rem',
-          color: '#6B6660',
+          color: 'var(--gray)',
           margin: '-4px 0 0 4px',
           letterSpacing: '0.01em',
         }}
@@ -349,7 +333,7 @@ export default function JoinForm() {
             top: '50%',
             transform: 'translateY(-50%)',
             pointerEvents: 'none',
-            color: '#6B6660',
+            color: 'var(--gray)',
             fontSize: '0.8rem',
           }}
         >
@@ -381,7 +365,7 @@ export default function JoinForm() {
             top: '50%',
             transform: 'translateY(-50%)',
             pointerEvents: 'none',
-            color: '#6B6660',
+            color: 'var(--gray)',
             fontSize: '0.8rem',
           }}
         >
@@ -413,7 +397,7 @@ export default function JoinForm() {
             top: '50%',
             transform: 'translateY(-50%)',
             pointerEvents: 'none',
-            color: '#6B6660',
+            color: 'var(--gray)',
             fontSize: '0.8rem',
           }}
         >
@@ -430,7 +414,7 @@ export default function JoinForm() {
           gap: '10px',
           padding: '12px 14px',
           background: consent ? 'rgba(21,72,138,0.04)' : '#ffffff',
-          border: `1px solid ${consent ? '#15488A' : '#D2D2C8'}`,
+          border: `1px solid ${consent ? 'var(--navy)' : 'var(--border)'}`,
           borderRadius: '12px',
           cursor: 'pointer',
           transition: 'background 0.15s, border-color 0.15s',
@@ -446,7 +430,7 @@ export default function JoinForm() {
             width: '18px',
             height: '18px',
             marginTop: '2px',
-            accentColor: '#15488A',
+            accentColor: 'var(--navy)',
             cursor: 'pointer',
             flexShrink: 0,
           }}
@@ -458,9 +442,9 @@ export default function JoinForm() {
             lineHeight: 1.6,
           }}
         >
-          <strong style={{ color: '#15488A' }}>[필수]</strong> 개인정보 수집·이용에 동의합니다.
+          <strong style={{ color: 'var(--navy)' }}>[필수]</strong> 개인정보 수집·이용에 동의합니다.
           <br />
-          <span style={{ fontSize: '0.76rem', color: '#6B6660' }}>
+          <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>
             수집 항목: 이름·연락처·이메일·희망 클래스 · 목적: 상담 연락·뉴스레터 발송 · 보관 3년 · 언제든 삭제 요청 가능
           </span>
         </span>
@@ -468,7 +452,7 @@ export default function JoinForm() {
 
       {/* 에러 */}
       {error && (
-        <p style={{ color: '#C73E3E', fontSize: '0.85rem', margin: 0 }}>{error}</p>
+        <p style={{ color: 'var(--accent-red)', fontSize: '0.85rem', margin: 0 }}>{error}</p>
       )}
 
       {/* 제출 버튼 */}
@@ -478,7 +462,7 @@ export default function JoinForm() {
         style={{
           width: '100%',
           padding: '16px',
-          background: loading ? 'rgba(21,72,138,0.5)' : '#15488A',
+          background: loading ? 'rgba(21,72,138,0.5)' : 'var(--navy)',
           color: '#ffffff',
           fontWeight: 800,
           fontSize: '1.05rem',
