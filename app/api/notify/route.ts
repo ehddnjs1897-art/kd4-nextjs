@@ -9,11 +9,20 @@ export async function POST(request: NextRequest) {
     // notify에서 직접 SMS 발송하면 Make와 이중 발송됨 — 제거
     const webhookUrl = process.env.MAKE_WEBHOOK_URL
     if (webhookUrl) {
-      await fetch(webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(record),
-      })
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 8000)
+      try {
+        await fetch(webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(record),
+          signal: controller.signal,
+        })
+      } catch {
+        // 웹훅 타임아웃/실패는 무시 — Supabase에 이미 저장됨
+      } finally {
+        clearTimeout(timeoutId)
+      }
     }
 
     return NextResponse.json({ ok: true })
