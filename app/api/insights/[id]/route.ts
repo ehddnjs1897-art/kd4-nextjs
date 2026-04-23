@@ -1,5 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase/admin'
+import { readFileSync, writeFileSync } from 'fs'
+import { join } from 'path'
+
+const DATA_PATH = join(process.cwd(), 'data', 'insights.json')
+
+function readAll() {
+  try { return JSON.parse(readFileSync(DATA_PATH, 'utf-8')) } catch { return [] }
+}
+function writeAll(data: unknown[]) {
+  writeFileSync(DATA_PATH, JSON.stringify(data, null, 2), 'utf-8')
+}
 
 // PATCH /api/insights/[id]  — 즐겨찾기 토글 또는 메모 수정
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -11,34 +21,26 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     return NextResponse.json({ error: '잘못된 요청' }, { status: 400 })
   }
 
-  const allowed: Record<string, unknown> = {}
-  if (typeof body.is_favorite === 'boolean') allowed.is_favorite = body.is_favorite
-  if (typeof body.memo === 'string') allowed.memo = body.memo
-  if (typeof body.category === 'string') allowed.category = body.category
+  const all = readAll()
+  const idx = all.findIndex((i: { id: string }) => i.id === id)
+  if (idx === -1) return NextResponse.json({ error: '없는 항목' }, { status: 404 })
 
-  if (Object.keys(allowed).length === 0) {
-    return NextResponse.json({ error: '변경할 필드가 없습니다.' }, { status: 400 })
-  }
+  if (typeof body.is_favorite === 'boolean') all[idx].is_favorite = body.is_favorite
+  if (typeof body.memo === 'string') all[idx].memo = body.memo
+  if (typeof body.category === 'string') all[idx].category = body.category
 
-  const { data, error } = await supabaseAdmin
-    .from('insights')
-    .update(allowed)
-    .eq('id', id)
-    .select('*')
-    .single()
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-
-  return NextResponse.json(data)
+  writeAll(all)
+  return NextResponse.json(all[idx])
 }
 
 // DELETE /api/insights/[id]
 export async function DELETE(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
 
-  const { error } = await supabaseAdmin.from('insights').delete().eq('id', id)
+  const all = readAll()
+  const filtered = all.filter((i: { id: string }) => i.id !== id)
+  if (filtered.length === all.length) return NextResponse.json({ error: '없는 항목' }, { status: 404 })
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-
+  writeAll(filtered)
   return NextResponse.json({ ok: true })
 }
