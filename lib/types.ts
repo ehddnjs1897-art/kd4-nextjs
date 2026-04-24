@@ -69,3 +69,61 @@ export interface ActorDetail extends ActorPublic {
   actor_filmography: FilmoEntry[]
 }
 
+// ─── 공통 API 응답 ───────────────────────────────────────────────────────────
+
+export interface PaginatedResponse<T> {
+  actors: T[]
+  total: number
+  page: number
+  limit: number
+}
+
+export interface ApiError {
+  error: string
+  status: number
+}
+
+// ─── 인사이트 ────────────────────────────────────────────────────────────────
+
+export type InsightSourceType = 'video' | 'blog' | 'article' | 'image' | 'other'
+export type InsightCategory = '연기' | '비즈니스' | '크리에이티브' | '디자인' | '기술' | '라이프' | '기타'
+
+export interface Insight {
+  id: string
+  url: string
+  title: string | null
+  description: string | null
+  image_url: string | null
+  memo: string | null
+  category: InsightCategory | null
+  tags: string[] | null
+  source_type: InsightSourceType | null
+  is_favorite: boolean
+  created_at: string
+}
+
+// ─── 게임 관련 (OFF THE PLASTIC) ────────────────────────────────────────────
+
+export interface GameScore {
+  id: string
+  user_id: string
+  score: number
+  duration_ms: number
+  stage: number
+  items_collected: number
+  created_at: string
+  profiles?: { name: string | null }
+}
+
+export interface GamePrize {
+  id: string
+  user_id: string
+  period_start: string
+  period_type: 'weekly' | 'monthly'
+  rank: number
+  prize_type: string
+  prize_description: string | null
+  status: 'pending' | 'claimed' | 'delivered'
+  created_at: string
+}
+

@@ -365,3 +365,23 @@ BEGIN
   UPDATE posts SET views = views + 1 WHERE id = post_id;
 END;
 $$;
+
+-- ============================================
+-- 13. INSIGHTS (인사이트 수집 — 개인 툴)
+-- ============================================
+CREATE TABLE IF NOT EXISTS insights (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  url         TEXT NOT NULL,
+  title       TEXT,
+  description TEXT,       -- AI 3줄 요약
+  image_url   TEXT,
+  memo        TEXT,       -- 사용자가 입력한 짧은 메모
+  category    TEXT,       -- AI 자동 분류
+  tags        TEXT[],     -- AI 자동 태그
+  source_type TEXT DEFAULT 'other' CHECK (source_type IN ('video', 'blog', 'article', 'image', 'other')),
+  is_favorite BOOLEAN DEFAULT false,
+  created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 개인 툴이므로 RLS 없이 public 접근 (서비스 롤 키로 제어)
+ALTER TABLE insights DISABLE ROW LEVEL SECURITY;
