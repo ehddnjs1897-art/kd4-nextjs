@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
 import { CLASSES } from '@/lib/classes'
 import { pixel } from '@/lib/meta-pixel'
 
@@ -92,17 +91,6 @@ export default function ContactForm() {
       maiznerExp && `마이즈너경험: ${maiznerExp}`,
     ].filter(Boolean)
     const motivation = motivationParts.length > 0 ? motivationParts.join(' / ') : null
-
-    const supabase = createClient()
-    await supabase.from('applications').insert({
-      name: form.name,
-      phone: form.phone,
-      email: form.email || null,
-      class_name: form.class_name || null,
-      motivation,
-      status: '대기',
-    })
-    // Supabase 오류(429 포함)는 무시 — notify(SMS)로 리드 보전
 
     pixel.lead()
 

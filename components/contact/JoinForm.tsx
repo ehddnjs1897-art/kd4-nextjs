@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { MessageCircle, FileText, CheckCircle } from 'lucide-react'
-import { createClient } from '@/lib/supabase/client'
 import { CLASSES } from '@/lib/classes'
 import { analytics } from '@/lib/analytics'
 
@@ -92,17 +91,6 @@ export default function JoinForm() {
       meisnerExp && `마이즈너경험: ${meisnerExp}`,
     ].filter(Boolean)
     const motivation = motivationParts.join(' / ')
-
-    const supabase = createClient()
-    await supabase.from('applications').insert({
-      name,
-      phone,
-      email: email || null,
-      class_name: className || null,
-      motivation,
-      status: '대기',
-    })
-    // Supabase 오류(429 포함)는 무시 — notify(SMS)로 리드 보전
 
     analytics.lead({
       source: 'join_form_instagram_ad',
