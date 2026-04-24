@@ -2,12 +2,24 @@
 
 import { ArrowRight } from 'lucide-react'
 
+interface Cohort {
+  name: string
+  cohort: string
+  seats: number
+}
+
 export default function StickyTopBar({
   seats,
+  cohorts,
 }: {
   deadline?: string
-  seats: number
+  seats?: number
+  cohorts?: Cohort[]
 }) {
+  const totalSeats = cohorts
+    ? cohorts.reduce((sum, c) => sum + c.seats, 0)
+    : (seats ?? 0)
+
   return (
     <div
       style={{
@@ -58,7 +70,7 @@ export default function StickyTopBar({
           }}
         />
         <span style={{ fontSize: '0.76rem', color: 'var(--white)', fontWeight: 600 }}>
-          잔여 <strong style={{ color: 'var(--navy)' }}>{seats}석</strong>
+          잔여 <strong style={{ color: 'var(--navy)' }}>{totalSeats}석</strong>
         </span>
       </div>
 

@@ -6,6 +6,7 @@ declare global {
       params?: Record<string, unknown>
     ) => void
     _fbq: unknown
+    gtag: (...args: unknown[]) => void
   }
 }
 export {}
