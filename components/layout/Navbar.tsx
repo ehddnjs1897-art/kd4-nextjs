@@ -251,7 +251,7 @@ export default function Navbar() {
                       top: 'calc(100% + 10px)',
                       left: '50%',
                       transform: 'translateX(-50%)',
-                      background: '#E8E8DF',
+                      background: 'var(--bg2)',
                       border: '1px solid rgba(21,72,138,0.2)',
                       borderRadius: '8px',
                       padding: '8px',
@@ -281,7 +281,7 @@ export default function Navbar() {
                       height: 0,
                       borderLeft: '5px solid transparent',
                       borderRight: '5px solid transparent',
-                      borderBottom: '5px solid #E8E8DF',
+                      borderBottom: '5px solid var(--bg2)',
                     }} />
 
                     {crewLinks.map(item => (

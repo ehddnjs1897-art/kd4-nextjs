@@ -1,8 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
-import { UserRole } from '@/lib/types'
 
 interface Actor {
   id: string
@@ -64,34 +62,7 @@ const AGE_OPTIONS: { value: AgeFilter; label: string }[] = [
   { value: '50대 이상', label: '50대+' },
 ]
 
-/** 배우DB 열람 가능 여부 */
-function canViewActorDb(role: UserRole | null): boolean {
-  return role === 'editor' || role === 'director' || role === 'admin' || role === 'crew'
-}
-
-/** 연락처 등 전체 정보 열람 (디렉터/관리자만) */
-function isDirectorOrAdmin(role: UserRole | null): boolean {
-  return role === 'director' || role === 'admin'
-}
-
 export default async function ActorsPage({ searchParams }: PageProps) {
-  /* ---- 비로그인도 접근 가능 (공개 페이지) ---- */
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  // 역할 조회 (로그인 시에만)
-  let role: UserRole | null = null
-  if (user) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .maybeSingle()
-    role = (profile?.role ?? 'user') as UserRole
-  }
-
   /* ---- 데이터 fetch ---- */
   const params = await searchParams
   const gender = params.gender ?? 'all'
@@ -209,69 +180,6 @@ const styles: Record<string, React.CSSProperties> = {
     background: 'var(--bg)',
     paddingTop: 80,
     paddingBottom: 80,
-  },
-  /* ---- 접근 불가 ---- */
-  deniedBox: {
-    maxWidth: 480,
-    margin: '80px auto',
-    textAlign: 'center',
-    background: 'var(--bg2)',
-    border: '1px solid var(--border)',
-    borderRadius: 12,
-    padding: '60px 40px',
-  },
-  deniedIcon: {
-    fontSize: '2.8rem',
-    marginBottom: 16,
-  },
-  deniedTitle: {
-    fontFamily: 'var(--font-display)',
-    fontSize: '1.6rem',
-    fontWeight: 700,
-    color: 'var(--white)',
-    marginBottom: 16,
-  },
-  deniedDesc: {
-    fontSize: '0.95rem',
-    color: 'var(--gray)',
-    lineHeight: 1.8,
-    marginBottom: 12,
-  },
-  deniedSub: {
-    fontSize: '0.82rem',
-    color: 'var(--gray)',
-    marginBottom: 28,
-  },
-  deniedLink: {
-    color: 'var(--gold)',
-    textDecoration: 'underline',
-  },
-  deniedBtns: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 10,
-    marginTop: 4,
-  },
-  btnPrimary: {
-    display: 'block',
-    background: 'var(--gold)',
-    color: '#ffffff',
-    borderRadius: 6,
-    padding: '12px 0',
-    fontSize: '0.9rem',
-    fontWeight: 700,
-    fontFamily: 'var(--font-display)',
-    textDecoration: 'none',
-    letterSpacing: '0.05em',
-  },
-  btnSecondary: {
-    display: 'block',
-    border: '1px solid var(--border)',
-    color: 'var(--gray)',
-    borderRadius: 6,
-    padding: '11px 0',
-    fontSize: '0.88rem',
-    textDecoration: 'none',
   },
   /* ---- 목록 ---- */
   header: {

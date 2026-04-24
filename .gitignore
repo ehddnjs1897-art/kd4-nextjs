@@ -48,3 +48,7 @@ next-env.d.ts
 
 # Claude Code worktrees
 .claude/worktrees/
+
+# Untracked local image files (not used in code)
+director2.JPG
+public/kd4-mascot.PNG

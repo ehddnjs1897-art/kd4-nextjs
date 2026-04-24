@@ -852,8 +852,6 @@ ul, ol { list-style: none; }
   background: rgba(21,72,138,0.03);
 }
 
-.comparison-check { color: var(--gold); font-size: 1.1rem; }
-.comparison-x { color: var(--gray); }
 
 /* === HOW IT WORKS === */
 .steps-grid {
@@ -1280,34 +1278,6 @@ ul, ol { list-style: none; }
   line-height: 1.6;
 }
 
-/* === AI TEASER === */
-.ai-teaser {
-  background: linear-gradient(135deg, rgba(21,72,138,0.06) 0%, rgba(21,72,138,0.04) 100%);
-  border: 1px solid rgba(74,158,255,0.15);
-  border-radius: var(--radius);
-  padding: 60px 48px;
-  display: flex;
-  align-items: center;
-  gap: 48px;
-}
-
-.ai-teaser-icon {
-  font-size: 4rem;
-  flex-shrink: 0;
-}
-
-.ai-teaser-badge {
-  display: inline-block;
-  font-family: var(--font-display);
-  font-size: 0.62rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--blue);
-  border: 1px solid rgba(74,158,255,0.3);
-  border-radius: 2px;
-  padding: 4px 10px;
-  margin-bottom: 12px;
-}
 
 /* === ABOUT / DIRECTOR === */
 .about-grid {
@@ -1427,8 +1397,7 @@ ul, ol { list-style: none; }
   .stats-card { padding: 20px 8px; gap: 6px; border-radius: 12px; }
   .stats-icon-wrap { width: 36px; height: 36px; border-radius: 10px; font-size: 1rem; }
   .about-steps { grid-template-columns: 1fr; }
-  .ai-teaser { flex-direction: column; padding: 40px 28px; }
-  .cta-card { padding: 40px 24px; }
+.cta-card { padding: 40px 24px; }
   .footer-grid { grid-template-columns: 1fr; gap: 28px; }
   .footer-bottom { flex-direction: column; align-items: flex-start; }
   .footer-biz { text-align: left; }
@@ -1777,24 +1746,6 @@ ul, ol { list-style: none; }
   box-shadow: 0 6px 18px rgba(21,72,138,0.1);
 }
 
-/* 네비게이션 링크 호버 언더라인 애니메이션 */
-.nav-link-anim {
-  position: relative;
-}
-.nav-link-anim::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 50%;
-  width: 0;
-  height: 2px;
-  background: var(--navy);
-  transition: width 0.3s, left 0.3s;
-}
-.nav-link-anim:hover::after {
-  width: 100%;
-  left: 0;
-}
 
 /* subtlePulse: 애니메이션 제거 — 정적 상태만 */
 .pulse-cta {
@@ -1803,10 +1754,6 @@ ul, ol { list-style: none; }
 
 /* 잔여석/할인용 빨간 펄스는 페이지에서 개별적으로 제거됨 */
 
-/* 캐스팅 마퀴 호버 일시정지 */
-.casting-marquee:hover .marquee-track {
-  animation-play-state: paused;
-}
 
 /* ============================================================
    UX 개선 — focus, 터치타겟, FloatingCTA 여백, 폼 반응형

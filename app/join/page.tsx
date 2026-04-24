@@ -41,8 +41,6 @@ export const metadata: Metadata = {
 }
 
 /* ── 상수 ────────────────────────────────────────────────────────── */
-/* Hero 배경 이미지 — KD4 text logo (브랜드 아이덴티티) */
-const HERO_IMG = '/text-logo.png'
 /* 강사 사진은 DIRECTOR.photo 참조 (/director.jpg) — Director 섹션용 */
 const STUDIO_IMG =
   'https://drive.google.com/uc?export=view&id=1by0ZDO3J5yS-44McKbmAPixjPtI3xWNr'
@@ -62,6 +60,40 @@ const OPEN_COHORTS = [
 /* 첫 달 할인액 (Anchor Price 시각화) */
 const FIRST_MONTH_DISCOUNT = 100000
 
+/* ── 할인 혜택 목록 ─────────────────────────────────────────── */
+const DISCOUNTS = [
+  {
+    tag: '신규 멤버 웰컴',
+    title: '첫 달 10만원 할인',
+    desc: '또는 무료 오픈클래스 중 택1 · 신규 등록 시 적용',
+    isNew: false,
+  },
+  {
+    tag: '휴면 멤버 웰컴백',
+    title: '첫 달 5만원 할인',
+    desc: '6개월 이상 휴면 후 복귀 시 적용',
+    isNew: false,
+  },
+  {
+    tag: '출연영상·심화 클래스 할인',
+    title: '출연영상 · 심화 클래스 30% 할인',
+    desc: '출연영상 2회 이상 수강 배우 적용',
+    isNew: false,
+  },
+  {
+    tag: '지인 동반 할인',
+    title: '함께 등록 시 1+1 · 두 분 모두 3만원 할인',
+    desc: '지인과 동반 등록 시 두 분 각각 3만원씩 할인',
+    isNew: true,
+  },
+  {
+    tag: '출연영상 재수강 할인',
+    title: '2회차부터 각 3만원 할인',
+    desc: '회차당 40만원 → 37만원 · 3개월 간 (총 9만원 할인)',
+    isNew: true,
+  },
+]
+
 /* ── Agitation 관찰형 체크리스트 3개 ────────────────────────── */
 const PAIN_POINTS = [
   {
@@ -71,8 +103,8 @@ const PAIN_POINTS = [
   },
   {
     Icon: Moon,
-    title: '어렵게 잡은 오디션, 무소식',
-    desc: '매번 어렵게 받은 기회, 돌아오는 답은 없습니다.',
+    title: '카메라는 0.1mm의 감정도 잡아낸다',
+    desc: '무대 연기로 통하던 것들이 화면에선 과하게 보입니다.',
   },
   {
     Icon: HelpCircle,
@@ -263,16 +295,17 @@ export default function JoinPage() {
           <h1
             className="section-title-serif"
             style={{
-              fontSize: 'clamp(1.8rem, 4.8vw, 2.8rem)',
+              fontSize: 'clamp(1.55rem, 4.2vw, 2.8rem)',
               color: '#ffffff',
-              lineHeight: 1.35,
+              lineHeight: 1.4,
               marginBottom: '28px',
               maxWidth: '640px',
               marginLeft: 'auto',
               marginRight: 'auto',
+              wordBreak: 'keep-all',
             }}
           >
-            오디션 결과가 없다면,
+            배우를 성장시키는
             <br />
             <span
               style={{
@@ -281,7 +314,7 @@ export default function JoinPage() {
                 paddingBottom: '2px',
               }}
             >
-              방법의 문제입니다
+              KD4 액팅 스튜디오입니다.
             </span>
           </h1>
 
@@ -297,7 +330,9 @@ export default function JoinPage() {
               wordBreak: 'keep-all',
             }}
           >
-            틀에 박힌 연기, 공장식 수업에서 벗어나고 싶은 배우를 위한 스튜디오
+            틀에 박힌 연기, 공장식 수업에서 벗어나고 싶은
+            <br />
+            배우를 위한 스튜디오
           </p>
           <p
             style={{
@@ -1115,6 +1150,81 @@ export default function JoinPage() {
               할인 마감까지
             </p>
             <CountdownTimer deadline={DEADLINE} />
+          </div>
+
+          {/* 할인 혜택 목록 */}
+          <div
+            style={{
+              maxWidth: '520px',
+              margin: '0 auto 36px',
+              background: 'var(--bg2)',
+              border: '1px solid var(--border)',
+              borderRadius: 'var(--radius)',
+              overflow: 'hidden',
+            }}
+          >
+            {DISCOUNTS.map(({ tag, title, desc, isNew }, i) => (
+              <div
+                key={tag}
+                style={{
+                  padding: '18px 20px',
+                  borderTop: i > 0 ? '1px solid var(--border)' : undefined,
+                }}
+              >
+                <div style={{ marginBottom: '6px' }}>
+                  <span
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      fontFamily: 'var(--font-display)',
+                      fontSize: '0.65rem',
+                      fontWeight: 700,
+                      letterSpacing: '0.08em',
+                      textTransform: 'uppercase',
+                      color: isNew ? '#ffffff' : 'var(--navy)',
+                      background: isNew ? 'var(--accent-red)' : 'rgba(21,72,138,0.1)',
+                      borderRadius: '4px',
+                      padding: '3px 8px',
+                    }}
+                  >
+                    {tag}
+                    {isNew && ' · NEW'}
+                  </span>
+                </div>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-serif)',
+                    fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)',
+                    fontWeight: 700,
+                    marginBottom: '3px',
+                    lineHeight: 1.3,
+                    wordBreak: 'keep-all',
+                  }}
+                >
+                  {title}
+                </p>
+                <p style={{ fontSize: '0.8rem', color: 'var(--gray-light)', lineHeight: 1.5 }}>
+                  {desc}
+                </p>
+              </div>
+            ))}
+            <div style={{ padding: '14px 20px', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
+              <JoinCTALink
+                href="#form"
+                location="offer_discount"
+                label="지금 신청하기"
+                fireLead
+                className="btn-primary"
+                style={{ background: 'var(--navy)', color: '#ffffff', width: '100%', justifyContent: 'center' }}
+              >
+                지금 신청하기
+                <ArrowRight size={15} strokeWidth={2.2} />
+              </JoinCTALink>
+              <p style={{ fontSize: '0.72rem', color: 'var(--gray)', marginTop: '8px' }}>
+                * 5월까지 · 선착순 마감 시 조기 종료
+              </p>
+            </div>
           </div>
 
           {/* 클래스 카드 */}

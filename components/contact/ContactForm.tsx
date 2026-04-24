@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { CLASSES } from '@/lib/classes'
 import { pixel } from '@/lib/meta-pixel'
+import { SOURCE_VALUES, INQUIRY_OPTIONS } from '@/lib/form-options'
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
@@ -28,24 +29,6 @@ const labelStyle: React.CSSProperties = {
   fontWeight: 500,
 }
 
-const SOURCE_OPTIONS = [
-  '인스타그램',
-  '네이버 블로그',
-  '액터길드',
-  '필름메이커스',
-  'OTR',
-  '네이버·구글 검색',
-  'AI 추천',
-  '지인소개',
-  '리플레이 단톡방',
-  '기타',
-]
-
-const INQUIRY_OPTIONS = [
-  { value: '방문 상담',                           label: '방문 상담',  icon: '😊', desc: '자세한 상담' },
-  { value: '바로 수강신청 (첫 달 10만원 할인)',  label: '봄 맞이, 웰컴 할인',   icon: '🌸', desc: '(마이즈너 정규, 출연영상)' },
-  { value: '무료 오픈클래스',                    label: '오픈클래스', icon: '🎁', desc: '무료 체험 클래스\n(대기 신청)' },
-]
 
 export default function ContactForm() {
   const [form, setForm] = useState({
@@ -300,7 +283,7 @@ export default function ContactForm() {
           onBlur={() => setFocusedField(null)}
         >
           <option value="">선택해 주세요</option>
-          {SOURCE_OPTIONS.map(opt => (
+          {SOURCE_VALUES.map(opt => (
             <option key={opt} value={opt}>{opt}</option>
           ))}
         </select>
@@ -347,7 +330,7 @@ export default function ContactForm() {
       </label>
 
       {error && (
-        <p style={{ color: '#C73E3E', fontSize: '0.85rem', margin: 0 }}>{error}</p>
+        <p style={{ color: 'var(--accent-red)', fontSize: '0.85rem', margin: 0 }}>{error}</p>
       )}
 
       <button
