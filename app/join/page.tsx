@@ -683,7 +683,7 @@ export default function JoinPage() {
                 textAlign: 'center',
               }}
             >
-              대형 학원의 마이즈너와 다릅니다 — 회당 30분+ 1인 피드백, 6~8명, 현역 배우 직강
+              대형 학원과 다릅니다 — 회당 30분+ 1인 피드백, 6~8명, 현역 배우 직강
             </p>
           </div>
         </div>
