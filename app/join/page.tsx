@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
+import dynamic from 'next/dynamic'
 import {
   Users,
   Award,
@@ -20,16 +21,18 @@ import {
 } from 'lucide-react'
 import { CLASSES, DIRECTOR } from '@/lib/classes'
 import { FAQ_ITEMS } from '@/lib/faq-items'
-import JoinForm from '@/components/contact/JoinForm'
-import CountdownTimer from '@/components/ui/CountdownTimer'
 import StickyTopBar from '@/components/join/StickyTopBar'
-import StickyBottomCTA from '@/components/join/StickyBottomCTA'
-import FaqAccordion from '@/components/join/FaqAccordion'
 import JoinCTALink from '@/components/join/JoinCTALink'
-import ScrollDepth from '@/components/analytics/ScrollDepth'
 import JoinPageView from '@/components/analytics/JoinPageView'
-import ReviewGrid from '@/components/join/ReviewGrid'
 import type { ReviewItem } from '@/components/join/ReviewLightbox'
+
+/* 폴드 아래 / 비즈니스 크리티컬하지 않은 컴포넌트 — 지연 로딩 */
+const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
+const StickyBottomCTA = dynamic(() => import('@/components/join/StickyBottomCTA'), { ssr: false })
+const ScrollDepth = dynamic(() => import('@/components/analytics/ScrollDepth'), { ssr: false })
+const ReviewGrid = dynamic(() => import('@/components/join/ReviewGrid'), { ssr: false })
+const CountdownTimer = dynamic(() => import('@/components/ui/CountdownTimer'), { ssr: false })
+const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
 
 export const metadata: Metadata = {
   title: '무료 상담 신청 | KD4 액팅 스튜디오',
@@ -323,20 +326,6 @@ export default function JoinPage() {
             }}
           >
             6~8명 소수정예 · 연기상 수상 배우 직강
-          </p>
-          <p
-            style={{
-              fontSize: 'clamp(0.76rem, 1.8vw, 0.84rem)',
-              color: 'rgba(255,255,255,0.38)',
-              lineHeight: 1.65,
-              marginBottom: '32px',
-              maxWidth: '480px',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              wordBreak: 'keep-all',
-            }}
-          >
-            이미 다른 훈련을 경험했지만, 현장에서 통하는 연기를 찾는 배우에게도 맞습니다.
           </p>
 
           <div
@@ -771,24 +760,6 @@ export default function JoinPage() {
               </p>
             </div>
           </div>
-          <div style={{ textAlign: 'center', marginTop: '28px' }}>
-            <a
-              href="/#director"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontSize: '0.82rem',
-                fontWeight: 600,
-                color: 'var(--navy)',
-                borderBottom: '1px solid var(--navy)',
-                padding: '4px 0',
-                textDecoration: 'none',
-              }}
-            >
-              필모그래피 전체 보기 →
-            </a>
-          </div>
         </div>
       </section>
 
@@ -813,7 +784,7 @@ export default function JoinPage() {
                 margin: 0,
               }}
             >
-              KD4를 거친 배우들의 솔직한 후기
+              배우들의 솔직한 후기
             </p>
           </div>
 
