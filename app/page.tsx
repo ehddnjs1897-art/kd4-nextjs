@@ -989,7 +989,7 @@ export default function HomePage() {
             위 캐스팅 결과를 만들어낸 훈련 방식이 궁금하다면
           </p>
           <Link
-            href="/join#method"
+            href="/about#meisner"
             onClick={() => pixel.contact()}
             style={{
               display: "inline-flex",
