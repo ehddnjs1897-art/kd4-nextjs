@@ -408,7 +408,7 @@ export default function JoinPage() {
                 wordBreak: 'keep-all',
               }}
             >
-              KD4에만 있는 것들
+              KD4를 선택해야 하는 이유
             </h2>
             <p style={{ fontSize: '0.9rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
               3년간 만들어온 KD4만의 캐스팅 연계 시스템
