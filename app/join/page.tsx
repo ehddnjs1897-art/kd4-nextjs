@@ -48,8 +48,8 @@ const FILM_CLASS = CLASSES.find((c) => c.nameKo === '출연영상 클래스')!
 
 /* Sticky 상단 모집 중 반 (기수 정보 포함) */
 const OPEN_COHORTS = [
-  { name: '마이즈너 정규', cohort: '3기', seats: MAIN_CLASS.remainingSeats ?? 0 },
-  { name: '출연영상', cohort: '19기', seats: FILM_CLASS.remainingSeats ?? 0 },
+  { name: '마이즈너', cohort: '3기', seats: MAIN_CLASS.remainingSeats ?? 0, price: parseInt(MAIN_CLASS.price.replace(/,/g, '')) },
+  { name: '출연영상', cohort: '19기', seats: FILM_CLASS.remainingSeats ?? 0, price: parseInt(FILM_CLASS.price.replace(/,/g, '')) },
 ]
 
 /* 첫 달 할인액 (Anchor Price 시각화) */
