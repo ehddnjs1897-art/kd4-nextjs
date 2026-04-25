@@ -876,9 +876,9 @@ export default function JoinPage() {
           </div>
 
           <div
+            className="curriculum-grid"
             style={{
               display: 'grid',
-              /* 3열 × 2행 고정 — 모바일도 한 화면에 6카드 보이게 */
               gridTemplateColumns: 'repeat(3, 1fr)',
               gap: 'clamp(6px, 1.5vw, 16px)',
               maxWidth: '1080px',
@@ -1127,31 +1127,6 @@ export default function JoinPage() {
             <p style={{ fontSize: '0.95rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
               <strong style={{ color: 'var(--accent-red)' }}>첫 달 10만원 할인</strong>
             </p>
-          </div>
-
-          {/* 할인 배지 (첫 달만 할인) */}
-          <div
-            style={{
-              maxWidth: '520px',
-              margin: '0 auto 24px',
-              display: 'flex',
-              justifyContent: 'center',
-            }}
-          >
-            <div
-              style={{
-                background: 'var(--accent-red-soft)',
-                border: '1px solid rgba(199,62,62,0.25)',
-                borderRadius: 'var(--radius)',
-                padding: '10px 20px',
-                fontSize: '0.88rem',
-                color: 'var(--accent-red)',
-                fontWeight: 700,
-                letterSpacing: '0.02em',
-              }}
-            >
-              첫 달 {FIRST_MONTH_DISCOUNT.toLocaleString()}원 할인
-            </div>
           </div>
 
           {/* 카운트다운 */}
