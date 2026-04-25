@@ -24,14 +24,12 @@ import { FAQ_ITEMS } from '@/lib/faq-items'
 import StickyTopBar from '@/components/join/StickyTopBar'
 import JoinCTALink from '@/components/join/JoinCTALink'
 import JoinPageView from '@/components/analytics/JoinPageView'
-import type { ReviewItem } from '@/components/join/ReviewLightbox'
 
 /* 폴드 아래 / 비즈니스 크리티컬하지 않은 컴포넌트 — 지연 로딩 */
 const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
-const StickyBottomCTA = dynamic(() => import('@/components/join/StickyBottomCTA'), { ssr: false })
-const ScrollDepth = dynamic(() => import('@/components/analytics/ScrollDepth'), { ssr: false })
-const ReviewGrid = dynamic(() => import('@/components/join/ReviewGrid'), { ssr: false })
-const CountdownTimer = dynamic(() => import('@/components/ui/CountdownTimer'), { ssr: false })
+const StickyBottomCTA = dynamic(() => import('@/components/join/StickyBottomCTA'))
+const ScrollDepth = dynamic(() => import('@/components/analytics/ScrollDepth'))
+const CountdownTimer = dynamic(() => import('@/components/ui/CountdownTimer'))
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
 
 export const metadata: Metadata = {
@@ -149,62 +147,16 @@ const COMPARISON_ROWS: { label: string; normal: string; kd4: string }[] = [
   { label: '월 수강료', normal: '월 45~55만원', kd4: '월 32~37만원 · 최대 약 30%↓' },
 ]
 
-/* ── 카톡 후기 6장 (하이브리드 B안: 썸네일 + 요약 + 라이트박스) ── */
-const REVIEWS: ReviewItem[] = [
-  {
-    id: 'kang-yookyung',
-    image: '/reviews/review-01.jpg',
-    author: '강*경',
-    cohort: '마이즈너 정규반',
-    summary: '의식 깊은 곳 감정이 뱉어졌다',
-    fullQuote:
-      '내 의지로 만들어진 연기가 아니라 의식 깊은 곳에서 건드려진 감정이 자연스럽게 뱉어지는 경험을 했습니다.',
-  },
-  {
-    id: 'kim-gwangil',
-    image: '/reviews/review-02.jpg',
-    author: '김*일',
-    cohort: '마이즈너 정규반',
-    summary: "카메라 앞 '진짜로' 숨쉬는 법",
-    fullQuote:
-      '좀 더 솔직하고 진짜 내가 느끼고 있는 감정을 표현해내고 있었다. 카메라 앞에서든 무대 위에서든 꾸며진 가짜의 환경 속에서 조금이나마 더 진짜로 숨쉴 수 있는 방법의 물꼬를 터준 수업.',
-  },
-  {
-    id: 'han-gayoon',
-    image: '/reviews/review-03.jpg',
-    author: '한*윤',
-    cohort: '마이즈너 정규반',
-    summary: '안 보이던 업계의 길이 보였다',
-    fullQuote:
-      '실제 업계에 있으신 배우 권동원 대표님이 현재 업계가 어떻게 돌아가고 있는지 시스템을 현실적이고 구체적으로 설명해주셔서 안 보이던 길이 보입니다.',
-  },
-  {
-    id: 'heo-geon',
-    image: '/reviews/review-04.png',
-    author: '허*',
-    cohort: '마이즈너 정규반',
-    summary: '여러 워크샵 중 가장 의미있었다',
-    fullQuote:
-      '하나로 정하고 고정하는 연기가 아닌, 자유로운 탐구로 다양한 길을 열어가는 연기를 직접 경험해볼 수 있어서 나름 여러 연기 워크샵을 다녀봤지만 가장 의미있는 시간이었다.',
-  },
-  {
-    id: 'jo-mingun',
-    image: '/reviews/review-05.png',
-    author: '조*건',
-    cohort: '마이즈너 정규반',
-    summary: '대사 뱉자 색다른 감정이 휘몰아쳤다',
-    fullQuote:
-      '오늘은 허심탄회하게 제 마음을 다 드러낸 거 같아요. 그러고나서 다시 대사를 뱉어보니 색다른 감정들이 저를 휘몰아치게 하더라고요.',
-  },
-  {
-    id: 'kim-suji',
-    image: '/reviews/review-06.jpg',
-    author: '김*지',
-    cohort: '마이즈너 정규반',
-    summary: '5시간, 6명, 한 명 한 명 케어',
-    fullQuote:
-      '5시간 여 동안 거의 쉬지 않고 여섯 명을 한 명 한 명 집중해주셨고 프로필도 한 명 한 명 자세하게 봐주셨습니다! 학원에서 배울 수 없는 것들을 얻어간 귀중한 시간이었습니다!',
-  },
+/* ── 후기 마퀴 (2행 교차) ── */
+const REVIEW_MARQUEE_ROW1 = [
+  { text: '내 의지로 만들어진 연기가 아니라 의식 깊은 곳에서 건드려진 감정이 자연스럽게 뱉어지는 경험을 했습니다.', author: '강*경' },
+  { text: '카메라 앞에서든 무대 위에서든 진짜로 숨쉴 수 있는 방법의 물꼬를 터준 수업.', author: '김*일' },
+  { text: '안 보이던 업계의 길이 보였습니다. 현역 배우가 현실적으로 설명해주는 곳.', author: '한*윤' },
+]
+const REVIEW_MARQUEE_ROW2 = [
+  { text: '여러 연기 워크샵을 다녀봤지만 가장 의미있는 시간이었다.', author: '허*' },
+  { text: '다시 대사를 뱉어보니 색다른 감정들이 저를 휘몰아치게 하더라고요.', author: '조*건' },
+  { text: '5시간 동안 여섯 명을 한 명 한 명 집중해주셨어요. 학원에서 배울 수 없는 것들을 얻어간 귀중한 시간.', author: '김*지' },
 ]
 
 /* ── Risk Reversal 3가지 보장 ─────────────────────────────── */
@@ -788,7 +740,28 @@ export default function JoinPage() {
             </p>
           </div>
 
-          <ReviewGrid reviews={REVIEWS} />
+          {/* 마퀴 1행: 왼쪽으로 */}
+          <div className="review-marquee" style={{ marginBottom: '12px' }}>
+            <div className="review-marquee-track">
+              {[...REVIEW_MARQUEE_ROW1, ...REVIEW_MARQUEE_ROW1].map((r, i) => (
+                <div key={i} style={{ flex: '0 0 auto', width: '320px', padding: '20px 24px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', marginRight: '14px' }}>
+                  <p style={{ fontSize: '0.86rem', color: 'var(--white)', lineHeight: 1.7, marginBottom: '10px' }}>&ldquo;{r.text}&rdquo;</p>
+                  <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>— {r.author}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* 마퀴 2행: 오른쪽으로 */}
+          <div className="review-marquee reverse">
+            <div className="review-marquee-track">
+              {[...REVIEW_MARQUEE_ROW2, ...REVIEW_MARQUEE_ROW2].map((r, i) => (
+                <div key={i} style={{ flex: '0 0 auto', width: '320px', padding: '20px 24px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', marginRight: '14px' }}>
+                  <p style={{ fontSize: '0.86rem', color: 'var(--white)', lineHeight: 1.7, marginBottom: '10px' }}>&ldquo;{r.text}&rdquo;</p>
+                  <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>— {r.author}</span>
+                </div>
+              ))}
+            </div>
+          </div>
 
           {/* 인라인 CTA */}
           <div style={{ textAlign: 'center', marginTop: '32px' }}>
