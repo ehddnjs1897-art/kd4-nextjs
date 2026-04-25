@@ -26,6 +26,18 @@ Supabase 대시보드 → Settings → API에서:
 Gemini:
 - NEXT_PUBLIC_GEMINI_KEY=[API Key]
 
+SMS 알림 (Solapi — console.solapi.com):
+- SOLAPI_API_KEY=[API Key]
+- SOLAPI_API_SECRET=[API Secret]
+- SOLAPI_FROM_NUMBER=[발신번호, 예: 01012345678]  ← 사전 등록 필수
+- ADMIN_PHONE_NUMBER=[대표 수신번호]              ← 신규 상담 알림 수신
+
+Make.com 웹훅:
+- MAKE_WEBHOOK_URL=[Make 시나리오 웹훅 URL]      ← 구글시트 연동
+
+⚠️ Vercel 배포 시 위 4개 Solapi 변수 반드시 Environment Variables에 추가할 것
+   Settings → Environment Variables → Production에 입력 → Redeploy 필요
+
 ## DB 초기화
 1. Supabase 대시보드 → SQL Editor
 2. supabase/schema.sql 전체 복사 붙여넣기 → Run
@@ -46,6 +58,7 @@ app/
   dashboard/        # 마이페이지 + 편집
   auth/             # 로그인/회원가입
   api/              # API routes
+    notify/         # 신규 상담 접수 알림 (SMS + Make 웹훅 동시 발송)
 
 lib/
   classes.ts        # 클래스 데이터 (임의 수정 금지)
@@ -55,6 +68,7 @@ lib/
     admin.ts        # service_role (서버 전용)
   storage.ts        # Storage 추상화 (STORAGE_PROVIDER 환경변수로 전환)
   actor-matching.ts # 동일인 자동 매칭
+  sms.ts           # Solapi SMS 발송 유틸 (서버 전용)
 
 components/
   layout/           # Navbar, Footer
