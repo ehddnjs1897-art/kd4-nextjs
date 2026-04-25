@@ -20,7 +20,7 @@ interface PageProps {
   }>
 }
 
-async function fetchActors(gender: string, ageGroup: string): Promise<Actor[]> {
+async function fetchActors(gender: string, ageGroup: string): Promise<{ actors: Actor[]; dbError: boolean }> {
   let query = supabaseAdmin
     .from('actors')
     .select('id, name, gender, age_group, drive_photo_id')
@@ -38,9 +38,9 @@ async function fetchActors(gender: string, ageGroup: string): Promise<Actor[]> {
   const { data, error } = await query
   if (error) {
     console.error('[ActorsPage] Supabase 오류:', error.message)
-    return []
+    return { actors: [], dbError: true }
   }
-  return (data ?? []) as Actor[]
+  return { actors: (data ?? []) as Actor[], dbError: false }
 }
 
 function thumbnailUrl(drivePhotoId: string | null): string {
@@ -67,7 +67,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
   const params = await searchParams
   const gender = params.gender ?? 'all'
   const ageGroup = params.ageGroup ?? 'all'
-  const actors = await fetchActors(gender, ageGroup)
+  const { actors, dbError } = await fetchActors(gender, ageGroup)
 
   function filterHref(key: string, value: string) {
     const next = new URLSearchParams()
@@ -137,10 +137,17 @@ export default async function ActorsPage({ searchParams }: PageProps) {
         </div>
 
         {/* 결과 수 */}
-        <p style={styles.resultCount}>총 {actors.length}명</p>
+        <p style={styles.resultCount}>{dbError ? '—' : `총 ${actors.length}명`}</p>
 
         {/* 배우 그리드 */}
-        {actors.length === 0 ? (
+        {dbError ? (
+          <div style={styles.emptyState}>
+            <p style={styles.emptyText}>데이터베이스 연결 오류가 발생했습니다.</p>
+            <p style={{ fontSize: '0.8rem', color: 'var(--gray)', marginTop: '8px' }}>
+              잠시 후 다시 시도해 주세요.
+            </p>
+          </div>
+        ) : actors.length === 0 ? (
           <div style={styles.emptyState}>
             <p style={styles.emptyText}>해당 조건의 배우가 없습니다.</p>
             <Link href="/actors" style={styles.resetLink}>필터 초기화</Link>
