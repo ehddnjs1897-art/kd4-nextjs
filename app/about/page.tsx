@@ -102,15 +102,15 @@ export default function AboutPage() {
         <p
           style={{
             fontFamily: 'var(--font-sans)',
-            fontSize: 'clamp(0.95rem, 2.5vw, 1.125rem)',
+            fontSize: 'clamp(0.88rem, 2vw, 1rem)',
             color: 'var(--secondary)',
             lineHeight: 1.9,
             maxWidth: '620px',
-            margin: '0 auto 16px',
+            margin: '0 auto 12px',
+            letterSpacing: '0.03em',
           }}
         >
-          액팅 메소드 훈련과<br />
-          성장 시스템으로
+          마이즈너 테크닉 훈련 · 출연영상 제작 · 캐스팅 연계
         </p>
         <p
           style={{
@@ -118,11 +118,11 @@ export default function AboutPage() {
             fontSize: 'clamp(0.88rem, 2vw, 1rem)',
             color: 'var(--secondary)',
             lineHeight: 1.8,
-            maxWidth: '540px',
+            maxWidth: '560px',
             margin: '0 auto 40px',
           }}
         >
-          카메라 연기에 최적화된 &lsquo;연기하지 않는 연기&rsquo;의 핵심 기법입니다.
+          카메라 앞에서 통하는 &lsquo;연기하지 않는 연기&rsquo;를 배웁니다.
         </p>
         <p
           style={{
@@ -143,7 +143,7 @@ export default function AboutPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* ── 철학 ── */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
+      <section id="meisner" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
         <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px' }}>
           PHILOSOPHY
         </p>
@@ -159,6 +159,47 @@ export default function AboutPage() {
           플라스틱처럼 굳어버린 연기 패턴에서 벗어나,
           상대방에게 반응하는 살아있는 연기를 훈련합니다.
         </p>
+
+        {/* 마이즈너 핵심 3요소 */}
+        <div style={{ marginTop: '36px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
+          {[
+            {
+              label: 'REPETITION',
+              title: 'Repetition 훈련',
+              desc: '두 배우가 상대를 관찰하며 말과 행동을 반복·반응하는 핵심 훈련. 감정을 혼자 만들지 않고, 상대에게서 촉발된 충동에 반응합니다.',
+            },
+            {
+              label: 'CAMERA',
+              title: '카메라 연기에 최적화',
+              desc: '마이즈너 테크닉은 과장 없이 미세한 반응으로 진실을 담는 방식입니다. 무대 연기와 달리 클로즈업 카메라 앞에서 오히려 더 강력합니다.',
+            },
+            {
+              label: 'VS OTHER METHODS',
+              title: '다른 방법과의 차이',
+              desc: '스타니슬랍스키의 감정기억과 달리, 마이즈너는 상대에게 집중합니다. 혼자 짜내는 감정이 아니라 관계 속에서 살아나는 연기입니다.',
+            },
+          ].map(item => (
+            <div
+              key={item.label}
+              style={{
+                background: 'var(--bg2)',
+                border: '1px solid var(--border)',
+                borderRadius: '12px',
+                padding: '22px 20px',
+              }}
+            >
+              <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '8px' }}>
+                {item.label}
+              </p>
+              <h3 style={{ fontFamily: 'var(--font-sans)', fontSize: '0.95rem', fontWeight: 700, color: 'var(--white)', marginBottom: '8px' }}>
+                {item.title}
+              </h3>
+              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', color: 'var(--secondary)', lineHeight: 1.75 }}>
+                {item.desc}
+              </p>
+            </div>
+          ))}
+        </div>
 
         {/* YouTube 임베드 — 자동재생, 음소거, 루프 */}
         <div style={{

@@ -17,9 +17,6 @@ import {
   Clock,
   ShieldCheck,
   HeartHandshake,
-  Camera,
-  Moon,
-  HelpCircle,
 } from 'lucide-react'
 import { CLASSES, DIRECTOR } from '@/lib/classes'
 import { FAQ_ITEMS } from '@/lib/faq-items'
@@ -42,8 +39,6 @@ export const metadata: Metadata = {
 
 /* ── 상수 ────────────────────────────────────────────────────────── */
 /* 강사 사진은 DIRECTOR.photo 참조 (/director.jpg) — Director 섹션용 */
-const STUDIO_IMG =
-  'https://drive.google.com/uc?export=view&id=1by0ZDO3J5yS-44McKbmAPixjPtI3xWNr'
 const DEADLINE = '2026-05-20T23:59:59'  // 5월 모집 마감 (날짜 확정 시 업데이트)
 
 /* ── lib/classes.ts 데이터 재사용 ─────────────────────────────────── */
@@ -91,25 +86,6 @@ const DISCOUNTS = [
     title: '2회차부터 각 3만원 할인',
     desc: '회차당 40만원 → 37만원 · 3개월 간 (총 9만원 할인)',
     isNew: true,
-  },
-]
-
-/* ── Agitation 관찰형 체크리스트 3개 ────────────────────────── */
-const PAIN_POINTS = [
-  {
-    Icon: Camera,
-    title: '연습실과 현장은 다르다',
-    desc: '준비한 연기가 카메라 앞에선 무너집니다.',
-  },
-  {
-    Icon: Moon,
-    title: '카메라는 0.1mm의 감정도 잡아낸다',
-    desc: '무대 연기로 통하던 것들이 화면에선 과하게 보입니다.',
-  },
-  {
-    Icon: HelpCircle,
-    title: '내 연기의 문제를 모른다',
-    desc: '찍어놓고 봐도 뭐가 어색한지 감이 안 옵니다.',
   },
 ]
 
@@ -339,7 +315,7 @@ export default function JoinPage() {
               fontSize: 'clamp(0.8rem, 2vw, 0.88rem)',
               color: 'rgba(255,255,255,0.50)',
               lineHeight: 1.75,
-              marginBottom: '36px',
+              marginBottom: '6px',
               maxWidth: '460px',
               marginLeft: 'auto',
               marginRight: 'auto',
@@ -347,6 +323,20 @@ export default function JoinPage() {
             }}
           >
             6~8명 소수정예 · 연기상 수상 배우 직강
+          </p>
+          <p
+            style={{
+              fontSize: 'clamp(0.76rem, 1.8vw, 0.84rem)',
+              color: 'rgba(255,255,255,0.38)',
+              lineHeight: 1.65,
+              marginBottom: '32px',
+              maxWidth: '480px',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              wordBreak: 'keep-all',
+            }}
+          >
+            이미 다른 훈련을 경험했지만, 현장에서 통하는 연기를 찾는 배우에게도 맞습니다.
           </p>
 
           <div
@@ -384,59 +374,45 @@ export default function JoinPage() {
               카카오로 문의하기
             </JoinCTALink>
           </div>
+          <p
+            style={{
+              fontSize: '0.72rem',
+              color: 'rgba(255,255,255,0.35)',
+              marginTop: '14px',
+              textAlign: 'center',
+            }}
+          >
+            * 첫 달 10만원 할인 or 무료 오픈클래스 — 둘 중 하나 선택
+          </p>
         </div>
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ② AGITATION — 감정 체크리스트 3개 카드 (Round 1 반영)     */}
+      {/* ② KD4 고유 자산 — 3년이 만든 캐스팅 연계 시스템           */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section
         style={{
-          position: 'relative',
           padding: 'clamp(64px, 12vw, 100px) 0',
           background: 'var(--bg2)',
-          overflow: 'hidden',
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={STUDIO_IMG}
-          alt=""
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            opacity: 0.07,
-            filter: 'grayscale(1)',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background:
-              'linear-gradient(to bottom, var(--bg2) 0%, rgba(232,232,223,0.85) 40%, var(--bg2) 100%)',
-          }}
-        />
-
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+        <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">01 — THE PROBLEM</p>
+            <p className="section-eyebrow">01 — KD4 ONLY</p>
             <h2
               className="section-title-serif"
               style={{
-                fontSize: 'clamp(1.05rem, 3.3vw, 2.2rem)',
+                fontSize: 'clamp(1.4rem, 3.6vw, 2.2rem)',
                 lineHeight: 1.45,
-                marginBottom: '18px',
+                marginBottom: '14px',
                 wordBreak: 'keep-all',
-                whiteSpace: 'nowrap',
               }}
             >
-              전문 액팅코치가 배우의 성장을 촉진시킵니다
+              다른 곳에서는 못 받는 것들
             </h2>
+            <p style={{ fontSize: '0.9rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
+              3년간 만들어온 KD4만의 캐스팅 연계 시스템
+            </p>
           </div>
 
           <div
@@ -448,7 +424,23 @@ export default function JoinPage() {
               margin: '0 auto',
             }}
           >
-            {PAIN_POINTS.map(({ Icon, title, desc }) => (
+            {([
+              {
+                Icon: Handshake,
+                title: '캐스팅 디렉터 공식 협업',
+                desc: '방진원·이상원 캐스팅 디렉터와 직접 협업합니다. 수료 배우는 캐스팅팀이 직접 조회하는 DB에 등록됩니다.',
+              },
+              {
+                Icon: Film,
+                title: '전문 영화팀 출연영상',
+                desc: '현직 배우 100여 명이 거쳐간 시그니처 클래스. 완성된 출연영상 한 편이 실제 캐스팅으로 연결됩니다.',
+              },
+              {
+                Icon: Users,
+                title: '배우 DB 시스템',
+                desc: 'kd4.club 배우 데이터베이스. 수료 후 자동 등록되며 캐스팅팀이 실제로 조회합니다.',
+              },
+            ] as const).map(({ Icon, title, desc }) => (
               <div
                 key={title}
                 style={{
@@ -463,15 +455,15 @@ export default function JoinPage() {
                     width: '42px',
                     height: '42px',
                     borderRadius: '10px',
-                    background: 'var(--accent-red-soft)',
-                    border: '1px solid rgba(199,62,62,0.2)',
+                    background: 'rgba(21,72,138,0.08)',
+                    border: '1px solid rgba(21,72,138,0.18)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     marginBottom: '16px',
                   }}
                 >
-                  <Icon size={20} color="var(--accent-red)" strokeWidth={1.8} />
+                  <Icon size={20} color="var(--navy)" strokeWidth={1.8} />
                 </div>
                 <p
                   style={{
@@ -647,6 +639,9 @@ export default function JoinPage() {
                 <span style={{ display: 'block', fontSize: '0.68rem', opacity: 0.7, marginTop: '2px', textTransform: 'none', letterSpacing: '0.02em', fontStyle: 'italic' }}>
                   Sanford Meisner on Acting (1987)
                 </span>
+                <span style={{ display: 'block', fontSize: '0.72rem', opacity: 0.55, marginTop: '6px', textTransform: 'none', letterSpacing: '0.01em', fontStyle: 'normal' }}>
+                  "상상된 상황 속에서 진실하게 살아가는 것"
+                </span>
               </figcaption>
             </figure>
 
@@ -679,6 +674,17 @@ export default function JoinPage() {
                 loading="lazy"
               />
             </div>
+            <p
+              style={{
+                fontSize: '0.82rem',
+                color: 'var(--gray-light)',
+                marginTop: '20px',
+                lineHeight: 1.6,
+                textAlign: 'center',
+              }}
+            >
+              대형 학원과 다릅니다 — 회당 30분+ 1인 피드백, 6~8명, 현역 배우 직강
+            </p>
           </div>
         </div>
       </section>
@@ -690,16 +696,21 @@ export default function JoinPage() {
         <div className="container">
           <div className="stats-grid">
             {[
-              { Icon: Users, num: '300+', label: '배우 코칭' },
-              { Icon: Award, num: '3년+', label: '스튜디오 운영' },
-              { Icon: TrendingUp, num: '80명+', label: '현재 수강배우' },
-            ].map(({ Icon, num, label }) => (
+              { Icon: Users, num: '300+', label: '배우 코칭', sub: '(스튜디오 운영 기준)' },
+              { Icon: Award, num: '3년+', label: '스튜디오 운영', sub: undefined },
+              { Icon: TrendingUp, num: '80명+', label: '현재 수강배우', sub: undefined },
+            ].map(({ Icon, num, label, sub }) => (
               <div key={num} className="stats-card">
                 <div className="stats-icon-wrap">
                   <Icon size={22} color="var(--navy)" strokeWidth={1.8} />
                 </div>
                 <div className="stat-num">{num}</div>
                 <div className="stat-label">{label}</div>
+                {sub && (
+                  <div style={{ fontSize: '0.62rem', color: 'var(--gray)', marginTop: '2px' }}>
+                    {sub}
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -770,6 +781,24 @@ export default function JoinPage() {
                 {DIRECTOR.quote}
               </p>
             </div>
+          </div>
+          <div style={{ textAlign: 'center', marginTop: '28px' }}>
+            <a
+              href="/#director"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '0.82rem',
+                fontWeight: 600,
+                color: 'var(--navy)',
+                borderBottom: '1px solid var(--navy)',
+                padding: '4px 0',
+                textDecoration: 'none',
+              }}
+            >
+              필모그래피 전체 보기 →
+            </a>
           </div>
         </div>
       </section>
@@ -925,6 +954,21 @@ export default function JoinPage() {
                 >
                   {desc}
                 </p>
+                {step === 'AFTER COURSE' && (
+                  <a
+                    href="/#casting"
+                    style={{
+                      display: 'block',
+                      marginTop: '10px',
+                      fontSize: 'clamp(0.68rem, 1.8vw, 0.8rem)',
+                      color: 'var(--navy)',
+                      fontWeight: 600,
+                      textDecoration: 'underline',
+                    }}
+                  >
+                    실제 캐스팅 현황 보기 →
+                  </a>
+                )}
               </div>
             ))}
           </div>
@@ -1339,7 +1383,7 @@ export default function JoinPage() {
                       ? parseInt(cls.originalPrice.replace(/,/g, ''))
                       : first
                     const total = first + regular * (months - 1)
-                    const lumpSumDiscount = 50000
+                    const lumpSumDiscount = cls.lumpSumDiscount ?? 50000
                     const lumpSumPrice = total - lumpSumDiscount
                     return (
                       <>

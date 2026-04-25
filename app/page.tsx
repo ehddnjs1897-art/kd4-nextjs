@@ -7,7 +7,6 @@ import { useState, useEffect, useRef } from "react";
 import { CLASSES } from "@/lib/classes";
 
 import { pixel } from "@/lib/meta-pixel";
-import ContactForm from "@/components/contact/ContactForm";
 import { CASTING_PHOTOS } from "@/lib/casting-photos"
 import { Users, Award, TrendingUp } from "lucide-react"
 import { gsap } from "gsap";
@@ -170,17 +169,9 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
           )}
         </div>
 
-        <a
-          href="/#contact"
+        <Link
+          href="/join#offer"
           className="class-card-cta"
-          onClick={(e) => {
-            e.preventDefault()
-            pixel.viewContent(cls.nameKo)
-            pixel.contact()
-            const el = document.getElementById('contact')
-            if (el) el.scrollIntoView({ behavior: 'smooth' })
-            else window.location.href = '/#contact'
-          }}
           style={{
             display: "block", textAlign: "center", padding: "12px 0",
             background: "var(--gold)", color: "#ffffff", fontWeight: 700,
@@ -189,8 +180,8 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             transition: "opacity 0.2s", boxShadow: "0 4px 16px rgba(21,72,138,0.25)",
           }}
         >
-          상담 신청 →
-        </a>
+          자세히 보기 →
+        </Link>
       </div>
     </div>
   )
@@ -205,25 +196,6 @@ export default function HomePage() {
   const [step2Open, setStep2Open] = useState(false)
   const [step3Open, setStep3Open] = useState(false)
   const [extraOpen, setExtraOpen] = useState(false)
-
-  /**
-   * /#contact 해시로 진입 시 메인 로드 후 자동 스크롤
-   * (다른 페이지 Navbar/FloatingCTA → 메인 이동 → 여기로 도달)
-   */
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    if (window.location.hash !== '#contact') return
-    const tryScroll = (tries = 0) => {
-      const el = document.getElementById('contact')
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' })
-      } else if (tries < 20) {
-        setTimeout(() => tryScroll(tries + 1), 100)
-      }
-    }
-    const id = setTimeout(() => tryScroll(), 300) // 히어로 애니메이션 후
-    return () => clearTimeout(id)
-  }, [])
 
   /* ── 히어로 타이틀: 서브 가로폭을 h1과 일치시킨 후 "한 번만" 등장 ──
        - KoPub·Helvetica 명시 로드 → offsetWidth 실측 → letter-spacing 1차 계산
@@ -556,20 +528,19 @@ export default function HomePage() {
           <span style={{ display: "block", width: "36px", height: "1px", background: "var(--gold)" }} />
         </div>
         <div className="cta-buttons">
-          <a
-            href="#classes"
-            onClick={(e) => { e.preventDefault(); document.getElementById("classes")?.scrollIntoView({ behavior: "smooth" }) }}
+          <Link
+            href="/join"
+            onClick={() => pixel.contact()}
             className="btn-primary"
             style={{
               background: "var(--navy)",
               color: "#ffffff",
               textDecoration: "none",
               boxShadow: "0 4px 14px rgba(21,72,138,0.2)",
-              cursor: "pointer",
             }}
           >
             클래스 알아보기 →
-          </a>
+          </Link>
           <Link
             href="/actors"
             style={{
@@ -600,7 +571,7 @@ export default function HomePage() {
           {[
             { num: "300+", label: "배우 코칭", Icon: Users },
             { num: "3년+", label: "스튜디오 운영", Icon: Award },
-            { num: "80명+", label: "현재 수강배우", Icon: TrendingUp },
+            { num: "70명+", label: "현재 수강배우", Icon: TrendingUp },
           ].map(({ num, label, Icon }) => (
             <div key={label} className="stats-card">
               <div className="stats-icon-wrap">
@@ -1018,7 +989,7 @@ export default function HomePage() {
             위 캐스팅 결과를 만들어낸 훈련 방식이 궁금하다면
           </p>
           <Link
-            href="/join#method"
+            href="/about#meisner"
             onClick={() => pixel.contact()}
             style={{
               display: "inline-flex",
@@ -1185,14 +1156,10 @@ export default function HomePage() {
               무료 상담을 통해 나에게 맞는 클래스를 안내받으세요.
             </p>
             <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
-              <a
-                href="#contact"
-                onClick={(e) => { e.preventDefault(); pixel.contact(); document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" }) }}
-                className="btn-primary"
-                style={{ background: "var(--navy)", color: "#ffffff", textDecoration: "none", boxShadow: "0 4px 20px rgba(21,72,138,0.3)", cursor: "pointer" }}
-              >
-                수강 상담 신청 →
-              </a>
+              <Link href="/join" onClick={() => pixel.contact()} className="btn-primary"
+                style={{ background: "var(--navy)", color: "#ffffff", textDecoration: "none", boxShadow: "0 4px 20px rgba(21,72,138,0.3)" }}>
+                무료 상담 신청 →
+              </Link>
               <a href="https://pf.kakao.com/_ximxdqn" target="_blank" rel="noopener noreferrer" onClick={() => pixel.contact()}
                 style={{ display: "inline-block", padding: "14px 40px", border: "1px solid rgba(17,17,17,0.35)", color: "#111111", fontWeight: 600, fontSize: "0.9rem", letterSpacing: "0.06em", borderRadius: "var(--radius)" }}>
                 카카오 상담
@@ -1250,42 +1217,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 11b. CONTACT ────────────────────────────────────────────────────── */}
-      <section
-        id="contact"
-        style={{
-          padding: "80px 24px",
-          background: "var(--bg2)",
-          borderTop: "1px solid var(--border)",
-        }}
-      >
-        <div className="container" style={{ maxWidth: "640px" }}>
-          <p className="section-eyebrow">CONTACT</p>
-          <h2
-            style={{
-              fontSize: "clamp(1.6rem, 4vw, 2.4rem)",
-              fontWeight: 700,
-              color: "var(--white)",
-              marginBottom: "12px",
-              lineHeight: 1.2,
-            }}
-          >
-            무료 상담 신청
-          </h2>
-          <p
-            style={{
-              fontSize: "0.9rem",
-              color: "var(--gray)",
-              marginBottom: "40px",
-              lineHeight: 1.7,
-            }}
-          >
-            어떤 클래스가 맞는지 모르겠다면 — 부담 없이 문의하세요.
-          </p>
-          <ContactForm />
-        </div>
-      </section>
-
       {/* ── 12. CTA ──────────────────────────────────────────────────────────── */}
       <section
         id="cta"
@@ -1327,15 +1258,9 @@ export default function HomePage() {
             className="cta-buttons"
             style={{ marginBottom: "48px" }}
           >
-            <a
-              href="/#contact"
-              onClick={(e) => {
-                e.preventDefault()
-                pixel.contact()
-                const el = document.getElementById('contact')
-                if (el) el.scrollIntoView({ behavior: 'smooth' })
-                else window.location.href = '/#contact'
-              }}
+            <Link
+              href="/join"
+              onClick={() => pixel.contact()}
               className="btn-primary"
               style={{
                 background: "var(--navy)",
@@ -1345,7 +1270,7 @@ export default function HomePage() {
               }}
             >
               무료 상담 신청 →
-            </a>
+            </Link>
             <a
               href="https://pf.kakao.com/_ximxdqn"
               target="_blank"

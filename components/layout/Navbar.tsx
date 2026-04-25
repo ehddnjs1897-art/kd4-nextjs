@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 
 const publicLinks = [
   { label: '스튜디오 소개', href: '/about' },
+  { label: '클래스 소개', href: '/classes' },
 ]
 
 const crewLinks = [
@@ -90,21 +91,6 @@ export default function Navbar() {
     if (!isLoggedIn) {
       e.preventDefault()
       router.push(`/auth/login?next=${encodeURIComponent(href)}`)
-    }
-  }
-
-  /**
-   * 상담 CTA — 메인(/)이면 스무스 스크롤, 타 페이지면 /#contact 네비게이트
-   * 모든 페이지에서 작동하도록 통일
-   */
-  const handleContactClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    closeMobile()
-    const target = document.getElementById('contact')
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth' })
-    } else {
-      router.push('/#contact')
     }
   }
 
@@ -251,7 +237,7 @@ export default function Navbar() {
                       top: 'calc(100% + 10px)',
                       left: '50%',
                       transform: 'translateX(-50%)',
-                      background: 'var(--bg2)',
+                      background: '#E8E8DF',
                       border: '1px solid rgba(21,72,138,0.2)',
                       borderRadius: '8px',
                       padding: '8px',
@@ -281,7 +267,7 @@ export default function Navbar() {
                       height: 0,
                       borderLeft: '5px solid transparent',
                       borderRight: '5px solid transparent',
-                      borderBottom: '5px solid var(--bg2)',
+                      borderBottom: '5px solid #E8E8DF',
                     }} />
 
                     {crewLinks.map(item => (
@@ -321,9 +307,8 @@ export default function Navbar() {
 
           {/* ── CTA + 햄버거 ── */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <a
-              href="/#contact"
-              onClick={handleContactClick}
+            <Link
+              href="/join"
               className="desktop-cta"
               style={{
                 display: 'inline-block',
@@ -342,8 +327,8 @@ export default function Navbar() {
               onMouseEnter={e => (e.currentTarget.style.background = 'var(--gold-light)')}
               onMouseLeave={e => (e.currentTarget.style.background = 'var(--gold)')}
             >
-              상담 신청
-            </a>
+              수강신청
+            </Link>
 
             {/* 햄버거 */}
             <button
@@ -505,9 +490,9 @@ export default function Navbar() {
             </ul>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '32px' }}>
-              <a
-                href="/#contact"
-                onClick={handleContactClick}
+              <Link
+                href="/join"
+                onClick={closeMobile}
                 style={{
                   display: 'block',
                   padding: '16px',
@@ -522,8 +507,8 @@ export default function Navbar() {
                   textDecoration: 'none',
                 }}
               >
-                상담 신청 →
-              </a>
+                수강신청 하기
+              </Link>
               <a
                 href="https://pf.kakao.com/_ximxdqn"
                 target="_blank"

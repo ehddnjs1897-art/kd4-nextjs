@@ -1,63 +1,41 @@
 'use client'
 
-import { analytics } from '@/lib/analytics'
-import type { CSSProperties, ReactNode } from 'react'
+import { pixel } from '@/lib/meta-pixel'
 
-/**
- * /join 페이지 CTA 링크 래퍼 — 클릭 시 analytics.ctaClick 발화
- *
- * 서버 컴포넌트(/join/page.tsx)에서 `<a>` 대신 사용합니다.
- * 앵커 링크(#form) 또는 외부 링크(카카오) 둘 다 지원.
- */
+interface JoinCTALinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  href: string
+  location: string
+  label: string
+  fireLead?: boolean
+  kind?: 'external'
+  channel?: string
+  children: React.ReactNode
+}
+
 export default function JoinCTALink({
   href,
-  location,
-  label,
-  kind = 'anchor',
-  channel,
+  location: _location,
+  label: _label,
   fireLead,
-  className,
-  style,
+  kind,
+  channel: _channel,
   children,
-}: {
-  href: string
-  /** 어디에 있는 CTA 인지 — hero / inline_proof / offer_bottom / footer 등 */
-  location: string
-  /** GA4 리포트용 라벨 (버튼 텍스트) */
-  label?: string
-  /** anchor: 내부 스크롤 / external: 새 탭 (카카오 등) */
-  kind?: 'anchor' | 'external'
-  /** external 일 때 channel 구분 — kakao / phone */
-  channel?: 'kakao' | 'phone'
-  /** true 이면 클릭 시 Meta Pixel Lead 이벤트도 함께 발화 (신청 CTA용) */
-  fireLead?: boolean
-  className?: string
-  style?: CSSProperties
-  children: ReactNode
-}) {
-  const handleClick = () => {
-    if (fireLead) {
-      analytics.ctaLead(location, label)
-    } else {
-      analytics.ctaClick(location, label)
-    }
-    if (kind === 'external' && channel) {
-      analytics.contact(channel)
-    }
+  onClick,
+  ...rest
+}: JoinCTALinkProps) {
+  function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    if (fireLead) pixel.lead()
+    onClick?.(e)
   }
 
-  const externalProps =
-    kind === 'external'
-      ? { target: '_blank' as const, rel: 'noopener noreferrer' }
-      : {}
+  const external = kind === 'external'
 
   return (
     <a
       href={href}
-      className={className}
-      style={style}
       onClick={handleClick}
-      {...externalProps}
+      {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+      {...rest}
     >
       {children}
     </a>

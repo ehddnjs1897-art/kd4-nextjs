@@ -13,6 +13,7 @@ export interface ClassItem {
   price: string;
   originalPrice?: string;       // 할인 전 원가 (할인 중일 때만)
   promoLabel?: string;           // "5월 한정 10만원 할인" 등
+  lumpSumDiscount?: number;      // 일시불 결제 시 추가 할인액
   remainingSeats?: number;       // 잔여석 뱃지 (null이면 표시 안 함)
   instructor?: string;
   highlight?: boolean;
@@ -65,6 +66,7 @@ export const CLASSES: ClassItem[] = [
     instructor: "권동원 대표",
     highlight: true,
     isNewMemberOpen: true,
+    lumpSumDiscount: 50000,
   },
   {
     step: "STEP 1",
@@ -88,6 +90,7 @@ export const CLASSES: ClassItem[] = [
     remainingSeats: 2,
     highlight: true,
     isNewMemberOpen: true,
+    lumpSumDiscount: 50000,
   },
   {
     step: "STEP 2",
@@ -269,10 +272,10 @@ export const DIRECTOR: DirectorProfile = {
 
   // Join 등 짧은 랜딩용 하이라이트 5줄 (메인 이력을 축약·그룹핑)
   highlights: [
+    "Disney+ 무빙2 (2026) · Netflix 중증외상센터 (2025)",
     "LA Meisner Workshop 수료 · 한국 마이즈너테크닉 아카데미 수료",
     "유익액터스 대표 · 영화 경계선 제작·주연",
     "K-웹드라마 어워드 연기상 수상 · LG 크리에이터 특별상",
-    "Disney+ 무빙2 (2026) · Netflix 중증외상센터 (2025)",
     "프로 배우 400명+ 액팅 코칭 · Youtube 2000만뷰+",
   ],
 };
