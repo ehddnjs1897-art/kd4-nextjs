@@ -30,26 +30,6 @@ async function sendEmail(to: string, subject: string, html: string) {
   }
 }
 
-/** 신규 디렉터 가입 관리자 알림 */
-export async function notifyNewDirector(name: string, email: string, affiliation?: string) {
-  const html = `
-    <div style="font-family:sans-serif;max-width:480px;margin:0 auto">
-      <h2 style="color:#3b5bdb">🎬 신규 디렉터 가입 알림</h2>
-      <table style="width:100%;border-collapse:collapse">
-        <tr><td style="padding:6px 0;color:#888;width:80px">이름</td><td style="padding:6px 0"><strong>${name}</strong></td></tr>
-        <tr><td style="padding:6px 0;color:#888">이메일</td><td style="padding:6px 0">${email}</td></tr>
-        ${affiliation ? `<tr><td style="padding:6px 0;color:#888">소속</td><td style="padding:6px 0">${affiliation}</td></tr>` : ''}
-        <tr><td style="padding:6px 0;color:#888">시각</td><td style="padding:6px 0">${new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}</td></tr>
-      </table>
-      <hr style="margin:20px 0"/>
-      <a href="${SITE_URL}/admin" style="display:inline-block;padding:10px 20px;background:#3b5bdb;color:#fff;border-radius:6px;text-decoration:none;font-weight:bold">
-        관리자 패널 열기
-      </a>
-    </div>
-  `
-  await sendEmail(ADMIN_EMAIL, `[KD4] 신규 디렉터 가입 — ${name}`, html)
-}
-
 /** KD4 크루 신청 관리자 알림 */
 export async function notifyCrewRequest(name: string, email: string, userId: string) {
   const approveUrl = `${SITE_URL}/api/admin/approve-crew?uid=${userId}`

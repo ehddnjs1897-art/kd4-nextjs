@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
 import { CLASSES } from '@/lib/classes'
 import { pixel } from '@/lib/meta-pixel'
+import { SOURCE_VALUES, INQUIRY_OPTIONS } from '@/lib/form-options'
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
@@ -29,34 +29,18 @@ const labelStyle: React.CSSProperties = {
   fontWeight: 500,
 }
 
-const SOURCE_OPTIONS = [
-  '인스타그램',
-  '네이버 블로그',
-  '액터길드',
-  '필름메이커스',
-  'OTR',
-  '네이버·구글 검색',
-  'AI 추천',
-  '지인소개',
-  '리플레이 단톡방',
-  '기타',
-]
-
-const INQUIRY_OPTIONS = [
-  { value: '방문 상담',                           label: '방문 상담',  icon: '😊', desc: '자세한 상담' },
-  { value: '바로 수강신청 (첫 달 10만원 할인)',  label: '봄 맞이, 웰컴 할인',   icon: '🌸', desc: '(마이즈너 정규, 출연영상)' },
-  { value: '무료 오픈클래스',                    label: '오픈클래스', icon: '🎁', desc: '무료 체험 클래스\n(대기 신청)' },
-]
 
 export default function ContactForm() {
   const [form, setForm] = useState({
     name: '',
     phone: '',
+    email: '',
     class_name: '',
     source: '',
     inquiry_type: '',
   })
   const [maiznerExp, setMaiznerExp] = useState('')
+  const [consent, setConsent] = useState(false)
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
@@ -73,8 +57,12 @@ export default function ContactForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!form.name || !form.phone) {
-      setError('이름과 연락처는 필수입니다.')
+    if (!form.name || !form.phone || !form.email) {
+      setError('이름 · 연락처 · 이메일은 필수입니다.')
+      return
+    }
+    if (!consent) {
+      setError('개인정보 수집·이용에 동의해 주세요.')
       return
     }
     setLoading(true)
@@ -87,22 +75,6 @@ export default function ContactForm() {
     ].filter(Boolean)
     const motivation = motivationParts.length > 0 ? motivationParts.join(' / ') : null
 
-    const supabase = createClient()
-    const { error: dbError } = await supabase.from('applications').insert({
-      name: form.name,
-      phone: form.phone,
-      email: null,
-      class_name: form.class_name || null,
-      motivation,
-      status: '대기',
-    })
-
-    if (dbError) {
-      setError('전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.')
-      setLoading(false)
-      return
-    }
-
     pixel.lead()
 
     fetch('/api/notify', {
@@ -112,7 +84,7 @@ export default function ContactForm() {
         record: {
           name: form.name,
           phone: form.phone,
-          email: null,
+          email: form.email || null,
           class_name: form.class_name || null,
           source: form.source || null,
           inquiry_type: form.inquiry_type || null,
@@ -246,6 +218,26 @@ export default function ContactForm() {
         </div>
       </div>
 
+      {/* 이메일 (뉴스레터 수신 · 필수) */}
+      <div>
+        <label style={labelStyle}>
+          이메일 <span style={{ color: 'var(--navy)' }}>*</span>{' '}
+          <span style={{ color: 'var(--gray-light)', fontSize: '0.7rem' }}>
+            (뉴스레터·연기 자료 수신)
+          </span>
+        </label>
+        <input
+          style={focusStyle('email')}
+          type="email"
+          placeholder="your@email.com"
+          value={form.email}
+          onChange={set('email')}
+          onFocus={() => setFocusedField('email')}
+          onBlur={() => setFocusedField(null)}
+          required
+        />
+      </div>
+
       {/* 마이즈너 테크닉 경험 여부 */}
       <div>
         <label style={labelStyle}>마이즈너 테크닉 경험 여부 <span style={{ color: 'var(--gray-light)', fontSize: '0.7rem' }}>(선택)</span></label>
@@ -274,7 +266,7 @@ export default function ContactForm() {
           onBlur={() => setFocusedField(null)}
         >
           <option value="">아직 모르겠어요</option>
-          {CLASSES.filter(c => c.isNewMemberOpen).map(c => (
+          {CLASSES.filter(c => c.isNewMemberOpen && c.nameKo !== '베이직 클래스').map(c => (
             <option key={c.nameKo} value={c.nameKo}>{c.nameKo}</option>
           ))}
         </select>
@@ -291,18 +283,54 @@ export default function ContactForm() {
           onBlur={() => setFocusedField(null)}
         >
           <option value="">선택해 주세요</option>
-          {SOURCE_OPTIONS.map(opt => (
+          {SOURCE_VALUES.map(opt => (
             <option key={opt} value={opt}>{opt}</option>
           ))}
         </select>
       </div>
 
-      <p style={{ color: 'var(--gray-light)', fontSize: '0.72rem', margin: '-6px 0', lineHeight: 1.5 }}>
-        개인정보는 상담 목적 외 사용되지 않으며, 언제든 삭제 요청 가능합니다.
-      </p>
+      {/* 개인정보 수집·이용 동의 (필수) */}
+      <label
+        htmlFor="main-consent"
+        style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: '10px',
+          padding: '12px 14px',
+          background: consent ? 'rgba(21,72,138,0.04)' : '#ffffff',
+          border: `1px solid ${consent ? 'var(--navy)' : 'var(--border)'}`,
+          borderRadius: '12px',
+          cursor: 'pointer',
+          transition: 'background 0.15s, border-color 0.15s',
+          margin: '-4px 0',
+        }}
+      >
+        <input
+          id="main-consent"
+          type="checkbox"
+          checked={consent}
+          onChange={(e) => setConsent(e.target.checked)}
+          required
+          style={{
+            width: '18px',
+            height: '18px',
+            marginTop: '2px',
+            accentColor: 'var(--navy)',
+            cursor: 'pointer',
+            flexShrink: 0,
+          }}
+        />
+        <span style={{ fontSize: '0.78rem', color: '#111111', lineHeight: 1.55 }}>
+          <strong style={{ color: 'var(--navy)' }}>[필수]</strong> 개인정보 수집·이용에 동의합니다.
+          <br />
+          <span style={{ fontSize: '0.72rem', color: 'var(--gray-light)' }}>
+            수집 항목: 이름·연락처·이메일·희망 클래스 · 목적: 상담 연락·뉴스레터 발송 · 보관 3년 · 언제든 삭제 요청 가능
+          </span>
+        </span>
+      </label>
 
       {error && (
-        <p style={{ color: '#C73E3E', fontSize: '0.85rem', margin: 0 }}>{error}</p>
+        <p style={{ color: 'var(--accent-red)', fontSize: '0.85rem', margin: 0 }}>{error}</p>
       )}
 
       <button

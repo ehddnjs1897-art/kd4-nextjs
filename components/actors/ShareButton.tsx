@@ -3,9 +3,6 @@
 import { useState } from 'react'
 
 interface Props {
-  title: string
-  description: string
-  imageUrl: string
   webUrl: string
 }
 

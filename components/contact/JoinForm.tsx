@@ -2,34 +2,45 @@
 
 import { useState } from 'react'
 import { MessageCircle, FileText, CheckCircle } from 'lucide-react'
-import { createClient } from '@/lib/supabase/client'
 import { CLASSES } from '@/lib/classes'
-import { pixel } from '@/lib/meta-pixel'
+import { analytics } from '@/lib/analytics'
+import { SOURCE_VALUES, MEISNER_OPTIONS } from '@/lib/form-options'
 
-const MEISNER_OPTIONS = [
-  { value: '', label: '마이즈너 경험 선택 (선택사항)' },
-  { value: '처음이다', label: '처음이다' },
-  { value: '몇 번 해봤다', label: '몇 번 해봤다' },
-  { value: '6개월 이상 훈련했다', label: '6개월 이상 훈련했다' },
+const SOURCE_OPTIONS = [
+  { value: '', label: 'KD4를 어떻게 알게 되셨나요?' },
+  ...SOURCE_VALUES.map((v) => ({ value: v, label: v })),
 ]
 
-const OPEN_CLASSES = CLASSES.filter((c) => c.isNewMemberOpen)
+const OPEN_CLASSES = CLASSES.filter((c) => c.isNewMemberOpen && c.nameKo !== '베이직 클래스')
 
 export default function JoinForm() {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
+  const [email, setEmail] = useState('')
+  const [source, setSource] = useState('')
   const [className, setClassName] = useState('')
   const [meisnerExp, setMeisnerExp] = useState('')
+  const [consent, setConsent] = useState(false)
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
   const [ticketNo, setTicketNo] = useState('')
   const [focused, setFocused] = useState<string | null>(null)
+  const [formStarted, setFormStarted] = useState(false)
+
+  /** 첫 필드 포커스 시 form_start 이벤트 1회 발화 */
+  function handleFieldFocus(field: string) {
+    setFocused(field)
+    if (!formStarted) {
+      analytics.formStart('join_form')
+      setFormStarted(true)
+    }
+  }
 
   const inputStyle = (field: string): React.CSSProperties => ({
     width: '100%',
     background: '#ffffff',
-    border: `1px solid ${focused === field ? '#15488A' : '#D2D2C8'}`,
+    border: `1px solid ${focused === field ? 'var(--navy)' : 'var(--border)'}`,
     borderRadius: '12px',
     padding: '14px 18px',
     color: '#111111',
@@ -43,37 +54,32 @@ export default function JoinForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!name || !phone) {
-      setError('이름과 연락처는 필수입니다.')
+    if (!name || !phone || !email) {
+      setError('이름 · 연락처 · 이메일은 필수입니다.')
+      return
+    }
+    if (!className || !meisnerExp || !source) {
+      setError('희망 클래스 · 마이즈너 경험 · 유입 경로를 모두 선택해 주세요.')
+      return
+    }
+    if (!consent) {
+      setError('개인정보 수집·이용에 동의해 주세요.')
       return
     }
     setLoading(true)
     setError('')
 
     const motivationParts = [
-      '유입경로: 인스타그램광고',
+      source ? `유입경로: ${source}` : '유입경로: /join 랜딩',
       className && `희망클래스: ${className}`,
       meisnerExp && `마이즈너경험: ${meisnerExp}`,
     ].filter(Boolean)
     const motivation = motivationParts.join(' / ')
 
-    const supabase = createClient()
-    const { error: dbError } = await supabase.from('applications').insert({
-      name,
-      phone,
-      email: null,
-      class_name: className || null,
-      motivation,
-      status: '대기',
+    analytics.lead({
+      source: 'join_form_instagram_ad',
+      className: className || undefined,
     })
-
-    if (dbError) {
-      setError('전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.')
-      setLoading(false)
-      return
-    }
-
-    pixel.lead()
 
     fetch('/api/notify', {
       method: 'POST',
@@ -82,9 +88,9 @@ export default function JoinForm() {
         record: {
           name,
           phone,
-          email: null,
+          email: email || null,
           class_name: className || null,
-          source: '인스타그램광고',
+          source: source || '/join 랜딩',
           motivation,
           status: '대기',
           created_at: new Date().toISOString(),
@@ -106,8 +112,8 @@ export default function JoinForm() {
     return (
       <div
         style={{
-          background: 'rgba(21,72,138,0.06)',
-          border: '1px solid rgba(21,72,138,0.25)',
+          background: 'var(--navy-tint-1)',
+          border: '1px solid var(--navy-tint-3)',
           borderRadius: '16px',
           padding: '40px 28px',
           textAlign: 'center',
@@ -118,25 +124,35 @@ export default function JoinForm() {
             width: '56px',
             height: '56px',
             borderRadius: '50%',
-            background: 'rgba(21,72,138,0.1)',
+            background: 'var(--navy-tint-2)',
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
             marginBottom: '18px',
           }}
         >
-          <CheckCircle size={28} color="#15488A" strokeWidth={1.8} />
+          <CheckCircle size={28} color="var(--navy)" strokeWidth={1.8} />
         </div>
         <p
           style={{
             fontFamily: 'var(--font-serif)',
             fontSize: '1.3rem',
             fontWeight: 700,
-            marginBottom: '8px',
+            marginBottom: '6px',
             color: '#111111',
           }}
         >
-          접수 완료되었습니다
+          배우지망생 → <span style={{ color: 'var(--navy)' }}>진짜 배우</span>
+        </p>
+        <p
+          style={{
+            fontSize: '0.9rem',
+            color: 'var(--gray)',
+            marginBottom: '10px',
+            lineHeight: 1.6,
+          }}
+        >
+          첫 걸음 접수 완료
         </p>
 
         {/* 접수번호 */}
@@ -144,19 +160,19 @@ export default function JoinForm() {
           style={{
             fontFamily: 'var(--font-display)',
             fontSize: '0.78rem',
-            color: '#6B6660',
+            color: 'var(--gray)',
             letterSpacing: '0.1em',
             marginBottom: '20px',
           }}
         >
-          접수번호 <strong style={{ color: '#15488A' }}>{ticketNo}</strong>
+          접수번호 <strong style={{ color: 'var(--navy)' }}>{ticketNo}</strong>
         </p>
 
         {/* 다음 안내 */}
         <div
           style={{
             background: '#ffffff',
-            border: '1px solid #D2D2C8',
+            border: '1px solid var(--border)',
             borderRadius: '12px',
             padding: '18px 20px',
             marginBottom: '20px',
@@ -164,11 +180,11 @@ export default function JoinForm() {
           }}
         >
           <p style={{ fontSize: '0.88rem', color: '#111', lineHeight: 1.75, marginBottom: '10px' }}>
-            <strong>24시간 이내</strong>{' '}
-            <strong style={{ color: '#15488A' }}>권동원 대표</strong>가 직접 카카오톡으로 연락드립니다.
+            문자를 남겨주시면 <strong>24시간 이내</strong> 연락드립니다.{' '}
+            <span style={{ color: 'var(--gray)', fontSize: '0.82rem' }}>(SMS 확인)</span>
           </p>
-          <p style={{ fontSize: '0.82rem', color: '#6B6660', lineHeight: 1.7 }}>
-            30분 상담 예약 일정을 잡은 뒤, 스튜디오에서 만나 뵙거나 비대면 상담으로 진행합니다.
+          <p style={{ fontSize: '0.82rem', color: 'var(--gray)', lineHeight: 1.7 }}>
+            30분 상담 예약 일정을 잡은 뒤 상담을 진행합니다.
           </p>
         </div>
 
@@ -181,7 +197,7 @@ export default function JoinForm() {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
-            background: '#15488A',
+            background: 'var(--navy)',
             color: '#ffffff',
             padding: '12px 20px',
             borderRadius: '10px',
@@ -191,18 +207,18 @@ export default function JoinForm() {
             marginBottom: '10px',
           }}
         >
-          <FileText size={15} strokeWidth={2} />
-          오디션 합격 가이드 받기
+          <MessageCircle size={15} strokeWidth={2} />
+          카카오 상담받기
         </a>
 
-        <p style={{ fontSize: '0.78rem', color: '#6B6660', marginTop: '14px', lineHeight: 1.7 }}>
+        <p style={{ fontSize: '0.78rem', color: 'var(--gray)', marginTop: '14px', lineHeight: 1.7 }}>
           급하시면{' '}
           <a
             href="https://pf.kakao.com/_ximxdqn"
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              color: '#15488A',
+              color: 'var(--navy)',
               textDecoration: 'underline',
               display: 'inline-flex',
               alignItems: 'center',
@@ -226,7 +242,7 @@ export default function JoinForm() {
         placeholder="이름 *"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        onFocus={() => setFocused('name')}
+        onFocus={() => handleFieldFocus('name')}
         onBlur={() => setFocused(null)}
         style={inputStyle('name')}
         required
@@ -235,10 +251,10 @@ export default function JoinForm() {
       {/* 연락처 */}
       <input
         type="tel"
-        placeholder="연락처 * (010-0000-0000)"
+        placeholder="연락처 * 010-0000-0000"
         value={phone}
         onChange={(e) => setPhone(e.target.value)}
-        onFocus={() => setFocused('phone')}
+        onFocus={() => handleFieldFocus('phone')}
         onBlur={() => setFocused(null)}
         style={inputStyle('phone')}
         required
@@ -247,8 +263,8 @@ export default function JoinForm() {
       <p
         id="phone-hint"
         style={{
-          fontSize: '0.72rem',
-          color: '#6B6660',
+          fontSize: '0.78rem',
+          color: 'var(--gray)',
           margin: '-4px 0 0 4px',
           letterSpacing: '0.01em',
         }}
@@ -256,16 +272,42 @@ export default function JoinForm() {
         카카오톡으로만 연락드립니다 · 광고 전화 없음
       </p>
 
+      {/* 이메일 (선택 · 뉴스레터 수신용) */}
+      <input
+        type="email"
+        placeholder="이메일 * your@email.com"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        onFocus={() => handleFieldFocus('email')}
+        onBlur={() => setFocused(null)}
+        style={inputStyle('email')}
+        required
+        aria-describedby="email-hint"
+      />
+      <p
+        id="email-hint"
+        style={{
+          fontSize: '0.78rem',
+          color: 'var(--gray)',
+          margin: '-4px 0 0 4px',
+          letterSpacing: '0.01em',
+        }}
+      >
+        KD4 월간 뉴스레터·연기 자료 발송 용도 · 언제든 수신 거부
+      </p>
+
       {/* 희망 클래스 */}
       <div style={{ position: 'relative' }}>
         <select
           value={className}
           onChange={(e) => setClassName(e.target.value)}
-          onFocus={() => setFocused('class')}
+          onFocus={() => handleFieldFocus('class')}
           onBlur={() => setFocused(null)}
           style={{ ...inputStyle('class'), cursor: 'pointer' }}
+          required
+          aria-required="true"
         >
-          <option value="">희망 클래스 선택 (선택사항)</option>
+          <option value="">희망 클래스 선택 *</option>
           {OPEN_CLASSES.map((c) => (
             <option key={c.nameKo} value={c.nameKo}>
               {c.nameKo}
@@ -279,7 +321,7 @@ export default function JoinForm() {
             top: '50%',
             transform: 'translateY(-50%)',
             pointerEvents: 'none',
-            color: '#6B6660',
+            color: 'var(--gray)',
             fontSize: '0.8rem',
           }}
         >
@@ -292,13 +334,15 @@ export default function JoinForm() {
         <select
           value={meisnerExp}
           onChange={(e) => setMeisnerExp(e.target.value)}
-          onFocus={() => setFocused('meisner')}
+          onFocus={() => handleFieldFocus('meisner')}
           onBlur={() => setFocused(null)}
           style={{ ...inputStyle('meisner'), cursor: 'pointer' }}
+          required
+          aria-required="true"
         >
           {MEISNER_OPTIONS.map((o) => (
             <option key={o.value} value={o.value}>
-              {o.label}
+              {o.label === '마이즈너 경험 선택' ? '마이즈너 경험 *' : o.label}
             </option>
           ))}
         </select>
@@ -309,7 +353,7 @@ export default function JoinForm() {
             top: '50%',
             transform: 'translateY(-50%)',
             pointerEvents: 'none',
-            color: '#6B6660',
+            color: 'var(--gray)',
             fontSize: '0.8rem',
           }}
         >
@@ -317,9 +361,86 @@ export default function JoinForm() {
         </span>
       </div>
 
+      {/* 유입 경로 */}
+      <div style={{ position: 'relative' }}>
+        <select
+          value={source}
+          onChange={(e) => setSource(e.target.value)}
+          onFocus={() => handleFieldFocus('source')}
+          onBlur={() => setFocused(null)}
+          style={{ ...inputStyle('source'), cursor: 'pointer' }}
+          required
+          aria-required="true"
+        >
+          {SOURCE_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.value === '' ? 'KD4를 어떻게 알게 되셨나요? *' : o.label}
+            </option>
+          ))}
+        </select>
+        <span
+          style={{
+            position: 'absolute',
+            right: '16px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            pointerEvents: 'none',
+            color: 'var(--gray)',
+            fontSize: '0.8rem',
+          }}
+        >
+          ▼
+        </span>
+      </div>
+
+      {/* 개인정보 수집·이용 동의 (필수) */}
+      <label
+        htmlFor="join-consent"
+        style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: '10px',
+          padding: '12px 14px',
+          background: consent ? 'rgba(21,72,138,0.04)' : '#ffffff',
+          border: `1px solid ${consent ? 'var(--navy)' : 'var(--border)'}`,
+          borderRadius: '12px',
+          cursor: 'pointer',
+          transition: 'background 0.15s, border-color 0.15s',
+        }}
+      >
+        <input
+          id="join-consent"
+          type="checkbox"
+          checked={consent}
+          onChange={(e) => setConsent(e.target.checked)}
+          required
+          style={{
+            width: '18px',
+            height: '18px',
+            marginTop: '2px',
+            accentColor: 'var(--navy)',
+            cursor: 'pointer',
+            flexShrink: 0,
+          }}
+        />
+        <span
+          style={{
+            fontSize: '0.85rem',
+            color: '#111111',
+            lineHeight: 1.6,
+          }}
+        >
+          <strong style={{ color: 'var(--navy)' }}>[필수]</strong> 개인정보 수집·이용에 동의합니다.
+          <br />
+          <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>
+            수집 항목: 이름·연락처·이메일·희망 클래스 · 목적: 상담 연락·뉴스레터 발송 · 보관 3년 · 언제든 삭제 요청 가능
+          </span>
+        </span>
+      </label>
+
       {/* 에러 */}
       {error && (
-        <p style={{ color: '#C73E3E', fontSize: '0.85rem', margin: 0 }}>{error}</p>
+        <p style={{ color: 'var(--accent-red)', fontSize: '0.85rem', margin: 0 }}>{error}</p>
       )}
 
       {/* 제출 버튼 */}
@@ -329,7 +450,7 @@ export default function JoinForm() {
         style={{
           width: '100%',
           padding: '16px',
-          background: loading ? 'rgba(21,72,138,0.5)' : '#15488A',
+          background: loading ? 'rgba(21,72,138,0.5)' : 'var(--navy)',
           color: '#ffffff',
           fontWeight: 800,
           fontSize: '1.05rem',
@@ -342,7 +463,7 @@ export default function JoinForm() {
           fontFamily: 'inherit',
         }}
       >
-        {loading ? '신청 중...' : '무료 상담 신청하기 →'}
+        {loading ? '신청 중...' : '무료 상담 신청 →'}
       </button>
     </form>
   )

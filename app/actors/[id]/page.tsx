@@ -198,12 +198,7 @@ export default async function ActorDetailPage({
               )}
 
               {/* 카카오 공유 버튼 */}
-              <ShareButton
-                title={`${actor.name} | KD4 액팅 스튜디오`}
-                description={`${actor.name} 배우 갤러리를 확인해 보세요.`}
-                imageUrl={photoUrl}
-                webUrl={pageUrl}
-              />
+              <ShareButton webUrl={pageUrl} />
             </div>
           </aside>
 

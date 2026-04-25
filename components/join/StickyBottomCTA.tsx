@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { ArrowRight } from 'lucide-react'
+import { analytics } from '@/lib/analytics'
 
 /**
  * 하단 고정 CTA — UX 개선 2차
@@ -60,6 +61,7 @@ export default function StickyBottomCTA() {
       <a
         href="#form"
         className="pulse-cta"
+        onClick={() => analytics.ctaClick('sticky_bottom', '무료 상담 신청')}
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -80,7 +82,7 @@ export default function StickyBottomCTA() {
           textDecoration: 'none',
         }}
       >
-        무료 상담 신청하기
+        무료 상담 신청
         <ArrowRight size={15} strokeWidth={2.5} />
       </a>
     </div>

@@ -59,8 +59,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/admin?error=update_failed`)
   }
 
-  console.log(`[approve-crew] 승인 완료: ${target.name ?? target.email} (${uid})`)
-
   // 관리자 패널로 리디렉트 (성공 메시지 포함)
   return NextResponse.redirect(
     `${origin}/admin?approved=${encodeURIComponent(target.name ?? target.email ?? uid)}`
