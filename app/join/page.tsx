@@ -674,17 +674,6 @@ export default function JoinPage() {
                 loading="lazy"
               />
             </div>
-            <p
-              style={{
-                fontSize: '0.82rem',
-                color: 'var(--gray-light)',
-                marginTop: '20px',
-                lineHeight: 1.6,
-                textAlign: 'center',
-              }}
-            >
-              대형 학원과 다릅니다 — 회당 30분+ 1인 피드백, 6~8명, 현역 배우 직강
-            </p>
           </div>
         </div>
       </section>
