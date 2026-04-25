@@ -982,8 +982,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── CASTING → /join 핸드오프 ─────────────────────────────────────────── */}
-      <div style={{ background: "var(--bg2)", borderTop: "1px solid var(--border)", padding: "0 24px 60px" }}>
+      {/* ── CASTING → /about 핸드오프 ─────────────────────────────────────────── */}
+      <div style={{ background: "var(--bg2)", borderTop: "1px solid var(--border)", padding: "48px 24px 60px" }}>
         <div className="container" style={{ maxWidth: "720px", textAlign: "center" }}>
           <p style={{ fontSize: "0.82rem", color: "var(--gray)", marginBottom: "20px", lineHeight: 1.7 }}>
             위 캐스팅 결과를 만들어낸 훈련 방식이 궁금하다면
@@ -994,6 +994,7 @@ export default function HomePage() {
             style={{
               display: "inline-flex",
               alignItems: "center",
+              justifyContent: "center",
               gap: "8px",
               padding: "14px 36px",
               background: "var(--navy)",
@@ -1004,7 +1005,10 @@ export default function HomePage() {
               borderRadius: "var(--radius)",
               textDecoration: "none",
               boxShadow: "0 4px 16px rgba(21,72,138,0.2)",
-            }}
+              maxWidth: "320px",
+              width: "100%",
+              boxSizing: "border-box",
+            } as React.CSSProperties}
           >
             마이즈너 테크닉 알아보기 →
           </Link>
