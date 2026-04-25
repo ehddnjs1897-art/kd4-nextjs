@@ -2023,3 +2023,12 @@ main {
     overflow-x: clip;
   }
 }
+
+/* === /join 모바일 반응형 === */
+/* 커리큘럼 6단계: 데스크톱 3열 → 모바일 2열 (3열은 375px에서 너무 좁음) */
+@media (max-width: 640px) {
+  .curriculum-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+

@@ -272,7 +272,7 @@ export default function JoinForm() {
         카카오톡으로만 연락드립니다 · 광고 전화 없음
       </p>
 
-      {/* 이메일 (선택 · 뉴스레터 수신용) */}
+      {/* 이메일 */}
       <input
         type="email"
         placeholder="이메일 * your@email.com"
@@ -282,19 +282,7 @@ export default function JoinForm() {
         onBlur={() => setFocused(null)}
         style={inputStyle('email')}
         required
-        aria-describedby="email-hint"
       />
-      <p
-        id="email-hint"
-        style={{
-          fontSize: '0.78rem',
-          color: 'var(--gray)',
-          margin: '-4px 0 0 4px',
-          letterSpacing: '0.01em',
-        }}
-      >
-        KD4 월간 뉴스레터·연기 자료 발송 용도 · 언제든 수신 거부
-      </p>
 
       {/* 희망 클래스 */}
       <div style={{ position: 'relative' }}>
@@ -433,7 +421,7 @@ export default function JoinForm() {
           <strong style={{ color: 'var(--navy)' }}>[필수]</strong> 개인정보 수집·이용에 동의합니다.
           <br />
           <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>
-            수집 항목: 이름·연락처·이메일·희망 클래스 · 목적: 상담 연락·뉴스레터 발송 · 보관 3년 · 언제든 삭제 요청 가능
+            상담 연락 목적으로만 사용됩니다 · 언제든 삭제 요청 가능
           </span>
         </span>
       </label>
