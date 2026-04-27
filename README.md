@@ -33,7 +33,18 @@ KAKAO_CLIENT_SECRET=
 NEXT_PUBLIC_GEMINI_KEY=
 
 STORAGE_PROVIDER=supabase   # r2로 바꾸면 Cloudflare R2 전환
+
+# SMS 알림 (Solapi — console.solapi.com에서 API Key 발급)
+SOLAPI_API_KEY=
+SOLAPI_API_SECRET=
+SOLAPI_FROM_NUMBER=   # 사전 등록된 발신번호 (예: 01012345678)
+ADMIN_PHONE_NUMBER=   # 신규 상담 접수 알림 수신번호
+
+# Make.com 웹훅 (구글시트 연동)
+MAKE_WEBHOOK_URL=
 ```
+
+> ⚠️ Vercel 배포 시 위 Solapi 4개 변수도 Environment Variables에 추가 후 Redeploy 필요
 
 ## DB 초기화
 
