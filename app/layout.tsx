@@ -6,6 +6,7 @@ import ConditionalShell from '@/components/layout/ConditionalShell'
 import JsonLd from '@/components/seo/JsonLd'
 import { FAQ_ITEMS } from '@/lib/faq-items'
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
+import GAPageTracker from '@/components/analytics/GAPageTracker'
 import MetaPixel from '@/components/analytics/MetaPixel'
 
 const notoSansKR = Noto_Sans_KR({
@@ -89,13 +90,14 @@ export default function RootLayout({
     <html lang="ko">
       <head>
         <JsonLd faqItems={FAQ_ITEMS} />
-        <GoogleAnalytics />
-        <MetaPixel />
       </head>
       <body
         className={`${notoSansKR.variable} ${notoSerifKR.variable} ${oswald.variable}`}
       >
         <ConditionalShell>{children}</ConditionalShell>
+        <GoogleAnalytics />
+        <GAPageTracker />
+        <MetaPixel />
         <Script
           src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
           strategy="afterInteractive"
