@@ -6,12 +6,6 @@
 import { usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 
-declare global {
-  interface Window {
-    gtag?: (...args: unknown[]) => void
-  }
-}
-
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID ?? 'G-8122KKQZ99'
 
 export default function GAPageTracker() {
