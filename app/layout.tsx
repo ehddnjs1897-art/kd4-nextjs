@@ -90,8 +90,10 @@ export default function RootLayout({
     <html lang="ko">
       <head>
         <JsonLd faqItems={FAQ_ITEMS} />
-        {/* 외부 폰트 CDN preconnect — KoPubWorld(JSDelivr) + Satoshi(cdnfonts) 로딩 지연 최소화 */}
-        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
+        {/* KoPubWorld 서브셋 폰트 preload — Vercel edge에서 직서빙, 64~122KB */}
+        <link rel="preload" href="/fonts/KoPubWorldDotum-Medium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/KoPubWorldBatang-Medium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        {/* Satoshi CDN preconnect */}
         <link rel="preconnect" href="https://fonts.cdnfonts.com" crossOrigin="anonymous" />
       </head>
       <body

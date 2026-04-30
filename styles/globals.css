@@ -3,34 +3,57 @@
 
 /* === FONT LOADING (non-blocking @font-face) ===
    Noto Sans/Serif KR, Oswald → app/layout.tsx next/font/google 처리 (비차단)
-   Satoshi, KoPubWorld Dotum/Batang → @font-face font-display:swap (비차단)
-   CDN: cdn.jsdelivr.net/npm/font-kopubworld@1.0 (200 OK 확인됨)
+   KoPubWorld Dotum·Batang → 서브셋 woff2 로컬 서빙 (64~122KB, 비차단)
+   Satoshi → cdnfonts.com (비차단)
+
+   서브셋 생성: pyftsubset으로 프로젝트 실제 사용 글자(835자)만 추출
+   원본 대비: Dotum 1,982KB→64KB(-97%), Batang 3,170KB→112KB(-96%)
 */
 
-/* KoPubWorld Dotum (본문·UI 전용) */
+/* KoPubWorld Dotum (본문·UI 전용) — 서브셋 로컬 */
 @font-face {
   font-family: 'KoPubWorld Dotum';
   font-style: normal;
   font-weight: 300;
   font-display: swap;
-  src: url('https://cdn.jsdelivr.net/npm/font-kopubworld@1.0/fonts/KoPubWorld-Dotum-Light.woff2') format('woff2'),
-       url('https://cdn.jsdelivr.net/npm/font-kopubworld@1.0/fonts/KoPubWorld-Dotum-Light.woff') format('woff');
+  src: url('/fonts/KoPubWorldDotum-Light.woff2') format('woff2');
 }
 @font-face {
   font-family: 'KoPubWorld Dotum';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('https://cdn.jsdelivr.net/npm/font-kopubworld@1.0/fonts/KoPubWorld-Dotum-Medium.woff2') format('woff2'),
-       url('https://cdn.jsdelivr.net/npm/font-kopubworld@1.0/fonts/KoPubWorld-Dotum-Medium.woff') format('woff');
+  src: url('/fonts/KoPubWorldDotum-Medium.woff2') format('woff2');
 }
 @font-face {
   font-family: 'KoPubWorld Dotum';
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('https://cdn.jsdelivr.net/npm/font-kopubworld@1.0/fonts/KoPubWorld-Dotum-Bold.woff2') format('woff2'),
-       url('https://cdn.jsdelivr.net/npm/font-kopubworld@1.0/fonts/KoPubWorld-Dotum-Bold.woff') format('woff');
+  src: url('/fonts/KoPubWorldDotum-Bold.woff2') format('woff2');
+}
+
+/* KoPubWorld Batang (헤딩 세리프 전용) — 서브셋 로컬 */
+@font-face {
+  font-family: 'KoPubWorld Batang';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('/fonts/KoPubWorldBatang-Light.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'KoPubWorld Batang';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/KoPubWorldBatang-Medium.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'KoPubWorld Batang';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/KoPubWorldBatang-Bold.woff2') format('woff2');
 }
 
 /* Satoshi */
@@ -90,7 +113,7 @@
   --gray-light: #4A4A4A;
   --border: #D2D2C8;
   --border-strong: #B8B8AC;
-  --font-serif: var(--font-noto-serif-kr), 'Noto Serif KR', Georgia, serif;
+  --font-serif: 'KoPubWorld Batang', var(--font-noto-serif-kr), 'Noto Serif KR', Georgia, serif;
   --font-sans: 'KoPubWorld Dotum', var(--font-noto-sans-kr), 'Noto Sans KR', Helvetica, 'Helvetica Neue', Arial, sans-serif;
   --font-display: 'KoPubWorld Dotum', var(--font-oswald), var(--font-noto-sans-kr), Helvetica, 'Helvetica Neue', Arial, sans-serif;
   --radius: 4px;
