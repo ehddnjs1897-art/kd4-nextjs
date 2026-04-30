@@ -9,7 +9,6 @@ import { CLASSES } from "@/lib/classes";
 
 import { pixel } from "@/lib/meta-pixel";
 import { CASTING_PHOTOS } from "@/lib/casting-photos"
-import { Users, Award, TrendingUp } from "lucide-react"
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -570,13 +569,39 @@ export default function HomePage() {
           className="container stats-grid"
         >
           {[
-            { num: "300+", label: "배우 코칭", Icon: Users },
-            { num: "3년+", label: "스튜디오 운영", Icon: Award },
-            { num: "70명+", label: "현재 수강배우", Icon: TrendingUp },
-          ].map(({ num, label, Icon }) => (
+            {
+              num: "300+", label: "배우 코칭",
+              icon: (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              ),
+            },
+            {
+              num: "3년+", label: "스튜디오 운영",
+              icon: (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/>
+                  <circle cx="12" cy="8" r="6"/>
+                </svg>
+              ),
+            },
+            {
+              num: "70명+", label: "현재 수강배우",
+              icon: (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+                  <polyline points="16 7 22 7 22 13"/>
+                </svg>
+              ),
+            },
+          ].map(({ num, label, icon }) => (
             <div key={label} className="stats-card">
               <div className="stats-icon-wrap">
-                <Icon size={22} color="var(--navy)" strokeWidth={1.8} />
+                {icon}
               </div>
               <p
                 style={{
