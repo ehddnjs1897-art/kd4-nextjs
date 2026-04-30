@@ -19,9 +19,6 @@ gsap.registerPlugin(ScrollTrigger);
 const HeroScene = dynamic(() => import("@/components/hero/HeroScene"), {
   ssr: false,
 });
-const HeroMobileFallback = dynamic(() => import("@/components/hero/HeroMobileFallback"), {
-  ssr: false,
-});
 
 // ─── 후기 마퀴 데이터 ────────────────────────────────────────────────────────
 
@@ -200,16 +197,6 @@ export default function HomePage() {
   const [step2Open, setStep2Open] = useState(false)
   const [step3Open, setStep3Open] = useState(false)
   const [extraOpen, setExtraOpen] = useState(false)
-
-  /* ── Hero 분기: 모바일은 정적 fallback, 데스크톱은 Three.js 3D scene ── */
-  const [isDesktopHero, setIsDesktopHero] = useState<boolean | null>(null)
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 768px)')
-    const update = () => setIsDesktopHero(mq.matches)
-    update()
-    mq.addEventListener('change', update)
-    return () => mq.removeEventListener('change', update)
-  }, [])
 
   /* ── 히어로 타이틀: 서브 가로폭을 h1과 일치시킨 후 "한 번만" 등장 ──
        - KoPub·Helvetica 명시 로드 → offsetWidth 실측 → letter-spacing 1차 계산
@@ -430,9 +417,8 @@ export default function HomePage() {
           justifyContent: "flex-end",
         }}
       >
-        {/* Hero 배경: 모바일은 정적 fallback (Three.js JS 다운로드 자체 회피), 데스크톱은 3D scene */}
-        {isDesktopHero === true && <HeroScene />}
-        {isDesktopHero === false && <HeroMobileFallback />}
+        {/* Hero 배경: Three.js 3D scene (모바일도 동일 — 모바일에서는 더 가볍게 렌더) */}
+        <HeroScene />
 
         {/* 상단 페이드 — 네비바 영역이 3D 천장/스포트라이트와 겹치지 않도록 자연스럽게 마스킹
              네비바 뒤로 beige 톤이 은은하게 내려와서 공간감을 유지하면서 어두운 오브젝트 가려줌 */}
@@ -484,16 +470,13 @@ export default function HomePage() {
         </div>
 
         {/* 뒷벽에 박히는 타이틀 — DOM/CSS로 선명하게, 달리줌과 동기화
-             측정 완료 전(titleReady=false)에는 비가시 — letter-spacing 적용 후 등장
-             모바일은 정적 이미지에 타이틀이 이미 박혀있으므로 DOM 타이틀 비표시 (중복 회피) */}
-        {isDesktopHero !== false && (
-          <div className={`hero-title-wall-pos ${titleReady ? 'is-ready' : ''}`}>
-            <div className="hero-title-wall" ref={heroTitleRef}>
-              <h1>KD4 액팅 스튜디오</h1>
-              <p className="hero-title-wall-sub">ACTOR ACCELERATING SYSTEM</p>
-            </div>
+             측정 완료 전(titleReady=false)에는 비가시 — letter-spacing 적용 후 등장 */}
+        <div className={`hero-title-wall-pos ${titleReady ? 'is-ready' : ''}`}>
+          <div className="hero-title-wall" ref={heroTitleRef}>
+            <h1>KD4 액팅 스튜디오</h1>
+            <p className="hero-title-wall-sub">ACTOR ACCELERATING SYSTEM</p>
           </div>
-        )}
+        </div>
 
         {/* 스크롤 인디케이터 */}
         <div
