@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 
 const publicLinks = [
   { label: '스튜디오 소개', href: '/about' },
@@ -49,36 +48,48 @@ export default function Navbar() {
     return () => { document.body.style.overflow = '' }
   }, [mobileOpen])
 
-  /* ── 인증 상태 & 역할 fetch ── */
+  /* ── 인증 상태 & 역할 fetch — Supabase 클라이언트 동적 로드 (메인 페이지 초기 번들에서 제외) ── */
   useEffect(() => {
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
       setAuthLoaded(true)
       return
     }
-    const supabase = createClient()
+    let unsub: (() => void) | undefined
+    let cancelled = false
 
-    const fetchRole = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        setUserRole(null)
+    ;(async () => {
+      const { createClient } = await import('@/lib/supabase/client')
+      if (cancelled) return
+      const supabase = createClient()
+
+      const fetchRole = async () => {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) {
+          setUserRole(null)
+          setAuthLoaded(true)
+          return
+        }
+        const { data } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single()
+        setUserRole((data?.role as UserRole) || 'user')
         setAuthLoaded(true)
-        return
       }
-      const { data } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single()
-      setUserRole((data?.role as UserRole) || 'user')
-      setAuthLoaded(true)
-    }
 
-    fetchRole()
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
       fetchRole()
-    })
-    return () => subscription.unsubscribe()
+
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+        fetchRole()
+      })
+      unsub = () => subscription.unsubscribe()
+    })()
+
+    return () => {
+      cancelled = true
+      unsub?.()
+    }
   }, [])
 
   const isLoggedIn = authLoaded && userRole !== null
