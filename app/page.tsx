@@ -752,13 +752,13 @@ export default function HomePage() {
             </div>{/* end 텍스트 영역 */}
 
             {/* 대표 사진 */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src="/director.jpg"
               alt="대표 권동원"
+              width={300}
+              height={420}
+              priority
               style={{
-                width: '300px',
-                height: '420px',
                 objectFit: 'cover',
                 objectPosition: 'center top',
                 borderRadius: '12px',
@@ -978,13 +978,13 @@ export default function HomePage() {
                 }}>
                   {i < CASTING_PHOTOS.length ? photo.name : ""}
                 </span>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={photo.url}
                   alt={i < CASTING_PHOTOS.length ? photo.name : ""}
-                  loading="lazy"
-                  onError={(e) => { e.currentTarget.style.display = "none" }}
-                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 1 }}
+                  fill
+                  sizes="200px"
+                  style={{ objectFit: "cover", zIndex: 1 }}
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = "none" }}
                 />
               </div>
             ))}
