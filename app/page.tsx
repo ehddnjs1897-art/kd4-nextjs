@@ -484,13 +484,16 @@ export default function HomePage() {
         </div>
 
         {/* 뒷벽에 박히는 타이틀 — DOM/CSS로 선명하게, 달리줌과 동기화
-             측정 완료 전(titleReady=false)에는 비가시 — letter-spacing 적용 후 등장 */}
-        <div className={`hero-title-wall-pos ${titleReady ? 'is-ready' : ''}`}>
-          <div className="hero-title-wall" ref={heroTitleRef}>
-            <h1>KD4 액팅 스튜디오</h1>
-            <p className="hero-title-wall-sub">ACTOR ACCELERATING SYSTEM</p>
+             측정 완료 전(titleReady=false)에는 비가시 — letter-spacing 적용 후 등장
+             모바일은 정적 이미지에 타이틀이 이미 박혀있으므로 DOM 타이틀 비표시 (중복 회피) */}
+        {isDesktopHero !== false && (
+          <div className={`hero-title-wall-pos ${titleReady ? 'is-ready' : ''}`}>
+            <div className="hero-title-wall" ref={heroTitleRef}>
+              <h1>KD4 액팅 스튜디오</h1>
+              <p className="hero-title-wall-sub">ACTOR ACCELERATING SYSTEM</p>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* 스크롤 인디케이터 */}
         <div
