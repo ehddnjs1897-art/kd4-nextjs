@@ -1,10 +1,7 @@
 /* === KD4 ACTING STUDIO — Global Styles === */
 /* Ported from kd4-studio/index.html */
 
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Noto+Serif+KR:wght@300;400;700&family=Oswald:wght@300;400;600;700&display=swap');
-@import url('https://fonts.cdnfonts.com/css/satoshi');
-@import url('https://cdn.jsdelivr.net/gh/webfontworld/kopub@main/KoPubWorldBatang.css');
-@import url('https://cdn.jsdelivr.net/gh/webfontworld/kopub@main/KoPubWorldDotum.css');
+/* 폰트는 app/layout.tsx의 next/font/google로 로드 (비차단 방식) — @import 제거로 LCP 개선 */
 
 /* === CSS VARIABLES === */
 :root {
@@ -33,9 +30,9 @@
   --gray-light: #4A4A4A;
   --border: #D2D2C8;
   --border-strong: #B8B8AC;
-  --font-serif: 'KoPubWorldBatang', 'KoPub World Batang', 'KoPub Batang', 'Noto Serif KR', Georgia, serif;
-  --font-sans: 'KoPubWorldDotum', 'KoPub World Dotum', 'KoPub Dotum', Helvetica, 'Helvetica Neue', Arial, sans-serif;
-  --font-display: 'KoPubWorldDotum', 'KoPub World Dotum', Helvetica, 'Helvetica Neue', Arial, sans-serif;
+  --font-serif: var(--font-noto-serif-kr), 'Noto Serif KR', Georgia, serif;
+  --font-sans: var(--font-noto-sans-kr), 'Noto Sans KR', Helvetica, 'Helvetica Neue', Arial, sans-serif;
+  --font-display: var(--font-oswald), var(--font-noto-sans-kr), Helvetica, 'Helvetica Neue', Arial, sans-serif;
   --radius: 4px;
   --transition: 0.25s ease;
   --container: 1200px;
