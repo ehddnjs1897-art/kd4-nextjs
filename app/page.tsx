@@ -968,13 +968,22 @@ export default function HomePage() {
                   aspectRatio: "9 / 16",
                 }}
               >
-                <Image
+                {/* 이름 fallback — 이미지 로드 실패 시 노출 */}
+                <span style={{
+                  position: "absolute", inset: 0,
+                  display: "flex", alignItems: "flex-end", justifyContent: "center",
+                  paddingBottom: "14px", fontSize: "0.82rem", color: "var(--gray)",
+                  zIndex: 0,
+                }}>
+                  {i < CASTING_PHOTOS.length ? photo.name : ""}
+                </span>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   src={photo.url}
                   alt={i < CASTING_PHOTOS.length ? photo.name : ""}
-                  fill
-                  sizes="200px"
-                  style={{ objectFit: "cover" }}
                   loading="lazy"
+                  onError={(e) => { e.currentTarget.style.display = "none" }}
+                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 1 }}
                 />
               </div>
             ))}
