@@ -1,5 +1,6 @@
 "use client";
 
+import '@/app/page-hero.css'
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";

@@ -23,9 +23,9 @@ import { CLASSES, DIRECTOR } from '@/lib/classes'
 import { FAQ_ITEMS } from '@/lib/faq-items'
 import StickyTopBar from '@/components/join/StickyTopBar'
 import JoinCTALink from '@/components/join/JoinCTALink'
-import JoinPageView from '@/components/analytics/JoinPageView'
 
 /* 폴드 아래 / 비즈니스 크리티컬하지 않은 컴포넌트 — 지연 로딩 */
+const JoinPageView = dynamic(() => import('@/components/analytics/JoinPageView'))
 const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
 const StickyBottomCTA = dynamic(() => import('@/components/join/StickyBottomCTA'))
 const ScrollDepth = dynamic(() => import('@/components/analytics/ScrollDepth'))
