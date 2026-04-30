@@ -417,7 +417,7 @@ export default function HomePage() {
           justifyContent: "flex-end",
         }}
       >
-        {/* Three.js 배경 */}
+        {/* Hero 배경: Three.js 3D scene (모바일도 동일 — 모바일에서는 더 가볍게 렌더) */}
         <HeroScene />
 
         {/* 상단 페이드 — 네비바 영역이 3D 천장/스포트라이트와 겹치지 않도록 자연스럽게 마스킹

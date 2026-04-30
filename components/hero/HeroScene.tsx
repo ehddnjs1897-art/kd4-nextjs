@@ -36,13 +36,12 @@ export default function HeroScene() {
       camera.lookAt(0, 0.6, 0);
 
       // ── FLOOR — 프로시저럴 우드플로어 (Canvas2D 랜덤 엇갈림 판자) ─────
-      // JPG 타일링은 세로줄 이음새가 노출돼서 합판 느낌 → 판자마다 길이/톤/엇갈림을
-      // 자연스럽게 분산시킨 canvas 텍스처로 대체
+      // 모바일은 해상도 1/2 + 디테일(나뭇결, 하이라이트) 생략 — 시각 차이 거의 없음
       const makeWoodFloorTexture = (): THREE.CanvasTexture => {
         const canvas = document.createElement("canvas");
-        // 1024×2048 — 세로(V) = 판자 길이 방향
-        canvas.width = 1024;
-        canvas.height = 2048;
+        const SCALE = isMobile ? 0.5 : 1;
+        canvas.width = 1024 * SCALE;
+        canvas.height = 2048 * SCALE;
         const ctx = canvas.getContext("2d")!;
 
         // 배경 = 이음새 색 (밝아진 바닥에 맞게 조정)
@@ -56,43 +55,44 @@ export default function HeroScene() {
           "#B09474", "#BAA07C",
         ];
 
-        const plankW = 82; // 판자 가로폭 (픽셀)
+        const plankW = 82 * SCALE; // 판자 가로폭 (픽셀)
         let colIdx = 0;
         for (let x = 0; x < canvas.width; x += plankW) {
           // 각 열마다 랜덤 오프셋 → 판자 끝 위치가 엇갈림
-          let yOffset = (colIdx * 380 + Math.random() * 240) % canvas.height;
+          let yOffset = (colIdx * 380 * SCALE + Math.random() * 240 * SCALE) % canvas.height;
           let y = -yOffset;
 
           while (y < canvas.height) {
-            const plankLen = 260 + Math.random() * 480; // 260~740px 판자 길이
+            const plankLen = (260 + Math.random() * 480) * SCALE; // 260~740px 판자 길이
             const tone = plankTones[Math.floor(Math.random() * plankTones.length)];
 
             // 판자 본체 (2px 여백 = 다크 이음새)
             ctx.fillStyle = tone;
-            ctx.fillRect(x + 2, y + 2, plankW - 4, plankLen - 4);
+            ctx.fillRect(x + 2 * SCALE, y + 2 * SCALE, plankW - 4 * SCALE, plankLen - 4 * SCALE);
 
-            // 판자 내부 나뭇결 (세로 방향의 미세한 곡선)
-            ctx.strokeStyle = "rgba(0,0,0,0.07)";
-            ctx.lineWidth = 1;
-            for (let i = 0; i < 3; i++) {
-              const gx = x + 10 + Math.random() * (plankW - 20);
+            // 판자 내부 나뭇결 + 하이라이트 — 데스크톱만 (모바일에서는 멀리 보여 어차피 안 보임)
+            if (!isMobile) {
+              ctx.strokeStyle = "rgba(0,0,0,0.07)";
+              ctx.lineWidth = 1;
+              for (let i = 0; i < 3; i++) {
+                const gx = x + 10 + Math.random() * (plankW - 20);
+                ctx.beginPath();
+                ctx.moveTo(gx, y + 6);
+                ctx.bezierCurveTo(
+                  gx + (Math.random() - 0.5) * 4, y + plankLen * 0.3,
+                  gx + (Math.random() - 0.5) * 4, y + plankLen * 0.7,
+                  gx, y + plankLen - 6
+                );
+                ctx.stroke();
+              }
+
+              ctx.strokeStyle = "rgba(255,240,220,0.04)";
+              ctx.lineWidth = 1;
               ctx.beginPath();
-              ctx.moveTo(gx, y + 6);
-              ctx.bezierCurveTo(
-                gx + (Math.random() - 0.5) * 4, y + plankLen * 0.3,
-                gx + (Math.random() - 0.5) * 4, y + plankLen * 0.7,
-                gx, y + plankLen - 6
-              );
+              ctx.moveTo(x + 3, y + 4);
+              ctx.lineTo(x + 3, y + plankLen - 4);
               ctx.stroke();
             }
-
-            // 아주 살짝 밝은 하이라이트 줄 (판자 왼쪽 가장자리)
-            ctx.strokeStyle = "rgba(255,240,220,0.04)";
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(x + 3, y + 4);
-            ctx.lineTo(x + 3, y + plankLen - 4);
-            ctx.stroke();
 
             y += plankLen;
           }
@@ -101,7 +101,7 @@ export default function HeroScene() {
 
         const tex = new THREE.CanvasTexture(canvas);
         tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-        tex.anisotropy = 8;
+        tex.anisotropy = isMobile ? 2 : 8;
         if ("colorSpace" in tex) {
           (tex as any).colorSpace = THREE.SRGBColorSpace;
         } else {
@@ -301,9 +301,14 @@ export default function HeroScene() {
       };
 
       // 딱 3개만 — 아담한 공간에 맞춰 간격 좁게
-      addSpot(1);
-      addSpot(-4);
-      addSpot(-10);
+      // 모바일은 가운데 1개만 — 라이트 비용 1/3, 시각적 임팩트 유지
+      if (isMobile) {
+        addSpot(-4);
+      } else {
+        addSpot(1);
+        addSpot(-4);
+        addSpot(-10);
+      }
 
       // ── AMBIENT ───────────────────────────────────────────────────────────
       // 웜그레이 톤 ambient — 과한 주황빛 방지
@@ -324,11 +329,19 @@ export default function HeroScene() {
         1 - Math.pow(1 - t, 3.2);
 
       let isVisible = true;
-      let lastIdleFrame = 0;
-      const IDLE_INTERVAL = isMobile ? 1000 / 30 : 0;
+      let lastFrame = 0;
+      // 모바일은 dolly + idle 모두 30fps (CPU/GPU 부담 절반) — 시네마틱 느낌은 유지됨
+      const FRAME_INTERVAL = isMobile ? 1000 / 30 : 0;
 
       const animate = (ts: number) => {
         if (!startTime) startTime = ts;
+        // 30fps throttle — 모바일에서만 적용
+        if (FRAME_INTERVAL > 0 && ts - lastFrame < FRAME_INTERVAL) {
+          if (isVisible) animFrameId = requestAnimationFrame(animate);
+          return;
+        }
+        lastFrame = ts;
+
         const elapsed = ts - startTime;
         const t = Math.min(elapsed / TOTAL, 1);
 
@@ -343,16 +356,13 @@ export default function HeroScene() {
           camera.updateProjectionMatrix();
           camera.lookAt(0, 0.6 + 1.0 * e, -6);
         } else {
-          if (ts - lastIdleFrame >= IDLE_INTERVAL) {
-            lastIdleFrame = ts;
-            const t2 = (elapsed - TOTAL) / 1000;
-            camera.position.x = Math.sin(t2 * 0.15) * 0.035;
-            camera.position.y = 1.6 + Math.sin(t2 * 0.22) * 0.012;
-            camera.position.z = 3.8;
-            camera.fov = 55 + Math.sin(t2 * 0.18) * 0.15;
-            camera.updateProjectionMatrix();
-            camera.lookAt(Math.sin(t2 * 0.1) * 0.025, 1.6, -6);
-          }
+          const t2 = (elapsed - TOTAL) / 1000;
+          camera.position.x = Math.sin(t2 * 0.15) * 0.035;
+          camera.position.y = 1.6 + Math.sin(t2 * 0.22) * 0.012;
+          camera.position.z = 3.8;
+          camera.fov = 55 + Math.sin(t2 * 0.18) * 0.15;
+          camera.updateProjectionMatrix();
+          camera.lookAt(Math.sin(t2 * 0.1) * 0.025, 1.6, -6);
         }
 
         renderer.render(scene, camera);
