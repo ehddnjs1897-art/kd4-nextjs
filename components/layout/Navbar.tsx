@@ -147,7 +147,7 @@ export default function Navbar() {
           {/* ── 로고 ── */}
           <Link href="/" style={{ display: 'flex', alignItems: 'center' }}>
             <img
-              src="/heart logo.png"
+              src="/heart-logo.png"
               alt="KD4 Acting Studio"
               style={{
                 height: '44px',

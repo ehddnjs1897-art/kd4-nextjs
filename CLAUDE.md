@@ -24,22 +24,25 @@
 - **kd4.club** (`app/page.tsx`): SEO 검색 노출 홈페이지 — Three.js HeroScene + GSAP
 - **kd4.club/join** (`app/join/page.tsx`): 광고 직접 유입 전용 랜딩 페이지
 
+### 추가 정리 (2026-05-01)
+- public/reviews/ 19MB 삭제 (불러오는 페이지 없음 — 죽은 컴포넌트 ReviewGrid/ReviewLightbox도 함께 제거)
+- public/kd4-mascot.PNG, "kdddd acting studio.ai", .DS_Store 제거 (사용처 0)
+- public/heart logo.png(공백) → public/heart-logo.png(하이픈)으로 통일, Navbar src 업데이트
+- 캐스팅 마퀴·대표 사진 `<img>` → `next/image` 변환은 이전 작업에서 이미 완료됨
+- public/casting/캐스팅.zip, KD4_캐스팅_한글*.png, public/textures/ 도 이전 작업에서 이미 정리됨
+- public/ 총 용량 ~46MB → 27MB
+
 ### 남은 미완료 작업
-- [ ] **미사용 정적 파일 삭제** (~53MB) — 빌드 최적화
-  - `public/casting/캐스팅.zip` (25MB)
-  - `public/casting/KD4_캐스팅_*.png` 한글 원본 16개 (~25MB) — 영문명 복사본 있음
-  - `public/textures/wf*.zip` 5개 (24MB)
-  - `public/text-logo.png` — 사용처 grep 확인 후 삭제
-  - ⚠️ `public/heart-logo.png` — Navbar에서 사용 중, 삭제 금지
-- [ ] **캐스팅 마퀴 `<img>` → next/image 변환** (app/page.tsx ~980라인)
-- [ ] **대표 사진 `<img>` → next/image** (app/page.tsx ~755라인)
 - [ ] **Meta 도메인 인증** (가비아 DNS TXT 레코드 추가)
 - [ ] **PageSpeed 재측정** (kd4.club 홈 기준 모바일)
+- [ ] **app/api/notify/route.ts 미커밋 변경** — Meta CAPI(Lead 이벤트 서버 전송) 통합 WIP. `META_CAPI_TOKEN` + `NEXT_PUBLIC_META_PIXEL_ID` env 필요. 검토 후 커밋 결정
+- [ ] **/actors Drive 썸네일** — Drive `thumbnail?id=...&sz=w600` URL은 캐싱·신뢰성 약함. Supabase Storage 또는 next/image 캐시로 마이그레이션 검토
 
-### Supabase Storage 상태
-- 2026-05-03까지 다운 예정 → 캐스팅 사진은 `public/casting/` 로컬 사용 중
-- 영문 파일명 복사본 존재: kwondongwon-1.png, pakwoojin-1.png 등
-- 한글 원본(KD4_캐스팅_*.png)은 중복 — 삭제 대상
+### Supabase 상태 (2026-05-01 기준)
+- 결제 완료 → 프로젝트 정상 가동 (HTTP 200)
+- `actors` 테이블 공개 배우 51명 정상 조회됨
+- 캐스팅 마퀴 사진은 여전히 `public/casting/` 로컬 정적 서빙 (PageSpeed상 더 빠름 — 유지)
+- middleware.ts의 "Supabase 격리" 코드는 장애 대비 안전장치 — 유지
 
 ## 스택
 - Next.js 16.2.2 (App Router) + TypeScript
