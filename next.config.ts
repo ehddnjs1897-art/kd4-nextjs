@@ -22,15 +22,7 @@ const nextConfig: NextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  // URL 대소문자 정규화 (모바일 자동완성 등 /Join → /join)
-  async redirects() {
-    return [
-      { source: '/Join', destination: '/join', permanent: true },
-      { source: '/JOIN', destination: '/join', permanent: true },
-      { source: '/Actors', destination: '/actors', permanent: true },
-      { source: '/Board', destination: '/board', permanent: true },
-    ]
-  },
+  // URL 대소문자 정규화는 middleware.ts에서 처리 (Next.js 16 redirects 무한루프 회피)
   // 정적 자산 장기 캐시 (Vercel edge에서 처리)
   async headers() {
     return [
