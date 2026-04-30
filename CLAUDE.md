@@ -172,6 +172,44 @@ lib/storage.ts에 R2 구현 추가 (TODO 표시됨)
 - 환불 정책 확정 시 FAQ 9번 항목 추가 예정
 
 ### 작업 브랜치 규칙
-- 메인 작업 브랜치: `claude/report-app-design-progress-H8UER` (현재)
 - 모든 PR은 draft로 시작
 - main 머지 시 Vercel 자동 배포
+
+---
+
+## 🚨 2026-04-30 기준 현황 — 새 채팅 시 반드시 읽을 것
+
+### 현재 PageSpeed 점수 (모바일)
+- **성능 44 / 접근성 86 / 권장사항 73 / SEO 61** — 성능 매우 낮음
+
+### main 브랜치에 이미 적용된 최적화
+사용자(KD4)가 직접 main에 푸시한 성능 작업:
+- `07a54ad` KoPub 폰트 서브셋 자가 서빙
+- `1c1230b` /join 페이지 폰트(KoPub 9.5MB) 제거 + JS 지연로딩
+- `6fd2c42` KoPubWorld JSDelivr CDN 복원
+- `617a6d9` 이미지 압축 (heart-logo 5.5MB→215KB, kwon-dongwon 1.6MB→56KB, meisner 11MB→276KB), Cache-Control 헤더 추가
+- `e7fd80d` 폰트 @import 제거 (렌더 블로킹 5,690ms 해소)
+
+### 아직 안 된 최적화 (PR #15에 있지만 미머지·draft 상태)
+PR #15 (`claude/report-app-design-progress-H8UER`)는 충돌 위험 있어 **머지하지 말고 닫을 것**. 대신 main에서 새 브랜치 파서 다시 작업:
+
+1. **미사용 정적 파일 삭제 (~53MB)**
+   - `public/casting/캐스팅.zip` (25MB)
+   - `public/casting/KD4_캐스팅_*.png` 한글 원본 16개 (~25MB)
+   - `public/textures/wf*.zip` 5개 (24MB)
+   - `public/light.JPG`, `public/text-logo.png`
+   - **주의**: `public/heart-logo.png`은 사용자가 압축해서 사용 중일 수 있음 → 삭제 전 grep 재확인
+2. **`<img>` → `next/image` 변환**
+   - 캐스팅 마퀴 (`app/page.tsx` 약 980라인)
+   - 대표 사진 director.jpg (`app/page.tsx` 약 755라인)
+   - 효과: 200px 폭 카드에 1.5MB PNG 그대로 로드 → AVIF 50KB로 자동 변환
+3. **추가 검토 후보**
+   - Three.js HeroScene (모델 8.7MB + 텍스처 28MB) — 모바일 부담
+   - GSAP 동기 import → 동적 import
+   - 폰트 preload 추가
+   - `optimizePackageImports`에 `gsap`, `lenis` 등 추가 검토
+
+### 절대 변경 금지 (사용자 명시 조건)
+- **디자인 변경 절대 금지** — 로딩 속도만 개선
+- 캐스팅 마퀴 디자인 그대로
+- 모든 섹션 레이아웃 그대로
