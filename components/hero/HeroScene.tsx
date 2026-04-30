@@ -329,19 +329,12 @@ export default function HeroScene() {
         1 - Math.pow(1 - t, 3.2);
 
       let isVisible = true;
-      let lastFrame = 0;
-      // 모바일은 dolly + idle 모두 30fps (CPU/GPU 부담 절반) — 시네마틱 느낌은 유지됨
-      const FRAME_INTERVAL = isMobile ? 1000 / 30 : 0;
+      let lastIdleFrame = 0;
+      // dolly는 60fps (첫 인상 부드러움 중요), idle은 30fps (거의 안 움직여 차이 안 보임)
+      const IDLE_INTERVAL = isMobile ? 1000 / 30 : 0;
 
       const animate = (ts: number) => {
         if (!startTime) startTime = ts;
-        // 30fps throttle — 모바일에서만 적용
-        if (FRAME_INTERVAL > 0 && ts - lastFrame < FRAME_INTERVAL) {
-          if (isVisible) animFrameId = requestAnimationFrame(animate);
-          return;
-        }
-        lastFrame = ts;
-
         const elapsed = ts - startTime;
         const t = Math.min(elapsed / TOTAL, 1);
 
@@ -356,13 +349,16 @@ export default function HeroScene() {
           camera.updateProjectionMatrix();
           camera.lookAt(0, 0.6 + 1.0 * e, -6);
         } else {
-          const t2 = (elapsed - TOTAL) / 1000;
-          camera.position.x = Math.sin(t2 * 0.15) * 0.035;
-          camera.position.y = 1.6 + Math.sin(t2 * 0.22) * 0.012;
-          camera.position.z = 3.8;
-          camera.fov = 55 + Math.sin(t2 * 0.18) * 0.15;
-          camera.updateProjectionMatrix();
-          camera.lookAt(Math.sin(t2 * 0.1) * 0.025, 1.6, -6);
+          if (ts - lastIdleFrame >= IDLE_INTERVAL) {
+            lastIdleFrame = ts;
+            const t2 = (elapsed - TOTAL) / 1000;
+            camera.position.x = Math.sin(t2 * 0.15) * 0.035;
+            camera.position.y = 1.6 + Math.sin(t2 * 0.22) * 0.012;
+            camera.position.z = 3.8;
+            camera.fov = 55 + Math.sin(t2 * 0.18) * 0.15;
+            camera.updateProjectionMatrix();
+            camera.lookAt(Math.sin(t2 * 0.1) * 0.025, 1.6, -6);
+          }
         }
 
         renderer.render(scene, camera);
