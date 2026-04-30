@@ -31,6 +31,7 @@ const StickyBottomCTA = dynamic(() => import('@/components/join/StickyBottomCTA'
 const ScrollDepth = dynamic(() => import('@/components/analytics/ScrollDepth'))
 const CountdownTimer = dynamic(() => import('@/components/ui/CountdownTimer'))
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
+const YouTubeFacade = dynamic(() => import('@/components/youtube/YouTubeFacade'))
 
 export const metadata: Metadata = {
   title: '무료 상담 신청 | KD4 액팅 스튜디오',
@@ -587,35 +588,17 @@ export default function JoinPage() {
               </figcaption>
             </figure>
 
-            {/* YouTube 영상 임베드 — 16:9 반응형 */}
-            <div
-              style={{
-                position: 'relative',
-                paddingBottom: '56.25%',
-                height: 0,
-                overflow: 'hidden',
+            {/* YouTube 영상 임베드 — 16:9 반응형 (클릭 시 로드) */}
+            <YouTubeFacade
+              videoId="6crvxRnBerk"
+              title="마이즈너 테크닉 — KD4 액팅 스튜디오"
+              containerStyle={{
                 borderRadius: 'var(--radius)',
                 boxShadow: '0 8px 28px rgba(21,72,138,0.12)',
                 border: '1px solid var(--border)',
                 background: 'var(--bg2)',
               }}
-            >
-              <iframe
-                src="https://www.youtube.com/embed/6crvxRnBerk"
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%',
-                  border: 0,
-                }}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                title="마이즈너 테크닉 — KD4 액팅 스튜디오"
-                loading="lazy"
-              />
-            </div>
+            />
           </div>
         </div>
       </section>
@@ -978,36 +961,18 @@ export default function JoinPage() {
                   </span>
                 </div>
 
-                {/* 영상 임베드 */}
-                <div
-                  style={{
-                    position: 'relative',
-                    paddingBottom: '56.25%',
-                    height: 0,
-                    overflow: 'hidden',
+                {/* 영상 임베드 — 클릭 시 로드 */}
+                <YouTubeFacade
+                  videoId={youtubeId}
+                  title={`${genre} — ${subtitle}`}
+                  containerStyle={{
                     borderRadius: 'var(--radius)',
                     boxShadow: '0 8px 32px rgba(21,72,138,0.14)',
                     border: '1px solid var(--border)',
                     background: '#0a0a0a',
                     marginBottom: '14px',
                   }}
-                >
-                  <iframe
-                    src={`https://www.youtube.com/embed/${youtubeId}`}
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '100%',
-                      height: '100%',
-                      border: 0,
-                    }}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    title={`${genre} — ${subtitle}`}
-                    loading="lazy"
-                  />
-                </div>
+                />
 
                 {/* 캡션 */}
                 <p
