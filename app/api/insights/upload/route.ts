@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase/admin'
 import { randomUUID } from 'crypto'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 import type { InsightSourceType, InsightCategory } from '@/lib/types'
 
 const BUCKET = 'insights'
@@ -36,23 +36,19 @@ export async function POST(request: NextRequest) {
 
     const { data: { publicUrl } } = supabaseAdmin.storage.from(BUCKET).getPublicUrl(filename)
 
-    const newItem = {
-      id: randomUUID(),
-      url: publicUrl,
-      title: title || file.name.replace(/\.[^.]+$/, ''),
-      description: memo || null,
-      image_url: publicUrl,
-      memo: memo || null,
-      category: '디자인' as InsightCategory,
-      tags: ['이미지', '레퍼런스'] as string[],
-      source_type: 'image' as InsightSourceType,
-      is_favorite: false,
-      created_at: new Date().toISOString(),
-    }
-
     const { data, error: dbError } = await supabaseAdmin
       .from('insights')
-      .insert(newItem)
+      .insert({
+        url: publicUrl,
+        title: title || file.name.replace(/\.[^.]+$/, ''),
+        description: memo || null,
+        image_url: publicUrl,
+        memo: memo || null,
+        category: '디자인' as InsightCategory,
+        tags: ['이미지', '레퍼런스'],
+        source_type: 'image' as InsightSourceType,
+        is_favorite: false,
+      })
       .select()
       .single()
 

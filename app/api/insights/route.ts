@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
-import { randomUUID } from 'crypto'
-import type { InsightSourceType, InsightCategory } from '@/lib/types'
 
 const GEMINI_KEY = process.env.GEMINI_KEY ?? process.env.NEXT_PUBLIC_GEMINI_KEY
 
@@ -54,7 +52,7 @@ URL: ${url}
 메모: ${memo ?? '없음'}
 
 {
-  "category": "연기|비즈니스|크리에이티브|기술|라이프|기타",
+  "category": "연기|비즈니스|크리에이티브|디자인|기술|라이프|기타",
   "tags": ["태그1", "태그2"],
   "source_type": "video|blog|article|other",
   "description": "메모를 참고해서 이 콘텐츠가 왜 유용한지 3줄로 설명. 각 줄은 '- '로 시작."
@@ -77,16 +75,11 @@ URL: ${url}
     return JSON.parse(jsonMatch[0])
   } catch {
     const isVideo = /youtube\.com|youtu\.be|vimeo\.com|tiktok\.com/.test(url)
-    return {
-      category: '기타',
-      tags: [],
-      source_type: isVideo ? 'video' : 'other',
-      description: memo ? `- ${memo}` : null,
-    }
+    return { category: '기타', tags: [], source_type: isVideo ? 'video' : 'other', description: memo ? `- ${memo}` : null }
   }
 }
 
-// GET /api/insights?category=연기&source_type=video&favorite=true&q=검색어
+// GET /api/insights
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const category = searchParams.get('category')
@@ -100,16 +93,15 @@ export async function GET(request: NextRequest) {
     .from('insights')
     .select('*', { count: 'exact' })
     .order('created_at', { ascending: false })
+    .range(offset, offset + limit - 1)
 
   if (category && category !== '전체') query = query.eq('category', category)
   if (sourceType && sourceType !== '전체') query = query.eq('source_type', sourceType)
   if (favorite === 'true') query = query.eq('is_favorite', true)
   if (q) query = query.or(`title.ilike.%${q}%,description.ilike.%${q}%,memo.ilike.%${q}%`)
 
-  const { data, error, count } = await query.range(offset, offset + limit - 1)
-
+  const { data, error, count } = await query
   if (error) return withCors(NextResponse.json({ error: error.message }, { status: 500 }))
-
   return withCors(NextResponse.json({ data: data ?? [], total: count ?? 0 }))
 }
 
@@ -132,23 +124,21 @@ export async function POST(request: NextRequest) {
     classifyWithGemini(url, null, memo ?? null),
   ])
 
-  const newItem = {
-    id: randomUUID(),
-    url,
-    title: og.title ?? url,
-    description: ai.description ?? (memo ? `- ${memo}` : null),
-    image_url: og.image_url ?? null,
-    memo: memo ?? null,
-    category: (ai.category ?? '기타') as InsightCategory,
-    tags: (ai.tags ?? []) as string[],
-    source_type: (ai.source_type ?? 'other') as InsightSourceType,
-    is_favorite: false,
-    created_at: new Date().toISOString(),
-  }
-
-  const { data, error } = await supabaseAdmin.from('insights').insert(newItem).select().single()
+  const { data, error } = await supabaseAdmin
+    .from('insights')
+    .insert({
+      url,
+      title: og.title ?? url,
+      description: ai.description ?? (memo ? `- ${memo}` : null),
+      image_url: og.image_url ?? null,
+      memo: memo ?? null,
+      category: ai.category ?? '기타',
+      tags: ai.tags ?? [],
+      source_type: ai.source_type ?? 'other',
+    })
+    .select()
+    .single()
 
   if (error) return withCors(NextResponse.json({ error: error.message }, { status: 500 }))
-
   return withCors(NextResponse.json(data, { status: 201 }))
 }
