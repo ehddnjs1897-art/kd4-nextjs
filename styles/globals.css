@@ -1,7 +1,39 @@
 /* === KD4 ACTING STUDIO — Global Styles === */
 /* Ported from kd4-studio/index.html */
 
-/* 폰트는 app/layout.tsx의 next/font/google로 로드 (비차단 방식) — @import 제거로 LCP 개선 */
+/* === FONT LOADING (non-blocking @font-face) ===
+   Noto Sans/Serif KR, Oswald → app/layout.tsx next/font/google 처리 (비차단)
+   Satoshi → @font-face font-display:swap (비차단, @import 제거)
+   KoPubWorld → 원본 CDN URL 404 확인됨, Noto Serif KR로 대체
+*/
+@font-face {
+  font-family: 'Satoshi';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: local('Satoshi'), url('https://fonts.cdnfonts.com/s/85546/Satoshi-Light.woff') format('woff');
+}
+@font-face {
+  font-family: 'Satoshi';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Satoshi'), url('https://fonts.cdnfonts.com/s/85546/Satoshi-Regular.woff') format('woff');
+}
+@font-face {
+  font-family: 'Satoshi';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: local('Satoshi'), url('https://fonts.cdnfonts.com/s/85546/Satoshi-Medium.woff') format('woff');
+}
+@font-face {
+  font-family: 'Satoshi';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Satoshi'), url('https://fonts.cdnfonts.com/s/85546/Satoshi-Bold.woff') format('woff');
+}
 
 /* === CSS VARIABLES === */
 :root {

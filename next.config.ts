@@ -22,6 +22,38 @@ const nextConfig: NextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
+  // URL 대소문자 정규화 (모바일 자동완성 등 /Join → /join)
+  async redirects() {
+    return [
+      { source: '/Join', destination: '/join', permanent: true },
+      { source: '/JOIN', destination: '/join', permanent: true },
+      { source: '/Actors', destination: '/actors', permanent: true },
+      { source: '/Board', destination: '/board', permanent: true },
+    ]
+  },
+  // 정적 자산 장기 캐시 (Vercel edge에서 처리)
+  async headers() {
+    return [
+      {
+        source: '/_next/static/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+      {
+        source: '/images/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=2592000, stale-while-revalidate=86400' },
+        ],
+      },
+      {
+        source: '/casting/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=2592000, stale-while-revalidate=86400' },
+        ],
+      },
+    ]
+  },
 };
 
 export default nextConfig;
