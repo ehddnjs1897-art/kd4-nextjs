@@ -305,6 +305,7 @@ export default function JoinPage() {
               channel="kakao"
               location="hero"
               label="카카오로 문의하기"
+              fireLead
               className="btn-outline"
               style={{
                 borderColor: 'rgba(255,255,255,0.4)',
@@ -1490,6 +1491,7 @@ export default function JoinPage() {
               channel="kakao"
               location="footer"
               label="카카오로 문의하기"
+              fireLead
               className="btn-outline"
               style={{ borderColor: 'var(--navy)', color: 'var(--navy)' }}
             >
