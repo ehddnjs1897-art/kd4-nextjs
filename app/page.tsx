@@ -19,6 +19,9 @@ gsap.registerPlugin(ScrollTrigger);
 const HeroScene = dynamic(() => import("@/components/hero/HeroScene"), {
   ssr: false,
 });
+const HeroMobileFallback = dynamic(() => import("@/components/hero/HeroMobileFallback"), {
+  ssr: false,
+});
 
 // ─── 후기 마퀴 데이터 ────────────────────────────────────────────────────────
 
@@ -197,6 +200,16 @@ export default function HomePage() {
   const [step2Open, setStep2Open] = useState(false)
   const [step3Open, setStep3Open] = useState(false)
   const [extraOpen, setExtraOpen] = useState(false)
+
+  /* ── Hero 분기: 모바일은 정적 fallback, 데스크톱은 Three.js 3D scene ── */
+  const [isDesktopHero, setIsDesktopHero] = useState<boolean | null>(null)
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 768px)')
+    const update = () => setIsDesktopHero(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
 
   /* ── 히어로 타이틀: 서브 가로폭을 h1과 일치시킨 후 "한 번만" 등장 ──
        - KoPub·Helvetica 명시 로드 → offsetWidth 실측 → letter-spacing 1차 계산
@@ -417,8 +430,9 @@ export default function HomePage() {
           justifyContent: "flex-end",
         }}
       >
-        {/* Three.js 배경 */}
-        <HeroScene />
+        {/* Hero 배경: 모바일은 정적 fallback (Three.js JS 다운로드 자체 회피), 데스크톱은 3D scene */}
+        {isDesktopHero === true && <HeroScene />}
+        {isDesktopHero === false && <HeroMobileFallback />}
 
         {/* 상단 페이드 — 네비바 영역이 3D 천장/스포트라이트와 겹치지 않도록 자연스럽게 마스킹
              네비바 뒤로 beige 톤이 은은하게 내려와서 공간감을 유지하면서 어두운 오브젝트 가려줌 */}
