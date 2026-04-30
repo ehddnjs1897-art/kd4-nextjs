@@ -137,3 +137,55 @@ lib/storage.ts에 R2 구현 추가 (TODO 표시됨)
   - 기존 코드 대규모 리팩토링
   - 사용자가 "opus 검토해줘" 요청 시
 - Opus 검토 결과를 사용자에게 보여준 후 승인받고 진행
+
+---
+
+## 운영 컨텍스트 (2026-04-30 기준 — 새 채팅에서도 반드시 인지)
+
+### Supabase Storage 용량 초과 (2026-05-03까지)
+- Supabase Storage 무료 한도 초과로 모든 Storage URL 일시 다운
+- **임시 우회**: 캐스팅 사진은 `public/casting/` 로컬 정적 파일로 변경됨 (PR #14, 2026-04-30 머지)
+  - `lib/casting-photos.ts` → `BASE = '/casting'`
+  - 영문 파일명 15장 (`kwondongwon-1.png` 등)
+- **2026-05-03 이후**: Supabase 복구되면 다시 Storage 사용할지 결정 필요. 단, 로컬 방식이 더 빠르고 안정적이므로 그대로 유지 권장
+- `STORAGE_PROVIDER=r2` 환경변수로 R2 전환 옵션 미리 준비됨 (lib/storage.ts)
+
+### 캐스팅현황 사진 업데이트 절차
+- 새 사진 추가 시: `public/casting/`에 영문명으로 저장 후 `lib/casting-photos.ts` 배열에 추가
+- 절대 한글 파일명 사용 금지 (URL 인코딩 이슈 가능성)
+- 처음 7명은 고정 순서 (권동원·윤지원·이차일·김이영·박우진·강승현·김신율)
+
+### 폼 제출 데이터 흐름 (중요)
+- `JoinForm` 제출 시:
+  1. Supabase `applications` 테이블 INSERT 시도 (현재 429 오류 — 코드에서 무시)
+  2. **항상** `/api/notify` POST → `MAKE_WEBHOOK_URL` (Make.com 웹훅) → Google Sheets + SMS + Telegram
+- **결론**: Supabase 다운에도 폼 제출 정상 작동 (Make.com 웹훅이 백업)
+- TODO: Supabase 복구 후 applications 테이블 백업 동기화 점검
+
+### SEO 키워드 전략 (kd4.club 메인)
+- **타깃 키워드**: 연기학원 / 마이즈너 테크닉 / 신촌·이대·서대문구·대현동 연기학원 / 소수정예 / 현역 배우 직강 / 연기 워크샵 / 캐스팅 / 오디션 / 배우지망생 / 아메리칸 액팅 메소드 / 이바나 처벅 테크닉
+- 메타데이터 위치: `app/layout.tsx`, `components/seo/JsonLd.tsx`
+- Google·네이버 verification 모두 등록됨 (`google85ccd72cbfb42219.html`)
+- robots.txt: 네이버봇(Yeti), GPT/Claude/Perplexity 봇 모두 허용
+- **`/join`은 광고 랜딩 전용** — `robots: { index: false, follow: false }` 유지 (검색 노출 금지)
+
+### 분석 도구 설치 상태
+- GA4 (`components/analytics/GoogleAnalytics.tsx`)
+- Meta Pixel (`components/analytics/MetaPixel.tsx`) — `lib/meta-pixel.ts`로 이벤트 발화
+- 주요 이벤트: `ViewContent`, `CTAClick`, `Lead`, `Contact`, `DeepScroll`
+
+### 성능 최적화 가이드 (디자인 변경 금지 시)
+- **public/ 미사용 파일**: 즉시 삭제 OK (브라우저는 참조된 것만 로딩, 다만 배포 크기는 증가)
+- **`<img>` 태그 → `next/image`**: 자동 AVIF/WebP 변환 + 리사이즈 (로컬 파일도 동일하게 최적화됨)
+- **위험 변환**: `<img onError={fallback}>` 패턴 사용 시 next/image로 옮길 때 placeholder 처리 필요
+- 캐스팅 마퀴(`page.tsx:981`)와 director 사진(`page.tsx:755`)은 아직 `<img>` 사용 — 최적화 여지 큼
+
+### 진행 중 / 보류 작업
+- `/root/.claude/plans/smooth-questing-bonbon.md` — /join 페이지 개선 종합 계획 (FAQ 재작성·CTA 강화 등) 미적용 상태
+- `/join` 폼: applications 테이블 백업 (Supabase 복구 후 점검)
+- 환불 정책 확정 시 FAQ 9번 항목 추가 예정
+
+### 작업 브랜치 규칙
+- 메인 작업 브랜치: `claude/report-app-design-progress-H8UER` (현재)
+- 모든 PR은 draft로 시작
+- main 머지 시 Vercel 자동 배포
