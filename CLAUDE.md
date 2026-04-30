@@ -1,5 +1,46 @@
 # KD4 액팅 스튜디오 — 개발 가이드
 
+## 🚨 2026-05-01 기준 현황 (새 채팅 시작 시 반드시 읽기)
+
+### 완료된 성능 최적화 (main 브랜치 반영됨)
+1. **CSS @import 4개 제거** — globals.css 렌더 블로킹 5,690ms 해소
+2. **KoPub 폰트 서브셋 자가 서빙** — 원본 CDN 13MB → 로컬 535KB (-96%)
+   - public/fonts/ 에 woff2 6개 (Dotum Light/Medium/Bold, Batang Light/Medium/Bold)
+   - pyftsubset으로 실제 사용 글자 835자만 추출
+   - layout.tsx에 Medium 2종 preload 추가
+3. **이미지 압축** — meisner 11MB→276KB, kwon-dongwon 1.6MB→56KB, heart-logo 5.5MB→215KB
+4. **next.config.ts 개선** — AVIF/WebP 포맷, URL 대소문자 리다이렉트, 정적 자산 캐시 헤더
+5. **CSS 분리** — 메인 페이지 hero 전용 CSS → app/page-hero.css (globals.css에서 제거)
+6. **JS 지연로딩** — JoinPageView dynamic import 전환
+
+### 폰트 구조 (디자인 변경 금지 — 임의 수정 절대 금지)
+| CSS 변수 | 사용 폰트 | 파일 위치 |
+|---|---|---|
+| `--font-serif` | KoPubWorld Batang → Noto Serif KR | public/fonts/KoPubWorldBatang-*.woff2 |
+| `--font-sans` | KoPubWorld Dotum → Noto Sans KR | public/fonts/KoPubWorldDotum-*.woff2 |
+| `--font-display` | KoPubWorld Dotum → Oswald → Noto Sans KR | 동일 |
+
+### /join vs kd4.club 역할 구분
+- **kd4.club** (`app/page.tsx`): SEO 검색 노출 홈페이지 — Three.js HeroScene + GSAP
+- **kd4.club/join** (`app/join/page.tsx`): 광고 직접 유입 전용 랜딩 페이지
+
+### 남은 미완료 작업
+- [ ] **미사용 정적 파일 삭제** (~53MB) — 빌드 최적화
+  - `public/casting/캐스팅.zip` (25MB)
+  - `public/casting/KD4_캐스팅_*.png` 한글 원본 16개 (~25MB) — 영문명 복사본 있음
+  - `public/textures/wf*.zip` 5개 (24MB)
+  - `public/text-logo.png` — 사용처 grep 확인 후 삭제
+  - ⚠️ `public/heart-logo.png` — Navbar에서 사용 중, 삭제 금지
+- [ ] **캐스팅 마퀴 `<img>` → next/image 변환** (app/page.tsx ~980라인)
+- [ ] **대표 사진 `<img>` → next/image** (app/page.tsx ~755라인)
+- [ ] **Meta 도메인 인증** (가비아 DNS TXT 레코드 추가)
+- [ ] **PageSpeed 재측정** (kd4.club 홈 기준 모바일)
+
+### Supabase Storage 상태
+- 2026-05-03까지 다운 예정 → 캐스팅 사진은 `public/casting/` 로컬 사용 중
+- 영문 파일명 복사본 존재: kwondongwon-1.png, pakwoojin-1.png 등
+- 한글 원본(KD4_캐스팅_*.png)은 중복 — 삭제 대상
+
 ## 스택
 - Next.js 16.2.2 (App Router) + TypeScript
 - Supabase (PostgreSQL + Auth + Storage)
