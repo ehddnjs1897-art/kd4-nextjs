@@ -1,7 +1,7 @@
 // KD4 캐스팅현황 사진 목록
-// Supabase Storage: casting 버킷 사용
+// public/casting/ 로컬 정적 파일 서빙 (Supabase Storage 대신)
 
-const BASE = `${process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'https://qudyncopszvcbnwgrwbd.supabase.co'}/storage/v1/object/public/casting`
+const BASE = `/casting`
 
 export const CASTING_PHOTOS: { url: string; name: string; work?: string }[] = [
   // ── 고정 앞 7명 ──
