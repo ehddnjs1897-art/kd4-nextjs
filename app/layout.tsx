@@ -90,7 +90,8 @@ export default function RootLayout({
     <html lang="ko">
       <head>
         <JsonLd faqItems={FAQ_ITEMS} />
-        {/* 외부 폰트 CDN preconnect — Satoshi 폰트 로딩 지연 최소화 */}
+        {/* 외부 폰트 CDN preconnect — KoPubWorld(JSDelivr) + Satoshi(cdnfonts) 로딩 지연 최소화 */}
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.cdnfonts.com" crossOrigin="anonymous" />
       </head>
       <body
