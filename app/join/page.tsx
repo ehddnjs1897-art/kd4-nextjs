@@ -104,7 +104,7 @@ const CURRICULUM = [
     num: '02',
     step: 'STEP 02',
     title: '포트폴리오 제작',
-    desc: '전문 영화팀과 함께 제작하는 출연영상으로 실전 포트폴리오 완성',
+    desc: '전문 영화팀과 함께하는 실전 출연영상 포트폴리오',
   },
   {
     Icon: Handshake,
@@ -438,7 +438,7 @@ export default function JoinPage() {
               {
                 Icon: Handshake,
                 title: '캐스팅 디렉터 공식 협업',
-                desc: '방진원·이상원 캐스팅 디렉터와 직접 협업합니다. 수료 배우는 캐스팅팀이 직접 조회하는 DB에 등록됩니다.',
+                desc: '방진원·이상원 캐스팅 디렉터와 정기 오디션·캐스팅 연계.',
               },
               {
                 Icon: Film,
@@ -768,20 +768,10 @@ export default function JoinPage() {
             <p className="section-eyebrow">05 — REAL REVIEWS</p>
             <h2
               className="section-title-serif"
-              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
-            >
-              KD4 배우 이야기
-            </h2>
-            <p
-              style={{
-                fontSize: '0.95rem',
-                color: 'var(--gray-light)',
-                lineHeight: 1.7,
-                margin: 0,
-              }}
+              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: 0 }}
             >
               배우들의 솔직한 후기
-            </p>
+            </h2>
           </div>
 
           {/* 마퀴 1행: 왼쪽으로 */}
@@ -1512,7 +1502,7 @@ export default function JoinPage() {
                 무료 상담 신청
               </h2>
               <p style={{ fontSize: '0.9rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-                어떤 클래스가 맞는지 모르겠다면 — 부담 없이 문의하세요. 24시간 이내 카카오로 연락드립니다.
+                24시간 이내 카카오 채널을 통해 연락드립니다.
               </p>
             </div>
             <JoinForm />
