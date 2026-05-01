@@ -700,7 +700,7 @@ export default function JoinPage() {
       <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 48px', textAlign: 'center' }}>
-            <p className="section-eyebrow">06 — CURRICULUM</p>
+            <p className="section-eyebrow">04 — CURRICULUM</p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '10px' }}
@@ -830,275 +830,12 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑦.5 PORTFOLIO — 출연영상 결과물                            */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
-        <div className="container">
-          <div style={{ maxWidth: '720px', margin: '0 auto 48px', textAlign: 'center' }}>
-            <p className="section-eyebrow">07 — PORTFOLIO</p>
-            <h2
-              className="section-title-serif"
-              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
-            >
-              KD4 배우들의{' '}
-              <span style={{ color: 'var(--gold)' }}>실제 출연영상</span>
-            </h2>
-            <p
-              style={{
-                fontSize: '0.95rem',
-                color: 'var(--gray-light)',
-                lineHeight: 1.7,
-                maxWidth: '480px',
-                margin: '0 auto',
-              }}
-            >
-              전문 영화팀과 함께 제작한 포트폴리오입니다.
-              <br />
-              이 영상으로 캐스팅이 연결됩니다.
-            </p>
-          </div>
-
-          {/* 2-column video grid */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
-              gap: 'clamp(16px, 3vw, 28px)',
-              maxWidth: '980px',
-              margin: '0 auto',
-            }}
-          >
-            {([
-              { youtubeId: '7Q62XeyVLbc', genre: '드라마', subtitle: '단편 「여배우들」', cohort: '심화 1기' },
-              { youtubeId: '4XTm59jydSA', genre: '스릴러', subtitle: '단편 「싸이코패스」', cohort: '출연영상 3기' },
-              { youtubeId: 'Cr4-qwVDkBc', genre: '드라마', subtitle: '단편 「각자의 이유」', cohort: '심화 1기' },
-            ] as const).map(({ youtubeId, genre, subtitle, cohort }) => (
-              <div key={youtubeId}>
-                {/* 장르 뱃지 */}
-                <div style={{ marginBottom: '10px' }}>
-                  <span
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '5px',
-                      fontFamily: 'var(--font-display)',
-                      fontSize: '0.68rem',
-                      fontWeight: 700,
-                      letterSpacing: '0.12em',
-                      textTransform: 'uppercase',
-                      color: 'var(--navy)',
-                      background: 'rgba(21,72,138,0.08)',
-                      border: '1px solid rgba(21,72,138,0.2)',
-                      borderRadius: '999px',
-                      padding: '4px 10px',
-                    }}
-                  >
-                    <Film size={11} strokeWidth={2} />
-                    {genre}
-                  </span>
-                </div>
-
-                {/* 영상 임베드 — 클릭 시 로드 */}
-                <YouTubeFacade
-                  videoId={youtubeId}
-                  title={`${genre} — ${subtitle}`}
-                  containerStyle={{
-                    borderRadius: 'var(--radius)',
-                    boxShadow: '0 8px 32px rgba(21,72,138,0.14)',
-                    border: '1px solid var(--border)',
-                    background: '#0a0a0a',
-                    marginBottom: '14px',
-                  }}
-                />
-
-                {/* 캡션 */}
-                <p
-                  style={{
-                    fontFamily: 'var(--font-serif)',
-                    fontSize: '0.95rem',
-                    fontWeight: 700,
-                    marginBottom: '4px',
-                    color: '#111111',
-                  }}
-                >
-                  {subtitle}
-                </p>
-                <p style={{ fontSize: '0.8rem', color: 'var(--gray-light)' }}>
-                  {cohort}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {/* 플레이리스트 링크 */}
-          <div style={{ textAlign: 'center', marginTop: '40px' }}>
-            <a
-              href="https://youtube.com/playlist?list=PLMbZlnkLfP7iaE41p_g9dzGKp5eU9VZk2"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontFamily: 'var(--font-display)',
-                fontSize: '0.82rem',
-                fontWeight: 600,
-                letterSpacing: '0.08em',
-                color: 'var(--navy)',
-                borderBottom: '1px solid var(--navy)',
-                padding: '4px 0',
-                textDecoration: 'none',
-                textTransform: 'uppercase',
-              }}
-            >
-              출연영상 포트폴리오 전체 보기
-              <ArrowRight size={14} strokeWidth={2.2} />
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑤ DIRECTOR — 강사 크레딧 구체화 + 인라인 CTA              */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
-        <div className="container">
-          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">04 — THE LEADER</p>
-            <h2
-              className="section-title-serif"
-              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '12px' }}
-            >
-              배우의 성장을 가이드합니다
-            </h2>
-            <p
-              style={{
-                fontSize: 'clamp(0.82rem, 2.2vw, 0.98rem)',
-                color: 'var(--gray-light)',
-                lineHeight: 1.6,
-                margin: 0,
-                wordBreak: 'keep-all',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              전문 액팅코치가 배우의 성장을 촉진시킵니다.
-            </p>
-          </div>
-
-          <div className="director-card" style={{ maxWidth: '720px', margin: '0 auto' }}>
-            <div className="director-photo" style={{ position: 'relative' }}>
-              <Image
-                src={DIRECTOR.photo}
-                alt={`${DIRECTOR.name} 대표`}
-                fill
-                sizes="(max-width: 768px) 100vw, 260px"
-                style={{
-                  objectFit: 'cover',
-                  objectPosition: 'center 15%',
-                }}
-              />
-            </div>
-            <div style={{ flex: 1 }}>
-              <div className="director-name">{DIRECTOR.name}</div>
-              <div className="director-role">{DIRECTOR.title}</div>
-              <div className="director-creds">
-                {DIRECTOR.highlights.map((line) => (
-                  <div key={line} className="director-cred">
-                    {line}
-                  </div>
-                ))}
-              </div>
-              <p
-                style={{
-                  marginTop: '22px',
-                  paddingLeft: '14px',
-                  borderLeft: '2px solid var(--navy)',
-                  fontStyle: 'italic',
-                  fontSize: '0.92rem',
-                  color: 'var(--gray-light)',
-                  lineHeight: 1.8,
-                }}
-              >
-                {DIRECTOR.quote}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑥ PROOF — 후기 (신뢰도 보강) + 인라인 CTA                 */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
-        <div className="container">
-          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">05 — REAL REVIEWS</p>
-            <h2
-              className="section-title-serif"
-              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: 0 }}
-            >
-              배우들의 솔직한 후기
-            </h2>
-          </div>
-
-          {/* 마퀴 1행: 왼쪽으로 */}
-          <div className="review-marquee" style={{ marginBottom: '12px' }}>
-            <div className="review-marquee-track">
-              {[...REVIEW_MARQUEE_ROW1, ...REVIEW_MARQUEE_ROW1].map((r, i) => (
-                <div key={i} style={{ flex: '0 0 auto', width: '320px', padding: '20px 24px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', marginRight: '14px' }}>
-                  <p style={{ fontSize: '0.86rem', color: 'var(--white)', lineHeight: 1.7, marginBottom: '10px' }}>&ldquo;{r.text}&rdquo;</p>
-                  <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>— {r.author}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-          {/* 마퀴 2행: 오른쪽으로 */}
-          <div className="review-marquee reverse">
-            <div className="review-marquee-track">
-              {[...REVIEW_MARQUEE_ROW2, ...REVIEW_MARQUEE_ROW2].map((r, i) => (
-                <div key={i} style={{ flex: '0 0 auto', width: '320px', padding: '20px 24px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', marginRight: '14px' }}>
-                  <p style={{ fontSize: '0.86rem', color: 'var(--white)', lineHeight: 1.7, marginBottom: '10px' }}>&ldquo;{r.text}&rdquo;</p>
-                  <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>— {r.author}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* 인라인 CTA */}
-          <div style={{ textAlign: 'center', marginTop: '32px' }}>
-            <JoinCTALink
-              href="#form"
-              location="inline_proof"
-              label="나도 진짜 배우로 · 무료 상담 신청"
-              fireLead
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontFamily: 'var(--font-display)',
-                fontSize: '0.82rem',
-                fontWeight: 600,
-                letterSpacing: '0.08em',
-                color: 'var(--navy)',
-                borderBottom: '1px solid var(--navy)',
-                padding: '4px 0',
-                textDecoration: 'none',
-                textTransform: 'uppercase',
-              }}
-            >
-              나도 진짜 배우로 · 무료 상담 신청
-              <ArrowRight size={14} strokeWidth={2.2} />
-            </JoinCTALink>
-          </div>
-        </div>
-      </section>
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑨ OFFER — 가격 + 카운트다운 + Anchor Price 배지           */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">08 — SPRING SPECIAL</p>
+            <p className="section-eyebrow">05 — SPRING SPECIAL</p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
@@ -1377,6 +1114,269 @@ export default function JoinPage() {
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑩ FAQ                                                      */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* ⑦.5 PORTFOLIO — 출연영상 결과물                            */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 48px', textAlign: 'center' }}>
+            <p className="section-eyebrow">06 — PORTFOLIO</p>
+            <h2
+              className="section-title-serif"
+              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
+            >
+              KD4 배우들의{' '}
+              <span style={{ color: 'var(--gold)' }}>실제 출연영상</span>
+            </h2>
+            <p
+              style={{
+                fontSize: '0.95rem',
+                color: 'var(--gray-light)',
+                lineHeight: 1.7,
+                maxWidth: '480px',
+                margin: '0 auto',
+              }}
+            >
+              전문 영화팀과 함께 제작한 포트폴리오입니다.
+              <br />
+              이 영상으로 캐스팅이 연결됩니다.
+            </p>
+          </div>
+
+          {/* 2-column video grid */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
+              gap: 'clamp(16px, 3vw, 28px)',
+              maxWidth: '980px',
+              margin: '0 auto',
+            }}
+          >
+            {([
+              { youtubeId: '7Q62XeyVLbc', genre: '드라마', subtitle: '단편 「여배우들」', cohort: '심화 1기' },
+              { youtubeId: '4XTm59jydSA', genre: '스릴러', subtitle: '단편 「싸이코패스」', cohort: '출연영상 3기' },
+              { youtubeId: 'Cr4-qwVDkBc', genre: '드라마', subtitle: '단편 「각자의 이유」', cohort: '심화 1기' },
+            ] as const).map(({ youtubeId, genre, subtitle, cohort }) => (
+              <div key={youtubeId}>
+                {/* 장르 뱃지 */}
+                <div style={{ marginBottom: '10px' }}>
+                  <span
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      fontFamily: 'var(--font-display)',
+                      fontSize: '0.68rem',
+                      fontWeight: 700,
+                      letterSpacing: '0.12em',
+                      textTransform: 'uppercase',
+                      color: 'var(--navy)',
+                      background: 'rgba(21,72,138,0.08)',
+                      border: '1px solid rgba(21,72,138,0.2)',
+                      borderRadius: '999px',
+                      padding: '4px 10px',
+                    }}
+                  >
+                    <Film size={11} strokeWidth={2} />
+                    {genre}
+                  </span>
+                </div>
+
+                {/* 영상 임베드 — 클릭 시 로드 */}
+                <YouTubeFacade
+                  videoId={youtubeId}
+                  title={`${genre} — ${subtitle}`}
+                  containerStyle={{
+                    borderRadius: 'var(--radius)',
+                    boxShadow: '0 8px 32px rgba(21,72,138,0.14)',
+                    border: '1px solid var(--border)',
+                    background: '#0a0a0a',
+                    marginBottom: '14px',
+                  }}
+                />
+
+                {/* 캡션 */}
+                <p
+                  style={{
+                    fontFamily: 'var(--font-serif)',
+                    fontSize: '0.95rem',
+                    fontWeight: 700,
+                    marginBottom: '4px',
+                    color: '#111111',
+                  }}
+                >
+                  {subtitle}
+                </p>
+                <p style={{ fontSize: '0.8rem', color: 'var(--gray-light)' }}>
+                  {cohort}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* 플레이리스트 링크 */}
+          <div style={{ textAlign: 'center', marginTop: '40px' }}>
+            <a
+              href="https://youtube.com/playlist?list=PLMbZlnkLfP7iaE41p_g9dzGKp5eU9VZk2"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontFamily: 'var(--font-display)',
+                fontSize: '0.82rem',
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                color: 'var(--navy)',
+                borderBottom: '1px solid var(--navy)',
+                padding: '4px 0',
+                textDecoration: 'none',
+                textTransform: 'uppercase',
+              }}
+            >
+              출연영상 포트폴리오 전체 보기
+              <ArrowRight size={14} strokeWidth={2.2} />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* ⑤ DIRECTOR — 강사 크레딧 구체화 + 인라인 CTA              */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
+            <p className="section-eyebrow">07 — THE LEADER</p>
+            <h2
+              className="section-title-serif"
+              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '12px' }}
+            >
+              배우의 성장을 가이드합니다
+            </h2>
+            <p
+              style={{
+                fontSize: 'clamp(0.82rem, 2.2vw, 0.98rem)',
+                color: 'var(--gray-light)',
+                lineHeight: 1.6,
+                margin: 0,
+                wordBreak: 'keep-all',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              전문 액팅코치가 배우의 성장을 촉진시킵니다.
+            </p>
+          </div>
+
+          <div className="director-card" style={{ maxWidth: '720px', margin: '0 auto' }}>
+            <div className="director-photo" style={{ position: 'relative' }}>
+              <Image
+                src={DIRECTOR.photo}
+                alt={`${DIRECTOR.name} 대표`}
+                fill
+                sizes="(max-width: 768px) 100vw, 260px"
+                style={{
+                  objectFit: 'cover',
+                  objectPosition: 'center 15%',
+                }}
+              />
+            </div>
+            <div style={{ flex: 1 }}>
+              <div className="director-name">{DIRECTOR.name}</div>
+              <div className="director-role">{DIRECTOR.title}</div>
+              <div className="director-creds">
+                {DIRECTOR.highlights.map((line) => (
+                  <div key={line} className="director-cred">
+                    {line}
+                  </div>
+                ))}
+              </div>
+              <p
+                style={{
+                  marginTop: '22px',
+                  paddingLeft: '14px',
+                  borderLeft: '2px solid var(--navy)',
+                  fontStyle: 'italic',
+                  fontSize: '0.92rem',
+                  color: 'var(--gray-light)',
+                  lineHeight: 1.8,
+                }}
+              >
+                {DIRECTOR.quote}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* ⑥ PROOF — 후기 (신뢰도 보강) + 인라인 CTA                 */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
+            <p className="section-eyebrow">08 — REAL REVIEWS</p>
+            <h2
+              className="section-title-serif"
+              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: 0 }}
+            >
+              배우들의 솔직한 후기
+            </h2>
+          </div>
+
+          {/* 마퀴 1행: 왼쪽으로 */}
+          <div className="review-marquee" style={{ marginBottom: '12px' }}>
+            <div className="review-marquee-track">
+              {[...REVIEW_MARQUEE_ROW1, ...REVIEW_MARQUEE_ROW1].map((r, i) => (
+                <div key={i} style={{ flex: '0 0 auto', width: '320px', padding: '20px 24px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', marginRight: '14px' }}>
+                  <p style={{ fontSize: '0.86rem', color: 'var(--white)', lineHeight: 1.7, marginBottom: '10px' }}>&ldquo;{r.text}&rdquo;</p>
+                  <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>— {r.author}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* 마퀴 2행: 오른쪽으로 */}
+          <div className="review-marquee reverse">
+            <div className="review-marquee-track">
+              {[...REVIEW_MARQUEE_ROW2, ...REVIEW_MARQUEE_ROW2].map((r, i) => (
+                <div key={i} style={{ flex: '0 0 auto', width: '320px', padding: '20px 24px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', marginRight: '14px' }}>
+                  <p style={{ fontSize: '0.86rem', color: 'var(--white)', lineHeight: 1.7, marginBottom: '10px' }}>&ldquo;{r.text}&rdquo;</p>
+                  <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>— {r.author}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 인라인 CTA */}
+          <div style={{ textAlign: 'center', marginTop: '32px' }}>
+            <JoinCTALink
+              href="#form"
+              location="inline_proof"
+              label="나도 진짜 배우로 · 무료 상담 신청"
+              fireLead
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontFamily: 'var(--font-display)',
+                fontSize: '0.82rem',
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                color: 'var(--navy)',
+                borderBottom: '1px solid var(--navy)',
+                padding: '4px 0',
+                textDecoration: 'none',
+                textTransform: 'uppercase',
+              }}
+            >
+              나도 진짜 배우로 · 무료 상담 신청
+              <ArrowRight size={14} strokeWidth={2.2} />
+            </JoinCTALink>
+          </div>
+        </div>
+      </section>
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
