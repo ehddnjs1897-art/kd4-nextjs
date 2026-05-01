@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Fragment } from 'react'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import {
@@ -6,8 +7,6 @@ import {
   Award,
   TrendingUp,
   Flame,
-  Repeat,
-  Zap,
   FileText,
   Film,
   Handshake,
@@ -95,63 +94,24 @@ const DISCOUNTS = [
 const CURRICULUM = [
   {
     Icon: Flame,
-    step: 'STEP 01',
-    title: 'Emotional Release',
-    subtitle: '감정 해방 · 충동·본능 회복',
-    desc: '막혀있던 감정의 둑을 터뜨리는 첫 단계. 충동과 본능을 회복합니다.',
     num: '01',
-    short: '감정 해방',
-    hook: '감정 해방 · 본능 회복',
-  },
-  {
-    Icon: Repeat,
-    step: 'STEP 02',
-    title: 'Repetition',
-    subtitle: '레피티션 훈련',
-    desc: '상대방의 말·표정·행동을 그대로 관찰하고 즉각 반응하는 훈련. 정답 연기를 버립니다.',
-    num: '02',
-    short: '레피티션',
-    hook: '정답 연기를 버린다',
-  },
-  {
-    Icon: Zap,
-    step: 'STEP 03',
-    title: 'Independent Activity',
-    subtitle: '인디펜던트 액티비티',
-    desc: '다양한 관계 상황을 설계해 연기의 본질을 경험하고, 어떤 현장에도 반응하는 연기 스펙트럼을 넓힙니다.',
-    num: '03',
-    short: '인디펜던트',
-    hook: '관계의 본질을 경험',
-  },
-  {
-    Icon: FileText,
-    step: 'STEP 04',
-    title: 'Text Analysis',
-    subtitle: '텍스트 분석 · 메모라이징',
-    desc: '이바나 처벅 테크닉을 접목해 심리학적 근거로 분석하고, 살아있는 연기·존재하는 연기로 향합니다.',
-    num: '04',
-    short: '텍스트 분석',
-    hook: '살아있는 연기로',
+    step: 'STEP 01',
+    title: '아메리칸 액팅 메소드\n트레이닝',
+    desc: '마이즈너 테크닉 · 이바나 처벅 테크닉 기반의 심층 연기 훈련',
   },
   {
     Icon: Film,
-    step: 'STEP 05',
-    title: 'Final Portfolio',
-    subtitle: '출연영상 촬영',
-    desc: '전문 영화팀과 함께하는 포트폴리오(출연영상) 촬영. 요즘 캐스팅은 전부 출연영상으로 진행됩니다.',
-    num: '05',
-    short: '출연영상',
-    hook: '전문 영화팀과 촬영',
+    num: '02',
+    step: 'STEP 02',
+    title: '포트폴리오 제작',
+    desc: '전문 영화팀과 함께 제작하는 출연영상으로 실전 포트폴리오 완성',
   },
   {
     Icon: Handshake,
-    step: 'AFTER COURSE',
-    title: 'Casting',
-    subtitle: '실전 캐스팅 연계',
-    desc: '인물조감독·캐스팅디렉터 오디션에 직접 연결. 수료 후에도 이어지는 지원입니다.',
-    num: '★',
-    short: '캐스팅',
-    hook: '캐디·인물조감독 직연결',
+    num: '03',
+    step: 'STEP 03',
+    title: '캐스팅 연계',
+    desc: '캐스팅 디렉터 · 인물 조감독과 직접 연결되는 실전 캐스팅 지원',
   },
 ]
 
@@ -910,48 +870,128 @@ export default function JoinPage() {
             </p>
           </div>
 
-          {/* 모바일: Z자 흐름 (2열 × 3행) */}
-          <ul className="curriculum-zigzag" aria-label="커리큘럼 단계 — 모바일">
-            {CURRICULUM.map(({ Icon, step, title, num, short }) => (
-              <li
-                key={step}
-                className={`zigzag-card ${num === '★' ? 'zigzag-card--final' : ''}`}
-              >
-                <div className="zigzag-card-head">
-                  <span className="zigzag-card-num">{num}</span>
-                  <Icon size={18} strokeWidth={1.8} aria-hidden />
-                </div>
-                <p className="zigzag-card-short">{short}</p>
-                <p className="zigzag-card-title">{title}</p>
-                {num === '★' && (
-                  <a href="/#casting" className="zigzag-card-link">
-                    캐스팅 현황 →
-                  </a>
-                )}
-              </li>
-            ))}
-          </ul>
+          {/* 3단계 도식 — 메인 페이지 ALL IN ONE SYSTEM과 일관 */}
+          <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
+            <div className="steps-journey">
+              {CURRICULUM.map((s, i) => (
+                <Fragment key={s.num}>
+                  <div
+                    className="step-card"
+                    style={{
+                      position: 'relative',
+                      background: 'var(--bg2)',
+                      border: s.num === '03' ? '1px solid var(--navy)' : '1px solid var(--border)',
+                      borderRadius: 'var(--radius)',
+                      padding: 'clamp(40px, 6vw, 56px) clamp(20px, 4vw, 36px) clamp(36px, 5vw, 48px)',
+                      textAlign: 'center',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {/* 대형 배경 숫자 */}
+                    <span
+                      aria-hidden
+                      style={{
+                        position: 'absolute',
+                        top: '12px',
+                        right: '20px',
+                        fontFamily: 'var(--font-display)',
+                        fontSize: 'clamp(3rem, 7vw, 5.5rem)',
+                        fontWeight: 700,
+                        color: 'rgba(21,72,138,0.08)',
+                        lineHeight: 1,
+                        userSelect: 'none',
+                        pointerEvents: 'none',
+                      }}
+                    >
+                      {s.num}
+                    </span>
 
-          {/* 데스크톱: 가로 타임라인 (1행 × 6열) */}
-          <ol className="curriculum-timeline" aria-label="커리큘럼 단계 — 데스크톱">
-            {CURRICULUM.map(({ step, title, num, short, hook, desc }) => (
-              <li
-                key={step}
-                className={`timeline-node ${num === '★' ? 'timeline-node--final' : ''}`}
-              >
-                <p className="timeline-title">{title}</p>
-                <span className="timeline-circle" aria-hidden>{num}</span>
-                <p className="timeline-short">{short}</p>
-                <p className="timeline-hook">{hook}</p>
-                <span className="timeline-tooltip" role="tooltip">{desc}</span>
-                {num === '★' && (
-                  <a href="/#casting" className="timeline-link">
-                    실제 캐스팅 현황 보기 →
-                  </a>
-                )}
-              </li>
-            ))}
-          </ol>
+                    {/* STEP 라벨 */}
+                    <p
+                      style={{
+                        fontFamily: 'var(--font-display)',
+                        fontSize: 'clamp(0.7rem, 1.6vw, 0.8rem)',
+                        letterSpacing: '0.2em',
+                        fontWeight: 700,
+                        color: 'var(--navy)',
+                        marginBottom: '14px',
+                        textTransform: 'uppercase',
+                      }}
+                    >
+                      {s.step}
+                    </p>
+
+                    {/* 아이콘 */}
+                    <div
+                      className="step-icon-glow"
+                      style={{ margin: '0 auto 18px' }}
+                    >
+                      <s.Icon size={26} color="var(--navy)" strokeWidth={1.6} />
+                    </div>
+
+                    {/* 제목 */}
+                    <h3
+                      style={{
+                        fontFamily: 'var(--font-serif)',
+                        fontSize: 'clamp(1rem, 2.3vw, 1.2rem)',
+                        fontWeight: 700,
+                        marginBottom: '12px',
+                        lineHeight: 1.4,
+                        whiteSpace: 'pre-line',
+                        wordBreak: 'keep-all',
+                      }}
+                    >
+                      {s.title}
+                    </h3>
+
+                    {/* 설명 */}
+                    <p
+                      style={{
+                        fontSize: 'clamp(0.78rem, 1.7vw, 0.88rem)',
+                        color: 'var(--gray-light)',
+                        lineHeight: 1.7,
+                        wordBreak: 'keep-all',
+                      }}
+                    >
+                      {s.desc}
+                    </p>
+
+                    {/* STEP 03 캐스팅 현황 링크 */}
+                    {s.num === '03' && (
+                      <a
+                        href="/#casting"
+                        style={{
+                          display: 'inline-block',
+                          marginTop: '16px',
+                          fontSize: '0.8rem',
+                          color: 'var(--navy)',
+                          fontWeight: 700,
+                          textDecoration: 'underline',
+                        }}
+                      >
+                        실제 캐스팅 현황 보기 →
+                      </a>
+                    )}
+                  </div>
+
+                  {/* 화살표 (마지막 제외) */}
+                  {i < CURRICULUM.length - 1 && (
+                    <div className="step-journey-arrow" aria-hidden>
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path
+                          d="M4 10h12M11 5l5 5-5 5"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  )}
+                </Fragment>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
