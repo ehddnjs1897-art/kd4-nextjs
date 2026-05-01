@@ -340,6 +340,84 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* ① WHO NEEDS — 자기인식 페르소나 (Hero 직후 게이트)         */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section
+        style={{
+          padding: 'clamp(56px, 10vw, 88px) 0',
+          background: 'var(--bg)',
+        }}
+      >
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
+            <p className="section-eyebrow">WHO NEEDS KD4</p>
+            <h2
+              className="section-title-serif"
+              style={{
+                fontSize: 'clamp(1.4rem, 3.6vw, 2.2rem)',
+                lineHeight: 1.45,
+                marginBottom: '12px',
+                wordBreak: 'keep-all',
+              }}
+            >
+              이런 배우에게 필요합니다
+            </h2>
+            <p style={{ fontSize: '0.88rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
+              하나라도 해당된다면, KD4가 답이 될 수 있습니다
+            </p>
+          </div>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gap: '12px',
+              maxWidth: '880px',
+              margin: '0 auto',
+            }}
+          >
+            {[
+              '연기의 본질을 제대로 배우고 싶은 분',
+              '활동의 한계에 부딪힌 배우',
+              '열심히 하지만 달라지는 게 없는 배우',
+              '억지로 짜내는 연기에서 벗어나고 싶은 배우',
+              '출연영상이 없어서 캐스팅 기회를 놓치는 배우',
+            ].map((item, i) => (
+              <div
+                key={item}
+                style={{
+                  background: 'var(--bg2)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius)',
+                  padding: '20px 22px',
+                  display: 'flex',
+                  gap: '14px',
+                  alignItems: 'flex-start',
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    color: 'var(--navy)',
+                    fontSize: '0.85rem',
+                    fontWeight: 700,
+                    flexShrink: 0,
+                    minWidth: '20px',
+                    letterSpacing: '0.05em',
+                  }}
+                >
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <p style={{ fontSize: '0.92rem', lineHeight: 1.55, wordBreak: 'keep-all' }}>
+                  {item}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ② KD4 고유 자산 — 3년이 만든 캐스팅 연계 시스템           */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section
