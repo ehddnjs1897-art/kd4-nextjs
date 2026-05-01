@@ -1474,8 +1474,10 @@ ul, ol { list-style: none; }
   .section { padding: 70px 0; }
   .classes-grid { grid-template-columns: repeat(2, 1fr); }
   .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .stats-card { padding: 20px 8px; gap: 6px; border-radius: 12px; }
+  .stats-card { padding: 20px 6px; gap: 6px; border-radius: 12px; min-width: 0; }
   .stats-icon-wrap { width: 36px; height: 36px; border-radius: 10px; font-size: 1rem; }
+  .stat-num { font-size: clamp(1.4rem, 6.5vw, 2rem); }
+  .stat-label { font-size: 0.68rem; letter-spacing: 0.02em; word-break: keep-all; line-height: 1.3; }
   .about-steps { grid-template-columns: 1fr; }
 .cta-card { padding: 40px 24px; }
   .footer-grid { grid-template-columns: 1fr; gap: 28px; }
@@ -1923,14 +1925,6 @@ main {
   /* overflow-x: clip은 합성 레이어를 만들지 않아 스크롤 성능 개선 */
   body {
     overflow-x: clip;
-  }
-}
-
-/* === /join 모바일 반응형 === */
-/* 커리큘럼 6단계: 데스크톱 3열 → 모바일 2열 (3열은 375px에서 너무 좁음) */
-@media (max-width: 640px) {
-  .curriculum-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
   }
 }
 
