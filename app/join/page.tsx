@@ -221,7 +221,7 @@ export default function JoinPage() {
             className="section-eyebrow"
             style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '20px', wordBreak: 'keep-all' }}
           >
-            ACTOR ACCELERATING SYSTEM
+            캐스팅 디렉터 · 조감독 공식 협업 액팅 스튜디오
           </p>
 
           <h1
@@ -237,7 +237,7 @@ export default function JoinPage() {
               wordBreak: 'keep-all',
             }}
           >
-            배우를 성장시키는
+            수업이 끝이 아닙니다.
             <br />
             <span
               style={{
@@ -246,7 +246,7 @@ export default function JoinPage() {
                 paddingBottom: '2px',
               }}
             >
-              KD4 액팅 스튜디오입니다.
+              캐스팅까지 연결합니다.
             </span>
           </h1>
 
@@ -262,9 +262,7 @@ export default function JoinPage() {
               wordBreak: 'keep-all',
             }}
           >
-            틀에 박힌 연기, 공장식 수업에서 벗어나고 싶은
-            <br />
-            배우를 위한 스튜디오
+            현직 배우 100여 명이 거쳐간 시그니처 클래스 · 권동원 직강
           </p>
           <p
             style={{
@@ -278,7 +276,7 @@ export default function JoinPage() {
               letterSpacing: '0.03em',
             }}
           >
-            6~8명 소수정예 · 연기상 수상 배우 직강
+            6~8명 소수정예 · 연기 경험 없어도 OK
           </p>
 
           <div
