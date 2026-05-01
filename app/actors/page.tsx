@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { supabaseAdmin } from '@/lib/supabase/admin'
+import { getActorPhotoUrl } from '@/lib/actor-photo'
 
 interface Actor {
   id: string
@@ -8,6 +9,7 @@ interface Actor {
   gender: '남' | '여' | null
   age_group: string | null
   drive_photo_id: string | null
+  storage_photo_path: string | null
 }
 
 type GenderFilter = 'all' | '남' | '여'
@@ -23,7 +25,7 @@ interface PageProps {
 async function fetchActors(gender: string, ageGroup: string): Promise<{ actors: Actor[]; dbError: boolean }> {
   let query = supabaseAdmin
     .from('actors')
-    .select('id, name, gender, age_group, drive_photo_id')
+    .select('id, name, gender, age_group, drive_photo_id, storage_photo_path')
     .eq('is_public', true)
     .order('age_group', { ascending: true, nullsFirst: false })
     .order('created_at', { ascending: false })
@@ -43,9 +45,8 @@ async function fetchActors(gender: string, ageGroup: string): Promise<{ actors: 
   return { actors: (data ?? []) as Actor[], dbError: false }
 }
 
-function thumbnailUrl(drivePhotoId: string | null): string {
-  if (!drivePhotoId) return '/placeholder-actor.svg'
-  return `https://drive.google.com/thumbnail?id=${drivePhotoId}&sz=w600`
+function thumbnailUrl(actor: Actor): string {
+  return getActorPhotoUrl(actor, 'small')
 }
 
 const GENDER_OPTIONS: { value: GenderFilter; label: string }[] = [
@@ -158,7 +159,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
               <Link key={actor.id} href={`/actors/${actor.id}`} style={styles.card} className="actor-card">
                 <div style={styles.imageWrap}>
                   <Image
-                    src={thumbnailUrl(actor.drive_photo_id)}
+                    src={thumbnailUrl(actor)}
                     alt={actor.name}
                     fill
                     sizes="(max-width:640px) 100vw, 50vw"
