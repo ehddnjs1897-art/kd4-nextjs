@@ -99,6 +99,9 @@ const CURRICULUM = [
     title: 'Emotional Release',
     subtitle: '감정 해방 · 충동·본능 회복',
     desc: '막혀있던 감정의 둑을 터뜨리는 첫 단계. 충동과 본능을 회복합니다.',
+    num: '01',
+    short: '감정 해방',
+    hook: '감정 해방 · 본능 회복',
   },
   {
     Icon: Repeat,
@@ -106,6 +109,9 @@ const CURRICULUM = [
     title: 'Repetition',
     subtitle: '레피티션 훈련',
     desc: '상대방의 말·표정·행동을 그대로 관찰하고 즉각 반응하는 훈련. 정답 연기를 버립니다.',
+    num: '02',
+    short: '레피티션',
+    hook: '정답 연기를 버린다',
   },
   {
     Icon: Zap,
@@ -113,6 +119,9 @@ const CURRICULUM = [
     title: 'Independent Activity',
     subtitle: '인디펜던트 액티비티',
     desc: '다양한 관계 상황을 설계해 연기의 본질을 경험하고, 어떤 현장에도 반응하는 연기 스펙트럼을 넓힙니다.',
+    num: '03',
+    short: '인디펜던트',
+    hook: '관계의 본질을 경험',
   },
   {
     Icon: FileText,
@@ -120,6 +129,9 @@ const CURRICULUM = [
     title: 'Text Analysis',
     subtitle: '텍스트 분석 · 메모라이징',
     desc: '이바나 처벅 테크닉을 접목해 심리학적 근거로 분석하고, 살아있는 연기·존재하는 연기로 향합니다.',
+    num: '04',
+    short: '텍스트 분석',
+    hook: '살아있는 연기로',
   },
   {
     Icon: Film,
@@ -127,6 +139,9 @@ const CURRICULUM = [
     title: 'Final Portfolio',
     subtitle: '출연영상 촬영',
     desc: '전문 영화팀과 함께하는 포트폴리오(출연영상) 촬영. 요즘 캐스팅은 전부 출연영상으로 진행됩니다.',
+    num: '05',
+    short: '출연영상',
+    hook: '전문 영화팀과 촬영',
   },
   {
     Icon: Handshake,
@@ -134,6 +149,9 @@ const CURRICULUM = [
     title: 'Casting',
     subtitle: '실전 캐스팅 연계',
     desc: '인물조감독·캐스팅디렉터 오디션에 직접 연결. 수료 후에도 이어지는 지원입니다.',
+    num: '★',
+    short: '캐스팅',
+    hook: '캐디·인물조감독 직연결',
   },
 ]
 
@@ -892,92 +910,48 @@ export default function JoinPage() {
             </p>
           </div>
 
-          <div
-            className="curriculum-grid"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: 'clamp(6px, 1.5vw, 16px)',
-              maxWidth: '1080px',
-              margin: '0 auto',
-            }}
-          >
-            {CURRICULUM.map(({ Icon, step, title, subtitle, desc }) => (
-              <div
+          {/* 모바일: Z자 흐름 (2열 × 3행) */}
+          <ul className="curriculum-zigzag" aria-label="커리큘럼 단계 — 모바일">
+            {CURRICULUM.map(({ Icon, step, title, num, short }) => (
+              <li
                 key={step}
-                className="step-card"
-                style={{
-                  background: 'var(--bg2)',
-                  border: '1px solid var(--border)',
-                  borderRadius: '8px',
-                  padding: 'clamp(14px, 2.5vw, 32px) clamp(10px, 2vw, 24px)',
-                  wordBreak: 'keep-all',
-                  overflowWrap: 'break-word',
-                }}
+                className={`zigzag-card ${num === '★' ? 'zigzag-card--final' : ''}`}
               >
-                <div className="step-icon-glow" style={{ marginBottom: 'clamp(10px, 2vw, 20px)' }}>
-                  <Icon size={20} color="var(--navy)" strokeWidth={1.8} />
+                <div className="zigzag-card-head">
+                  <span className="zigzag-card-num">{num}</span>
+                  <Icon size={18} strokeWidth={1.8} aria-hidden />
                 </div>
-                <p
-                  style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: 'clamp(0.56rem, 1.6vw, 0.7rem)',
-                    letterSpacing: '0.16em',
-                    color: 'var(--navy)',
-                    marginBottom: 'clamp(6px, 1.5vw, 12px)',
-                  }}
-                >
-                  {step}
-                </p>
-                <h3
-                  style={{
-                    fontFamily: 'var(--font-serif)',
-                    fontSize: 'clamp(0.85rem, 2.4vw, 1.15rem)',
-                    fontWeight: 700,
-                    marginBottom: '4px',
-                    lineHeight: 1.3,
-                  }}
-                >
-                  {title}
-                </h3>
-                <p
-                  style={{
-                    fontSize: 'clamp(0.68rem, 1.9vw, 0.82rem)',
-                    color: 'var(--navy)',
-                    marginBottom: 'clamp(8px, 1.8vw, 14px)',
-                    fontWeight: 500,
-                    lineHeight: 1.4,
-                  }}
-                >
-                  {subtitle}
-                </p>
-                <p
-                  style={{
-                    fontSize: 'clamp(0.7rem, 1.85vw, 0.85rem)',
-                    color: 'var(--gray-light)',
-                    lineHeight: 1.6,
-                  }}
-                >
-                  {desc}
-                </p>
-                {step === 'AFTER COURSE' && (
-                  <a
-                    href="/#casting"
-                    style={{
-                      display: 'block',
-                      marginTop: '10px',
-                      fontSize: 'clamp(0.68rem, 1.8vw, 0.8rem)',
-                      color: 'var(--navy)',
-                      fontWeight: 600,
-                      textDecoration: 'underline',
-                    }}
-                  >
+                <p className="zigzag-card-short">{short}</p>
+                <p className="zigzag-card-title">{title}</p>
+                {num === '★' && (
+                  <a href="/#casting" className="zigzag-card-link">
+                    캐스팅 현황 →
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+
+          {/* 데스크톱: 가로 타임라인 (1행 × 6열) */}
+          <ol className="curriculum-timeline" aria-label="커리큘럼 단계 — 데스크톱">
+            {CURRICULUM.map(({ step, title, num, short, hook, desc }) => (
+              <li
+                key={step}
+                className={`timeline-node ${num === '★' ? 'timeline-node--final' : ''}`}
+              >
+                <p className="timeline-title">{title}</p>
+                <span className="timeline-circle" aria-hidden>{num}</span>
+                <p className="timeline-short">{short}</p>
+                <p className="timeline-hook">{hook}</p>
+                <span className="timeline-tooltip" role="tooltip">{desc}</span>
+                {num === '★' && (
+                  <a href="/#casting" className="timeline-link">
                     실제 캐스팅 현황 보기 →
                   </a>
                 )}
-              </div>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </section>
 
