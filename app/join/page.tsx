@@ -262,7 +262,9 @@ export default function JoinPage() {
               wordBreak: 'keep-all',
             }}
           >
-            현직 배우 100명이 수료한 인증된 시그니처 클래스 · 권동원 대표 직강 (연기상 수상)
+            현직 배우 100명이 수료한 인증된 시그니처 클래스
+            <br />
+            권동원 대표 직강 (연기상 수상)
           </p>
           <p
             style={{
