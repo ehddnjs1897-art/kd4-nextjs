@@ -372,21 +372,24 @@ export default function JoinPage() {
                   padding: '20px 22px',
                   display: 'flex',
                   gap: '14px',
-                  alignItems: 'flex-start',
+                  alignItems: 'center',
                 }}
               >
                 <span
                   style={{
-                    fontFamily: 'var(--font-display)',
-                    color: 'var(--navy)',
-                    fontSize: '0.85rem',
-                    fontWeight: 700,
+                    width: '26px',
+                    height: '26px',
+                    borderRadius: '50%',
+                    background: 'rgba(21,72,138,0.1)',
+                    border: '1px solid rgba(21,72,138,0.2)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                     flexShrink: 0,
-                    minWidth: '20px',
-                    letterSpacing: '0.05em',
                   }}
+                  aria-hidden
                 >
-                  {String(i + 1).padStart(2, '0')}
+                  <Check size={14} color="var(--navy)" strokeWidth={2.6} />
                 </span>
                 <p style={{ fontSize: '0.92rem', lineHeight: 1.55, wordBreak: 'keep-all' }}>
                   {item}
