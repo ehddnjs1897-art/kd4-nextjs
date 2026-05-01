@@ -324,7 +324,7 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section
         style={{
-          padding: 'clamp(56px, 10vw, 88px) 0',
+          padding: 'clamp(64px, 12vw, 100px) 0',
           background: 'var(--bg)',
         }}
       >
