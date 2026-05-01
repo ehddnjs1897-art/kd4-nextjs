@@ -572,88 +572,81 @@ export default function JoinPage() {
               감정을 만드는 것이 아니라, 상대에게 반응하는 훈련법입니다.
             </p>
 
-            {/* Sanford Meisner 인용 블록 — 책 인용 + 사진 */}
-            <figure
+            {/* 마이즈너 핵심 3요소 — REPETITION / CAMERA / VS OTHER METHODS */}
+            <div
               style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '20px',
-                background: 'var(--bg2)',
-                border: '1px solid var(--border)',
-                borderRadius: 'var(--radius)',
-                padding: 'clamp(28px, 5vw, 44px) clamp(24px, 4vw, 40px)',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                gap: '14px',
                 marginBottom: '40px',
-                position: 'relative',
+                textAlign: 'left',
               }}
             >
-              {/* 사진 — Group Theatre 1938 단체 사진 (공개 도메인) */}
-              <div
-                style={{
-                  position: 'relative',
-                  width: 'clamp(240px, 50vw, 420px)',
-                  aspectRatio: '4 / 3',
-                  borderRadius: 'var(--radius)',
-                  overflow: 'hidden',
-                  border: '1px solid var(--border)',
-                  flexShrink: 0,
-                  filter: 'grayscale(0.1)',
-                  boxShadow: '0 6px 24px rgba(21,72,138,0.12)',
-                }}
-              >
-                <Image
-                  src="/images/meisner-group-theatre-1938.jpg"
-                  alt="Sanford Meisner with the Group Theatre, 1938"
-                  fill
-                  sizes="(max-width: 768px) 80vw, 420px"
+              {[
+                {
+                  label: 'REPETITION',
+                  title: 'Repetition 훈련',
+                  desc: '두 배우가 상대를 관찰하며 말과 행동을 반복·반응하는 핵심 훈련. 감정을 혼자 만들지 않고, 상대에게서 촉발된 충동에 반응합니다.',
+                },
+                {
+                  label: 'CAMERA',
+                  title: '카메라 연기에 최적화',
+                  desc: '마이즈너 테크닉은 과장 없이 미세한 반응으로 진실을 담는 방식입니다. 무대 연기와 달리 클로즈업 카메라 앞에서 오히려 더 강력합니다.',
+                },
+                {
+                  label: 'VS OTHER METHODS',
+                  title: '다른 방법과의 차이',
+                  desc: '스타니슬랍스키의 감정기억과 달리, 마이즈너는 상대에게 집중합니다. 혼자 짜내는 감정이 아니라 관계 속에서 살아나는 연기입니다.',
+                },
+              ].map(item => (
+                <div
+                  key={item.label}
                   style={{
-                    objectFit: 'cover',
-                    objectPosition: 'center',
+                    background: 'var(--bg2)',
+                    border: '1px solid var(--border)',
+                    borderRadius: 'var(--radius)',
+                    padding: '24px 22px',
                   }}
-                />
-              </div>
-
-              {/* 인용구 */}
-              <blockquote
-                style={{
-                  fontFamily: 'var(--font-serif)',
-                  fontStyle: 'italic',
-                  fontSize: 'clamp(0.95rem, 2.4vw, 1.3rem)',
-                  lineHeight: 1.55,
-                  color: 'var(--navy)',
-                  maxWidth: '720px',
-                  textAlign: 'center',
-                  margin: 0,
-                  letterSpacing: '0.01em',
-                  wordBreak: 'keep-all',
-                }}
-              >
-                <span style={{ opacity: 0.35, fontSize: '1.4em', verticalAlign: '-0.15em', marginRight: '4px' }}>“</span>
-                Acting is living truthfully under imaginary circumstances.
-                <span style={{ opacity: 0.35, fontSize: '1.4em', verticalAlign: '-0.15em', marginLeft: '4px' }}>”</span>
-              </blockquote>
-
-              {/* 출처 */}
-              <figcaption
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: '0.72rem',
-                  letterSpacing: '0.12em',
-                  color: 'var(--gray)',
-                  textAlign: 'center',
-                  textTransform: 'uppercase',
-                  lineHeight: 1.8,
-                }}
-              >
-                — Sanford Meisner
-                <span style={{ display: 'block', fontSize: '0.68rem', opacity: 0.7, marginTop: '2px', textTransform: 'none', letterSpacing: '0.02em', fontStyle: 'italic' }}>
-                  Sanford Meisner on Acting (1987)
-                </span>
-                <span style={{ display: 'block', fontSize: '0.72rem', opacity: 0.55, marginTop: '6px', textTransform: 'none', letterSpacing: '0.01em', fontStyle: 'normal' }}>
-                  "상상된 상황 속에서 진실하게 살아가는 것"
-                </span>
-              </figcaption>
-            </figure>
+                >
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-display)',
+                      fontSize: '0.65rem',
+                      letterSpacing: '0.2em',
+                      color: 'var(--navy)',
+                      textTransform: 'uppercase',
+                      marginBottom: '10px',
+                      fontWeight: 700,
+                    }}
+                  >
+                    {item.label}
+                  </p>
+                  <h3
+                    style={{
+                      fontFamily: 'var(--font-serif)',
+                      fontSize: '1.02rem',
+                      fontWeight: 700,
+                      color: 'var(--navy)',
+                      marginBottom: '10px',
+                      lineHeight: 1.4,
+                      wordBreak: 'keep-all',
+                    }}
+                  >
+                    {item.title}
+                  </h3>
+                  <p
+                    style={{
+                      fontSize: '0.85rem',
+                      color: 'var(--gray-light)',
+                      lineHeight: 1.7,
+                      wordBreak: 'keep-all',
+                    }}
+                  >
+                    {item.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
 
             {/* YouTube 영상 임베드 — 16:9 반응형 (클릭 시 로드) */}
             <YouTubeFacade
