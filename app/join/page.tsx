@@ -221,7 +221,7 @@ export default function JoinPage() {
             className="section-eyebrow"
             style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '20px', wordBreak: 'keep-all' }}
           >
-            캐스팅 디렉터 · 조감독 공식 협업 액팅 스튜디오
+            캐스팅 디렉터 · 인물 조감독 공식 협업 아카데미
           </p>
 
           <h1
@@ -262,7 +262,7 @@ export default function JoinPage() {
               wordBreak: 'keep-all',
             }}
           >
-            현직 배우 100여 명이 거쳐간 시그니처 클래스 · 권동원 직강
+            현직 배우 100명이 수료한 인증된 시그니처 클래스 · 권동원 대표 직강 (연기상 수상)
           </p>
           <p
             style={{
@@ -619,9 +619,9 @@ export default function JoinPage() {
         <div className="container">
           <div className="stats-grid">
             {[
-              { Icon: Users, num: '300+', label: '배우 코칭', sub: '(스튜디오 운영 기준)' },
-              { Icon: Award, num: '3년+', label: '스튜디오 운영', sub: undefined },
-              { Icon: TrendingUp, num: '80명+', label: '현재 수강배우', sub: undefined },
+              { Icon: Award, num: '50건+', label: '캐스팅 연계', sub: undefined },
+              { Icon: Users, num: '400명+', label: '누적 코칭', sub: undefined },
+              { Icon: TrendingUp, num: '100편+', label: '디즈니·넷플릭스·tvN', sub: '출연 작품' },
             ].map(({ Icon, num, label, sub }) => (
               <div key={num} className="stats-card">
                 <div className="stats-icon-wrap">
