@@ -319,9 +319,20 @@ export default function JoinPage() {
           </div>
           <p
             style={{
+              fontSize: '0.78rem',
+              color: 'rgba(255,255,255,0.62)',
+              marginTop: '14px',
+              textAlign: 'center',
+              letterSpacing: '0.01em',
+            }}
+          >
+            마이즈너 정규 클래스 25만원 → 첫 달 <strong style={{ color: '#fff' }}>15만원</strong> · 잔여 3석
+          </p>
+          <p
+            style={{
               fontSize: '0.72rem',
               color: 'rgba(255,255,255,0.35)',
-              marginTop: '14px',
+              marginTop: '6px',
               textAlign: 'center',
             }}
           >
