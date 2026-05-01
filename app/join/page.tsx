@@ -695,141 +695,6 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑤ DIRECTOR — 강사 크레딧 구체화 + 인라인 CTA              */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
-        <div className="container">
-          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">04 — THE LEADER</p>
-            <h2
-              className="section-title-serif"
-              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '12px' }}
-            >
-              배우의 성장을 가이드합니다
-            </h2>
-            <p
-              style={{
-                fontSize: 'clamp(0.82rem, 2.2vw, 0.98rem)',
-                color: 'var(--gray-light)',
-                lineHeight: 1.6,
-                margin: 0,
-                wordBreak: 'keep-all',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              전문 액팅코치가 배우의 성장을 촉진시킵니다.
-            </p>
-          </div>
-
-          <div className="director-card" style={{ maxWidth: '720px', margin: '0 auto' }}>
-            <div className="director-photo" style={{ position: 'relative' }}>
-              <Image
-                src={DIRECTOR.photo}
-                alt={`${DIRECTOR.name} 대표`}
-                fill
-                sizes="(max-width: 768px) 100vw, 260px"
-                style={{
-                  objectFit: 'cover',
-                  objectPosition: 'center 15%',
-                }}
-              />
-            </div>
-            <div style={{ flex: 1 }}>
-              <div className="director-name">{DIRECTOR.name}</div>
-              <div className="director-role">{DIRECTOR.title}</div>
-              <div className="director-creds">
-                {DIRECTOR.highlights.map((line) => (
-                  <div key={line} className="director-cred">
-                    {line}
-                  </div>
-                ))}
-              </div>
-              <p
-                style={{
-                  marginTop: '22px',
-                  paddingLeft: '14px',
-                  borderLeft: '2px solid var(--navy)',
-                  fontStyle: 'italic',
-                  fontSize: '0.92rem',
-                  color: 'var(--gray-light)',
-                  lineHeight: 1.8,
-                }}
-              >
-                {DIRECTOR.quote}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑥ PROOF — 후기 (신뢰도 보강) + 인라인 CTA                 */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
-        <div className="container">
-          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">05 — REAL REVIEWS</p>
-            <h2
-              className="section-title-serif"
-              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: 0 }}
-            >
-              배우들의 솔직한 후기
-            </h2>
-          </div>
-
-          {/* 마퀴 1행: 왼쪽으로 */}
-          <div className="review-marquee" style={{ marginBottom: '12px' }}>
-            <div className="review-marquee-track">
-              {[...REVIEW_MARQUEE_ROW1, ...REVIEW_MARQUEE_ROW1].map((r, i) => (
-                <div key={i} style={{ flex: '0 0 auto', width: '320px', padding: '20px 24px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', marginRight: '14px' }}>
-                  <p style={{ fontSize: '0.86rem', color: 'var(--white)', lineHeight: 1.7, marginBottom: '10px' }}>&ldquo;{r.text}&rdquo;</p>
-                  <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>— {r.author}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-          {/* 마퀴 2행: 오른쪽으로 */}
-          <div className="review-marquee reverse">
-            <div className="review-marquee-track">
-              {[...REVIEW_MARQUEE_ROW2, ...REVIEW_MARQUEE_ROW2].map((r, i) => (
-                <div key={i} style={{ flex: '0 0 auto', width: '320px', padding: '20px 24px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', marginRight: '14px' }}>
-                  <p style={{ fontSize: '0.86rem', color: 'var(--white)', lineHeight: 1.7, marginBottom: '10px' }}>&ldquo;{r.text}&rdquo;</p>
-                  <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>— {r.author}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* 인라인 CTA */}
-          <div style={{ textAlign: 'center', marginTop: '32px' }}>
-            <JoinCTALink
-              href="#form"
-              location="inline_proof"
-              label="나도 진짜 배우로 · 무료 상담 신청"
-              fireLead
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontFamily: 'var(--font-display)',
-                fontSize: '0.82rem',
-                fontWeight: 600,
-                letterSpacing: '0.08em',
-                color: 'var(--navy)',
-                borderBottom: '1px solid var(--navy)',
-                padding: '4px 0',
-                textDecoration: 'none',
-                textTransform: 'uppercase',
-              }}
-            >
-              나도 진짜 배우로 · 무료 상담 신청
-              <ArrowRight size={14} strokeWidth={2.2} />
-            </JoinCTALink>
-          </div>
-        </div>
-      </section>
-
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑦ CURRICULUM — 6단계 훈련 과정 (감정 해방 → 캐스팅 연계) */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
@@ -1094,6 +959,140 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* ⑤ DIRECTOR — 강사 크레딧 구체화 + 인라인 CTA              */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
+            <p className="section-eyebrow">04 — THE LEADER</p>
+            <h2
+              className="section-title-serif"
+              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '12px' }}
+            >
+              배우의 성장을 가이드합니다
+            </h2>
+            <p
+              style={{
+                fontSize: 'clamp(0.82rem, 2.2vw, 0.98rem)',
+                color: 'var(--gray-light)',
+                lineHeight: 1.6,
+                margin: 0,
+                wordBreak: 'keep-all',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              전문 액팅코치가 배우의 성장을 촉진시킵니다.
+            </p>
+          </div>
+
+          <div className="director-card" style={{ maxWidth: '720px', margin: '0 auto' }}>
+            <div className="director-photo" style={{ position: 'relative' }}>
+              <Image
+                src={DIRECTOR.photo}
+                alt={`${DIRECTOR.name} 대표`}
+                fill
+                sizes="(max-width: 768px) 100vw, 260px"
+                style={{
+                  objectFit: 'cover',
+                  objectPosition: 'center 15%',
+                }}
+              />
+            </div>
+            <div style={{ flex: 1 }}>
+              <div className="director-name">{DIRECTOR.name}</div>
+              <div className="director-role">{DIRECTOR.title}</div>
+              <div className="director-creds">
+                {DIRECTOR.highlights.map((line) => (
+                  <div key={line} className="director-cred">
+                    {line}
+                  </div>
+                ))}
+              </div>
+              <p
+                style={{
+                  marginTop: '22px',
+                  paddingLeft: '14px',
+                  borderLeft: '2px solid var(--navy)',
+                  fontStyle: 'italic',
+                  fontSize: '0.92rem',
+                  color: 'var(--gray-light)',
+                  lineHeight: 1.8,
+                }}
+              >
+                {DIRECTOR.quote}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* ⑥ PROOF — 후기 (신뢰도 보강) + 인라인 CTA                 */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
+            <p className="section-eyebrow">05 — REAL REVIEWS</p>
+            <h2
+              className="section-title-serif"
+              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: 0 }}
+            >
+              배우들의 솔직한 후기
+            </h2>
+          </div>
+
+          {/* 마퀴 1행: 왼쪽으로 */}
+          <div className="review-marquee" style={{ marginBottom: '12px' }}>
+            <div className="review-marquee-track">
+              {[...REVIEW_MARQUEE_ROW1, ...REVIEW_MARQUEE_ROW1].map((r, i) => (
+                <div key={i} style={{ flex: '0 0 auto', width: '320px', padding: '20px 24px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', marginRight: '14px' }}>
+                  <p style={{ fontSize: '0.86rem', color: 'var(--white)', lineHeight: 1.7, marginBottom: '10px' }}>&ldquo;{r.text}&rdquo;</p>
+                  <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>— {r.author}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* 마퀴 2행: 오른쪽으로 */}
+          <div className="review-marquee reverse">
+            <div className="review-marquee-track">
+              {[...REVIEW_MARQUEE_ROW2, ...REVIEW_MARQUEE_ROW2].map((r, i) => (
+                <div key={i} style={{ flex: '0 0 auto', width: '320px', padding: '20px 24px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', marginRight: '14px' }}>
+                  <p style={{ fontSize: '0.86rem', color: 'var(--white)', lineHeight: 1.7, marginBottom: '10px' }}>&ldquo;{r.text}&rdquo;</p>
+                  <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>— {r.author}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 인라인 CTA */}
+          <div style={{ textAlign: 'center', marginTop: '32px' }}>
+            <JoinCTALink
+              href="#form"
+              location="inline_proof"
+              label="나도 진짜 배우로 · 무료 상담 신청"
+              fireLead
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontFamily: 'var(--font-display)',
+                fontSize: '0.82rem',
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                color: 'var(--navy)',
+                borderBottom: '1px solid var(--navy)',
+                padding: '4px 0',
+                textDecoration: 'none',
+                textTransform: 'uppercase',
+              }}
+            >
+              나도 진짜 배우로 · 무료 상담 신청
+              <ArrowRight size={14} strokeWidth={2.2} />
+            </JoinCTALink>
+          </div>
+        </div>
+      </section>
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑨ OFFER — 가격 + 카운트다운 + Anchor Price 배지           */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
@@ -1109,112 +1108,6 @@ export default function JoinPage() {
             <p style={{ fontSize: '0.95rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
               <strong style={{ color: 'var(--accent-red)' }}>첫 달 10만원 할인</strong>
             </p>
-          </div>
-
-          {/* 카운트다운 */}
-          <div
-            style={{
-              background: 'var(--bg2)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--radius)',
-              padding: '28px 20px',
-              maxWidth: '520px',
-              margin: '0 auto 28px',
-              textAlign: 'center',
-            }}
-          >
-            <p
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: '0.7rem',
-                letterSpacing: '0.2em',
-                color: 'var(--accent-red)',
-                marginBottom: '16px',
-                textTransform: 'uppercase',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-              }}
-            >
-              <Clock size={13} strokeWidth={1.8} />
-              할인 마감까지
-            </p>
-            <CountdownTimer deadline={DEADLINE} />
-          </div>
-
-          {/* 할인 혜택 목록 */}
-          <div
-            style={{
-              maxWidth: '520px',
-              margin: '0 auto 36px',
-              background: 'var(--bg2)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--radius)',
-              overflow: 'hidden',
-            }}
-          >
-            {DISCOUNTS.map(({ tag, title, desc, isNew }, i) => (
-              <div
-                key={tag}
-                style={{
-                  padding: '18px 20px',
-                  borderTop: i > 0 ? '1px solid var(--border)' : undefined,
-                }}
-              >
-                <div style={{ marginBottom: '6px' }}>
-                  <span
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '5px',
-                      fontFamily: 'var(--font-display)',
-                      fontSize: '0.65rem',
-                      fontWeight: 700,
-                      letterSpacing: '0.08em',
-                      textTransform: 'uppercase',
-                      color: isNew ? '#ffffff' : 'var(--navy)',
-                      background: isNew ? 'var(--accent-red)' : 'rgba(21,72,138,0.1)',
-                      borderRadius: '4px',
-                      padding: '3px 8px',
-                    }}
-                  >
-                    {tag}
-                    {isNew && ' · NEW'}
-                  </span>
-                </div>
-                <p
-                  style={{
-                    fontFamily: 'var(--font-serif)',
-                    fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)',
-                    fontWeight: 700,
-                    marginBottom: '3px',
-                    lineHeight: 1.3,
-                    wordBreak: 'keep-all',
-                  }}
-                >
-                  {title}
-                </p>
-                <p style={{ fontSize: '0.8rem', color: 'var(--gray-light)', lineHeight: 1.5 }}>
-                  {desc}
-                </p>
-              </div>
-            ))}
-            <div style={{ padding: '14px 20px', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
-              <JoinCTALink
-                href="#form"
-                location="offer_discount"
-                label="지금 신청하기"
-                fireLead
-                className="btn-primary"
-                style={{ background: 'var(--navy)', color: '#ffffff', width: '100%', justifyContent: 'center' }}
-              >
-                지금 신청하기
-                <ArrowRight size={15} strokeWidth={2.2} />
-              </JoinCTALink>
-              <p style={{ fontSize: '0.72rem', color: 'var(--gray)', marginTop: '8px' }}>
-                * 5월까지 · 선착순 마감 시 조기 종료
-              </p>
-            </div>
           </div>
 
           {/* 클래스 카드 */}
@@ -1320,7 +1213,6 @@ export default function JoinPage() {
                     </div>
                   </div>
 
-
                   {/* 코스 총액 (첫달 할인 반영) */}
                   {cls.course && (() => {
                     const months = parseInt(cls.course.match(/\d+/)?.[0] ?? '1')
@@ -1360,6 +1252,111 @@ export default function JoinPage() {
                 </div>
               </div>
             ))}
+          </div>
+          {/* 카운트다운 */}
+          <div
+            style={{
+              background: 'var(--bg2)',
+              border: '1px solid var(--border)',
+              borderRadius: 'var(--radius)',
+              padding: '28px 20px',
+              maxWidth: '520px',
+              margin: '0 auto 28px',
+              textAlign: 'center',
+            }}
+          >
+            <p
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: '0.7rem',
+                letterSpacing: '0.2em',
+                color: 'var(--accent-red)',
+                marginBottom: '16px',
+                textTransform: 'uppercase',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+            >
+              <Clock size={13} strokeWidth={1.8} />
+              할인 마감까지
+            </p>
+            <CountdownTimer deadline={DEADLINE} />
+          </div>
+
+          {/* 할인 혜택 목록 */}
+          <div
+            style={{
+              maxWidth: '520px',
+              margin: '0 auto 36px',
+              background: 'var(--bg2)',
+              border: '1px solid var(--border)',
+              borderRadius: 'var(--radius)',
+              overflow: 'hidden',
+            }}
+          >
+            {DISCOUNTS.map(({ tag, title, desc, isNew }, i) => (
+              <div
+                key={tag}
+                style={{
+                  padding: '18px 20px',
+                  borderTop: i > 0 ? '1px solid var(--border)' : undefined,
+                }}
+              >
+                <div style={{ marginBottom: '6px' }}>
+                  <span
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      fontFamily: 'var(--font-display)',
+                      fontSize: '0.65rem',
+                      fontWeight: 700,
+                      letterSpacing: '0.08em',
+                      textTransform: 'uppercase',
+                      color: isNew ? '#ffffff' : 'var(--navy)',
+                      background: isNew ? 'var(--accent-red)' : 'rgba(21,72,138,0.1)',
+                      borderRadius: '4px',
+                      padding: '3px 8px',
+                    }}
+                  >
+                    {tag}
+                    {isNew && ' · NEW'}
+                  </span>
+                </div>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-serif)',
+                    fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)',
+                    fontWeight: 700,
+                    marginBottom: '3px',
+                    lineHeight: 1.3,
+                    wordBreak: 'keep-all',
+                  }}
+                >
+                  {title}
+                </p>
+                <p style={{ fontSize: '0.8rem', color: 'var(--gray-light)', lineHeight: 1.5 }}>
+                  {desc}
+                </p>
+              </div>
+            ))}
+            <div style={{ padding: '14px 20px', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
+              <JoinCTALink
+                href="#form"
+                location="offer_discount"
+                label="지금 신청하기"
+                fireLead
+                className="btn-primary"
+                style={{ background: 'var(--navy)', color: '#ffffff', width: '100%', justifyContent: 'center' }}
+              >
+                지금 신청하기
+                <ArrowRight size={15} strokeWidth={2.2} />
+              </JoinCTALink>
+              <p style={{ fontSize: '0.72rem', color: 'var(--gray)', marginTop: '8px' }}>
+                * 5월까지 · 선착순 마감 시 조기 종료
+              </p>
+            </div>
           </div>
 
           <div style={{ textAlign: 'center', marginTop: '40px' }}>
