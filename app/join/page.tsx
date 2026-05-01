@@ -304,7 +304,7 @@ export default function JoinPage() {
               letterSpacing: '0.01em',
             }}
           >
-            마이즈너 정규 클래스 25만원 → 첫 달 <strong style={{ color: '#fff' }}>15만원</strong> · 잔여 3석
+            마이즈너 정규 클래스 35만원 → 첫 달 <strong style={{ color: '#fff' }}>25만원</strong> · 잔여 3석
           </p>
           <p
             style={{
