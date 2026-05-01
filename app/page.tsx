@@ -169,19 +169,6 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
           )}
         </div>
 
-        <Link
-          href="/join#offer"
-          className="class-card-cta"
-          style={{
-            display: "block", textAlign: "center", padding: "12px 0",
-            background: "var(--gold)", color: "#ffffff", fontWeight: 700,
-            fontSize: "0.88rem", fontFamily: "var(--font-display)", letterSpacing: "0.06em",
-            borderRadius: "var(--radius)", textDecoration: "none",
-            transition: "opacity 0.2s", boxShadow: "0 4px 16px rgba(21,72,138,0.25)",
-          }}
-        >
-          자세히 보기 →
-        </Link>
       </div>
     </div>
   )
@@ -529,8 +516,7 @@ export default function HomePage() {
         </div>
         <div className="cta-buttons">
           <Link
-            href="/join"
-            onClick={() => pixel.contact()}
+            href="#classes"
             className="btn-primary"
             style={{
               background: "var(--navy)",
@@ -1024,7 +1010,7 @@ export default function HomePage() {
             위 캐스팅 결과를 만들어낸 훈련 방식이 궁금하다면
           </p>
           <Link
-            href="/about#meisner"
+            href="/about"
             onClick={() => pixel.contact()}
             style={{
               display: "inline-flex",
@@ -1195,7 +1181,7 @@ export default function HomePage() {
               무료 상담을 통해 나에게 맞는 클래스를 안내받으세요.
             </p>
             <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
-              <Link href="/join" onClick={() => pixel.contact()} className="btn-primary"
+              <Link href="/join#form" onClick={() => pixel.contact()} className="btn-primary"
                 style={{ background: "var(--navy)", color: "#ffffff", textDecoration: "none", boxShadow: "0 4px 20px rgba(21,72,138,0.3)" }}>
                 무료 상담 신청 →
               </Link>
@@ -1298,7 +1284,7 @@ export default function HomePage() {
             style={{ marginBottom: "48px" }}
           >
             <Link
-              href="/join"
+              href="/join#form"
               onClick={() => pixel.contact()}
               className="btn-primary"
               style={{
