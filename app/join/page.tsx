@@ -1402,13 +1402,10 @@ export default function JoinPage() {
             <p className="section-eyebrow">10 — OUR PROMISE</p>
             <h2
               className="section-title-serif"
-              style={{ fontSize: 'clamp(1.6rem, 4vw, 2.3rem)', marginBottom: '16px' }}
+              style={{ fontSize: 'clamp(1.6rem, 4vw, 2.3rem)', marginBottom: 0 }}
             >
               상담만 받아도 괜찮아요
             </h2>
-            <p style={{ fontSize: '0.95rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-              부담 없는 30분 대화. 본인에게 맞는지 확인만 하고 가셔도 됩니다.
-            </p>
           </div>
 
           <div
