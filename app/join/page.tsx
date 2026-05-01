@@ -955,23 +955,6 @@ export default function JoinPage() {
                     >
                       {s.desc}
                     </p>
-
-                    {/* STEP 03 캐스팅 현황 링크 */}
-                    {s.num === '03' && (
-                      <a
-                        href="/#casting"
-                        style={{
-                          display: 'inline-block',
-                          marginTop: '16px',
-                          fontSize: '0.8rem',
-                          color: 'var(--navy)',
-                          fontWeight: 700,
-                          textDecoration: 'underline',
-                        }}
-                      >
-                        실제 캐스팅 현황 보기 →
-                      </a>
-                    )}
                   </div>
 
                   {/* 화살표 (마지막 제외) */}
