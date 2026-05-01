@@ -33,10 +33,20 @@
 - public/ 총 용량 ~46MB → 27MB
 
 ### 남은 미완료 작업
-- [ ] **Meta 도메인 인증** (가비아 DNS TXT 레코드 추가)
-- [ ] **PageSpeed 재측정** (kd4.club 홈 기준 모바일)
-- [ ] **app/api/notify/route.ts 미커밋 변경** — Meta CAPI(Lead 이벤트 서버 전송) 통합 WIP. `META_CAPI_TOKEN` + `NEXT_PUBLIC_META_PIXEL_ID` env 필요. 검토 후 커밋 결정
-- [ ] **/actors Drive 썸네일** — Drive `thumbnail?id=...&sz=w600` URL은 캐싱·신뢰성 약함. Supabase Storage 또는 next/image 캐시로 마이그레이션 검토
+- [x] ~~Meta 도메인 인증~~ — 완료
+- [x] ~~PageSpeed 재측정~~ — 완료
+- [x] ~~app/api/notify/route.ts Meta CAPI WIP~~ — 정리됨 (현재 Make 웹훅 + Solapi SMS만 깔끔하게 동작)
+- [ ] **/actors Drive 썸네일 → Supabase Storage 마이그레이션**
+  - 코드 작업 완료 (`lib/actor-photo.ts` 헬퍼 + 페이지 수정 + `scripts/migrate-actor-photos.ts`)
+  - **사장님 출근 후 1회 실행 필요**:
+    1. Supabase Dashboard → SQL Editor → `supabase/migrations/20260501_add_storage_photo_path.sql` 전체 실행 (actors 테이블에 storage_photo_path 컬럼 추가)
+    2. 로컬 터미널: `npm install` → `npm run migrate:actors` (51명 배우 사진 일괄 이전, 약 2~3분)
+- [ ] **CPE 자동 측정 셋업** (`docs/cpe-tracking-setup.md` 가이드 작성됨)
+  - **사장님 출근 후 본인 작업 필요**:
+    1. Google Sheets `KD4 CPE Tracking` 생성 (가이드 Step 1)
+    2. Meta Marketing API 토큰 발급 (가이드 Step 3-1, 30분)
+    3. Make 시나리오 2개 추가 (가이드 Step 2 + 3-2)
+  - 완료 후 매월 5~10분 운영으로 LP 효과 측정 가능
 
 ### Supabase 상태 (2026-05-01 기준)
 - 결제 완료 → 프로젝트 정상 가동 (HTTP 200)

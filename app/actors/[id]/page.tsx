@@ -6,6 +6,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 import ActorTabs from '@/components/actors/ActorTabs'
 import ShareButton from '@/components/actors/ShareButton'
 import ProfilePhotoWrapper from '@/components/actors/ProfilePhotoWrapper'
+import { getActorPhotoUrl } from '@/lib/actor-photo'
 import { UserRole } from '@/lib/types'
 
 /** 배우DB 열람 가능 여부 */
@@ -28,6 +29,7 @@ interface Actor {
   weight: number | null
   skills: string[]
   drive_photo_id: string | null
+  storage_photo_path: string | null
   profile_photo: string | null
   email: string | null
   phone: string | null
@@ -66,7 +68,7 @@ async function getActor(id: string): Promise<Actor | null> {
     .select(
       `
       id, name, gender, age_group, height, weight, skills,
-      drive_photo_id, profile_photo, email, phone, instagram,
+      drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram,
       actor_photos ( id, drive_photo_id, caption, sort_order ),
       actor_videos ( id, youtube_id, title ),
       actor_filmography ( id, category, title, role, year, production )
@@ -80,10 +82,7 @@ async function getActor(id: string): Promise<Actor | null> {
 }
 
 function profilePhotoUrl(actor: Actor): string {
-  if (actor.profile_photo) return actor.profile_photo
-  if (actor.drive_photo_id)
-    return `https://drive.google.com/thumbnail?id=${actor.drive_photo_id}&sz=w900`
-  return '/placeholder-actor.svg'
+  return getActorPhotoUrl(actor, 'large')
 }
 
 /* ---- generateMetadata ---- */
