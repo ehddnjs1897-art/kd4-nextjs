@@ -385,3 +385,31 @@ CREATE TABLE IF NOT EXISTS insights (
 
 -- 개인 툴이므로 RLS 없이 public 접근 (서비스 롤 키로 제어)
 ALTER TABLE insights DISABLE ROW LEVEL SECURITY;
+
+-- ============================================
+-- 14. CONSULTATIONS (kd4.club 상담 접수 1차 영속 저장)
+-- /api/notify가 webhook·SMS 전에 무조건 INSERT — 누락 방지
+-- ============================================
+CREATE TABLE IF NOT EXISTS consultations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  email TEXT,
+  class_name TEXT,
+  source TEXT,
+  inquiry_type TEXT,
+  motivation TEXT,
+  status TEXT DEFAULT '대기',
+  raw_payload JSONB,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_consultations_created_at
+  ON consultations(created_at DESC);
+
+ALTER TABLE consultations ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "consultations_admin_all" ON consultations
+  FOR ALL USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
