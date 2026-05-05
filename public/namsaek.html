@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>남색을 세계 언어로 — Navy Blue Around the World</title>
+<style>
+  :root {
+    --navy: #1a2b5c;
+    --navy-deep: #0f1d44;
+    --navy-light: #2d4280;
+    --gold: #d4af37;
+    --cream: #f5f1e8;
+    --text: #1a1a1a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    min-height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+    background: linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 50%, var(--navy-light) 100%);
+    color: var(--cream);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    padding: 24px 16px 60px;
+  }
+
+  header {
+    text-align: center;
+    padding: 24px 0 32px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .swatch {
+    display: inline-block;
+    width: 88px;
+    height: 88px;
+    background: var(--navy);
+    border: 3px solid var(--gold);
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35), inset 0 0 12px rgba(0,0,0,0.4);
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+
+  h1 .accent { color: var(--gold); }
+
+  .subtitle {
+    font-size: 0.95rem;
+    opacity: 0.75;
+    line-height: 1.6;
+  }
+
+  .hint {
+    margin-top: 12px;
+    font-size: 0.85rem;
+    opacity: 0.55;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .card {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(212, 175, 55, 0.18);
+    border-radius: 16px;
+    padding: 20px;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: var(--gold);
+    transform: translateY(-2px);
+  }
+
+  .card:active,
+  .card.playing {
+    background: rgba(212, 175, 55, 0.18);
+    border-color: var(--gold);
+    transform: scale(0.98);
+  }
+
+  .card.playing::after {
+    content: "🔊";
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    font-size: 1.2rem;
+    animation: pulse 0.8s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.15); }
+  }
+
+  .country {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    margin-bottom: 8px;
+    opacity: 0.85;
+  }
+
+  .word {
+    font-size: 1.6rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 6px;
+    word-break: keep-all;
+  }
+
+  .romanization {
+    font-size: 0.92rem;
+    opacity: 0.7;
+    font-style: italic;
+  }
+
+  .flag {
+    font-size: 1.3rem;
+    margin-right: 6px;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 0.8rem;
+    opacity: 0.5;
+  }
+
+  @media (max-width: 480px) {
+    .grid { grid-template-columns: 1fr; }
+    .word { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="swatch" aria-hidden="true"></div>
+  <h1>남색을 <span class="accent">세계 언어</span>로</h1>
+  <p class="subtitle">카드를 터치하면 해당 언어로 발음과 표기를 확인할 수 있습니다.</p>
+  <p class="hint">💡 첫 재생 시 브라우저가 음성 데이터를 불러옵니다 (잠시 기다려 주세요)</p>
+</header>
+
+<main class="grid" id="grid"></main>
+
+<footer>
+  Navy Blue · 남색 · 紺色 · Bleu marine · Marineblau<br/>
+  Web Speech API · Built for KD4
+</footer>
+
+<script>
+  const colors = [
+    { country: "한국어",     flag: "🇰🇷", word: "남색",                roman: "namsaek",            lang: "ko-KR" },
+    { country: "English",    flag: "🇺🇸", word: "Navy blue",          roman: "ˈneɪvi bluː",         lang: "en-US" },
+    { country: "日本語",     flag: "🇯🇵", word: "紺色",                roman: "kon-iro",             lang: "ja-JP" },
+    { country: "中文",       flag: "🇨🇳", word: "深蓝色",              roman: "shēn lán sè",         lang: "zh-CN" },
+    { country: "Español",    flag: "🇪🇸", word: "Azul marino",        roman: "a-soól ma-rée-no",    lang: "es-ES" },
+    { country: "Français",   flag: "🇫🇷", word: "Bleu marine",        roman: "blø ma-ʁin",          lang: "fr-FR" },
+    { country: "Deutsch",    flag: "🇩🇪", word: "Marineblau",         roman: "ma-ree-ne-blow",      lang: "de-DE" },
+    { country: "Italiano",   flag: "🇮🇹", word: "Blu marino",         roman: "bloo ma-ree-no",      lang: "it-IT" },
+    { country: "Português",  flag: "🇵🇹", word: "Azul-marinho",       roman: "a-zool ma-reé-nyo",   lang: "pt-PT" },
+    { country: "Русский",    flag: "🇷🇺", word: "Тёмно-синий",        roman: "tyom-no-see-niy",     lang: "ru-RU" },
+    { country: "العربية",    flag: "🇸🇦", word: "كحلي",                roman: "kuhli",               lang: "ar-SA" },
+    { country: "हिन्दी",      flag: "🇮🇳", word: "गहरा नीला",            roman: "gahara neela",        lang: "hi-IN" },
+    { country: "Tiếng Việt", flag: "🇻🇳", word: "Xanh nước biển",     roman: "san nuhk byen",       lang: "vi-VN" },
+    { country: "ภาษาไทย",    flag: "🇹🇭", word: "สีกรมท่า",             roman: "sǐi krom thâa",       lang: "th-TH" },
+    { country: "Nederlands", flag: "🇳🇱", word: "Marineblauw",        roman: "ma-ree-nə-blow",      lang: "nl-NL" },
+    { country: "Türkçe",     flag: "🇹🇷", word: "Lacivert",            roman: "la-jee-vert",         lang: "tr-TR" },
+  ];
+
+  const grid = document.getElementById("grid");
+  let voices = [];
+  let currentCard = null;
+
+  function loadVoices() {
+    voices = window.speechSynthesis.getVoices();
+  }
+  loadVoices();
+  if (typeof speechSynthesis !== "undefined" && speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = loadVoices;
+  }
+
+  function findVoice(langCode) {
+    if (!voices.length) return null;
+    const exact = voices.find(v => v.lang === langCode);
+    if (exact) return exact;
+    const prefix = langCode.split("-")[0];
+    return voices.find(v => v.lang.startsWith(prefix)) || null;
+  }
+
+  function speak(item, cardEl) {
+    if (!("speechSynthesis" in window)) {
+      alert("이 브라우저는 음성 기능을 지원하지 않습니다.");
+      return;
+    }
+    window.speechSynthesis.cancel();
+
+    const utter = new SpeechSynthesisUtterance(item.word);
+    utter.lang = item.lang;
+    utter.rate = 0.85;
+    utter.pitch = 1;
+    utter.volume = 1;
+
+    const voice = findVoice(item.lang);
+    if (voice) utter.voice = voice;
+
+    if (currentCard) currentCard.classList.remove("playing");
+    cardEl.classList.add("playing");
+    currentCard = cardEl;
+
+    utter.onend = () => cardEl.classList.remove("playing");
+    utter.onerror = () => cardEl.classList.remove("playing");
+
+    window.speechSynthesis.speak(utter);
+  }
+
+  colors.forEach(item => {
+    const card = document.createElement("button");
+    card.className = "card";
+    card.type = "button";
+    card.setAttribute("aria-label", `${item.country}로 ${item.word} 듣기`);
+    card.innerHTML = `
+      <div class="country"><span class="flag">${item.flag}</span>${item.country}</div>
+      <div class="word">${item.word}</div>
+      <div class="romanization">${item.roman}</div>
+    `;
+    card.addEventListener("click", () => speak(item, card));
+    grid.appendChild(card);
+  });
+</script>
+
+</body>
+</html>
