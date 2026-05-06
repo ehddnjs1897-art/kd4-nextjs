@@ -28,6 +28,7 @@ interface Actor {
   weight: number | null
   skills: string[]
   drive_photo_id: string | null
+  storage_photo_path: string | null
   profile_photo: string | null
   email: string | null
   phone: string | null
@@ -66,7 +67,7 @@ async function getActor(id: string): Promise<Actor | null> {
     .select(
       `
       id, name, gender, age_group, height, weight, skills,
-      drive_photo_id, profile_photo, email, phone, instagram,
+      drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram,
       actor_photos ( id, drive_photo_id, caption, sort_order ),
       actor_videos ( id, youtube_id, title ),
       actor_filmography ( id, category, title, role, year, production )
@@ -80,7 +81,12 @@ async function getActor(id: string): Promise<Actor | null> {
 }
 
 function profilePhotoUrl(actor: Actor): string {
+  // 우선순위: profile_photo (수동 업로드) → Storage → Drive → 플레이스홀더
   if (actor.profile_photo) return actor.profile_photo
+  if (actor.storage_photo_path) {
+    const base = process.env.NEXT_PUBLIC_SUPABASE_URL
+    if (base) return `${base}/storage/v1/object/public/actor-photos/${actor.storage_photo_path}`
+  }
   if (actor.drive_photo_id)
     return `https://drive.google.com/thumbnail?id=${actor.drive_photo_id}&sz=w900`
   return '/placeholder-actor.svg'
