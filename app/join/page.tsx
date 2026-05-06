@@ -847,6 +847,37 @@ export default function JoinPage() {
             </p>
           </div>
 
+          {/* 카운트다운 */}
+          <div
+            style={{
+              background: 'var(--bg2)',
+              border: '1px solid var(--border)',
+              borderRadius: 'var(--radius)',
+              padding: '28px 20px',
+              maxWidth: '520px',
+              margin: '0 auto 28px',
+              textAlign: 'center',
+            }}
+          >
+            <p
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: '0.7rem',
+                letterSpacing: '0.2em',
+                color: 'var(--accent-red)',
+                marginBottom: '16px',
+                textTransform: 'uppercase',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+            >
+              <Clock size={13} strokeWidth={1.8} />
+              할인 마감까지
+            </p>
+            <CountdownTimer deadline={DEADLINE} />
+          </div>
+
           {/* 클래스 카드 */}
           <div
             style={{
@@ -989,36 +1020,6 @@ export default function JoinPage() {
                 </div>
               </div>
             ))}
-          </div>
-          {/* 카운트다운 */}
-          <div
-            style={{
-              background: 'var(--bg2)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--radius)',
-              padding: '28px 20px',
-              maxWidth: '520px',
-              margin: '0 auto 28px',
-              textAlign: 'center',
-            }}
-          >
-            <p
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: '0.7rem',
-                letterSpacing: '0.2em',
-                color: 'var(--accent-red)',
-                marginBottom: '16px',
-                textTransform: 'uppercase',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-              }}
-            >
-              <Clock size={13} strokeWidth={1.8} />
-              할인 마감까지
-            </p>
-            <CountdownTimer deadline={DEADLINE} />
           </div>
 
           {/* 할인 혜택 목록 */}

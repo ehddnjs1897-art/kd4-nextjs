@@ -327,16 +327,10 @@ export default function HomePage() {
       })
     })
 
-    /* === 클래스 카드 배치 스태거 (빠른 등장) === */
-    ScrollTrigger.batch('.classes-grid > div', {
-      onEnter: (batch) => {
-        gsap.from(batch, {
-          y: 20, opacity: 0,
-          stagger: 0.05, duration: 0.35, ease: "power2.out",
-        })
-      },
-      start: 'top 98%',
-    })
+    /* === 클래스 카드: ScrollTrigger.batch 제거 ===
+       이전엔 onEnter에서 gsap.from(opacity:0) 적용 → 앵커 점프나 레이아웃 변경으로
+       카드가 이미 viewport 안에 있으면 onEnter 미발화 → opacity:0인 채 잔존하는 버그.
+       카드는 처음부터 보이는 게 안전. (레이아웃 변경마다 깨지는 구조적 결함 제거) */
 
     /* === 후기 마퀴: 스크롤 연동 가속 === */
     document.querySelectorAll('.review-marquee-track').forEach((track, i) => {
@@ -576,7 +570,7 @@ export default function HomePage() {
               ),
             },
             {
-              num: "70명+", label: "현재 수강배우",
+              num: "87명+", label: "현재 수강배우",
               icon: (
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                   <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
