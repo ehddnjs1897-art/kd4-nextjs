@@ -88,13 +88,15 @@ async function fetchRecentPosts(): Promise<AdminPost[]> {
 }
 
 async function fetchApplications(): Promise<AdminApplication[]> {
+  // /join · /contact 등 광고 랜딩에서 들어오는 상담 신청은 consultations 테이블에 누적됨
+  // (applications 테이블은 회원가입·일반 신청용, 별도)
   const { data, error } = await supabaseAdmin
-    .from('applications')
+    .from('consultations')
     .select('id, name, email, phone, class_name, status, created_at')
     .order('created_at', { ascending: false })
 
   if (error) {
-    console.error('[admin] applications fetch 오류:', error.message)
+    console.error('[admin] consultations fetch 오류:', error.message)
     return []
   }
   return (data ?? []) as AdminApplication[]
