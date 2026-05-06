@@ -1,6 +1,10 @@
 # KD4 액팅 스튜디오 — 개발 가이드
 
-## 🚨 2026-05-01 기준 현황 (새 채팅 시작 시 반드시 읽기)
+> ⚠️ **AI 작업자 룰**: 이 문서의 "미완료" 항목은 시간이 지나면 stale될 수 있다.
+> 사용자에게 "미완료"라고 보고하기 전에 **반드시 라이브 검증** 후에 말할 것.
+> (DNS TXT 조회·라이브 자산 헤더·코드 grep 등으로 1분 안에 확인 가능한 항목들임)
+
+## 🚨 2026-05-06 기준 현황 (새 채팅 시작 시 반드시 읽기)
 
 ### 완료된 성능 최적화 (main 브랜치 반영됨)
 1. **CSS @import 4개 제거** — globals.css 렌더 블로킹 5,690ms 해소
@@ -32,11 +36,30 @@
 - public/casting/캐스팅.zip, KD4_캐스팅_한글*.png, public/textures/ 도 이전 작업에서 이미 정리됨
 - public/ 총 용량 ~46MB → 27MB
 
-### 남은 미완료 작업
-- [ ] **Meta 도메인 인증** (가비아 DNS TXT 레코드 추가)
-- [ ] **PageSpeed 재측정** (kd4.club 홈 기준 모바일)
-- [ ] **app/api/notify/route.ts 미커밋 변경** — Meta CAPI(Lead 이벤트 서버 전송) 통합 WIP. `META_CAPI_TOKEN` + `NEXT_PUBLIC_META_PIXEL_ID` env 필요. 검토 후 커밋 결정
-- [ ] **/actors Drive 썸네일** — Drive `thumbnail?id=...&sz=w600` URL은 캐싱·신뢰성 약함. Supabase Storage 또는 next/image 캐시로 마이그레이션 검토
+### ✅ 2026-05-06 검증 완료 (이전 "미완료" 였던 것)
+
+| 항목 | 검증 방법 | 결과 |
+|---|---|---|
+| **Meta 도메인 인증** | `dig kd4.club TXT` | ✅ `facebook-domain-verification=10h6ugh4jd1l7fp2szm7lushh2m5lj` 정상 등록 |
+| **GA4 측정 ID 박혀있음** | curl 라이브 HTML grep | ✅ `gtag('config', 'G-8122KKQZ99')` 정상 (개행 fix 후) |
+| **Meta Pixel 픽셀 박혀있음** | curl 라이브 HTML grep | ✅ `id=1272652704844114` noscript fallback 노출 + JS 인라인 hydration 정상 |
+| **이미지 최적화** | curl HEAD 라이브 자산 | ✅ meisner 276KB, director 148KB, heart-logo 215KB |
+| **폰트 서브셋** | next.config.ts + public/fonts | ✅ KoPub Dotum/Batang 6종 woff2 (64~122KB) |
+| **TTFB** | curl 3회 측정 | ✅ /join 평균 130~400ms, / 평균 150~220ms (Vercel edge) |
+
+### 🔴 남은 미완료 작업
+
+- [ ] **GA4 데이터 누적 검증** — 5/6 trim fix 후 1~2일 누적되면 GA4 콘솔에서 활성 사용자 1+ 잡혀야. 안 잡히면 다른 원인 추가 점검
+- [ ] **PSI 모바일 점수 직접 측정** — 자동 PSI API는 일일 quota 초과 상태(공유 IP). pagespeed.web.dev 사용자 직접 1회 측정 권장
+- [ ] **`director.jpg` / `heart-logo.png` Cache-Control = max-age=0** — 정적 자산인데 캐싱 안 됨. next.config.ts headers 룰 점검 필요 (LCP 영향 미미하지만 완성도 차원)
+- [ ] **자동 일일 트래픽 리포트 재가동** — `04-ops/reports/daily-analytics/` 폴더에 4/27 이후 9일치 누락. `kd4-daily-analytics-report` 스킬 스케줄 점검
+- [ ] **app/api/notify/route.ts 미커밋 변경** — Meta CAPI 통합 WIP. `META_CAPI_TOKEN` + `NEXT_PUBLIC_META_PIXEL_ID` env 필요. 검토 후 커밋 결정 (stash@{0}에 보존)
+- [ ] **/actors Drive 썸네일** — Drive URL 캐싱·신뢰성 약함. Supabase Storage 또는 next/image 캐시 마이그레이션 검토
+
+### 🔬 분석/관측 (2026-05-06)
+- **Meta Pixel 28일 깔때기** (4/27 시점): PageView 1,700 → ViewContent 85(5%) → DeepScroll 44 → InitiateCheckout 1 → CTAClick 1
+- **상담 전환율 0.06%** — 정상 광고는 1~3%. 폼 필수 필드 7개(이름·연락처·이메일·희망클래스·마이즈너경험·유입경로·동의)가 강한 마찰 지점으로 의심
+- **GA4 수치는 신뢰 불가** (5/6 trim fix 전까지) — Meta 1,700 vs GA 28일 89PV 격차 → fix 적용 후 재진단 필요
 
 ### Supabase 상태 (2026-05-01 기준)
 - 결제 완료 → 프로젝트 정상 가동 (HTTP 200)
