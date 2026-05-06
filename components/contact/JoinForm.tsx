@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
-import { MessageCircle, FileText, CheckCircle } from 'lucide-react'
-import { CLASSES } from '@/lib/classes'
+import Image from 'next/image'
+import { useId, useState } from 'react'
+import { MessageCircle, FileText, CheckCircle, ArrowRight } from 'lucide-react'
+import { CLASSES, DIRECTOR } from '@/lib/classes'
 import { analytics } from '@/lib/analytics'
 import { SOURCE_VALUES, MEISNER_OPTIONS } from '@/lib/form-options'
 
@@ -14,6 +15,9 @@ const SOURCE_OPTIONS = [
 const OPEN_CLASSES = CLASSES.filter((c) => c.isNewMemberOpen && c.nameKo !== '베이직 클래스')
 
 export default function JoinForm() {
+  const uid = useId()
+  const consentId = `join-consent-${uid}`
+  const phoneHintId = `phone-hint-${uid}`
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
@@ -226,6 +230,222 @@ export default function JoinForm() {
           </a>
           로 먼저 문의하셔도 됩니다.
         </p>
+
+        {/* ── 상담 전 KD4 더 알아보기 — 4개 카드 ── */}
+        <div style={{ marginTop: '40px', textAlign: 'left' }}>
+          <p
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: '0.7rem',
+              letterSpacing: '0.2em',
+              color: 'var(--gray)',
+              textTransform: 'uppercase',
+              marginBottom: '16px',
+              textAlign: 'center',
+            }}
+          >
+            상담 전 더 알아보기
+          </p>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gap: '12px',
+            }}
+          >
+            {/* 카드 1: 권동원 대표 */}
+            <a
+              href="/#director"
+              style={{
+                display: 'block',
+                background: '#ffffff',
+                border: '1px solid var(--border)',
+                borderRadius: '12px',
+                overflow: 'hidden',
+                textDecoration: 'none',
+                color: '#111111',
+                transition: 'border-color 0.2s, transform 0.15s',
+              }}
+            >
+              <div style={{ position: 'relative', aspectRatio: '4/3' }}>
+                <Image
+                  src="/director.jpg"
+                  alt="권동원 대표"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 220px"
+                  style={{ objectFit: 'cover', objectPosition: 'center top' }}
+                />
+              </div>
+              <div style={{ padding: '12px 14px' }}>
+                <p style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: '4px' }}>
+                  {DIRECTOR.name} 대표
+                </p>
+                <p style={{ fontSize: '0.75rem', color: 'var(--gray)', lineHeight: 1.5, marginBottom: '8px' }}>
+                  Disney+ 무빙2 · Netflix 중증외상센터 · 마이즈너 워크샵 수료
+                </p>
+                <p
+                  style={{
+                    fontSize: '0.72rem',
+                    color: 'var(--navy)',
+                    fontWeight: 600,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '3px',
+                  }}
+                >
+                  자세히 보기 <ArrowRight size={11} strokeWidth={2.2} />
+                </p>
+              </div>
+            </a>
+
+            {/* 카드 2: 캐스팅 결과 */}
+            <a
+              href="/#casting"
+              style={{
+                display: 'block',
+                background: '#ffffff',
+                border: '1px solid var(--border)',
+                borderRadius: '12px',
+                overflow: 'hidden',
+                textDecoration: 'none',
+                color: '#111111',
+                transition: 'border-color 0.2s, transform 0.15s',
+              }}
+            >
+              <div
+                style={{
+                  position: 'relative',
+                  aspectRatio: '4/3',
+                  background: 'var(--bg2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '2.4rem',
+                }}
+              >
+                🎬
+              </div>
+              <div style={{ padding: '12px 14px' }}>
+                <p style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: '4px' }}>
+                  KD4 캐스팅 결과
+                </p>
+                <p style={{ fontSize: '0.75rem', color: 'var(--gray)', lineHeight: 1.5, marginBottom: '8px' }}>
+                  KD4 배우들의 실제 캐스팅 작품 모아보기
+                </p>
+                <p
+                  style={{
+                    fontSize: '0.72rem',
+                    color: 'var(--navy)',
+                    fontWeight: 600,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '3px',
+                  }}
+                >
+                  자세히 보기 <ArrowRight size={11} strokeWidth={2.2} />
+                </p>
+              </div>
+            </a>
+
+            {/* 카드 3: 마이즈너 테크닉 */}
+            <a
+              href="/about#meisner"
+              style={{
+                display: 'block',
+                background: '#ffffff',
+                border: '1px solid var(--border)',
+                borderRadius: '12px',
+                overflow: 'hidden',
+                textDecoration: 'none',
+                color: '#111111',
+                transition: 'border-color 0.2s, transform 0.15s',
+              }}
+            >
+              <div
+                style={{
+                  position: 'relative',
+                  aspectRatio: '4/3',
+                  background: 'var(--bg2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '2.4rem',
+                }}
+              >
+                🎭
+              </div>
+              <div style={{ padding: '12px 14px' }}>
+                <p style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: '4px' }}>
+                  마이즈너 테크닉
+                </p>
+                <p style={{ fontSize: '0.75rem', color: 'var(--gray)', lineHeight: 1.5, marginBottom: '8px' }}>
+                  KD4 훈련의 핵심 — 연기하지 않는 연기
+                </p>
+                <p
+                  style={{
+                    fontSize: '0.72rem',
+                    color: 'var(--navy)',
+                    fontWeight: 600,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '3px',
+                  }}
+                >
+                  자세히 보기 <ArrowRight size={11} strokeWidth={2.2} />
+                </p>
+              </div>
+            </a>
+
+            {/* 카드 4: 동료 배우 이야기 */}
+            <a
+              href="/about#reviews"
+              style={{
+                display: 'block',
+                background: '#ffffff',
+                border: '1px solid var(--border)',
+                borderRadius: '12px',
+                overflow: 'hidden',
+                textDecoration: 'none',
+                color: '#111111',
+                transition: 'border-color 0.2s, transform 0.15s',
+              }}
+            >
+              <div
+                style={{
+                  position: 'relative',
+                  aspectRatio: '4/3',
+                  background: 'var(--bg2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '2.4rem',
+                }}
+              >
+                💬
+              </div>
+              <div style={{ padding: '12px 14px' }}>
+                <p style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: '4px' }}>
+                  동료 배우 이야기
+                </p>
+                <p style={{ fontSize: '0.75rem', color: 'var(--gray)', lineHeight: 1.5, marginBottom: '8px' }}>
+                  KD4 배우들이 직접 남긴 후기
+                </p>
+                <p
+                  style={{
+                    fontSize: '0.72rem',
+                    color: 'var(--navy)',
+                    fontWeight: 600,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '3px',
+                  }}
+                >
+                  자세히 보기 <ArrowRight size={11} strokeWidth={2.2} />
+                </p>
+              </div>
+            </a>
+          </div>
+        </div>
       </div>
     )
   }
@@ -254,10 +474,10 @@ export default function JoinForm() {
         onBlur={() => setFocused(null)}
         style={inputStyle('phone')}
         required
-        aria-describedby="phone-hint"
+        aria-describedby={phoneHintId}
       />
       <p
-        id="phone-hint"
+        id={phoneHintId}
         style={{
           fontSize: '0.78rem',
           color: 'var(--gray)',
@@ -372,7 +592,7 @@ export default function JoinForm() {
 
       {/* 개인정보 수집·이용 동의 (필수) */}
       <label
-        htmlFor="join-consent"
+        htmlFor={consentId}
         style={{
           display: 'flex',
           alignItems: 'flex-start',
@@ -386,7 +606,7 @@ export default function JoinForm() {
         }}
       >
         <input
-          id="join-consent"
+          id={consentId}
           type="checkbox"
           checked={consent}
           onChange={(e) => setConsent(e.target.checked)}

@@ -10,8 +10,6 @@ import {
   FileText,
   Film,
   Handshake,
-  Check,
-  X,
   ArrowRight,
   MessageCircle,
   Clock,
@@ -320,85 +318,37 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ① WHO NEEDS — 자기인식 페르소나 (Hero 직후 게이트)         */}
+      {/* ⓪ FORM-HERO — Hero 직후 즉시 신청 (스크롤 거리 0)         */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section
+        id="form-hero"
+        className="section"
         style={{
-          padding: 'clamp(64px, 12vw, 100px) 0',
-          background: 'var(--bg)',
+          background: 'radial-gradient(ellipse at 50% 0%, rgba(21,72,138,0.08) 0%, var(--bg) 70%)',
+          padding: 'clamp(48px, 9vw, 80px) 0',
         }}
       >
         <div className="container">
-          <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
-            <p className="section-eyebrow">WHO NEEDS KD4</p>
-            <h2
-              className="section-title-serif"
-              style={{
-                fontSize: 'clamp(1.4rem, 3.6vw, 2.2rem)',
-                lineHeight: 1.45,
-                marginBottom: '12px',
-                wordBreak: 'keep-all',
-              }}
-            >
-              이런 배우에게 필요합니다
-            </h2>
-            <p style={{ fontSize: '0.88rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-              하나라도 해당된다면, KD4가 답이 될 수 있습니다
-            </p>
-          </div>
-
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-              gap: '12px',
-              maxWidth: '880px',
-              margin: '0 auto',
-            }}
-          >
-            {[
-              '연기의 본질을 제대로 배우고 싶은 분',
-              '활동의 한계에 부딪힌 배우',
-              '열심히 하지만 달라지는 게 없는 배우',
-              '억지로 짜내는 연기에서 벗어나고 싶은 배우',
-              '출연영상이 없어서 캐스팅 기회를 놓치는 배우',
-            ].map((item, i) => (
-              <div
-                key={item}
-                style={{
-                  background: 'var(--bg2)',
-                  border: '1px solid var(--border)',
-                  borderRadius: 'var(--radius)',
-                  padding: '20px 22px',
-                  display: 'flex',
-                  gap: '14px',
-                  alignItems: 'center',
-                }}
+          <div style={{ maxWidth: '520px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+              <p className="section-eyebrow">무료 상담 · 30초 신청</p>
+              <h2
+                className="section-title-serif"
+                style={{ fontSize: 'clamp(1.4rem, 3.6vw, 1.9rem)', marginBottom: '10px' }}
               >
-                <span
-                  style={{
-                    width: '26px',
-                    height: '26px',
-                    borderRadius: '50%',
-                    background: 'rgba(21,72,138,0.1)',
-                    border: '1px solid rgba(21,72,138,0.2)',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                  }}
-                  aria-hidden
-                >
-                  <Check size={14} color="var(--navy)" strokeWidth={2.6} />
-                </span>
-                <p style={{ fontSize: '0.92rem', lineHeight: 1.55, wordBreak: 'keep-all' }}>
-                  {item}
-                </p>
-              </div>
-            ))}
+                지금 바로 상담 신청
+              </h2>
+              <p style={{ fontSize: '0.88rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
+                이름·연락처만 남기시면 24시간 이내 카카오 채널로 연락드려요.
+                <br />광고 전화 없음 · 부담 0
+              </p>
+            </div>
+            <JoinForm />
           </div>
         </div>
       </section>
+
+      {/* WHO NEEDS 섹션 — 광고 압축으로 제거 (5/6) */}
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ② KD4 고유 자산 — 3년이 만든 캐스팅 연계 시스템           */}
@@ -498,160 +448,29 @@ export default function JoinPage() {
         </div>
       </section>
 
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ② COMPARE — 공장식 학원 vs KD4                           */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
-        <div className="container">
-          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">02 — COMPARE</p>
-            <h2
-              className="section-title-serif"
-              style={{
-                fontSize: 'clamp(1.5rem, 4vw, 2.5rem)',
-                marginBottom: '14px',
-                wordBreak: 'keep-all',
-              }}
-            >
-              공장식 학원 vs <span style={{ color: 'var(--navy)' }}>KD4</span>
-            </h2>
-            <p style={{ fontSize: '0.9rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-              같은 연기 수업이 아닙니다. 배우를 대하는 방식부터 다릅니다.
-            </p>
-          </div>
-
-          <div style={{ maxWidth: '480px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <div style={{
-              display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
-              padding: '6px 16px',
-              fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em',
-              color: 'var(--gray)', textAlign: 'center',
-            }}>
-              <span />
-              <span>대형 학원</span>
-              <span style={{ color: 'var(--navy)' }}>KD4</span>
-            </div>
-            {COMPARISON_ROWS.map((row) => (
-              <div key={row.label} style={{
-                display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
-                alignItems: 'center',
-                background: 'var(--bg2)', border: '1px solid var(--border)',
-                borderRadius: '8px', padding: '14px 16px',
-              }}>
-                <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>{row.label}</span>
-                <span style={{ fontSize: '0.82rem', color: 'var(--gray)', textAlign: 'center' }}>
-                  {row.normal === 'X'
-                    ? <X size={16} color="var(--gray)" strokeWidth={2.2} style={{ display: 'inline-block', verticalAlign: 'middle' }} />
-                    : row.normal}
-                </span>
-                <span style={{ fontSize: '0.82rem', color: 'var(--navy)', fontWeight: 700, textAlign: 'center' }}>
-                  {row.kd4 === 'O'
-                    ? <Check size={16} color="var(--navy)" strokeWidth={2.2} style={{ display: 'inline-block', verticalAlign: 'middle' }} />
-                    : row.kd4}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* COMPARE 섹션 — 광고 압축으로 제거 (5/6) */}
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ③ SOLUTION — 마이즈너 테크닉 (영상 임베드)                */}
+      {/* ③ SOLUTION — 마이즈너 테크닉 (광고 압축: 영상 + 1줄 + 링크) */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
+      <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto', textAlign: 'center' }}>
             <p className="section-eyebrow">03 — THE METHOD</p>
             <h2
               className="section-title-serif"
-              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
+              style={{ fontSize: 'clamp(1.5rem, 3.6vw, 2.1rem)', marginBottom: '12px' }}
             >
               <span style={{ color: 'var(--navy)' }}>마이즈너 테크닉</span>
             </h2>
             <p
               className="section-desc"
-              style={{ margin: '0 auto 32px', textAlign: 'center', maxWidth: '520px' }}
+              style={{ margin: '0 auto 28px', textAlign: 'center', maxWidth: '520px' }}
             >
-              감정을 만드는 것이 아니라, 상대에게 반응하는 훈련법입니다.
+              감정을 만드는 것이 아니라, 상대에게 반응하는 훈련법입니다. <br />
+              머리로 짜낸 연기가 아닌, 충동에서 시작되는 살아있는 연기.
             </p>
 
-            {/* 마이즈너 핵심 3요소 — REPETITION / CAMERA / VS OTHER METHODS */}
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-                gap: '14px',
-                marginBottom: '40px',
-                textAlign: 'left',
-              }}
-            >
-              {[
-                {
-                  label: 'REPETITION',
-                  title: 'Repetition 훈련',
-                  desc: '두 배우가 상대를 관찰하며 말과 행동을 반복·반응하는 핵심 훈련. 감정을 혼자 만들지 않고, 상대에게서 촉발된 충동에 반응합니다.',
-                },
-                {
-                  label: 'CAMERA',
-                  title: '카메라 연기에 최적화',
-                  desc: '마이즈너 테크닉은 과장 없이 미세한 반응으로 진실을 담는 방식입니다. 무대 연기와 달리 클로즈업 카메라 앞에서 오히려 더 강력합니다.',
-                },
-                {
-                  label: 'INSTINCT',
-                  title: '연기하지 않는 연기',
-                  desc: '머리로 짜낸 틀에 박힌 연기가 아닙니다. 자신의 충동에서 시작되는 살아있는 연기 — 연기하지 않는 연기를 만듭니다.',
-                },
-              ].map(item => (
-                <div
-                  key={item.label}
-                  style={{
-                    background: 'var(--bg2)',
-                    border: '1px solid var(--border)',
-                    borderRadius: 'var(--radius)',
-                    padding: '24px 22px',
-                  }}
-                >
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-display)',
-                      fontSize: '0.65rem',
-                      letterSpacing: '0.2em',
-                      color: 'var(--navy)',
-                      textTransform: 'uppercase',
-                      marginBottom: '10px',
-                      fontWeight: 700,
-                    }}
-                  >
-                    {item.label}
-                  </p>
-                  <h3
-                    style={{
-                      fontFamily: 'var(--font-serif)',
-                      fontSize: '1.02rem',
-                      fontWeight: 700,
-                      color: 'var(--navy)',
-                      marginBottom: '10px',
-                      lineHeight: 1.4,
-                      wordBreak: 'keep-all',
-                    }}
-                  >
-                    {item.title}
-                  </h3>
-                  <p
-                    style={{
-                      fontSize: '0.85rem',
-                      color: 'var(--gray-light)',
-                      lineHeight: 1.7,
-                      wordBreak: 'keep-all',
-                    }}
-                  >
-                    {item.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            {/* YouTube 영상 임베드 — 16:9 반응형 (클릭 시 로드) */}
             <YouTubeFacade
               videoId="6crvxRnBerk"
               title="마이즈너 테크닉 — KD4 액팅 스튜디오"
@@ -660,8 +479,25 @@ export default function JoinPage() {
                 boxShadow: '0 8px 28px rgba(21,72,138,0.12)',
                 border: '1px solid var(--border)',
                 background: 'var(--bg2)',
+                marginBottom: '24px',
               }}
             />
+
+            <a
+              href="/about#meisner"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '0.85rem',
+                color: 'var(--navy)',
+                fontWeight: 600,
+                textDecoration: 'underline',
+                textUnderlineOffset: '4px',
+              }}
+            >
+              마이즈너 테크닉 더 자세히 알아보기 <ArrowRight size={13} strokeWidth={2.2} />
+            </a>
           </div>
         </div>
       </section>
@@ -1245,29 +1081,28 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑤ DIRECTOR — 강사 크레딧 구체화 + 인라인 CTA              */}
+      {/* ⑤ DIRECTOR — 강사 크레딧 (광고 압축: highlights 3개 + 링크) */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
+      <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
         <div className="container">
-          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">07 — THE LEADER</p>
+          <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
+            <p className="section-eyebrow">04 — THE LEADER</p>
             <h2
               className="section-title-serif"
-              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '12px' }}
+              style={{ fontSize: 'clamp(1.5rem, 3.6vw, 2.1rem)', marginBottom: '10px' }}
             >
               배우의 성장을 가이드합니다
             </h2>
             <p
               style={{
-                fontSize: 'clamp(0.82rem, 2.2vw, 0.98rem)',
+                fontSize: 'clamp(0.82rem, 2.2vw, 0.95rem)',
                 color: 'var(--gray-light)',
                 lineHeight: 1.6,
                 margin: 0,
                 wordBreak: 'keep-all',
-                whiteSpace: 'nowrap',
               }}
             >
-              전문 액팅코치가 배우의 성장을 촉진시킵니다.
+              현역 배우가 직접 가이드하는 액팅 코치
             </p>
           </div>
 
@@ -1288,47 +1123,50 @@ export default function JoinPage() {
               <div className="director-name">{DIRECTOR.name}</div>
               <div className="director-role">{DIRECTOR.title}</div>
               <div className="director-creds">
-                {DIRECTOR.highlights.map((line) => (
+                {DIRECTOR.highlights.slice(0, 3).map((line) => (
                   <div key={line} className="director-cred">
                     {line}
                   </div>
                 ))}
               </div>
-              <p
+              <a
+                href="/#director"
                 style={{
-                  marginTop: '22px',
-                  paddingLeft: '14px',
-                  borderLeft: '2px solid var(--navy)',
-                  fontStyle: 'italic',
-                  fontSize: '0.92rem',
-                  color: 'var(--gray-light)',
-                  lineHeight: 1.8,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  marginTop: '14px',
+                  fontSize: '0.82rem',
+                  color: 'var(--navy)',
+                  fontWeight: 600,
+                  textDecoration: 'underline',
+                  textUnderlineOffset: '4px',
                 }}
               >
-                {DIRECTOR.quote}
-              </p>
+                필모그래피 · 약력 더 보기 <ArrowRight size={12} strokeWidth={2.2} />
+              </a>
             </div>
           </div>
         </div>
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑥ PROOF — 후기 (신뢰도 보강) + 인라인 CTA                 */}
+      {/* ⑥ PROOF — 후기 (광고 압축: 마퀴 1행 + 더보기 링크)         */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
+      <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
         <div className="container">
-          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">08 — REAL REVIEWS</p>
+          <div style={{ maxWidth: '720px', margin: '0 auto 28px', textAlign: 'center' }}>
+            <p className="section-eyebrow">05 — REAL REVIEWS</p>
             <h2
               className="section-title-serif"
-              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: 0 }}
+              style={{ fontSize: 'clamp(1.5rem, 3.6vw, 2.1rem)', marginBottom: 0 }}
             >
               배우들의 솔직한 후기
             </h2>
           </div>
 
-          {/* 마퀴 1행: 왼쪽으로 */}
-          <div className="review-marquee" style={{ marginBottom: '12px' }}>
+          {/* 마퀴 1행만 (압축) */}
+          <div className="review-marquee">
             <div className="review-marquee-track">
               {[...REVIEW_MARQUEE_ROW1, ...REVIEW_MARQUEE_ROW1].map((r, i) => (
                 <div key={i} style={{ flex: '0 0 auto', width: '320px', padding: '20px 24px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', marginRight: '14px' }}>
@@ -1338,20 +1176,23 @@ export default function JoinPage() {
               ))}
             </div>
           </div>
-          {/* 마퀴 2행: 오른쪽으로 */}
-          <div className="review-marquee reverse">
-            <div className="review-marquee-track">
-              {[...REVIEW_MARQUEE_ROW2, ...REVIEW_MARQUEE_ROW2].map((r, i) => (
-                <div key={i} style={{ flex: '0 0 auto', width: '320px', padding: '20px 24px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', marginRight: '14px' }}>
-                  <p style={{ fontSize: '0.86rem', color: 'var(--white)', lineHeight: 1.7, marginBottom: '10px' }}>&ldquo;{r.text}&rdquo;</p>
-                  <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>— {r.author}</span>
-                </div>
-              ))}
-            </div>
-          </div>
 
-          {/* 인라인 CTA */}
-          <div style={{ textAlign: 'center', marginTop: '32px' }}>
+          {/* 더 보기 링크 + 인라인 CTA */}
+          <div style={{ textAlign: 'center', marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '14px', alignItems: 'center' }}>
+            <a
+              href="/about#reviews"
+              style={{
+                fontSize: '0.82rem',
+                color: 'var(--gray-light)',
+                textDecoration: 'underline',
+                textUnderlineOffset: '4px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+              }}
+            >
+              동료 배우 이야기 더 보기 <ArrowRight size={12} strokeWidth={2.2} />
+            </a>
             <JoinCTALink
               href="#form"
               location="inline_proof"
