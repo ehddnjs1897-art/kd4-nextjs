@@ -6,7 +6,7 @@
 import { usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 
-const GA_ID = process.env.NEXT_PUBLIC_GA_ID ?? 'G-8122KKQZ99'
+const GA_ID = (process.env.NEXT_PUBLIC_GA_ID ?? 'G-8122KKQZ99').trim()
 
 export default function GAPageTracker() {
   const pathname = usePathname()
