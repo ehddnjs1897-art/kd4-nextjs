@@ -474,19 +474,7 @@ export default function JoinForm() {
         onBlur={() => setFocused(null)}
         style={inputStyle('phone')}
         required
-        aria-describedby={phoneHintId}
       />
-      <p
-        id={phoneHintId}
-        style={{
-          fontSize: '0.78rem',
-          color: 'var(--gray)',
-          margin: '-4px 0 0 4px',
-          letterSpacing: '0.01em',
-        }}
-      >
-        문자로만 연락드립니다 · 광고 전화 없음
-      </p>
 
       {/* 이메일 — 필수 (뉴스레터 발송용) */}
       <input
@@ -498,19 +486,7 @@ export default function JoinForm() {
         onBlur={() => setFocused(null)}
         style={inputStyle('email')}
         required
-        aria-describedby={`email-hint-${uid}`}
       />
-      <p
-        id={`email-hint-${uid}`}
-        style={{
-          fontSize: '0.78rem',
-          color: 'var(--gray)',
-          margin: '-4px 0 0 4px',
-          letterSpacing: '0.01em',
-        }}
-      >
-        뉴스레터 발송용 (월 1~2회) · 광고 메일 없음
-      </p>
 
       {/* 희망 클래스 (선택) */}
       <div style={{ position: 'relative' }}>

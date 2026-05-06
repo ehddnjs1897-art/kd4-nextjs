@@ -318,8 +318,7 @@ export default function JoinPage() {
                 지금 바로 상담 신청
               </h2>
               <p style={{ fontSize: '0.88rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-                이름·연락처만 남기시면 24시간 이내 카카오 채널로 연락드려요.
-                <br />광고 전화 없음 · 부담 0
+                이름·연락처만 남기시면 24시간 이내 SMS로 연락드립니다.
               </p>
             </div>
             <JoinForm />
@@ -1347,7 +1346,7 @@ export default function JoinPage() {
                 무료 상담 신청
               </h2>
               <p style={{ fontSize: '0.9rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-                24시간 이내 카카오 채널을 통해 연락드립니다.
+                24시간 이내 SMS로 연락드립니다.
               </p>
             </div>
             <JoinForm />
@@ -1360,10 +1359,7 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="section" style={{ background: 'var(--bg)', padding: '60px 0 40px' }}>
         <div className="container" style={{ textAlign: 'center' }}>
-          <p style={{ fontSize: '0.78rem', color: 'var(--gray)', lineHeight: 1.7 }}>
-            개인정보는 상담 연락과 뉴스레터 발송에만 사용됩니다.
-          </p>
-          <div style={{ marginTop: '24px' }}>
+          <div>
             <JoinCTALink
               href="https://pf.kakao.com/_ximxdqn"
               kind="external"
