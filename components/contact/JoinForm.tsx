@@ -54,12 +54,8 @@ export default function JoinForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!name || !phone || !email) {
-      setError('이름 · 연락처 · 이메일은 필수입니다.')
-      return
-    }
-    if (!className || !meisnerExp || !source) {
-      setError('희망 클래스 · 마이즈너 경험 · 유입 경로를 모두 선택해 주세요.')
+    if (!name || !phone) {
+      setError('이름 · 연락처는 필수입니다.')
       return
     }
     if (!consent) {
@@ -272,19 +268,18 @@ export default function JoinForm() {
         카카오톡으로만 연락드립니다 · 광고 전화 없음
       </p>
 
-      {/* 이메일 */}
+      {/* 이메일 (선택) */}
       <input
         type="email"
-        placeholder="이메일 * your@email.com"
+        placeholder="이메일 (선택)"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         onFocus={() => handleFieldFocus('email')}
         onBlur={() => setFocused(null)}
         style={inputStyle('email')}
-        required
       />
 
-      {/* 희망 클래스 */}
+      {/* 희망 클래스 (선택) */}
       <div style={{ position: 'relative' }}>
         <select
           value={className}
@@ -292,10 +287,8 @@ export default function JoinForm() {
           onFocus={() => handleFieldFocus('class')}
           onBlur={() => setFocused(null)}
           style={{ ...inputStyle('class'), cursor: 'pointer' }}
-          required
-          aria-required="true"
         >
-          <option value="">희망 클래스 선택 *</option>
+          <option value="">희망 클래스 (선택 — 상담 시 안내)</option>
           {OPEN_CLASSES.map((c) => (
             <option key={c.nameKo} value={c.nameKo}>
               {c.nameKo}
@@ -317,7 +310,7 @@ export default function JoinForm() {
         </span>
       </div>
 
-      {/* 마이즈너 경험 */}
+      {/* 마이즈너 경험 (선택) */}
       <div style={{ position: 'relative' }}>
         <select
           value={meisnerExp}
@@ -325,12 +318,10 @@ export default function JoinForm() {
           onFocus={() => handleFieldFocus('meisner')}
           onBlur={() => setFocused(null)}
           style={{ ...inputStyle('meisner'), cursor: 'pointer' }}
-          required
-          aria-required="true"
         >
           {MEISNER_OPTIONS.map((o) => (
             <option key={o.value} value={o.value}>
-              {o.label === '마이즈너 경험 선택' ? '마이즈너 경험 *' : o.label}
+              {o.label === '마이즈너 경험 선택' ? '마이즈너 경험 (선택)' : o.label}
             </option>
           ))}
         </select>
@@ -349,7 +340,7 @@ export default function JoinForm() {
         </span>
       </div>
 
-      {/* 유입 경로 */}
+      {/* 유입 경로 (선택) */}
       <div style={{ position: 'relative' }}>
         <select
           value={source}
@@ -357,12 +348,10 @@ export default function JoinForm() {
           onFocus={() => handleFieldFocus('source')}
           onBlur={() => setFocused(null)}
           style={{ ...inputStyle('source'), cursor: 'pointer' }}
-          required
-          aria-required="true"
         >
           {SOURCE_OPTIONS.map((o) => (
             <option key={o.value} value={o.value}>
-              {o.value === '' ? 'KD4를 어떻게 알게 되셨나요? *' : o.label}
+              {o.value === '' ? 'KD4를 어떻게 알게 되셨나요? (선택)' : o.label}
             </option>
           ))}
         </select>
