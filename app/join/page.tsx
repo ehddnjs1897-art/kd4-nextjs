@@ -885,7 +885,7 @@ export default function JoinPage() {
               gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
               gap: '20px',
               maxWidth: '720px',
-              margin: '0 auto',
+              margin: '0 auto 56px',
             }}
           >
             {[MAIN_CLASS, FILM_CLASS].map((cls) => (
