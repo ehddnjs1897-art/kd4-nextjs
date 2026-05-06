@@ -293,27 +293,6 @@ export default function JoinPage() {
               카카오로 문의하기
             </JoinCTALink>
           </div>
-          <p
-            style={{
-              fontSize: '0.78rem',
-              color: 'rgba(255,255,255,0.62)',
-              marginTop: '14px',
-              textAlign: 'center',
-              letterSpacing: '0.01em',
-            }}
-          >
-            마이즈너 정규 클래스 35만원 → 첫 달 <strong style={{ color: '#fff' }}>25만원</strong> · 잔여 3석
-          </p>
-          <p
-            style={{
-              fontSize: '0.72rem',
-              color: 'rgba(255,255,255,0.35)',
-              marginTop: '6px',
-              textAlign: 'center',
-            }}
-          >
-            * 첫 달 10만원 할인 or 무료 오픈클래스 — 둘 중 하나 선택
-          </p>
         </div>
       </section>
 
@@ -479,25 +458,8 @@ export default function JoinPage() {
                 boxShadow: '0 8px 28px rgba(21,72,138,0.12)',
                 border: '1px solid var(--border)',
                 background: 'var(--bg2)',
-                marginBottom: '24px',
               }}
             />
-
-            <a
-              href="/about#meisner"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontSize: '0.85rem',
-                color: 'var(--navy)',
-                fontWeight: 600,
-                textDecoration: 'underline',
-                textUnderlineOffset: '4px',
-              }}
-            >
-              마이즈너 테크닉 더 자세히 알아보기 <ArrowRight size={13} strokeWidth={2.2} />
-            </a>
           </div>
         </div>
       </section>
