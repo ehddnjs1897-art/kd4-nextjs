@@ -1123,7 +1123,7 @@ export default function JoinPage() {
               <div className="director-name">{DIRECTOR.name}</div>
               <div className="director-role">{DIRECTOR.title}</div>
               <div className="director-creds">
-                {DIRECTOR.highlights.slice(0, 3).map((line) => (
+                {DIRECTOR.highlights.map((line) => (
                   <div key={line} className="director-cred">
                     {line}
                   </div>
