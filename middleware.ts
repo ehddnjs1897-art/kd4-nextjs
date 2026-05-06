@@ -2,8 +2,19 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  // 대소문자 오타 정규화 — /Join → /join 등 (308 루프 없이 안전)
   const { pathname } = request.nextUrl
+
+  // 정적 자산은 대소문자 그대로 유지 (Vercel은 대소문자 구분 — KoPub*.woff2 등)
+  // 폰트·이미지·CSS·JS·맵 등 모든 정적 확장자
+  if (
+    pathname.startsWith('/fonts/') ||
+    pathname.startsWith('/images/') ||
+    /\.(woff2?|ttf|otf|eot|css|js|map|json|webmanifest)$/i.test(pathname)
+  ) {
+    return NextResponse.next()
+  }
+
+  // 대소문자 오타 정규화 — /Join → /join 등 (308 루프 없이 안전)
   const lowered = pathname.toLowerCase()
   if (pathname !== lowered) {
     const url = request.nextUrl.clone()
@@ -64,6 +75,6 @@ export const config = {
     /*
      * /auth/callback, /api/* 등 정적 파일 제외한 모든 경로에서 세션 갱신
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|fonts/|images/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|woff2|woff|ttf|otf|eot|css|js|map|json|webmanifest|ico)$).*)',
   ],
 }

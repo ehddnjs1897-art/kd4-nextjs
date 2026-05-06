@@ -1084,29 +1084,87 @@ export default function JoinPage() {
             <div style={{ flex: 1 }}>
               <div className="director-name">{DIRECTOR.name}</div>
               <div className="director-role">{DIRECTOR.title}</div>
-              <div className="director-creds">
-                {DIRECTOR.highlights.map((line) => (
-                  <div key={line} className="director-cred">
-                    {line}
-                  </div>
-                ))}
-              </div>
-              <a
-                href="/#director"
+
+              {/* PROFILE — 풀 이력 9개 */}
+              <p
                 style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  marginTop: '14px',
-                  fontSize: '0.82rem',
+                  fontFamily: 'var(--font-display)',
+                  fontSize: '0.7rem',
+                  letterSpacing: '0.15em',
                   color: 'var(--navy)',
-                  fontWeight: 600,
-                  textDecoration: 'underline',
-                  textUnderlineOffset: '4px',
+                  marginTop: '20px',
+                  marginBottom: '12px',
+                  fontWeight: 700,
                 }}
               >
-                필모그래피 · 약력 더 보기 <ArrowRight size={12} strokeWidth={2.2} />
-              </a>
+                PROFILE
+              </p>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '24px', listStyle: 'none', padding: 0 }}>
+                {DIRECTOR.profileFlat.map((item) => (
+                  <li
+                    key={item}
+                    style={{
+                      fontSize: '0.85rem',
+                      color: 'var(--gray-light)',
+                      paddingLeft: '14px',
+                      position: 'relative',
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    <span
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        top: '0.6em',
+                        width: '6px',
+                        height: '1px',
+                        background: 'var(--navy)',
+                        display: 'inline-block',
+                      }}
+                    />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+
+              {/* FILMOGRAPHY */}
+              <p
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: '0.7rem',
+                  letterSpacing: '0.15em',
+                  color: 'var(--navy)',
+                  marginBottom: '12px',
+                  fontWeight: 700,
+                }}
+              >
+                FILMOGRAPHY
+              </p>
+              {[
+                { cat: '드라마', items: DIRECTOR.filmography.drama },
+                { cat: '영화', items: DIRECTOR.filmography.film },
+                { cat: 'CF', items: DIRECTOR.filmography.cf },
+              ].map((group) => (
+                <div key={group.cat} style={{ marginBottom: '14px' }}>
+                  <p
+                    style={{
+                      fontSize: '0.72rem',
+                      color: 'var(--gray)',
+                      marginBottom: '6px',
+                      letterSpacing: '0.05em',
+                    }}
+                  >
+                    {group.cat}
+                  </p>
+                  <ul style={{ display: 'flex', flexDirection: 'column', gap: '4px', listStyle: 'none', padding: 0 }}>
+                    {group.items.map((item) => (
+                      <li key={item} style={{ fontSize: '0.82rem', color: 'var(--gray-light)' }}>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
           </div>
         </div>
