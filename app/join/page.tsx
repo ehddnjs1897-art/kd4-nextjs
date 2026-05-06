@@ -1177,22 +1177,8 @@ export default function JoinPage() {
             </div>
           </div>
 
-          {/* 더 보기 링크 + 인라인 CTA */}
-          <div style={{ textAlign: 'center', marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '14px', alignItems: 'center' }}>
-            <a
-              href="/about#reviews"
-              style={{
-                fontSize: '0.82rem',
-                color: 'var(--gray-light)',
-                textDecoration: 'underline',
-                textUnderlineOffset: '4px',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '4px',
-              }}
-            >
-              동료 배우 이야기 더 보기 <ArrowRight size={12} strokeWidth={2.2} />
-            </a>
+          {/* 인라인 CTA */}
+          <div style={{ textAlign: 'center', marginTop: '24px' }}>
             <JoinCTALink
               href="#form"
               location="inline_proof"
