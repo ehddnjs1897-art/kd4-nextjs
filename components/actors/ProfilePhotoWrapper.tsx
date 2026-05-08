@@ -17,31 +17,27 @@ export default function ProfilePhotoWrapper({ src, alt, downloadHref, imageProte
   if (imageProtected) {
     return (
       <div
-        style={{
-          ...wrapStyles,
-          backgroundImage: `url("${src}")`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center top',
-          userSelect: 'none',
-          WebkitUserSelect: 'none',
-        }}
+        style={{ ...wrapStyles, position: 'relative' }}
         onContextMenu={(e) => e.preventDefault()}
         onDragStart={(e) => e.preventDefault()}
       >
-        {/* 투명 오버레이 */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={src}
+          alt={alt}
+          style={imgStyles}
+          draggable={false}
+        />
+        {/* 투명 오버레이: 우클릭 저장 차단 */}
         <div style={overlayStyle} />
       </div>
     )
   }
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ ...wrapStyles, position: 'relative' }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={src}
-        alt={alt}
-        style={{ ...wrapStyles, objectFit: 'cover', objectPosition: 'center top', display: 'block' }}
-      />
+      <img src={src} alt={alt} style={imgStyles} />
       {downloadHref && (
         <a
           href={downloadHref}
@@ -58,12 +54,19 @@ export default function ProfilePhotoWrapper({ src, alt, downloadHref, imageProte
 }
 
 const wrapStyles: React.CSSProperties = {
-  position: 'relative',
-  aspectRatio: '9/16',
   borderRadius: 8,
   overflow: 'hidden',
   background: 'var(--bg3)',
   width: '100%',
+  userSelect: 'none',
+  WebkitUserSelect: 'none',
+}
+
+const imgStyles: React.CSSProperties = {
+  width: '100%',
+  height: 'auto',
+  display: 'block',
+  pointerEvents: 'none',
 }
 
 const overlayStyle: React.CSSProperties = {

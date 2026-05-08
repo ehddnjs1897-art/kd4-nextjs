@@ -54,16 +54,24 @@ async function main() {
     const filename = `${actor.id}.jpg`
 
     try {
-      // 2. Drive에서 사진 fetch
-      const driveUrl = `https://drive.google.com/uc?export=view&id=${actor.drive_photo_id}`
+      // 2. Drive에서 사진 fetch (썸네일 URL 사용 — uc?export=view는 권한 페이지로 리다이렉트되는 경우 있음)
+      const driveUrl = `https://drive.google.com/thumbnail?id=${actor.drive_photo_id}&sz=w1600`
       const res = await fetch(driveUrl)
       if (!res.ok) throw new Error(`Drive fetch ${res.status}`)
-      const blob = await res.blob()
 
-      // 3. Storage 업로드
+      const contentType = res.headers.get('content-type') ?? ''
+      if (contentType.includes('text/html')) {
+        throw new Error('Drive returned HTML (권한 없음 또는 파일 비공개)')
+      }
+
+      // Buffer로 변환 — Blob의 type이 application/octet-stream이면 contentType 옵션이 무시됨
+      const arrayBuffer = await res.arrayBuffer()
+      const buffer = Buffer.from(arrayBuffer)
+
+      // 3. Storage 업로드 (명시적으로 image/jpeg 지정)
       const { error: uploadError } = await supabase.storage
         .from(BUCKET)
-        .upload(filename, blob, {
+        .upload(filename, buffer, {
           contentType: 'image/jpeg',
           upsert: true,
         })
