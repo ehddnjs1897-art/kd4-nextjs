@@ -831,7 +831,7 @@ export default function JoinPage() {
           >
             <p
               className="section-eyebrow"
-              style={{ color: 'var(--accent-red)', marginBottom: '10px' }}
+              style={{ color: 'var(--navy)', marginBottom: '10px' }}
             >
               06 — DISCOUNT BENEFITS
             </p>
