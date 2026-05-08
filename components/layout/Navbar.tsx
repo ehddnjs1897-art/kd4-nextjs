@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 const publicLinks = [
   { label: '스튜디오 소개', href: '/about' },
   { label: '클래스 소개', href: '/classes' },
+  { label: '멤버 혜택', href: '/benefits' },
 ]
 
 const crewLinks = [
