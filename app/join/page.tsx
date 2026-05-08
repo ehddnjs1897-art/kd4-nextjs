@@ -819,15 +819,53 @@ export default function JoinPage() {
             ))}
           </div>
 
+          {/* 할인 혜택 섹션 타이틀 */}
+          <div
+            style={{
+              maxWidth: '520px',
+              margin: '56px auto 0',
+              paddingTop: '36px',
+              borderTop: '1px solid var(--border)',
+              textAlign: 'center',
+            }}
+          >
+            <p
+              className="section-eyebrow"
+              style={{ color: 'var(--accent-red)', marginBottom: '10px' }}
+            >
+              06 — DISCOUNT BENEFITS
+            </p>
+            <h3
+              className="section-title-serif"
+              style={{
+                fontSize: 'clamp(1.4rem, 3.5vw, 1.9rem)',
+                marginBottom: '10px',
+              }}
+            >
+              할인 혜택
+            </h3>
+            <p
+              style={{
+                fontSize: '0.88rem',
+                color: 'var(--gray-light)',
+                lineHeight: 1.6,
+                marginBottom: '20px',
+              }}
+            >
+              해당하는 조건이 있다면 추가로 적용받을 수 있어요
+            </p>
+          </div>
+
           {/* 할인 혜택 목록 */}
           <div
             style={{
               maxWidth: '520px',
               margin: '0 auto 36px',
               background: 'var(--bg2)',
-              border: '1px solid var(--border)',
+              border: '2px solid var(--accent-red)',
               borderRadius: 'var(--radius)',
               overflow: 'hidden',
+              boxShadow: '0 4px 20px rgba(199,62,62,0.08)',
             }}
           >
             {DISCOUNTS.map(({ tag, title, desc, isNew }, i) => (
