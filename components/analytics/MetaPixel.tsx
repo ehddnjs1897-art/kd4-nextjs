@@ -2,15 +2,23 @@
 
 import Script from 'next/script'
 import { usePathname } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim()
 
 export default function MetaPixel() {
   const pathname = usePathname()
+  const isInitialMount = useRef(true)
 
   // SPA 라우팅 대응 — 경로 바뀔 때마다 PageView 재발생
+  // ※ 초기 마운트는 스킵: 인라인 Script fbq('init') + fbq('track','PageView') 에서 이미 발생
   useEffect(() => {
+    // 초기 마운트 스킵 — inline Script 에서 이미 PageView 전송
+    if (isInitialMount.current) {
+      isInitialMount.current = false
+      return
+    }
+
     if (
       process.env.NODE_ENV !== 'production' ||
       typeof window === 'undefined' ||
