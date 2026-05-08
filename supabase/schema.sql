@@ -65,6 +65,7 @@ CREATE TABLE IF NOT EXISTS actors (
   instagram TEXT,
   profile_photo TEXT,           -- 메인 9:16 사진 URL
   drive_photo_id TEXT,          -- 드라이브 초기 임포트용 파일 ID
+  storage_photo_path TEXT,      -- Supabase Storage actor-photos 버킷 경로 (우선 사용, null이면 drive_photo_id 폴백)
   drive_photo_position TEXT DEFAULT 'center top',
   source TEXT DEFAULT 'manual' CHECK (source IN ('manual', 'drive_import')),
   is_public BOOLEAN DEFAULT TRUE,
