@@ -1,6 +1,6 @@
-import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import BoardClient from '@/components/board/BoardClient'
+import PublicLanding from '@/components/board/PublicLanding'
 
 export const metadata = { title: '커뮤니티 — KD4 액팅 스튜디오' }
 
@@ -8,7 +8,10 @@ export default async function BoardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user) redirect('/auth/login?next=/board')
+  // 비로그인: 안내 페이지 노출 (이전엔 즉시 /auth/login으로 redirect → "여기 뭐 하는 데지?" 이탈 유발)
+  if (!user) {
+    return <PublicLanding />
+  }
 
   // 전체 포스트 한 번에 fetch — 카테고리 필터링은 클라이언트에서 처리 (탭 딜레이 없음)
   const { data: posts } = await supabase

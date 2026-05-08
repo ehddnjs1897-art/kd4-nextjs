@@ -7,6 +7,7 @@ import ActorTabs from '@/components/actors/ActorTabs'
 import ShareButton from '@/components/actors/ShareButton'
 import ProfilePhotoWrapper from '@/components/actors/ProfilePhotoWrapper'
 import { UserRole } from '@/lib/types'
+import { getActorPersonSchema, getActorVideoSchemas, serializeJsonLd } from '@/lib/seo'
 
 /** 배우DB 열람 가능 여부 */
 function canViewActorDb(role: UserRole | null): boolean {
@@ -149,8 +150,45 @@ export default async function ActorDetailPage({
       ? `${process.env.NEXT_PUBLIC_SITE_URL}/actors/${actor.id}`
       : `https://kd4studio.com/actors/${actor.id}`
 
+  /* ── SEO: Person + VideoObject JSON-LD (검색 노출용) ── */
+  const personSchema = getActorPersonSchema({
+    id: actor.id,
+    name: actor.name,
+    gender: actor.gender,
+    age_group: actor.age_group ?? null,
+    height: actor.height,
+    weight: actor.weight,
+    skills: actor.skills ?? null,
+    email: actor.email,
+    phone: actor.phone,
+    instagram: actor.instagram,
+    imageUrl: photoUrl.startsWith('http') ? photoUrl : `https://kd4.club${photoUrl}`,
+    filmography: actor.actor_filmography ?? [],
+  })
+  const videoSchemas = getActorVideoSchemas(
+    { id: actor.id, name: actor.name },
+    (actor.actor_videos ?? []).map((v) => ({
+      youtubeId: v.youtube_id,
+      title: v.title,
+      // uploadDate: actor_videos.created_at 컬럼이 추가되면 여기로 ISO8601 전달
+    }))
+  )
+
   return (
     <div style={styles.page}>
+      {/* Person JSON-LD — Google Knowledge Graph 노출 후보 */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(personSchema) }}
+      />
+      {/* VideoObject JSON-LD — 출연영상 */}
+      {videoSchemas.map((v, i) => (
+        <script
+          key={`vid-${i}`}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(v) }}
+        />
+      ))}
       <div className="container">
         <div className="actor-detail-layout">
           {/* ---- 좌측: 프로필 ---- */}

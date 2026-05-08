@@ -396,7 +396,7 @@ export default function JoinForm() {
               </div>
             </a>
 
-            {/* 카드 4: 동료 배우 이야기 */}
+            {/* 카드 4: 멤버 이야기 */}
             <a
               href="/about#reviews"
               style={{
@@ -425,10 +425,10 @@ export default function JoinForm() {
               </div>
               <div style={{ padding: '12px 14px' }}>
                 <p style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: '4px' }}>
-                  동료 배우 이야기
+                  멤버 이야기
                 </p>
                 <p style={{ fontSize: '0.75rem', color: 'var(--gray)', lineHeight: 1.5, marginBottom: '8px' }}>
-                  KD4 배우들이 직접 남긴 후기
+                  KD4 멤버가 직접 남긴 후기
                 </p>
                 <p
                   style={{

@@ -414,7 +414,7 @@ export default function PrototypePage() {
           color: '#c4a55a', letterSpacing: '0.3em', textTransform: 'uppercase',
           textAlign: 'center', marginBottom: '48px',
         }}>
-          동료 배우 이야기
+          멤버 이야기
         </h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {REVIEWS.map((r, i) => (

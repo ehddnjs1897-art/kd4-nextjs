@@ -505,7 +505,7 @@ ul, ol { list-style: none; }
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 24px;
   text-align: center;
 }
@@ -1126,7 +1126,7 @@ ul, ol { list-style: none; }
 /* stats grid — 3열 기본, 모바일 1열 */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
 }
 
@@ -1473,7 +1473,7 @@ ul, ol { list-style: none; }
   .hamburger { display: flex; }
   .section { padding: 70px 0; }
   .classes-grid { grid-template-columns: repeat(2, 1fr); }
-  .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .stats-card { padding: 20px 6px; gap: 6px; border-radius: 12px; min-width: 0; }
   .stats-icon-wrap { width: 36px; height: 36px; border-radius: 10px; font-size: 1rem; }
   .stat-num { font-size: clamp(1.4rem, 6.5vw, 2rem); }

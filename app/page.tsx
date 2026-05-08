@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { CLASSES } from "@/lib/classes";
+import { KD4_STATS } from "@/lib/stats";
 
 import { pixel } from "@/lib/meta-pixel";
 import { CASTING_PHOTOS } from "@/lib/casting-photos"
@@ -535,79 +536,73 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 2. STATS ─────────────────────────────────────────────────────────── */}
+      {/* ── 2. STATS — KD4 by the Numbers (훈련→영상→DB→캐스팅 발자국) ──────── */}
+      {/* 숫자 데이터: lib/stats.ts (단일 소스) / 아이콘 4개는 인덱스로 매칭 */}
       <section
         id="stats"
         style={{
           background: "var(--bg2)",
           borderTop: "1px solid var(--border)",
           borderBottom: "1px solid var(--border)",
-          padding: "clamp(28px, 5vw, 60px) 0",
+          padding: "clamp(36px, 6vw, 72px) 0",
         }}
       >
-        <div
-          className="container stats-grid"
-        >
-          {[
-            {
-              num: "300+", label: "배우 코칭",
-              icon: (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                  <circle cx="9" cy="7" r="4"/>
-                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                </svg>
-              ),
-            },
-            {
-              num: "3년+", label: "스튜디오 운영",
-              icon: (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                  <path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/>
-                  <circle cx="12" cy="8" r="6"/>
-                </svg>
-              ),
-            },
-            {
-              num: "87명+", label: "현재 수강배우",
-              icon: (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                  <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
-                  <polyline points="16 7 22 7 22 13"/>
-                </svg>
-              ),
-            },
-          ].map(({ num, label, icon }) => (
-            <div key={label} className="stats-card">
-              <div className="stats-icon-wrap">
-                {icon}
+        <div className="container stats-grid">
+          {KD4_STATS.map((stat, i) => {
+            const icons = [
+              // 0: 누적 코칭 배우 — 사람 그룹
+              <svg key="people" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>,
+              // 1: 출연영상 제작 — 카메라/영상
+              <svg key="video" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <polygon points="23 7 16 12 23 17 23 7"/>
+                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+              </svg>,
+              // 2: 배우 DB — 데이터베이스
+              <svg key="db" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/>
+                <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/>
+              </svg>,
+              // 3: 캐스팅 — 차트 우상향
+              <svg key="chart" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+                <polyline points="16 7 22 7 22 13"/>
+              </svg>,
+            ]
+            return (
+              <div key={stat.label} className="stats-card">
+                <div className="stats-icon-wrap">{icons[i]}</div>
+                <p
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontSize: "clamp(1.4rem, 6vw, 2.8rem)",
+                    fontWeight: 700,
+                    color: "var(--gold)",
+                    lineHeight: 1,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {stat.value}
+                </p>
+                <p
+                  style={{
+                    fontSize: "clamp(0.65rem, 2vw, 0.8rem)",
+                    color: "var(--gray)",
+                    letterSpacing: "0.04em",
+                    textAlign: "center",
+                    lineHeight: 1.3,
+                  }}
+                >
+                  {stat.label}
+                </p>
               </div>
-              <p
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: "clamp(1.4rem, 6vw, 2.8rem)",
-                  fontWeight: 700,
-                  color: "var(--gold)",
-                  lineHeight: 1,
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {num}
-              </p>
-              <p
-                style={{
-                  fontSize: "clamp(0.65rem, 2vw, 0.8rem)",
-                  color: "var(--gray)",
-                  letterSpacing: "0.04em",
-                  textAlign: "center",
-                  lineHeight: 1.3,
-                }}
-              >
-                {label}
-              </p>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </section>
 
