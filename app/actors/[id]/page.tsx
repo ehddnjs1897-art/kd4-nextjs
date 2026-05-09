@@ -127,7 +127,7 @@ function profilePhotoUrl(actor: Actor): string {
   return '/placeholder-actor.svg'
 }
 
-/* ---- generateMetadata ---- */
+/* ---- generateMetadata — 카카오톡 캐스팅 카드 미리보기용 ---- */
 export async function generateMetadata({
   params,
 }: {
@@ -137,14 +137,51 @@ export async function generateMetadata({
   const actor = await getActor(id)
   if (!actor) return { title: 'KD4 액팅 스튜디오' }
 
-  const imageUrl = profilePhotoUrl(actor)
+  const SITE_URL = 'https://kd4.club'
+  // 동적 OG 이미지 (1200×630 캐스팅 카드, Vercel Edge에서 즉석 생성)
+  const ogImage = `${SITE_URL}/api/og/actor/${actor.id}`
+  const pageUrl = `${SITE_URL}/actors/${actor.id}`
+
+  const genderLabel =
+    actor.gender === '남' ? '남자 배우' : actor.gender === '여' ? '여자 배우' : '배우'
+  const subline = [actor.age_group, genderLabel].filter(Boolean).join(' · ')
+
+  // description 우선순위: casting_summary → 태그 조합 → 기본
+  const description = actor.casting_summary?.trim()
+    ? `${actor.name} — ${actor.casting_summary}`
+    : actor.casting_tags && actor.casting_tags.length > 0
+      ? `${actor.name} · ${subline} · ${actor.casting_tags.slice(0, 3).join('·')} | KD4 액팅 스튜디오`
+      : `${actor.name} · ${subline} | KD4 액팅 스튜디오`
+
+  const title = `${actor.name} | KD4 액팅 스튜디오`
+
   return {
-    title: `${actor.name} | KD4 액팅 스튜디오`,
-    description: `${actor.name} 배우 갤러리 — KD4 액팅 스튜디오`,
+    title,
+    description,
+    alternates: { canonical: pageUrl },
     openGraph: {
-      title: `${actor.name} | KD4 액팅 스튜디오`,
-      description: `${actor.name} 배우 갤러리`,
-      images: [{ url: imageUrl, width: 900, height: 1600, alt: actor.name }],
+      title,
+      description,
+      url: pageUrl,
+      siteName: 'KD4 액팅 스튜디오',
+      type: 'profile',
+      locale: 'ko_KR',
+      images: [
+        {
+          url: ogImage,
+          secureUrl: ogImage,
+          width: 1200,
+          height: 630,
+          alt: `${actor.name} 캐스팅 카드 — KD4 액팅 스튜디오`,
+          type: 'image/png',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [ogImage],
     },
   }
 }
