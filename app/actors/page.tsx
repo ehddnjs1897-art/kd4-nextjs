@@ -25,49 +25,74 @@ interface PageProps {
   }>
 }
 
+/** Postgres 'undefined_column' (42703) — 마이그레이션 미실행 시 발생 */
+function isUndefinedColumnError(err: { code?: string; message?: string } | null): boolean {
+  if (!err) return false
+  return err.code === '42703' || /column .* does not exist/i.test(err.message ?? '')
+}
+
 async function fetchActors(gender: string, ageGroup: string, tag: string): Promise<{ actors: Actor[]; dbError: boolean; allTags: string[] }> {
-  let query = supabaseAdmin
-    .from('actors')
-    .select('id, name, gender, age_group, drive_photo_id, storage_photo_path, casting_tags, casting_summary')
-    .eq('is_public', true)
-    .order('age_group', { ascending: true, nullsFirst: false })
-    .order('created_at', { ascending: false })
-
-  if (gender && gender !== 'all') {
-    query = query.eq('gender', gender)
-  }
-  if (ageGroup && ageGroup !== 'all') {
-    query = query.eq('age_group', ageGroup)
-  }
-  if (tag && tag !== 'all') {
-    // PostgreSQL array contains: casting_tags @> ARRAY['형사']
-    query = query.contains('casting_tags', [tag])
+  // 새 컬럼(casting_tags/summary) 포함 쿼리 — 마이그레이션 미실행 시 fallback
+  const buildQuery = (cols: string) => {
+    let q = supabaseAdmin
+      .from('actors')
+      .select(cols)
+      .eq('is_public', true)
+      .order('age_group', { ascending: true, nullsFirst: false })
+      .order('created_at', { ascending: false })
+    if (gender && gender !== 'all') q = q.eq('gender', gender)
+    if (ageGroup && ageGroup !== 'all') q = q.eq('age_group', ageGroup)
+    return q
   }
 
-  const { data, error } = await query
-  if (error) {
-    console.error('[ActorsPage] Supabase 오류:', error.message)
-    return { actors: [], dbError: true, allTags: [] }
-  }
-  const actors = (data ?? []) as Actor[]
-
-  // 필터 UI용 distinct 태그 — 현재 필터 결과가 아니라
-  // 전체 공개 배우 + (gender/ageGroup) 필터 결과에서 집계.
-  // (tag 필터 결과로 집계하면 사용자가 X 태그 누른 후 다른 태그 못 봄)
-  let tagsQuery = supabaseAdmin
-    .from('actors')
-    .select('casting_tags')
-    .eq('is_public', true)
-    .not('casting_tags', 'is', null)
-  if (gender && gender !== 'all') tagsQuery = tagsQuery.eq('gender', gender)
-  if (ageGroup && ageGroup !== 'all') tagsQuery = tagsQuery.eq('age_group', ageGroup)
-  const { data: tagsData } = await tagsQuery
-  const tagSet = new Set<string>()
-  for (const row of (tagsData ?? []) as Array<{ casting_tags: string[] | null }>) {
-    if (row.casting_tags) for (const t of row.casting_tags) tagSet.add(t)
+  // 1차: 새 스키마 시도
+  let actors: Actor[] = []
+  let castingSchemaAvailable = true
+  {
+    let query = buildQuery('id, name, gender, age_group, drive_photo_id, storage_photo_path, casting_tags, casting_summary')
+    if (tag && tag !== 'all') query = query.contains('casting_tags', [tag])
+    const { data, error } = await query
+    if (error && isUndefinedColumnError(error)) {
+      console.warn('[ActorsPage] casting_tags 컬럼 미존재 — 마이그레이션 미실행. 기본 스키마로 fallback')
+      castingSchemaAvailable = false
+    } else if (error) {
+      console.error('[ActorsPage] Supabase 오류:', error.message)
+      return { actors: [], dbError: true, allTags: [] }
+    } else {
+      actors = (data ?? []) as Actor[]
+    }
   }
 
-  return { actors, dbError: false, allTags: Array.from(tagSet).sort() }
+  // 2차: fallback (구 스키마, casting 컬럼 없이)
+  if (!castingSchemaAvailable) {
+    const { data, error } = await buildQuery('id, name, gender, age_group, drive_photo_id, storage_photo_path')
+    if (error) {
+      console.error('[ActorsPage] Fallback Supabase 오류:', error.message)
+      return { actors: [], dbError: true, allTags: [] }
+    }
+    actors = ((data ?? []) as Array<Omit<Actor, 'casting_tags' | 'casting_summary'>>)
+      .map((a) => ({ ...a, casting_tags: null, casting_summary: null }))
+  }
+
+  // 필터 UI용 distinct 태그 (마이그레이션 안 됐으면 빈 배열)
+  let allTags: string[] = []
+  if (castingSchemaAvailable) {
+    let tagsQuery = supabaseAdmin
+      .from('actors')
+      .select('casting_tags')
+      .eq('is_public', true)
+      .not('casting_tags', 'is', null)
+    if (gender && gender !== 'all') tagsQuery = tagsQuery.eq('gender', gender)
+    if (ageGroup && ageGroup !== 'all') tagsQuery = tagsQuery.eq('age_group', ageGroup)
+    const { data: tagsData } = await tagsQuery
+    const tagSet = new Set<string>()
+    for (const row of (tagsData ?? []) as Array<{ casting_tags: string[] | null }>) {
+      if (row.casting_tags) for (const t of row.casting_tags) tagSet.add(t)
+    }
+    allTags = Array.from(tagSet).sort()
+  }
+
+  return { actors, dbError: false, allTags }
 }
 
 // 사진 URL은 lib/actor-photo의 getActorPhotoUrl 사용 (Storage 우선, Drive 폴백)

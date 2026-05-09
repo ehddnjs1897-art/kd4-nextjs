@@ -65,8 +65,14 @@ interface FilmoEntry {
 }
 
 /* ---- 데이터 fetch (admin 클라이언트로 공개 조회) ---- */
+function isUndefinedColumnError(err: { code?: string; message?: string } | null): boolean {
+  if (!err) return false
+  return err.code === '42703' || /column .* does not exist/i.test(err.message ?? '')
+}
+
 async function getActor(id: string): Promise<Actor | null> {
-  const { data, error } = await supabaseAdmin
+  // 1차: 새 스키마 (casting_tags/summary/profile_pdf_url)
+  const newSchema = await supabaseAdmin
     .from('actors')
     .select(
       `
@@ -81,8 +87,32 @@ async function getActor(id: string): Promise<Actor | null> {
     .eq('id', id)
     .single()
 
-  if (error || !data) return null
-  return data as Actor
+  if (!newSchema.error && newSchema.data) return newSchema.data as Actor
+  if (newSchema.error && !isUndefinedColumnError(newSchema.error)) return null
+
+  // 2차: fallback (마이그레이션 미실행 시 — 새 컬럼 없이)
+  console.warn('[ActorDetail] casting_tags 컬럼 미존재 — fallback 스키마로 조회')
+  const oldSchema = await supabaseAdmin
+    .from('actors')
+    .select(
+      `
+      id, name, gender, age_group, height, weight, skills,
+      drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram,
+      actor_photos ( id, drive_photo_id, caption, sort_order ),
+      actor_videos ( id, youtube_id, title ),
+      actor_filmography ( id, category, title, role, year, production )
+    `
+    )
+    .eq('id', id)
+    .single()
+
+  if (oldSchema.error || !oldSchema.data) return null
+  return {
+    ...(oldSchema.data as Omit<Actor, 'casting_tags' | 'casting_summary' | 'profile_pdf_url'>),
+    casting_tags: null,
+    casting_summary: null,
+    profile_pdf_url: null,
+  }
 }
 
 function profilePhotoUrl(actor: Actor): string {
