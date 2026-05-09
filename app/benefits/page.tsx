@@ -30,6 +30,7 @@ const CAREER_SERVICES = [
 ]
 
 interface CommunityItem {
+  emoji: string
   title: string
   leader: string
   desc: string
@@ -37,16 +38,19 @@ interface CommunityItem {
 
 const COMMUNITIES: CommunityItem[] = [
   {
+    emoji: '🎭',
     title: '레피티션 스터디',
     leader: '홍수민 리더',
     desc: '자율적으로 모여 마이즈너 테크닉 레피티션을 훈련합니다. KD4 멤버가 아니어도 누구나 참여 가능',
   },
   {
+    emoji: '🎥',
     title: '굿무비 굿액팅',
     leader: '박우진 리더',
     desc: '함께 영화를 보고 토론하는 모임. 연기와 영화를 보는 눈을 함께 키우는 시간',
   },
   {
+    emoji: '✝️',
     title: '크리스쳔 액터스',
     leader: '권동원 리더',
     desc: '신앙을 가진 배우들이 작품·삶·진로를 함께 나누는 커뮤니티',
@@ -342,41 +346,50 @@ export default function BenefitsPage() {
               key={item.title}
               style={{
                 background: 'var(--bg2)',
-                border: '1px solid var(--border)',
+                border: '1.5px solid rgba(21,72,138,0.18)',
                 borderRadius: 12,
                 padding: 24,
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 8,
+                position: 'relative',
+                overflow: 'hidden',
               }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                <span style={{
-                  fontFamily: 'var(--font-display), Oswald, sans-serif',
-                  fontSize: '0.65rem',
-                  letterSpacing: '0.15em',
-                  color: 'var(--gold)',
-                  textTransform: 'uppercase',
-                  background: 'rgba(21,72,138,0.1)',
-                  border: '1px solid rgba(21,72,138,0.25)',
-                  borderRadius: 3,
-                  padding: '3px 9px',
-                }}>커뮤니티</span>
+              {/* 상단 액센트 바 — 커뮤니티만 강조 */}
+              <span aria-hidden style={{
+                position: 'absolute',
+                top: 0, left: 0, right: 0,
+                height: 3,
+                background: 'var(--gold)',
+              }} />
+
+              {/* 큰 이모지 + leader (top row) */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginTop: 4 }}>
+                <span aria-hidden style={{
+                  fontSize: '2rem',
+                  lineHeight: 1,
+                }}>{item.emoji}</span>
                 <span style={{
                   fontFamily: 'var(--font-sans)',
                   fontSize: '0.78rem',
                   fontWeight: 600,
                   color: 'var(--white)',
                   letterSpacing: '0.02em',
+                  background: 'rgba(21,72,138,0.06)',
+                  border: '1px solid rgba(21,72,138,0.18)',
+                  borderRadius: 3,
+                  padding: '4px 10px',
                 }}>{item.leader}</span>
               </div>
+
               <h3 style={{
                 fontFamily: 'var(--font-sans)',
-                fontSize: '1.05rem',
+                fontSize: '1.1rem',
                 fontWeight: 700,
                 color: 'var(--white)',
                 letterSpacing: '0.02em',
-                marginTop: 6,
+                marginTop: 8,
               }}>{item.title}</h3>
               <p style={{
                 fontFamily: 'var(--font-sans)',
