@@ -505,7 +505,8 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    padding: '10px 16px',
+    padding: '13px 20px', // 44px+ touch target
+    minHeight: 44,
     background: 'transparent',
     color: 'var(--white)',
     border: '1px solid var(--border)',

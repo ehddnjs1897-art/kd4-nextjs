@@ -4,8 +4,6 @@ import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import {
   Users,
-  Award,
-  TrendingUp,
   Flame,
   FileText,
   Film,
@@ -17,6 +15,7 @@ import {
   HeartHandshake,
 } from 'lucide-react'
 import { CLASSES, DIRECTOR } from '@/lib/classes'
+import { KD4_STATS } from '@/lib/stats'
 import { FAQ_ITEMS } from '@/lib/faq-items'
 import StickyTopBar from '@/components/join/StickyTopBar'
 import JoinCTALink from '@/components/join/JoinCTALink'
@@ -466,27 +465,44 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ④ STATS                                                    */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* ── STATS — 메인 페이지(/)와 동일한 4카드 (lib/stats.ts 단일 소스) ─── */}
       <section className="stats-banner">
         <div className="container">
           <div className="stats-grid">
-            {[
-              { Icon: Award, num: '50건+', label: '캐스팅 연계', sub: undefined },
-              { Icon: Users, num: '400명+', label: '누적 코칭', sub: undefined },
-              { Icon: TrendingUp, num: '100편+', label: '디즈니·넷플릭스·tvN', sub: '출연 작품' },
-            ].map(({ Icon, num, label, sub }) => (
-              <div key={num} className="stats-card">
-                <div className="stats-icon-wrap">
-                  <Icon size={22} color="var(--navy)" strokeWidth={1.8} />
+            {KD4_STATS.map((stat, i) => {
+              const icons = [
+                // 0: 누적 코칭 배우 — 사람 그룹
+                <svg key="people" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>,
+                // 1: 출연영상 제작 — 카메라/영상
+                <svg key="video" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <polygon points="23 7 16 12 23 17 23 7"/>
+                  <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                </svg>,
+                // 2: 배우 DB — 데이터베이스
+                <svg key="db" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                  <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/>
+                  <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/>
+                </svg>,
+                // 3: 캐스팅 — 차트 우상향
+                <svg key="chart" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+                  <polyline points="16 7 22 7 22 13"/>
+                </svg>,
+              ]
+              return (
+                <div key={stat.label} className="stats-card">
+                  <div className="stats-icon-wrap">{icons[i]}</div>
+                  <div className="stat-num">{stat.value}</div>
+                  <div className="stat-label">{stat.label}</div>
                 </div>
-                <div className="stat-num">{num}</div>
-                <div className="stat-label">{label}</div>
-                {sub && (
-                  <div style={{ fontSize: '0.62rem', color: 'var(--gray)', marginTop: '2px' }}>
-                    {sub}
-                  </div>
-                )}
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>

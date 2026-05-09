@@ -330,8 +330,11 @@ const styles: Record<string, React.CSSProperties> = {
     flexWrap: 'wrap' as const,
   },
   filterBtn: {
-    padding: '5px 14px',
-    borderRadius: 20,
+    padding: '10px 16px', // 44px touch target (5px → 10px)
+    minHeight: 44,
+    display: 'inline-flex',
+    alignItems: 'center',
+    borderRadius: 22,
     fontSize: '0.82rem',
     color: 'var(--gray)',
     background: 'var(--bg3)',

@@ -1754,20 +1754,14 @@ ul, ol { list-style: none; }
     grid-template-columns: 1fr;
     gap: 24px;
   }
+  /* 사이드바: 사진 위 + 정보 아래 (단일 컬럼) — 768~480 squeeze 회피 */
   .actor-detail-sidebar {
     position: static !important;
-    display: grid;
-    grid-template-columns: 160px 1fr;
-    gap: 20px;
-    align-items: start;
+    grid-template-columns: 1fr;
   }
   .actor-detail-profile-img {
-    margin-bottom: 0 !important;
-  }
-}
-@media (max-width: 480px) {
-  .actor-detail-sidebar {
-    grid-template-columns: 1fr;
+    max-width: 320px;
+    margin: 0 auto 20px !important;
   }
 }
 
