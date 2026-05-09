@@ -10,6 +10,8 @@ interface Actor {
   age_group: string | null
   drive_photo_id: string | null
   storage_photo_path: string | null
+  casting_tags: string[] | null
+  casting_summary: string | null
 }
 
 type GenderFilter = 'all' | '남' | '여'
@@ -19,13 +21,14 @@ interface PageProps {
   searchParams: Promise<{
     gender?: string
     ageGroup?: string
+    tag?: string
   }>
 }
 
-async function fetchActors(gender: string, ageGroup: string): Promise<{ actors: Actor[]; dbError: boolean }> {
+async function fetchActors(gender: string, ageGroup: string, tag: string): Promise<{ actors: Actor[]; dbError: boolean; allTags: string[] }> {
   let query = supabaseAdmin
     .from('actors')
-    .select('id, name, gender, age_group, drive_photo_id, storage_photo_path')
+    .select('id, name, gender, age_group, drive_photo_id, storage_photo_path, casting_tags, casting_summary')
     .eq('is_public', true)
     .order('age_group', { ascending: true, nullsFirst: false })
     .order('created_at', { ascending: false })
@@ -36,13 +39,35 @@ async function fetchActors(gender: string, ageGroup: string): Promise<{ actors: 
   if (ageGroup && ageGroup !== 'all') {
     query = query.eq('age_group', ageGroup)
   }
+  if (tag && tag !== 'all') {
+    // PostgreSQL array contains: casting_tags @> ARRAY['형사']
+    query = query.contains('casting_tags', [tag])
+  }
 
   const { data, error } = await query
   if (error) {
     console.error('[ActorsPage] Supabase 오류:', error.message)
-    return { actors: [], dbError: true }
+    return { actors: [], dbError: true, allTags: [] }
   }
-  return { actors: (data ?? []) as Actor[], dbError: false }
+  const actors = (data ?? []) as Actor[]
+
+  // 필터 UI용 distinct 태그 — 현재 필터 결과가 아니라
+  // 전체 공개 배우 + (gender/ageGroup) 필터 결과에서 집계.
+  // (tag 필터 결과로 집계하면 사용자가 X 태그 누른 후 다른 태그 못 봄)
+  let tagsQuery = supabaseAdmin
+    .from('actors')
+    .select('casting_tags')
+    .eq('is_public', true)
+    .not('casting_tags', 'is', null)
+  if (gender && gender !== 'all') tagsQuery = tagsQuery.eq('gender', gender)
+  if (ageGroup && ageGroup !== 'all') tagsQuery = tagsQuery.eq('age_group', ageGroup)
+  const { data: tagsData } = await tagsQuery
+  const tagSet = new Set<string>()
+  for (const row of (tagsData ?? []) as Array<{ casting_tags: string[] | null }>) {
+    if (row.casting_tags) for (const t of row.casting_tags) tagSet.add(t)
+  }
+
+  return { actors, dbError: false, allTags: Array.from(tagSet).sort() }
 }
 
 // 사진 URL은 lib/actor-photo의 getActorPhotoUrl 사용 (Storage 우선, Drive 폴백)
@@ -66,12 +91,14 @@ export default async function ActorsPage({ searchParams }: PageProps) {
   const params = await searchParams
   const gender = params.gender ?? 'all'
   const ageGroup = params.ageGroup ?? 'all'
-  const { actors, dbError } = await fetchActors(gender, ageGroup)
+  const tag = params.tag ?? 'all'
+  const { actors, dbError, allTags } = await fetchActors(gender, ageGroup, tag)
 
   function filterHref(key: string, value: string) {
     const next = new URLSearchParams()
     if (key !== 'gender') next.set('gender', gender)
     if (key !== 'ageGroup') next.set('ageGroup', ageGroup)
+    if (key !== 'tag') next.set('tag', tag)
     next.set(key, value)
     return `/actors?${next.toString()}`
   }
@@ -133,6 +160,36 @@ export default async function ActorsPage({ searchParams }: PageProps) {
               ))}
             </div>
           </div>
+
+          {/* 캐스팅 타입 — 자동 분류된 태그 (회사원/형사/엄마 등) */}
+          {(allTags.length > 0 || tag !== 'all') && (
+            <div style={styles.filterGroup}>
+              <span style={styles.filterLabel}>캐스팅 타입</span>
+              <div style={styles.filterBtnGroup}>
+                <Link
+                  href={filterHref('tag', 'all')}
+                  style={{
+                    ...styles.filterBtn,
+                    ...(tag === 'all' ? styles.filterBtnActive : {}),
+                  }}
+                >
+                  전체
+                </Link>
+                {allTags.map((t) => (
+                  <Link
+                    key={t}
+                    href={filterHref('tag', t)}
+                    style={{
+                      ...styles.filterBtn,
+                      ...(tag === t ? styles.filterBtnActive : {}),
+                    }}
+                  >
+                    {t}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* 결과 수 */}
@@ -169,6 +226,14 @@ export default async function ActorsPage({ searchParams }: PageProps) {
                     <span style={styles.cardMeta}>
                       {actor.gender ?? ''}{actor.gender && actor.age_group ? ' · ' : ''}{actor.age_group ?? ''}
                     </span>
+                    {/* 캐스팅 태그 — 자동 분류 결과 (있을 때만, 최대 3개) */}
+                    {actor.casting_tags && actor.casting_tags.length > 0 && (
+                      <div style={styles.cardTags}>
+                        {actor.casting_tags.slice(0, 3).map((t) => (
+                          <span key={t} style={styles.cardTag}>{t}</span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </Link>
@@ -303,6 +368,23 @@ const styles: Record<string, React.CSSProperties> = {
   cardMeta: {
     fontSize: '0.75rem',
     color: 'rgba(255,255,255,0.65)',
+  },
+  cardTags: {
+    display: 'flex',
+    gap: 4,
+    flexWrap: 'wrap' as const,
+    marginTop: 6,
+  },
+  cardTag: {
+    fontSize: '0.65rem',
+    fontWeight: 600,
+    color: 'rgba(255,255,255,0.92)',
+    background: 'rgba(255,255,255,0.16)',
+    border: '1px solid rgba(255,255,255,0.25)',
+    borderRadius: 3,
+    padding: '2px 7px',
+    letterSpacing: '0.02em',
+    backdropFilter: 'blur(4px)',
   },
   emptyState: {
     textAlign: 'center',

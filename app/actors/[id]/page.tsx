@@ -34,6 +34,9 @@ interface Actor {
   email: string | null
   phone: string | null
   instagram: string | null
+  casting_tags: string[] | null
+  casting_summary: string | null
+  profile_pdf_url: string | null
   actor_photos: ActorPhoto[]
   actor_videos: ActorVideo[]
   actor_filmography: FilmoEntry[]
@@ -69,6 +72,7 @@ async function getActor(id: string): Promise<Actor | null> {
       `
       id, name, gender, age_group, height, weight, skills,
       drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram,
+      casting_tags, casting_summary, profile_pdf_url,
       actor_photos ( id, drive_photo_id, caption, sort_order ),
       actor_videos ( id, youtube_id, title ),
       actor_filmography ( id, category, title, role, year, production )
@@ -164,6 +168,8 @@ export default async function ActorDetailPage({
     instagram: actor.instagram,
     imageUrl: photoUrl.startsWith('http') ? photoUrl : `https://kd4.club${photoUrl}`,
     filmography: actor.actor_filmography ?? [],
+    castingTags: actor.casting_tags,
+    castingSummary: actor.casting_summary,
   })
   const videoSchemas = getActorVideoSchemas(
     { id: actor.id, name: actor.name },
@@ -213,6 +219,18 @@ export default async function ActorDetailPage({
                 {actor.age_group ? ` · ${actor.age_group}` : ''}
               </p>
 
+              {/* 캐스팅 자동 분류 — 캐스팅 디렉터가 1초 안에 판단할 정보 */}
+              {actor.casting_summary && (
+                <p style={styles.castingSummary}>{actor.casting_summary}</p>
+              )}
+              {actor.casting_tags && actor.casting_tags.length > 0 && (
+                <div style={styles.castingTagsWrap}>
+                  {actor.casting_tags.map((t) => (
+                    <span key={t} style={styles.castingTag}>{t}</span>
+                  ))}
+                </div>
+              )}
+
               <dl style={styles.specList}>
                 {actor.height && (
                   <>
@@ -243,6 +261,34 @@ export default async function ActorDetailPage({
 
               {/* 카카오 공유 버튼 */}
               <ShareButton webUrl={pageUrl} />
+
+              {/* 프로필 PDF 다운로드 (있을 때만 노출) */}
+              {actor.profile_pdf_url && (
+                <a
+                  href={actor.profile_pdf_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={styles.pdfButton}
+                >
+                  <svg
+                    aria-hidden
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="12" y1="18" x2="12" y2="12" />
+                    <polyline points="9 15 12 18 15 15" />
+                  </svg>
+                  프로필 PDF 다운로드
+                </a>
+              )}
             </div>
           </aside>
 
@@ -356,6 +402,53 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '0.85rem',
     color: 'var(--gray)',
     marginTop: -8,
+  },
+  castingSummary: {
+    fontFamily: 'var(--font-serif)',
+    fontSize: '0.95rem',
+    color: 'var(--white)',
+    fontWeight: 600,
+    lineHeight: 1.5,
+    padding: '12px 14px',
+    background: 'rgba(21,72,138,0.06)',
+    borderLeft: '3px solid var(--gold)',
+    borderRadius: 4,
+    marginTop: 4,
+    letterSpacing: '0.005em',
+  },
+  castingTagsWrap: {
+    display: 'flex',
+    flexWrap: 'wrap' as const,
+    gap: 6,
+    marginTop: 4,
+  },
+  castingTag: {
+    fontFamily: 'var(--font-display), Oswald, sans-serif',
+    fontSize: '0.7rem',
+    fontWeight: 700,
+    letterSpacing: '0.08em',
+    color: 'var(--gold)',
+    background: 'rgba(21,72,138,0.1)',
+    border: '1px solid rgba(21,72,138,0.25)',
+    borderRadius: 3,
+    padding: '4px 10px',
+  },
+  pdfButton: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    padding: '10px 16px',
+    background: 'transparent',
+    color: 'var(--white)',
+    border: '1px solid var(--border)',
+    borderRadius: 4,
+    fontFamily: 'var(--font-sans)',
+    fontSize: '0.85rem',
+    fontWeight: 600,
+    letterSpacing: '0.02em',
+    textDecoration: 'none',
+    marginTop: 8,
   },
   specList: {
     display: 'grid',

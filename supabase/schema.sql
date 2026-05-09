@@ -69,6 +69,12 @@ CREATE TABLE IF NOT EXISTS actors (
   drive_photo_position TEXT DEFAULT 'center top',
   source TEXT DEFAULT 'manual' CHECK (source IN ('manual', 'drive_import')),
   is_public BOOLEAN DEFAULT TRUE,
+  -- 캐스팅 매칭 자동 분류 (Gemini, 2026-05-10 추가)
+  casting_tags TEXT[],            -- 자동 분류 이미지 타입 (회사원/형사/엄마/아빠/악역/코믹/생활연기 등)
+  casting_summary TEXT,           -- 자동 생성 한 줄 캐스팅 타입 요약
+  profile_pdf_url TEXT,           -- 프로필 PDF 다운로드 링크 (선택)
+  is_casting_available BOOLEAN DEFAULT TRUE,
+  last_classified_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );

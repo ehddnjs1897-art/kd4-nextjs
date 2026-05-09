@@ -24,6 +24,10 @@ interface ActorPersonInput {
   filmography?: { title: string; role?: string | null; year?: number | null; production?: string | null }[]
   /** 출연영상 youtube_id 배열 */
   videoYoutubeIds?: string[]
+  /** Gemini 자동 분류 캐스팅 태그 (knowsAbout 매핑) */
+  castingTags?: string[] | null
+  /** Gemini 자동 생성 한 줄 캐스팅 요약 (description 보강) */
+  castingSummary?: string | null
 }
 
 /**
@@ -38,13 +42,18 @@ export function getActorPersonSchema(actor: ActorPersonInput) {
   const ageDesc = actor.age_group ? `${actor.age_group} ` : ''
   const genderDesc = actor.gender === '남' ? '남자 배우' : actor.gender === '여' ? '여자 배우' : '배우'
 
+  // description: Gemini casting_summary 우선 → 없으면 기본 텍스트
+  const description = actor.castingSummary?.trim()
+    ? `${actor.name} — ${actor.castingSummary}`
+    : `${actor.name} — KD4 액팅 스튜디오 ${ageDesc}${genderDesc}`
+
   const personSchema: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: actor.name,
     url: `${SITE_URL}/actors/${actor.id}`,
     jobTitle: ['배우', 'Actor'],
-    description: `${actor.name} — KD4 액팅 스튜디오 ${ageDesc}${genderDesc}`,
+    description,
     gender: actor.gender === '남' ? 'Male' : actor.gender === '여' ? 'Female' : undefined,
     affiliation: {
       '@type': 'Organization',
@@ -56,7 +65,12 @@ export function getActorPersonSchema(actor: ActorPersonInput) {
   if (actor.imageUrl) personSchema.image = actor.imageUrl
   if (actor.height) personSchema.height = `${actor.height} cm`
   if (actor.weight) personSchema.weight = `${actor.weight} kg`
-  if (actor.skills && actor.skills.length > 0) personSchema.knowsAbout = actor.skills
+
+  // knowsAbout — skills + casting_tags 합쳐 SEO 강화 (중복 제거)
+  const knowsAbout = new Set<string>()
+  if (actor.skills) for (const s of actor.skills) knowsAbout.add(s)
+  if (actor.castingTags) for (const t of actor.castingTags) knowsAbout.add(t)
+  if (knowsAbout.size > 0) personSchema.knowsAbout = Array.from(knowsAbout)
 
   // 한국어 + 영문 ID 매핑 (필요 시)
   if (actor.age_group && ageMap[actor.age_group]) {
