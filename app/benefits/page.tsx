@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { RotateCcw, Film, Camera } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: '멤버 혜택 | KD4 액팅 스튜디오',
@@ -11,9 +12,7 @@ export const metadata: Metadata = {
 
 const LEARNING_SUPPORT = [
   {
-    icon: '🎓',
     title: '보강 신청 안내',
-    summary: '결석해도 훈련의 흐름은 끊기지 않게',
     desc: '부득이하게 결석하시는 경우, 보강을 신청하실 수 있습니다. 보강은 스케줄표에 있는 다른 수업 클래스에서 가능합니다.',
     extras: [
       '수업 3일 전까지 미리 말씀해 주셔야 보강 제도를 이용하실 수 있습니다',
@@ -24,16 +23,12 @@ const LEARNING_SUPPORT = [
 
 const CAREER_SERVICES = [
   {
-    icon: '🎬',
     title: '출연영상 편집 서비스',
-    summary: '캐스팅 디렉터에게 바로 보낼 수 있는 완성본',
     desc: '촬영한 출연영상을 캐스팅 디렉터에게 보낼 수 있도록, 업계 문법에 맞게 편집해 드립니다.',
     price: '50,000원',
   },
   {
-    icon: '📷',
     title: '프로필 편집 서비스',
-    summary: '오디션·캐스팅 제출용으로 바로 사용 가능',
     desc: '오디션 또는 캐스팅 디렉터 제출 시 바로 사용할 수 있도록, 업계 문법에 맞게 제작해 드립니다.',
     price: '30,000원',
   },
@@ -211,90 +206,110 @@ export default function BenefitsPage() {
               style={{
                 background: 'var(--bg2)',
                 border: '1px solid var(--border)',
-                borderRadius: '12px',
-                padding: '24px',
+                borderRadius: '16px',
+                padding: 'clamp(28px, 4vw, 40px)',
                 display: 'flex',
-                flexDirection: 'column',
-                gap: '8px',
+                gap: 'clamp(20px, 3vw, 32px)',
+                alignItems: 'flex-start',
+                flexWrap: 'wrap',
               }}
             >
-              {/* tag 배지 (canonical pattern) */}
-              <span
+              {/* 좌측: 큰 아이콘 박스 */}
+              <div
                 style={{
-                  alignSelf: 'flex-start',
-                  fontFamily: 'var(--font-display), Oswald, sans-serif',
-                  fontSize: '0.65rem',
-                  letterSpacing: '0.15em',
-                  color: 'var(--gold)',
-                  textTransform: 'uppercase',
-                  background: 'rgba(21,72,138,0.1)',
-                  border: '1px solid rgba(21,72,138,0.25)',
-                  borderRadius: '3px',
-                  padding: '3px 9px',
+                  width: 64,
+                  height: 64,
+                  borderRadius: 14,
+                  background: 'rgba(21,72,138,0.08)',
+                  border: '1px solid rgba(21,72,138,0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
                 }}
               >
-                학습 보강
-              </span>
-              <h3
-                style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '1rem',
-                  fontWeight: 700,
-                  color: 'var(--white)',
-                  letterSpacing: '0.02em',
-                  marginTop: '4px',
-                }}
-              >
-                {item.title}
-              </h3>
-              <p
-                style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '0.85rem',
-                  color: 'var(--secondary)',
-                  lineHeight: 1.75,
-                }}
-              >
-                {item.desc}
-              </p>
-              {item.extras && (
-                <ul
+                <RotateCcw size={28} color="var(--navy)" strokeWidth={1.6} />
+              </div>
+
+              {/* 우측: 콘텐츠 */}
+              <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <span
                   style={{
-                    listStyle: 'none',
-                    margin: '10px 0 0',
-                    padding: 0,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '6px',
+                    alignSelf: 'flex-start',
+                    fontFamily: 'var(--font-display), Oswald, sans-serif',
+                    fontSize: '0.65rem',
+                    letterSpacing: '0.15em',
+                    color: 'var(--gold)',
+                    textTransform: 'uppercase',
+                    background: 'rgba(21,72,138,0.1)',
+                    border: '1px solid rgba(21,72,138,0.25)',
+                    borderRadius: '3px',
+                    padding: '3px 9px',
                   }}
                 >
-                  {item.extras.map((line) => (
-                    <li
-                      key={line}
-                      style={{
-                        fontFamily: 'var(--font-sans)',
-                        fontSize: '0.8rem',
-                        color: 'var(--secondary)',
-                        paddingLeft: '12px',
-                        position: 'relative',
-                        lineHeight: 1.7,
-                      }}
-                    >
-                      <span
+                  학습 보강
+                </span>
+                <h3
+                  style={{
+                    fontFamily: 'var(--font-serif)',
+                    fontSize: 'clamp(1.15rem, 2.4vw, 1.35rem)',
+                    fontWeight: 700,
+                    color: 'var(--white)',
+                    lineHeight: 1.4,
+                    marginTop: 2,
+                  }}
+                >
+                  {item.title}
+                </h3>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-sans)',
+                    fontSize: '0.92rem',
+                    color: 'var(--secondary)',
+                    lineHeight: 1.85,
+                  }}
+                >
+                  {item.desc}
+                </p>
+                {item.extras && (
+                  <ul
+                    style={{
+                      listStyle: 'none',
+                      margin: '8px 0 0',
+                      padding: 0,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 8,
+                    }}
+                  >
+                    {item.extras.map((line) => (
+                      <li
+                        key={line}
                         style={{
-                          position: 'absolute',
-                          left: 0,
-                          top: '0.7em',
-                          width: '6px',
-                          height: '1px',
-                          background: 'var(--gold)',
+                          fontFamily: 'var(--font-sans)',
+                          fontSize: '0.85rem',
+                          color: 'var(--secondary)',
+                          paddingLeft: 18,
+                          position: 'relative',
+                          lineHeight: 1.7,
                         }}
-                      />
-                      {line}
-                    </li>
-                  ))}
-                </ul>
-              )}
+                      >
+                        <span
+                          style={{
+                            position: 'absolute',
+                            left: 0,
+                            top: '0.6em',
+                            width: 10,
+                            height: 1,
+                            background: 'var(--gold)',
+                          }}
+                        />
+                        {line}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -316,81 +331,101 @@ export default function BenefitsPage() {
             gap: '14px',
           }}
         >
-          {CAREER_SERVICES.map((item) => (
-            <div
-              className="kd4-card-hover"
-              key={item.title}
-              style={{
-                background: 'var(--bg2)',
-                border: '1px solid var(--border)',
-                borderRadius: '12px',
-                padding: '24px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '8px',
-              }}
-            >
-              {/* tag + price 인라인 (top-left tag, top-right price) */}
+          {CAREER_SERVICES.map((item, i) => {
+            const Icon = i === 0 ? Film : Camera
+            return (
               <div
+                className="kd4-card-hover"
+                key={item.title}
                 style={{
+                  background: 'var(--bg2)',
+                  border: '1px solid var(--border)',
+                  borderRadius: '12px',
+                  padding: '24px',
                   display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  gap: 8,
+                  gap: 18,
+                  alignItems: 'flex-start',
                 }}
               >
-                <span
+                {/* 좌측 아이콘 — /join GUARANTEES 패턴 */}
+                <div
                   style={{
-                    fontFamily: 'var(--font-display), Oswald, sans-serif',
-                    fontSize: '0.65rem',
-                    letterSpacing: '0.15em',
-                    color: 'var(--gold)',
-                    textTransform: 'uppercase',
-                    background: 'rgba(21,72,138,0.1)',
-                    border: '1px solid rgba(21,72,138,0.25)',
-                    borderRadius: '3px',
-                    padding: '3px 9px',
+                    width: 48,
+                    height: 48,
+                    borderRadius: 12,
+                    background: 'rgba(21,72,138,0.08)',
+                    border: '1px solid rgba(21,72,138,0.2)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
                   }}
                 >
-                  편집 서비스
-                </span>
-                <span
-                  style={{
-                    fontFamily: 'var(--font-display), Oswald, sans-serif',
-                    fontSize: '0.85rem',
-                    fontWeight: 700,
-                    color: 'var(--gold)',
-                    letterSpacing: '0.02em',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {item.price}
-                </span>
+                  <Icon size={22} color="var(--navy)" strokeWidth={1.6} />
+                </div>
+
+                {/* 우측 콘텐츠 */}
+                <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <h3
+                    style={{
+                      fontFamily: 'var(--font-serif)',
+                      fontSize: 'clamp(1rem, 2.2vw, 1.1rem)',
+                      fontWeight: 700,
+                      color: 'var(--white)',
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    {item.title}
+                  </h3>
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-sans)',
+                      fontSize: '0.85rem',
+                      color: 'var(--secondary)',
+                      lineHeight: 1.7,
+                    }}
+                  >
+                    {item.desc}
+                  </p>
+                  {/* 가격 강조 — separator 후 */}
+                  <div
+                    style={{
+                      marginTop: 10,
+                      paddingTop: 12,
+                      borderTop: '1px dashed var(--border)',
+                      display: 'flex',
+                      alignItems: 'baseline',
+                      gap: 6,
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: 'var(--font-display), Oswald, sans-serif',
+                        fontSize: '0.65rem',
+                        letterSpacing: '0.2em',
+                        color: 'var(--gray)',
+                        textTransform: 'uppercase',
+                      }}
+                    >
+                      Price
+                    </span>
+                    <span
+                      style={{
+                        fontFamily: 'var(--font-display)',
+                        fontSize: 'clamp(1.2rem, 3vw, 1.5rem)',
+                        fontWeight: 700,
+                        color: 'var(--gold)',
+                        letterSpacing: '-0.01em',
+                        lineHeight: 1,
+                      }}
+                    >
+                      {item.price}
+                    </span>
+                  </div>
+                </div>
               </div>
-              <h3
-                style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '1rem',
-                  fontWeight: 700,
-                  color: 'var(--white)',
-                  letterSpacing: '0.02em',
-                  marginTop: '4px',
-                }}
-              >
-                {item.title}
-              </h3>
-              <p
-                style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '0.85rem',
-                  color: 'var(--secondary)',
-                  lineHeight: 1.75,
-                }}
-              >
-                {item.desc}
-              </p>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
         {/* 카카오채널 문의 버튼 */}
@@ -452,57 +487,23 @@ export default function BenefitsPage() {
                 background: 'var(--bg2)',
                 border: '1px solid var(--border)',
                 borderRadius: '12px',
-                padding: '24px',
+                padding: '28px 24px',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '8px',
+                gap: '10px',
               }}
             >
-              {/* tag + leader 인라인 */}
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  gap: 8,
-                  flexWrap: 'wrap',
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: 'var(--font-display), Oswald, sans-serif',
-                    fontSize: '0.65rem',
-                    letterSpacing: '0.15em',
-                    color: 'var(--gold)',
-                    textTransform: 'uppercase',
-                    background: 'rgba(21,72,138,0.1)',
-                    border: '1px solid rgba(21,72,138,0.25)',
-                    borderRadius: '3px',
-                    padding: '3px 9px',
-                  }}
-                >
-                  커뮤니티
-                </span>
-                <span
-                  style={{
-                    fontFamily: 'var(--font-sans)',
-                    fontSize: '0.78rem',
-                    color: 'var(--secondary)',
-                    fontWeight: 500,
-                    letterSpacing: '0.02em',
-                  }}
-                >
-                  {item.leader}
-                </span>
+              {/* 이모지 — 사람·관계 톤 */}
+              <div style={{ fontSize: '1.8rem', lineHeight: 1 }} aria-hidden>
+                {item.icon}
               </div>
               <h3
                 style={{
                   fontFamily: 'var(--font-sans)',
-                  fontSize: '1rem',
+                  fontSize: '1.05rem',
                   fontWeight: 700,
                   color: 'var(--white)',
                   letterSpacing: '0.02em',
-                  marginTop: '4px',
                 }}
               >
                 {item.title}
@@ -511,8 +512,43 @@ export default function BenefitsPage() {
                 style={{
                   fontFamily: 'var(--font-sans)',
                   fontSize: '0.85rem',
+                  color: 'var(--gold)',
+                  fontWeight: 500,
+                }}
+              >
+                {item.summary}
+              </p>
+              {/* Leader 라인 */}
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  marginTop: '2px',
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '0.78rem',
                   color: 'var(--secondary)',
-                  lineHeight: 1.75,
+                  letterSpacing: '0.03em',
+                }}
+              >
+                <span
+                  aria-hidden
+                  style={{
+                    display: 'inline-block',
+                    width: '20px',
+                    height: '1px',
+                    background: 'var(--gold)',
+                  }}
+                />
+                <strong style={{ color: 'var(--white)', fontWeight: 600 }}>{item.leader}</strong>
+              </div>
+              <p
+                style={{
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '0.9rem',
+                  color: 'var(--secondary)',
+                  lineHeight: 1.8,
+                  marginTop: '4px',
                 }}
               >
                 {item.desc}
@@ -522,11 +558,11 @@ export default function BenefitsPage() {
                   style={{
                     marginTop: '8px',
                     padding: '10px 12px',
-                    background: 'rgba(21,72,138,0.08)',
-                    border: '1px solid rgba(21,72,138,0.25)',
+                    background: 'rgba(21,72,138,0.06)',
+                    border: '1px solid rgba(21,72,138,0.2)',
                     borderRadius: '6px',
                     fontFamily: 'var(--font-sans)',
-                    fontSize: '0.8rem',
+                    fontSize: '0.82rem',
                     color: 'var(--gold)',
                     fontWeight: 600,
                     letterSpacing: '0.02em',
