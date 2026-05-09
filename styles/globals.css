@@ -1928,3 +1928,20 @@ main {
   }
 }
 
+
+/* === KD4 표준 카드 hover (서버 컴포넌트용 utility) === */
+.kd4-card-hover {
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.kd4-card-hover:hover {
+  border-color: var(--gold) !important;
+  transform: translateY(-2px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .kd4-card-hover {
+    transition: border-color 0.2s ease;
+  }
+  .kd4-card-hover:hover {
+    transform: none;
+  }
+}

@@ -206,25 +206,43 @@ export default function BenefitsPage() {
         >
           {LEARNING_SUPPORT.map((item) => (
             <div
+              className="kd4-card-hover"
               key={item.title}
               style={{
                 background: 'var(--bg2)',
                 border: '1px solid var(--border)',
                 borderRadius: '12px',
-                padding: '28px 24px',
+                padding: '24px',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '10px',
+                gap: '8px',
               }}
             >
-              <div style={{ fontSize: '1.8rem', lineHeight: 1 }}>{item.icon}</div>
+              {/* tag 배지 (canonical pattern) */}
+              <span
+                style={{
+                  alignSelf: 'flex-start',
+                  fontFamily: 'var(--font-display), Oswald, sans-serif',
+                  fontSize: '0.65rem',
+                  letterSpacing: '0.15em',
+                  color: 'var(--gold)',
+                  textTransform: 'uppercase',
+                  background: 'rgba(21,72,138,0.1)',
+                  border: '1px solid rgba(21,72,138,0.25)',
+                  borderRadius: '3px',
+                  padding: '3px 9px',
+                }}
+              >
+                학습 보강
+              </span>
               <h3
                 style={{
                   fontFamily: 'var(--font-sans)',
-                  fontSize: '1.05rem',
+                  fontSize: '1rem',
                   fontWeight: 700,
                   color: 'var(--white)',
                   letterSpacing: '0.02em',
+                  marginTop: '4px',
                 }}
               >
                 {item.title}
@@ -233,19 +251,8 @@ export default function BenefitsPage() {
                 style={{
                   fontFamily: 'var(--font-sans)',
                   fontSize: '0.85rem',
-                  color: 'var(--gold)',
-                  fontWeight: 500,
-                }}
-              >
-                {item.summary}
-              </p>
-              <p
-                style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '0.9rem',
                   color: 'var(--secondary)',
-                  lineHeight: 1.8,
-                  marginTop: '4px',
+                  lineHeight: 1.75,
                 }}
               >
                 {item.desc}
@@ -254,7 +261,7 @@ export default function BenefitsPage() {
                 <ul
                   style={{
                     listStyle: 'none',
-                    margin: '12px 0 0',
+                    margin: '10px 0 0',
                     padding: 0,
                     display: 'flex',
                     flexDirection: 'column',
@@ -266,9 +273,9 @@ export default function BenefitsPage() {
                       key={line}
                       style={{
                         fontFamily: 'var(--font-sans)',
-                        fontSize: '0.82rem',
+                        fontSize: '0.8rem',
                         color: 'var(--secondary)',
-                        paddingLeft: '14px',
+                        paddingLeft: '12px',
                         position: 'relative',
                         lineHeight: 1.7,
                       }}
@@ -311,37 +318,49 @@ export default function BenefitsPage() {
         >
           {CAREER_SERVICES.map((item) => (
             <div
+              className="kd4-card-hover"
               key={item.title}
               style={{
                 background: 'var(--bg2)',
                 border: '1px solid var(--border)',
                 borderRadius: '12px',
-                padding: '28px 24px',
+                padding: '24px',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '10px',
+                gap: '8px',
               }}
             >
+              {/* tag + price 인라인 (top-left tag, top-right price) */}
               <div
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
-                  alignItems: 'flex-start',
-                  gap: '10px',
+                  alignItems: 'center',
+                  gap: 8,
                 }}
               >
-                <div style={{ fontSize: '1.8rem', lineHeight: 1 }}>{item.icon}</div>
                 <span
                   style={{
                     fontFamily: 'var(--font-display), Oswald, sans-serif',
-                    fontSize: '0.95rem',
+                    fontSize: '0.65rem',
+                    letterSpacing: '0.15em',
+                    color: 'var(--gold)',
+                    textTransform: 'uppercase',
+                    background: 'rgba(21,72,138,0.1)',
+                    border: '1px solid rgba(21,72,138,0.25)',
+                    borderRadius: '3px',
+                    padding: '3px 9px',
+                  }}
+                >
+                  편집 서비스
+                </span>
+                <span
+                  style={{
+                    fontFamily: 'var(--font-display), Oswald, sans-serif',
+                    fontSize: '0.85rem',
                     fontWeight: 700,
                     color: 'var(--gold)',
-                    background: 'rgba(196,165,90,0.12)',
-                    border: '1px solid rgba(196,165,90,0.3)',
-                    borderRadius: '4px',
-                    padding: '4px 12px',
-                    letterSpacing: '0.04em',
+                    letterSpacing: '0.02em',
                     whiteSpace: 'nowrap',
                   }}
                 >
@@ -351,7 +370,7 @@ export default function BenefitsPage() {
               <h3
                 style={{
                   fontFamily: 'var(--font-sans)',
-                  fontSize: '1.05rem',
+                  fontSize: '1rem',
                   fontWeight: 700,
                   color: 'var(--white)',
                   letterSpacing: '0.02em',
@@ -364,19 +383,8 @@ export default function BenefitsPage() {
                 style={{
                   fontFamily: 'var(--font-sans)',
                   fontSize: '0.85rem',
-                  color: 'var(--gold)',
-                  fontWeight: 500,
-                }}
-              >
-                {item.summary}
-              </p>
-              <p
-                style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '0.9rem',
                   color: 'var(--secondary)',
-                  lineHeight: 1.8,
-                  marginTop: '4px',
+                  lineHeight: 1.75,
                 }}
               >
                 {item.desc}
@@ -438,25 +446,63 @@ export default function BenefitsPage() {
         >
           {COMMUNITIES.map((item) => (
             <div
+              className="kd4-card-hover"
               key={item.title}
               style={{
                 background: 'var(--bg2)',
                 border: '1px solid var(--border)',
                 borderRadius: '12px',
-                padding: '28px 24px',
+                padding: '24px',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '10px',
+                gap: '8px',
               }}
             >
-              <div style={{ fontSize: '1.8rem', lineHeight: 1 }}>{item.icon}</div>
+              {/* tag + leader 인라인 */}
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  gap: 8,
+                  flexWrap: 'wrap',
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: 'var(--font-display), Oswald, sans-serif',
+                    fontSize: '0.65rem',
+                    letterSpacing: '0.15em',
+                    color: 'var(--gold)',
+                    textTransform: 'uppercase',
+                    background: 'rgba(21,72,138,0.1)',
+                    border: '1px solid rgba(21,72,138,0.25)',
+                    borderRadius: '3px',
+                    padding: '3px 9px',
+                  }}
+                >
+                  커뮤니티
+                </span>
+                <span
+                  style={{
+                    fontFamily: 'var(--font-sans)',
+                    fontSize: '0.78rem',
+                    color: 'var(--secondary)',
+                    fontWeight: 500,
+                    letterSpacing: '0.02em',
+                  }}
+                >
+                  {item.leader}
+                </span>
+              </div>
               <h3
                 style={{
                   fontFamily: 'var(--font-sans)',
-                  fontSize: '1.05rem',
+                  fontSize: '1rem',
                   fontWeight: 700,
                   color: 'var(--white)',
                   letterSpacing: '0.02em',
+                  marginTop: '4px',
                 }}
               >
                 {item.title}
@@ -465,41 +511,8 @@ export default function BenefitsPage() {
                 style={{
                   fontFamily: 'var(--font-sans)',
                   fontSize: '0.85rem',
-                  color: 'var(--gold)',
-                  fontWeight: 500,
-                }}
-              >
-                {item.summary}
-              </p>
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  marginTop: '2px',
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '0.78rem',
                   color: 'var(--secondary)',
-                  letterSpacing: '0.03em',
-                }}
-              >
-                <span
-                  style={{
-                    display: 'inline-block',
-                    width: '20px',
-                    height: '1px',
-                    background: 'var(--gold)',
-                  }}
-                />
-                <strong style={{ color: 'var(--white)', fontWeight: 600 }}>{item.leader}</strong>
-              </div>
-              <p
-                style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '0.9rem',
-                  color: 'var(--secondary)',
-                  lineHeight: 1.8,
-                  marginTop: '4px',
+                  lineHeight: 1.75,
                 }}
               >
                 {item.desc}
@@ -509,12 +522,12 @@ export default function BenefitsPage() {
                   style={{
                     marginTop: '8px',
                     padding: '10px 12px',
-                    background: 'rgba(196,165,90,0.08)',
-                    border: '1px solid rgba(196,165,90,0.25)',
+                    background: 'rgba(21,72,138,0.08)',
+                    border: '1px solid rgba(21,72,138,0.25)',
                     borderRadius: '6px',
                     fontFamily: 'var(--font-sans)',
-                    fontSize: '0.82rem',
-                    color: 'var(--gold-light, var(--gold))',
+                    fontSize: '0.8rem',
+                    color: 'var(--gold)',
                     fontWeight: 600,
                     letterSpacing: '0.02em',
                   }}
@@ -545,6 +558,7 @@ export default function BenefitsPage() {
         >
           {DISCOUNTS.map((d) => (
             <div
+              className="kd4-card-hover"
               key={d.title}
               style={{
                 background: 'var(--bg2)',
@@ -564,8 +578,8 @@ export default function BenefitsPage() {
                   letterSpacing: '0.15em',
                   color: 'var(--gold)',
                   textTransform: 'uppercase',
-                  background: 'rgba(196,165,90,0.1)',
-                  border: '1px solid rgba(196,165,90,0.25)',
+                  background: 'rgba(21,72,138,0.1)',
+                  border: '1px solid rgba(21,72,138,0.25)',
                   borderRadius: '3px',
                   padding: '3px 9px',
                 }}
