@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { RotateCcw, Film, Camera } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: '멤버 혜택 | KD4 액팅 스튜디오',
@@ -13,11 +12,7 @@ export const metadata: Metadata = {
 const LEARNING_SUPPORT = [
   {
     title: '보강 신청 안내',
-    desc: '부득이하게 결석하시는 경우, 보강을 신청하실 수 있습니다. 보강은 스케줄표에 있는 다른 수업 클래스에서 가능합니다.',
-    extras: [
-      '수업 3일 전까지 미리 말씀해 주셔야 보강 제도를 이용하실 수 있습니다',
-      '자세한 규정은 카카오채널로 문의',
-    ],
+    desc: '부득이하게 결석하시는 경우, 스케줄표에 있는 다른 수업 클래스에서 보강 가능. 수업 3일 전까지 미리 신청해 주세요. 자세한 규정은 카카오채널 문의.',
   },
 ]
 
@@ -35,9 +30,7 @@ const CAREER_SERVICES = [
 ]
 
 interface CommunityItem {
-  icon: string
   title: string
-  summary: string
   leader: string
   desc: string
   fee?: string
@@ -45,26 +38,20 @@ interface CommunityItem {
 
 const COMMUNITIES: CommunityItem[] = [
   {
-    icon: '🎭',
     title: '레피티션 스터디',
-    summary: 'Meisner Repetition 자율 훈련',
     leader: '홍수민 리더',
-    desc: '자율적으로 모여 마이즈너 테크닉 레피티션을 훈련합니다. 수업 외 시간에도 살아있는 반응을 유지하기 위한 훈련. KD4 멤버가 아니어도 레피티션 훈련을 지속하고 싶은 분이라면 누구나 참여하실 수 있습니다.',
-    fee: '월 회비 100,000원 · KD4 수강생 무료',
+    desc: '자율적으로 모여 마이즈너 테크닉 레피티션을 훈련합니다. KD4 멤버가 아니어도 누구나 참여 가능',
+    fee: '월 회비 100,000원 · KD4 멤버 무료',
   },
   {
-    icon: '🎥',
     title: '굿무비 굿액팅',
-    summary: '좋은 영화를 보는 배우의 눈',
     leader: '박우진 리더',
-    desc: 'KD4 멤버들과 함께 영화를 보고 토론하는 모임. 연기를 보는 눈과 영화를 보는 눈을 함께 키우며, 영화와 연기를 더 깊이 사랑하게 되는 시간.',
+    desc: '함께 영화를 보고 토론하는 모임. 연기와 영화를 보는 눈을 함께 키우는 시간',
   },
   {
-    icon: '✝️',
     title: '크리스쳔 액터스',
-    summary: '신앙 안에서 배우로 살아가기',
     leader: '권동원 리더',
-    desc: '신앙을 가진 배우들이 모여 작품·삶·진로를 함께 나누는 커뮤니티.',
+    desc: '신앙을 가진 배우들이 작품·삶·진로를 함께 나누는 커뮤니티',
   },
 ]
 
@@ -206,110 +193,40 @@ export default function BenefitsPage() {
               style={{
                 background: 'var(--bg2)',
                 border: '1px solid var(--border)',
-                borderRadius: '16px',
-                padding: 'clamp(28px, 4vw, 40px)',
+                borderRadius: 12,
+                padding: 24,
                 display: 'flex',
-                gap: 'clamp(20px, 3vw, 32px)',
-                alignItems: 'flex-start',
-                flexWrap: 'wrap',
+                flexDirection: 'column',
+                gap: 8,
               }}
             >
-              {/* 좌측: 큰 아이콘 박스 */}
-              <div
-                style={{
-                  width: 64,
-                  height: 64,
-                  borderRadius: 14,
-                  background: 'rgba(21,72,138,0.08)',
-                  border: '1px solid rgba(21,72,138,0.2)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                }}
-              >
-                <RotateCcw size={28} color="var(--navy)" strokeWidth={1.6} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                <span style={{
+                  fontFamily: 'var(--font-display), Oswald, sans-serif',
+                  fontSize: '0.65rem',
+                  letterSpacing: '0.15em',
+                  color: 'var(--gold)',
+                  textTransform: 'uppercase',
+                  background: 'rgba(21,72,138,0.1)',
+                  border: '1px solid rgba(21,72,138,0.25)',
+                  borderRadius: 3,
+                  padding: '3px 9px',
+                }}>학습 보강</span>
               </div>
-
-              {/* 우측: 콘텐츠 */}
-              <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <span
-                  style={{
-                    alignSelf: 'flex-start',
-                    fontFamily: 'var(--font-display), Oswald, sans-serif',
-                    fontSize: '0.65rem',
-                    letterSpacing: '0.15em',
-                    color: 'var(--gold)',
-                    textTransform: 'uppercase',
-                    background: 'rgba(21,72,138,0.1)',
-                    border: '1px solid rgba(21,72,138,0.25)',
-                    borderRadius: '3px',
-                    padding: '3px 9px',
-                  }}
-                >
-                  학습 보강
-                </span>
-                <h3
-                  style={{
-                    fontFamily: 'var(--font-serif)',
-                    fontSize: 'clamp(1.15rem, 2.4vw, 1.35rem)',
-                    fontWeight: 700,
-                    color: 'var(--white)',
-                    lineHeight: 1.4,
-                    marginTop: 2,
-                  }}
-                >
-                  {item.title}
-                </h3>
-                <p
-                  style={{
-                    fontFamily: 'var(--font-sans)',
-                    fontSize: '0.92rem',
-                    color: 'var(--secondary)',
-                    lineHeight: 1.85,
-                  }}
-                >
-                  {item.desc}
-                </p>
-                {item.extras && (
-                  <ul
-                    style={{
-                      listStyle: 'none',
-                      margin: '8px 0 0',
-                      padding: 0,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: 8,
-                    }}
-                  >
-                    {item.extras.map((line) => (
-                      <li
-                        key={line}
-                        style={{
-                          fontFamily: 'var(--font-sans)',
-                          fontSize: '0.85rem',
-                          color: 'var(--secondary)',
-                          paddingLeft: 18,
-                          position: 'relative',
-                          lineHeight: 1.7,
-                        }}
-                      >
-                        <span
-                          style={{
-                            position: 'absolute',
-                            left: 0,
-                            top: '0.6em',
-                            width: 10,
-                            height: 1,
-                            background: 'var(--gold)',
-                          }}
-                        />
-                        {line}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
+              <h3 style={{
+                fontFamily: 'var(--font-sans)',
+                fontSize: '1.05rem',
+                fontWeight: 700,
+                color: 'var(--white)',
+                letterSpacing: '0.02em',
+                marginTop: 6,
+              }}>{item.title}</h3>
+              <p style={{
+                fontFamily: 'var(--font-sans)',
+                fontSize: '0.85rem',
+                color: 'var(--secondary)',
+                lineHeight: 1.7,
+              }}>{item.desc}</p>
             </div>
           ))}
         </div>
@@ -331,101 +248,57 @@ export default function BenefitsPage() {
             gap: '14px',
           }}
         >
-          {CAREER_SERVICES.map((item, i) => {
-            const Icon = i === 0 ? Film : Camera
-            return (
-              <div
-                className="kd4-card-hover"
-                key={item.title}
-                style={{
-                  background: 'var(--bg2)',
-                  border: '1px solid var(--border)',
-                  borderRadius: '12px',
-                  padding: '24px',
-                  display: 'flex',
-                  gap: 18,
-                  alignItems: 'flex-start',
-                }}
-              >
-                {/* 좌측 아이콘 — /join GUARANTEES 패턴 */}
-                <div
-                  style={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 12,
-                    background: 'rgba(21,72,138,0.08)',
-                    border: '1px solid rgba(21,72,138,0.2)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                  }}
-                >
-                  <Icon size={22} color="var(--navy)" strokeWidth={1.6} />
-                </div>
-
-                {/* 우측 콘텐츠 */}
-                <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  <h3
-                    style={{
-                      fontFamily: 'var(--font-serif)',
-                      fontSize: 'clamp(1rem, 2.2vw, 1.1rem)',
-                      fontWeight: 700,
-                      color: 'var(--white)',
-                      lineHeight: 1.4,
-                    }}
-                  >
-                    {item.title}
-                  </h3>
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-sans)',
-                      fontSize: '0.85rem',
-                      color: 'var(--secondary)',
-                      lineHeight: 1.7,
-                    }}
-                  >
-                    {item.desc}
-                  </p>
-                  {/* 가격 강조 — separator 후 */}
-                  <div
-                    style={{
-                      marginTop: 10,
-                      paddingTop: 12,
-                      borderTop: '1px dashed var(--border)',
-                      display: 'flex',
-                      alignItems: 'baseline',
-                      gap: 6,
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontFamily: 'var(--font-display), Oswald, sans-serif',
-                        fontSize: '0.65rem',
-                        letterSpacing: '0.2em',
-                        color: 'var(--gray)',
-                        textTransform: 'uppercase',
-                      }}
-                    >
-                      Price
-                    </span>
-                    <span
-                      style={{
-                        fontFamily: 'var(--font-display)',
-                        fontSize: 'clamp(1.2rem, 3vw, 1.5rem)',
-                        fontWeight: 700,
-                        color: 'var(--gold)',
-                        letterSpacing: '-0.01em',
-                        lineHeight: 1,
-                      }}
-                    >
-                      {item.price}
-                    </span>
-                  </div>
-                </div>
+          {CAREER_SERVICES.map((item) => (
+            <div
+              className="kd4-card-hover"
+              key={item.title}
+              style={{
+                background: 'var(--bg2)',
+                border: '1px solid var(--border)',
+                borderRadius: 12,
+                padding: 24,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 8,
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                <span style={{
+                  fontFamily: 'var(--font-display), Oswald, sans-serif',
+                  fontSize: '0.65rem',
+                  letterSpacing: '0.15em',
+                  color: 'var(--gold)',
+                  textTransform: 'uppercase',
+                  background: 'rgba(21,72,138,0.1)',
+                  border: '1px solid rgba(21,72,138,0.25)',
+                  borderRadius: 3,
+                  padding: '3px 9px',
+                }}>편집 서비스</span>
+                <span style={{
+                  fontFamily: 'var(--font-display), Oswald, sans-serif',
+                  fontSize: '0.95rem',
+                  fontWeight: 700,
+                  color: 'var(--gold)',
+                  letterSpacing: '-0.01em',
+                  lineHeight: 1,
+                }}>{item.price}</span>
               </div>
-            )
-          })}
+              <h3 style={{
+                fontFamily: 'var(--font-sans)',
+                fontSize: '1.05rem',
+                fontWeight: 700,
+                color: 'var(--white)',
+                letterSpacing: '0.02em',
+                marginTop: 6,
+              }}>{item.title}</h3>
+              <p style={{
+                fontFamily: 'var(--font-sans)',
+                fontSize: '0.85rem',
+                color: 'var(--secondary)',
+                lineHeight: 1.7,
+              }}>{item.desc}</p>
+            </div>
+          ))}
         </div>
 
         {/* 카카오채널 문의 버튼 */}
@@ -486,91 +359,47 @@ export default function BenefitsPage() {
               style={{
                 background: 'var(--bg2)',
                 border: '1px solid var(--border)',
-                borderRadius: '12px',
-                padding: '28px 24px',
+                borderRadius: 12,
+                padding: 24,
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '10px',
+                gap: 8,
               }}
             >
-              {/* 이모지 — 사람·관계 톤 */}
-              <div style={{ fontSize: '1.8rem', lineHeight: 1 }} aria-hidden>
-                {item.icon}
-              </div>
-              <h3
-                style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '1.05rem',
-                  fontWeight: 700,
-                  color: 'var(--white)',
-                  letterSpacing: '0.02em',
-                }}
-              >
-                {item.title}
-              </h3>
-              <p
-                style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '0.85rem',
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                <span style={{
+                  fontFamily: 'var(--font-display), Oswald, sans-serif',
+                  fontSize: '0.65rem',
+                  letterSpacing: '0.15em',
                   color: 'var(--gold)',
-                  fontWeight: 500,
-                }}
-              >
-                {item.summary}
-              </p>
-              {/* Leader 라인 */}
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  marginTop: '2px',
+                  textTransform: 'uppercase',
+                  background: 'rgba(21,72,138,0.1)',
+                  border: '1px solid rgba(21,72,138,0.25)',
+                  borderRadius: 3,
+                  padding: '3px 9px',
+                }}>커뮤니티</span>
+                <span style={{
                   fontFamily: 'var(--font-sans)',
                   fontSize: '0.78rem',
-                  color: 'var(--secondary)',
-                  letterSpacing: '0.03em',
-                }}
-              >
-                <span
-                  aria-hidden
-                  style={{
-                    display: 'inline-block',
-                    width: '20px',
-                    height: '1px',
-                    background: 'var(--gold)',
-                  }}
-                />
-                <strong style={{ color: 'var(--white)', fontWeight: 600 }}>{item.leader}</strong>
+                  fontWeight: 600,
+                  color: 'var(--white)',
+                  letterSpacing: '0.02em',
+                }}>{item.leader}</span>
               </div>
-              <p
-                style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '0.9rem',
-                  color: 'var(--secondary)',
-                  lineHeight: 1.8,
-                  marginTop: '4px',
-                }}
-              >
-                {item.desc}
-              </p>
-              {item.fee && (
-                <p
-                  style={{
-                    marginTop: '8px',
-                    padding: '10px 12px',
-                    background: 'rgba(21,72,138,0.06)',
-                    border: '1px solid rgba(21,72,138,0.2)',
-                    borderRadius: '6px',
-                    fontFamily: 'var(--font-sans)',
-                    fontSize: '0.82rem',
-                    color: 'var(--gold)',
-                    fontWeight: 600,
-                    letterSpacing: '0.02em',
-                  }}
-                >
-                  {item.fee}
-                </p>
-              )}
+              <h3 style={{
+                fontFamily: 'var(--font-sans)',
+                fontSize: '1.05rem',
+                fontWeight: 700,
+                color: 'var(--white)',
+                letterSpacing: '0.02em',
+                marginTop: 6,
+              }}>{item.title}</h3>
+              <p style={{
+                fontFamily: 'var(--font-sans)',
+                fontSize: '0.85rem',
+                color: 'var(--secondary)',
+                lineHeight: 1.7,
+              }}>{item.desc}{item.fee ? ` · ${item.fee}` : ''}</p>
             </div>
           ))}
         </div>
@@ -592,23 +421,22 @@ export default function BenefitsPage() {
             gap: '14px',
           }}
         >
-          {DISCOUNTS.map((d) => (
+          {DISCOUNTS.map((d, i) => (
             <div
               className="kd4-card-hover"
               key={d.title}
               style={{
                 background: 'var(--bg2)',
                 border: '1px solid var(--border)',
-                borderRadius: '12px',
-                padding: '24px',
+                borderRadius: 12,
+                padding: 24,
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '8px',
+                gap: 8,
               }}
             >
-              <span
-                style={{
-                  alignSelf: 'flex-start',
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                <span style={{
                   fontFamily: 'var(--font-display), Oswald, sans-serif',
                   fontSize: '0.65rem',
                   letterSpacing: '0.15em',
@@ -616,34 +444,32 @@ export default function BenefitsPage() {
                   textTransform: 'uppercase',
                   background: 'rgba(21,72,138,0.1)',
                   border: '1px solid rgba(21,72,138,0.25)',
-                  borderRadius: '3px',
+                  borderRadius: 3,
                   padding: '3px 9px',
-                }}
-              >
-                {d.tag}
-              </span>
-              <h3
-                style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '1rem',
-                  fontWeight: 700,
-                  color: 'var(--white)',
-                  letterSpacing: '0.02em',
-                  marginTop: '4px',
-                }}
-              >
-                {d.title}
-              </h3>
-              <p
-                style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '0.85rem',
-                  color: 'var(--secondary)',
-                  lineHeight: 1.75,
-                }}
-              >
-                {d.desc}
-              </p>
+                }}>{d.tag}</span>
+                <span aria-hidden style={{
+                  fontFamily: 'var(--font-display), Oswald, sans-serif',
+                  fontSize: '1.3rem',
+                  fontWeight: 300,
+                  color: 'var(--gray)',
+                  letterSpacing: '0.05em',
+                  lineHeight: 1,
+                }}>{String(i + 1).padStart(2, '0')}</span>
+              </div>
+              <h3 style={{
+                fontFamily: 'var(--font-sans)',
+                fontSize: '1.05rem',
+                fontWeight: 700,
+                color: 'var(--white)',
+                letterSpacing: '0.02em',
+                marginTop: 6,
+              }}>{d.title}</h3>
+              <p style={{
+                fontFamily: 'var(--font-sans)',
+                fontSize: '0.85rem',
+                color: 'var(--secondary)',
+                lineHeight: 1.7,
+              }}>{d.desc}</p>
             </div>
           ))}
         </div>

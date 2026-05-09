@@ -210,31 +210,24 @@ export default function ClassesPage() {
               {
                 num: '01',
                 tag: 'BEGINNER',
-                questions: ['취미로 연기를 하고 싶다'],
-                target: '베이직 클래스',
+                title: '베이직 클래스',
+                desc: '취미로 연기를 시작하고 싶은 분',
               },
               {
                 num: '02',
                 tag: 'TRAINING',
-                questions: [
-                  '제대로 배우 훈련을 받고 싶다',
-                  '연기 매너리즘이 왔다',
-                  '연기하지 않는 연기를 하고 싶다',
-                ],
-                target: '마이즈너 테크닉 정규 클래스',
+                title: '마이즈너 정규 클래스',
+                desc: '제대로 배우 훈련을 받고 싶은 분 · 연기 매너리즘 · 연기하지 않는 연기',
               },
               {
                 num: '03',
                 tag: 'PORTFOLIO',
-                questions: [
-                  '캐스팅 되는 포트폴리오를 만들고 싶다',
-                  '연기력을 업그레이드 하고 싶다',
-                ],
-                target: '출연영상 클래스',
+                title: '출연영상 클래스',
+                desc: '캐스팅되는 포트폴리오를 만들고 싶은 분 · 연기력 업그레이드',
               },
-            ].map(({ num, tag, questions, target }) => (
+            ].map(({ num, tag, title, desc }) => (
               <a
-                key={target}
+                key={title}
                 href="#class-cards-step1"
                 onClick={(e) => {
                   e.preventDefault()
@@ -248,13 +241,12 @@ export default function ClassesPage() {
                 style={{
                   background: 'var(--bg2)',
                   border: '1px solid var(--border)',
-                  borderRadius: '12px',
-                  padding: '24px',
+                  borderRadius: 12,
+                  padding: 24,
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '8px',
+                  gap: 8,
                   textDecoration: 'none',
-                  cursor: 'pointer',
                   transition: 'border-color 0.2s, transform 0.2s',
                 }}
                 onMouseEnter={(e) => {
@@ -266,129 +258,41 @@ export default function ClassesPage() {
                   e.currentTarget.style.transform = 'none'
                 }}
               >
-                {/* tag + 번호 (top row) */}
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    gap: 8,
-                  }}
-                >
-                  <span
-                    style={{
-                      fontFamily: 'var(--font-display), Oswald, sans-serif',
-                      fontSize: '0.65rem',
-                      letterSpacing: '0.15em',
-                      color: 'var(--gold)',
-                      textTransform: 'uppercase',
-                      background: 'rgba(21,72,138,0.1)',
-                      border: '1px solid rgba(21,72,138,0.25)',
-                      borderRadius: '3px',
-                      padding: '3px 9px',
-                    }}
-                  >
-                    {tag}
-                  </span>
-                  <span
-                    aria-hidden
-                    style={{
-                      fontFamily: 'var(--font-display), Oswald, sans-serif',
-                      fontSize: '1.4rem',
-                      fontWeight: 300,
-                      color: 'var(--gray)',
-                      letterSpacing: '0.05em',
-                      lineHeight: 1,
-                    }}
-                  >
-                    {num}
-                  </span>
-                </div>
-
-                {/* 질문 리스트 (불릿) */}
-                <ul
-                  style={{
-                    listStyle: 'none',
-                    margin: '12px 0 4px',
-                    padding: 0,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 8,
-                  }}
-                >
-                  {questions.map((q) => (
-                    <li
-                      key={q}
-                      style={{
-                        fontFamily: 'var(--font-sans)',
-                        fontSize: '0.95rem',
-                        fontWeight: 600,
-                        color: 'var(--white)',
-                        lineHeight: 1.55,
-                        paddingLeft: 14,
-                        position: 'relative',
-                        letterSpacing: '0.005em',
-                      }}
-                    >
-                      <span
-                        aria-hidden
-                        style={{
-                          position: 'absolute',
-                          left: 0,
-                          top: '0.55em',
-                          width: 6,
-                          height: 1,
-                          background: 'var(--gold)',
-                        }}
-                      />
-                      {q}
-                    </li>
-                  ))}
-                </ul>
-
-                {/* divider */}
-                <hr
-                  style={{
-                    border: 'none',
-                    borderTop: '1px solid var(--border)',
-                    margin: '14px 0 8px',
-                  }}
-                />
-
-                {/* YOUR CLASS 라벨 + 클래스명 + 화살표 */}
-                <p
-                  style={{
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                  <span style={{
                     fontFamily: 'var(--font-display), Oswald, sans-serif',
-                    fontSize: '0.62rem',
-                    letterSpacing: '0.2em',
-                    color: 'var(--gray)',
+                    fontSize: '0.65rem',
+                    letterSpacing: '0.15em',
+                    color: 'var(--gold)',
                     textTransform: 'uppercase',
-                    marginBottom: 4,
-                  }}
-                >
-                  Your Class
-                </p>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: 8,
-                  }}
-                >
-                  <span
-                    style={{
-                      fontFamily: 'var(--font-sans)',
-                      fontSize: '1rem',
-                      color: 'var(--gold)',
-                      fontWeight: 700,
-                      letterSpacing: '0.02em',
-                    }}
-                  >
-                    {target}
-                  </span>
-                  <ArrowRight size={16} aria-hidden style={{ color: 'var(--gold)', flexShrink: 0 }} />
+                    background: 'rgba(21,72,138,0.1)',
+                    border: '1px solid rgba(21,72,138,0.25)',
+                    borderRadius: 3,
+                    padding: '3px 9px',
+                  }}>{tag}</span>
+                  <span aria-hidden style={{
+                    fontFamily: 'var(--font-display), Oswald, sans-serif',
+                    fontSize: '1.3rem',
+                    fontWeight: 300,
+                    color: 'var(--gray)',
+                    letterSpacing: '0.05em',
+                    lineHeight: 1,
+                  }}>{num}</span>
                 </div>
+                <h3 style={{
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '1.05rem',
+                  fontWeight: 700,
+                  color: 'var(--white)',
+                  letterSpacing: '0.02em',
+                  marginTop: 6,
+                }}>{title}</h3>
+                <p style={{
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '0.85rem',
+                  color: 'var(--secondary)',
+                  lineHeight: 1.7,
+                }}>{desc}</p>
               </a>
             ))}
           </div>
