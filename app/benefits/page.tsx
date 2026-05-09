@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 const LEARNING_SUPPORT = [
   {
-    title: '보강 신청 안내',
+    title: '보강제도',
     desc: '부득이하게 결석하시는 경우, 스케줄표에 있는 다른 수업 클래스에서 보강 가능. 수업 3일 전까지 미리 신청해 주세요. 자세한 규정은 카카오채널 문의.',
   },
 ]
@@ -33,7 +33,6 @@ interface CommunityItem {
   title: string
   leader: string
   desc: string
-  fee?: string
 }
 
 const COMMUNITIES: CommunityItem[] = [
@@ -41,7 +40,6 @@ const COMMUNITIES: CommunityItem[] = [
     title: '레피티션 스터디',
     leader: '홍수민 리더',
     desc: '자율적으로 모여 마이즈너 테크닉 레피티션을 훈련합니다. KD4 멤버가 아니어도 누구나 참여 가능',
-    fee: '월 회비 100,000원 · KD4 멤버 무료',
   },
   {
     title: '굿무비 굿액팅',
@@ -200,26 +198,12 @@ export default function BenefitsPage() {
                 gap: 8,
               }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                <span style={{
-                  fontFamily: 'var(--font-display), Oswald, sans-serif',
-                  fontSize: '0.65rem',
-                  letterSpacing: '0.15em',
-                  color: 'var(--gold)',
-                  textTransform: 'uppercase',
-                  background: 'rgba(21,72,138,0.1)',
-                  border: '1px solid rgba(21,72,138,0.25)',
-                  borderRadius: 3,
-                  padding: '3px 9px',
-                }}>학습 보강</span>
-              </div>
               <h3 style={{
                 fontFamily: 'var(--font-sans)',
                 fontSize: '1.05rem',
                 fontWeight: 700,
                 color: 'var(--white)',
                 letterSpacing: '0.02em',
-                marginTop: 6,
               }}>{item.title}</h3>
               <p style={{
                 fontFamily: 'var(--font-sans)',
@@ -399,7 +383,7 @@ export default function BenefitsPage() {
                 fontSize: '0.85rem',
                 color: 'var(--secondary)',
                 lineHeight: 1.7,
-              }}>{item.desc}{item.fee ? ` · ${item.fee}` : ''}</p>
+              }}>{item.desc}</p>
             </div>
           ))}
         </div>
