@@ -59,7 +59,7 @@ async function fetchActors(gender: string, ageGroup: string, tag: string): Promi
       console.error('[ActorsPage] Supabase 오류:', error.message)
       return { actors: [], dbError: true, allTags: [] }
     } else {
-      actors = (data ?? []) as Actor[]
+      actors = (data ?? []) as unknown as Actor[]
     }
   }
 
@@ -70,7 +70,7 @@ async function fetchActors(gender: string, ageGroup: string, tag: string): Promi
       console.error('[ActorsPage] Fallback Supabase 오류:', error.message)
       return { actors: [], dbError: true, allTags: [] }
     }
-    actors = ((data ?? []) as Array<Omit<Actor, 'casting_tags' | 'casting_summary'>>)
+    actors = ((data ?? []) as unknown as Array<Omit<Actor, 'casting_tags' | 'casting_summary'>>)
       .map((a) => ({ ...a, casting_tags: null, casting_summary: null }))
   }
 
