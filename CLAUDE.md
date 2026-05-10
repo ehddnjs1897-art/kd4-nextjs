@@ -53,7 +53,7 @@
 - [ ] **PSI 모바일 점수 직접 측정** — 자동 PSI API는 일일 quota 초과 상태(공유 IP). pagespeed.web.dev 사용자 직접 1회 측정 권장
 - [x] **`director.jpg` / `heart-logo.png` Cache-Control** — 해결됨 (commit af90b1e, max-age=2592000 라이브 확인 2026-05-11)
 - [ ] **자동 일일 트래픽 리포트 재가동** — `04-ops/reports/daily-analytics/` 폴더에 4/27 이후 9일치 누락. `kd4-daily-analytics-report` 스킬 스케줄 점검
-- [ ] **app/api/notify/route.ts 미커밋 변경** — Meta CAPI 통합 WIP. `META_CAPI_TOKEN` + `NEXT_PUBLIC_META_PIXEL_ID` env 필요. 검토 후 커밋 결정 (stash@{0}에 보존)
+- [x] **app/api/notify/route.ts Meta CAPI** — 커밋 완료 (ba8f4ed). `META_CAPI_TOKEN` + `NEXT_PUBLIC_META_PIXEL_ID` Vercel env 추가 시 즉시 작동 (env 없으면 silent skip)
 - [ ] **/actors Drive 썸네일** — Drive URL 캐싱·신뢰성 약함. Supabase Storage 또는 next/image 캐시 마이그레이션 검토
 
 ### 🔬 분석/관측 (2026-05-06)
