@@ -51,7 +51,7 @@
 
 - [ ] **GA4 데이터 누적 검증** — 5/6 trim fix 후 1~2일 누적되면 GA4 콘솔에서 활성 사용자 1+ 잡혀야. 안 잡히면 다른 원인 추가 점검
 - [ ] **PSI 모바일 점수 직접 측정** — 자동 PSI API는 일일 quota 초과 상태(공유 IP). pagespeed.web.dev 사용자 직접 1회 측정 권장
-- [ ] **`director.jpg` / `heart-logo.png` Cache-Control = max-age=0** — 정적 자산인데 캐싱 안 됨. next.config.ts headers 룰 점검 필요 (LCP 영향 미미하지만 완성도 차원)
+- [x] **`director.jpg` / `heart-logo.png` Cache-Control** — 해결됨 (commit af90b1e, max-age=2592000 라이브 확인 2026-05-11)
 - [ ] **자동 일일 트래픽 리포트 재가동** — `04-ops/reports/daily-analytics/` 폴더에 4/27 이후 9일치 누락. `kd4-daily-analytics-report` 스킬 스케줄 점검
 - [ ] **app/api/notify/route.ts 미커밋 변경** — Meta CAPI 통합 WIP. `META_CAPI_TOKEN` + `NEXT_PUBLIC_META_PIXEL_ID` env 필요. 검토 후 커밋 결정 (stash@{0}에 보존)
 - [ ] **/actors Drive 썸네일** — Drive URL 캐싱·신뢰성 약함. Supabase Storage 또는 next/image 캐시 마이그레이션 검토
