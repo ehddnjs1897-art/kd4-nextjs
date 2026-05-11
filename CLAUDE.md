@@ -52,7 +52,7 @@
 - [ ] **GA4 데이터 누적 검증** — 5/6 trim fix 후 1~2일 누적되면 GA4 콘솔에서 활성 사용자 1+ 잡혀야. 안 잡히면 다른 원인 추가 점검
 - [ ] **PSI 모바일 점수 직접 측정** — 자동 PSI API는 일일 quota 초과 상태(공유 IP). pagespeed.web.dev 사용자 직접 1회 측정 권장
 - [x] **`director.jpg` / `heart-logo.png` Cache-Control** — 해결됨 (commit af90b1e, max-age=2592000 라이브 확인 2026-05-11)
-- [ ] **자동 일일 트래픽 리포트 재가동** — `04-ops/reports/daily-analytics/` 폴더에 4/27 이후 **14일치 누락** (2026-05-11 CronList 0건 확인 — 스킬 스케줄 미등록이 원인). Claude Code 데스크톱에서 `/schedule` 명령으로 `kd4-daily-analytics-report` 매일 오전 9시 등록 필요
+- [x] **자동 일일 트래픽 리포트 재가동** — 4/27 이후 14일치 누락됐으나 RemoteTrigger `trig_018ENRkD9xeDByXnnGKX5oHw` 등록 완료 (매일 00:00 UTC = 09:00 KST, 첫 실행 2026-05-12). ⚠️ GA4 API 자격증명 미설정 → 실행 시 Notion에 "수동 확인 필요" 페이지만 생성됨 (실제 데이터는 Google 서비스계정 키 설정 필요)
 - [x] **app/api/notify/route.ts Meta CAPI** — 커밋 완료 (ba8f4ed). `META_CAPI_TOKEN` + `NEXT_PUBLIC_META_PIXEL_ID` Vercel env 추가 시 즉시 작동 (env 없으면 silent skip)
 - [ ] **/actors Drive 썸네일** — Drive URL 캐싱·신뢰성 약함. Supabase Storage 또는 next/image 캐시 마이그레이션 검토
 
