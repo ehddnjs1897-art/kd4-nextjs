@@ -54,7 +54,7 @@
 - [x] **`director.jpg` / `heart-logo.png` Cache-Control** — 해결됨 (commit af90b1e, max-age=2592000 라이브 확인 2026-05-11)
 - [x] **자동 일일 트래픽 리포트 재가동** — 4/27 이후 14일치 누락됐으나 RemoteTrigger `trig_018ENRkD9xeDByXnnGKX5oHw` 등록 완료 (매일 00:00 UTC = 09:00 KST, 첫 실행 2026-05-12). ⚠️ GA4 API 자격증명 미설정 → 실행 시 Notion에 "수동 확인 필요" 페이지만 생성됨 (실제 데이터는 Google 서비스계정 키 설정 필요)
 - [x] **app/api/notify/route.ts Meta CAPI** — 커밋 완료 (ba8f4ed). `META_CAPI_TOKEN` + `NEXT_PUBLIC_META_PIXEL_ID` Vercel env 추가 시 즉시 작동 (env 없으면 silent skip)
-- [ ] **/actors Drive 썸네일** — Drive URL 캐싱·신뢰성 약함. Supabase Storage 또는 next/image 캐시 마이그레이션 검토
+- [x] **/actors Drive 썸네일** — 2026-05-12 자율에이전트: 45/51명 Storage 이전 완료. 이선미 로컬 PPTX 추출→업로드. 나머지 6명(송은아·이차일·박정민·조소영·김민정·김마고) Drive 비공개/삭제 → 프로필 사진 수동 업로드 후 migrate-actor-photos.ts 재실행 필요
 
 ### 🔬 분석/관측 (2026-05-06)
 - **Meta Pixel 28일 깔때기** (4/27 시점): PageView 1,700 → ViewContent 85(5%) → DeepScroll 44 → InitiateCheckout 1 → CTAClick 1
