@@ -1939,3 +1939,105 @@ main {
     transform: none;
   }
 }
+
+/* ╔══════════════════════════════════════════════════════════════╗ */
+/* ║  /join visual uplift (PREVIEW — eduver-inspired rough demo)    ║ */
+/* ║  Branch: preview/visual-uplift-rough · 머지 전 검토용           ║ */
+/* ╚══════════════════════════════════════════════════════════════╝ */
+
+/* A. 섹션 진입 fade-up — 페이지 로드 후 자동 stagger
+   (러프 데모용; 정식 구현은 IntersectionObserver로 스크롤 trigger 권장) */
+@keyframes upliftIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.uplift-page > section {
+  animation: upliftIn 0.85s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+.uplift-page > section:nth-of-type(1) { animation-delay: 0.00s; }
+.uplift-page > section:nth-of-type(2) { animation-delay: 0.08s; }
+.uplift-page > section:nth-of-type(3) { animation-delay: 0.15s; }
+.uplift-page > section:nth-of-type(4) { animation-delay: 0.22s; }
+.uplift-page > section:nth-of-type(5) { animation-delay: 0.28s; }
+.uplift-page > section:nth-of-type(n+6) { animation-delay: 0.32s; }
+@media (prefers-reduced-motion: reduce) {
+  .uplift-page > section { animation: none !important; }
+}
+
+/* B. Hero 시네마틱 배경 — director.jpg overlay + 강한 그라데이션 */
+.hero-bg-image {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url('/director.jpg');
+  background-size: cover;
+  background-position: center 22%;
+  opacity: 0.22;
+  filter: grayscale(0.55) contrast(1.08) brightness(0.95);
+}
+.hero-cinematic-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 30% 25%, rgba(30, 91, 168, 0.45) 0%, transparent 55%),
+    radial-gradient(ellipse at 75% 80%, rgba(15, 51, 100, 0.65) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(15, 51, 100, 0.25) 0%, rgba(21, 72, 138, 0.5) 100%);
+}
+
+/* C. 풀스크린 OFFER 섹션 — 100vw + 강조 배경 */
+.uplift-fullscreen-offer {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(199, 62, 62, 0.06) 0%, transparent 55%),
+    var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+/* D. CTA + 카드 마이크로 인터랙션 강화 */
+.btn-primary {
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+.btn-primary:hover {
+  transform: translateY(-2px) scale(1.015);
+  box-shadow: 0 10px 28px rgba(21, 72, 138, 0.32);
+  filter: brightness(1.05);
+}
+.btn-outline {
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+.btn-outline:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.7) !important;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* CTA pulse — 시각 트리거 (Hero CTA만) */
+@keyframes ctaPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(199, 62, 62, 0.0); }
+  50%      { box-shadow: 0 0 0 8px rgba(199, 62, 62, 0.18); }
+}
+.uplift-cta-pulse {
+  animation: ctaPulse 2.4s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .uplift-cta-pulse { animation: none; }
+}
+
+/* 카드 hover 강화 */
+.uplift-page .class-card,
+.uplift-page .step-card,
+.uplift-page .stats-card {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.22s ease;
+}
+.uplift-page .class-card:hover,
+.uplift-page .step-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(21, 72, 138, 0.14);
+  border-color: rgba(21, 72, 138, 0.3);
+}
+
