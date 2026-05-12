@@ -159,6 +159,7 @@ const GUARANTEES = [
 export default function JoinPage() {
   return (
     <div
+      className="uplift-page"
       style={{
         background: 'var(--bg)',
         color: '#111111',
@@ -182,6 +183,9 @@ export default function JoinPage() {
           background: 'var(--navy)',
         }}
       >
+        {/* B. Hero 시네마틱 배경 (Preview) — director.jpg overlay + 그라데이션 */}
+        <div className="hero-bg-image" aria-hidden />
+        <div className="hero-cinematic-overlay" aria-hidden />
 
         <div
           className="container"
@@ -267,12 +271,12 @@ export default function JoinPage() {
             <JoinCTALink
               href="#form"
               location="hero"
-              label="무료 상담 신청"
+              label="잔여 3석 — 봄맞이 할인 받고 무료 상담"
               fireLead
-              className="btn-primary"
+              className="btn-primary uplift-cta-pulse"
               style={{ background: 'var(--navy)', color: '#ffffff' }}
             >
-              무료 상담 신청
+              잔여 3석 — 봄맞이 할인 받고 무료 상담
               <ArrowRight size={16} strokeWidth={2.2} />
             </JoinCTALink>
             <JoinCTALink
@@ -644,8 +648,9 @@ export default function JoinPage() {
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑨ OFFER — 가격 + 카운트다운 + Anchor Price 배지           */}
+      {/* C. 풀스크린 섹션 (Preview) — 100vw + 강조 그라데이션 배경 */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
+      <section className="section uplift-fullscreen-offer" style={{ padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow">05 — SPRING SPECIAL</p>
