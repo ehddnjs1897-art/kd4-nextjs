@@ -1,7 +1,7 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { getActorPhotoUrl, shouldOptimize } from '@/lib/actor-photo'
+import ActorCardImage from '@/components/actors/ActorCardImage'
 
 interface Actor {
   id: string
@@ -238,12 +238,9 @@ export default async function ActorsPage({ searchParams }: PageProps) {
             {actors.map((actor) => (
               <Link key={actor.id} href={`/actors/${actor.id}`} style={styles.card} className="actor-card">
                 <div style={styles.imageWrap}>
-                  <Image
+                  <ActorCardImage
                     src={getActorPhotoUrl(actor)}
                     alt={actor.name}
-                    fill
-                    sizes="(max-width:640px) 100vw, 50vw"
-                    style={{ objectFit: 'cover', objectPosition: 'center top' }}
                     unoptimized={!shouldOptimize(actor)}
                   />
                   <div style={styles.cardOverlay}>
