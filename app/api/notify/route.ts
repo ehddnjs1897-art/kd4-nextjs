@@ -58,32 +58,50 @@ export async function POST(request: NextRequest) {
 
     // 1. Supabase에 무조건 먼저 기록 — webhook·SMS 실패와 무관하게 데이터 보존
     let savedId: string | null = null
+    const baseRecord = {
+      name: record?.name ?? null,
+      phone: record?.phone ?? null,
+      email: record?.email ?? null,
+      class_name: record?.class_name ?? null,
+      source: record?.source ?? null,
+      inquiry_type: record?.inquiry_type ?? null,
+      motivation: record?.motivation ?? null,
+      status: record?.status ?? '대기',
+      raw_payload: record,
+    }
+    const utmFields = {
+      utm_source: record?.utm_source ?? null,
+      utm_medium: record?.utm_medium ?? null,
+      utm_campaign: record?.utm_campaign ?? null,
+      utm_content: record?.utm_content ?? null,
+      utm_term: record?.utm_term ?? null,
+      referrer: record?.referrer ?? null,
+    }
     try {
+      // UTM 컬럼 포함 시도 — Supabase migration(2026-05-14_utm_tracking.sql) 실행 후 완전 작동
       const { data: inserted, error } = await getSupabaseAdmin()
         .from('consultations')
-        .insert({
-          name: record?.name ?? null,
-          phone: record?.phone ?? null,
-          email: record?.email ?? null,
-          class_name: record?.class_name ?? null,
-          source: record?.source ?? null,
-          inquiry_type: record?.inquiry_type ?? null,
-          motivation: record?.motivation ?? null,
-          status: record?.status ?? '대기',
-          // 2026-05-14: UTM 파라미터 — 광고 채널별 ROI 추적
-          utm_source: record?.utm_source ?? null,
-          utm_medium: record?.utm_medium ?? null,
-          utm_campaign: record?.utm_campaign ?? null,
-          utm_content: record?.utm_content ?? null,
-          utm_term: record?.utm_term ?? null,
-          referrer: record?.referrer ?? null,
-          raw_payload: record,
-        })
+        .insert({ ...baseRecord, ...utmFields })
         .select('id')
         .single()
 
-      if (error) throw error
-      savedId = inserted?.id ?? null
+      if (error) {
+        // UTM 컬럼 미존재 시 fallback — 신청 데이터 손실 방지
+        if (error.message?.includes('column') || error.code === '42703') {
+          console.warn('[notify] UTM 컬럼 없음 — fallback insert (마이그레이션 미실행)')
+          const { data: fallback, error: fallbackErr } = await getSupabaseAdmin()
+            .from('consultations')
+            .insert(baseRecord)
+            .select('id')
+            .single()
+          if (fallbackErr) throw fallbackErr
+          savedId = fallback?.id ?? null
+        } else {
+          throw error
+        }
+      } else {
+        savedId = inserted?.id ?? null
+      }
     } catch (dbError) {
       console.error('[notify] Supabase insert 실패:', dbError, record)
     }
