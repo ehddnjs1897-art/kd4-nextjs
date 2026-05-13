@@ -99,8 +99,10 @@ export default function JoinForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!name || !phone || !email) {
-      setError('이름 · 연락처 · 이메일은 필수입니다.')
+    // 2026-05-14: 이메일을 선택으로 강등 — 광고 유입 모바일 사용자 마찰 감소
+    // SMS 운영이라 이메일 사실상 안 씀. 폼 카피 "이름·연락처만 남기시면"과 일치하게.
+    if (!name || !phone) {
+      setError('이름과 연락처는 필수입니다.')
       return
     }
     if (!consent) {
@@ -519,16 +521,15 @@ export default function JoinForm() {
         required
       />
 
-      {/* 이메일 — 필수 (뉴스레터 발송용) */}
+      {/* 이메일 — 선택 (2026-05-14: 광고 유입 마찰 감소 위해 필수 해제) */}
       <input
         type="email"
-        placeholder="이메일 *"
+        placeholder="이메일 (선택)"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         onFocus={() => handleFieldFocus('email')}
         onBlur={() => setFocused(null)}
         style={inputStyle('email')}
-        required
       />
 
       {/* 희망 클래스 (선택) */}

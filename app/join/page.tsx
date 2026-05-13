@@ -269,7 +269,7 @@ export default function JoinPage() {
             }}
           >
             <JoinCTALink
-              href="#form"
+              href="#form-hero"
               location="hero"
               label="잔여 3석 — 봄맞이 할인 받고 무료 상담"
               fireLead
