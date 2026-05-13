@@ -1,11 +1,39 @@
 'use client'
 
 import Image from 'next/image'
-import { useId, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { MessageCircle, FileText, CheckCircle, ArrowRight } from 'lucide-react'
 import { CLASSES, DIRECTOR } from '@/lib/classes'
 import { analytics } from '@/lib/analytics'
 import { SOURCE_VALUES, MEISNER_OPTIONS } from '@/lib/form-options'
+
+/** UTM 파라미터 추적 (2026-05-14) — 광고 채널별 ROI 분석용
+ * 광고 URL에 ?utm_source=meta&utm_campaign=lead_5월 등을 붙이면
+ * 신청 폼에서 자동 캡처해 Supabase에 저장. 어느 광고가 진짜 신청 만들었는지 추적.
+ */
+interface UTMData {
+  utm_source: string | null
+  utm_medium: string | null
+  utm_campaign: string | null
+  utm_content: string | null
+  utm_term: string | null
+  referrer: string | null
+}
+
+function readUTMFromURL(): UTMData {
+  if (typeof window === 'undefined') {
+    return { utm_source: null, utm_medium: null, utm_campaign: null, utm_content: null, utm_term: null, referrer: null }
+  }
+  const params = new URLSearchParams(window.location.search)
+  return {
+    utm_source: params.get('utm_source'),
+    utm_medium: params.get('utm_medium'),
+    utm_campaign: params.get('utm_campaign'),
+    utm_content: params.get('utm_content'),
+    utm_term: params.get('utm_term'),
+    referrer: document.referrer || null,
+  }
+}
 
 const SOURCE_OPTIONS = [
   { value: '', label: 'KD4를 어떻게 알게 되셨나요?' },
@@ -31,6 +59,19 @@ export default function JoinForm() {
   const [ticketNo, setTicketNo] = useState('')
   const [focused, setFocused] = useState<string | null>(null)
   const [formStarted, setFormStarted] = useState(false)
+
+  /** UTM 파라미터 — 마운트 시 1회 캡처해 ref 에 보관 (재렌더 영향 X) */
+  const utmRef = useRef<UTMData>({
+    utm_source: null,
+    utm_medium: null,
+    utm_campaign: null,
+    utm_content: null,
+    utm_term: null,
+    referrer: null,
+  })
+  useEffect(() => {
+    utmRef.current = readUTMFromURL()
+  }, [])
 
   /** 첫 필드 포커스 시 form_start 이벤트 1회 발화 */
   function handleFieldFocus(field: string) {
@@ -94,6 +135,8 @@ export default function JoinForm() {
           motivation,
           status: '대기',
           created_at: new Date().toISOString(),
+          // 2026-05-14: 광고 채널 추적용 UTM 파라미터
+          ...utmRef.current,
         },
       }),
     }).catch(() => {})

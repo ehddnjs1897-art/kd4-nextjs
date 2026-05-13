@@ -70,6 +70,13 @@ export async function POST(request: NextRequest) {
           inquiry_type: record?.inquiry_type ?? null,
           motivation: record?.motivation ?? null,
           status: record?.status ?? '대기',
+          // 2026-05-14: UTM 파라미터 — 광고 채널별 ROI 추적
+          utm_source: record?.utm_source ?? null,
+          utm_medium: record?.utm_medium ?? null,
+          utm_campaign: record?.utm_campaign ?? null,
+          utm_content: record?.utm_content ?? null,
+          utm_term: record?.utm_term ?? null,
+          referrer: record?.referrer ?? null,
           raw_payload: record,
         })
         .select('id')
