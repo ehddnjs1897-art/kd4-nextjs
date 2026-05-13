@@ -81,14 +81,23 @@ export async function POST(request: NextRequest) {
       console.error('[notify] Supabase insert 실패:', dbError, record)
     }
 
-    // 2. Make webhook 발송 (실패해도 데이터는 이미 Supabase에 보존됨)
+    // 2. Make webhook 발송 — await 로 변경 (2026-05-13)
+    //   이전: fire-and-forget → Vercel serverless cold start 시점에 함수 종료가 빨라
+    //   background fetch 가 발사되지 못함 (5/11 안현빈, 5/12 최문일 새벽 신청 누락 사고).
+    //   이제 응답 전 webhook 완료 대기. 단 webhook 자체가 실패해도 Supabase 데이터는 보존됨.
     const webhookUrl = process.env.MAKE_WEBHOOK_URL
     if (webhookUrl) {
-      fetch(webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(record),
-      }).catch((err) => console.error('[notify] Make webhook 실패:', err))
+      try {
+        await fetch(webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(record),
+          // 10초 후 timeout (Make 처리 평균 5~8초)
+          signal: AbortSignal.timeout(10000),
+        })
+      } catch (err) {
+        console.error('[notify] Make webhook 실패:', err)
+      }
     }
 
     // 3. 관리자 SMS 발송 (실패해도 데이터는 이미 Supabase에 보존됨)
