@@ -54,16 +54,17 @@
 - [x] **`director.jpg` / `heart-logo.png` Cache-Control** — 해결됨 (commit af90b1e, max-age=2592000 라이브 확인 2026-05-11)
 - [x] **자동 일일 트래픽 리포트 재가동** — 4/27 이후 14일치 누락됐으나 RemoteTrigger `trig_018ENRkD9xeDByXnnGKX5oHw` 등록 완료 (매일 00:00 UTC = 09:00 KST, 첫 실행 2026-05-12). ⚠️ GA4 API 자격증명 미설정 → 실행 시 Notion에 "수동 확인 필요" 페이지만 생성됨 (실제 데이터는 Google 서비스계정 키 설정 필요)
 - [x] **app/api/notify/route.ts Meta CAPI** — 커밋 완료 (ba8f4ed). `META_CAPI_TOKEN` + `NEXT_PUBLIC_META_PIXEL_ID` Vercel env 추가 시 즉시 작동 (env 없으면 silent skip)
-- [ ] **/actors Drive 썸네일** — Drive URL 캐싱·신뢰성 약함. Supabase Storage 또는 next/image 캐시 마이그레이션 검토
+- [ ] **/actors Drive 썸네일** — 2026-05-14 직접 검증: 51명 중 48명 Storage 완료, 3명(송은아·조소영·김마고) Drive 의존 잔여. 송은아 PPTX 234MB(크기 초과), 조소영·김마고 Drive 파일 삭제됨 → 대표님 원본 파일 전달 필요
 
 ### 🔬 분석/관측 (2026-05-06)
 - **Meta Pixel 28일 깔때기** (4/27 시점): PageView 1,700 → ViewContent 85(5%) → DeepScroll 44 → InitiateCheckout 1 → CTAClick 1
 - **상담 전환율 0.06%** — 정상 광고는 1~3%. 폼 필수 필드 7개(이름·연락처·이메일·희망클래스·마이즈너경험·유입경로·동의)가 강한 마찰 지점으로 의심
 - **GA4 수치는 신뢰 불가** (5/6 trim fix 전까지) — Meta 1,700 vs GA 28일 89PV 격차 → fix 적용 후 재진단 필요
 
-### Supabase 상태 (2026-05-01 기준)
+### Supabase 상태 (2026-05-14 직접 검증)
 - 결제 완료 → 프로젝트 정상 가동 (HTTP 200)
 - `actors` 테이블 공개 배우 51명 정상 조회됨
+- Storage 마이그레이션: 48/51명 완료. 잔여 3명(송은아·조소영·김마고) Drive 의존 → placeholder 표시 중 (UX 영향 없음)
 - 캐스팅 마퀴 사진은 여전히 `public/casting/` 로컬 정적 서빙 (PageSpeed상 더 빠름 — 유지)
 - middleware.ts의 "Supabase 격리" 코드는 장애 대비 안전장치 — 유지
 
