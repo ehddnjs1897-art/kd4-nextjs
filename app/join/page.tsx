@@ -1012,8 +1012,8 @@ export default function JoinPage() {
           >
             {([
               { youtubeId: '7Q62XeyVLbc', genre: '드라마', subtitle: '단편 「여배우들」', cohort: '심화 1기' },
-              { youtubeId: 'PUlrhjOkvjA', genre: '드라마', subtitle: '단편 「외사랑」', cohort: '출연영상 16기' },
               { youtubeId: 'IWL6hlOrU-w', genre: '드라마', subtitle: '「메소드 연기」', cohort: '출연영상 17기' },
+              { youtubeId: 'PUlrhjOkvjA', genre: '드라마', subtitle: '단편 「외사랑」', cohort: '출연영상 16기' },
             ] as const).map(({ youtubeId, genre, subtitle, cohort }) => (
               <div key={youtubeId}>
                 {/* 장르 뱃지 */}
