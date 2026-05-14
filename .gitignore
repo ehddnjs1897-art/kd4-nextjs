@@ -52,3 +52,9 @@ next-env.d.ts
 # Untracked local image files (not used in code)
 director2.JPG
 public/kd4-mascot.PNG
+
+# Supabase CLI temp files
+supabase/.temp/
+
+# One-time diagnostic scripts (not for deployment)
+scripts/apply_utm_migration.ts
