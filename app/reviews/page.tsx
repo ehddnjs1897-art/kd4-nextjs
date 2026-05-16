@@ -84,9 +84,6 @@ export default function ReviewsPage() {
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
             <p className="section-eyebrow">01 — REAL VOICES</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>실제 멤버들의 목소리</h2>
-            <p className="section-desc">
-              개인정보 보호를 위해 가명 처리됐습니다 (예: 김*현).
-            </p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', maxWidth: '1080px', margin: '0 auto' }}>
             {REVIEW_ITEMS.map((r, i) => (

@@ -14,30 +14,30 @@ const SITE_URL = 'https://kd4.club'
 const PAGE_URL = `${SITE_URL}/actor-training-for-minor-role-actors`
 
 export const metadata: Metadata = {
-  title: '단역·조연 배우 연기 훈련 — KD4 액팅 스튜디오',
+  title: '진짜 배우를 위한 연기 훈련 — KD4 액팅 스튜디오',
   description:
-    '단역·조연 배우를 위한 마이즈너 테크닉 정규 훈련. 짧은 등장 시간일수록 정확한 연기력이 필요합니다. 캐스팅 연계 지원.',
+    '현장에서 통하는 진짜 배우를 만드는 KD4 정규 연기 훈련. 마이즈너 테크닉 기반 6~8명 소수정예 클래스 + 캐스팅 연계.',
   keywords: [
-    '단역 배우 연기',
-    '조연 배우 훈련',
-    '단역 연기 학원',
-    '조연 연기 학원',
-    '단역 배우 마이즈너',
+    '진짜 배우 훈련',
+    '정규 연기 훈련',
+    '배우 연기 클래스',
+    '마이즈너 정규 훈련',
+    '현역 배우 클래스',
   ],
   alternates: { canonical: PAGE_URL },
   openGraph: {
     type: 'website',
     url: PAGE_URL,
-    title: '단역·조연 배우 연기 훈련 — KD4 액팅 스튜디오',
-    description: '단역·조연 배우를 위한 마이즈너 테크닉 정규 훈련.',
+    title: '진짜 배우를 위한 연기 훈련 — KD4 액팅 스튜디오',
+    description: '현장에서 통하는 진짜 배우를 만드는 KD4 정규 연기 훈련.',
     images: ['/og-image.jpg'],
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
   },
   twitter: {
     card: 'summary_large_image',
-    title: '단역·조연 배우 연기 훈련 — KD4',
-    description: '단역·조연을 위한 마이즈너 정규 훈련.',
+    title: '진짜 배우를 위한 연기 훈련 — KD4',
+    description: '현장에서 통하는 진짜 배우 정규 훈련.',
     images: ['/og-image.jpg'],
   },
 }
@@ -46,7 +46,7 @@ const REASONS = [
   {
     Icon: Target,
     title: '단 한 컷의 정확도',
-    desc: '짧은 등장 시간일수록 정확한 연기력이 중요합니다. 단 한 컷의 호흡, 표정, 반응이 캐스팅 디렉터의 다음 결정을 좌우합니다.',
+    desc: '단 한 컷의 호흡·표정·반응이 다음 캐스팅을 좌우합니다. 정확도가 결정적입니다.',
   },
   {
     Icon: Clock,
@@ -55,8 +55,8 @@ const REASONS = [
   },
   {
     Icon: Layers,
-    title: '단역에서 주연으로 가는 경로',
-    desc: 'STEP 1 마이즈너 정규반 → STEP 2 출연영상·심화 → STEP 3 액터스 리더로 이어지는 단계적 성장 경로가 설계되어 있습니다.',
+    title: '단계적 성장 경로',
+    desc: 'STEP 1 마이즈너 정규반 → STEP 2 출연영상·심화 → STEP 3 액터스 리더로 이어지는 로드맵이 설계되어 있습니다.',
   },
   {
     Icon: Handshake,
@@ -72,7 +72,7 @@ export default function MinorRolePage() {
         schemas={[
           buildBreadcrumb([
             { name: '홈', url: SITE_URL },
-            { name: '단역·조연 배우 훈련', url: PAGE_URL },
+            { name: '진짜 배우 훈련', url: PAGE_URL },
           ]),
           buildFaqPage(MINOR_ROLE_FAQ),
         ]}
@@ -82,13 +82,13 @@ export default function MinorRolePage() {
       <section style={{ padding: 'clamp(72px, 12vw, 110px) 24px clamp(48px, 9vw, 80px)', background: 'var(--navy)', color: '#fff', textAlign: 'center' }}>
         <div className="container">
           <p className="section-eyebrow" style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '16px' }}>
-            FOR WORKING ACTORS
+            REAL ACTOR TRAINING
           </p>
           <h1 className="section-title-serif" style={{ color: '#fff', fontSize: 'clamp(1.7rem, 4.5vw, 2.8rem)', lineHeight: 1.35, marginBottom: '16px', maxWidth: '720px', margin: '0 auto 16px', wordBreak: 'keep-all' }}>
-            단역·조연 배우 연기 훈련
+            진짜 배우를 위한 연기 훈련
           </h1>
           <p style={{ fontSize: 'clamp(0.95rem, 2.6vw, 1.05rem)', color: 'rgba(255,255,255,0.86)', lineHeight: 1.7, marginBottom: '32px', maxWidth: '600px', margin: '0 auto 32px', wordBreak: 'keep-all' }}>
-            짧은 등장일수록 정확도가 결정적입니다. 현역 배우를 위한 마이즈너 정규 훈련.
+            현장에서 통하는 진짜 배우를 만드는 마이즈너 정규 훈련.
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <JoinCTALink href="#form" location="minor-role-hero" label="무료 상담 신청" className="btn-primary" style={{ background: '#fff', color: 'var(--navy)' }}>
@@ -105,8 +105,8 @@ export default function MinorRolePage() {
       <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
-            <p className="section-eyebrow">01 — KD4 FOR YOU</p>
-            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>현역 배우에게 KD4가 적합한 이유</h2>
+            <p className="section-eyebrow">01 — WHY KD4</p>
+            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>진짜 배우에게 KD4가 필요한 이유</h2>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', maxWidth: '960px', margin: '0 auto' }}>
             {REASONS.map(({ Icon, title, desc }) => (
@@ -125,7 +125,7 @@ export default function MinorRolePage() {
         <div className="container" style={{ maxWidth: '720px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '24px' }}>
             <p className="section-eyebrow">02 — GROWTH PATH</p>
-            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>단역에서 시작하는 KD4 로드맵</h2>
+            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>KD4 배우 성장 로드맵</h2>
           </div>
           <ol style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {[
@@ -168,7 +168,7 @@ export default function MinorRolePage() {
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
               <p className="section-eyebrow">무료 상담 신청</p>
               <h2 className="section-title-serif" style={{ fontSize: 'clamp(1.4rem, 3.6vw, 1.9rem)', marginBottom: '8px' }}>
-                현역 배우 맞춤 상담
+                진짜 배우 훈련 상담
               </h2>
               <p style={{ fontSize: '0.88rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
                 이름·연락처만 남기시면 24시간 이내 SMS로 연락드립니다.

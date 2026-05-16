@@ -46,7 +46,6 @@ const VIDEOS = [
   { id: '7Q62XeyVLbc', title: 'KD4 출연영상 — 메소드 연기' },
   { id: 'IWL6hlOrU-w', title: 'KD4 출연영상 — 장면연기 1' },
   { id: 'PUlrhjOkvjA', title: 'KD4 출연영상 — 장면연기 2' },
-  { id: '6crvxRnBerk', title: 'KD4 출연영상 — 마이즈너 테크닉' },
 ]
 
 export default function PortfolioPage() {
@@ -71,10 +70,7 @@ export default function PortfolioPage() {
           <h1 className="section-title-serif" style={{ color: '#fff', fontSize: 'clamp(1.7rem, 4.5vw, 2.8rem)', lineHeight: 1.35, marginBottom: '16px', maxWidth: '720px', margin: '0 auto 16px', wordBreak: 'keep-all' }}>
             배우 출연영상 포트폴리오 사례
           </h1>
-          <p style={{ fontSize: 'clamp(0.95rem, 2.6vw, 1.05rem)', color: 'rgba(255,255,255,0.86)', lineHeight: 1.7, marginBottom: '32px', maxWidth: '560px', margin: '0 auto 32px', wordBreak: 'keep-all' }}>
-            출연영상 클래스 멤버들이 출연·제작한 작품. 동의된 영상만 게시됩니다.
-          </p>
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '32px' }}>
             <JoinCTALink href="#form" location="portfolio-hero" label="무료 상담 신청" className="btn-primary" style={{ background: '#fff', color: 'var(--navy)' }}>
               무료 상담 신청
             </JoinCTALink>
