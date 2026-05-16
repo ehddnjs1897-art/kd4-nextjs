@@ -88,7 +88,7 @@ export default function MinorRolePage() {
             단역·조연 배우 연기 훈련
           </h1>
           <p style={{ fontSize: 'clamp(0.95rem, 2.6vw, 1.05rem)', color: 'rgba(255,255,255,0.86)', lineHeight: 1.7, marginBottom: '32px', maxWidth: '600px', margin: '0 auto 32px', wordBreak: 'keep-all' }}>
-            짧은 등장 시간일수록 정확한 연기력이 중요합니다. 단역·조연 배우를 위한 마이즈너 테크닉 정규 훈련.
+            짧은 등장일수록 정확도가 결정적입니다. 현역 배우를 위한 마이즈너 정규 훈련.
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <JoinCTALink href="#form" location="minor-role-hero" label="무료 상담 신청" className="btn-primary" style={{ background: '#fff', color: 'var(--navy)' }}>
@@ -101,24 +101,11 @@ export default function MinorRolePage() {
         </div>
       </section>
 
-      {/* INTRO */}
-      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
-        <div className="container" style={{ maxWidth: '720px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-            <p className="section-eyebrow">01 — WHY TRAIN</p>
-            <h2 className="section-title-serif" style={{ marginBottom: '16px' }}>왜 단역도 정규 훈련이 필요한가</h2>
-          </div>
-          <p style={{ fontSize: '0.95rem', color: 'var(--gray-light)', lineHeight: 1.85, wordBreak: 'keep-all' }}>
-            많은 단역·조연 배우가 "현장에서 배운다"고 생각하지만 현장은 가르치는 곳이 아닙니다. 짧은 등장 시간일수록 첫 컷에서 정확한 연기를 보여줘야 다음 캐스팅으로 이어집니다. 정규 마이즈너 훈련은 즉흥적인 현장 학습이 채울 수 없는 기본기를 만듭니다.
-          </p>
-        </div>
-      </section>
-
       {/* 4 REASONS */}
-      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
+      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
-            <p className="section-eyebrow">02 — KD4 FOR YOU</p>
+            <p className="section-eyebrow">01 — KD4 FOR YOU</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>현역 배우에게 KD4가 적합한 이유</h2>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', maxWidth: '960px', margin: '0 auto' }}>
@@ -134,10 +121,10 @@ export default function MinorRolePage() {
       </section>
 
       {/* GROWTH PATH */}
-      <section style={{ padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg)' }}>
+      <section style={{ padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg2)' }}>
         <div className="container" style={{ maxWidth: '720px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-            <p className="section-eyebrow">03 — GROWTH PATH</p>
+            <p className="section-eyebrow">02 — GROWTH PATH</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>단역에서 시작하는 KD4 로드맵</h2>
           </div>
           <ol style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -164,7 +151,7 @@ export default function MinorRolePage() {
       </section>
 
       {/* FAQ */}
-      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
+      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
             <p className="section-eyebrow">FAQ</p>
@@ -175,7 +162,7 @@ export default function MinorRolePage() {
       </section>
 
       {/* FORM */}
-      <section id="form" style={{ padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg)' }}>
+      <section id="form" style={{ padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '520px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>

@@ -72,7 +72,7 @@ export default function PortfolioPage() {
             배우 출연영상 포트폴리오 사례
           </h1>
           <p style={{ fontSize: 'clamp(0.95rem, 2.6vw, 1.05rem)', color: 'rgba(255,255,255,0.86)', lineHeight: 1.7, marginBottom: '32px', maxWidth: '560px', margin: '0 auto 32px', wordBreak: 'keep-all' }}>
-            KD4 출연영상 클래스 멤버들이 직접 출연·제작한 포트폴리오 영상. 동의된 작품만 게시됩니다.
+            출연영상 클래스 멤버들이 출연·제작한 작품. 동의된 영상만 게시됩니다.
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <JoinCTALink href="#form" location="portfolio-hero" label="무료 상담 신청" className="btn-primary" style={{ background: '#fff', color: 'var(--navy)' }}>
@@ -106,22 +106,20 @@ export default function PortfolioPage() {
             ))}
           </div>
           <p style={{ textAlign: 'center', marginTop: '24px', fontSize: '0.85rem', color: 'var(--gray)' }}>
-            매월 신규 수료 멤버의 영상이 추가됩니다. 동의된 작품만 공개됩니다.
+            매월 신규 영상이 추가됩니다.
           </p>
         </div>
       </section>
 
       {/* CROSS-LINK */}
-      <section style={{ padding: 'clamp(48px, 8vw, 64px) 0', background: 'var(--bg2)', textAlign: 'center' }}>
-        <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
-          <p className="section-eyebrow">CLASS</p>
-          <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>이런 영상은 어떻게 만드나요?</h2>
-          <p style={{ fontSize: '0.92rem', color: 'var(--gray-light)', lineHeight: 1.7, marginBottom: '20px' }}>
-            출연영상 클래스 3개월 코스에서 시나리오·촬영·편집까지 모두 포함됩니다.
+      <section style={{ padding: 'clamp(32px, 6vw, 48px) 0', background: 'var(--bg2)', textAlign: 'center' }}>
+        <div className="container">
+          <p style={{ fontSize: '0.92rem', color: 'var(--gray-light)', lineHeight: 1.7, margin: 0 }}>
+            이런 영상은 출연영상 클래스 3개월 코스에서 만들어집니다.{' '}
+            <Link href="/reel-production-class" style={{ color: 'var(--navy)', fontWeight: 600 }}>
+              자세히 보기 →
+            </Link>
           </p>
-          <Link href="/reel-production-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', fontWeight: 600 }}>
-            출연영상 클래스 자세히 보기 →
-          </Link>
         </div>
       </section>
 

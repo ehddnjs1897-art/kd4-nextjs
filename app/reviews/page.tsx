@@ -65,7 +65,7 @@ export default function ReviewsPage() {
             KD4 멤버 이야기
           </h1>
           <p style={{ fontSize: 'clamp(0.95rem, 2.6vw, 1.05rem)', color: 'rgba(255,255,255,0.86)', lineHeight: 1.7, marginBottom: '32px', maxWidth: '560px', margin: '0 auto 32px', wordBreak: 'keep-all' }}>
-            마이즈너 테크닉 정규반·출연영상 클래스를 수료한 KD4 멤버들이 직접 남긴 진솔한 후기.
+            실제 KD4 멤버들이 직접 남긴 후기. 모두 본인 동의 후 게시됩니다.
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <JoinCTALink href="#form" location="reviews-hero" label="무료 상담 신청" className="btn-primary" style={{ background: '#fff', color: 'var(--navy)' }}>
@@ -85,7 +85,7 @@ export default function ReviewsPage() {
             <p className="section-eyebrow">01 — REAL VOICES</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>실제 멤버들의 목소리</h2>
             <p className="section-desc">
-              모든 후기는 본인 동의 후 게시되며 개인정보 보호를 위해 가명 처리됐습니다.
+              개인정보 보호를 위해 가명 처리됐습니다 (예: 김*현).
             </p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', maxWidth: '1080px', margin: '0 auto' }}>
