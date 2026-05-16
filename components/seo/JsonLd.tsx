@@ -1,17 +1,29 @@
 /**
  * JSON-LD 구조화 데이터 — AEO/GEO 최적화
- * LocalBusiness + Organization + FAQPage + Course 스키마
+ * Organization + EducationalOrganization + Person(권동원) + LocalBusiness + FAQPage + Course
  * AI 검색(ChatGPT, Perplexity, Google AI Overview)에서 KD4를 노출시키기 위함
+ *
+ * @id 체계 (그래프 연결):
+ *   - kd4.club#org      → Organization
+ *   - kd4.club#school   → EducationalOrganization
+ *   - kd4.club#local    → LocalBusiness
+ *   - kd4.club#dongwon  → Person (권동원)
  */
 import { CLASSES } from '@/lib/classes'
+import {
+  buildOrganization,
+  buildEducationalOrganization,
+  buildPersonDongwon,
+} from '@/lib/seo-schemas'
 
 const SITE_URL = 'https://kd4.club'
 
-/** LocalBusiness + Organization */
+/** LocalBusiness + PerformingArtsTheater — 실제 매장 위치 */
 function getLocalBusinessSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': ['LocalBusiness', 'PerformingArtsTheater'],
+    '@id': `${SITE_URL}#local`,
     name: 'KD4 액팅 스튜디오',
     alternateName: 'KD4 Acting Studio',
     description:
@@ -19,6 +31,7 @@ function getLocalBusinessSchema() {
     url: SITE_URL,
     telephone: '+82-10-8564-0244',
     email: 'uikactors@gmail.com',
+    parentOrganization: { '@id': `${SITE_URL}#org` },
     address: {
       '@type': 'PostalAddress',
       streetAddress: '이화여대1안길 12 아리움3차 1층 101호',
@@ -46,11 +59,7 @@ function getLocalBusinessSchema() {
     ],
     priceRange: '₩150,000 ~ ₩450,000',
     image: `${SITE_URL}/og-image.jpg`,
-    founder: {
-      '@type': 'Person',
-      name: '권동원',
-      jobTitle: '대표',
-    },
+    founder: { '@id': `${SITE_URL}#dongwon` },
   }
 }
 
@@ -110,11 +119,26 @@ interface JsonLdProps {
 }
 
 export default function JsonLd({ faqItems }: JsonLdProps) {
+  const organization = buildOrganization()
+  const school = buildEducationalOrganization()
+  const dongwon = buildPersonDongwon()
   const localBusiness = getLocalBusinessSchema()
   const courses = getCourseSchemas()
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organization) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(school) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(dongwon) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusiness) }}
