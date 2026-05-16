@@ -75,7 +75,7 @@ const COMPARISON_ROWS = [
 
 export default function MeisnerPage() {
   return (
-    <main style={{ paddingTop: '80px', background: 'var(--bg)', minHeight: '100vh', color: '#111111' }}>
+    <div style={{ paddingTop: '80px', background: 'var(--bg)', minHeight: '100vh', color: '#111111' }}>
       <PageJsonLd
         schemas={[
           buildBreadcrumb([
@@ -278,6 +278,6 @@ export default function MeisnerPage() {
           }
         }
       `}</style>
-    </main>
+    </div>
   )
 }

@@ -53,7 +53,7 @@ const ACCESS_ITEMS = [
 
 export default function SinchonPage() {
   return (
-    <main style={{ paddingTop: '80px', background: 'var(--bg)', minHeight: '100vh', color: '#111111' }}>
+    <div style={{ paddingTop: '80px', background: 'var(--bg)', minHeight: '100vh', color: '#111111' }}>
       <PageJsonLd
         schemas={[
           buildBreadcrumb([
@@ -121,8 +121,8 @@ export default function SinchonPage() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', maxWidth: '880px', margin: '0 auto 24px' }}>
             {[
-              { href: '/meisner-technique-class', title: '마이즈너 테크닉 정규 클래스', desc: '4개월 코스 · 정원 8명 · 회당 4시간', tag: 'STEP 1' },
-              { href: '/reel-production-class', title: '출연영상 클래스', desc: '3개월 코스 · 정원 6명 · 전문 영화팀 촬영', tag: 'STEP 1' },
+              { href: '/meisner-technique-class', title: '마이즈너 테크닉 정규 클래스', desc: '4개월 코스 · 정원 8명 · 회당 4시간 · 월 ₩250,000', tag: 'STEP 1' },
+              { href: '/reel-production-class', title: '출연영상 클래스', desc: '3개월 코스 · 정원 6명 · 전문 영화팀 촬영 · 월 ₩300,000', tag: 'STEP 1' },
             ].map(({ href, title, desc, tag }) => (
               <Link key={href} href={href} style={{ display: 'block', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', padding: '24px', textDecoration: 'none', color: '#111111' }}>
                 <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.7rem', letterSpacing: '0.15em', color: 'var(--navy)', background: 'var(--navy-tint-1)', border: '1px solid var(--navy-tint-3)', borderRadius: '4px', padding: '3px 8px' }}>
@@ -184,6 +184,6 @@ export default function SinchonPage() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   )
 }

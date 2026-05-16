@@ -84,7 +84,7 @@ const PORTFOLIO_VIDEOS = [
 
 export default function ReelPage() {
   return (
-    <main style={{ paddingTop: '80px', background: 'var(--bg)', minHeight: '100vh', color: '#111111' }}>
+    <div style={{ paddingTop: '80px', background: 'var(--bg)', minHeight: '100vh', color: '#111111' }}>
       <PageJsonLd
         schemas={[
           buildBreadcrumb([
@@ -270,6 +270,16 @@ export default function ReelPage() {
           </div>
         </div>
       </section>
-    </main>
+
+      {/* CROSS-LINK */}
+      <section style={{ padding: '24px', background: 'var(--bg)', textAlign: 'center', borderTop: '1px solid var(--border)' }}>
+        <Link href="/meisner-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
+          ← 마이즈너 정규 클래스
+        </Link>
+        <Link href="/classes" style={{ fontSize: '0.9rem', color: 'var(--navy)' }}>
+          전체 클래스 보기 →
+        </Link>
+      </section>
+    </div>
   )
 }

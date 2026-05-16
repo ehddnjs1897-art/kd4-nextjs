@@ -48,7 +48,7 @@ export const metadata: Metadata = {
 
 export default function CoachPage() {
   return (
-    <main style={{ paddingTop: '80px', background: 'var(--bg)', minHeight: '100vh', color: '#111111' }}>
+    <div style={{ paddingTop: '80px', background: 'var(--bg)', minHeight: '100vh', color: '#111111' }}>
       <PageJsonLd
         schemas={[
           buildBreadcrumb([
@@ -214,6 +214,6 @@ export default function CoachPage() {
           }
         }
       `}</style>
-    </main>
+    </div>
   )
 }
