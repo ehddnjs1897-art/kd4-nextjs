@@ -65,7 +65,7 @@ export default function ReviewsPage() {
             KD4 멤버 이야기
           </h1>
           <p style={{ fontSize: 'clamp(0.95rem, 2.6vw, 1.05rem)', color: 'rgba(255,255,255,0.86)', lineHeight: 1.7, marginBottom: '32px', maxWidth: '560px', margin: '0 auto 32px', wordBreak: 'keep-all' }}>
-            실제 KD4 멤버들이 직접 남긴 후기. 모두 본인 동의 후 게시됩니다.
+            실제 KD4 멤버들이 직접 남긴 후기.
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <JoinCTALink href="#form" location="reviews-hero" label="무료 상담 신청" className="btn-primary" style={{ background: '#fff', color: 'var(--navy)' }}>
