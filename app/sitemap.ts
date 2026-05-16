@@ -18,6 +18,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      url: `${BASE}/classes`,
+      lastModified: NOW,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
       url: `${BASE}/benefits`,
       lastModified: NOW,
       changeFrequency: 'monthly',
