@@ -10,6 +10,7 @@
  *   - '#local'    → LocalBusiness (실제 매장 위치)
  *   - '#dongwon'  → Person (권동원 대표)
  */
+import type { ClassItem } from './classes'
 import { DIRECTOR } from './classes'
 
 const SITE_URL = 'https://kd4.club'
@@ -98,5 +99,103 @@ export function buildPersonDongwon() {
       'https://www.instagram.com/kd4actingstudio',
       'https://www.youtube.com/@kd4actingstudio',
     ],
+  }
+}
+
+/** Person — 권동원 상세 (코치 페이지 전용, alumniOf·award·performerIn 포함) */
+export function buildPersonDongwonDetailed() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    '@id': `${SITE_URL}#dongwon`,
+    name: DIRECTOR.name,
+    alternateName: 'Kwon Dongwon',
+    jobTitle: ['액팅 코치', '연기 강사', '배우', 'KD4 대표'],
+    description:
+      'KD4 액팅 스튜디오 대표. 마이즈너 테크닉 액팅 코치이자 현역 배우로 Disney+ 무빙2, Netflix 중증외상센터 등에 출연 중.',
+    url: `${SITE_URL}/acting-coach-dongwon-kwon`,
+    image: `${SITE_URL}${DIRECTOR.photo}`,
+    worksFor: { '@id': `${SITE_URL}#org` },
+    knowsAbout: [
+      '마이즈너 테크닉',
+      '이바나 처벅 테크닉',
+      '연기 코칭',
+      '캐스팅',
+      '오디션 독백',
+    ],
+    alumniOf: [
+      { '@type': 'EducationalOrganization', name: 'LA Meisner Workshop' },
+      { '@type': 'EducationalOrganization', name: '한국 마이즈너테크닉 아카데미' },
+      { '@type': 'EducationalOrganization', name: '건명원' },
+      { '@type': 'EducationalOrganization', name: 'The Chora' },
+    ],
+    award: [...DIRECTOR.credentials.awards],
+    performerIn: [
+      ...DIRECTOR.filmography.drama.map((title) => ({
+        '@type': 'CreativeWork',
+        name: title,
+      })),
+      ...DIRECTOR.filmography.film.map((title) => ({
+        '@type': 'Movie',
+        name: title,
+      })),
+    ],
+    sameAs: [...SAMEAS],
+  }
+}
+
+/** BreadcrumbList — 페이지 네비 구조 (검색결과 빵부스러기 노출) */
+export function buildBreadcrumb(items: { name: string; url: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((it, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: it.name,
+      item: it.url,
+    })),
+  }
+}
+
+/** FAQPage — 페이지 FAQ 데이터를 검색엔진용 라벨로 */
+export function buildFaqPage(items: { q: string; a: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  }
+}
+
+/** Course — ClassItem을 상세 Course 라벨로 변환 */
+export function buildCourseFromClass(cls: ClassItem, opts: { url: string }) {
+  const desc = [cls.quote, ...cls.bullets].join(' · ')
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Course',
+    name: `${cls.nameKo} (${cls.nameEn})`,
+    description: desc,
+    url: opts.url,
+    provider: { '@id': `${SITE_URL}#school` },
+    offers: {
+      '@type': 'Offer',
+      price: cls.price.replace(/,/g, ''),
+      priceCurrency: 'KRW',
+      availability: 'https://schema.org/InStock',
+      url: opts.url,
+    },
+    ...(cls.instructor ? { instructor: { '@id': `${SITE_URL}#dongwon` } } : {}),
+    courseMode: 'Offline',
+    inLanguage: 'ko',
+    educationalLevel: cls.isHobby ? 'Beginner' : 'Intermediate',
+    locationCreated: {
+      '@type': 'Place',
+      name: 'KD4 액팅 스튜디오',
+      address: ADDRESS,
+    },
   }
 }
