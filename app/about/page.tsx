@@ -6,6 +6,29 @@ export const metadata: Metadata = {
   title: '스튜디오 소개 | KD4 액팅 스튜디오',
   description:
     '마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 현장에서 통하는 배우를 키웁니다. 삶의 변화, 좋은 연기, 커리어의 성장.',
+  keywords: [
+    'KD4 소개',
+    'KD4 액팅 스튜디오',
+    '마이즈너 학원 소개',
+    '연기학원 소개',
+    'KD4 철학',
+  ],
+  alternates: { canonical: 'https://kd4.club/about' },
+  openGraph: {
+    type: 'website',
+    url: 'https://kd4.club/about',
+    title: '스튜디오 소개 | KD4 액팅 스튜디오',
+    description: '마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 현장에서 통하는 배우를 키웁니다.',
+    images: ['/og-image.jpg'],
+    locale: 'ko_KR',
+    siteName: 'KD4 액팅 스튜디오',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '스튜디오 소개 | KD4 액팅 스튜디오',
+    description: '마이즈너 테크닉 기반 연기 훈련 시스템.',
+    images: ['/og-image.jpg'],
+  },
 }
 
 const PARTNERS = [
