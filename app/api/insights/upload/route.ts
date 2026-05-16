@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { randomUUID } from 'crypto'
 import type { InsightSourceType, InsightCategory } from '@/lib/types'
@@ -12,7 +13,24 @@ const ALLOWED_TYPES: Record<string, string> = {
   'image/webp': 'webp',
 }
 
+async function requireAdmin(): Promise<{ userId: string } | NextResponse> {
+  const supabase = await createClient()
+  const { data: { user }, error: authErr } = await supabase.auth.getUser()
+  if (authErr || !user) {
+    return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
+  }
+  const { data: profile, error: profileErr } = await supabase
+    .from('profiles').select('role').eq('id', user.id).single()
+  if (profileErr || !profile || profile.role !== 'admin') {
+    return NextResponse.json({ error: '관리자 권한이 필요합니다.' }, { status: 403 })
+  }
+  return { userId: user.id }
+}
+
 export async function POST(request: NextRequest) {
+  const auth = await requireAdmin()
+  if (auth instanceof NextResponse) return auth
+
   try {
     const formData = await request.formData()
     const file = formData.get('file') as File | null
