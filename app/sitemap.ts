@@ -48,6 +48,30 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.75,
     },
     {
+      url: `${BASE}/reviews`,
+      lastModified: NOW,
+      changeFrequency: 'weekly',
+      priority: 0.75,
+    },
+    {
+      url: `${BASE}/actor-reel-portfolio`,
+      lastModified: NOW,
+      changeFrequency: 'monthly',
+      priority: 0.75,
+    },
+    {
+      url: `${BASE}/meisner-academy-recommend`,
+      lastModified: NOW,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${BASE}/actor-training-for-minor-role-actors`,
+      lastModified: NOW,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
       url: `${BASE}/benefits`,
       lastModified: NOW,
       changeFrequency: 'monthly',
