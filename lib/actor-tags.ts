@@ -10,7 +10,8 @@
  * 환경변수: GEMINI_KEY (서버 전용)
  */
 
-const GEMINI_KEY = process.env.GEMINI_KEY ?? process.env.NEXT_PUBLIC_GEMINI_KEY
+// GEMINI_KEY는 서버 전용. NEXT_PUBLIC_* 접두사 사용 금지 — 브라우저 번들 노출 위험.
+const GEMINI_KEY = process.env.GEMINI_KEY
 
 /** 허용 태그 화이트리스트 — 캐스팅 디렉터가 흔히 쓰는 카테고리 */
 export const CASTING_TAG_OPTIONS = [
