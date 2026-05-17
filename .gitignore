@@ -58,3 +58,4 @@ supabase/.temp/
 
 # One-time diagnostic scripts (not for deployment)
 scripts/apply_utm_migration.ts
+.env*.local
