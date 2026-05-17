@@ -6,7 +6,14 @@ import { CLASSES } from '@/lib/classes'
 import { pixel } from '@/lib/meta-pixel'
 import { ArrowRight } from 'lucide-react'
 
+/** 신규 SEO 상세 페이지 매핑 — 마이즈너/출연영상 카드 하단에 상세 페이지 링크 노출 */
+const CLASS_DETAIL_HREF: Record<string, string> = {
+  '마이즈너 테크닉 정규 클래스': '/meisner-technique-class',
+  '출연영상 클래스': '/reel-production-class',
+}
+
 function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
+  const detailHref = CLASS_DETAIL_HREF[cls.nameKo]
   return (
     <div
       style={{
@@ -141,6 +148,19 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
         >
           무료 상담 신청 →
         </a>
+
+        {detailHref && (
+          <Link
+            href={detailHref}
+            style={{
+              display: 'block', textAlign: 'center', padding: '8px 0',
+              fontSize: '0.82rem', fontFamily: 'var(--font-display)', letterSpacing: '0.04em',
+              color: 'var(--navy)', textDecoration: 'none',
+            }}
+          >
+            클래스 상세 페이지 보기 →
+          </Link>
+        )}
       </div>
     </div>
   )
