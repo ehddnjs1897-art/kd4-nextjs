@@ -341,6 +341,7 @@ export default function JoinPage() {
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow">01 — KD4 ONLY</p>
+            {/* 섹션 번호: 01 KD4 ONLY · 02 METHOD · 03 CURRICULUM · 04 OFFER · 05 DISCOUNT · 06 LEADER · 07 PORTFOLIO · 08 REVIEWS · 09 FAQ · 10 PROMISE · 11 CONTACT */}
             <h2
               className="section-title-serif"
               style={{
@@ -435,7 +436,7 @@ export default function JoinPage() {
       <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto', textAlign: 'center' }}>
-            <p className="section-eyebrow">03 — THE METHOD</p>
+            <p className="section-eyebrow">02 — THE METHOD</p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.5rem, 3.6vw, 2.1rem)', marginBottom: '12px' }}
@@ -515,7 +516,7 @@ export default function JoinPage() {
       <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 48px', textAlign: 'center' }}>
-            <p className="section-eyebrow">04 — CURRICULUM</p>
+            <p className="section-eyebrow">03 — CURRICULUM</p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '10px' }}
@@ -651,7 +652,7 @@ export default function JoinPage() {
       <section className="section uplift-fullscreen-offer" style={{ padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">05 — SPRING SPECIAL</p>
+            <p className="section-eyebrow">04 — SPRING SPECIAL</p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
