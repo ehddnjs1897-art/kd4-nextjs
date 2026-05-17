@@ -318,7 +318,49 @@ export default function Navbar() {
           </ul>
 
           {/* ── CTA + 햄버거 ── */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {/* 로그인/마이페이지 진입점 — 데스크탑 */}
+            {authLoaded && !isLoggedIn && (
+              <Link
+                href="/auth/login"
+                className="desktop-auth"
+                style={{
+                  display: 'inline-block',
+                  padding: '8px 12px',
+                  color: '#111111',
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '0.825rem',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  whiteSpace: 'nowrap',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.color = 'var(--navy)')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#111111')}
+              >
+                로그인
+              </Link>
+            )}
+            {authLoaded && isLoggedIn && (
+              <Link
+                href="/dashboard"
+                className="desktop-auth"
+                style={{
+                  display: 'inline-block',
+                  padding: '8px 12px',
+                  color: '#111111',
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '0.825rem',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  whiteSpace: 'nowrap',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.color = 'var(--navy)')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#111111')}
+              >
+                마이페이지
+              </Link>
+            )}
+
             <Link
               href="/join"
               className="desktop-cta"
@@ -502,6 +544,29 @@ export default function Navbar() {
             </ul>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '32px' }}>
+              {/* 로그인/마이페이지 모바일 진입점 */}
+              {authLoaded && (
+                <Link
+                  href={isLoggedIn ? '/dashboard' : '/auth/login'}
+                  onClick={closeMobile}
+                  style={{
+                    display: 'block',
+                    padding: '15px',
+                    background: 'transparent',
+                    border: '1px solid var(--border-strong)',
+                    color: '#111111',
+                    fontFamily: 'var(--font-sans)',
+                    fontSize: '1rem',
+                    fontWeight: 700,
+                    borderRadius: 'var(--radius)',
+                    textAlign: 'center',
+                    letterSpacing: '0.06em',
+                    textDecoration: 'none',
+                  }}
+                >
+                  {isLoggedIn ? '마이페이지' : '로그인'}
+                </Link>
+              )}
               <Link
                 href="/join"
                 onClick={closeMobile}
@@ -556,6 +621,7 @@ export default function Navbar() {
         @media (max-width: 768px) {
           .desktop-nav { display: none !important; }
           .desktop-cta { display: none !important; }
+          .desktop-auth { display: none !important; }
           .hamburger-btn { display: flex !important; }
         }
       `}</style>

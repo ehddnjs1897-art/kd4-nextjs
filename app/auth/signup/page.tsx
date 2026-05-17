@@ -2,12 +2,14 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 type MemberType = 'actor' | 'director'
 type Step = 'type-select' | 'form' | 'success'
 
 export default function SignupPage() {
+  const router = useRouter()
   const [step, setStep] = useState<Step>('type-select')
   const [memberType, setMemberType] = useState<MemberType>('actor')
 
@@ -79,26 +81,33 @@ export default function SignupPage() {
       return
     }
 
-    // 이메일 인증 OFF 상태: signUp이 즉시 세션을 반환 → 콜백 없이 바로 로그인됨
-    // → 이 경우 profiles에 올바른 role을 직접 upsert해야 함
-    // 프로필 업데이트 (role은 DB 기본값 'member' 유지 — 관리자만 변경 가능)
+    // 이메일 인증 OFF: signUp이 즉시 세션 반환 → 메일 안내 대신 dashboard 직행
+    // 이메일 인증 ON: 세션 없음 → success 화면에서 메일 확인 안내
     const userId = signUpData?.user?.id
-    if (userId && signUpData?.session) {
+    const hasSession = !!signUpData?.session
+
+    if (userId && hasSession) {
+      // profiles 트리거(handle_new_user)가 자동 생성하지만, name/phone 백필
+      // role 필드는 절대 클라이언트에서 변경 X (RLS WITH CHECK로 차단됨)
       await supabase.from('profiles').upsert(
         {
           id: userId,
           name: name || null,
-          email: email || null,
           phone: memberType === 'actor' ? (phone || null) : null,
-          // role 필드 제거: 클라이언트에서 역할 조작 방지
-          // member_type은 auth.users의 user_metadata에 보관됨
         },
         { onConflict: 'id' }
       )
     }
 
-    setStep('success')
     setLoading(false)
+
+    if (hasSession) {
+      // 이미 로그인됨 — 곧바로 대시보드로
+      router.push('/dashboard')
+    } else {
+      // 메일 인증 대기 화면
+      setStep('success')
+    }
   }
 
   /* ---- Step 1: 유형 선택 ---- */
