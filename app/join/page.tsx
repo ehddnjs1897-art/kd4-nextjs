@@ -314,12 +314,12 @@ export default function JoinPage() {
             <JoinCTALink
               href="#form-hero"
               location="hero"
-              label="잔여 3석 — 봄맞이 할인 받고 무료 상담"
+              label="잔여 2석 — 봄맞이 할인 받고 무료 상담"
               fireLead
               className="btn-primary uplift-cta-pulse"
               style={{ background: 'var(--navy)', color: '#ffffff' }}
             >
-              잔여 3석 — 봄맞이 할인 받고 무료 상담
+              잔여 2석 — 봄맞이 할인 받고 무료 상담
               <ArrowRight size={16} strokeWidth={2.2} />
             </JoinCTALink>
             <JoinCTALink
