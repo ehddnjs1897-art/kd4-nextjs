@@ -183,8 +183,15 @@ export default function JoinPage() {
           background: 'var(--navy)',
         }}
       >
-        {/* B. Hero 시네마틱 배경 (Preview) — director.jpg overlay + 그라데이션 */}
-        <div className="hero-bg-image" aria-hidden />
+        {/* A안 프리뷰 — 출연영상 음소거 자동재생 루프 배경 */}
+        <div className="hero-video-bg" aria-hidden>
+          <iframe
+            src="https://www.youtube.com/embed/7Q62XeyVLbc?autoplay=1&mute=1&loop=1&playlist=7Q62XeyVLbc&controls=0&showinfo=0&modestbranding=1&rel=0&playsinline=1&disablekb=1"
+            title=""
+            allow="autoplay; encrypted-media"
+            tabIndex={-1}
+          />
+        </div>
         <div className="hero-cinematic-overlay" aria-hidden />
 
         <div
