@@ -234,7 +234,7 @@ export default function JoinPage() {
               fontSize: 'clamp(0.95rem, 2.6vw, 1.05rem)',
               color: 'rgba(255,255,255,0.86)',
               lineHeight: 1.65,
-              marginBottom: '10px',
+              marginBottom: '20px',
               maxWidth: '520px',
               marginLeft: 'auto',
               marginRight: 'auto',
@@ -243,19 +243,58 @@ export default function JoinPage() {
           >
             현직 배우 100명이 수료한 인증된 시그니처 클래스
           </p>
+
+          {/* 숫자 임팩트 — 첫 화면 후킹 */}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: 'clamp(20px, 6vw, 44px)',
+              marginBottom: '28px',
+              flexWrap: 'wrap',
+            }}
+          >
+            {[
+              { num: '100+', label: '현직 배우 수료' },
+              { num: '3년', label: '캐스팅 연계 운영' },
+              { num: '6~8명', label: '소수정예 정원' },
+            ].map((s) => (
+              <div key={s.label} style={{ textAlign: 'center' }}>
+                <div
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: 'clamp(1.6rem, 5vw, 2.4rem)',
+                    fontWeight: 800,
+                    color: '#ffffff',
+                    lineHeight: 1,
+                    letterSpacing: '0.01em',
+                  }}
+                >
+                  {s.num}
+                </div>
+                <div
+                  style={{
+                    fontSize: 'clamp(0.68rem, 1.8vw, 0.78rem)',
+                    color: 'rgba(255,255,255,0.6)',
+                    marginTop: '6px',
+                    letterSpacing: '0.03em',
+                  }}
+                >
+                  {s.label}
+                </div>
+              </div>
+            ))}
+          </div>
+
           <p
             style={{
               fontSize: 'clamp(0.8rem, 2vw, 0.88rem)',
-              color: 'rgba(255,255,255,0.50)',
-              lineHeight: 1.75,
-              marginBottom: '6px',
-              maxWidth: '460px',
-              marginLeft: 'auto',
-              marginRight: 'auto',
+              color: 'rgba(255,255,255,0.55)',
+              marginBottom: '24px',
               letterSpacing: '0.03em',
             }}
           >
-            6~8명 소수정예 · 연기 경험 없어도 OK
+            연기 경험 없어도 OK
           </p>
 
           <div
