@@ -1973,8 +1973,8 @@ main {
   background-image: url('/director.jpg');
   background-size: cover;
   background-position: center 22%;
-  opacity: 0.22;
-  filter: grayscale(0.55) contrast(1.08) brightness(0.95);
+  opacity: 0.42;
+  filter: grayscale(0.2) contrast(1.1) brightness(0.92);
 }
 .hero-cinematic-overlay {
   position: absolute;
@@ -1982,9 +1982,9 @@ main {
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse at 30% 25%, rgba(30, 91, 168, 0.45) 0%, transparent 55%),
-    radial-gradient(ellipse at 75% 80%, rgba(15, 51, 100, 0.65) 0%, transparent 60%),
-    linear-gradient(180deg, rgba(15, 51, 100, 0.25) 0%, rgba(21, 72, 138, 0.5) 100%);
+    radial-gradient(ellipse at 30% 25%, rgba(30, 91, 168, 0.35) 0%, transparent 58%),
+    radial-gradient(ellipse at 75% 80%, rgba(15, 51, 100, 0.55) 0%, transparent 62%),
+    linear-gradient(180deg, rgba(15, 51, 100, 0.2) 0%, rgba(21, 72, 138, 0.42) 100%);
 }
 
 /* C. 풀스크린 OFFER 섹션 — 100vw + 강조 배경 */
