@@ -20,12 +20,19 @@ interface UTMData {
   referrer: string | null
 }
 
+/** UTM 영속 키 — 사이트 탐색 중에도 광고 진입 UTM 유지 (2026-05-19 버그 수정)
+ * 문제: 사용자가 /join?utm=… 진입 후 /classes 등 둘러보고 돌아오면
+ * URL에서 UTM 증발 → 폼 제출 시 전부 NULL 기록되던 버그.
+ * 해결: 첫 진입 시 sessionStorage에 저장, 이후 URL에 없으면 복원해서 사용.
+ */
+const UTM_STORAGE_KEY = 'kd4_utm'
+
 function readUTMFromURL(): UTMData {
-  if (typeof window === 'undefined') {
-    return { utm_source: null, utm_medium: null, utm_campaign: null, utm_content: null, utm_term: null, referrer: null }
-  }
+  const empty: UTMData = { utm_source: null, utm_medium: null, utm_campaign: null, utm_content: null, utm_term: null, referrer: null }
+  if (typeof window === 'undefined') return empty
+
   const params = new URLSearchParams(window.location.search)
-  return {
+  const fromURL: UTMData = {
     utm_source: params.get('utm_source'),
     utm_medium: params.get('utm_medium'),
     utm_campaign: params.get('utm_campaign'),
@@ -33,6 +40,26 @@ function readUTMFromURL(): UTMData {
     utm_term: params.get('utm_term'),
     referrer: document.referrer || null,
   }
+
+  // URL에 UTM이 하나라도 있으면 = 광고 첫 진입 → sessionStorage 저장 후 사용
+  const hasURLUTM = Boolean(
+    fromURL.utm_source || fromURL.utm_medium || fromURL.utm_campaign || fromURL.utm_content || fromURL.utm_term
+  )
+  try {
+    if (hasURLUTM) {
+      sessionStorage.setItem(UTM_STORAGE_KEY, JSON.stringify(fromURL))
+      return fromURL
+    }
+    // URL에 UTM 없음 = 사이트 둘러보다 돌아온 경우 → 저장된 첫 진입 UTM 복원
+    const stored = sessionStorage.getItem(UTM_STORAGE_KEY)
+    if (stored) {
+      const parsed = JSON.parse(stored) as Partial<UTMData>
+      return { ...empty, ...parsed }
+    }
+  } catch {
+    // 시크릿 모드 등 sessionStorage 접근 불가 — URL 값 그대로 사용
+  }
+  return fromURL
 }
 
 const SOURCE_OPTIONS = [
