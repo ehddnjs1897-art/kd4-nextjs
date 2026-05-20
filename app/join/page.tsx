@@ -853,7 +853,7 @@ export default function JoinPage() {
               className="section-eyebrow"
               style={{ color: 'var(--navy)', marginBottom: '10px' }}
             >
-              06 — DISCOUNT BENEFITS
+              05 — DISCOUNT BENEFITS
             </p>
             <h3
               className="section-title-serif"
@@ -968,15 +968,137 @@ export default function JoinPage() {
         </div>
       </section>
 
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑩ FAQ                                                      */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑦.5 PORTFOLIO — 출연영상 결과물                            */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* ⑥ DIRECTOR — 강사 크레딧 (광고 압축: highlights 3개 + 링크) */}
+      <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
+            <p className="section-eyebrow">06 — THE LEADER</p>
+            <h2
+              className="section-title-serif"
+              style={{ fontSize: 'clamp(1.5rem, 3.6vw, 2.1rem)', marginBottom: '10px' }}
+            >
+              배우의 성장을 가이드합니다
+            </h2>
+            <p
+              style={{
+                fontSize: 'clamp(0.82rem, 2.2vw, 0.95rem)',
+                color: 'var(--gray-light)',
+                lineHeight: 1.6,
+                margin: 0,
+                wordBreak: 'keep-all',
+              }}
+            >
+              현역 배우가 직접 가이드하는 액팅 코치
+            </p>
+          </div>
+
+          <div className="director-card" style={{ maxWidth: '720px', margin: '0 auto' }}>
+            <div className="director-photo" style={{ position: 'relative' }}>
+              <Image
+                src={DIRECTOR.photo}
+                alt={`${DIRECTOR.name} 대표`}
+                fill
+                sizes="(max-width: 768px) 100vw, 260px"
+                style={{
+                  objectFit: 'cover',
+                  objectPosition: 'center 15%',
+                }}
+              />
+            </div>
+            <div style={{ flex: 1 }}>
+              <div className="director-name">{DIRECTOR.name}</div>
+              <div className="director-role">{DIRECTOR.title}</div>
+
+              {/* PROFILE — 풀 이력 9개 */}
+              <p
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: '0.7rem',
+                  letterSpacing: '0.15em',
+                  color: 'var(--navy)',
+                  marginTop: '20px',
+                  marginBottom: '12px',
+                  fontWeight: 700,
+                }}
+              >
+                PROFILE
+              </p>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '24px', listStyle: 'none', padding: 0 }}>
+                {DIRECTOR.profileFlat.map((item) => (
+                  <li
+                    key={item}
+                    style={{
+                      fontSize: '0.85rem',
+                      color: 'var(--gray-light)',
+                      paddingLeft: '14px',
+                      position: 'relative',
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    <span
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        top: '0.6em',
+                        width: '6px',
+                        height: '1px',
+                        background: 'var(--navy)',
+                        display: 'inline-block',
+                      }}
+                    />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+
+              {/* FILMOGRAPHY */}
+              <p
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: '0.7rem',
+                  letterSpacing: '0.15em',
+                  color: 'var(--navy)',
+                  marginBottom: '12px',
+                  fontWeight: 700,
+                }}
+              >
+                FILMOGRAPHY
+              </p>
+              {[
+                { cat: '드라마', items: DIRECTOR.filmography.drama },
+                { cat: '영화', items: DIRECTOR.filmography.film },
+                { cat: 'CF', items: DIRECTOR.filmography.cf },
+              ].map((group) => (
+                <div key={group.cat} style={{ marginBottom: '14px' }}>
+                  <p
+                    style={{
+                      fontSize: '0.72rem',
+                      color: 'var(--gray)',
+                      marginBottom: '6px',
+                      letterSpacing: '0.05em',
+                    }}
+                  >
+                    {group.cat}
+                  </p>
+                  <ul style={{ display: 'flex', flexDirection: 'column', gap: '4px', listStyle: 'none', padding: 0 }}>
+                    {group.items.map((item) => (
+                      <li key={item} style={{ fontSize: '0.82rem', color: 'var(--gray-light)' }}>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ⑦ PORTFOLIO — 출연영상 결과물 */}
       <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 48px', textAlign: 'center' }}>
-            <p className="section-eyebrow">06 — PORTFOLIO</p>
+            <p className="section-eyebrow">07 — PORTFOLIO</p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
@@ -1100,140 +1222,12 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑤ DIRECTOR — 강사 크레딧 (광고 압축: highlights 3개 + 링크) */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
-        <div className="container">
-          <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
-            <p className="section-eyebrow">04 — THE LEADER</p>
-            <h2
-              className="section-title-serif"
-              style={{ fontSize: 'clamp(1.5rem, 3.6vw, 2.1rem)', marginBottom: '10px' }}
-            >
-              배우의 성장을 가이드합니다
-            </h2>
-            <p
-              style={{
-                fontSize: 'clamp(0.82rem, 2.2vw, 0.95rem)',
-                color: 'var(--gray-light)',
-                lineHeight: 1.6,
-                margin: 0,
-                wordBreak: 'keep-all',
-              }}
-            >
-              현역 배우가 직접 가이드하는 액팅 코치
-            </p>
-          </div>
-
-          <div className="director-card" style={{ maxWidth: '720px', margin: '0 auto' }}>
-            <div className="director-photo" style={{ position: 'relative' }}>
-              <Image
-                src={DIRECTOR.photo}
-                alt={`${DIRECTOR.name} 대표`}
-                fill
-                sizes="(max-width: 768px) 100vw, 260px"
-                style={{
-                  objectFit: 'cover',
-                  objectPosition: 'center 15%',
-                }}
-              />
-            </div>
-            <div style={{ flex: 1 }}>
-              <div className="director-name">{DIRECTOR.name}</div>
-              <div className="director-role">{DIRECTOR.title}</div>
-
-              {/* PROFILE — 풀 이력 9개 */}
-              <p
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: '0.7rem',
-                  letterSpacing: '0.15em',
-                  color: 'var(--navy)',
-                  marginTop: '20px',
-                  marginBottom: '12px',
-                  fontWeight: 700,
-                }}
-              >
-                PROFILE
-              </p>
-              <ul style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '24px', listStyle: 'none', padding: 0 }}>
-                {DIRECTOR.profileFlat.map((item) => (
-                  <li
-                    key={item}
-                    style={{
-                      fontSize: '0.85rem',
-                      color: 'var(--gray-light)',
-                      paddingLeft: '14px',
-                      position: 'relative',
-                      lineHeight: 1.5,
-                    }}
-                  >
-                    <span
-                      style={{
-                        position: 'absolute',
-                        left: 0,
-                        top: '0.6em',
-                        width: '6px',
-                        height: '1px',
-                        background: 'var(--navy)',
-                        display: 'inline-block',
-                      }}
-                    />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-
-              {/* FILMOGRAPHY */}
-              <p
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: '0.7rem',
-                  letterSpacing: '0.15em',
-                  color: 'var(--navy)',
-                  marginBottom: '12px',
-                  fontWeight: 700,
-                }}
-              >
-                FILMOGRAPHY
-              </p>
-              {[
-                { cat: '드라마', items: DIRECTOR.filmography.drama },
-                { cat: '영화', items: DIRECTOR.filmography.film },
-                { cat: 'CF', items: DIRECTOR.filmography.cf },
-              ].map((group) => (
-                <div key={group.cat} style={{ marginBottom: '14px' }}>
-                  <p
-                    style={{
-                      fontSize: '0.72rem',
-                      color: 'var(--gray)',
-                      marginBottom: '6px',
-                      letterSpacing: '0.05em',
-                    }}
-                  >
-                    {group.cat}
-                  </p>
-                  <ul style={{ display: 'flex', flexDirection: 'column', gap: '4px', listStyle: 'none', padding: 0 }}>
-                    {group.items.map((item) => (
-                      <li key={item} style={{ fontSize: '0.82rem', color: 'var(--gray-light)' }}>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑥ PROOF — 후기 (광고 압축: 마퀴 1행 + 더보기 링크)         */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 28px', textAlign: 'center' }}>
-            <p className="section-eyebrow">05 — REAL REVIEWS</p>
+            <p className="section-eyebrow">08 — REAL REVIEWS</p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.5rem, 3.6vw, 2.1rem)', marginBottom: 0 }}
