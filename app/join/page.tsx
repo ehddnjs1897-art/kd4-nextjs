@@ -37,7 +37,7 @@ export const metadata: Metadata = {
 
 /* ── 상수 ────────────────────────────────────────────────────────── */
 /* 강사 사진은 DIRECTOR.photo 참조 (/director.jpg) — Director 섹션용 */
-const DEADLINE = '2026-05-20T23:59:59'  // 5월 모집 마감 (날짜 확정 시 업데이트)
+const DEADLINE = '2026-05-31T23:59:59'  // 5월 모집 마감 (날짜 확정 시 업데이트)
 
 /* ── lib/classes.ts 데이터 재사용 ─────────────────────────────────── */
 const OPEN_CLASSES = CLASSES.filter((c) => c.isNewMemberOpen && c.highlight)
