@@ -9,12 +9,14 @@ export const metadata: Metadata = {
 
 /* ───────────── 데이터 ───────────── */
 
-const LEARNING_SUPPORT = [
-  {
-    title: '보강제도',
-    desc: '부득이하게 결석하시는 경우, 스케줄표에 있는 다른 수업 클래스에서 보강 가능. 수업 3일 전까지 미리 신청해 주세요. 자세한 규정은 카카오채널 문의.',
-  },
+const RESCHEDULE_STEPS = [
+  '부득이하게 결석하시는 경우, 보강을 받으실 수 있습니다.',
+  '스케줄표에 있는 다른 수업 클래스에서 보강이 가능합니다.',
+  '보강은 수업 3일 전까지 미리 신청해 주세요.',
+  '보강 신청은 아래 카카오채널로 접수해 주세요.',
 ]
+
+const KAKAO_CHANNEL_URL = 'https://pf.kakao.com/_ximxdqn'
 
 const CAREER_SERVICES = [
   {
@@ -183,41 +185,81 @@ export default function BenefitsPage() {
           desc="훈련의 흐름이 끊기지 않도록 KD4가 끝까지 함께합니다."
         />
         <div
+          className="kd4-card-hover"
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-            gap: '14px',
+            background: 'var(--bg2)',
+            border: '1px solid var(--border)',
+            borderRadius: 12,
+            padding: 'clamp(24px, 4vw, 32px)',
+            maxWidth: 640,
+            margin: '0 auto',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 18,
           }}
         >
-          {LEARNING_SUPPORT.map((item) => (
-            <div
-              className="kd4-card-hover"
-              key={item.title}
-              style={{
-                background: 'var(--bg2)',
-                border: '1px solid var(--border)',
-                borderRadius: 12,
-                padding: 24,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 8,
-              }}
-            >
-              <h3 style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: '1.05rem',
-                fontWeight: 700,
-                color: 'var(--white)',
-                letterSpacing: '0.02em',
-              }}>{item.title}</h3>
-              <p style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: '0.85rem',
-                color: 'var(--secondary)',
-                lineHeight: 1.7,
-              }}>{item.desc}</p>
-            </div>
-          ))}
+          <h3 style={{
+            fontFamily: 'var(--font-sans)',
+            fontSize: '1.1rem',
+            fontWeight: 700,
+            color: 'var(--white)',
+            letterSpacing: '0.02em',
+          }}>보강제도 안내</h3>
+
+          <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {RESCHEDULE_STEPS.map((step, i) => (
+              <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+                <span style={{
+                  flexShrink: 0,
+                  width: 24,
+                  height: 24,
+                  borderRadius: '50%',
+                  background: 'rgba(21,72,138,0.12)',
+                  border: '1px solid rgba(21,72,138,0.3)',
+                  color: 'var(--gold)',
+                  fontFamily: 'var(--font-display), Oswald, sans-serif',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  lineHeight: 1,
+                }}>{i + 1}</span>
+                <span style={{
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '0.92rem',
+                  color: 'var(--secondary)',
+                  lineHeight: 1.6,
+                  wordBreak: 'keep-all',
+                  paddingTop: 2,
+                }}>{step}</span>
+              </li>
+            ))}
+          </ol>
+
+          <a
+            href={KAKAO_CHANNEL_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              minHeight: 48,
+              padding: '14px 20px',
+              background: '#FEE500',
+              color: '#3C1E1E',
+              fontFamily: 'var(--font-sans)',
+              fontSize: '0.95rem',
+              fontWeight: 700,
+              borderRadius: 10,
+              textDecoration: 'none',
+              letterSpacing: '0.01em',
+            }}
+          >
+            카카오채널로 보강 신청하기
+          </a>
         </div>
       </section>
 
