@@ -56,37 +56,37 @@ const FIRST_MONTH_DISCOUNT = 100000
 /* ── 할인 혜택 목록 ─────────────────────────────────────────── */
 const DISCOUNTS = [
   {
-    tag: '신규 멤버 웰컴',
+    tag: '웰컴 할인',
     title: '첫 달 10만원 할인',
     desc: '또는 무료 오픈클래스 중 택1 · 신규 등록 시 적용',
     isNew: false,
   },
   {
-    tag: '휴면 멤버 웰컴백',
+    tag: '컴백 할인',
     title: '첫 달 5만원 할인',
     desc: '6개월 이상 휴면 후 복귀 시 적용',
     isNew: false,
   },
   {
-    tag: '출연영상 1달 할인',
+    tag: '출연영상 몰입 할인',
     title: '출연영상 클래스 1달 30% 할인',
     desc: '출연영상 2회 이상 수강 배우 · 1달간 적용',
     isNew: false,
   },
   {
-    tag: '지인 동반 할인',
+    tag: '동반 할인',
     title: '함께 등록 시 1+1 · 두 분 모두 5만원 할인',
     desc: '지인과 동반 등록 시 두 분 각각 5만원씩 할인',
     isNew: true,
   },
   {
-    tag: '출연영상 재수강 할인',
+    tag: '재수강 할인',
     title: '2번째 수강부터 월 3만원 할인',
     desc: '출연영상 클래스를 두 번째로 수강하는 달부터 매월 3만원 할인 (40만원 → 37만원)',
     isNew: true,
   },
   {
-    tag: '복수 클래스 할인',
+    tag: 'KD4 매니아 할인',
     title: '같은 달 2개 이상 수강 시 추가 클래스 15% 할인',
     desc: '같은 달에 두 개 이상의 클래스를 함께 수강하면, 추가하는 클래스 수강료를 15% 할인해 드립니다.',
     isNew: true,
@@ -941,34 +941,44 @@ export default function JoinPage() {
                   borderTop: i > 0 ? '1px solid var(--border)' : undefined,
                 }}
               >
-                <div style={{ marginBottom: '6px' }}>
-                  <span
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '5px' }}>
+                  <p
                     style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '5px',
-                      fontFamily: 'var(--font-display)',
-                      fontSize: '0.65rem',
+                      fontFamily: 'var(--font-serif)',
+                      fontSize: 'clamp(1.05rem, 2.8vw, 1.25rem)',
                       fontWeight: 700,
-                      letterSpacing: '0.08em',
-                      textTransform: 'uppercase',
-                      color: isNew ? '#ffffff' : 'var(--navy)',
-                      background: isNew ? 'var(--accent-red)' : 'rgba(21,72,138,0.1)',
-                      borderRadius: '4px',
-                      padding: '3px 8px',
+                      lineHeight: 1.3,
+                      wordBreak: 'keep-all',
+                      margin: 0,
                     }}
                   >
                     {tag}
-                    {isNew && ' · NEW'}
-                  </span>
+                  </p>
+                  {isNew && (
+                    <span
+                      style={{
+                        fontFamily: 'var(--font-display)',
+                        fontSize: '0.6rem',
+                        fontWeight: 700,
+                        letterSpacing: '0.08em',
+                        textTransform: 'uppercase',
+                        color: '#ffffff',
+                        background: 'var(--accent-red)',
+                        borderRadius: '4px',
+                        padding: '2px 6px',
+                      }}
+                    >
+                      NEW
+                    </span>
+                  )}
                 </div>
                 <p
                   style={{
-                    fontFamily: 'var(--font-serif)',
-                    fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)',
-                    fontWeight: 700,
+                    fontSize: 'clamp(0.9rem, 2.3vw, 1rem)',
+                    fontWeight: 600,
+                    color: 'var(--navy)',
                     marginBottom: '3px',
-                    lineHeight: 1.3,
+                    lineHeight: 1.4,
                     wordBreak: 'keep-all',
                   }}
                 >

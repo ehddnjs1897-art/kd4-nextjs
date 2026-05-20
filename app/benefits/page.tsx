@@ -58,12 +58,12 @@ const COMMUNITIES: CommunityItem[] = [
 ]
 
 const DISCOUNTS = [
-  { tag: '신규 멤버 웰컴', title: '첫 달 10만원 할인', desc: '또는 무료 오픈클래스 중 택1 · 신규 등록 시 적용' },
-  { tag: '휴면 멤버 웰컴백', title: '첫 달 5만원 할인', desc: '6개월 이상 휴면 후 복귀 시 적용' },
-  { tag: '출연영상 1달 할인', title: '출연영상 클래스 1달 30% 할인', desc: '출연영상 2회 이상 수강 배우 · 1달간 적용' },
-  { tag: '지인 동반 할인', title: '함께 등록 시 1+1 · 두 분 모두 5만원 할인', desc: '지인과 동반 등록 시 두 분 각각 5만원씩 할인' },
-  { tag: '출연영상 재수강 할인', title: '2번째 수강부터 월 3만원 할인', desc: '출연영상 클래스를 두 번째로 수강하는 달부터 매월 3만원 할인 (40만원 → 37만원)' },
-  { tag: '복수 클래스 할인', title: '같은 달 2개 이상 수강 시 추가 클래스 15% 할인', desc: '같은 달에 두 개 이상의 클래스를 함께 수강하면, 추가하는 클래스 수강료를 15% 할인해 드립니다.' },
+  { tag: '웰컴 할인', title: '첫 달 10만원 할인', desc: '또는 무료 오픈클래스 중 택1 · 신규 등록 시 적용' },
+  { tag: '컴백 할인', title: '첫 달 5만원 할인', desc: '6개월 이상 휴면 후 복귀 시 적용' },
+  { tag: '출연영상 몰입 할인', title: '출연영상 클래스 1달 30% 할인', desc: '출연영상 2회 이상 수강 배우 · 1달간 적용' },
+  { tag: '동반 할인', title: '함께 등록 시 1+1 · 두 분 모두 5만원 할인', desc: '지인과 동반 등록 시 두 분 각각 5만원씩 할인' },
+  { tag: '재수강 할인', title: '2번째 수강부터 월 3만원 할인', desc: '출연영상 클래스를 두 번째로 수강하는 달부터 매월 3만원 할인 (40만원 → 37만원)' },
+  { tag: 'KD4 매니아 할인', title: '같은 달 2개 이상 수강 시 추가 클래스 15% 할인', desc: '같은 달에 두 개 이상의 클래스를 함께 수강하면, 추가하는 클래스 수강료를 15% 할인해 드립니다.' },
 ]
 
 /* ───────────── 섹션 헤더 ───────────── */
@@ -434,17 +434,16 @@ export default function BenefitsPage() {
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                <span style={{
-                  fontFamily: 'var(--font-display), Oswald, sans-serif',
-                  fontSize: '0.65rem',
-                  letterSpacing: '0.15em',
-                  color: 'var(--gold)',
-                  textTransform: 'uppercase',
-                  background: 'rgba(21,72,138,0.1)',
-                  border: '1px solid rgba(21,72,138,0.25)',
-                  borderRadius: 3,
-                  padding: '3px 9px',
-                }}>{d.tag}</span>
+                <h3 style={{
+                  fontFamily: 'var(--font-serif)',
+                  fontSize: '1.15rem',
+                  fontWeight: 700,
+                  color: 'var(--white)',
+                  letterSpacing: '0.01em',
+                  lineHeight: 1.3,
+                  margin: 0,
+                  wordBreak: 'keep-all',
+                }}>{d.tag}</h3>
                 <span aria-hidden style={{
                   fontFamily: 'var(--font-display), Oswald, sans-serif',
                   fontSize: '1.3rem',
@@ -454,14 +453,15 @@ export default function BenefitsPage() {
                   lineHeight: 1,
                 }}>{String(i + 1).padStart(2, '0')}</span>
               </div>
-              <h3 style={{
+              <p style={{
                 fontFamily: 'var(--font-sans)',
-                fontSize: '1.05rem',
-                fontWeight: 700,
-                color: 'var(--white)',
-                letterSpacing: '0.02em',
-                marginTop: 6,
-              }}>{d.title}</h3>
+                fontSize: '0.95rem',
+                fontWeight: 600,
+                color: 'var(--gold)',
+                lineHeight: 1.5,
+                marginTop: 4,
+                wordBreak: 'keep-all',
+              }}>{d.title}</p>
               <p style={{
                 fontFamily: 'var(--font-sans)',
                 fontSize: '0.85rem',
