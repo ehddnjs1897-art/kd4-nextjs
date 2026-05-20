@@ -1046,7 +1046,7 @@ export default function JoinPage() {
                 wordBreak: 'keep-all',
               }}
             >
-              현역 배우가 직접 가이드하는 액팅 코치
+              건명원(建明苑) 창의인재 출신 배우
             </p>
           </div>
 
