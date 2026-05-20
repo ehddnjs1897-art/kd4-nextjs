@@ -81,8 +81,14 @@ const DISCOUNTS = [
   },
   {
     tag: '출연영상 재수강 할인',
-    title: '2회차부터 각 3만원 할인',
-    desc: '회차당 40만원 → 37만원 · 3개월 간 (총 9만원 할인)',
+    title: '2번째 수강부터 월 3만원 할인',
+    desc: '출연영상 클래스를 두 번째로 수강하는 달부터 매월 3만원 할인 (40만원 → 37만원)',
+    isNew: true,
+  },
+  {
+    tag: '복수 클래스 할인',
+    title: '같은 달 2개 이상 수강 시 추가 클래스 15% 할인',
+    desc: '같은 달에 두 개 이상의 클래스를 함께 수강하면, 추가하는 클래스 수강료를 15% 할인해 드립니다.',
     isNew: true,
   },
 ]
@@ -987,6 +993,9 @@ export default function JoinPage() {
               </JoinCTALink>
               <p style={{ fontSize: '0.72rem', color: 'var(--gray)', marginTop: '8px' }}>
                 * 5월까지 · 선착순 마감 시 조기 종료
+              </p>
+              <p style={{ fontSize: '0.72rem', color: 'var(--gray)', marginTop: '4px' }}>
+                * 모든 할인은 중복 적용되지 않으며, 가장 큰 혜택 하나만 적용됩니다
               </p>
             </div>
           </div>
