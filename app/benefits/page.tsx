@@ -374,7 +374,7 @@ export default function BenefitsPage() {
         <SectionHeader
           eyebrow="COMMUNITY"
           title="멤버 커뮤니티"
-          desc="배우는 혼자 크지 않습니다. 같은 길을 가는 동료와 함께 성장합니다."
+          desc="KD4 배우는 혼자 크지 않습니다. 같은 길을 가는 동료와 함께 성장합니다."
         />
         <div
           style={{
