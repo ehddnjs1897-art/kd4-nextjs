@@ -153,10 +153,18 @@ export default async function DashboardPage() {
                 </Link>
               </div>
             ) : (
-              <div>
-                <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 14 }}>
-                  PPTX·사진·영상을 올리면 검토 후 배우 DB에 공개됩니다.
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.6 }}>
+                  사진·영상·필모그래피를 등록하면 관리자 검토 후 배우 DB에 공개됩니다.
                 </p>
+                <div style={{
+                  padding: '10px 14px', borderRadius: 6,
+                  background: 'rgba(196,165,90,0.06)', border: '1px solid rgba(196,165,90,0.18)',
+                  fontSize: '0.78rem', color: 'rgba(196,165,90,0.8)', lineHeight: 1.7,
+                }}>
+                  📌 기존 KD4 배우라면 — 가입 시 KD4에 등록된 전화번호와 동일하게 입력해야 프로필이 자동 연결됩니다.
+                  전화번호를 수정하려면 내 정보 &gt; 전화번호를 변경해 주세요.
+                </div>
                 <Link href="/dashboard/edit" style={primaryBtn}>프로필 자료 올리기</Link>
               </div>
             )}
