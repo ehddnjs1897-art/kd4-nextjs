@@ -75,7 +75,7 @@ export default function Navbar() {
           .from('profiles')
           .select('role')
           .eq('id', user.id)
-          .single()
+          .maybeSingle()
         setUserRole((data?.role as UserRole) || 'user')
         setAuthLoaded(true)
       }
