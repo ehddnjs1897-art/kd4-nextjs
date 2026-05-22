@@ -74,8 +74,9 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * /auth/callback, /api/* 등 정적 파일 제외한 모든 경로에서 세션 갱신
+     * 정적 파일 및 API 경로 제외.
+     * /api/* 는 각 route.ts 내부에서 자체적으로 getUser() 호출 → 중복 세션 갱신 불필요.
      */
-    '/((?!_next/static|_next/image|favicon.ico|fonts/|images/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|woff2|woff|ttf|otf|eot|css|js|map|json|webmanifest|ico)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|fonts/|images/|api/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|woff2|woff|ttf|otf|eot|css|js|map|json|webmanifest|ico)$).*)',
   ],
 }

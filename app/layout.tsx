@@ -93,8 +93,6 @@ export default function RootLayout({
         {/* KoPubWorld 서브셋 폰트 preload — Vercel edge에서 직서빙, 64~122KB */}
         <link rel="preload" href="/fonts/KoPubWorldDotum-Medium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/KoPubWorldBatang-Medium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        {/* Satoshi CDN preconnect */}
-        <link rel="preconnect" href="https://fonts.cdnfonts.com" crossOrigin="anonymous" />
       </head>
       <body
         className={`${notoSansKR.variable} ${notoSerifKR.variable} ${oswald.variable}`}

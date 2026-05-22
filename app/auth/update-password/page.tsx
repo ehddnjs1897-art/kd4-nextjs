@@ -8,7 +8,7 @@
  *   → /auth/update-password (이 페이지)
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -23,6 +23,7 @@ export default function UpdatePasswordPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [sessionReady, setSessionReady] = useState<boolean | null>(null)
+  const redirectTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // 페이지 진입 시 recovery 세션이 있는지 확인
   useEffect(() => {
@@ -30,6 +31,10 @@ export default function UpdatePasswordPage() {
     supabase.auth.getUser().then(({ data: { user } }) => {
       setSessionReady(!!user)
     })
+    // 리다이렉트 타이머 언마운트 시 정리
+    return () => {
+      if (redirectTimer.current) clearTimeout(redirectTimer.current)
+    }
   }, [])
 
   async function handleUpdate(e: React.FormEvent) {
@@ -58,8 +63,8 @@ export default function UpdatePasswordPage() {
     setStep('success')
     setLoading(false)
 
-    // 3초 후 자동으로 대시보드로
-    setTimeout(() => router.push('/dashboard'), 3000)
+    // 3초 후 자동으로 대시보드로 (언마운트 시 정리)
+    redirectTimer.current = setTimeout(() => router.push('/dashboard'), 3000)
   }
 
   // 세션 확인 중

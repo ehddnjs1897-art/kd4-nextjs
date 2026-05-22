@@ -26,12 +26,17 @@ export async function GET(request: NextRequest) {
     const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') ?? '20', 10)))
     const offset = (page - 1) * limit
 
-    // 로그인 여부 확인
+    // 로그인 여부 + 역할 확인 (director/admin만 연락처 열람 가능)
     const supabase = await createClient()
     const {
       data: { user },
     } = await supabase.auth.getUser()
-    const isAuthenticated = !!user
+    let canSeeContact = false
+    if (user) {
+      const { data: profile } = await supabase
+        .from('profiles').select('role').eq('id', user.id).maybeSingle()
+      canSeeContact = ['director', 'admin'].includes(profile?.role ?? '')
+    }
 
     // 항상 '*'로 조회 후 JS 레벨에서 민감 컬럼 제거
     // (동적 columns 문자열은 Supabase SDK 타입 추론 오류 유발)
@@ -56,10 +61,10 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: '배우 목록 조회에 실패했습니다.' }, { status: 500 })
     }
 
-    // 비로그인 시 phone, email 제거
+    // director/admin만 phone/email 포함, 나머지는 제거
     const result: ActorPublic[] = (actors ?? []).map((actor) => {
       const typedActor = actor as unknown as Actor
-      if (isAuthenticated) {
+      if (canSeeContact) {
         return typedActor
       }
       const { phone: _phone, email: _email, ...safe } = typedActor

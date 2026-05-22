@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
 
   let query = supabaseAdmin
     .from('game_scores')
-    .select('id, user_id, score, stage, items_collected, duration_ms, created_at, profiles(name)')
+    .select('id, score, stage, items_collected, duration_ms, created_at, profiles(name)')
     .order('score', { ascending: false })
     .limit(limit)
 
