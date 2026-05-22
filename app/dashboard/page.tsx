@@ -53,6 +53,7 @@ export default async function DashboardPage() {
   const role: UserRole = (profile?.role as UserRole) || 'user'
   const createdAt = profile?.created_at || user.created_at
   const canEdit = role === 'editor' || role === 'admin'
+  const isActorMember = role === 'actor'
   const canViewActorDb = role === 'crew' || role === 'editor' || role === 'director' || role === 'admin'
   const isCrewPending = role === 'crew_pending'
   const canRequestCrew = role === 'user'
@@ -118,6 +119,23 @@ export default async function DashboardPage() {
                 </p>
                 <Link href="/dashboard/edit" style={styles.btnPrimary}>
                   내 갤러리 편집
+                </Link>
+              </section>
+            )}
+
+            {/* 배우 회원: 프로필 등록(온보딩) */}
+            {isActorMember && (
+              <section style={{
+                ...styles.card,
+                border: '1px solid rgba(196,165,90,0.25)',
+                background: 'rgba(196,165,90,0.04)',
+              }}>
+                <h2 style={styles.cardTitle}>프로필 등록</h2>
+                <p style={styles.cardDesc}>
+                  프로필 PPT·사진·출연영상을 올리면 검토 후 배우 DB에 공개됩니다.
+                </p>
+                <Link href="/onboarding" style={styles.btnPrimary}>
+                  프로필 올리기
                 </Link>
               </section>
             )}
