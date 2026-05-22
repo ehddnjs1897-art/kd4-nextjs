@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { MapPin, Train, Clock, Navigation, Map as MapIcon } from 'lucide-react'
-import { CLASSES, DIRECTOR } from '@/lib/classes'
 import { SINCHON_FAQ } from '@/lib/landing-faqs'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import JoinCTALink from '@/components/join/JoinCTALink'
@@ -25,16 +23,9 @@ const NAVER_MAP = `https://map.naver.com/p/search/${PLACE_Q}`
 const KAKAO_MAP = `https://map.kakao.com/?q=${PLACE_Q}`
 const GOOGLE_MAP = `https://www.google.com/maps/search/?api=1&query=${PLACE_Q}`
 
-// SEO 랜딩은 정가(첫달 할인 전) 표시
-const priceOf = (c: { price: string; originalPrice?: string }) => c.originalPrice ?? c.price
-const CLASS_LINK: Record<string, string> = {
-  '마이즈너 테크닉 정규 클래스': '/meisner-technique-class',
-  '출연영상 클래스': '/reel-production-class',
-}
-
 const ACCESS_ITEMS = [
-  { Icon: Train, title: '지하철 2호선 이대역', desc: '5번 출구 도보 3분 · 신촌역 10분' },
-  { Icon: Train, title: '5호선 충정로역', desc: '도보 12분 · 강북·종로 방면 접근 용이' },
+  { Icon: Train, title: '지하철 2호선 이대역', desc: '5번 출구에서 도보 약 3분' },
+  { Icon: Train, title: '경의중앙선 신촌역', desc: '도보 약 5분' },
   { Icon: Clock, title: '운영시간', desc: '월~토 10:00–22:00 · 일요일 휴무' },
 ]
 
@@ -172,67 +163,97 @@ export default function SinchonPage() {
           <div style={{ maxWidth: '720px', margin: '0 auto 28px', textAlign: 'center' }}>
             <p className="section-eyebrow">길찾기 약도</p>
             <h2 className="section-title-serif" style={{ marginBottom: '8px' }}>이대역에서 걸어오는 길</h2>
-            <p className="section-desc">5번 출구에서 이화여대길 따라 북쪽으로, 도보 약 3분.</p>
+            <p className="section-desc">이대역 5번 출구 → YES apM·가인볼링장 코너에서 이화여대1길로, 도보 약 3분.</p>
           </div>
           <div className="sinchon-route-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(280px, 340px) 1fr', gap: '24px', maxWidth: '880px', margin: '0 auto', alignItems: 'center' }}>
             {/* SVG 약도 (실제 도보 경로 기반) */}
             <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '16px', padding: '10px', boxShadow: '0 14px 40px -28px rgba(15,51,100,0.5)' }}>
               <svg viewBox="0 0 380 480" width="100%" style={{ display: 'block', fontFamily: "'Nanum Pen Script', cursive" }} role="img" aria-label="이대역 5번 출구에서 KD4 액팅 스튜디오까지 도보 약도">
                 <defs>
-                  <filter id="sketch" x="-6%" y="-6%" width="112%" height="112%">
-                    <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="5" result="n" />
-                    <feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" xChannelSelector="R" yChannelSelector="G" />
+                  <filter id="ink" x="-6%" y="-6%" width="112%" height="112%">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.014" numOctaves="2" seed="4" result="n" />
+                    <feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G" />
                   </filter>
-                  <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
-                    <circle cx="2" cy="2" r="1" fill="#E4DDC8" />
+                  <pattern id="dt" width="24" height="24" patternUnits="userSpaceOnUse">
+                    <circle cx="2" cy="2" r="1" fill="#E5DEC9" />
                   </pattern>
                 </defs>
 
                 {/* 종이 배경 */}
-                <rect x="0" y="0" width="380" height="480" rx="16" fill="#F5F1E5" />
-                <rect x="0" y="0" width="380" height="480" rx="16" fill="url(#dots)" />
+                <rect x="0" y="0" width="380" height="480" rx="16" fill="#F5F1E6" />
+                <rect x="0" y="0" width="380" height="480" rx="16" fill="url(#dt)" />
 
-                {/* 손그림 도식 (삐뚤빼뚤 필터) */}
-                <g filter="url(#sketch)" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                  {/* 도보 경로 */}
-                  <path d="M288,408 C 250,402 236,372 230,332 C 222,280 226,238 214,188 C 205,150 196,120 176,104 C 160,91 134,92 120,98" stroke="#ffffff" strokeWidth="9" />
-                  <path d="M288,408 C 250,402 236,372 230,332 C 222,280 226,238 214,188 C 205,150 196,120 176,104 C 160,91 134,92 120,98" stroke="#15488A" strokeWidth="4" strokeDasharray="1.5 12" />
-                  {/* 이대역 동그라미 */}
-                  <circle cx="288" cy="408" r="19" fill="#00A84D" stroke="#0a7d3a" strokeWidth="2.5" />
-                  {/* KD4 건물 */}
-                  <path d="M86,60 L108,40 L130,60 Z" fill="#C73E3E" stroke="#C73E3E" strokeWidth="2" />
-                  <rect x="90" y="60" width="36" height="32" rx="2" fill="#ffffff" stroke="#15488A" strokeWidth="2.5" />
-                  <rect x="101" y="76" width="14" height="16" rx="1" fill="#15488A" stroke="#15488A" strokeWidth="1" />
-                  {/* 이화여대 정문(아치) */}
-                  <path d="M236,264 L236,240 Q252,226 268,240 L268,264" stroke="#a59f8c" strokeWidth="3" />
-                  {/* 나무 두 그루 */}
-                  <g stroke="#7d9a58">
-                    <circle cx="46" cy="186" r="13" fill="#d2e1ba" strokeWidth="2" />
-                    <path d="M46,199 L46,214" strokeWidth="3" />
-                    <circle cx="332" cy="318" r="11" fill="#d2e1ba" strokeWidth="2" />
-                    <path d="M332,329 L332,343" strokeWidth="3" />
+                {/* 손그림 도식 (단색 네이비 잉크, 은은한 손맛) */}
+                <g filter="url(#ink)">
+                  {/* 포레스트 공원 */}
+                  <ellipse cx="252" cy="356" rx="38" ry="22" fill="#dfeac8" stroke="#9bb377" strokeWidth="1.4" />
+                  <g fill="#cfe0b0" stroke="#7d9a58" strokeWidth="1.6">
+                    <circle cx="240" cy="350" r="9" />
+                    <circle cx="264" cy="354" r="8" />
                   </g>
-                  {/* 나침반 화살표 */}
-                  <path d="M348,52 L348,28 M348,28 L343,37 M348,28 L353,37" stroke="#b6ad98" strokeWidth="2.5" />
+                  <g stroke="#7d9a58" strokeWidth="2.2" strokeLinecap="round">
+                    <path d="M240,359 L240,367" />
+                    <path d="M264,362 L264,369" />
+                  </g>
+                  {/* 도보 경로 (실선 + 화살표) */}
+                  <path d="M298,430 C 268,418 212,360 170,310 C 162,250 160,176 148,108" fill="none" stroke="#15488A" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="170" cy="310" r="3.2" fill="#15488A" />
+                  <path d="M232,372 l9,-5 l-1,7" fill="none" stroke="#15488A" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M156,206 l-4,-9 l8,3" fill="none" stroke="#15488A" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                  {/* 이대역 5번출구 (지하철 마커) */}
+                  <rect x="283" y="416" width="32" height="28" rx="6" fill="#15488A" />
+                  <rect x="290" y="423" width="18" height="11" rx="2" fill="#ffffff" />
+                  <rect x="292" y="425" width="5" height="5" fill="#15488A" />
+                  <rect x="301" y="425" width="5" height="5" fill="#15488A" />
+                  {/* YES apM·가인볼링장 건물 */}
+                  <rect x="190" y="286" width="64" height="46" rx="3" fill="rgba(21,72,138,0.06)" stroke="#15488A" strokeWidth="1.8" />
+                  <g fill="#15488A">
+                    <rect x="198" y="296" width="6" height="6" />
+                    <rect x="212" y="296" width="6" height="6" />
+                    <rect x="226" y="296" width="6" height="6" />
+                    <rect x="198" y="310" width="6" height="6" />
+                    <rect x="212" y="310" width="6" height="6" />
+                    <rect x="226" y="310" width="6" height="6" />
+                  </g>
+                  <path d="M243,299 q-3,4 0,11 q3,-7 0,-11 z" fill="#ffffff" stroke="#15488A" strokeWidth="1.1" />
+                  {/* 아리움3차 (목적지 건물) */}
+                  <rect x="126" y="84" width="44" height="56" rx="2" fill="rgba(21,72,138,0.07)" stroke="#15488A" strokeWidth="1.8" />
+                  <g fill="#15488A">
+                    <rect x="133" y="94" width="7" height="7" />
+                    <rect x="145" y="94" width="7" height="7" />
+                    <rect x="157" y="94" width="7" height="7" />
+                    <rect x="133" y="106" width="7" height="7" />
+                    <rect x="145" y="106" width="7" height="7" />
+                    <rect x="157" y="106" width="7" height="7" />
+                    <rect x="133" y="118" width="7" height="7" />
+                    <rect x="145" y="118" width="7" height="7" />
+                    <rect x="157" y="118" width="7" height="7" />
+                  </g>
+                  {/* 나침반 */}
+                  <circle cx="352" cy="40" r="13" fill="none" stroke="#b6ad98" strokeWidth="1.5" />
+                  <path d="M352,33 L348,45 L352,42 L356,45 Z" fill="#b6ad98" />
                 </g>
 
-                {/* 손글씨 라벨 (선명) */}
-                <text x="288" y="415" textAnchor="middle" fontSize="21" fill="#ffffff">2</text>
-                <text x="288" y="446" textAnchor="middle" fontSize="20" fill="#2A2F3A">이대역 5번 출구</text>
-                <text x="108" y="120" textAnchor="middle" fontSize="22" fill="#15488A">KD4 액팅 스튜디오</text>
-                <text x="252" y="284" textAnchor="middle" fontSize="17" fill="#a59f8c">이화여대</text>
-                <text x="348" y="64" textAnchor="middle" fontSize="16" fill="#b6ad98">N</text>
-                <g transform="rotate(-7 138 300)">
-                  <text x="138" y="300" textAnchor="middle" fontSize="25" fill="#C73E3E">도보 약 3분</text>
-                </g>
+                {/* 목적지 레드 핀 (선명) */}
+                <path d="M137,67 q11,17 11,22 q0,-5 11,-22 a11,11 0 1,0 -22,0 z" fill="#C73E3E" />
+                <circle cx="148" cy="66" r="4.2" fill="#ffffff" />
+
+                {/* 라벨 (손글씨 + 칩) */}
+                <g><rect x="88" y="149" width="116" height="19" rx="9" fill="rgba(255,255,255,0.86)" /><text x="146" y="164" textAnchor="middle" fontSize="15" fill="#15488A">아리움3차 1층 · KD4</text></g>
+                <g><rect x="249" y="449" width="98" height="19" rx="9" fill="rgba(255,255,255,0.86)" /><text x="298" y="464" textAnchor="middle" fontSize="15" fill="#2A2F3A">이대역 5번 출구</text></g>
+                <g><rect x="164" y="263" width="116" height="19" rx="9" fill="rgba(255,255,255,0.86)" /><text x="222" y="278" textAnchor="middle" fontSize="13" fill="#2A2F3A">YES apM · 가인볼링장</text></g>
+                <g><rect x="213" y="379" width="78" height="19" rx="9" fill="rgba(255,255,255,0.86)" /><text x="252" y="394" textAnchor="middle" fontSize="13" fill="#4a7a3a">포레스트 공원</text></g>
+                <g transform="rotate(-84 112 210)"><rect x="69" y="197" width="86" height="19" rx="9" fill="rgba(255,255,255,0.86)" /><text x="112" y="212" textAnchor="middle" fontSize="13" fill="#15488A">이화여대1길</text></g>
+                <g><rect x="207" y="405" width="74" height="19" rx="9" fill="rgba(255,255,255,0.86)" /><text x="244" y="420" textAnchor="middle" fontSize="15" fill="#15488A">도보 약 3분</text></g>
+                <text x="352" y="45" textAnchor="middle" fontSize="12" fill="#8a8270">N</text>
               </svg>
             </div>
             {/* 단계 안내 */}
             <ol style={{ display: 'flex', flexDirection: 'column', gap: '12px', listStyle: 'none', padding: 0, margin: 0 }}>
               {[
-                { t: '이대역(2호선) 5번 출구', d: '출구로 나와 신촌로 방향으로' },
-                { t: '이화여대길로 진입', d: '신촌로에서 이화여대길로 들어섭니다' },
-                { t: '북쪽으로 직진 (약 480m)', d: '이화여대길 따라 쭉 올라옵니다' },
+                { t: '이대역(2호선) 5번 출구', d: '출구로 나와 성산로 방향으로' },
+                { t: 'YES apM·가인볼링장 코너', d: '포레스트 공원 옆에서 이화여대1길로 진입' },
+                { t: '이화여대1길 직진 (약 480m)', d: '오피스텔촌 따라 북서쪽으로' },
                 { t: 'KD4 액팅 스튜디오 도착', d: '아리움3차 1층 101호' },
               ].map((s, i, arr) => (
                 <li key={i} style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
@@ -247,58 +268,6 @@ export default function SinchonPage() {
               ))}
             </ol>
           </div>
-        </div>
-      </section>
-
-      {/* ===== CLASSES — 전체 라인업 ===== */}
-      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
-        <div className="container">
-          <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
-            <p className="section-eyebrow">02 — CLASSES</p>
-            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>신촌 스튜디오 클래스 라인업</h2>
-            <p className="section-desc">입문부터 캐스팅 연계까지, 단계별로 운영하는 전체 클래스입니다.</p>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '14px', maxWidth: '1040px', margin: '0 auto' }}>
-            {CLASSES.map((c) => {
-              const href = CLASS_LINK[c.nameKo]
-              const inner = (
-                <>
-                  <div style={{ display: 'flex', gap: '6px', marginBottom: '10px' }}>
-                    <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.66rem', letterSpacing: '0.12em', color: 'var(--navy)', background: 'var(--navy-tint-1)', border: '1px solid var(--navy-tint-3)', borderRadius: '4px', padding: '3px 7px' }}>{c.step}</span>
-                    {c.isNewMemberOpen && (
-                      <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.66rem', letterSpacing: '0.06em', color: 'var(--accent-red)', background: 'var(--accent-red-soft)', borderRadius: '4px', padding: '3px 7px' }}>신규 모집</span>
-                    )}
-                  </div>
-                  <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.05rem', fontWeight: 700, marginBottom: '6px' }}>{c.nameKo}</p>
-                  <p style={{ fontSize: '0.84rem', color: 'var(--gray-light)', lineHeight: 1.55, marginBottom: '14px', wordBreak: 'keep-all' }}>{c.quote}</p>
-                  <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '8px', paddingTop: '12px', borderTop: '1px solid var(--border)' }}>
-                    <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>{c.course ?? c.schedule}</span>
-                    <span style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', fontWeight: 700, color: 'var(--navy)' }}>월 ₩{priceOf(c)}</span>
-                  </div>
-                  {href && <span style={{ fontSize: '0.8rem', color: 'var(--navy)', fontWeight: 600, marginTop: '10px' }}>상세 보기 →</span>}
-                </>
-              )
-              const cardStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', padding: '20px', textDecoration: 'none', color: '#111', minHeight: '160px' }
-              return href ? <Link key={c.nameKo} href={href} style={cardStyle}>{inner}</Link> : <div key={c.nameKo} style={cardStyle}>{inner}</div>
-            })}
-          </div>
-          <div style={{ textAlign: 'center', marginTop: '24px' }}>
-            <Link href="/classes" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'underline' }}>전체 클래스 자세히 보기 →</Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== DIRECTOR MINI ===== */}
-      <section style={{ padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg)', textAlign: 'center' }}>
-        <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
-          <p className="section-eyebrow">03 — LEADER</p>
-          <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>{DIRECTOR.name} — 액팅 코치 (리더)</h2>
-          <p style={{ fontSize: '0.92rem', color: 'var(--gray-light)', lineHeight: 1.7, marginBottom: '16px', wordBreak: 'keep-all' }}>
-            Disney+ 무빙2 · Netflix 중증외상센터 출연 중. LA Meisner Workshop 수료.
-          </p>
-          <Link href="/acting-coach-dongwon-kwon" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'underline' }}>
-            리더 프로필 자세히 보기 →
-          </Link>
         </div>
       </section>
 
