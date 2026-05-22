@@ -214,7 +214,7 @@ export default function EditPage() {
           <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
             <button
               type="button"
-              onClick={() => router.back()}
+              onClick={() => { if (window.history.length > 1) router.back(); else router.push('/board') }}
               style={{
                 padding: '10px 22px',
                 border: '1px solid var(--border)',

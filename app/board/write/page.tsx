@@ -26,6 +26,8 @@ export default function WritePage() {
     supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (!user) {
         router.replace('/auth/login?next=/board/write')
+        // 리다이렉트 실패 대비 — 5초 후 checkingAuth 해제
+        setTimeout(() => setCheckingAuth(false), 5000)
         return
       }
       // 역할 확인 (관리자면 '공지' 탭 노출)
@@ -36,7 +38,7 @@ export default function WritePage() {
         .maybeSingle()
       if (profile?.role === 'admin') setIsAdmin(true)
       setCheckingAuth(false)
-    })
+    }).catch(() => setCheckingAuth(false))
   }, [router])
 
   async function handleSubmit(e: React.FormEvent) {
@@ -184,7 +186,7 @@ export default function WritePage() {
           <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
             <button
               type="button"
-              onClick={() => router.back()}
+              onClick={() => { if (window.history.length > 1) router.back(); else router.push('/board') }}
               style={{
                 padding: '10px 22px',
                 border: '1px solid var(--border)',
