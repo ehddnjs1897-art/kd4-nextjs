@@ -62,10 +62,11 @@ export async function middleware(request: NextRequest) {
   )
 
   // 세션 갱신 — Supabase 429/네트워크 에러 시 그냥 통과 (무한 리다이렉트 방지)
+  // supabaseResponse 반환: 쿠키 갱신 유지 (NextResponse.next() 반환 시 쿠키 드롭됨)
   try {
     await supabase.auth.getUser()
   } catch {
-    return NextResponse.next()
+    return supabaseResponse
   }
 
   return supabaseResponse

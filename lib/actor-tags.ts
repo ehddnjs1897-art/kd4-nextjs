@@ -83,6 +83,7 @@ export async function classifyActor(input: ActorClassifyInput): Promise<ActorCla
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: AbortSignal.timeout(15_000),
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: {
