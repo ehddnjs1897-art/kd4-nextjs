@@ -23,6 +23,7 @@ interface Props {
 export default function ActorManagementTable({ actors: initialActors }: Props) {
   const [actors, setActors] = useState<ActorRow[]>(initialActors)
   const [loadingId, setLoadingId] = useState<string | null>(null)
+  const [errorMsg, setErrorMsg] = useState('')
 
   const totalPublic = actors.filter(a => a.is_public).length
   const totalWithPhoto = actors.filter(a => a.photoCount > 0).length
@@ -43,7 +44,8 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
       if (!res.ok) throw new Error('변경 실패')
       setActors(prev => prev.map(a => a.id === actor.id ? { ...a, is_public: next } : a))
     } catch {
-      alert('변경에 실패했습니다. 새로고침 후 다시 시도해 주세요.')
+      setErrorMsg('변경에 실패했습니다. 새로고침 후 다시 시도해 주세요.')
+      setTimeout(() => setErrorMsg(''), 4000)
     } finally {
       setLoadingId(null)
     }
@@ -51,6 +53,11 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
 
   return (
     <div>
+      {errorMsg && (
+        <p style={{ fontSize: '0.82rem', color: '#ef4444', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 6, padding: '8px 12px', marginBottom: 16 }}>
+          {errorMsg}
+        </p>
+      )}
       {/* 통계 카드 */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12, marginBottom: 32 }}>
         {[

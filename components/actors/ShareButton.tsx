@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import Image from 'next/image'
 
 interface Props {
@@ -9,6 +9,8 @@ interface Props {
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export default function ShareButton({ webUrl }: Props) {
+  const [copied, setCopied] = useState(false)
+
   const share = useCallback(() => {
     const Kakao = (window as any).Kakao
     const key = process.env.NEXT_PUBLIC_KAKAO_JS_KEY
@@ -26,7 +28,10 @@ export default function ShareButton({ webUrl }: Props) {
     if (navigator.clipboard) {
       navigator.clipboard
         .writeText(webUrl)
-        .then(() => alert('링크가 복사됐어요. 카카오톡에 붙여넣어 공유하세요.'))
+        .then(() => {
+          setCopied(true)
+          setTimeout(() => setCopied(false), 2500)
+        })
         .catch(() => prompt('아래 링크를 복사하세요:', webUrl))
     } else {
       prompt('아래 링크를 복사하세요:', webUrl)
@@ -34,10 +39,22 @@ export default function ShareButton({ webUrl }: Props) {
   }, [webUrl])
 
   return (
-    <button onClick={share} style={styles.btn} aria-label="카카오톡 공유">
-      <Image src="/icons/kakao.png" alt="" width={18} height={18} style={{ flexShrink: 0 }} />
-      카카오톡 공유
-    </button>
+    <div style={{ position: 'relative' }}>
+      <button onClick={share} style={styles.btn} aria-label="카카오톡 공유">
+        <Image src="/icons/kakao.png" alt="" width={18} height={18} style={{ flexShrink: 0 }} />
+        카카오톡 공유
+      </button>
+      {copied && (
+        <div style={{
+          position: 'absolute', bottom: 'calc(100% + 8px)', left: '50%', transform: 'translateX(-50%)',
+          background: 'rgba(30,30,30,0.92)', color: '#fff', fontSize: '0.78rem',
+          padding: '6px 12px', borderRadius: 6, whiteSpace: 'nowrap',
+          pointerEvents: 'none', zIndex: 10,
+        }}>
+          ✓ 링크 복사됨 — 카카오톡에 붙여넣어 공유하세요
+        </div>
+      )}
+    </div>
   )
 }
 

@@ -49,7 +49,7 @@ export default function R2Video({
       const res = await fetch(`/api/videos/${videoId}/signed-url?download=1`)
       const j = await res.json()
       if (!res.ok || !j.url) {
-        alert(j.error || '다운로드 링크 발급에 실패했습니다.')
+        setError(j.error || '다운로드 링크 발급에 실패했습니다.')
         return
       }
       const a = document.createElement('a')
@@ -59,7 +59,7 @@ export default function R2Video({
       a.click()
       a.remove()
     } catch {
-      alert('다운로드 중 오류가 발생했습니다.')
+      setError('다운로드 중 오류가 발생했습니다.')
     }
   }
 
