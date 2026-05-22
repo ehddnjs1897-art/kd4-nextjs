@@ -72,7 +72,6 @@ const OPEN_CLASSES = CLASSES.filter((c) => c.isNewMemberOpen && c.nameKo !== '�
 export default function JoinForm() {
   const uid = useId()
   const consentId = `join-consent-${uid}`
-  const phoneHintId = `phone-hint-${uid}`
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
@@ -126,6 +125,7 @@ export default function JoinForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (loading) return  // 더블 클릭 방지
     // 2026-05-20: 전 항목 필수로 — 대표 지시
     if (!name || !phone || !email || !className || !meisnerExp || !source) {
       setError('모든 항목을 입력해 주세요.')
@@ -133,6 +133,11 @@ export default function JoinForm() {
     }
     if (!consent) {
       setError('개인정보 수집·이용에 동의해 주세요.')
+      return
+    }
+    // 전화번호 형식 검증 (010-xxxx-xxxx 또는 숫자만)
+    if (!/^01[0-9][-\s]?\d{3,4}[-\s]?\d{4}$/.test(phone.replace(/\s/g, ''))) {
+      setError('올바른 연락처를 입력해 주세요. (예: 010-1234-5678)')
       return
     }
     setLoading(true)

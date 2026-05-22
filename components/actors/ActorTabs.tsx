@@ -363,6 +363,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                       title={video.title || actor.name}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
+                      loading="lazy"
                       style={s.iframe}
                     />
                   </div>
@@ -398,6 +399,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                       title={video.title || '전략적 독백'}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
+                      loading="lazy"
                       style={s.iframe}
                     />
                   </div>
@@ -613,10 +615,11 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
               </tbody>
             </table>
             </div>
-            {editErr && <p style={{ color: '#f87171', fontSize: '0.8rem', marginTop: 4 }}>{editErr}</p>}
           </section>
         )
       })}
+      {/* 필모그래피 수정 오류 — map 밖에 1번만 노출 */}
+      {editErr && <p style={{ color: '#f87171', fontSize: '0.82rem', marginTop: 8, padding: '6px 12px', background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)', borderRadius: 6 }}>{editErr}</p>}
 
       {/* ============ 수상이력 ============ */}
       {awardEntries.length > 0 && (
