@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import LogoutButton from '@/components/layout/LogoutButton'
 import CrewRequestButton from '@/components/dashboard/CrewRequestButton'
+import DirectorRequestButton from '@/components/dashboard/DirectorRequestButton'
 import ProfileEditForm from '@/components/dashboard/ProfileEditForm'
 import EnrollmentsPanel from '@/components/dashboard/EnrollmentsPanel'
 import { UserRole } from '@/lib/types'
@@ -55,6 +56,14 @@ export default async function DashboardPage() {
   const canViewActorDb = role === 'crew' || role === 'editor' || role === 'director' || role === 'admin'
   const isCrewPending = role === 'crew_pending'
   const canRequestCrew = role === 'user'
+
+  // 디렉터 승인 흐름 — member_type(메타데이터) 기준 + 모든 가입경로 커버
+  const memberType = user.user_metadata?.member_type as string | undefined
+  const isDirector = role === 'director'
+  const isDirectorPending = role === 'director_pending'
+  // 디렉터로 가입했으나 아직 승인 신청 전(일반/배우 역할) → 신청 버튼 노출
+  const canRequestDirector =
+    memberType === 'director' && (role === 'user' || role === 'member' || role === 'actor')
 
   /* ---- 수강 내역 (enrollments 테이블 없으면 빈 배열로 graceful) ---- */
   const now = new Date()
@@ -155,6 +164,67 @@ export default async function DashboardPage() {
                   <span>⏳</span>
                   <span>승인 검토 중입니다</span>
                 </div>
+              </section>
+            )}
+
+            {/* 디렉터 권한 신청 (디렉터로 가입했으나 아직 미승인) */}
+            {canRequestDirector && (
+              <section style={{
+                ...styles.card,
+                border: '1px solid rgba(196,165,90,0.25)',
+                background: 'rgba(196,165,90,0.04)',
+              }}>
+                <h2 style={styles.cardTitle}>디렉터 권한 신청</h2>
+                <p style={styles.cardDesc}>
+                  승인되면 배우들의 <strong style={{ color: 'var(--gold)' }}>연락처</strong>와
+                  사진·프로필 <strong style={{ color: 'var(--gold)' }}>다운로드</strong>를 이용할 수 있습니다.
+                  관리자 승인이 필요합니다.
+                </p>
+                <DirectorRequestButton />
+              </section>
+            )}
+
+            {/* 디렉터 승인 대기 중 */}
+            {isDirectorPending && (
+              <section style={{
+                ...styles.card,
+                border: '1px solid rgba(240,173,78,0.3)',
+                background: 'rgba(240,173,78,0.04)',
+              }}>
+                <h2 style={{ ...styles.cardTitle, color: '#f0ad4e' }}>디렉터 승인 대기 중</h2>
+                <p style={styles.cardDesc}>
+                  디렉터 권한 신청이 접수되었습니다. 관리자 승인 후 배우 연락처·다운로드를
+                  이용하실 수 있습니다. (승인 전에는 배우 프로필 열람만 가능합니다.)
+                </p>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '10px 14px',
+                  background: 'rgba(240,173,78,0.08)',
+                  border: '1px solid rgba(240,173,78,0.2)',
+                  borderRadius: 6,
+                  fontSize: '0.82rem',
+                  color: '#f0ad4e',
+                }}>
+                  <span>⏳</span>
+                  <span>승인 검토 중입니다</span>
+                </div>
+              </section>
+            )}
+
+            {/* 승인된 디렉터 안내 */}
+            {isDirector && (
+              <section style={{
+                ...styles.card,
+                border: '1px solid rgba(196,165,90,0.3)',
+                background: 'rgba(196,165,90,0.05)',
+              }}>
+                <h2 style={{ ...styles.cardTitle, color: 'var(--gold)' }}>디렉터 승인 완료</h2>
+                <p style={styles.cardDesc}>
+                  배우 DB에서 <strong style={{ color: 'var(--gold)' }}>연락처 열람 + 사진·프로필 다운로드</strong>가
+                  가능합니다.
+                </p>
               </section>
             )}
 

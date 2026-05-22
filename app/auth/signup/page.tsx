@@ -134,8 +134,8 @@ export default function SignupPage() {
               <span style={styles.typeIcon}>🎬</span>
               <span style={styles.typeLabel}>배우 회원</span>
               <span style={styles.typeDesc}>
-                KD4 스튜디오에서 활동하는 배우
-                <br />내 갤러리 페이지 관리 가능
+                KD4에서 활동하는 배우
+                <br />내 프로필·갤러리 관리 + 동료 배우 열람
               </span>
             </button>
 
@@ -150,7 +150,7 @@ export default function SignupPage() {
               <span style={styles.typeLabel}>디렉터 회원</span>
               <span style={styles.typeDesc}>
                 캐스팅 디렉터, 조감독, 제작사
-                <br />배우 DB 전체 열람 가능
+                <br />승인 후 배우 연락처·프로필 열람
               </span>
             </button>
           </div>

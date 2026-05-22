@@ -23,7 +23,8 @@ export async function middleware(request: NextRequest) {
   }
 
   // 광고 랜딩 · 공개 페이지 — Supabase 완전 격리 (어떤 외부 장애도 영향 없음)
-  const PUBLIC_PATHS = ['/', '/join', '/actors']
+  // 주의: /actors 는 회원 전용으로 잠금되어 세션 판별이 필요하므로 제외 (페이지 단에서 권한 처리)
+  const PUBLIC_PATHS = ['/', '/join']
   if (PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + '/'))) {
     return NextResponse.next()
   }
