@@ -30,7 +30,7 @@ export default function DirectorRequestButton() {
 
   if (done) {
     return (
-      <div style={{
+      <div role="status" aria-live="polite" style={{
         display: 'flex',
         alignItems: 'center',
         gap: 8,
@@ -50,7 +50,7 @@ export default function DirectorRequestButton() {
   return (
     <>
       {error && (
-        <p style={{
+        <p role="alert" style={{
           fontSize: '0.8rem',
           color: '#ff6b6b',
           padding: '8px 12px',

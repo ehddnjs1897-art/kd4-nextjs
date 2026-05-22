@@ -22,7 +22,6 @@ export async function GET(
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
-    let canViewProfile = false  // 배우 DB 열람 가능 여부
     let canSeeContact = false   // 연락처 열람 가능 여부 (director/admin or 본인)
 
     if (user) {
@@ -30,7 +29,6 @@ export async function GET(
         .from('profiles').select('role, actor_id').eq('id', user.id).maybeSingle()
       const role = profile?.role ?? ''
       const isOwn = profile?.actor_id === id
-      canViewProfile = isOwn || ['actor', 'crew', 'editor', 'director', 'admin'].includes(role)
       canSeeContact = isOwn || ['director', 'admin'].includes(role)
     }
 
@@ -50,19 +48,11 @@ export async function GET(
       return NextResponse.json({ error: '배우 조회에 실패했습니다.' }, { status: 500 })
     }
 
-    if (!actor) {
-      return NextResponse.json({ error: '배우를 찾을 수 없습니다.' }, { status: 404 })
-    }
-
     const typedActor = actor as unknown as ActorDetail
 
     // 연락처 포함 여부에 따라 응답
     if (!canSeeContact) {
       const { phone: _phone, email: _email, ...safe } = typedActor as Actor & ActorDetail
-      // 비로그인 또는 열람 권한 없는 경우 공개 정보만 반환
-      if (!canViewProfile) {
-        return NextResponse.json({ actor: safe as ActorDetail })
-      }
       return NextResponse.json({ actor: safe as ActorDetail })
     }
 

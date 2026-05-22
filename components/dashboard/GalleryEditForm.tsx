@@ -580,25 +580,26 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         <p style={s.sectionTitle}>Basic Info</p>
         <div style={{ ...s.row, marginBottom: 20 }}>
           <div style={{ ...s.field, flex: '1 1 120px' }}>
-            <label style={s.label}>신장 (cm)</label>
-            <input type="number" value={height} onChange={e => setHeight(e.target.value)} style={s.input} placeholder="170" />
+            <label htmlFor="actor-height" style={s.label}>신장 (cm)</label>
+            <input id="actor-height" type="number" value={height} onChange={e => setHeight(e.target.value)} style={s.input} placeholder="170" />
           </div>
           <div style={{ ...s.field, flex: '1 1 120px' }}>
-            <label style={s.label}>체중 (kg)</label>
-            <input type="number" value={weight} onChange={e => setWeight(e.target.value)} style={s.input} placeholder="60" />
+            <label htmlFor="actor-weight" style={s.label}>체중 (kg)</label>
+            <input id="actor-weight" type="number" value={weight} onChange={e => setWeight(e.target.value)} style={s.input} placeholder="60" />
           </div>
           <div style={{ ...s.field, flex: '2 1 240px' }}>
-            <label style={s.label}>특기</label>
-            <input value={skills} onChange={e => setSkills(e.target.value)} style={s.input} placeholder="수영, 검도, 피아노..." />
+            <label htmlFor="actor-skills" style={s.label}>특기</label>
+            <input id="actor-skills" value={skills} onChange={e => setSkills(e.target.value)} style={s.input} placeholder="수영, 검도, 피아노..." />
           </div>
         </div>
         <div style={{ ...s.field, marginBottom: 20 }}>
-          <label style={s.label}>인스타그램 ID</label>
-          <input value={instagram} onChange={e => setInstagram(e.target.value)} style={{ ...s.input, maxWidth: 280 }} placeholder="@username" />
+          <label htmlFor="actor-instagram" style={s.label}>인스타그램 ID</label>
+          <input id="actor-instagram" value={instagram} onChange={e => setInstagram(e.target.value)} style={{ ...s.input, maxWidth: 280 }} placeholder="@username" />
         </div>
         <div style={{ ...s.field, marginBottom: 20 }}>
-          <label style={s.label}>한줄소개 <span style={{ fontWeight: 400, fontSize: '0.75rem', color: 'var(--gray)' }}>(캐스팅 디렉터에게 보이는 자기소개, 50자 내외)</span></label>
+          <label htmlFor="actor-casting-summary" style={s.label}>한줄소개 <span style={{ fontWeight: 400, fontSize: '0.75rem', color: 'var(--gray)' }}>(캐스팅 디렉터에게 보이는 자기소개, 50자 내외)</span></label>
           <textarea
+            id="actor-casting-summary"
             value={castingSummary}
             onChange={e => setCastingSummary(e.target.value)}
             maxLength={120}
@@ -611,7 +612,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         <button onClick={saveInfo} disabled={infoSaving} style={{ ...s.btn, ...s.btnPrimary, opacity: infoSaving ? 0.6 : 1 }}>
           {infoSaving ? '저장 중…' : '저장'}
         </button>
-        {infoMsg && <p style={{ ...s.msg, color: infoMsg.includes('실패') || infoMsg.includes('오류') ? '#ef4444' : 'var(--gold)', marginTop: 10 }}>{infoMsg}</p>}
+        {infoMsg && <p role="alert" style={{ ...s.msg, color: infoMsg.includes('실패') || infoMsg.includes('오류') ? '#ef4444' : 'var(--gold)', marginTop: 10 }}>{infoMsg}</p>}
       </section>
 
       {/* ── 프로필 자료 (PPTX) ── */}
@@ -638,7 +639,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         <button onClick={() => pptRef.current?.click()} disabled={pptUploading} style={{ ...s.btn, ...s.btnGhost, opacity: pptUploading ? 0.6 : 1 }}>
           {pptUploading ? '업로드 중…' : hasPpt ? '📄 파일 교체' : '📄 파일 올리기'}
         </button>
-        {pptMsg && <p style={{ ...s.msg, color: pptMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{pptMsg}</p>}
+        {pptMsg && <p role="alert" style={{ ...s.msg, color: pptMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{pptMsg}</p>}
       </section>
 
       {/* ── 사진 ── */}
@@ -679,7 +680,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           </button>
           <span style={{ fontSize: '0.78rem', color: 'var(--gray)' }}>JPG·PNG, 최대 5MB · 9:16 비율 권장</span>
         </div>
-        {photoMsg && <p style={{ ...s.msg, color: photoMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{photoMsg}</p>}
+        {photoMsg && <p role="alert" style={{ ...s.msg, color: photoMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{photoMsg}</p>}
       </section>
 
       {/* ── 영상 ── */}
@@ -719,7 +720,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
             </button>
             <span style={{ fontSize: '0.74rem', color: 'var(--gray)', marginLeft: 12 }}>mp4 권장, 최대 300MB</span>
           </div>
-          {r2VideoMsg && <p style={{ ...s.msg, color: r2VideoMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{r2VideoMsg}</p>}
+          {r2VideoMsg && <p role="alert" style={{ ...s.msg, color: r2VideoMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{r2VideoMsg}</p>}
         </div>
 
         {/* 유튜브 연결 영상 */}
@@ -750,16 +751,16 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           )}
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'flex-end' }}>
             <div style={{ ...s.field, flex: '2 1 200px' }}>
-              <label style={s.label}>유튜브 URL 또는 ID</label>
-              <input value={videoUrl} onChange={e => setVideoUrl(e.target.value)} style={s.input} placeholder="https://youtu.be/..." />
+              <label htmlFor="video-url" style={s.label}>유튜브 URL 또는 ID</label>
+              <input id="video-url" value={videoUrl} onChange={e => setVideoUrl(e.target.value)} style={s.input} placeholder="https://youtu.be/..." />
             </div>
             <div style={{ ...s.field, flex: '1 1 140px' }}>
-              <label style={s.label}>제목 (선택)</label>
-              <input value={videoTitle} onChange={e => setVideoTitle(e.target.value)} style={s.input} placeholder="단편영화 주연" />
+              <label htmlFor="video-title" style={s.label}>제목 (선택)</label>
+              <input id="video-title" value={videoTitle} onChange={e => setVideoTitle(e.target.value)} style={s.input} placeholder="단편영화 주연" />
             </div>
             <button onClick={addVideo} style={{ ...s.btn, ...s.btnPrimary, marginBottom: 0 }}>추가</button>
           </div>
-          {videoMsg && <p style={{ ...s.msg, color: videoMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{videoMsg}</p>}
+          {videoMsg && <p role="alert" style={{ ...s.msg, color: videoMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{videoMsg}</p>}
         </div>
       </section>
 
@@ -810,7 +811,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
             </button>
           )}
         </div>
-        {filmMsg && <p style={{ ...s.msg, color: filmMsg.includes('저장') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{filmMsg}</p>}
+        {filmMsg && <p role="alert" style={{ ...s.msg, color: filmMsg.includes('저장') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{filmMsg}</p>}
       </section>
     </div>
   )

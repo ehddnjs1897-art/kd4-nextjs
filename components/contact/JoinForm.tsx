@@ -539,6 +539,7 @@ export default function JoinForm() {
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
       {/* 이름 */}
       <input
+        aria-label="이름"
         type="text"
         placeholder="이름 *"
         value={name}
@@ -551,6 +552,7 @@ export default function JoinForm() {
 
       {/* 연락처 */}
       <input
+        aria-label="연락처"
         type="tel"
         placeholder="연락처 * 010-0000-0000"
         value={phone}
@@ -563,6 +565,7 @@ export default function JoinForm() {
 
       {/* 이메일 — 필수 (2026-05-20: 대표 지시로 필수 복귀) */}
       <input
+        aria-label="이메일"
         type="email"
         placeholder="이메일"
         value={email}
@@ -576,6 +579,7 @@ export default function JoinForm() {
       {/* 희망 클래스 (필수) */}
       <div style={{ position: 'relative' }}>
         <select
+          aria-label="희망 클래스"
           value={className}
           onChange={(e) => setClassName(e.target.value)}
           onFocus={() => handleFieldFocus('class')}
@@ -608,6 +612,7 @@ export default function JoinForm() {
       {/* 마이즈너 경험 (필수) */}
       <div style={{ position: 'relative' }}>
         <select
+          aria-label="마이즈너 경험"
           value={meisnerExp}
           onChange={(e) => setMeisnerExp(e.target.value)}
           onFocus={() => handleFieldFocus('meisner')}
@@ -639,6 +644,7 @@ export default function JoinForm() {
       {/* 유입 경로 (필수) */}
       <div style={{ position: 'relative' }}>
         <select
+          aria-label="KD4를 어떻게 알게 되셨나요"
           value={source}
           onChange={(e) => setSource(e.target.value)}
           onFocus={() => handleFieldFocus('source')}
@@ -714,7 +720,7 @@ export default function JoinForm() {
 
       {/* 에러 */}
       {error && (
-        <p style={{ color: 'var(--accent-red)', fontSize: '0.85rem', margin: 0 }}>{error}</p>
+        <p role="alert" aria-live="assertive" style={{ color: 'var(--accent-red)', fontSize: '0.85rem', margin: 0 }}>{error}</p>
       )}
 
       {/* 제출 버튼 */}

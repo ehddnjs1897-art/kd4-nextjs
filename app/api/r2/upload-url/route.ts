@@ -11,6 +11,8 @@ import { createClient } from '@/lib/supabase/server'
 import { getUploadUrl, isR2Configured } from '@/lib/r2'
 
 const MAX_SIZE_BYTES = 300 * 1024 * 1024 // 300MB
+const ALLOWED_VIDEO_TYPES = new Set(['video/mp4', 'video/quicktime', 'video/x-msvideo', 'video/webm', 'video/x-m4v'])
+const ALLOWED_UPLOAD_ROLES = new Set(['member', 'actor', 'editor', 'admin'])
 
 export const runtime = 'nodejs'
 
@@ -31,6 +33,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   }
 
+  // 역할 체크 — member/actor/editor/admin만 영상 업로드 가능
+  const { data: profile } = await supabase
+    .from('profiles').select('role').eq('id', user.id).maybeSingle()
+  if (!profile || !ALLOWED_UPLOAD_ROLES.has(profile.role ?? '')) {
+    return NextResponse.json({ error: '업로드 권한이 없습니다.' }, { status: 403 })
+  }
+
   const body = await request.json().catch(() => null)
   const filename = typeof body?.filename === 'string' ? body.filename : ''
   const contentType = typeof body?.contentType === 'string' ? body.contentType : ''
@@ -39,8 +48,8 @@ export async function POST(request: NextRequest) {
   if (!filename || !contentType) {
     return NextResponse.json({ error: 'filename과 contentType이 필요합니다.' }, { status: 400 })
   }
-  if (!contentType.startsWith('video/')) {
-    return NextResponse.json({ error: '영상 파일만 업로드할 수 있습니다.' }, { status: 400 })
+  if (!ALLOWED_VIDEO_TYPES.has(contentType)) {
+    return NextResponse.json({ error: '지원하지 않는 영상 형식입니다. (mp4, mov, avi, webm만 가능)' }, { status: 400 })
   }
   if (size > MAX_SIZE_BYTES) {
     return NextResponse.json(

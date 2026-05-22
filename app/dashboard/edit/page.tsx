@@ -220,23 +220,4 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '0.9rem',
     color: 'var(--gray)',
   },
-  notice: {
-    background: 'var(--bg2)',
-    border: '1px solid var(--border)',
-    borderRadius: 8,
-    padding: '40px 36px',
-    maxWidth: 520,
-  },
-  noticeTitle: {
-    fontFamily: 'var(--font-display)',
-    fontSize: '1.1rem',
-    fontWeight: 600,
-    color: 'var(--white)',
-    marginBottom: 14,
-  },
-  noticeDesc: {
-    fontSize: '0.88rem',
-    color: 'var(--gray)',
-    lineHeight: 1.8,
-  },
 }
