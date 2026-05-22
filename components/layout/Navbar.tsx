@@ -363,7 +363,7 @@ export default function Navbar() {
             )}
 
             <Link
-              href="/join"
+              href="/enroll"
               className="desktop-cta"
               style={{
                 display: 'inline-block',
@@ -382,7 +382,7 @@ export default function Navbar() {
               onMouseEnter={e => (e.currentTarget.style.background = 'var(--gold-light)')}
               onMouseLeave={e => (e.currentTarget.style.background = 'var(--gold)')}
             >
-              수강신청
+              클래스 신청
             </Link>
 
             {/* 햄버거 */}
@@ -569,7 +569,7 @@ export default function Navbar() {
                 </Link>
               )}
               <Link
-                href="/join"
+                href="/enroll"
                 onClick={closeMobile}
                 style={{
                   display: 'block',
@@ -585,7 +585,7 @@ export default function Navbar() {
                   textDecoration: 'none',
                 }}
               >
-                수강신청 하기
+                클래스 신청하기
               </Link>
               <a
                 href="https://pf.kakao.com/_ximxdqn"
