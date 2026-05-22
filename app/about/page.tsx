@@ -15,7 +15,6 @@ const PARTNERS = [
   '방진원 캐스팅 디렉터',
   '이상원 캐스팅 디렉터',
   '박안드레 조감독',
-  'spectrum8 스튜디오',
   'neez.n 프로덕션',
 ]
 
@@ -431,6 +430,27 @@ export default function AboutPage() {
               {p}
             </span>
           ))}
+        </div>
+        <div style={{ textAlign: 'center', marginTop: '32px' }}>
+          <Link
+            href="/benefits"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '12px 28px',
+              background: 'var(--gold)',
+              color: '#ffffff',
+              fontFamily: 'var(--font-sans)',
+              fontSize: '0.9rem',
+              fontWeight: 700,
+              borderRadius: 'var(--radius)',
+              letterSpacing: '0.03em',
+              textDecoration: 'none',
+            }}
+          >
+            제휴 혜택 전체 보기 →
+          </Link>
         </div>
       </section>
 
