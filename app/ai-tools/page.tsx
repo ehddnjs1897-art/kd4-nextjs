@@ -257,10 +257,14 @@ export default function AIToolsPage() {
             {/* 탭 + 내용 */}
             {result && (
               <>
-                <div style={s.tabBar}>
+                <div style={s.tabBar} role="tablist" aria-label="분석 메소드 탭">
                   {(Object.keys(TAB_LABELS) as TabKey[]).map((key) => (
                     <button
                       key={key}
+                      role="tab"
+                      id={`tab-${key}`}
+                      aria-selected={activeTab === key}
+                      aria-controls={`tabpanel-${key}`}
                       onClick={() => setActiveTab(key)}
                       style={activeTab === key ? { ...s.tab, ...s.tabActive } : s.tab}
                     >
@@ -269,7 +273,12 @@ export default function AIToolsPage() {
                   ))}
                 </div>
 
-                <div style={s.tabContent}>
+                <div
+                  style={s.tabContent}
+                  role="tabpanel"
+                  id={`tabpanel-${activeTab}`}
+                  aria-labelledby={`tab-${activeTab}`}
+                >
                   {/* Uta Hagen */}
                   {activeTab === 'utaHagen' && (
                     <TabPanel title={result.utaHagen.title}>

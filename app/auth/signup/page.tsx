@@ -236,6 +236,7 @@ export default function SignupPage() {
               placeholder="실명을 입력하세요"
               required
               disabled={loading}
+              autoComplete="name"
               style={styles.input}
             />
           </div>
@@ -253,6 +254,7 @@ export default function SignupPage() {
               placeholder="example@email.com"
               required
               disabled={loading}
+              autoComplete="email"
               style={styles.input}
             />
           </div>
@@ -270,6 +272,7 @@ export default function SignupPage() {
               placeholder="8자 이상"
               required
               disabled={loading}
+              autoComplete="new-password"
               style={styles.input}
             />
           </div>
@@ -287,6 +290,7 @@ export default function SignupPage() {
               placeholder="비밀번호를 한 번 더 입력하세요"
               required
               disabled={loading}
+              autoComplete="new-password"
               style={{
                 ...styles.input,
                 borderColor:
@@ -316,6 +320,7 @@ export default function SignupPage() {
                 disabled={loading}
                 maxLength={13}
                 required
+                autoComplete="tel"
                 style={styles.input}
               />
               <p style={styles.hint}>
@@ -337,6 +342,7 @@ export default function SignupPage() {
                 onChange={(e) => setAffiliation(e.target.value)}
                 placeholder="제작사, 캐스팅사, 방송국 등"
                 disabled={loading}
+                autoComplete="organization"
                 style={styles.input}
               />
             </div>
