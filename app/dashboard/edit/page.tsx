@@ -20,7 +20,7 @@ interface Profile {
 interface ActorRow {
   height: number | null
   weight: number | null
-  skills: string | null
+  skills: string[] | null   // DB 타입: text[] — string | null 이었던 오류 수정
   instagram: string | null
   casting_summary: string | null
   profile_doc_path: string | null
@@ -146,7 +146,7 @@ export default async function GalleryEditPage() {
   const initialData = {
     height: actor.height ?? undefined,
     weight: actor.weight ?? undefined,
-    skills: actor.skills ?? undefined,
+    skills: actor.skills?.join(', ') ?? undefined,  // text[] → 쉼표 구분 문자열 (폼 표시용)
     instagram: actor.instagram ?? undefined,
     castingSummary: actor.casting_summary ?? undefined,
     profileDocPath: actor.profile_doc_path ?? null,
