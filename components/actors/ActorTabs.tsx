@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import Image from 'next/image'
 import R2Video from '@/components/actors/R2Video'
 
@@ -28,6 +27,9 @@ interface FilmoEntry {
   role: string | null
   year: number | null
   production: string | null
+  broadcaster?: string | null
+  film_type?: string | null
+  award?: string | null
 }
 
 interface Actor {
@@ -62,6 +64,21 @@ const CATEGORY_LABEL: Record<FilmoCategory, string> = {
   etc: '기타',
 }
 
+const FILM_TYPE_STYLE: Record<string, React.CSSProperties> = {
+  '상업': { background: 'rgba(21,72,138,0.08)', color: 'var(--navy)', border: '1px solid rgba(21,72,138,0.2)' },
+  '독립장편': { background: 'rgba(80,80,80,0.08)', color: 'var(--gray-light)', border: '1px solid var(--border)' },
+  '단편': { background: 'rgba(80,80,80,0.06)', color: 'var(--gray)', border: '1px solid var(--border)' },
+}
+
+const SECTION_NUMS: Record<FilmoCategory, string> = {
+  drama: '03',
+  film: '04',
+  cf: '05',
+  theater: '06',
+  musical: '07',
+  etc: '08',
+}
+
 function photoSrc(p: ActorPhoto): string {
   if (p.url) return p.url
   if (p.storage_path) {
@@ -72,14 +89,8 @@ function photoSrc(p: ActorPhoto): string {
 }
 
 export default function ActorTabs({ actor, canViewContact, imageProtected }: Props) {
-  // 필모 카테고리 필터
+  // 필모 전체 (연도 내림차순)
   const allFilmo = [...actor.actor_filmography].sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
-  const availableCategories = (
-    ['drama', 'film', 'cf', 'musical', 'theater', 'etc'] as FilmoCategory[]
-  ).filter((cat) => allFilmo.some((f) => f.category === cat))
-  const [activeFilmoTab, setActiveFilmoTab] = useState<FilmoCategory>(
-    availableCategories[0] ?? 'drama'
-  )
 
   // 프로필 사진 목록 (profile_photo + actor_photos, 최대 3장)
   const mainPhotoUrl = actor.profile_photo
@@ -95,18 +106,24 @@ export default function ActorTabs({ actor, canViewContact, imageProtected }: Pro
     if (stripPhotos.length >= 3) break
   }
 
-  // 영상
-  const videos = actor.actor_videos ?? []
+  // 영상 (최대 2개)
+  const videos = (actor.actor_videos ?? []).slice(0, 2)
 
   // 최근 출연 (year >= 2025)
   const recentWorks = allFilmo.filter((f) => (f.year ?? 0) >= 2025)
 
-  // 필모그래피 (선택된 카테고리)
-  const filmoByCategory = allFilmo.filter((f) => f.category === activeFilmoTab)
+  // 카테고리별 필모
+  const filmoByCategory = (cat: FilmoCategory) => allFilmo.filter((f) => f.category === cat)
+
+  // 수상이력
+  const awardEntries = allFilmo.filter((f) => f.award != null && f.award !== '')
+
+  // 카테고리 순서
+  const CATEGORY_ORDER: FilmoCategory[] = ['drama', 'film', 'cf', 'theater', 'musical', 'etc']
 
   return (
     <div style={s.root}>
-      {/* ============ 섹션 1: 프로필 사진 스트립 ============ */}
+      {/* ============ 프로필 사진 스트립 ============ */}
       {stripPhotos.length > 0 && (
         <section style={s.section}>
           <div
@@ -144,7 +161,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected }: Pro
         </section>
       )}
 
-      {/* ============ 섹션 2: 01 · REEL ============ */}
+      {/* ============ 01 · REEL ============ */}
       {videos.length > 0 && (
         <section style={s.section}>
           <h2 style={s.sectionHeading}>
@@ -180,7 +197,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected }: Pro
         </section>
       )}
 
-      {/* ============ 섹션 3: 02 · CURRENT WORKS ============ */}
+      {/* ============ 02 · CURRENT WORKS ============ */}
       {recentWorks.length > 0 && (
         <section style={s.section}>
           <h2 style={s.sectionHeading}>
@@ -201,52 +218,97 @@ export default function ActorTabs({ actor, canViewContact, imageProtected }: Pro
         </section>
       )}
 
-      {/* ============ 섹션 4: 03 · FILMOGRAPHY ============ */}
-      {allFilmo.length > 0 && (
+      {/* ============ 필모그래피 카테고리별 독립 섹션 ============ */}
+      {CATEGORY_ORDER.map((cat) => {
+        const entries = filmoByCategory(cat)
+        if (entries.length === 0) return null
+        const num = SECTION_NUMS[cat]
+        const isDrama = cat === 'drama'
+        const isFilm = cat === 'film'
+
+        return (
+          <section key={cat} style={s.section}>
+            <h2 style={s.sectionHeading}>
+              <span style={s.sectionNum}>{num}</span>
+              <span style={s.sectionTitle}>{CATEGORY_LABEL[cat].toUpperCase()}</span>
+            </h2>
+            <table style={s.table}>
+              <thead>
+                <tr>
+                  <th style={{ ...s.th, width: 56 }}>연도</th>
+                  <th style={s.th}>작품명</th>
+                  <th style={s.th}>역할</th>
+                  {isDrama && <th style={s.th}>방송사</th>}
+                  {isFilm && <th style={s.th}>구분</th>}
+                </tr>
+              </thead>
+              <tbody>
+                {entries.map((entry) => (
+                  <tr key={entry.id} style={s.tr}>
+                    <td style={{ ...s.td, color: 'var(--gray)', fontSize: '0.82rem' }}>
+                      {entry.year ?? '—'}
+                    </td>
+                    <td style={{ ...s.td, fontWeight: 600, color: 'var(--white)' }}>
+                      {entry.title}
+                    </td>
+                    <td style={s.td}>{entry.role ?? '—'}</td>
+                    {isDrama && (
+                      <td style={{ ...s.td, color: 'var(--gray)', fontSize: '0.82rem' }}>
+                        {entry.broadcaster ?? '—'}
+                      </td>
+                    )}
+                    {isFilm && (
+                      <td style={s.td}>
+                        {entry.film_type ? (
+                          <span style={{
+                            display: 'inline-block',
+                            padding: '2px 8px',
+                            borderRadius: 3,
+                            fontSize: '0.75rem',
+                            fontWeight: 600,
+                            letterSpacing: '0.03em',
+                            ...(FILM_TYPE_STYLE[entry.film_type] ?? {}),
+                          }}>
+                            {entry.film_type}
+                          </span>
+                        ) : '—'}
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+        )
+      })}
+
+      {/* ============ 수상이력 ============ */}
+      {awardEntries.length > 0 && (
         <section style={s.section}>
-          <h2 style={s.sectionHeading}>
-            <span style={s.sectionNum}>03</span>
-            <span style={s.sectionTitle}>FILMOGRAPHY</span>
+          <h2 style={{ ...s.sectionHeading, borderBottomColor: 'var(--accent-red)' }}>
+            <span style={{ ...s.sectionNum, color: 'var(--accent-red)' }}>🏆</span>
+            <span style={{ ...s.sectionTitle, color: 'var(--accent-red)' }}>AWARD</span>
           </h2>
-
-          {/* 카테고리 탭 버튼 */}
-          {availableCategories.length > 1 && (
-            <div style={s.filmoTabBar}>
-              {availableCategories.map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setActiveFilmoTab(cat)}
-                  style={{
-                    ...s.filmoTabBtn,
-                    ...(activeFilmoTab === cat ? s.filmoTabBtnActive : {}),
-                  }}
-                >
-                  {CATEGORY_LABEL[cat]}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* 필모 테이블 */}
           <table style={s.table}>
             <thead>
               <tr>
                 <th style={{ ...s.th, width: 56 }}>연도</th>
                 <th style={s.th}>작품명</th>
-                <th style={s.th}>역할</th>
+                <th style={s.th}>수상내역</th>
               </tr>
             </thead>
             <tbody>
-              {filmoByCategory.map((entry) => (
-                <tr key={entry.id} style={s.tr}>
+              {awardEntries.map((entry) => (
+                <tr key={`award-${entry.id}`} style={{ ...s.tr, borderLeft: '3px solid var(--accent-red)' }}>
                   <td style={{ ...s.td, color: 'var(--gray)', fontSize: '0.82rem' }}>
                     {entry.year ?? '—'}
                   </td>
                   <td style={{ ...s.td, fontWeight: 600, color: 'var(--white)' }}>
                     {entry.title}
                   </td>
-                  <td style={s.td}>{entry.role ?? '—'}</td>
+                  <td style={{ ...s.td, color: 'var(--accent-red)', fontWeight: 600 }}>
+                    {entry.award}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -298,7 +360,7 @@ const s: Record<string, React.CSSProperties> = {
     marginLeft: 4,
   },
 
-  /* ---- 섹션 1: 프로필 사진 스트립 ---- */
+  /* ---- 프로필 사진 스트립 ---- */
   photoStrip: {
     display: 'grid',
     gridTemplateColumns: 'repeat(3, 1fr)',
@@ -328,7 +390,7 @@ const s: Record<string, React.CSSProperties> = {
     cursor: 'default',
   },
 
-  /* ---- 섹션 2: REEL ---- */
+  /* ---- REEL ---- */
   videoGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
@@ -360,7 +422,7 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--gray)',
   },
 
-  /* ---- 섹션 3: CURRENT WORKS ---- */
+  /* ---- CURRENT WORKS ---- */
   recentGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
@@ -400,30 +462,7 @@ const s: Record<string, React.CSSProperties> = {
     opacity: 0.7,
   },
 
-  /* ---- 섹션 4: FILMOGRAPHY ---- */
-  filmoTabBar: {
-    display: 'flex',
-    gap: 6,
-    flexWrap: 'wrap' as const,
-  },
-  filmoTabBtn: {
-    padding: '6px 16px',
-    fontSize: '0.8rem',
-    color: 'var(--gray)',
-    background: 'var(--bg2)',
-    border: '1px solid var(--border)',
-    borderRadius: 4,
-    cursor: 'pointer',
-    fontFamily: 'var(--font-sans)',
-    letterSpacing: '0.04em',
-    transition: 'color 0.15s, border-color 0.15s',
-  },
-  filmoTabBtnActive: {
-    color: 'var(--gold)',
-    borderColor: 'var(--gold)',
-    background: 'rgba(196,165,90,0.07)',
-    fontWeight: 600,
-  },
+  /* ---- 필모 테이블 공통 ---- */
   table: {
     width: '100%',
     borderCollapse: 'collapse' as const,

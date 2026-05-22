@@ -60,6 +60,9 @@ interface FilmoEntry {
   role: string | null
   year: number | null
   production: string | null
+  broadcaster?: string | null
+  film_type?: string | null
+  award?: string | null
 }
 
 /* ---- 데이터 fetch (admin 클라이언트로 공개 조회) ---- */
@@ -79,7 +82,7 @@ async function getActor(id: string): Promise<Actor | null> {
       casting_tags, casting_summary, profile_pdf_url,
       actor_photos ( id, drive_photo_id, url, storage_path, caption, sort_order ),
       actor_videos ( id, youtube_id, r2_key, title ),
-      actor_filmography ( id, category, title, role, year, production )
+      actor_filmography ( id, category, title, role, year, production, broadcaster, film_type, award )
     `
     )
     .eq('id', id)
@@ -276,7 +279,7 @@ export default async function ActorDetailPage({
     actor.gender === '남' ? '남자 배우' : actor.gender === '여' ? '여자 배우' : '배우'
 
   return (
-    <div style={styles.page}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingBottom: 100 }}>
       {/* JSON-LD */}
       <script
         type="application/ld+json"
@@ -290,299 +293,129 @@ export default async function ActorDetailPage({
         />
       ))}
 
-      <div style={styles.container}>
-        {/* ---- 상단 헤더 영역 ---- */}
-        <header style={styles.header}>
-          {/* 배우 이름 */}
-          <div style={styles.nameBlock}>
-            <h1 style={styles.actorName}>{actor.name}</h1>
-            {actor.name_en && <p style={styles.actorNameEn}>{actor.name_en}</p>}
-            <p style={styles.actorSubLine}>
-              {genderLabel}
-              {actor.age_group ? ` · ${actor.age_group}` : ''}
-            </p>
-          </div>
-
-          {/* 캐스팅 서머리 */}
-          {actor.casting_summary && (
-            <p style={styles.castingSummary}>{actor.casting_summary}</p>
+      {/* 히어로 배너 — 네이비 다크 배경 + 배우 사진 */}
+      <div style={{ paddingTop: 70 }}>
+        <div style={{
+          position: 'relative',
+          width: '100%',
+          height: 460,
+          overflow: 'hidden',
+          background: '#1A1F2B',
+        }}>
+          {/* 배우 사진 배경 */}
+          {photoUrl !== '/placeholder-actor.svg' && (
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              backgroundImage: `url("${photoUrl}")`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center top',
+            }} />
           )}
-
-          {/* 캐스팅 태그 */}
-          {actor.casting_tags && actor.casting_tags.length > 0 && (
-            <div style={styles.castingTagsWrap}>
-              {actor.casting_tags.map((t) => (
-                <span key={t} style={styles.castingTag}>{t}</span>
-              ))}
-            </div>
-          )}
-
-          {/* 기본 스펙 */}
-          <div style={styles.specsRow}>
-            {actor.height && (
-              <span style={styles.specItem}>
-                <span style={styles.specKey}>신장</span>
-                <span style={styles.specVal}>{actor.height} cm</span>
-              </span>
-            )}
-            {actor.weight && (
-              <span style={styles.specItem}>
-                <span style={styles.specKey}>체중</span>
-                <span style={styles.specVal}>{actor.weight} kg</span>
-              </span>
-            )}
-          </div>
-
-          {/* 스킬 */}
-          {actor.skills && actor.skills.length > 0 && (
-            <div style={styles.skillsRow}>
-              {actor.skills.map((sk, i) => (
-                <span key={i} style={styles.skillTag}>{sk}</span>
-              ))}
-            </div>
-          )}
-
-          {/* 구분선 */}
-          <div style={styles.divider} />
-
-          {/* 연락처 */}
-          <div style={styles.contactRow}>
-            {canContact ? (
-              <>
-                {actor.phone && (
-                  <a href={`tel:${actor.phone}`} style={styles.contactItem}>
-                    <span style={styles.contactIcon}>☎</span>
-                    {actor.phone}
-                  </a>
-                )}
-                {actor.email && (
-                  <a href={`mailto:${actor.email}`} style={styles.contactItem}>
-                    <span style={styles.contactIcon}>✉</span>
-                    {actor.email}
-                  </a>
-                )}
-              </>
-            ) : (
-              <p style={styles.contactLocked}>
-                {user
-                  ? '연락처 열람은 디렉터 회원 전용입니다.'
-                  : '연락처 및 자료 다운로드는 KD4 멤버 전용입니다.'}
-                {!user && (
-                  <Link href="/auth/login" style={styles.loginLink}> 로그인</Link>
-                )}
-              </p>
-            )}
-            {/* 인스타그램 — 항상 공개 */}
-            {actor.instagram && (
-              <a
-                href={`https://instagram.com/${actor.instagram.replace('@', '')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={styles.instaLink}
-              >
-                <span style={styles.contactIcon}>@</span>
-                {actor.instagram.startsWith('@') ? actor.instagram : `@${actor.instagram}`}
-              </a>
-            )}
-          </div>
-
-          {/* 액션 버튼 */}
-          <div style={styles.actionRow}>
-            <div style={styles.actionHalf}>
-              <ShareButton webUrl={pageUrl} />
-            </div>
-            {canContact && (
-              <div style={styles.actionHalf}>
-                <ActorDownloadButton profileUrl={profileDocUrl} videoIds={downloadVideoIds} />
+          {/* 다크 그라디언트 오버레이 */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(to top, rgba(15,20,30,0.97) 0%, rgba(15,20,30,0.45) 50%, rgba(15,20,30,0.1) 100%)',
+          }} />
+          {/* 하단 텍스트 */}
+          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '0 clamp(20px,4vw,48px) 36px' }}>
+            {/* 캐스팅 태그 */}
+            {actor.casting_tags && actor.casting_tags.length > 0 && (
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
+                {actor.casting_tags.map(t => (
+                  <span key={t} style={{
+                    fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.08em',
+                    color: 'rgba(255,255,255,0.88)',
+                    background: 'rgba(255,255,255,0.12)',
+                    border: '1px solid rgba(255,255,255,0.28)',
+                    borderRadius: 3, padding: '3px 10px',
+                    fontFamily: 'var(--font-display)',
+                  }}>{t}</span>
+                ))}
               </div>
             )}
+            {/* 이름 */}
+            <h1 style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(2.4rem, 7vw, 3.6rem)',
+              fontWeight: 800, color: '#ffffff',
+              letterSpacing: '0.01em', lineHeight: 1.05, margin: 0,
+            }}>{actor.name}</h1>
+            {/* 서브라인 */}
+            <p style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.55)', marginTop: 8, letterSpacing: '0.04em' }}>
+              {genderLabel}{actor.age_group ? ` · ${actor.age_group}` : ''}{actor.name_en ? `  ·  ${actor.name_en}` : ''}
+            </p>
           </div>
-        </header>
+        </div>
+      </div>
 
-        {/* ---- 구분선 ---- */}
-        <div style={styles.mainDivider} />
+      {/* 정보 + 콘텐츠 컨테이너 */}
+      <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 clamp(20px,4vw,32px)', paddingTop: 36, display: 'flex', flexDirection: 'column', gap: 40 }}>
+        {/* 캐스팅 서머리 */}
+        {actor.casting_summary && (
+          <p style={{
+            fontFamily: 'var(--font-serif)',
+            fontSize: '1rem', color: 'var(--white)', fontWeight: 600, lineHeight: 1.7,
+            padding: '14px 20px',
+            background: 'var(--navy-tint-1)',
+            borderLeft: '3px solid var(--navy)',
+            borderRadius: 4,
+          }}>{actor.casting_summary}</p>
+        )}
 
-        {/* ---- 콘텐츠 섹션 (ActorTabs) ---- */}
-        <ActorTabs
-          actor={actor}
-          canViewContact={canContact}
-          imageProtected={!canContact}
-        />
+        {/* 스펙 + 스킬 */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {(actor.height || actor.weight) && (
+            <div style={{ display: 'flex', gap: 28, flexWrap: 'wrap' }}>
+              {actor.height && <span style={{ fontSize: '0.88rem' }}><span style={{ color: 'var(--gray)', marginRight: 8, fontSize: '0.75rem', letterSpacing: '0.05em' }}>신장</span><strong style={{ color: 'var(--white)', fontWeight: 600 }}>{actor.height} cm</strong></span>}
+              {actor.weight && <span style={{ fontSize: '0.88rem' }}><span style={{ color: 'var(--gray)', marginRight: 8, fontSize: '0.75rem', letterSpacing: '0.05em' }}>체중</span><strong style={{ color: 'var(--white)', fontWeight: 600 }}>{actor.weight} kg</strong></span>}
+            </div>
+          )}
+          {actor.skills && actor.skills.length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {actor.skills.map((sk, i) => (
+                <span key={i} style={{ padding: '4px 12px', background: 'var(--navy-tint-1)', border: '1px solid var(--navy-tint-3)', borderRadius: 3, fontSize: '0.78rem', color: 'var(--navy)', letterSpacing: '0.03em' }}>{sk}</span>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* 구분선 */}
+        <div style={{ borderTop: '1px solid var(--border)' }} />
+
+        {/* 연락처 */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'center' }}>
+          {canContact ? (
+            <>
+              {actor.phone && <a href={`tel:${actor.phone}`} style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>☎ {actor.phone}</a>}
+              {actor.email && <a href={`mailto:${actor.email}`} style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>✉ {actor.email}</a>}
+            </>
+          ) : (
+            <p style={{ fontSize: '0.85rem', color: 'var(--gray)' }}>
+              {user ? '연락처 열람은 디렉터 회원 전용입니다.' : '연락처 및 자료 다운로드는 KD4 멤버 전용입니다.'}
+              {!user && <Link href="/auth/login" style={{ color: 'var(--navy)', marginLeft: 6 }}>로그인</Link>}
+            </p>
+          )}
+          {actor.instagram && (
+            <a href={`https://instagram.com/${actor.instagram.replace('@','')}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.88rem', color: 'var(--gray)', textDecoration: 'none' }}>
+              @ {actor.instagram.startsWith('@') ? actor.instagram.slice(1) : actor.instagram}
+            </a>
+          )}
+        </div>
+
+        {/* 액션 버튼 */}
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <div style={{ flex: 1, minWidth: 140 }}><ShareButton webUrl={pageUrl} /></div>
+          {canContact && <div style={{ flex: 1, minWidth: 140 }}><ActorDownloadButton profileUrl={profileDocUrl} videoIds={downloadVideoIds} /></div>}
+        </div>
+
+        {/* 메인 구분선 */}
+        <div style={{ borderTop: '2px solid var(--border)' }} />
+
+        {/* ActorTabs */}
+        <ActorTabs actor={actor} canViewContact={canContact} imageProtected={!canContact} />
       </div>
     </div>
   )
-}
-
-const styles: Record<string, React.CSSProperties> = {
-  page: {
-    minHeight: '100vh',
-    background: 'var(--bg)',
-    paddingTop: 80,
-    paddingBottom: 100,
-  },
-  container: {
-    maxWidth: 960,
-    margin: '0 auto',
-    padding: '0 24px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 48,
-  },
-
-  /* ---- 헤더 ---- */
-  header: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 16,
-  },
-  nameBlock: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 4,
-  },
-  actorName: {
-    fontFamily: 'var(--font-display)',
-    fontSize: '2.6rem',
-    fontWeight: 700,
-    color: 'var(--white)',
-    letterSpacing: '0.04em',
-    lineHeight: 1.15,
-  },
-  actorNameEn: {
-    fontFamily: 'var(--font-display), Oswald, sans-serif',
-    fontSize: '1rem',
-    color: 'var(--gray)',
-    letterSpacing: '0.12em',
-    textTransform: 'uppercase' as const,
-    marginTop: 2,
-  },
-  actorSubLine: {
-    fontSize: '0.88rem',
-    color: 'var(--gray)',
-    marginTop: 4,
-  },
-  castingSummary: {
-    fontFamily: 'var(--font-serif)',
-    fontSize: '1rem',
-    color: 'var(--white)',
-    fontWeight: 600,
-    lineHeight: 1.6,
-    padding: '14px 18px',
-    background: 'rgba(196,165,90,0.05)',
-    borderLeft: '3px solid var(--gold)',
-    borderRadius: 4,
-    letterSpacing: '0.01em',
-  },
-  castingTagsWrap: {
-    display: 'flex',
-    flexWrap: 'wrap' as const,
-    gap: 6,
-  },
-  castingTag: {
-    fontFamily: 'var(--font-display), Oswald, sans-serif',
-    fontSize: '0.7rem',
-    fontWeight: 700,
-    letterSpacing: '0.08em',
-    color: 'var(--gold)',
-    background: 'rgba(196,165,90,0.08)',
-    border: '1px solid rgba(196,165,90,0.25)',
-    borderRadius: 3,
-    padding: '4px 10px',
-  },
-  specsRow: {
-    display: 'flex',
-    gap: 24,
-    flexWrap: 'wrap' as const,
-  },
-  specItem: {
-    display: 'flex',
-    gap: 8,
-    alignItems: 'baseline',
-  },
-  specKey: {
-    fontSize: '0.75rem',
-    color: 'var(--gray)',
-    letterSpacing: '0.05em',
-  },
-  specVal: {
-    fontSize: '0.92rem',
-    color: 'var(--white)',
-    fontWeight: 600,
-  },
-  skillsRow: {
-    display: 'flex',
-    flexWrap: 'wrap' as const,
-    gap: 6,
-  },
-  skillTag: {
-    padding: '4px 12px',
-    background: 'rgba(196,165,90,0.10)',
-    border: '1px solid rgba(196,165,90,0.28)',
-    borderRadius: 3,
-    fontSize: '0.78rem',
-    color: 'var(--gold-light, var(--gold))',
-    letterSpacing: '0.03em',
-  },
-  divider: {
-    borderTop: '1px solid var(--border)',
-    marginTop: 4,
-  },
-  contactRow: {
-    display: 'flex',
-    flexWrap: 'wrap' as const,
-    gap: 12,
-    alignItems: 'center',
-  },
-  contactItem: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: 6,
-    fontSize: '0.9rem',
-    color: 'var(--white)',
-    textDecoration: 'none',
-    padding: '6px 14px',
-    background: 'var(--bg2)',
-    border: '1px solid var(--border)',
-    borderRadius: 5,
-    transition: 'border-color 0.15s',
-  },
-  contactIcon: {
-    fontSize: '0.8rem',
-    color: 'var(--gold)',
-  },
-  instaLink: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: 6,
-    fontSize: '0.9rem',
-    color: 'var(--gold-light, var(--gold))',
-    textDecoration: 'none',
-    padding: '6px 14px',
-    background: 'var(--bg2)',
-    border: '1px solid rgba(196,165,90,0.3)',
-    borderRadius: 5,
-  },
-  contactLocked: {
-    fontSize: '0.85rem',
-    color: 'var(--gray)',
-    display: 'flex',
-    alignItems: 'center',
-    gap: 6,
-  },
-  loginLink: {
-    color: 'var(--gold)',
-    textDecoration: 'underline',
-  },
-  actionRow: {
-    display: 'flex',
-    gap: 10,
-    flexWrap: 'wrap' as const,
-  },
-  actionHalf: {
-    flex: '1 1 200px',
-    minWidth: 0,
-  },
-  mainDivider: {
-    borderTop: '1px solid var(--border)',
-  },
 }
