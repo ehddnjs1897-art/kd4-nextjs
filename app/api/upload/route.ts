@@ -14,6 +14,8 @@ import { uploadFile } from '@/lib/storage'
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5 MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
 const DEFAULT_BUCKET = 'actor-media'
+// 업로드 허용 버킷 — 클라이언트가 임의 버킷에 파일을 올리는 것을 방지
+const ALLOWED_BUCKETS = new Set(['actor-media', 'actor-photos'])
 
 // ─── 권한 확인 ───────────────────────────────────────────────────────────────
 
@@ -79,7 +81,8 @@ export async function POST(request: NextRequest) {
   try {
     const file = formData.get('file')
     const actorId = formData.get('actorId')
-    const bucket = (formData.get('bucket') as string | null) ?? DEFAULT_BUCKET
+    const rawBucket = (formData.get('bucket') as string | null) ?? DEFAULT_BUCKET
+    const bucket = ALLOWED_BUCKETS.has(rawBucket) ? rawBucket : DEFAULT_BUCKET
 
     // ── 유효성 검사 ──
     if (!file || !(file instanceof File)) {
@@ -164,10 +167,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ url: result.url, id: photoRow.id, path: result.path, provider: result.provider }, { status: 200 })
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : '알 수 없는 오류'
-    console.error('[POST /api/upload] 오류:', message)
+    console.error('[POST /api/upload] 오류:', err instanceof Error ? err.message : err)
     return NextResponse.json(
-      { error: `업로드에 실패했습니다: ${message}` },
+      { error: '업로드에 실패했습니다.' },
       { status: 500 }
     )
   }
