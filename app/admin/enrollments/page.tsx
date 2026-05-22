@@ -13,7 +13,7 @@ export default async function AdminEnrollmentsPage() {
   if (!user) redirect('/auth/login')
 
   // 권한 확인 + 데이터 병렬 조회
-  const [{ data: profile }, { data }] = await Promise.all([
+  const [{ data: profile }, enrollRes] = await Promise.all([
     supabase.from('profiles').select('role').eq('id', user.id).single(),
     supabaseAdmin
       .from('enrollments')
@@ -24,5 +24,17 @@ export default async function AdminEnrollmentsPage() {
 
   if (!profile || profile.role !== 'admin') redirect('/')
 
-  return <AdminEnrollments enrollments={data ?? []} />
+  if (enrollRes.error) {
+    return (
+      <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '80px 0 120px' }}>
+        <div className="container">
+          <p role="alert" style={{ color: 'var(--gray)', fontSize: '0.95rem', marginTop: '40px' }}>
+            수강 데이터를 불러오지 못했습니다. 새로고침 해주세요.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  return <AdminEnrollments enrollments={enrollRes.data ?? []} />
 }

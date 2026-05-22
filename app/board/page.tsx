@@ -14,11 +14,23 @@ export default async function BoardPage() {
   }
 
   // 전체 포스트 한 번에 fetch — 카테고리 필터링은 클라이언트에서 처리 (탭 딜레이 없음)
-  const { data: posts } = await supabase
+  const { data: posts, error: postsError } = await supabase
     .from('posts')
     .select('id, title, category, author_name, views, created_at')
     .order('created_at', { ascending: false })
     .limit(300)
+
+  if (postsError) {
+    return (
+      <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '80px 0 120px' }}>
+        <div className="container">
+          <p role="alert" style={{ color: 'var(--gray)', fontSize: '0.95rem', marginTop: '40px' }}>
+            게시판을 불러오지 못했습니다. 새로고침 해주세요.
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '80px 0 120px' }}>

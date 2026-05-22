@@ -138,6 +138,7 @@ URL: ${url}
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
         signal: AbortSignal.timeout(15000),
+        cache: 'no-store', // API 키 포함 URL이 Next.js fetch 캐시에 기록되지 않도록
       }
     )
     const data = await res.json()
@@ -172,8 +173,11 @@ export async function GET(request: NextRequest) {
   const sourceType = searchParams.get('source_type')
   const favorite = searchParams.get('favorite')
   const q = searchParams.get('q')
-  const limit = Math.min(100, parseInt(searchParams.get('limit') ?? '50', 10))
-  const offset = parseInt(searchParams.get('offset') ?? '0', 10)
+  // parseInt → NaN 방어: ?limit=abc 같은 잘못된 쿼리 파라미터 시 .range(NaN, NaN) → DB 500 방지
+  const rawLimit = parseInt(searchParams.get('limit') ?? '50', 10)
+  const rawOffset = parseInt(searchParams.get('offset') ?? '0', 10)
+  const limit = Number.isFinite(rawLimit) ? Math.min(100, Math.max(1, rawLimit)) : 50
+  const offset = Number.isFinite(rawOffset) ? Math.max(0, rawOffset) : 0
 
   let query = supabaseAdmin
     .from('insights')

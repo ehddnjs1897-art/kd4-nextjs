@@ -10,11 +10,12 @@ import { deleteFile } from '@/lib/storage'
 type Ctx = { params: Promise<{ id: string; photoId: string }> }
 
 async function authorize(actorId: string, userId: string) {
+  // maybeSingle(): 0건도 허용 → PGRST116 오류 로그 노이즈 방지
   const { data: profile } = await supabaseAdmin
     .from('profiles')
     .select('actor_id, role')
     .eq('id', userId)
-    .single()
+    .maybeSingle()
   return profile && (profile.actor_id === actorId || profile.role === 'admin')
 }
 

@@ -652,6 +652,7 @@ export default function HomePage() {
               width={300}
               height={420}
               priority
+              sizes="(max-width: 768px) 200px, 300px"
               style={{
                 objectFit: 'cover',
                 objectPosition: 'center top',

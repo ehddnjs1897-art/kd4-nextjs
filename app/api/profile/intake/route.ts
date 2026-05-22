@@ -22,7 +22,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 
 function photoPublicUrl(path: string): string {
   return `${SUPABASE_URL}/storage/v1/object/public/actor-photos/${path}`
@@ -31,6 +31,11 @@ function photoPublicUrl(path: string): string {
 export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
+  // SUPABASE_URL 없으면 사진 URL이 빈 경로로 DB에 저장되어 이미지가 전부 깨짐
+  if (!SUPABASE_URL) {
+    return NextResponse.json({ error: 'SUPABASE_URL 환경변수 누락' }, { status: 500 })
+  }
+
   const supabase = await createClient()
   const {
     data: { user },

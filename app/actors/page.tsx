@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { unstable_cache } from 'next/cache'
+import type { Metadata } from 'next'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { getActorPhotoUrl, shouldOptimize } from '@/lib/actor-photo'
@@ -7,6 +8,13 @@ import ActorDbLocked from '@/components/actors/ActorDbLocked'
 import ActorsSearchGrid from '@/components/actors/ActorsSearchGrid'
 import { canViewActorDb } from '@/lib/access'
 import type { UserRole } from '@/lib/types'
+
+export const metadata: Metadata = {
+  title: '배우 DB | KD4 액팅 스튜디오',
+  description: 'KD4 액팅 스튜디오 배우 데이터베이스. 멤버 전용.',
+  robots: { index: false, follow: false },
+  alternates: { canonical: 'https://kd4.club/actors' },
+}
 
 interface Actor {
   id: string
@@ -103,10 +111,14 @@ async function fetchActors(gender: string, ageGroup: string, tag: string): Promi
 // 배우 목록은 모든 회원에게 동일(공개 데이터) → 120초 캐시.
 // 매 요청마다 DB 조회 X → 캐시 1회 + 메모리 반환 (속도 대폭 개선).
 // 배우 추가/수정 시 revalidateTag('actors')로 즉시 갱신 가능.
-const fetchActorsCached = unstable_cache(fetchActors, ['actors-list-v1'], {
-  revalidate: 120,
-  tags: ['actors'],
-})
+// keyParts에 필터 조합 포함 → gender/ageGroup/tag 조합별로 독립 캐시 슬롯 보장.
+function getActorsCached(gender: string, ageGroup: string, tag: string) {
+  return unstable_cache(
+    fetchActors,
+    ['actors-list-v1', gender, ageGroup, tag],
+    { revalidate: 120, tags: ['actors'] }
+  )(gender, ageGroup, tag)
+}
 
 // 사진 URL은 lib/actor-photo의 getActorPhotoUrl 사용 (Storage 우선, Drive 폴백)
 
@@ -137,7 +149,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
 
   const [{ data: { user } }, { actors, dbError, allTags }] = await Promise.all([
     supabase.auth.getUser(),
-    fetchActorsCached(gender, ageGroup, tag),
+    getActorsCached(gender, ageGroup, tag),
   ])
   let role: UserRole | null = null
   if (user) {

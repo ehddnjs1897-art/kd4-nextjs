@@ -22,8 +22,11 @@ export async function GET(request: NextRequest) {
 
     const gender = searchParams.get('gender')
     const ageGroup = searchParams.get('ageGroup')
-    const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10))
-    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') ?? '20', 10)))
+    // parseInt → NaN 방어: Math.max/min(NaN) = NaN → .range(NaN,NaN) → DB 500 방지
+    const rawPage = parseInt(searchParams.get('page') ?? '1', 10)
+    const rawLimit = parseInt(searchParams.get('limit') ?? '20', 10)
+    const page = Math.max(1, Number.isFinite(rawPage) ? rawPage : 1)
+    const limit = Math.min(100, Math.max(1, Number.isFinite(rawLimit) ? rawLimit : 20))
     const offset = (page - 1) * limit
 
     // 로그인 여부 + 역할 확인 (director/admin만 연락처 열람 가능)

@@ -49,7 +49,13 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     if (!isAllowed) return NextResponse.json({ error: '권한 없음' }, { status: 403 })
 
     // ── 본문 파싱 ────────────────────────────────────────
-    const { items } = await request.json() as { items: FilmItem[] }
+    let parsed: { items: FilmItem[] }
+    try {
+      parsed = await request.json()
+    } catch {
+      return NextResponse.json({ error: '잘못된 JSON 형식입니다.' }, { status: 400 })
+    }
+    const { items } = parsed
     if (!Array.isArray(items)) {
       return NextResponse.json({ error: 'items 배열이 필요합니다.' }, { status: 400 })
     }

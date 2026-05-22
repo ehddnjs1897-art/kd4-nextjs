@@ -56,7 +56,11 @@ export async function generateMetadata({ params }: { params: Params }) {
     .select('title')
     .eq('id', id)
     .single()
-  return { title: data?.title ? `${data.title} — KD4 커뮤니티` : 'KD4 커뮤니티' }
+  return {
+    title: data?.title ? `${data.title} — KD4 커뮤니티` : 'KD4 커뮤니티',
+    robots: { index: false, follow: false },
+    alternates: { canonical: `https://kd4.club/board/${id}` },
+  }
 }
 
 export default async function PostDetailPage({ params }: { params: Params }) {
