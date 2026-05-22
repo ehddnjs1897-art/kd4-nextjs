@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 import LogoutButton from '@/components/layout/LogoutButton'
 import CrewRequestButton from '@/components/dashboard/CrewRequestButton'
 import DirectorRequestButton from '@/components/dashboard/DirectorRequestButton'
@@ -48,6 +49,14 @@ export default async function DashboardPage() {
   const role: UserRole = (profile?.role as UserRole) || 'user'
   const createdAt = profile?.created_at || user.created_at
   const actorId: string | null = profile?.actor_id ?? null
+
+  // actor_id가 있어도 실제 DB row가 없으면 404 → 미리 확인
+  let actorExists = false
+  if (actorId) {
+    const { data: actorCheck } = await supabaseAdmin
+      .from('actors').select('id').eq('id', actorId).maybeSingle()
+    actorExists = !!actorCheck
+  }
 
   const isAdmin = role === 'admin'
   const isActorMember = role === 'member' || role === 'actor' || isAdmin
@@ -128,21 +137,29 @@ export default async function DashboardPage() {
           <section style={{ ...card, borderColor: 'rgba(21,72,138,0.2)', background: 'rgba(21,72,138,0.03)' }}>
             <h2 style={sectionTitle}>내 배우 프로필</h2>
             {actorId ? (
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                <Link href={`/actors/${actorId}`} style={tileBtn}>
-                  <span style={tileIcon}>👤</span>
-                  <span>배우 페이지 보기</span>
-                </Link>
-                <Link href="/onboarding" style={tileBtn}>
-                  <span style={tileIcon}>📂</span>
-                  <span>자료 업로드</span>
-                </Link>
-                {canEdit && (
-                  <Link href="/dashboard/edit" style={{ ...tileBtn, gridColumn: '1 / -1' }}>
-                    <span style={tileIcon}>✏️</span>
-                    <span>배우 DB 수정하기</span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {/* 배우 페이지 링크 — actor row 존재 확인 후 표시 */}
+                {actorExists ? (
+                  <Link href={`/actors/${actorId}`} style={primaryBtn}>
+                    내 배우 페이지 보기 →
                   </Link>
+                ) : (
+                  <p style={{ fontSize: '0.8rem', color: 'var(--gray)', padding: '8px 0' }}>
+                    ⏳ 프로필 검토 준비 중 — 자료를 등록하면 관리자 검토 후 공개됩니다.
+                  </p>
                 )}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                  {canEdit && (
+                    <Link href="/dashboard/edit" style={tileBtn}>
+                      <span style={tileIcon}>✏️</span>
+                      <span>프로필 편집</span>
+                    </Link>
+                  )}
+                  <Link href="/onboarding" style={tileBtn}>
+                    <span style={tileIcon}>📂</span>
+                    <span>이력서·영상 등록</span>
+                  </Link>
+                </div>
               </div>
             ) : (
               <div>
