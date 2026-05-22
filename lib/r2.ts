@@ -97,12 +97,20 @@ export async function getUploadUrl(
  */
 export async function getVideoSignedUrl(
   key: string,
-  expiresInSec = 86400
+  expiresInSec = 86400,
+  downloadFilename?: string
 ): Promise<string> {
   const c = getClient()
   return getSignedUrl(
     c,
-    new GetObjectCommand({ Bucket: BUCKET_NAME, Key: key }),
+    new GetObjectCommand({
+      Bucket: BUCKET_NAME,
+      Key: key,
+      // downloadFilename 지정 시 브라우저가 "다운로드"로 처리 (스트리밍 대신)
+      ...(downloadFilename
+        ? { ResponseContentDisposition: `attachment; filename*=UTF-8''${encodeURIComponent(downloadFilename)}` }
+        : {}),
+    }),
     { expiresIn: expiresInSec }
   )
 }

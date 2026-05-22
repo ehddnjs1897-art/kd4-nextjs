@@ -57,7 +57,7 @@ export async function GET(
   // 영상 row 조회
   const { data: video, error } = await supabaseAdmin
     .from('actor_videos')
-    .select('id, r2_key, actor_id')
+    .select('id, r2_key, actor_id, title')
     .eq('id', id)
     .single()
 
@@ -80,8 +80,21 @@ export async function GET(
     )
   }
 
+  // 다운로드는 디렉터/관리자만 (정책)
+  const download = url.searchParams.get('download') === '1'
+  if (download && !(role === 'director' || role === 'admin')) {
+    return NextResponse.json(
+      { error: '영상 다운로드는 디렉터/관리자만 가능합니다.' },
+      { status: 403 }
+    )
+  }
+
   try {
-    const signedUrl = await getVideoSignedUrl(video.r2_key, expirySec)
+    const ext = video.r2_key.split('.').pop() || 'mp4'
+    const filename = download
+      ? `${(video.title || 'video').replace(/[\\/:*?"<>|]/g, '_')}.${ext}`
+      : undefined
+    const signedUrl = await getVideoSignedUrl(video.r2_key, expirySec, filename)
     const expiresAt = new Date(Date.now() + expirySec * 1000).toISOString()
     return NextResponse.json({ url: signedUrl, expiresAt })
   } catch (err) {

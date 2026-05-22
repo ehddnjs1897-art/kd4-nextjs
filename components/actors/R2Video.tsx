@@ -13,10 +13,12 @@ export default function R2Video({
   videoId,
   title,
   poster,
+  allowDownload,
 }: {
   videoId: string
   title?: string | null
   poster?: string | null
+  allowDownload?: boolean
 }) {
   const [url, setUrl] = useState<string | null>(null)
   const [playing, setPlaying] = useState(false)
@@ -40,6 +42,25 @@ export default function R2Video({
     if (!url) return
     setPlaying(true)
     setTimeout(() => videoRef.current?.play(), 50)
+  }
+
+  async function downloadVideo() {
+    try {
+      const res = await fetch(`/api/videos/${videoId}/signed-url?download=1`)
+      const j = await res.json()
+      if (!res.ok || !j.url) {
+        alert(j.error || '다운로드 링크 발급에 실패했습니다.')
+        return
+      }
+      const a = document.createElement('a')
+      a.href = j.url
+      a.rel = 'noopener'
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+    } catch {
+      alert('다운로드 중 오류가 발생했습니다.')
+    }
   }
 
   return (
@@ -98,6 +119,11 @@ export default function R2Video({
         )}
       </div>
       {title && <p style={s.title}>{title}</p>}
+      {allowDownload && (
+        <button type="button" onClick={downloadVideo} style={s.dlBtn}>
+          ⤓ 영상 다운로드
+        </button>
+      )}
     </div>
   )
 }
@@ -145,4 +171,16 @@ const s: Record<string, React.CSSProperties> = {
     animation: 'spin 0.8s linear infinite',
   },
   title: { fontSize: '0.85rem', color: 'var(--gray)' },
+  dlBtn: {
+    alignSelf: 'flex-start',
+    padding: '6px 14px',
+    fontSize: '0.78rem',
+    color: 'var(--gold)',
+    background: 'rgba(196,165,90,0.06)',
+    border: '1px solid rgba(196,165,90,0.3)',
+    borderRadius: 4,
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    letterSpacing: '0.03em',
+  },
 }
