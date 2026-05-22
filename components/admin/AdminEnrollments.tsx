@@ -24,6 +24,7 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
   const [items, setItems] = useState<Enrollment[]>(enrollments)
   const [month, setMonth] = useState<string>('all')
   const [busy, setBusy] = useState<string>('')
+  const [editingStatusId, setEditingStatusId] = useState<string | null>(null)
   const [toastMsg, setToastMsg] = useState('')
 
   function showToast(msg: string) {
@@ -39,6 +40,26 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
   const paidRevenue = filtered
     .filter((e) => e.payment_status === '결제완료' && e.status !== '취소')
     .reduce((s, e) => s + e.amount, 0)
+
+  async function setStatus(id: string, newStatus: string) {
+    setEditingStatusId(null)
+    setBusy(id)
+    try {
+      const res = await fetch(`/api/enrollments/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      })
+      if (res.ok) {
+        setItems((prev) => prev.map((e) => (e.id === id ? { ...e, status: newStatus } : e)))
+      } else {
+        showToast('수강 상태 변경에 실패했습니다.')
+      }
+    } catch {
+      showToast('네트워크 오류가 발생했습니다.')
+    }
+    setBusy('')
+  }
 
   async function togglePay(id: string, current: string) {
     const next = current === '결제완료' ? '결제대기' : '결제완료'
@@ -107,9 +128,38 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
                   <div style={{ fontSize: '0.9rem', fontWeight: 700 }}>{e.name || '(이름없음)'} · {e.class_name}</div>
                   <div style={{ fontSize: '0.76rem', color: '#9a938b' }}>{e.phone || '-'} · {e.amount.toLocaleString()}원</div>
                 </div>
-                <span style={{ fontSize: '0.74rem', fontWeight: 700, color: e.status === '확정' ? '#2d8a56' : e.status === '취소' ? '#c0392b' : '#9a938b' }}>
-                  {e.status}
-                </span>
+                {editingStatusId === e.id ? (
+                  <div style={{ display: 'flex', gap: 4 }}>
+                    {(['확정', '휴강', '취소'] as const).map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => setStatus(e.id, s)}
+                        disabled={busy === e.id}
+                        style={{
+                          padding: '3px 8px', borderRadius: 4, border: 'none',
+                          fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer',
+                          fontFamily: 'inherit',
+                          background: s === '확정' ? '#2d8a56' : s === '취소' ? '#c0392b' : '#9a938b',
+                          color: '#fff', opacity: e.status === s ? 1 : 0.55,
+                        }}
+                      >{s}</button>
+                    ))}
+                    <button onClick={() => setEditingStatusId(null)} style={{ padding: '3px 6px', borderRadius: 4, border: '1px solid #e4ddd3', background: '#fff', fontSize: '0.72rem', cursor: 'pointer', fontFamily: 'inherit' }}>✕</button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setEditingStatusId(e.id)}
+                    disabled={busy === e.id}
+                    style={{
+                      background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                      fontSize: '0.74rem', fontWeight: 700,
+                      color: e.status === '확정' ? '#2d8a56' : e.status === '취소' ? '#c0392b' : '#9a938b',
+                    }}
+                    title="클릭해서 상태 변경"
+                  >
+                    {e.status} ▾
+                  </button>
+                )}
                 <button
                   onClick={() => togglePay(e.id, e.payment_status)}
                   disabled={busy === e.id}
