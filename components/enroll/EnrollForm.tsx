@@ -26,7 +26,7 @@ const BRANDING_SERVICES: ClassOption[] = [
     nameEn: 'Profile Tour Service (Replay)',
     step: '서비스',
     price: '30,000',
-    course: null,
+    course: 'VAT 별도 · VAT 포함 33,000원',
     capacity: '-',
     schedule: '40장 기준',
     duration: '캐스팅 에이전시 배포',
