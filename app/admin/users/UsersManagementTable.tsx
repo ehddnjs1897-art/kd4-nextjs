@@ -21,6 +21,12 @@ const ROLE_CYCLE: Record<string, string> = {
   crew: 'editor',
   editor: 'admin',
   admin: 'user',
+  // 배우 멤버: crew로 순환 (크루 기능 추가)
+  member: 'crew',
+  actor: 'crew',
+  // 디렉터: pending → 승인, director → 일반 user로 revoke
+  director_pending: 'director',
+  director: 'user',
 }
 
 const ROLE_LABEL: Record<string, string> = {

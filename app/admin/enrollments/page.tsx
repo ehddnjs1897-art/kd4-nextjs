@@ -12,18 +12,17 @@ export default async function AdminEnrollmentsPage() {
   } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single()
-  if (!profile || profile.role !== 'admin') redirect('/')
+  // 권한 확인 + 데이터 병렬 조회
+  const [{ data: profile }, { data }] = await Promise.all([
+    supabase.from('profiles').select('role').eq('id', user.id).single(),
+    supabaseAdmin
+      .from('enrollments')
+      .select('id, name, phone, class_name, year_month, amount, status, payment_status, created_at')
+      .order('year_month', { ascending: false })
+      .order('created_at', { ascending: false }),
+  ])
 
-  const { data } = await supabaseAdmin
-    .from('enrollments')
-    .select('id, name, phone, class_name, year_month, amount, status, payment_status, created_at')
-    .order('year_month', { ascending: false })
-    .order('created_at', { ascending: false })
+  if (!profile || profile.role !== 'admin') redirect('/')
 
   return <AdminEnrollments enrollments={data ?? []} />
 }

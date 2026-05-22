@@ -24,6 +24,12 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
   const [items, setItems] = useState<Enrollment[]>(enrollments)
   const [month, setMonth] = useState<string>('all')
   const [busy, setBusy] = useState<string>('')
+  const [toastMsg, setToastMsg] = useState('')
+
+  function showToast(msg: string) {
+    setToastMsg(msg)
+    setTimeout(() => setToastMsg(''), 4000)
+  }
 
   const months = Array.from(new Set(items.map((e) => e.year_month))).sort().reverse()
   const filtered = month === 'all' ? items : items.filter((e) => e.year_month === month)
@@ -45,9 +51,11 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
       })
       if (res.ok) {
         setItems((prev) => prev.map((e) => (e.id === id ? { ...e, payment_status: next } : e)))
+      } else {
+        showToast('결제 상태 변경에 실패했습니다.')
       }
     } catch {
-      /* noop */
+      showToast('네트워크 오류가 발생했습니다.')
     }
     setBusy('')
   }
@@ -59,6 +67,11 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
           <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.5rem', fontWeight: 800 }}>수강 현황</h1>
           <Link href="/admin" style={{ fontSize: '0.85rem', color: '#15488a', textDecoration: 'underline' }}>← 관리자 홈</Link>
         </div>
+        {toastMsg && (
+          <p style={{ fontSize: '0.82rem', color: '#c0392b', background: 'rgba(192,57,43,0.08)', border: '1px solid rgba(192,57,43,0.2)', borderRadius: 6, padding: '8px 12px', marginBottom: 16 }}>
+            {toastMsg}
+          </p>
+        )}
 
         {/* 월 필터 */}
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
