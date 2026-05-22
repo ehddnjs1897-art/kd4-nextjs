@@ -77,10 +77,13 @@ const INCLUDES = [
 ]
 
 const PORTFOLIO_VIDEOS = [
+  { id: 's_AE-Vy0Ka0', title: '출연영상 대표 샘플' },
   { id: '7Q62XeyVLbc', title: '출연영상 샘플 1' },
   { id: 'IWL6hlOrU-w', title: '출연영상 샘플 2' },
   { id: 'PUlrhjOkvjA', title: '출연영상 샘플 3' },
 ]
+
+const PORTFOLIO_PLAYLIST = 'https://www.youtube.com/playlist?list=PLMbZlnkLfP7iaE41p_g9dzGKp5eU9VZk2'
 
 export default function ReelPage() {
   return (
@@ -98,9 +101,10 @@ export default function ReelPage() {
       />
 
       {/* HERO */}
-      <section style={{ padding: 'clamp(72px, 12vw, 110px) 24px clamp(48px, 9vw, 80px)', background: 'var(--navy)', color: '#fff', textAlign: 'center' }}>
-        <div className="container">
-          <p className="section-eyebrow" style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '16px' }}>
+      <section style={{ padding: 'clamp(72px, 12vw, 110px) 24px clamp(48px, 9vw, 80px)', background: 'linear-gradient(160deg, var(--navy-deep) 0%, var(--navy) 60%, #133f78 100%)', color: '#fff', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+        <div aria-hidden style={{ position: 'absolute', bottom: '-100px', left: '-60px', width: '320px', height: '320px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(199,62,62,0.2), transparent 70%)' }} />
+        <div className="container" style={{ position: 'relative' }}>
+          <p className="section-eyebrow" style={{ color: '#F0A8A8', marginBottom: '16px' }}>
             STEP 01 · REEL PRODUCTION
           </p>
           <h1 className="section-title-serif" style={{ color: '#fff', fontSize: 'clamp(1.7rem, 4.5vw, 2.8rem)', lineHeight: 1.35, marginBottom: '16px', maxWidth: '720px', margin: '0 auto 16px', wordBreak: 'keep-all' }}>
@@ -159,6 +163,11 @@ export default function ReelPage() {
               </div>
             ))}
           </div>
+          <div style={{ textAlign: 'center', marginTop: '28px' }}>
+            <a href={PORTFOLIO_PLAYLIST} target="_blank" rel="noopener noreferrer" className="btn-primary">
+              포트폴리오 더보기 (유튜브 재생목록) →
+            </a>
+          </div>
         </div>
       </section>
 
@@ -207,7 +216,7 @@ export default function ReelPage() {
                 { label: '시간', value: FILM_CLASS.duration },
                 { label: '정원', value: FILM_CLASS.capacity },
                 { label: '코스', value: FILM_CLASS.course ?? '3개월' },
-                { label: '월 수강료', value: `₩${FILM_CLASS.price}` },
+                { label: '월 수강료', value: `₩${FILM_CLASS.originalPrice ?? FILM_CLASS.price}` },
               ].map((info) => (
                 <div key={info.label}>
                   <span style={{ fontSize: '0.7rem', color: 'var(--gray)', display: 'block' }}>{info.label}</span>

@@ -160,7 +160,7 @@ export default function MeisnerPage() {
                 { label: '시간', value: MAIN_CLASS.duration },
                 { label: '정원', value: MAIN_CLASS.capacity },
                 { label: '코스', value: MAIN_CLASS.course ?? '4개월' },
-                { label: '월 수강료', value: `₩${MAIN_CLASS.price}` },
+                { label: '월 수강료', value: `₩${MAIN_CLASS.originalPrice ?? MAIN_CLASS.price}` },
               ].map((info) => (
                 <div key={info.label}>
                   <span style={{ fontSize: '0.7rem', color: 'var(--gray)', display: 'block' }}>{info.label}</span>

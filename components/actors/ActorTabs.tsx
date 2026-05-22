@@ -66,6 +66,7 @@ const CATEGORY_LABEL: Record<FilmoCategory, string> = {
 
 const FILM_TYPE_STYLE: Record<string, React.CSSProperties> = {
   '상업': { background: 'rgba(21,72,138,0.08)', color: 'var(--navy)', border: '1px solid rgba(21,72,138,0.2)' },
+  '상업영화': { background: 'rgba(21,72,138,0.08)', color: 'var(--navy)', border: '1px solid rgba(21,72,138,0.2)' },
   '독립장편': { background: 'rgba(80,80,80,0.08)', color: 'var(--gray-light)', border: '1px solid var(--border)' },
   '단편': { background: 'rgba(80,80,80,0.06)', color: 'var(--gray)', border: '1px solid var(--border)' },
 }

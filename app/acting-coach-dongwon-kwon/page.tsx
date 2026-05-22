@@ -14,33 +14,45 @@ const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
 const SITE_URL = 'https://kd4.club'
 const PAGE_URL = `${SITE_URL}/acting-coach-dongwon-kwon`
 
-const MAIN_CLASS = CLASSES.find((c) => c.nameKo === '마이즈너 테크닉 정규 클래스')!
+// 권동원 직강 클래스 (오디션 테크닉·움직임·베이직 제외 — 전부 대표 직강)
+const COACH_CLASS_NAMES = [
+  '마이즈너 테크닉 정규 클래스',
+  '출연영상 클래스',
+  '출연영상 심화 클래스',
+  '출연영상 1달 완성 클래스',
+  '액터스 리더 클래스',
+  '개인 레슨',
+]
+const COACH_CLASSES = COACH_CLASS_NAMES
+  .map((n) => CLASSES.find((c) => c.nameKo === n))
+  .filter((c): c is NonNullable<typeof c> => Boolean(c))
+
+const CLASS_LINK: Record<string, string> = {
+  '마이즈너 테크닉 정규 클래스': '/meisner-technique-class',
+  '출연영상 클래스': '/reel-production-class',
+}
+
+// SEO 랜딩은 정가(첫달 할인 전) 표시
+const priceOf = (c: { price: string; originalPrice?: string }) => c.originalPrice ?? c.price
 
 export const metadata: Metadata = {
-  title: '권동원 — 마이즈너 액팅 코치 · 현역 배우 | KD4 대표',
+  title: '권동원 — 액팅 코치 (리더) · 현역 배우 | KD4 대표',
   description:
-    'KD4 액팅 스튜디오 대표 권동원. 마이즈너 테크닉 액팅 코치, 현역 배우. Disney+ 무빙2·Netflix 중증외상센터 등 출연.',
-  keywords: [
-    '권동원',
-    '권동원 배우',
-    '권동원 KD4',
-    '마이즈너 강사',
-    '액팅 코치',
-    '현역 배우 강사',
-  ],
+    'KD4 액팅 스튜디오 대표 권동원. 마이즈너 테크닉 액팅 코치(리더), 현역 배우. Disney+ 무빙2·Netflix 중증외상센터 등 출연.',
+  keywords: ['권동원', '권동원 배우', '권동원 KD4', '마이즈너 강사', '액팅 코치', '액팅 리더', '현역 배우 강사'],
   alternates: { canonical: PAGE_URL },
   openGraph: {
     type: 'profile',
     url: PAGE_URL,
-    title: '권동원 — 마이즈너 액팅 코치 · 현역 배우 | KD4 대표',
-    description: 'KD4 액팅 스튜디오 대표. 마이즈너 테크닉 정통 코치이자 현역 배우.',
+    title: '권동원 — 액팅 코치 (리더) · 현역 배우 | KD4 대표',
+    description: 'KD4 액팅 스튜디오 대표. 마이즈너 테크닉 정통 코치(리더)이자 현역 배우.',
     images: ['/director.jpg'],
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
   },
   twitter: {
     card: 'summary_large_image',
-    title: '권동원 — KD4 대표 · 마이즈너 액팅 코치',
+    title: '권동원 — KD4 대표 · 액팅 코치 (리더)',
     description: 'Disney+ 무빙2 · Netflix 중증외상센터 출연 중인 현역 배우.',
     images: ['/director.jpg'],
   },
@@ -48,61 +60,97 @@ export const metadata: Metadata = {
 
 export default function CoachPage() {
   return (
-    <div style={{ paddingTop: '80px', background: 'var(--bg)', minHeight: '100vh', color: '#111111' }}>
+    <div style={{ paddingTop: '64px', background: 'var(--bg)', minHeight: '100vh', color: '#111111' }}>
       <PageJsonLd
         schemas={[
           buildBreadcrumb([
             { name: '홈', url: SITE_URL },
-            { name: '강사', url: PAGE_URL },
+            { name: '액팅 코치', url: PAGE_URL },
           ]),
           buildPersonDongwonDetailed(),
           buildFaqPage(COACH_FAQ),
         ]}
       />
 
-      {/* HERO */}
-      <section style={{ padding: 'clamp(72px, 12vw, 110px) 24px clamp(48px, 9vw, 80px)', background: 'var(--navy)' }}>
-        <div className="container coach-hero-grid" style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '32px', alignItems: 'center', maxWidth: '880px', margin: '0 auto' }}>
-          <div className="coach-hero-photo" style={{ position: 'relative', width: '220px', height: '290px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.2)' }}>
-            <Image src={DIRECTOR.photo} alt={`${DIRECTOR.name} 대표`} fill sizes="(max-width: 720px) 200px, 220px" style={{ objectFit: 'cover' }} priority />
-          </div>
-          <div style={{ color: '#fff' }}>
-            <p className="section-eyebrow" style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '12px' }}>THE LEADER</p>
-            <h1 className="section-title-serif" style={{ color: '#fff', fontSize: 'clamp(1.6rem, 4vw, 2.4rem)', lineHeight: 1.35, marginBottom: '12px', wordBreak: 'keep-all' }}>
-              {DIRECTOR.name} — 마이즈너 액팅 코치
+      {/* ===== HERO — 가로 사진 크게 + 네이비 그라데이션 ===== */}
+      <section
+        style={{
+          background: 'linear-gradient(160deg, var(--navy-deep) 0%, var(--navy) 55%, #133f78 100%)',
+          padding: 'clamp(48px, 8vw, 80px) 24px clamp(56px, 9vw, 88px)',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        {/* 데코 글로우 */}
+        <div aria-hidden style={{ position: 'absolute', top: '-120px', right: '-80px', width: '360px', height: '360px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(199,62,62,0.22), transparent 70%)' }} />
+        <div className="container" style={{ maxWidth: '960px', margin: '0 auto', position: 'relative' }}>
+          <div style={{ textAlign: 'center', marginBottom: 'clamp(28px, 5vw, 44px)' }}>
+            <p className="section-eyebrow" style={{ color: '#F0A8A8', marginBottom: '14px', letterSpacing: '0.22em' }}>
+              THE LEADER · KD4
+            </p>
+            <h1
+              className="section-title-serif"
+              style={{ color: '#fff', fontSize: 'clamp(1.9rem, 5vw, 3rem)', lineHeight: 1.3, marginBottom: '16px', wordBreak: 'keep-all' }}
+            >
+              권동원 — 액팅 코치 <span style={{ color: '#F0A8A8' }}>(리더)</span>
             </h1>
-            <p style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.7, marginBottom: '20px', wordBreak: 'keep-all' }}>
+            <p style={{ fontSize: 'clamp(0.95rem, 2.4vw, 1.08rem)', color: 'rgba(255,255,255,0.82)', lineHeight: 1.75, maxWidth: '600px', margin: '0 auto', wordBreak: 'keep-all' }}>
               {DIRECTOR.title}. Disney+ 무빙2, Netflix 중증외상센터 출연 중. LA Meisner Workshop 수료.
             </p>
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-              <JoinCTALink href="#form" location="coach-hero" label="무료 상담 신청" className="btn-primary" style={{ background: '#fff', color: 'var(--navy)' }}>
-                무료 상담 신청
-              </JoinCTALink>
-              <JoinCTALink href="https://pf.kakao.com/_ximxdqn" kind="external" channel="kakao" location="coach-hero" label="카카오 채널 문의" className="btn-outline" style={{ borderColor: 'rgba(255,255,255,0.4)', color: 'rgba(255,255,255,0.95)' }}>
-                카카오 채널 문의
-              </JoinCTALink>
-            </div>
+          </div>
+
+          {/* 가로 대표 사진 — 크게 */}
+          <div
+            style={{
+              position: 'relative',
+              width: '100%',
+              aspectRatio: '3 / 2',
+              borderRadius: '18px',
+              overflow: 'hidden',
+              boxShadow: '0 30px 70px -25px rgba(0,0,0,0.6)',
+              border: '1px solid rgba(255,255,255,0.14)',
+            }}
+          >
+            <Image
+              src={DIRECTOR.photo}
+              alt="권동원 KD4 액팅 코치 (리더)"
+              fill
+              sizes="(max-width: 1000px) 100vw, 960px"
+              style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
+              priority
+            />
+            <div aria-hidden style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(15,51,100,0.45), transparent 45%)' }} />
+          </div>
+
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center', marginTop: 'clamp(24px, 4vw, 36px)' }}>
+            <JoinCTALink href="#form" location="coach-hero" label="무료 상담 신청" className="btn-primary" style={{ background: '#fff', color: 'var(--navy)' }}>
+              무료 상담 신청
+            </JoinCTALink>
+            <JoinCTALink href="https://pf.kakao.com/_ximxdqn" kind="external" channel="kakao" location="coach-hero" label="카카오 채널 문의" className="btn-outline" style={{ borderColor: 'rgba(255,255,255,0.4)', color: 'rgba(255,255,255,0.95)' }}>
+              카카오 채널 문의
+            </JoinCTALink>
           </div>
         </div>
       </section>
 
-      {/* PHILOSOPHY + PROFILE */}
+      {/* ===== PHILOSOPHY ===== */}
       <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container" style={{ maxWidth: '720px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '32px' }}>
             <p className="section-eyebrow">01 — PHILOSOPHY</p>
             <h2 className="section-title-serif" style={{ marginBottom: '16px' }}>가르치는 철학</h2>
+            <div aria-hidden style={{ width: '48px', height: '3px', background: 'var(--accent-red)', borderRadius: '2px', margin: '0 auto' }} />
           </div>
-          <p style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--navy)', fontSize: '1.05rem', lineHeight: 1.75, marginBottom: '24px', textAlign: 'center', wordBreak: 'keep-all' }}>
+          <p style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--navy)', fontSize: '1.12rem', lineHeight: 1.75, marginBottom: '24px', textAlign: 'center', wordBreak: 'keep-all' }}>
             &ldquo;{DIRECTOR.quote}&rdquo;
           </p>
-          <p style={{ fontSize: '0.95rem', color: 'var(--gray-light)', lineHeight: 1.85, wordBreak: 'keep-all' }}>
+          <p style={{ fontSize: '0.96rem', color: 'var(--gray-light)', lineHeight: 1.85, wordBreak: 'keep-all' }}>
             마이즈너 테크닉은 한국에서 아직 깊이 가르쳐지지 않은 미국 정통 액팅 메소드입니다. LA Meisner Workshop과 한국 마이즈너테크닉 아카데미를 모두 수료한 후 한국 배우들에게 맞게 재해석된 커리큘럼으로 운영합니다. 현역 배우로 매년 작품에 출연하며 가르치기 때문에 책의 이론이 아닌 지금 촬영장에서 통하는 감각을 매주 수업에 가져옵니다.
           </p>
         </div>
       </section>
 
-      {/* PROFILE LIST */}
+      {/* ===== PROFILE LIST ===== */}
       <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
@@ -111,8 +159,8 @@ export default function CoachPage() {
           </div>
           <ul style={{ maxWidth: '640px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {DIRECTOR.profileFlat.map((line, i) => (
-              <li key={i} style={{ padding: '12px 16px 12px 40px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '0.92rem', color: '#111', position: 'relative' }}>
-                <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', fontFamily: 'var(--font-display)', fontSize: '0.78rem', color: 'var(--navy)', fontWeight: 700 }}>
+              <li key={i} style={{ padding: '14px 16px 14px 44px', background: 'var(--bg)', border: '1px solid var(--border)', borderLeft: '3px solid var(--navy)', borderRadius: '8px', fontSize: '0.94rem', color: '#111', position: 'relative' }}>
+                <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', fontFamily: 'var(--font-display)', fontSize: '0.78rem', color: 'var(--navy)', fontWeight: 700 }}>
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 {line}
@@ -122,7 +170,7 @@ export default function CoachPage() {
         </div>
       </section>
 
-      {/* FILMOGRAPHY + CREDENTIALS */}
+      {/* ===== FILMOGRAPHY + CREDENTIALS ===== */}
       <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
@@ -155,24 +203,52 @@ export default function CoachPage() {
         </div>
       </section>
 
-      {/* WHICH CLASS */}
-      <section style={{ padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg2)', textAlign: 'center' }}>
-        <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
-          <p className="section-eyebrow">04 — CLASS</p>
-          <h2 className="section-title-serif" style={{ marginBottom: '20px' }}>권동원 대표 직강 클래스</h2>
-          <div style={{ background: 'var(--bg)', border: '1.5px solid var(--navy)', borderRadius: '12px', padding: '24px', textAlign: 'left' }}>
-            <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.1rem', fontWeight: 700, marginBottom: '4px' }}>{MAIN_CLASS.nameKo}</p>
-            <p style={{ fontSize: '0.85rem', color: 'var(--gray-light)', marginBottom: '12px' }}>
-              4개월 코스 · 정원 8명 · 회당 4시간 · 월 ₩{MAIN_CLASS.price}
+      {/* ===== DIRECT CLASSES — 권동원 직강 클래스 전체 ===== */}
+      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--navy)', color: '#fff' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 36px', textAlign: 'center' }}>
+            <p className="section-eyebrow" style={{ color: '#F0A8A8' }}>04 — CLASSES</p>
+            <h2 className="section-title-serif" style={{ color: '#fff', marginBottom: '12px' }}>권동원 리더 직강 클래스</h2>
+            <p style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.78)', lineHeight: 1.7, wordBreak: 'keep-all' }}>
+              오디션 테크닉·움직임 클래스를 제외한 모든 정규 트랙을 권동원 리더가 직접 지도합니다.
             </p>
-            <Link href="/meisner-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', fontWeight: 600 }}>
-              클래스 상세 페이지 보기 →
-            </Link>
           </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '14px', maxWidth: '1040px', margin: '0 auto' }}>
+            {COACH_CLASSES.map((c) => {
+              const href = CLASS_LINK[c.nameKo]
+              const inner = (
+                <>
+                  <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.68rem', letterSpacing: '0.14em', color: '#fff', background: 'rgba(255,255,255,0.14)', borderRadius: '4px', padding: '3px 8px', alignSelf: 'flex-start' }}>
+                    {c.step}
+                  </span>
+                  <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.08rem', fontWeight: 700, marginTop: '12px', marginBottom: '6px', color: '#fff' }}>{c.nameKo}</p>
+                  <p style={{ fontSize: '0.86rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, marginBottom: '14px', wordBreak: 'keep-all' }}>{c.quote}</p>
+                  <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '8px' }}>
+                    <span style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.55)' }}>{c.course ?? c.schedule}</span>
+                    <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.05rem', fontWeight: 700, color: '#fff' }}>월 ₩{priceOf(c)}</span>
+                  </div>
+                  {href && (
+                    <span style={{ fontSize: '0.82rem', color: '#F0A8A8', fontWeight: 600, marginTop: '12px' }}>상세 보기 →</span>
+                  )}
+                </>
+              )
+              const cardStyle: React.CSSProperties = {
+                display: 'flex', flexDirection: 'column', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.14)', borderRadius: '14px', padding: '22px', textDecoration: 'none', minHeight: '180px',
+              }
+              return href ? (
+                <Link key={c.nameKo} href={href} style={cardStyle}>{inner}</Link>
+              ) : (
+                <div key={c.nameKo} style={cardStyle}>{inner}</div>
+              )
+            })}
+          </div>
+          <p style={{ textAlign: 'center', fontSize: '0.82rem', color: 'rgba(255,255,255,0.5)', marginTop: '20px' }}>
+            * 표기 금액은 정가(월 수강료) 기준입니다.
+          </p>
         </div>
       </section>
 
-      {/* FAQ */}
+      {/* ===== FAQ ===== */}
       <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
@@ -183,14 +259,14 @@ export default function CoachPage() {
         </div>
       </section>
 
-      {/* FORM */}
+      {/* ===== FORM ===== */}
       <section id="form" style={{ padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '520px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
               <p className="section-eyebrow">무료 상담 신청</p>
               <h2 className="section-title-serif" style={{ fontSize: 'clamp(1.4rem, 3.6vw, 1.9rem)', marginBottom: '8px' }}>
-                권동원 대표 직강 상담
+                권동원 리더 직강 상담
               </h2>
               <p style={{ fontSize: '0.88rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
                 이름·연락처만 남기시면 24시간 이내 SMS로 연락드립니다.
@@ -200,20 +276,6 @@ export default function CoachPage() {
           </div>
         </div>
       </section>
-
-      <style>{`
-        @media (max-width: 720px) {
-          .coach-hero-grid {
-            grid-template-columns: 1fr !important;
-            text-align: center;
-            justify-items: center;
-          }
-          .coach-hero-photo {
-            width: 180px !important;
-            height: 240px !important;
-          }
-        }
-      `}</style>
     </div>
   )
 }
