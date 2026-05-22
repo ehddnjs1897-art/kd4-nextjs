@@ -4,11 +4,13 @@
  * 카카오톡·페이스북·트위터에서 https://kd4.club/actors/{id} 링크 공유 시
  * 이 라우트가 1200×630 PNG 캐스팅 카드를 생성해 미리보기로 표시.
  *
+ * 레이아웃: 풀배경 사진 + 다크 그라디언트 오버레이 + 하단 텍스트
+ * → 가로(16:9) 사진에 최적화, 세로 사진도 cover로 표시됨
+ *
  * 사용:
  *   <meta property="og:image" content="https://kd4.club/api/og/actor/{id}" />
  *
- * 캐싱: Vercel Edge CDN 24시간 (배우 데이터 변경 시 자동 무효화 안 됨 —
- *      필요 시 ?v={timestamp} 쿼리로 강제 무효화)
+ * 캐싱: Vercel Edge CDN 24시간
  */
 
 import { ImageResponse } from 'next/og'
@@ -54,7 +56,7 @@ function getPhotoUrl(actor: ActorOg): string | null {
     return `${SUPABASE_URL}/storage/v1/object/public/actor-photos/${actor.storage_photo_path}`
   }
   if (actor.drive_photo_id) {
-    return `https://drive.google.com/thumbnail?id=${actor.drive_photo_id}&sz=w900`
+    return `https://drive.google.com/thumbnail?id=${actor.drive_photo_id}&sz=w1200`
   }
   return null
 }
@@ -76,10 +78,11 @@ export async function GET(
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: '#F0F0E8',
+            background: '#0A0A0A',
             fontSize: 60,
-            color: '#15488A',
+            color: '#C9A84C',
             fontFamily: 'sans-serif',
+            letterSpacing: '0.2em',
           }}
         >
           KD4 ACTING STUDIO
@@ -104,121 +107,91 @@ export async function GET(
           width: '100%',
           height: '100%',
           display: 'flex',
-          background: '#F0F0E8',
+          position: 'relative',
+          background: '#0A0A0A',
           fontFamily: 'sans-serif',
+          overflow: 'hidden',
         }}
       >
-        {/* 좌측: 배우 사진 (정사각 480) */}
-        <div
-          style={{
-            width: 480,
-            height: 630,
-            background: '#E8E8DF',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-            position: 'relative',
-            overflow: 'hidden',
-          }}
-        >
-          {photoUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={photoUrl}
-              alt={actor.name}
-              width={480}
-              height={630}
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                objectPosition: 'center top',
-              }}
-            />
-          ) : (
-            <div style={{ fontSize: 80, color: '#B8B8AC' }}>📷</div>
-          )}
-        </div>
+        {/* 풀배경 사진 */}
+        {photoUrl && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={photoUrl}
+            alt={actor.name}
+            width={1200}
+            height={630}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center top',
+            }}
+          />
+        )}
 
-        {/* 우측: 텍스트 영역 */}
+        {/* 다크 그라디언트 오버레이 (하단 강조) */}
         <div
           style={{
-            flex: 1,
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background:
+              'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0.15) 100%)',
+            display: 'flex',
+          }}
+        />
+
+        {/* 콘텐츠 레이어 */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
             display: 'flex',
             flexDirection: 'column',
-            padding: '64px 56px 48px',
             justifyContent: 'space-between',
-            background: '#F0F0E8',
+            padding: '44px 60px 48px',
           }}
         >
-          {/* 상단: KD4 로고 영역 + 캐스팅 라벨 */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <div
-              style={{
-                display: 'flex',
-                fontSize: 18,
-                letterSpacing: '0.3em',
-                color: '#15488A',
-                fontWeight: 700,
-                textTransform: 'uppercase',
-              }}
-            >
-              KD4 ACTING STUDIO
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                width: 60,
-                height: 2,
-                background: '#15488A',
-                marginTop: 8,
-              }}
-            />
+          {/* 상단: KD4 레이블 */}
+          <div
+            style={{
+              display: 'flex',
+              fontSize: 17,
+              letterSpacing: '0.35em',
+              color: 'rgba(201,168,76,0.9)',
+              fontWeight: 600,
+              textTransform: 'uppercase',
+            }}
+          >
+            KD4 ACTING STUDIO
           </div>
 
-          {/* 중앙: 이름·서브라인·태그·요약 */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            <div
-              style={{
-                display: 'flex',
-                fontSize: 88,
-                fontWeight: 800,
-                color: '#111111',
-                lineHeight: 1.1,
-                letterSpacing: '-0.01em',
-              }}
-            >
-              {actor.name}
-            </div>
-            {subline && (
-              <div
-                style={{
-                  display: 'flex',
-                  fontSize: 24,
-                  color: '#4A4A4A',
-                  fontWeight: 500,
-                }}
-              >
-                {subline}
-              </div>
-            )}
-
+          {/* 하단: 이름 · 서브라인 · 태그 */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {/* 캐스팅 태그 */}
             {tags.length > 0 && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 4 }}>
                 {tags.map((t) => (
                   <div
                     key={t}
                     style={{
                       display: 'flex',
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: 700,
-                      color: '#15488A',
-                      background: 'rgba(21,72,138,0.1)',
-                      border: '1px solid rgba(21,72,138,0.3)',
+                      color: '#C9A84C',
+                      background: 'rgba(201,168,76,0.15)',
+                      border: '1px solid rgba(201,168,76,0.5)',
                       borderRadius: 4,
-                      padding: '6px 14px',
+                      padding: '4px 12px',
                     }}
                   >
                     {t}
@@ -227,35 +200,46 @@ export async function GET(
               </div>
             )}
 
-            {/* 캐스팅 요약 */}
-            {actor.casting_summary && (
+            {/* 배우 이름 */}
+            <div
+              style={{
+                display: 'flex',
+                fontSize: 96,
+                fontWeight: 800,
+                color: '#FFFFFF',
+                lineHeight: 1.0,
+                letterSpacing: '-0.01em',
+              }}
+            >
+              {actor.name}
+            </div>
+
+            {/* 서브라인 + 도메인 */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginTop: 4 }}>
+              {subline && (
+                <div
+                  style={{
+                    display: 'flex',
+                    fontSize: 22,
+                    color: 'rgba(255,255,255,0.75)',
+                    fontWeight: 500,
+                  }}
+                >
+                  {subline}
+                </div>
+              )}
               <div
                 style={{
                   display: 'flex',
-                  fontSize: 22,
-                  color: '#15488A',
-                  fontWeight: 600,
-                  lineHeight: 1.5,
-                  marginTop: 16,
-                  paddingLeft: 14,
-                  borderLeft: '3px solid #15488A',
+                  fontSize: 16,
+                  color: 'rgba(255,255,255,0.35)',
+                  letterSpacing: '0.05em',
+                  marginLeft: 'auto',
                 }}
               >
-                {actor.casting_summary}
+                kd4.club / actors
               </div>
-            )}
-          </div>
-
-          {/* 하단: kd4.club */}
-          <div
-            style={{
-              display: 'flex',
-              fontSize: 18,
-              color: '#6B6660',
-              letterSpacing: '0.05em',
-            }}
-          >
-            kd4.club / actors
+            </div>
           </div>
         </div>
       </div>

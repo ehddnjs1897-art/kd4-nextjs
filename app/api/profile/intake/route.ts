@@ -14,7 +14,8 @@
  *  {
  *    docPath?: string,                       // actor-docs 버킷 경로 (PPT/PDF)
  *    photos?: { path: string }[],            // actor-photos 버킷 경로들
- *    video?: { key: string, size?: number, filename?: string }  // R2 key
+ *    video?: { key: string, size?: number, filename?: string },  // R2 key
+ *    ogPhotoPath?: string                    // 가로사진 경로 → actors.profile_photo (카카오톡 썸네일)
  *  }
  */
 import { NextRequest, NextResponse } from 'next/server'
@@ -52,6 +53,7 @@ export async function POST(request: NextRequest) {
           filename: typeof body.video.filename === 'string' ? body.video.filename : null,
         }
       : null
+  const ogPhotoPath: string | null = typeof body?.ogPhotoPath === 'string' ? body.ogPhotoPath : null
 
   if (!docPath && photos.length === 0 && !video) {
     return NextResponse.json({ error: '제출할 파일이 없습니다.' }, { status: 400 })
@@ -97,9 +99,10 @@ export async function POST(request: NextRequest) {
     await supabaseAdmin.from('profiles').update({ actor_id: actorId }).eq('id', user.id)
   }
 
-  // 2. PPT(문서) 경로 + 제출 시점 기록
+  // 2. PPT(문서) 경로 + 제출 시점 + 가로사진(OG 썸네일) 기록
   const actorPatch: Record<string, unknown> = { intake_submitted_at: nowIso }
   if (docPath) actorPatch.profile_doc_path = docPath
+  if (ogPhotoPath) actorPatch.profile_photo = photoPublicUrl(ogPhotoPath)
   await supabaseAdmin.from('actors').update(actorPatch).eq('id', actorId)
 
   // 3. 사진 rows — 기존 sort_order 다음부터 append

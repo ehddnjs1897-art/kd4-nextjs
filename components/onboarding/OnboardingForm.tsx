@@ -23,12 +23,24 @@ export default function OnboardingForm({
   const router = useRouter()
   const [ppt, setPpt] = useState<File | null>(null)
   const [photos, setPhotos] = useState<File[]>([])
+  const [landscapeIdx, setLandscapeIdx] = useState<number>(-1) // 가로사진 index
   const [video, setVideo] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
 
-  function pickPhotos(list: FileList | null) {
+  // 이미지 파일의 가로/세로 비율 체크
+  function checkLandscape(file: File): Promise<boolean> {
+    return new Promise((resolve) => {
+      const img = new window.Image()
+      const url = URL.createObjectURL(file)
+      img.onload = () => { URL.revokeObjectURL(url); resolve(img.naturalWidth > img.naturalHeight) }
+      img.onerror = () => { URL.revokeObjectURL(url); resolve(false) }
+      img.src = url
+    })
+  }
+
+  async function pickPhotos(list: FileList | null) {
     if (!list) return
     const arr = Array.from(list).slice(0, 3)
     for (const f of arr) {
@@ -37,6 +49,14 @@ export default function OnboardingForm({
         return
       }
     }
+    // 가로사진 최소 1장 체크
+    const checks = await Promise.all(arr.map(checkLandscape))
+    const idx = checks.findIndex(Boolean)
+    if (arr.length > 0 && idx === -1) {
+      setError('사진 중 최소 1장은 가로(16:9, 4:3 등) 형식으로 올려주세요. 카카오톡 공유 썸네일로 사용됩니다.')
+      return
+    }
+    setLandscapeIdx(idx)
     setError('')
     setPhotos(arr)
   }
@@ -126,10 +146,14 @@ export default function OnboardingForm({
       }
 
       setStatus('등록 마무리 중...')
+      // 가로사진이 있으면 ogPhotoPath로 전달 (카카오톡 썸네일)
+      const ogPhotoPath = landscapeIdx >= 0 && photoPaths[landscapeIdx]
+        ? photoPaths[landscapeIdx].path
+        : undefined
       const res = await fetch('/api/profile/intake', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ docPath, photos: photoPaths, video: videoMeta }),
+        body: JSON.stringify({ docPath, photos: photoPaths, video: videoMeta, ogPhotoPath }),
       })
       const j = await res.json()
       if (!res.ok) throw new Error(j.error || '등록에 실패했습니다.')
