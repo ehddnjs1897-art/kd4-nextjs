@@ -165,6 +165,7 @@ export default function SinchonPage() {
 
       {/* ===== 오시는 길 약도 ===== */}
       <section style={{ padding: 'clamp(48px, 8vw, 72px) 0', background: 'var(--bg2)' }}>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap" />
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 28px', textAlign: 'center' }}>
             <p className="section-eyebrow">길찾기 약도</p>
@@ -174,42 +175,53 @@ export default function SinchonPage() {
           <div className="sinchon-route-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(280px, 340px) 1fr', gap: '24px', maxWidth: '880px', margin: '0 auto', alignItems: 'center' }}>
             {/* SVG 약도 (실제 도보 경로 기반) */}
             <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '16px', padding: '10px', boxShadow: '0 14px 40px -28px rgba(15,51,100,0.5)' }}>
-              <svg viewBox="0 0 380 480" width="100%" style={{ display: 'block' }} role="img" aria-label="이대역 5번 출구에서 KD4 액팅 스튜디오까지 도보 경로 약도" fontFamily="var(--font-display), sans-serif">
-                <rect x="0" y="0" width="380" height="480" rx="14" fill="#EBEBE0" />
-                {/* 도시 블록 느낌 */}
-                <g fill="#E1E1D4">
-                  <rect x="24" y="120" width="120" height="150" rx="6" />
-                  <rect x="220" y="150" width="130" height="120" rx="6" />
-                  <rect x="232" y="300" width="120" height="120" rx="6" />
-                  <rect x="30" y="300" width="118" height="110" rx="6" />
+              <svg viewBox="0 0 380 480" width="100%" style={{ display: 'block', fontFamily: "'Nanum Pen Script', cursive" }} role="img" aria-label="이대역 5번 출구에서 KD4 액팅 스튜디오까지 도보 약도">
+                <defs>
+                  <filter id="sketch" x="-6%" y="-6%" width="112%" height="112%">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="5" result="n" />
+                    <feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" xChannelSelector="R" yChannelSelector="G" />
+                  </filter>
+                  <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+                    <circle cx="2" cy="2" r="1" fill="#E4DDC8" />
+                  </pattern>
+                </defs>
+
+                {/* 종이 배경 */}
+                <rect x="0" y="0" width="380" height="480" rx="16" fill="#F5F1E5" />
+                <rect x="0" y="0" width="380" height="480" rx="16" fill="url(#dots)" />
+
+                {/* 손그림 도식 (삐뚤빼뚤 필터) */}
+                <g filter="url(#sketch)" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                  {/* 도보 경로 */}
+                  <path d="M288,408 C 250,402 236,372 230,332 C 222,280 226,238 214,188 C 205,150 196,120 176,104 C 160,91 134,92 120,98" stroke="#ffffff" strokeWidth="9" />
+                  <path d="M288,408 C 250,402 236,372 230,332 C 222,280 226,238 214,188 C 205,150 196,120 176,104 C 160,91 134,92 120,98" stroke="#15488A" strokeWidth="4" strokeDasharray="1.5 12" />
+                  {/* 이대역 동그라미 */}
+                  <circle cx="288" cy="408" r="19" fill="#00A84D" stroke="#0a7d3a" strokeWidth="2.5" />
+                  {/* KD4 건물 */}
+                  <path d="M86,60 L108,40 L130,60 Z" fill="#C73E3E" stroke="#C73E3E" strokeWidth="2" />
+                  <rect x="90" y="60" width="36" height="32" rx="2" fill="#ffffff" stroke="#15488A" strokeWidth="2.5" />
+                  <rect x="101" y="76" width="14" height="16" rx="1" fill="#15488A" stroke="#15488A" strokeWidth="1" />
+                  {/* 이화여대 정문(아치) */}
+                  <path d="M236,264 L236,240 Q252,226 268,240 L268,264" stroke="#a59f8c" strokeWidth="3" />
+                  {/* 나무 두 그루 */}
+                  <g stroke="#7d9a58">
+                    <circle cx="46" cy="186" r="13" fill="#d2e1ba" strokeWidth="2" />
+                    <path d="M46,199 L46,214" strokeWidth="3" />
+                    <circle cx="332" cy="318" r="11" fill="#d2e1ba" strokeWidth="2" />
+                    <path d="M332,329 L332,343" strokeWidth="3" />
+                  </g>
+                  {/* 나침반 화살표 */}
+                  <path d="M348,52 L348,28 M348,28 L343,37 M348,28 L353,37" stroke="#b6ad98" strokeWidth="2.5" />
                 </g>
-                {/* 경로 (흰 테두리 + 네이비 점선) */}
-                <polyline points="275.8,424 188.1,401.6 182.9,289.3 171.3,157 154.2,58.2 104.2,52.6" fill="none" stroke="#ffffff" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
-                <polyline points="275.8,424 188.1,401.6 182.9,289.3 171.3,157 154.2,58.2 104.2,52.6" fill="none" stroke="#15488A" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="1 12" />
-                {/* 거리 라벨 */}
-                <g transform="rotate(-89 205 240)">
-                  <rect x="170" y="231" width="70" height="19" rx="9" fill="#15488A" />
-                  <text x="205" y="244" textAnchor="middle" fontSize="11" fontWeight="700" fill="#ffffff">이화여대길</text>
-                </g>
-                {/* 북 표시 */}
-                <g>
-                  <text x="350" y="34" textAnchor="middle" fontSize="13" fontWeight="700" fill="#9a958c">N</text>
-                  <path d="M350,38 L346,50 L350,46 L354,50 Z" fill="#9a958c" />
-                </g>
-                {/* 도착: KD4 핀 */}
-                <g>
-                  <circle cx="104" cy="40" r="14" fill="#C73E3E" />
-                  <path d="M93,49 L115,49 L104,62 Z" fill="#C73E3E" />
-                  <circle cx="104" cy="40" r="5" fill="#ffffff" />
-                  <rect x="40" y="74" width="128" height="22" rx="11" fill="#15488A" />
-                  <text x="104" y="89" textAnchor="middle" fontSize="12" fontWeight="700" fill="#ffffff">KD4 액팅 스튜디오</text>
-                </g>
-                {/* 출발: 이대역 5번출구 */}
-                <g>
-                  <circle cx="276" cy="424" r="16" fill="#00A84D" />
-                  <text x="276" y="430" textAnchor="middle" fontSize="16" fontWeight="800" fill="#ffffff">2</text>
-                  <rect x="212" y="446" width="128" height="22" rx="11" fill="#2A2F3A" />
-                  <text x="276" y="461" textAnchor="middle" fontSize="12" fontWeight="700" fill="#ffffff">이대역 5번 출구</text>
+
+                {/* 손글씨 라벨 (선명) */}
+                <text x="288" y="415" textAnchor="middle" fontSize="21" fill="#ffffff">2</text>
+                <text x="288" y="446" textAnchor="middle" fontSize="20" fill="#2A2F3A">이대역 5번 출구</text>
+                <text x="108" y="120" textAnchor="middle" fontSize="22" fill="#15488A">KD4 액팅 스튜디오</text>
+                <text x="252" y="284" textAnchor="middle" fontSize="17" fill="#a59f8c">이화여대</text>
+                <text x="348" y="64" textAnchor="middle" fontSize="16" fill="#b6ad98">N</text>
+                <g transform="rotate(-7 138 300)">
+                  <text x="138" y="300" textAnchor="middle" fontSize="25" fill="#C73E3E">도보 약 3분</text>
                 </g>
               </svg>
             </div>
