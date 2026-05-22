@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createHash } from 'crypto'
 import { sendSMS } from '@/lib/sms'
 import { getSupabaseAdmin } from '@/lib/supabase/admin'
+import { SITE_URL } from '@/lib/constants'
 
 /* ── Meta Conversions API (CAPI) ──────────────────────────────────────
  * iOS14 ATT 이후 클라이언트 픽셀 단독 추적은 30%+ 누락. 서버에서 직접
@@ -39,7 +40,7 @@ async function sendMetaCAPI(record: { name?: string | null; phone?: string | nul
         // 클라이언트 픽셀 Lead 와 동일 event_id → Meta 중복제거(dedup). 없으면 미전송(서버 단독 집계)
         ...(record.event_id ? { event_id: record.event_id } : {}),
         event_time: Math.floor(Date.now() / 1000),
-        event_source_url: 'https://kd4.club/join',
+        event_source_url: `${SITE_URL}/join`,
         action_source: 'website',
         user_data: userData,
       }],

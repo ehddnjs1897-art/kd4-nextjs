@@ -3,8 +3,9 @@
  * 이 layout이 metadata 전담 — children은 그대로 패스스루.
  */
 import type { Metadata } from 'next'
+import { SITE_URL } from '@/lib/constants'
 
-const PAGE_URL = 'https://kd4.club/classes'
+const PAGE_URL = `${SITE_URL}/classes`
 
 export const metadata: Metadata = {
   title: '연기 클래스 전체 보기 — KD4 액팅 스튜디오',

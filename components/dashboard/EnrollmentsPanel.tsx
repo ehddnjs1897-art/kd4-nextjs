@@ -76,7 +76,6 @@ export default function EnrollmentsPanel({
 
   async function setRest(id: string) {
     if (confirmingRestId !== id) { setConfirmingRestId(id); return }
-    setConfirmingRestId(null)
     setLoading(true)
     try {
       const res = await fetch(`/api/enrollments/${id}`, {
@@ -85,6 +84,7 @@ export default function EnrollmentsPanel({
         body: JSON.stringify({ status: '휴강' }),
       })
       if (res.ok) {
+        setConfirmingRestId(null)
         setItems((prev) => prev.map((e) => (e.id === id ? { ...e, status: '휴강' } : e)))
       } else {
         const json = await res.json().catch(() => ({}))

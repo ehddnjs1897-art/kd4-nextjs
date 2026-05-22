@@ -8,6 +8,7 @@ import { FAQ_ITEMS } from '@/lib/faq-items'
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
 import GAPageTracker from '@/components/analytics/GAPageTracker'
 import MetaPixel from '@/components/analytics/MetaPixel'
+import { SITE_URL } from '@/lib/constants'
 
 const notoSansKR = Noto_Sans_KR({
   subsets: ['latin'],
@@ -48,19 +49,19 @@ export const metadata: Metadata = {
     'KD4', 'KD4 액팅 스튜디오', '서울 연기학원',
   ],
   robots: { index: true, follow: true },
-  alternates: { canonical: 'https://kd4.club' },
+  alternates: { canonical: SITE_URL },
   verification: {
     google: 'W0fUOZTRh2Bays8786YMujcbOqWkA66OiOreK_OO2rw',
     other: { 'naver-site-verification': '55356c87afb0497963a7979c98e2cdf68ac09044' },
   },
-  metadataBase: new URL('https://kd4.club'),
+  metadataBase: new URL(SITE_URL),
   icons: {
     icon: '/favicon.ico',
   },
   openGraph: {
     title: 'KD4 액팅 스튜디오 | 서울 신촌 마이즈너 테크닉 연기학원',
     description: '서울 신촌 마이즈너 테크닉 연기학원. 연기 훈련·포트폴리오 제작·캐스팅 연계. KD4 액팅 스튜디오',
-    url: 'https://kd4.club',
+    url: SITE_URL,
     siteName: 'KD4 액팅 스튜디오',
     images: [
       {

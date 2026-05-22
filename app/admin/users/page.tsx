@@ -7,7 +7,10 @@ import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import UsersManagementTable from './UsersManagementTable'
 
-export const metadata = { title: '회원 관리 — KD4 Admin' }
+export const metadata = {
+  title: '회원 관리 — KD4 Admin',
+  robots: { index: false, follow: false },
+}
 
 interface Profile {
   id: string
