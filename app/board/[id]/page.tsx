@@ -7,6 +7,8 @@ import DeletePostButton from '@/components/board/DeletePostButton'
 
 type Params = Promise<{ id: string }>
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 // React cache() deduplicates the DB fetch across generateMetadata and PostDetailPage
 // (both run in the same request, so only 1 Supabase round-trip happens)
 const getPost = cache(async (id: string) => {
@@ -15,7 +17,7 @@ const getPost = cache(async (id: string) => {
     .from('posts')
     .select('id, title, content, category, author_id, author_name, views, created_at, updated_at')
     .eq('id', id)
-    .single()
+    .maybeSingle()
 })
 
 interface Post {
@@ -73,6 +75,7 @@ export async function generateMetadata({ params }: { params: Params }) {
 
 export default async function PostDetailPage({ params }: { params: Params }) {
   const { id } = await params
+  if (!UUID_RE.test(id)) notFound()
   const supabase = await createClient()
 
   // 게시글 조회 + 유저 인증 병렬 (getPost는 cache()로 generateMetadata와 중복 제거됨)
@@ -87,7 +90,7 @@ export default async function PostDetailPage({ params }: { params: Params }) {
   // 조회수 증가 + 역할 조회 병렬 (둘 다 위 결과에 의존하지 않음)
   const [, { data: profile }] = await Promise.all([
     supabase.rpc('increment_views', { post_id: id }),
-    supabase.from('profiles').select('role').eq('id', user.id).single(),
+    supabase.from('profiles').select('role').eq('id', user.id).maybeSingle(),
   ])
   const currentUserRole: string | null = profile?.role ?? null
 
@@ -155,7 +158,7 @@ export default async function PostDetailPage({ params }: { params: Params }) {
                 </span>
               )}
               <span style={{ fontSize: '0.82rem', color: 'var(--gray)' }}>
-                조회 {(typedPost.views ?? 0) + 1}
+                조회 {typedPost.views ?? 0}
               </span>
             </div>
 

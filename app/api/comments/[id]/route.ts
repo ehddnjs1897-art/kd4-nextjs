@@ -45,7 +45,8 @@ export async function DELETE(
     return NextResponse.json({ error: '삭제 권한이 없습니다.' }, { status: 403 })
   }
 
-  const { error: deleteError } = await supabase
+  // supabaseAdmin 사용 — 위에서 소유권 확인 완료, RLS가 삭제를 막지 않도록
+  const { error: deleteError } = await supabaseAdmin
     .from('comments')
     .delete()
     .eq('id', id)

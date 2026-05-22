@@ -27,10 +27,9 @@ export async function GET(
     return NextResponse.json({ error: '게시글을 찾을 수 없습니다.' }, { status: 404 })
   }
 
-  // 조회수 증가 (SQL로 atomic increment — race condition 방지)
-  await supabase.rpc('increment_views', { post_id: id })
-
-  return NextResponse.json({ ...post, views: (post.views ?? 0) + 1 })
+  // 조회수 증가는 board/[id]/page.tsx 서버 컴포넌트에서만 수행
+  // (API GET은 외부 호출도 가능 → 여기서 increment하면 이중 집계)
+  return NextResponse.json(post)
 }
 
 // PATCH /api/posts/[id] — 본인 또는 admin만
@@ -92,7 +91,8 @@ export async function PATCH(
     updates.category = body.category
   }
 
-  const { error: updateError } = await supabase
+  // supabaseAdmin 사용 — 위에서 소유권 확인 완료, RLS가 업데이트를 막지 않도록
+  const { error: updateError } = await supabaseAdmin
     .from('posts')
     .update(updates)
     .eq('id', id)
@@ -135,7 +135,8 @@ export async function DELETE(
     return NextResponse.json({ error: '삭제 권한이 없습니다.' }, { status: 403 })
   }
 
-  const { error: deleteError } = await supabase
+  // supabaseAdmin 사용 — 위에서 소유권 확인 완료, RLS가 삭제를 막지 않도록
+  const { error: deleteError } = await supabaseAdmin
     .from('posts')
     .delete()
     .eq('id', id)

@@ -191,6 +191,9 @@ export default function EditPage() {
               maxLength={200}
               style={inputStyle}
             />
+            <div style={{ textAlign: 'right', fontSize: '0.72rem', marginTop: '4px', color: title.length > 180 ? '#e74c3c' : 'var(--gray)' }}>
+              {title.length}/200
+            </div>
           </div>
 
           {/* 내용 */}
@@ -203,12 +206,16 @@ export default function EditPage() {
               placeholder="내용을 입력하세요"
               required
               rows={14}
+              maxLength={10000}
               style={{
                 ...inputStyle,
                 resize: 'vertical',
                 lineHeight: 1.7,
               }}
             />
+            <div style={{ textAlign: 'right', fontSize: '0.72rem', marginTop: '4px', color: content.length > 9000 ? '#e74c3c' : 'var(--gray)' }}>
+              {content.length}/10000
+            </div>
           </div>
 
           {/* 버튼 */}
