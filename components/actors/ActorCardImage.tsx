@@ -7,9 +7,10 @@ interface Props {
   src: string
   alt: string
   unoptimized?: boolean
+  priority?: boolean
 }
 
-export default function ActorCardImage({ src, alt, unoptimized }: Props) {
+export default function ActorCardImage({ src, alt, unoptimized, priority }: Props) {
   const [imgSrc, setImgSrc] = useState(src)
 
   return (
@@ -20,6 +21,7 @@ export default function ActorCardImage({ src, alt, unoptimized }: Props) {
       sizes="(max-width:640px) 100vw, 50vw"
       style={{ objectFit: 'cover', objectPosition: 'center top' }}
       unoptimized={unoptimized}
+      priority={priority}
       onError={() => setImgSrc('/placeholder-actor.svg')}
     />
   )

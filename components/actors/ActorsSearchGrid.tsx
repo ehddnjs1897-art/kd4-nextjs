@@ -102,13 +102,14 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
         </div>
       ) : (
         <div style={gridStyle} className="actors-grid">
-          {filtered.map((actor) => (
+          {filtered.map((actor, idx) => (
             <Link key={actor.id} href={`/actors/${actor.id}`} style={cardStyle} className="actor-card">
               <div style={imageWrapStyle}>
                 <ActorCardImage
                   src={actor.photoSrc}
                   alt={actor.name}
                   unoptimized={actor.unoptimized}
+                  priority={idx < 2}
                 />
                 <div style={overlayStyle}>
                   <span style={nameStyle}>{actor.name}</span>
