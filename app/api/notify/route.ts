@@ -58,17 +58,22 @@ export async function POST(request: NextRequest) {
     const data = await request.json()
     const record = data?.record ?? data
 
+    // 필수 필드 검증 — 상담 폼은 항상 name + phone 포함
+    const name = typeof record?.name === 'string' ? record.name.trim().slice(0, 100) : null
+    const phone = typeof record?.phone === 'string' ? record.phone.trim().slice(0, 20) : null
+    if (!name || !phone) {
+      return NextResponse.json({ error: '이름과 연락처는 필수입니다.' }, { status: 400 })
+    }
+
     // Rate limit: 동일 연락처로 5분 내 3회 초과 차단 (SMS 비용 폭탄 방지)
-    if (record?.phone) {
-      const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString()
-      const { count } = await getSupabaseAdmin()
-        .from('consultations')
-        .select('id', { count: 'exact', head: true })
-        .eq('phone', record.phone)
-        .gte('created_at', fiveMinAgo)
-      if ((count ?? 0) >= 3) {
-        return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
-      }
+    const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString()
+    const { count } = await getSupabaseAdmin()
+      .from('consultations')
+      .select('id', { count: 'exact', head: true })
+      .eq('phone', phone)
+      .gte('created_at', fiveMinAgo)
+    if ((count ?? 0) >= 3) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
 
     // 1. Supabase에 무조건 먼저 기록 — webhook·SMS 실패와 무관하게 데이터 보존
@@ -143,8 +148,13 @@ export async function POST(request: NextRequest) {
     // 3. 관리자 SMS 발송 (실패해도 데이터는 이미 Supabase에 보존됨)
     const adminPhone = process.env.ADMIN_PHONE_NUMBER
     if (adminPhone && record) {
-      const { name, phone, class_name } = record
-      const msg = `[KD4 신규상담] ${name} / ${phone}${class_name ? ` / ${class_name}` : ''}`
+      // 제어문자(개행 등) 제거 — SMS 포맷 파괴 방지
+      const safeName = name.replace(/[\r\n\t]/g, ' ')
+      const safePhone = phone.replace(/[\r\n\t]/g, '')
+      const safeClass = typeof record.class_name === 'string'
+        ? record.class_name.replace(/[\r\n\t]/g, ' ').slice(0, 50)
+        : null
+      const msg = `[KD4 신규상담] ${safeName} / ${safePhone}${safeClass ? ` / ${safeClass}` : ''}`
       await sendSMS(adminPhone, msg).catch((err) =>
         console.error('[notify] 관리자 SMS 실패:', err)
       )

@@ -63,8 +63,18 @@ export async function PATCH(
   }
 
   const updates: Record<string, string> = { updated_at: new Date().toISOString() }
-  if (body.title?.trim()) updates.title = body.title.trim()
-  if (body.content?.trim()) updates.content = body.content.trim()
+  if (body.title?.trim()) {
+    if (body.title.trim().length > 200) {
+      return NextResponse.json({ error: '제목은 200자 이하로 입력해주세요.' }, { status: 400 })
+    }
+    updates.title = body.title.trim()
+  }
+  if (body.content?.trim()) {
+    if (body.content.trim().length > 10000) {
+      return NextResponse.json({ error: '내용은 10,000자 이하로 입력해주세요.' }, { status: 400 })
+    }
+    updates.content = body.content.trim()
+  }
   if (body.category) {
     const validCategories = ['일반', '공지', '질문', '자유', '수업']
     if (!validCategories.includes(body.category)) {

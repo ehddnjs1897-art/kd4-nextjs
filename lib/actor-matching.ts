@@ -51,6 +51,11 @@ export async function matchActorOnSignup(
   const inputName = normalizeName(name)
   const inputPhone = normalizePhone(phone)
 
+  // 빈 값으로 인한 false-positive 방지 (blank name/phone → 매칭 스킵)
+  if (!inputName || !inputPhone) {
+    return { matched: false }
+  }
+
   // 2. 정규화 매칭
   const matched = actors.find(
     (actor) =>
@@ -100,14 +105,29 @@ export async function linkEnrollmentsOnSignup(
   const patch: { user_id: string; actor_id?: string } = { user_id: profileId }
   if (actorId) patch.actor_id = actorId
 
-  // actor_id가 있으면 추가 조건으로 동명이인 오연결 방지
-  let q = supabaseAdmin
+  // 1단계: 매칭 ID 목록 조회 (최대 10개 캡 — 동명이인 대량 연결 방지)
+  let selectQ = supabaseAdmin
     .from('enrollments')
-    .update(patch)
+    .select('id')
     .is('user_id', null)
     .eq('name', trimmed)
-  if (actorId) q = q.eq('actor_id', actorId)
-  const { data, error } = await q.select('id')
+    .limit(10)
+  if (actorId) selectQ = selectQ.eq('actor_id', actorId)
+  const { data: matches, error: selectErr } = await selectQ
+
+  if (selectErr) {
+    console.error('[enrollment-link] 조회 실패:', selectErr.message)
+    return 0
+  }
+  if (!matches || matches.length === 0) return 0
+
+  // 2단계: ID 목록으로만 업데이트 (mass-update 방지)
+  const ids = matches.map((r) => r.id)
+  const { data, error } = await supabaseAdmin
+    .from('enrollments')
+    .update(patch)
+    .in('id', ids)
+    .select('id')
 
   if (error) {
     console.error('[enrollment-link] 연결 실패:', error.message)
