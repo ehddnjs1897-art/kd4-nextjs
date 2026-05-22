@@ -27,7 +27,10 @@ export const metadata: Metadata = {
   },
 }
 
-export default async function BoardPage() {
+type SearchParams = Promise<{ my?: string }>
+
+export default async function BoardPage({ searchParams }: { searchParams: SearchParams }) {
+  const { my } = await searchParams
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -36,12 +39,18 @@ export default async function BoardPage() {
     return <PublicLanding />
   }
 
-  // 첫 20개만 fetch + 총 개수 — BoardClient에서 페이지네이션
-  const { data: posts, error: postsError, count } = await supabase
+  const isMyPosts = my === '1'
+
+  // 첫 20개만 fetch + 총 개수 — my=1이면 내 게시글만, BoardClient에서 페이지네이션
+  let postsQ = supabase
     .from('posts')
     .select('id, title, category, author_name, views, created_at', { count: 'exact' })
     .order('created_at', { ascending: false })
     .range(0, 19)
+
+  if (isMyPosts) postsQ = postsQ.eq('author_id', user.id)
+
+  const { data: posts, error: postsError, count } = await postsQ
 
   if (postsError) {
     return (
@@ -81,7 +90,13 @@ export default async function BoardPage() {
         </div>
 
         {/* 탭 + 목록 (클라이언트 컴포넌트 — 페이지네이션) */}
-        <BoardClient initialPosts={posts ?? []} initialTotal={count ?? 0} isLoggedIn={!!user} />
+        <BoardClient
+          initialPosts={posts ?? []}
+          initialTotal={count ?? 0}
+          isLoggedIn={!!user}
+          currentUserId={user.id}
+          showMyPosts={isMyPosts}
+        />
       </div>
     </div>
   )

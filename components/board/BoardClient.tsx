@@ -3,8 +3,8 @@
 import { useState, useCallback } from 'react'
 import Link from 'next/link'
 
-type Category = '전체' | '공지' | '질문' | '자유' | '수업'
-const CATEGORIES: Category[] = ['전체', '질문', '자유', '수업', '공지']
+type Category = '전체' | '공지' | '질문' | '자유' | '수업' | '내 게시글'
+const BASE_CATEGORIES: Category[] = ['전체', '질문', '자유', '수업', '공지']
 const PAGE_SIZE = 20
 
 interface Post {
@@ -50,12 +50,22 @@ export default function BoardClient({
   initialPosts,
   initialTotal,
   isLoggedIn,
+  currentUserId,
+  showMyPosts = false,
 }: {
   initialPosts: Post[]
   initialTotal: number
   isLoggedIn: boolean
+  currentUserId?: string
+  showMyPosts?: boolean
 }) {
-  const [activeCategory, setActiveCategory] = useState<Category>('전체')
+  const CATEGORIES = currentUserId
+    ? ([...BASE_CATEGORIES, '내 게시글'] as Category[])
+    : BASE_CATEGORIES
+
+  const [activeCategory, setActiveCategory] = useState<Category>(
+    showMyPosts && currentUserId ? '내 게시글' : '전체'
+  )
   const [posts, setPosts] = useState<Post[]>(initialPosts)
   const [total, setTotal] = useState(initialTotal)
   const [currentPage, setCurrentPage] = useState(1)
@@ -70,7 +80,11 @@ export default function BoardClient({
 
     try {
       const params = new URLSearchParams({ page: String(page), limit: String(PAGE_SIZE) })
-      if (category !== '전체') params.set('category', category)
+      if (category === '내 게시글' && currentUserId) {
+        params.set('author_id', currentUserId)
+      } else if (category !== '전체') {
+        params.set('category', category)
+      }
       const res = await fetch(`/api/posts?${params}`)
       const json: { data?: Post[]; total?: number } = await res.json()
       if (res.ok) {

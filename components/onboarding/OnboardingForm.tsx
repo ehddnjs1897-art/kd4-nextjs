@@ -283,8 +283,8 @@ export default function OnboardingForm({
         </div>
       </section>
 
-      {warning && <p style={warnStyle}>{warning}</p>}
-      {error && <p style={errStyle}>{error}</p>}
+      {warning && <p role="status" aria-live="polite" style={warnStyle}>{warning}</p>}
+      {error && <p role="alert" style={errStyle}>{error}</p>}
       {loading && status && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', background: 'rgba(196,165,90,0.08)', border: '1px solid rgba(196,165,90,0.2)', borderRadius: 8, marginBottom: 16 }}>
           <span style={{ fontSize: '1rem' }}>⏳</span>

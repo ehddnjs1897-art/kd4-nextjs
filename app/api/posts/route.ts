@@ -26,6 +26,13 @@ export async function GET(request: NextRequest) {
     query = query.eq('category', category)
   }
 
+  // 내 게시글 필터 (UUID 검증 필수)
+  const authorId = searchParams.get('author_id')
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  if (authorId && UUID_RE.test(authorId)) {
+    query = query.eq('author_id', authorId)
+  }
+
   const { data, error, count } = await query
 
   if (error) {
