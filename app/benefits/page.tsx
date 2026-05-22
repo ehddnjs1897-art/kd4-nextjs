@@ -396,20 +396,24 @@ export default function BenefitsPage() {
           </Link>
 
           {/* 리플레이 */}
-          <div
+          <a
+            href="https://pf.kakao.com/_ximxdqn"
+            target="_blank"
+            rel="noopener noreferrer"
             className="kd4-card-hover"
-            style={{ display: 'flex', alignItems: 'center', gap: 'clamp(16px, 4vw, 24px)', background: '#ffffff', border: '1.5px solid rgba(21,72,138,0.18)', borderRadius: 12, padding: 'clamp(18px, 3vw, 24px)', position: 'relative', overflow: 'hidden', flexWrap: 'wrap' }}
+            style={{ display: 'flex', alignItems: 'center', gap: 'clamp(16px, 4vw, 24px)', background: '#ffffff', border: '1.5px solid rgba(21,72,138,0.18)', borderRadius: 12, padding: 'clamp(18px, 3vw, 24px)', textDecoration: 'none', position: 'relative', overflow: 'hidden', flexWrap: 'wrap' }}
           >
             <span aria-hidden style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 3, background: 'var(--gold)' }} />
-            <span style={{ flexShrink: 0, width: 72, height: 72, borderRadius: 6, background: 'rgba(21,72,138,0.08)', border: '1px solid rgba(21,72,138,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '1rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.04em' }}>REPLAY</span>
+            <span style={{ flexShrink: 0, width: 72, height: 72, borderRadius: 8, background: 'conic-gradient(from 200deg at 50% 50%, #43c643, #ffe000, #ff8c00, #e91e63, #9b27af, #43c643)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '2.6rem', fontWeight: 900, color: '#fff', lineHeight: 1, textShadow: '0 1px 4px rgba(0,0,0,0.25)' }}>R</span>
             </span>
             <span style={{ display: 'flex', flexDirection: 'column', gap: 5, minWidth: 160, flex: 1 }}>
               <span style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', fontWeight: 700, color: 'var(--white)' }}>배우 커뮤니티 리플레이</span>
-              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 600, color: 'var(--gold)' }}>KD4 멤버 3만원 / 50장 (일반 4만원)</span>
-              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: 'var(--secondary)' }}>리플레이 · 프로필 투어 서비스 · 배포</span>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 600, color: 'var(--gold)' }}>KD4 멤버 3만원 (VAT 별도) / 50장</span>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: 'var(--secondary)' }}>일반 4만원 / 40장 · 프로필 투어 · 캐스팅 배포</span>
             </span>
-          </div>
+            <span aria-hidden style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 700, color: 'var(--gold)', whiteSpace: 'nowrap' }}>신청하기 →</span>
+          </a>
 
           {/* CGV 신촌아트레온 아트하우스 */}
           <div
@@ -422,8 +426,8 @@ export default function BenefitsPage() {
             </span>
             <span style={{ display: 'flex', flexDirection: 'column', gap: 5, minWidth: 160, flex: 1 }}>
               <span style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', fontWeight: 700, color: 'var(--white)' }}>신촌 아트레온 CGV 아트하우스</span>
-              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 600, color: 'var(--gold)' }}>공식 광고 파트너</span>
-              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: 'var(--secondary)' }}>신촌 아트레온 아트하우스 상영관 내 KD4 공식 광고 운영 중</span>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 600, color: 'var(--gold)' }}>신촌 아트레온 아트하우스 광고 체결</span>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: 'var(--secondary)' }}>CGV 아트하우스 상영관 내 KD4 공식 광고 운영 중</span>
             </span>
           </div>
 
