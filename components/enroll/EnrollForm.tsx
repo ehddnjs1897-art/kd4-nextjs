@@ -37,13 +37,12 @@ export default function EnrollForm({
   userPhone: string
   userEmail: string
 }) {
+  // 수강월은 자동으로 다음 달 고정 (선택 안 함)
   const now = new Date()
-  const monthOptions = [ym(now), ym(new Date(now.getFullYear(), now.getMonth() + 1, 1))]
+  const nextMonth = ym(new Date(now.getFullYear(), now.getMonth() + 1, 1))
 
   const [type, setType] = useState<string>('기존 KD4 멤버')
   const [selected, setSelected] = useState<string[]>([])
-  const [yearMonth, setYearMonth] = useState<string>(monthOptions[0])
-  const [phone, setPhone] = useState<string>(userPhone)
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
@@ -62,17 +61,18 @@ export default function EnrollForm({
       setError('수강할 클래스를 1개 이상 선택해 주세요.')
       return
     }
-    if (!phone) {
-      setError('연락처를 입력해 주세요.')
+    if (!userPhone) {
+      setError('연락처가 없습니다. 마이페이지에서 연락처를 먼저 등록해 주세요.')
       return
     }
     setLoading(true)
     setError('')
     try {
+      // 연락처는 회원정보(서버 profiles) 자동 사용 · 수강월은 다음 달 자동
       const res = await fetch('/api/enrollments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ enrollment_type: type, class_names: selected, year_month: yearMonth, phone }),
+        body: JSON.stringify({ enrollment_type: type, class_names: selected, year_month: nextMonth }),
       })
       const json = await res.json()
       if (!res.ok) {
@@ -98,7 +98,7 @@ export default function EnrollForm({
             수강 신청 완료
           </h1>
           <p style={{ fontSize: '0.92rem', color: 'var(--gray-light)', lineHeight: 1.7, marginBottom: 28 }}>
-            {ymLabel(yearMonth)} · {selected.length}개 클래스 신청이 접수되었습니다.<br />
+            {ymLabel(nextMonth)} · {selected.length}개 클래스 신청이 접수되었습니다.<br />
             마이페이지에서 신청 내역과 결제 안내를 확인하세요.
           </p>
           <Link href="/dashboard" className="btn-primary" style={{ background: 'var(--navy)', color: '#fff' }}>
@@ -203,42 +203,25 @@ export default function EnrollForm({
           </div>
         </div>
 
-        {/* 3. 수강 월 */}
-        <div style={{ marginBottom: 28 }}>
-          <label style={labelStyle}>3. 수강 월</label>
-          <div style={{ display: 'flex', gap: 8 }}>
-            {monthOptions.map((m) => (
-              <button
-                key={m}
-                type="button"
-                onClick={() => setYearMonth(m)}
-                style={{
-                  flex: 1, minHeight: 44, padding: '10px 14px', borderRadius: 10,
-                  border: `1.5px solid ${yearMonth === m ? 'var(--navy)' : 'var(--border)'}`,
-                  background: yearMonth === m ? 'rgba(21,72,138,0.06)' : '#fff',
-                  color: yearMonth === m ? 'var(--navy)' : 'var(--gray)',
-                  fontWeight: 700, fontSize: '0.88rem', cursor: 'pointer', fontFamily: 'inherit',
-                }}
-              >
-                {ymLabel(m)}
-              </button>
-            ))}
+        {/* 수강 시작월(다음 달 자동) + 연락처(회원정보 연동) 안내 */}
+        <div style={{ marginBottom: 24, padding: '16px 18px', background: 'var(--bg2)', borderRadius: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ fontSize: '0.86rem', color: 'var(--gray)' }}>
+            📅 수강 시작
+            <strong style={{ color: 'var(--navy)', marginLeft: 6 }}>{ymLabel(nextMonth)}</strong>
+            <span style={{ fontSize: '0.76rem', marginLeft: 6 }}>(다음 달 자동)</span>
           </div>
-        </div>
-
-        {/* 4. 연락처 */}
-        <div style={{ marginBottom: 28 }}>
-          <label style={labelStyle}>4. 연락처</label>
-          <input
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="010-0000-0000"
-            style={{
-              width: '100%', background: '#fff', border: '1px solid var(--border)', borderRadius: 12,
-              padding: '14px 16px', color: '#111', fontSize: '1rem', fontFamily: 'inherit', boxSizing: 'border-box', outline: 'none',
-            }}
-          />
+          <div style={{ fontSize: '0.86rem', color: 'var(--gray)' }}>
+            📞 연락처
+            {userPhone
+              ? <strong style={{ color: '#111', marginLeft: 6 }}>{userPhone}</strong>
+              : <span style={{ color: 'var(--accent-red)', marginLeft: 6 }}>미등록</span>}
+            <span style={{ fontSize: '0.76rem', marginLeft: 6 }}>(회원정보 연동)</span>
+          </div>
+          {!userPhone && (
+            <div style={{ fontSize: '0.78rem', color: 'var(--accent-red)', lineHeight: 1.5 }}>
+              ※ 마이페이지에서 연락처를 먼저 등록해 주세요.
+            </div>
+          )}
         </div>
 
         {/* 합계 */}
