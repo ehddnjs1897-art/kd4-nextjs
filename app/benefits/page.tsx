@@ -396,10 +396,9 @@ export default function BenefitsPage() {
           </Link>
 
           {/* 리플레이 */}
-          <Link
-            href="/benefits/replay"
+          <div
             className="kd4-card-hover"
-            style={{ display: 'flex', alignItems: 'center', gap: 'clamp(16px, 4vw, 24px)', background: '#ffffff', border: '1.5px solid rgba(21,72,138,0.18)', borderRadius: 12, padding: 'clamp(18px, 3vw, 24px)', textDecoration: 'none', position: 'relative', overflow: 'hidden', flexWrap: 'wrap' }}
+            style={{ display: 'flex', alignItems: 'center', gap: 'clamp(16px, 4vw, 24px)', background: '#ffffff', border: '1.5px solid rgba(21,72,138,0.18)', borderRadius: 12, padding: 'clamp(18px, 3vw, 24px)', position: 'relative', overflow: 'hidden', flexWrap: 'wrap' }}
           >
             <span aria-hidden style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 3, background: 'var(--gold)' }} />
             <span style={{ flexShrink: 0, width: 72, height: 72, borderRadius: 6, background: 'rgba(21,72,138,0.08)', border: '1px solid rgba(21,72,138,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -410,8 +409,7 @@ export default function BenefitsPage() {
               <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 600, color: 'var(--gold)' }}>KD4 멤버 3만원 / 50장 (일반 4만원)</span>
               <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: 'var(--secondary)' }}>리플레이 · 프로필 투어 서비스 · 배포</span>
             </span>
-            <span aria-hidden style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 700, color: 'var(--gold)', whiteSpace: 'nowrap' }}>자세히 보기 →</span>
-          </Link>
+          </div>
 
           {/* CGV 신촌아트레온 아트하우스 */}
           <div
