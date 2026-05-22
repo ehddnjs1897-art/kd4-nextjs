@@ -10,8 +10,10 @@
  * 환경변수: GEMINI_KEY (서버 전용)
  */
 
-// GEMINI_KEY는 서버 전용. NEXT_PUBLIC_* 접두사 사용 금지 — 브라우저 번들 노출 위험.
-const GEMINI_KEY = process.env.GEMINI_KEY
+// 서버 전용 GEMINI_KEY 우선. 단, 기존 배포에 NEXT_PUBLIC_GEMINI_KEY만 등록돼 있어
+// 자동분류가 조용히 비활성화되던 버그가 있었음 → 폴백으로 NEXT_PUBLIC도 허용.
+// (권장: Vercel에 서버 전용 GEMINI_KEY 추가 후 NEXT_PUBLIC_GEMINI_KEY 제거)
+const GEMINI_KEY = process.env.GEMINI_KEY ?? process.env.NEXT_PUBLIC_GEMINI_KEY
 
 /** 허용 태그 화이트리스트 — 캐스팅 디렉터가 흔히 쓰는 카테고리 */
 export const CASTING_TAG_OPTIONS = [

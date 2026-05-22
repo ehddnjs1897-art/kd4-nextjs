@@ -48,6 +48,15 @@ export default function SetupPage() {
       return
     }
 
+    // 디렉터 선택 시: 승인 대기 상태로 신청 + 관리자 알림 (승인 후 연락처 열람 가능)
+    if (memberType === 'director') {
+      try {
+        await fetch('/api/director-request', { method: 'POST' })
+      } catch {
+        // 신청 실패해도 대시보드에서 다시 신청 가능 → 흐름 막지 않음
+      }
+    }
+
     router.replace('/dashboard')
   }
 
@@ -87,8 +96,8 @@ export default function SetupPage() {
               <span style={styles.typeIcon}>🎬</span>
               <span style={styles.typeLabel}>배우 회원</span>
               <span style={styles.typeDesc}>
-                KD4 스튜디오에서 활동하는 배우
-                <br />내 갤러리 페이지 관리 가능
+                KD4에서 활동하는 배우
+                <br />내 프로필·갤러리 관리 + 동료 배우 열람
               </span>
             </button>
 
@@ -104,7 +113,7 @@ export default function SetupPage() {
               <span style={styles.typeLabel}>디렉터 회원</span>
               <span style={styles.typeDesc}>
                 캐스팅 디렉터, 조감독, 제작사
-                <br />배우 DB 전체 열람 가능
+                <br />승인 후 배우 연락처·프로필 열람
               </span>
             </button>
           </div>

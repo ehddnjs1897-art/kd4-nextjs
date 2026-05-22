@@ -4,7 +4,7 @@
 
 // ─── 사용자 역할 ─────────────────────────────────────────────────────────────
 
-export type UserRole = 'user' | 'member' | 'actor' | 'crew_pending' | 'crew' | 'editor' | 'director' | 'admin'
+export type UserRole = 'user' | 'member' | 'actor' | 'crew_pending' | 'crew' | 'editor' | 'director_pending' | 'director' | 'admin'
 
 // ─── 배우 관련 ───────────────────────────────────────────────────────────────
 

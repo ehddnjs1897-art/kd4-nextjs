@@ -52,3 +52,27 @@ export async function notifyCrewRequest(name: string, email: string, userId: str
   `
   await sendEmail(ADMIN_EMAIL, `[KD4] 크루 신청 — ${name}`, html)
 }
+
+/** KD4 디렉터 권한 신청 관리자 알림 (승인 시 배우 연락처·다운로드 열람 가능) */
+export async function notifyDirectorRequest(name: string, email: string, userId: string) {
+  const approveUrl = `${SITE_URL}/api/admin/approve-crew?uid=${userId}`
+  const html = `
+    <div style="font-family:sans-serif;max-width:480px;margin:0 auto">
+      <h2 style="color:#15488a">🎥 KD4 디렉터 권한 신청</h2>
+      <p style="color:#555;font-size:14px">승인하면 이 디렉터가 배우들의 <strong>연락처 + 사진/프로필 다운로드</strong>를 열람할 수 있습니다.</p>
+      <table style="width:100%;border-collapse:collapse">
+        <tr><td style="padding:6px 0;color:#888;width:80px">이름</td><td style="padding:6px 0"><strong>${name}</strong></td></tr>
+        <tr><td style="padding:6px 0;color:#888">이메일</td><td style="padding:6px 0">${email}</td></tr>
+        <tr><td style="padding:6px 0;color:#888">시각</td><td style="padding:6px 0">${new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}</td></tr>
+      </table>
+      <hr style="margin:20px 0"/>
+      <a href="${approveUrl}" style="display:inline-block;padding:10px 20px;background:#15488a;color:#fff;border-radius:6px;text-decoration:none;font-weight:bold;margin-right:8px">
+        디렉터 승인하기
+      </a>
+      <a href="${SITE_URL}/admin" style="display:inline-block;padding:10px 20px;background:#444;color:#fff;border-radius:6px;text-decoration:none;">
+        관리자 패널
+      </a>
+    </div>
+  `
+  await sendEmail(ADMIN_EMAIL, `[KD4] 디렉터 권한 신청 — ${name}`, html)
+}

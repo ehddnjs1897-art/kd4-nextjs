@@ -49,10 +49,19 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/admin?error=user_not_found`)
   }
 
-  // crew_pending → crew 승인
+  // 승인 대상 역할 매핑 — 크루/디렉터 신청 모두 처리
+  //   crew_pending → crew, director_pending → director (이미 승인된 경우는 그대로 유지)
+  const APPROVE_MAP: Record<string, { role: string; label: string }> = {
+    crew_pending: { role: 'crew', label: '크루' },
+    crew: { role: 'crew', label: '크루' },
+    director_pending: { role: 'director', label: '디렉터' },
+    director: { role: 'director', label: '디렉터' },
+  }
+  const mapped = APPROVE_MAP[target.role ?? ''] ?? { role: 'crew', label: '크루' }
+
   const { error: updateErr } = await supabaseAdmin
     .from('profiles')
-    .update({ role: 'crew' })
+    .update({ role: mapped.role })
     .eq('id', uid)
 
   if (updateErr) {
@@ -62,10 +71,11 @@ export async function GET(request: NextRequest) {
 
   // 사용자에게 승인 SMS 알림 (trally 패턴 — 양방향 알림)
   if (target.phone) {
-    sendSMS(
-      target.phone,
-      `[KD4] 크루 승인 완료\n${target.name ?? ''}님, KD4 크루 권한이 승인되었습니다.\n커뮤니티·배우 DB·대본 분석 이용 가능합니다.`,
-    ).catch(console.error)
+    const msg =
+      mapped.role === 'director'
+        ? `[KD4] 디렉터 승인 완료\n${target.name ?? ''}님, 디렉터 권한이 승인되었습니다.\n배우 연락처 열람·프로필 다운로드가 가능합니다.`
+        : `[KD4] 크루 승인 완료\n${target.name ?? ''}님, KD4 크루 권한이 승인되었습니다.\n커뮤니티·배우 DB·대본 분석 이용 가능합니다.`
+    sendSMS(target.phone, msg).catch(console.error)
   }
 
   // 관리자 패널로 리디렉트 (성공 메시지 포함)

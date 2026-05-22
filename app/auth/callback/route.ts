@@ -3,6 +3,17 @@ import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { matchActorOnSignup, linkEnrollmentsOnSignup } from '@/lib/actor-matching'
 
+// 신규 가입은 모두 'actor' 기본 역할로 시작한다.
+// 디렉터 권한은 자동 부여하지 않고 대시보드에서 승인 신청 → 관리자 승인(director_pending → director).
+// 이미 승급된 역할(crew/editor/director/admin 등)은 재로그인·재인증 시 절대 강등하지 않는다.
+const ELEVATED_ROLES = ['crew_pending', 'crew', 'editor', 'director_pending', 'director', 'admin']
+function resolveInitialRole(memberType: string | undefined, existingRole: string | null | undefined): string {
+  if (existingRole && ELEVATED_ROLES.includes(existingRole)) return existingRole
+  // 디렉터로 가입 → 'member'(배우DB 잠금, 승인받아야 director).
+  // 배우로 가입 → 'actor'(동료 목록·프로필 열람 가능).
+  return memberType === 'director' ? 'member' : 'actor'
+}
+
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
@@ -44,7 +55,13 @@ export async function GET(request: Request) {
     const name = user.user_metadata?.name ?? user.user_metadata?.full_name ?? ''
     const phone = user.user_metadata?.phone ?? ''
     const memberType = user.user_metadata?.member_type
-    const initialRole = memberType === 'director' ? 'director' : 'actor'
+    // 기존 역할 조회 — 승급된 역할(director/editor 등) 강등 방지
+    const { data: existingForRole } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle()
+    const initialRole = resolveInitialRole(memberType, existingForRole?.role)
 
     // ignoreDuplicates: false → role을 항상 올바르게 덮어씀
     await supabase.from('profiles').upsert(
@@ -116,11 +133,8 @@ export async function GET(request: Request) {
 
   // ── 이메일 가입 콜백 or 기존 OAuth 재로그인 ──────────────────────────
   // member_type이 있으면(이메일 가입) role을 우선 적용, 없으면(OAuth 재로그인) 기존 role 유지
-  const initialRole = memberType === 'director'
-    ? 'director'
-    : memberType === 'actor'
-      ? 'actor'
-      : (existingProfile?.role ?? 'actor')
+  // 신규는 actor/member 기본, 기존 승급 역할은 유지 (디렉터 자동부여 X — 승인 절차로만)
+  const initialRole = resolveInitialRole(memberType, existingProfile?.role)
 
   const { error: upsertErr } = await supabase.from('profiles').upsert(
     {

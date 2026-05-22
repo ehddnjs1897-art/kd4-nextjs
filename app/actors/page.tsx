@@ -1,7 +1,11 @@
 import Link from 'next/link'
 import { supabaseAdmin } from '@/lib/supabase/admin'
+import { createClient } from '@/lib/supabase/server'
 import { getActorPhotoUrl, shouldOptimize } from '@/lib/actor-photo'
 import ActorCardImage from '@/components/actors/ActorCardImage'
+import ActorDbLocked from '@/components/actors/ActorDbLocked'
+import { canViewActorDb } from '@/lib/access'
+import type { UserRole } from '@/lib/types'
 
 interface Actor {
   id: string
@@ -112,6 +116,24 @@ const AGE_OPTIONS: { value: AgeFilter; label: string }[] = [
 ]
 
 export default async function ActorsPage({ searchParams }: PageProps) {
+  /* ---- 접근 권한 확인 (배우 DB는 회원 전용) ---- */
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  let role: UserRole | null = null
+  if (user) {
+    const { data: roleRow } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle()
+    role = (roleRow?.role ?? null) as UserRole | null
+  }
+  if (!canViewActorDb(role)) {
+    return <ActorDbLocked role={role} />
+  }
+
   /* ---- 데이터 fetch ---- */
   const params = await searchParams
   const gender = params.gender ?? 'all'

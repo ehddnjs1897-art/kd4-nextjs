@@ -6,18 +6,10 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 import ActorTabs from '@/components/actors/ActorTabs'
 import ShareButton from '@/components/actors/ShareButton'
 import ProfilePhotoWrapper from '@/components/actors/ProfilePhotoWrapper'
+import ActorDbLocked from '@/components/actors/ActorDbLocked'
 import { UserRole } from '@/lib/types'
+import { canViewActorDb, canViewActorContact } from '@/lib/access'
 import { getActorPersonSchema, getActorVideoSchemas, serializeJsonLd } from '@/lib/seo'
-
-/** 배우DB 열람 가능 여부 */
-function canViewActorDb(role: UserRole | null): boolean {
-  return role === 'editor' || role === 'director' || role === 'admin' || role === 'crew'
-}
-
-/** 연락처 등 전체 정보 열람 (디렉터/관리자만) */
-function isDirectorOrAdmin(role: UserRole | null): boolean {
-  return role === 'director' || role === 'admin'
-}
 
 /* ---- 타입 정의 ---- */
 interface Actor {
@@ -211,6 +203,11 @@ export default async function ActorDetailPage({
     role = (profile?.role ?? 'user') as UserRole
   }
 
+  /* ---- 접근 권한 확인 (배우 DB는 회원 전용) ---- */
+  if (!canViewActorDb(role)) {
+    return <ActorDbLocked role={role} />
+  }
+
   /* ---- 데이터 fetch ---- */
   const actor = await getActor(id)
   if (!actor) notFound()
@@ -270,9 +267,9 @@ export default async function ActorDetailPage({
               <ProfilePhotoWrapper
                 src={photoUrl}
                 alt={actor.name}
-                imageProtected={!isDirectorOrAdmin(role)}
+                imageProtected={!canViewActorContact(role)}
                 downloadHref={
-                  isDirectorOrAdmin(role) && actor.drive_photo_id
+                  canViewActorContact(role) && actor.drive_photo_id
                     ? `https://drive.google.com/uc?id=${actor.drive_photo_id}&export=download`
                     : undefined
                 }
@@ -363,8 +360,8 @@ export default async function ActorDetailPage({
           <div style={styles.content}>
             <ActorTabs
               actor={actor}
-              canViewContact={isDirectorOrAdmin(role)}
-              imageProtected={!isDirectorOrAdmin(role)}
+              canViewContact={canViewActorContact(role)}
+              imageProtected={!canViewActorContact(role)}
             />
           </div>
         </div>
