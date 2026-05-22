@@ -13,16 +13,12 @@ const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
 const SITE_URL = 'https://kd4.club'
 const PAGE_URL = `${SITE_URL}/sinchon-acting-academy`
 
-// 위치 / 지도
-const ADDRESS = '서울특별시 서대문구 대현동 90-7 아리움3차'
+// 위치 / 길찾기 (구글 지도 임베드 제거 — 약도가 메인)
 const ADDRESS_FULL = '서울시 서대문구 대현동 90-7 아리움3차 1층 101호'
-const Q = encodeURIComponent(ADDRESS)
 const PLACE_Q = encodeURIComponent('KD4 액팅 스튜디오')
-const MAP_EMBED = `https://maps.google.com/maps?q=${Q}&z=17&hl=ko&output=embed`
 // 길찾기 버튼은 상호명으로 검색 (주소로 하면 '아리움3차오피스텔'이 떠서)
 const NAVER_MAP = `https://map.naver.com/p/search/${PLACE_Q}`
 const KAKAO_MAP = `https://map.kakao.com/?q=${PLACE_Q}`
-const GOOGLE_MAP = `https://www.google.com/maps/search/?api=1&query=${PLACE_Q}`
 
 const ACCESS_ITEMS = [
   { Icon: Train, title: '지하철 2호선 이대역', desc: '5번 출구에서 도보 약 3분' },
@@ -90,95 +86,29 @@ export default function SinchonPage() {
         </div>
       </section>
 
-      {/* ===== LOCATION — 지도 + 길찾기 ===== */}
+      {/* ===== LOCATION — 약도 메인 ===== */}
       <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
             <p className="section-eyebrow">01 — LOCATION</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>찾아오시는 길</h2>
-            <p className="section-desc">
-              이대역 5번 출구 도보 3분. 이대 상권 안이라 수업 전후 시간을 보내기 좋습니다.
-            </p>
-          </div>
-
-          <div className="sinchon-map-grid" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '20px', maxWidth: '1040px', margin: '0 auto', alignItems: 'stretch' }}>
-            {/* 지도 임베드 */}
-            <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', border: '1px solid var(--border)', minHeight: '340px', boxShadow: '0 18px 48px -28px rgba(15,51,100,0.5)' }}>
-              <iframe
-                title="KD4 액팅 스튜디오 위치 지도"
-                src={MAP_EMBED}
-                width="100%"
-                height="100%"
-                style={{ border: 0, display: 'block', minHeight: '340px' }}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
-              />
-            </div>
-
-            {/* 주소 + 길찾기 */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div style={{ background: 'var(--navy)', color: '#fff', borderRadius: '14px', padding: '22px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-                  <MapPin size={18} strokeWidth={2} />
-                  <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.78rem', letterSpacing: '0.12em', color: '#F0A8A8' }}>ADDRESS</span>
-                </div>
-                <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.02rem', fontWeight: 700, lineHeight: 1.5, wordBreak: 'keep-all' }}>{ADDRESS_FULL}</p>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                <a href={NAVER_MAP} target="_blank" rel="noopener noreferrer" style={mapBtn}>
-                  <Navigation size={15} strokeWidth={2} /> 네이버 지도
-                </a>
-                <a href={KAKAO_MAP} target="_blank" rel="noopener noreferrer" style={mapBtn}>
-                  <MapIcon size={15} strokeWidth={2} /> 카카오맵
-                </a>
-                <a href={GOOGLE_MAP} target="_blank" rel="noopener noreferrer" style={{ ...mapBtn, gridColumn: '1 / -1' }}>
-                  <Navigation size={15} strokeWidth={2} /> 구글 지도 · 로드뷰로 외관 보기
-                </a>
-              </div>
-
-              {/* 교통 */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '2px' }}>
-                {ACCESS_ITEMS.map(({ Icon, title, desc }) => (
-                  <div key={title} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '10px', padding: '12px 14px' }}>
-                    <div style={{ width: '32px', height: '32px', flexShrink: 0, borderRadius: '8px', background: 'var(--navy-tint-2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <Icon size={16} color="var(--navy)" strokeWidth={1.9} />
-                    </div>
-                    <div>
-                      <p style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '2px' }}>{title}</p>
-                      <p style={{ fontSize: '0.82rem', color: 'var(--gray-light)', lineHeight: 1.5, wordBreak: 'keep-all' }}>{desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== 오시는 길 약도 ===== */}
-      <section style={{ padding: 'clamp(48px, 8vw, 72px) 0', background: 'var(--bg2)' }}>
-        <div className="container">
-          <div style={{ maxWidth: '720px', margin: '0 auto 28px', textAlign: 'center' }}>
-            <p className="section-eyebrow">길찾기 약도</p>
-            <h2 className="section-title-serif" style={{ marginBottom: '8px' }}>이대역에서 걸어오는 길</h2>
             <p className="section-desc">이대역 5번 출구 → 예스APM·가인볼링장 코너에서 이화여대1길로, 도보 약 3분.</p>
           </div>
-          <div className="sinchon-route-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(280px, 340px) 1fr', gap: '24px', maxWidth: '880px', margin: '0 auto', alignItems: 'center' }}>
-            {/* 도보 약도 (일러스트 이미지) */}
-            <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '16px', padding: '8px', boxShadow: '0 14px 40px -28px rgba(15,51,100,0.5)', overflow: 'hidden' }}>
+
+          {/* 약도(메인) + 번호 길안내 */}
+          <div className="sinchon-route-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 440px) 1fr', gap: '28px', maxWidth: '960px', margin: '0 auto', alignItems: 'center' }}>
+            <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '16px', padding: '8px', boxShadow: '0 18px 48px -28px rgba(15,51,100,0.5)', overflow: 'hidden' }}>
               <Image
                 src="/sinchon-route-map.png"
                 alt="이대역 5번 출구에서 KD4 액팅 스튜디오(아리움3차)까지 도보 약도 — 성산로 → 예스APM·가인볼링장 코너 → 이화여대1길"
                 width={1122}
                 height={1402}
-                sizes="(max-width: 760px) 100vw, 340px"
+                sizes="(max-width: 760px) 100vw, 440px"
+                priority
                 style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '10px' }}
               />
             </div>
-            {/* 단계 안내 */}
-            <ol style={{ display: 'flex', flexDirection: 'column', gap: '12px', listStyle: 'none', padding: 0, margin: 0 }}>
+            <ol style={{ display: 'flex', flexDirection: 'column', gap: '14px', listStyle: 'none', padding: 0, margin: 0 }}>
               {[
                 { t: '이대역(2호선) 5번 출구', d: '출구로 나와 성산로 방향으로' },
                 { t: 'YES apM·가인볼링장 코너', d: '포레스트 공원 옆에서 이화여대1길로 진입' },
@@ -196,6 +126,40 @@ export default function SinchonPage() {
                 </li>
               ))}
             </ol>
+          </div>
+
+          {/* 주소 · 교통 · 길찾기 */}
+          <div className="sinchon-info-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', maxWidth: '960px', margin: '32px auto 0', alignItems: 'start' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ background: 'var(--navy)', color: '#fff', borderRadius: '14px', padding: '22px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+                  <MapPin size={18} strokeWidth={2} />
+                  <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.78rem', letterSpacing: '0.12em', color: '#F0A8A8' }}>ADDRESS</span>
+                </div>
+                <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.02rem', fontWeight: 700, lineHeight: 1.5, wordBreak: 'keep-all' }}>{ADDRESS_FULL}</p>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <a href={NAVER_MAP} target="_blank" rel="noopener noreferrer" style={mapBtn}>
+                  <Navigation size={15} strokeWidth={2} /> 네이버 지도
+                </a>
+                <a href={KAKAO_MAP} target="_blank" rel="noopener noreferrer" style={mapBtn}>
+                  <MapIcon size={15} strokeWidth={2} /> 카카오맵
+                </a>
+              </div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {ACCESS_ITEMS.map(({ Icon, title, desc }) => (
+                <div key={title} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '10px', padding: '12px 14px' }}>
+                  <div style={{ width: '32px', height: '32px', flexShrink: 0, borderRadius: '8px', background: 'var(--navy-tint-2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Icon size={16} color="var(--navy)" strokeWidth={1.9} />
+                  </div>
+                  <div>
+                    <p style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '2px' }}>{title}</p>
+                    <p style={{ fontSize: '0.82rem', color: 'var(--gray-light)', lineHeight: 1.5, wordBreak: 'keep-all' }}>{desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -231,8 +195,8 @@ export default function SinchonPage() {
 
       <style>{`
         @media (max-width: 760px) {
-          .sinchon-map-grid { grid-template-columns: 1fr !important; }
           .sinchon-route-grid { grid-template-columns: 1fr !important; }
+          .sinchon-info-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
     </div>
