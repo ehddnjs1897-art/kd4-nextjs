@@ -10,6 +10,8 @@ import { revalidateTag } from '@/lib/revalidate'
 
 type Ctx = { params: Promise<{ id: string; photoId: string }> }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 async function authorize(actorId: string, userId: string) {
   // maybeSingle(): 0건도 허용 → PGRST116 오류 로그 노이즈 방지
   const { data: profile } = await supabaseAdmin
@@ -23,6 +25,9 @@ async function authorize(actorId: string, userId: string) {
 export async function PATCH(request: NextRequest, { params }: Ctx) {
   try {
     const { id, photoId } = await params
+    if (!UUID_RE.test(id) || !UUID_RE.test(photoId)) {
+      return NextResponse.json({ error: '잘못된 ID입니다.' }, { status: 400 })
+    }
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
@@ -59,6 +64,9 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
 export async function DELETE(_request: NextRequest, { params }: Ctx) {
   try {
     const { id, photoId } = await params
+    if (!UUID_RE.test(id) || !UUID_RE.test(photoId)) {
+      return NextResponse.json({ error: '잘못된 ID입니다.' }, { status: 400 })
+    }
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })

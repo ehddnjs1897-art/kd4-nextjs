@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null)
   // 최대 길이 상수
   const MAX_PATH_LEN = 500   // Storage/R2 경로
-  const MAX_SUMMARY_LEN = 1000
+  const MAX_SUMMARY_LEN = 2000
   const MAX_FILENAME_LEN = 200
   const MAX_PHOTOS = 30      // 배열 크기 상한
   const docPath: string | null = typeof body?.docPath === 'string' ? body.docPath.slice(0, MAX_PATH_LEN) : null
@@ -99,6 +99,15 @@ export async function POST(request: NextRequest) {
 
   const nowIso = new Date().toISOString()
   const partialErrors: string[] = []
+
+  // 이미 제출된 경우 — 중복 제출 방지 (사진/영상 row 중복 삽입 방지)
+  if (profile.actor_id) {
+    const { data: existingActor } = await supabaseAdmin
+      .from('actors').select('intake_submitted_at').eq('id', profile.actor_id).maybeSingle()
+    if (existingActor?.intake_submitted_at) {
+      return NextResponse.json({ error: '이미 제출된 프로필입니다.', submitted: true }, { status: 409 })
+    }
+  }
 
   // 1. 대상 배우 row 결정 — 없으면 비공개로 신규 생성
   let actorId = profile.actor_id as string | null

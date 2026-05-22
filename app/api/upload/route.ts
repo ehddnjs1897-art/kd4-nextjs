@@ -13,6 +13,7 @@ import { uploadFile } from '@/lib/storage'
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5 MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const DEFAULT_BUCKET = 'actor-media'
 // 업로드 허용 버킷 — 클라이언트가 임의 버킷에 파일을 올리는 것을 방지
 const ALLOWED_BUCKETS = new Set(['actor-media', 'actor-photos'])
@@ -74,6 +75,10 @@ export async function POST(request: NextRequest) {
   const formData = await request.formData()
   const actorIdRaw = formData.get('actorId')
   const targetActorId = typeof actorIdRaw === 'string' ? actorIdRaw : null
+
+  if (!targetActorId || !UUID_RE.test(targetActorId)) {
+    return NextResponse.json({ error: '잘못된 배우 ID입니다.' }, { status: 400 })
+  }
 
   const check = await requireUploadAccess(targetActorId)
   if (check instanceof NextResponse) return check

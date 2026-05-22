@@ -8,9 +8,15 @@ import { revalidateTag } from '@/lib/revalidate'
 
 type Ctx = { params: Promise<{ id: string }> }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+const YOUTUBE_ID_RE = /^[a-zA-Z0-9_-]{11}$/
+
 export async function POST(request: NextRequest, { params }: Ctx) {
   try {
     const { id } = await params
+    if (!UUID_RE.test(id)) {
+      return NextResponse.json({ error: '잘못된 배우 ID입니다.' }, { status: 400 })
+    }
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
@@ -24,6 +30,9 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     const { youtube_id, r2_key, title, video_type } = await request.json()
     if (!youtube_id && !r2_key) {
       return NextResponse.json({ error: 'youtube_id 또는 r2_key가 필요합니다.' }, { status: 400 })
+    }
+    if (youtube_id && !YOUTUBE_ID_RE.test(youtube_id)) {
+      return NextResponse.json({ error: '유효하지 않은 YouTube ID입니다.' }, { status: 400 })
     }
 
     const insertData: Record<string, unknown> = {
