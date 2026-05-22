@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import ActorTabs from '@/components/actors/ActorTabs'
 import ShareButton from '@/components/actors/ShareButton'
-import ProfilePhotoWrapper from '@/components/actors/ProfilePhotoWrapper'
+import ActorGallery from '@/components/actors/ActorGallery'
 import ActorDbLocked from '@/components/actors/ActorDbLocked'
 import { UserRole } from '@/lib/types'
 import { canViewActorDb, canViewActorContact } from '@/lib/access'
@@ -36,7 +36,9 @@ interface Actor {
 
 interface ActorPhoto {
   id: string
-  drive_photo_id: string
+  drive_photo_id: string | null
+  url: string | null
+  storage_path: string | null
   caption: string | null
   sort_order: number
 }
@@ -71,7 +73,7 @@ async function getActor(id: string): Promise<Actor | null> {
       id, name, gender, age_group, height, weight, skills,
       drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram,
       casting_tags, casting_summary, profile_pdf_url,
-      actor_photos ( id, drive_photo_id, caption, sort_order ),
+      actor_photos ( id, drive_photo_id, url, storage_path, caption, sort_order ),
       actor_videos ( id, youtube_id, title ),
       actor_filmography ( id, category, title, role, year, production )
     `
@@ -90,7 +92,7 @@ async function getActor(id: string): Promise<Actor | null> {
       `
       id, name, gender, age_group, height, weight, skills,
       drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram,
-      actor_photos ( id, drive_photo_id, caption, sort_order ),
+      actor_photos ( id, drive_photo_id, url, storage_path, caption, sort_order ),
       actor_videos ( id, youtube_id, title ),
       actor_filmography ( id, category, title, role, year, production )
     `
@@ -117,6 +119,17 @@ function profilePhotoUrl(actor: Actor): string {
   if (actor.drive_photo_id)
     return `https://drive.google.com/thumbnail?id=${actor.drive_photo_id}&sz=w900`
   return '/placeholder-actor.svg'
+}
+
+/** actor_photos 한 장의 표시 URL (업로드 url 우선 → storage → drive) */
+function photoDisplayUrl(p: ActorPhoto): string | null {
+  if (p.url) return p.url
+  if (p.storage_path) {
+    const base = process.env.NEXT_PUBLIC_SUPABASE_URL
+    if (base) return `${base}/storage/v1/object/public/actor-photos/${p.storage_path}`
+  }
+  if (p.drive_photo_id) return `https://drive.google.com/thumbnail?id=${p.drive_photo_id}&sz=w900`
+  return null
 }
 
 /* ---- generateMetadata — 카카오톡 캐스팅 카드 미리보기용 ---- */
@@ -213,6 +226,14 @@ export default async function ActorDetailPage({
   if (!actor) notFound()
 
   const photoUrl = profilePhotoUrl(actor)
+  // 좌측 갤러리용 사진 목록 (메인 + 추가 사진들)
+  const extraPhotos = [...(actor.actor_photos ?? [])]
+    .sort((a, b) => a.sort_order - b.sort_order)
+    .map(photoDisplayUrl)
+    .filter((u): u is string => !!u)
+  const galleryPhotos = photoUrl.includes('placeholder')
+    ? (extraPhotos.length ? extraPhotos : [photoUrl])
+    : [photoUrl, ...extraPhotos]
   const pageUrl =
     process.env.NEXT_PUBLIC_SITE_URL
       ? `${process.env.NEXT_PUBLIC_SITE_URL}/actors/${actor.id}`
@@ -264,15 +285,10 @@ export default async function ActorDetailPage({
           {/* ---- 좌측: 프로필 ---- */}
           <aside style={styles.sidebar} className="actor-detail-sidebar">
             <div style={styles.profileImageWrap} className="actor-detail-profile-img">
-              <ProfilePhotoWrapper
-                src={photoUrl}
-                alt={actor.name}
-                imageProtected={!canViewActorContact(role)}
-                downloadHref={
-                  canViewActorContact(role) && actor.drive_photo_id
-                    ? `https://drive.google.com/uc?id=${actor.drive_photo_id}&export=download`
-                    : undefined
-                }
+              <ActorGallery
+                photos={galleryPhotos}
+                name={actor.name}
+                allowDownload={canViewActorContact(role)}
               />
             </div>
 

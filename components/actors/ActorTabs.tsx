@@ -7,7 +7,9 @@ import Link from 'next/link'
 /* ---- 타입 ---- */
 interface ActorPhoto {
   id: string
-  drive_photo_id: string
+  drive_photo_id: string | null
+  url?: string | null
+  storage_path?: string | null
   caption: string | null
   sort_order: number
 }
@@ -59,8 +61,13 @@ const CATEGORY_LABEL: Record<FilmoEntry['category'], string> = {
   etc: '기타',
 }
 
-function thumbUrl(drivePhotoId: string) {
-  return `https://drive.google.com/thumbnail?id=${drivePhotoId}&sz=w800`
+function photoSrc(p: ActorPhoto): string {
+  if (p.url) return p.url
+  if (p.storage_path) {
+    return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/actor-photos/${p.storage_path}`
+  }
+  if (p.drive_photo_id) return `https://drive.google.com/thumbnail?id=${p.drive_photo_id}&sz=w800`
+  return '/placeholder-actor.svg'
 }
 
 function downloadUrl(drivePhotoId: string) {
@@ -171,7 +178,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected }: Pro
                     key={photo.id}
                     style={{
                       ...styles.photoItem,
-                      backgroundImage: `url("${thumbUrl(photo.drive_photo_id)}")`,
+                      backgroundImage: `url("${photoSrc(photo)}")`,
                       backgroundSize: 'contain',
                       backgroundPosition: 'center',
                       backgroundRepeat: 'no-repeat',
@@ -186,7 +193,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected }: Pro
                   <div key={photo.id} style={styles.photoItemDirector}>
                     <div style={{ ...styles.photoItem, position: 'relative' }}>
                       <Image
-                        src={thumbUrl(photo.drive_photo_id)}
+                        src={photoSrc(photo)}
                         alt={photo.caption || `${actor.name} ${idx + 2}페이지`}
                         fill
                         sizes="(max-width:640px) 100vw, 50vw"
@@ -196,7 +203,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected }: Pro
                       <span style={styles.pageLabel}>{String(idx + 2).padStart(2, '0')}</span>
                     </div>
                     <a
-                      href={downloadUrl(photo.drive_photo_id)}
+                      href={photoSrc(photo)}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={styles.downloadBtn}
