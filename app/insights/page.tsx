@@ -18,6 +18,9 @@ export default function InsightsPage() {
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
+  const [fetchError, setFetchError] = useState('')
+  const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null)
 
   const [url, setUrl] = useState('')
   const [memo, setMemo] = useState('')
@@ -44,17 +47,24 @@ export default function InsightsPage() {
 
   const fetchInsights = useCallback(async () => {
     setLoading(true)
-    const params = new URLSearchParams()
-    if (filterCategory !== '전체') params.set('category', filterCategory)
-    if (filterSource !== '전체') params.set('source_type', filterSource)
-    if (filterFavorite) params.set('favorite', 'true')
-    if (search) params.set('q', search)
+    setFetchError('')
+    try {
+      const params = new URLSearchParams()
+      if (filterCategory !== '전체') params.set('category', filterCategory)
+      if (filterSource !== '전체') params.set('source_type', filterSource)
+      if (filterFavorite) params.set('favorite', 'true')
+      if (search) params.set('q', search)
 
-    const res = await fetch(`/api/insights?${params}`)
-    const json = await res.json()
-    setInsights(json.data ?? [])
-    setTotal(json.total ?? 0)
-    setLoading(false)
+      const res = await fetch(`/api/insights?${params}`)
+      const json = await res.json()
+      if (!res.ok) { setFetchError('목록을 불러오지 못했습니다.'); return }
+      setInsights(json.data ?? [])
+      setTotal(json.total ?? 0)
+    } catch {
+      setFetchError('네트워크 오류가 발생했습니다.')
+    } finally {
+      setLoading(false)
+    }
   }, [filterCategory, filterSource, filterFavorite, search])
 
   useEffect(() => { fetchInsights() }, [fetchInsights])
@@ -62,6 +72,7 @@ export default function InsightsPage() {
   const handleSave = async () => {
     if (!url.trim()) return
     setSaving(true)
+    setSaveError('')
     try {
       const res = await fetch('/api/insights', {
         method: 'POST',
@@ -74,7 +85,8 @@ export default function InsightsPage() {
       setShowMemo(false)
       await fetchInsights()
     } catch {
-      alert('저장 실패. 다시 시도해주세요.')
+      setSaveError('저장 실패. 다시 시도해주세요.')
+      setTimeout(() => setSaveError(''), 4000)
     } finally {
       setSaving(false)
     }
@@ -90,10 +102,13 @@ export default function InsightsPage() {
   }
 
   const deleteInsight = async (id: string) => {
-    if (!confirm('삭제할까요?')) return
-    await fetch(`/api/insights/${id}`, { method: 'DELETE' })
-    setInsights((prev: Insight[]) => prev.filter((i: Insight) => i.id !== id))
-    setTotal((t: number) => t - 1)
+    if (confirmingDeleteId !== id) { setConfirmingDeleteId(id); return }
+    setConfirmingDeleteId(null)
+    try {
+      await fetch(`/api/insights/${id}`, { method: 'DELETE' })
+      setInsights((prev: Insight[]) => prev.filter((i: Insight) => i.id !== id))
+      setTotal((t: number) => t - 1)
+    } catch { /* 낙관적 업데이트 실패 시 무시 */ }
   }
 
   const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null)
@@ -174,6 +189,7 @@ export default function InsightsPage() {
                   메모 {showMemo ? '▲' : '▼'}
                 </button>
               </div>
+              {saveError && <p style={{ fontSize: 12, color: '#ef4444', marginTop: 6 }}>{saveError}</p>}
               {showMemo && (
                 <textarea
                   className="ins-input"
@@ -282,6 +298,7 @@ export default function InsightsPage() {
         </div>
 
         {/* 카드 목록 */}
+        {fetchError && <p style={{ fontSize: 13, color: '#ef4444', padding: '16px 0', textAlign: 'center' }}>{fetchError}</p>}
         {loading ? (
           <p style={{ color: 'var(--gray)', textAlign: 'center', padding: '60px 0' }}>불러오는 중…</p>
         ) : insights.length === 0 ? (
@@ -359,11 +376,24 @@ export default function InsightsPage() {
                         style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 16, color: insight.is_favorite ? 'var(--gold)' : 'var(--gray)' }}
                         title={insight.is_favorite ? '즐겨찾기 해제' : '즐겨찾기'}
                       >★</button>
-                      <button
-                        onClick={() => deleteInsight(insight.id)}
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--gray)' }}
-                        title="삭제"
-                      >✕</button>
+                      {confirmingDeleteId === insight.id ? (
+                        <>
+                          <button
+                            onClick={() => setConfirmingDeleteId(null)}
+                            style={{ background: 'none', border: '1px solid var(--border)', borderRadius: 4, cursor: 'pointer', fontSize: 11, color: 'var(--gray)', padding: '2px 6px' }}
+                          >취소</button>
+                          <button
+                            onClick={() => deleteInsight(insight.id)}
+                            style={{ background: '#ef4444', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 11, color: '#fff', padding: '2px 6px' }}
+                          >삭제</button>
+                        </>
+                      ) : (
+                        <button
+                          onClick={() => deleteInsight(insight.id)}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--gray)' }}
+                          title="삭제"
+                        >✕</button>
+                      )}
                     </div>
                   </div>
                 </div>
