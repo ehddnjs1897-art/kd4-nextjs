@@ -31,6 +31,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '댓글은 2,000자 이하로 입력해주세요.' }, { status: 400 })
   }
 
+  // 레이트 리밋: 1분에 최대 10개 (스팸 방지)
+  const oneMinAgo = new Date(Date.now() - 60_000).toISOString()
+  const { count: recentCommentCount } = await supabaseAdmin
+    .from('comments')
+    .select('id', { count: 'exact', head: true })
+    .eq('author_id', user.id)
+    .gte('created_at', oneMinAgo)
+  if ((recentCommentCount ?? 0) >= 10) {
+    return NextResponse.json({ error: '잠시 후 다시 시도해주세요. (1분 최대 10개)' }, { status: 429 })
+  }
+
   // 게시글 존재 확인 + 작성자 이름 병렬 조회 (supabaseAdmin: RLS 우회로 정확한 결과)
   const [{ data: post, error: postError }, { data: profile }] = await Promise.all([
     supabaseAdmin.from('posts').select('id').eq('id', post_id).maybeSingle(),

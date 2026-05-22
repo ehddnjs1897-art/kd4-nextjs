@@ -78,6 +78,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '올바른 카테고리를 선택해주세요.' }, { status: 400 })
   }
 
+  // 레이트 리밋: 1분에 최대 5개 (스팸 방지)
+  const oneMinAgo = new Date(Date.now() - 60_000).toISOString()
+  const { count: recentPostCount } = await supabaseAdmin
+    .from('posts')
+    .select('id', { count: 'exact', head: true })
+    .eq('author_id', user.id)
+    .gte('created_at', oneMinAgo)
+  if ((recentPostCount ?? 0) >= 5) {
+    return NextResponse.json({ error: '잠시 후 다시 시도해주세요. (1분 최대 5개)' }, { status: 429 })
+  }
+
   // 작성자 이름 조회 (admin 클라이언트 → RLS 우회)
   const { data: profile } = await supabaseAdmin
     .from('profiles')

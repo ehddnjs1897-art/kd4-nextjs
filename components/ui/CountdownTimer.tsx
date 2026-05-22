@@ -13,12 +13,14 @@ function calcTimeLeft(deadline?: string) {
   const target = deadline
     ? new Date(deadline)
     : (() => { const d = new Date(); d.setHours(24, 0, 0, 0); return d })()
-  const diff = Math.max(0, target.getTime() - Date.now())
+  const rawDiff = target.getTime() - Date.now()
+  const diff = Math.max(0, rawDiff)
   return {
     days: Math.floor(diff / 86_400_000),
     h: Math.floor((diff % 86_400_000) / 3_600_000),
     m: Math.floor((diff % 3_600_000) / 60_000),
     s: Math.floor((diff % 60_000) / 1_000),
+    expired: rawDiff <= 0,
   }
 }
 
@@ -34,6 +36,29 @@ export default function CountdownTimer({ deadline, compact = false }: Props) {
   const pad = (n: number) => String(n).padStart(2, '0')
 
   if (!time) return null
+
+  /* ── 마감 처리 ────────────────────────────────────────────── */
+  if (time.expired) {
+    if (compact) {
+      return (
+        <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.82rem' }}>
+          마감
+        </span>
+      )
+    }
+    return (
+      <p style={{
+        fontFamily: 'var(--font-display)',
+        fontSize: '0.95rem',
+        fontWeight: 700,
+        color: 'var(--gray)',
+        letterSpacing: '0.08em',
+        textAlign: 'center',
+      }}>
+        모집이 마감됐습니다
+      </p>
+    )
+  }
 
   /* ── 컴팩트 모드: sticky 바 인라인 (색상은 부모에서 상속) ────── */
   if (compact) {
