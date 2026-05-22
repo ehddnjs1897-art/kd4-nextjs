@@ -132,7 +132,7 @@ export default function EnrollForm({
       return
     }
     if (!userPhone) {
-      setError('연락처를 먼저 등록해 주세요. 신청 후 결제 안내를 문자로 드립니다.')
+      setError('마이페이지에서 연락처를 등록해 주세요.')
       return
     }
     setLoading(true)
@@ -366,7 +366,7 @@ export default function EnrollForm({
             </span>
             {userPhone
               ? <span style={{ fontSize: '0.83rem', fontWeight: 700, color: '#111', whiteSpace: 'nowrap' }}>{userPhone}</span>
-              : <Link href="/dashboard" style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--navy)', textDecoration: 'underline', whiteSpace: 'nowrap' }}>연락처 등록 →</Link>
+              : <Link href="/dashboard" style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--navy)', textDecoration: 'underline', whiteSpace: 'nowrap' }}>마이페이지에서 등록 →</Link>
             }
           </div>
         </div>
@@ -393,7 +393,7 @@ export default function EnrollForm({
         >
           {loading ? '신청 중...' : (
             <>
-              {ymLabel(nextMonth)} 기수 신청하기
+              {parseInt(nextMonth.split('-')[1], 10)}월 클래스 신청하기
               <ArrowRight size={16} strokeWidth={2.5} />
             </>
           )}
