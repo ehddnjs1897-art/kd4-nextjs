@@ -38,9 +38,7 @@ const REVIEW_ITEMS_2 = [
 ]
 
 const PARTNERS = [
-  '서울대학교', '고려대학교', '(주)컴플렉시온', '(주)needs.z',
-  'CGV 신촌아트레온 아트하우스', '리플레이', '서우스튜디오',
-  '액터길드', 'spectrum8 스튜디오', '(주)마이엠', 'neez.n', '찍어주다',
+  '서우스튜디오', '리플레이', 'CGV 신촌아트레온 아트하우스',
 ]
 
 const reviewCardStyle: React.CSSProperties = {
