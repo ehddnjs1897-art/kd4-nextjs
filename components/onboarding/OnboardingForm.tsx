@@ -1,0 +1,244 @@
+'use client'
+
+/**
+ * 배우 온보딩 업로드 폼 (가입 직후)
+ *  - PPT(≤10MB) → Supabase Storage actor-docs (비공개)
+ *  - 사진 3장(가로세로 혼합, 장당 ≤5MB) → Supabase Storage actor-photos (공개)
+ *  - 영상(≤300MB) → R2 presigned PUT (브라우저 직접 업로드)
+ * 업로드는 모두 브라우저가 직접 수행 → 마지막에 /api/profile/intake 로 경로만 기록.
+ */
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
+
+const MB = 1024 * 1024
+
+export default function OnboardingForm({
+  userName,
+}: {
+  userId: string
+  userName: string
+}) {
+  const router = useRouter()
+  const [ppt, setPpt] = useState<File | null>(null)
+  const [photos, setPhotos] = useState<File[]>([])
+  const [video, setVideo] = useState<File | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [status, setStatus] = useState('')
+  const [error, setError] = useState('')
+
+  function pickPhotos(list: FileList | null) {
+    if (!list) return
+    const arr = Array.from(list).slice(0, 3)
+    for (const f of arr) {
+      if (f.size > 5 * MB) {
+        setError(`사진은 장당 5MB 이하여야 합니다: ${f.name}`)
+        return
+      }
+    }
+    setError('')
+    setPhotos(arr)
+  }
+
+  function pickPpt(f: File | null) {
+    if (f && f.size > 10 * MB) {
+      setError('프로필 파일(PPT/PDF)은 10MB 이하여야 합니다.')
+      return
+    }
+    setError('')
+    setPpt(f)
+  }
+
+  function pickVideo(f: File | null) {
+    if (f && f.size > 300 * MB) {
+      setError('영상은 300MB 이하여야 합니다.')
+      return
+    }
+    setError('')
+    setVideo(f)
+  }
+
+  async function uploadToBucket(bucket: string, file: File, contentType?: string): Promise<string> {
+    const supabase = createClient()
+    const ext = file.name.split('.').pop()?.toLowerCase() || 'bin'
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`
+    const { error: upErr } = await supabase.storage.from(bucket).upload(path, file, {
+      contentType: contentType || file.type || undefined,
+      upsert: false,
+    })
+    if (upErr) throw new Error(`${bucket} 업로드 실패: ${upErr.message}`)
+    return path
+  }
+
+  async function uploadVideo(file: File): Promise<{ key: string; size: number; filename: string }> {
+    const res = await fetch('/api/r2/upload-url', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        filename: file.name,
+        contentType: file.type || 'video/mp4',
+        size: file.size,
+      }),
+    })
+    const j = await res.json()
+    if (!res.ok) throw new Error(j.error || '영상 업로드 URL 발급 실패')
+    const put = await fetch(j.uploadUrl, {
+      method: 'PUT',
+      body: file,
+      headers: { 'Content-Type': file.type || 'video/mp4' },
+    })
+    if (!put.ok) throw new Error('영상 업로드에 실패했습니다. (네트워크 또는 CORS 설정 확인)')
+    return { key: j.key, size: file.size, filename: file.name }
+  }
+
+  async function submit() {
+    setError('')
+    if (!ppt && photos.length === 0 && !video) {
+      setError('하나 이상 첨부해 주세요.')
+      return
+    }
+    setLoading(true)
+    try {
+      let docPath: string | undefined
+      if (ppt) {
+        setStatus('프로필(PPT) 업로드 중...')
+        const ext = ppt.name.split('.').pop()?.toLowerCase()
+        const ct =
+          ppt.type ||
+          (ext === 'pdf'
+            ? 'application/pdf'
+            : 'application/vnd.openxmlformats-officedocument.presentationml.presentation')
+        docPath = await uploadToBucket('actor-docs', ppt, ct)
+      }
+
+      const photoPaths: { path: string }[] = []
+      for (let i = 0; i < photos.length; i++) {
+        setStatus(`사진 업로드 중... (${i + 1}/${photos.length})`)
+        const p = await uploadToBucket('actor-photos', photos[i])
+        photoPaths.push({ path: p })
+      }
+
+      let videoMeta: { key: string; size: number; filename: string } | undefined
+      if (video) {
+        setStatus('영상 업로드 중... (용량이 크면 시간이 걸려요)')
+        videoMeta = await uploadVideo(video)
+      }
+
+      setStatus('등록 마무리 중...')
+      const res = await fetch('/api/profile/intake', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ docPath, photos: photoPaths, video: videoMeta }),
+      })
+      const j = await res.json()
+      if (!res.ok) throw new Error(j.error || '등록에 실패했습니다.')
+
+      router.push('/dashboard?intake=done')
+    } catch (e) {
+      setError(e instanceof Error ? e.message : '오류가 발생했습니다.')
+      setLoading(false)
+      setStatus('')
+    }
+  }
+
+  return (
+    <div style={s.wrap}>
+      <div style={s.head}>
+        <p style={s.eyebrow}>PROFILE SETUP</p>
+        <h1 style={s.title}>프로필 등록</h1>
+        <p style={s.sub}>
+          {userName ? `${userName}님, ` : ''}프로필 자료를 올려 주세요. 검토 후 배우 DB에 공개됩니다.
+        </p>
+      </div>
+
+      {/* PPT */}
+      <div style={s.field}>
+        <label style={s.label}>프로필 PPT / PDF <span style={s.hint}>(가로형, 10MB 이하)</span></label>
+        <input
+          type="file"
+          accept=".pptx,.pdf,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation"
+          disabled={loading}
+          onChange={(e) => pickPpt(e.target.files?.[0] ?? null)}
+          style={s.input}
+        />
+        {ppt && <p style={s.picked}>✓ {ppt.name} ({(ppt.size / MB).toFixed(1)}MB)</p>}
+      </div>
+
+      {/* 사진 */}
+      <div style={s.field}>
+        <label style={s.label}>프로필 사진 <span style={s.hint}>(최대 3장, 가로세로 무관, 장당 5MB 이하)</span></label>
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          disabled={loading}
+          onChange={(e) => pickPhotos(e.target.files)}
+          style={s.input}
+        />
+        {photos.length > 0 && (
+          <p style={s.picked}>✓ {photos.length}장 선택됨: {photos.map((p) => p.name).join(', ')}</p>
+        )}
+      </div>
+
+      {/* 영상 */}
+      <div style={s.field}>
+        <label style={s.label}>출연 영상 <span style={s.hint}>(300MB 이하)</span></label>
+        <input
+          type="file"
+          accept="video/*"
+          disabled={loading}
+          onChange={(e) => pickVideo(e.target.files?.[0] ?? null)}
+          style={s.input}
+        />
+        {video && <p style={s.picked}>✓ {video.name} ({(video.size / MB).toFixed(0)}MB)</p>}
+      </div>
+
+      {error && <p style={s.error}>{error}</p>}
+      {loading && status && <p style={s.status}>⏳ {status}</p>}
+
+      <button type="button" onClick={submit} disabled={loading} style={{ ...s.btn, opacity: loading ? 0.6 : 1 }}>
+        {loading ? '업로드 중...' : '프로필 제출하기'}
+      </button>
+
+      <button
+        type="button"
+        onClick={() => router.push('/dashboard')}
+        disabled={loading}
+        style={s.skip}
+      >
+        나중에 하기
+      </button>
+    </div>
+  )
+}
+
+const s: Record<string, React.CSSProperties> = {
+  wrap: { maxWidth: 520, margin: '0 auto', padding: 'clamp(48px,9vw,80px) 24px', color: 'var(--white)' },
+  head: { marginBottom: 32 },
+  eyebrow: {
+    fontFamily: 'var(--font-display)', fontSize: '0.7rem', letterSpacing: '0.3em',
+    color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 12,
+  },
+  title: { fontFamily: 'var(--font-display)', fontSize: '1.6rem', fontWeight: 700, marginBottom: 10 },
+  sub: { fontSize: '0.9rem', color: 'var(--gray)', lineHeight: 1.7 },
+  field: { display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24 },
+  label: { fontSize: '0.85rem', fontWeight: 700, color: 'var(--white)' },
+  hint: { fontSize: '0.75rem', fontWeight: 400, color: 'var(--gray)' },
+  input: {
+    background: 'var(--bg3)', border: '1px solid var(--border)', borderRadius: 8,
+    padding: '10px 12px', color: 'var(--white)', fontSize: '0.85rem', fontFamily: 'inherit',
+  },
+  picked: { fontSize: '0.78rem', color: 'var(--gold)' },
+  error: { color: 'var(--accent-red, #f87171)', fontSize: '0.85rem', marginBottom: 14 },
+  status: { color: 'var(--gold)', fontSize: '0.85rem', marginBottom: 14 },
+  btn: {
+    width: '100%', padding: 15, background: 'var(--gold)', color: '#fff', fontWeight: 800,
+    fontSize: '1rem', borderRadius: 10, border: 'none', cursor: 'pointer', fontFamily: 'var(--font-display)',
+    letterSpacing: '0.04em',
+  },
+  skip: {
+    width: '100%', padding: 12, marginTop: 10, background: 'transparent', color: 'var(--gray)',
+    fontSize: '0.85rem', borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+  },
+}

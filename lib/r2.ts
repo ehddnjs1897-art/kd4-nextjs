@@ -66,6 +66,27 @@ export async function uploadVideo(
 }
 
 /**
+ * 업로드용 presigned PUT URL 발급 — 브라우저가 R2로 "직접" 업로드.
+ * Vercel 서버리스 본문 4.5MB 제한을 우회하기 위함 (300MB 영상 대응).
+ * 발급된 URL로 브라우저가 PUT 하면 파일이 R2에 바로 저장됨.
+ * @param key R2 경로
+ * @param contentType MIME (예: "video/mp4")
+ * @param expiresInSec 만료 시간 (초). 기본 1시간.
+ */
+export async function getUploadUrl(
+  key: string,
+  contentType: string,
+  expiresInSec = 3600
+): Promise<string> {
+  const c = getClient()
+  return getSignedUrl(
+    c,
+    new PutObjectCommand({ Bucket: BUCKET_NAME, Key: key, ContentType: contentType }),
+    { expiresIn: expiresInSec }
+  )
+}
+
+/**
  * Signed URL 발급 — 시간제한 비공개 다운로드/재생 링크
  * @param key R2 경로
  * @param expiresInSec 만료 시간 (초). 기본 24시간.
