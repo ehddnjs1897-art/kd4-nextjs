@@ -138,11 +138,29 @@ export async function POST(request: NextRequest) {
     //   이제 응답 전 webhook 완료 대기. 단 webhook 자체가 실패해도 Supabase 데이터는 보존됨.
     const webhookUrl = process.env.MAKE_WEBHOOK_URL
     if (webhookUrl) {
+      // 선택 필드 trim + length cap → 오염된 입력이 Make 시나리오에 그대로 흘러들어가지 않도록
+      const sanitizedPayload = {
+        name,
+        phone,
+        email: emailRaw,
+        class_name: typeof record?.class_name === 'string' ? record.class_name.trim().slice(0, 100) : null,
+        source: typeof record?.source === 'string' ? record.source.trim().slice(0, 100) : null,
+        inquiry_type: typeof record?.inquiry_type === 'string' ? record.inquiry_type.trim().slice(0, 100) : null,
+        motivation: typeof record?.motivation === 'string' ? record.motivation.trim().slice(0, 2000) : null,
+        utm_source: typeof record?.utm_source === 'string' ? record.utm_source.trim().slice(0, 200) : null,
+        utm_medium: typeof record?.utm_medium === 'string' ? record.utm_medium.trim().slice(0, 200) : null,
+        utm_campaign: typeof record?.utm_campaign === 'string' ? record.utm_campaign.trim().slice(0, 200) : null,
+        utm_content: typeof record?.utm_content === 'string' ? record.utm_content.trim().slice(0, 200) : null,
+        utm_term: typeof record?.utm_term === 'string' ? record.utm_term.trim().slice(0, 200) : null,
+        referrer: typeof record?.referrer === 'string' ? record.referrer.trim().slice(0, 500) : null,
+        status: typeof record?.status === 'string' ? record.status.trim().slice(0, 50) : '대기',
+        ...(savedId ? { id: savedId } : {}),
+      }
       try {
         await fetch(webhookUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(record),
+          body: JSON.stringify(sanitizedPayload),
           // 10초 후 timeout (Make 처리 평균 5~8초)
           signal: AbortSignal.timeout(10000),
         })

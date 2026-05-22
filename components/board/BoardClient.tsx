@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import Link from 'next/link'
 
 type Category = '전체' | '공지' | '질문' | '자유' | '수업' | '내 게시글'
@@ -72,8 +72,10 @@ export default function BoardClient({
   const [loading, setLoading] = useState(false)
   const [loadingMore, setLoadingMore] = useState(false)
   const [fetchError, setFetchError] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const searchMounted = useRef(false)
 
-  const fetchPosts = useCallback(async (category: Category, page: number, append: boolean) => {
+  const fetchPosts = useCallback(async (category: Category, page: number, append: boolean, q?: string) => {
     if (append) setLoadingMore(true)
     else setLoading(true)
     setFetchError(null)
@@ -85,6 +87,7 @@ export default function BoardClient({
       } else if (category !== '전체') {
         params.set('category', category)
       }
+      if (q?.trim()) params.set('q', q.trim())
       const res = await fetch(`/api/posts?${params}`)
       const json: { data?: Post[]; total?: number } = await res.json()
       if (res.ok) {
@@ -100,19 +103,29 @@ export default function BoardClient({
       if (append) setLoadingMore(false)
       else setLoading(false)
     }
-  }, [])
+  }, [currentUserId])
+
+  // 검색어 디바운스 (300ms) — 초기 마운트는 건너뜀
+  useEffect(() => {
+    if (!searchMounted.current) { searchMounted.current = true; return }
+    const timer = setTimeout(() => {
+      setCurrentPage(1)
+      fetchPosts(activeCategory, 1, false, searchQuery)
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [searchQuery]) // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleCategoryChange(cat: Category) {
     if (cat === activeCategory) return
     setActiveCategory(cat)
     setCurrentPage(1)
-    fetchPosts(cat, 1, false)
+    fetchPosts(cat, 1, false, searchQuery)
   }
 
   function handleLoadMore() {
     const next = currentPage + 1
     setCurrentPage(next)
-    fetchPosts(activeCategory, next, true)
+    fetchPosts(activeCategory, next, true, searchQuery)
   }
 
   const hasMore = posts.length < total
@@ -172,6 +185,33 @@ export default function BoardClient({
         )}
       </div>
 
+      {/* 검색 인풋 */}
+      <div style={{ marginBottom: '16px', position: 'relative' }}>
+        <span style={{
+          position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)',
+          color: 'var(--gray)', fontSize: '0.9rem', pointerEvents: 'none',
+        }}>🔍</span>
+        <input
+          type="search"
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          placeholder="제목 검색..."
+          aria-label="게시글 제목 검색"
+          style={{
+            width: '100%',
+            padding: '10px 14px 10px 38px',
+            background: 'var(--bg2)',
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--radius)',
+            fontSize: '0.875rem',
+            color: 'var(--white)',
+            outline: 'none',
+            boxSizing: 'border-box',
+            fontFamily: 'var(--font-sans)',
+          }}
+        />
+      </div>
+
       {/* 게시글 테이블 */}
       <div style={{
         border: '1px solid var(--border)',
@@ -198,7 +238,10 @@ export default function BoardClient({
           </div>
         ) : posts.length === 0 ? (
           <div style={{ padding: '60px 20px', textAlign: 'center', color: 'var(--gray)' }}>
-            {activeCategory !== '전체' ? `${activeCategory} 카테고리에 ` : ''}게시글이 없습니다.
+            {searchQuery.trim()
+              ? `"${searchQuery.trim()}"에 해당하는 게시글이 없습니다.`
+              : `${activeCategory !== '전체' ? `${activeCategory} 카테고리에 ` : ''}게시글이 없습니다.`
+            }
           </div>
         ) : (
           posts.map((post, idx) => (

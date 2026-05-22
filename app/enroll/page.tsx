@@ -50,11 +50,14 @@ export default async function EnrollPage({
   }
 
   /* ── 로그인: 프로필 + 신청 가능 클래스 ── */
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('name, phone, email')
     .eq('id', user.id)
     .maybeSingle()
+  if (profileError) {
+    console.error('[EnrollPage] 프로필 조회 오류:', profileError)
+  }
 
   // 전체 클래스 표시 · 수강료는 정가(originalPrice) 기준 — 첫 달 할인가가 아님
   const allClasses = CLASSES.map((c) => ({

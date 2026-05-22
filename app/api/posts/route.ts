@@ -33,6 +33,10 @@ export async function GET(request: NextRequest) {
     query = query.eq('author_id', authorId)
   }
 
+  // 제목 검색 (ilike — 대소문자 무시, 최대 100자)
+  const q = searchParams.get('q')?.trim().slice(0, 100)
+  if (q) query = query.ilike('title', `%${q}%`)
+
   const { data, error, count } = await query
 
   if (error) {

@@ -63,6 +63,7 @@ export default function AIToolsPage() {
   const [activeTab, setActiveTab] = useState<TabKey>('utaHagen')
 
   const [hasAccess, setHasAccess] = useState(false)
+  const [copied, setCopied] = useState(false)
 
   // 비로그인 → 로그인 / 권한 부족 → 접근 차단
   // cancelled flag: 언마운트 후 비동기 setState 방지 (메모리 리크)
@@ -155,6 +156,31 @@ export default function AIToolsPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  function handleCopy() {
+    let text = ''
+    if (rawText) {
+      text = rawText
+    } else if (result) {
+      const lines: string[] = [`[KD4 AI 분석] "${characterName}" 캐릭터 분석 결과\n`]
+      const addSection = (title: string, items: { label: string; content: string }[]) => {
+        lines.push(`\n── ${title} ──`)
+        items.forEach(({ label, content }) => lines.push(`${label}: ${content}`))
+      }
+      addSection(result.utaHagen.title, result.utaHagen.items)
+      addSection(result.ivanaChubbuck.title, result.ivanaChubbuck.items)
+      addSection(result.meisner.title, result.meisner.items)
+      lines.push(`\n── ${result.lineByLine.title} ──`)
+      result.lineByLine.lines.forEach(({ line, note }) => lines.push(`"${line}" → ${note}`))
+      lines.push(`\n── ${result.onSetSummary.title} ──\n${result.onSetSummary.content}`)
+      text = lines.join('\n')
+    }
+    if (!text) return
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
   }
 
   function handleReset() {
@@ -254,9 +280,14 @@ export default function AIToolsPage() {
                   &ldquo;{characterName}&rdquo; 캐릭터 분석 결과
                 </h2>
               </div>
-              <button onClick={handleReset} style={s.btnReset}>
-                분석 초기화
-              </button>
+              <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+                <button onClick={handleCopy} style={{ ...s.btnReset, color: copied ? 'var(--gold)' : 'var(--gray)', borderColor: copied ? 'var(--gold)' : undefined }}>
+                  {copied ? '✓ 복사됨' : '텍스트 복사'}
+                </button>
+                <button onClick={handleReset} style={s.btnReset}>
+                  분석 초기화
+                </button>
+              </div>
             </div>
 
             {/* rawText 폴백 */}
