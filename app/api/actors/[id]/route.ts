@@ -5,6 +5,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
+import { revalidateTag } from '@/lib/revalidate'
 import type { Actor, ActorDetail } from '@/lib/types'
 
 export async function GET(
@@ -129,6 +130,7 @@ export async function PATCH(
       .eq('id', id)
 
     if (error) return NextResponse.json({ error: '배우 정보 수정에 실패했습니다.' }, { status: 500 })
+    revalidateTag('actors')
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error('[PATCH /api/actors/[id]]', err)

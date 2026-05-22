@@ -43,6 +43,7 @@ export default function WritePage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (submitting) return
     if (!title.trim() || !content.trim()) return
     setSubmitting(true)
     setError(null)

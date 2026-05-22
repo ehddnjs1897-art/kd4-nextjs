@@ -4,6 +4,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
+import { revalidateTag } from '@/lib/revalidate'
 
 type Ctx = { params: Promise<{ id: string }> }
 
@@ -48,6 +49,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       console.error('[videos POST] DB 오류:', error.message)
       return NextResponse.json({ error: '영상 추가에 실패했습니다.' }, { status: 500 })
     }
+    revalidateTag('actors')
     return NextResponse.json({ id: data.id })
   } catch (err) {
     console.error(err)

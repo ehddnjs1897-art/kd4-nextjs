@@ -11,6 +11,10 @@ import { sendSMS } from '@/lib/sms'
 
 const ADMIN_PHONE = process.env.ADMIN_PHONE_NUMBER ?? ''
 
+// 인메모리 레이트 리밋: 같은 userId로 60초 내 재요청 차단 (Race condition + SMS 남용 방어)
+const requestMap = new Map<string, number>()
+const COOLDOWN_MS = 60_000
+
 export async function POST() {
   const supabase = await createClient()
   const { data: { user }, error: authErr } = await supabase.auth.getUser()
@@ -18,6 +22,14 @@ export async function POST() {
   if (authErr || !user) {
     return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   }
+
+  // 레이트 리밋 체크
+  const now = Date.now()
+  const last = requestMap.get(user.id)
+  if (last && now - last < COOLDOWN_MS) {
+    return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+  }
+  requestMap.set(user.id, now)
 
   // 현재 역할 + 이름 조회
   const { data: profile } = await supabaseAdmin

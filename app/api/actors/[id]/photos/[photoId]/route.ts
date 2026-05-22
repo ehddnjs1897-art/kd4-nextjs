@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { deleteFile } from '@/lib/storage'
+import { revalidateTag } from '@/lib/revalidate'
 
 type Ctx = { params: Promise<{ id: string; photoId: string }> }
 
@@ -47,6 +48,7 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
       if (photo) await supabaseAdmin.from('actors').update({ profile_photo: photo.url }).eq('id', id)
     }
 
+    revalidateTag('actors')
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error(err)
@@ -96,6 +98,7 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
       }
     }
 
+    revalidateTag('actors')
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error(err)

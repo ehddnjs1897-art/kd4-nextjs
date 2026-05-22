@@ -69,7 +69,7 @@ export default function BoardClient({
         flexWrap: 'wrap',
         gap: '12px',
       }}>
-        <nav style={{ display: 'flex', gap: '4px' }}>
+        <nav style={{ display: 'flex', gap: '4px' }} aria-label="게시판 카테고리 필터">
           {CATEGORIES.map((cat) => (
             <button
               key={cat}

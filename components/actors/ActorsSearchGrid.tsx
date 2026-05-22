@@ -84,7 +84,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
 
       {/* 배우 그리드 */}
       {filtered.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '80px 0' }}>
+        <div role="status" aria-live="polite" style={{ textAlign: 'center', padding: '80px 0' }}>
           <p style={{ fontSize: '0.95rem', color: 'var(--gray)', marginBottom: 16 }}>
             &ldquo;{query}&rdquo; 에 해당하는 배우가 없습니다.
           </p>

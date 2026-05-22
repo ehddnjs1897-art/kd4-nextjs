@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
+import { revalidateTag } from '@/lib/revalidate'
 
 // ─── 공통: admin 권한 확인 ───────────────────────────────────────────────────
 
@@ -83,6 +84,7 @@ export async function PATCH(
       )
     }
 
+    revalidateTag('actors')
     return NextResponse.json({ actor: data })
   } catch (err) {
     console.error('[PATCH /api/admin/actors/[id]] 예상치 못한 오류:', err)

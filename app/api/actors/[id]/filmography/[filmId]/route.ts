@@ -5,6 +5,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
+import { revalidateTag } from '@/lib/revalidate'
 
 type Ctx = { params: Promise<{ id: string; filmId: string }> }
 
@@ -46,6 +47,7 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
       console.error('[filmography PATCH] DB 오류:', error.message)
       return NextResponse.json({ error: '필모그래피 수정에 실패했습니다.' }, { status: 500 })
     }
+    revalidateTag('actors')
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error(err)
@@ -70,6 +72,7 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
       console.error('[filmography DELETE] DB 오류:', error.message)
       return NextResponse.json({ error: '필모그래피 삭제에 실패했습니다.' }, { status: 500 })
     }
+    revalidateTag('actors')
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error(err)
