@@ -40,6 +40,8 @@ interface FilmItem {
   year: number
   title: string
   role: string
+  broadcaster?: string
+  film_type?: string
 }
 
 interface InitialData {
@@ -431,31 +433,49 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     const hasContent = filmography.some(f => f.title.trim())
     if (!hasContent) { setFilmMsg('저장할 항목이 없습니다.'); return }
     setFilmSaving(true); setFilmMsg('')
-    let errors = 0
-    const updated = [...filmography]
-    for (let i = 0; i < filmography.length; i++) {
-      const f = filmography[i]
-      if (!f.title.trim()) continue
-      try {
-        const body = { category: f.category, year: Number(f.year), title: f.title.trim(), role: f.role.trim() }
-        if (f.id) {
-          const res = await fetch(`/api/actors/${actorId}/filmography/${f.id}`, {
-            method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
-          })
-          if (!res.ok) errors++
-        } else {
-          const res = await fetch(`/api/actors/${actorId}/filmography`, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
-          })
-          if (!res.ok) errors++
-          else { const row = await res.json(); updated[i] = { ...updated[i], id: row.id } }
+    try {
+      const items = filmography
+        .filter(f => f.title.trim())
+        .map(f => ({
+          id: f.id || undefined,
+          category: f.category,
+          year: f.year ? Number(f.year) : undefined,
+          title: f.title.trim(),
+          role: f.role?.trim() || undefined,
+          broadcaster: f.broadcaster?.trim() || undefined,
+          film_type: f.film_type?.trim() || undefined,
+        }))
+      const res = await fetch(`/api/actors/${actorId}/filmography/bulk`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setFilmMsg(data.error || '저장 중 오류가 발생했습니다.')
+      } else {
+        // 새로 삽입된 항목에 DB id 반영
+        const insertResults = (data.results ?? []).filter((r: { id: string; ok: boolean; originalIdx?: number }) => r.originalIdx !== undefined)
+        if (insertResults.length > 0) {
+          const updated = [...filmography]
+          let insertIdx = 0
+          for (let i = 0; i < updated.length; i++) {
+            if (!updated[i].id && updated[i].title.trim() && insertResults[insertIdx]) {
+              updated[i] = { ...updated[i], id: insertResults[insertIdx].id }
+              insertIdx++
+            }
+          }
+          setFilmography(updated)
         }
-      } catch { errors++ }
+        const errors = data.errors ?? 0
+        setFilmMsg(errors > 0 ? `${errors}개 항목 저장 실패` : '저장되었습니다.')
+      }
+    } catch {
+      setFilmMsg('네트워크 오류가 발생했습니다.')
+    } finally {
+      setFilmSaving(false)
+      setTimeout(() => setFilmMsg(''), 3000)
     }
-    setFilmography(updated)
-    setFilmSaving(false)
-    setFilmMsg(errors > 0 ? `${errors}개 항목 저장 실패` : '저장되었습니다.')
-    setTimeout(() => setFilmMsg(''), 3000)
   }
 
   async function deleteFilm(idx: number) {
