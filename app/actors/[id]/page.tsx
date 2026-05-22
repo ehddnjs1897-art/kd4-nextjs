@@ -139,7 +139,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params
   const actor = await getActorCached(id)
-  if (!actor) return { title: 'KD4 액팅 스튜디오' }
+  if (!actor) return { title: '배우 프로필 | kd4.club' }
 
   const SITE_URL = 'https://kd4.club'
   const ogImage = `${SITE_URL}/api/og/actor/${actor.id}`
@@ -152,10 +152,12 @@ export async function generateMetadata({
   const description = actor.casting_summary?.trim()
     ? `${actor.name} — ${actor.casting_summary}`
     : actor.casting_tags && actor.casting_tags.length > 0
-      ? `${actor.name} · ${subline} · ${actor.casting_tags.slice(0, 3).join('·')} | KD4 액팅 스튜디오`
-      : `${actor.name} · ${subline} | KD4 액팅 스튜디오`
+      ? `${actor.name} · ${subline} · ${actor.casting_tags.slice(0, 3).join(' · ')}`
+      : `${actor.name} · ${subline}`
 
-  const title = `배우 ${actor.name} | ${actor.age_group ?? ''} | KD4 액팅 스튜디오`
+  const title = actor.age_group
+    ? `${actor.name} · ${actor.age_group} 배우`
+    : `${actor.name} · 배우`
 
   return {
     title,
@@ -165,7 +167,7 @@ export async function generateMetadata({
       title,
       description,
       url: pageUrl,
-      siteName: 'KD4 액팅 스튜디오',
+      siteName: 'kd4.club',
       type: 'profile',
       locale: 'ko_KR',
       images: [
@@ -174,7 +176,7 @@ export async function generateMetadata({
           secureUrl: ogImage,
           width: 1200,
           height: 630,
-          alt: `${actor.name} 캐스팅 카드 — KD4 액팅 스튜디오`,
+          alt: `${actor.name} 배우 프로필`,
           type: 'image/png',
         },
       ],

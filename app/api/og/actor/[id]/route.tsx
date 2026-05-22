@@ -79,13 +79,13 @@ export async function GET(
             alignItems: 'center',
             justifyContent: 'center',
             background: '#0A0A0A',
-            fontSize: 60,
-            color: '#C9A84C',
+            fontSize: 24,
+            color: 'rgba(255,255,255,0.2)',
             fontFamily: 'sans-serif',
-            letterSpacing: '0.2em',
+            letterSpacing: '0.15em',
           }}
         >
-          KD4 ACTING STUDIO
+          kd4.club
         </div>
       ),
       { width: 1200, height: 630 }
@@ -157,24 +157,10 @@ export async function GET(
             bottom: 0,
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'space-between',
+            justifyContent: 'flex-end',
             padding: '44px 60px 48px',
           }}
         >
-          {/* 상단: KD4 레이블 */}
-          <div
-            style={{
-              display: 'flex',
-              fontSize: 17,
-              letterSpacing: '0.35em',
-              color: 'rgba(201,168,76,0.9)',
-              fontWeight: 600,
-              textTransform: 'uppercase',
-            }}
-          >
-            KD4 ACTING STUDIO
-          </div>
-
           {/* 하단: 이름 · 서브라인 · 태그 */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {/* 캐스팅 태그 */}
@@ -231,13 +217,13 @@ export async function GET(
               <div
                 style={{
                   display: 'flex',
-                  fontSize: 16,
-                  color: 'rgba(255,255,255,0.35)',
-                  letterSpacing: '0.05em',
+                  fontSize: 14,
+                  color: 'rgba(255,255,255,0.25)',
+                  letterSpacing: '0.06em',
                   marginLeft: 'auto',
                 }}
               >
-                kd4.club / actors
+                kd4.club
               </div>
             </div>
           </div>
