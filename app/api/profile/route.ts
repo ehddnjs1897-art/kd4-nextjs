@@ -60,7 +60,7 @@ export async function PATCH(request: NextRequest) {
   let actorId: string | undefined
   if (phone && name) {
     const { data: profile } = await supabaseAdmin
-      .from('profiles').select('actor_id, role').eq('id', user.id).single()
+      .from('profiles').select('actor_id, role').eq('id', user.id).maybeSingle()
     const needsMatch = !profile?.actor_id && (profile?.role === 'actor' || profile?.role === 'member')
     if (needsMatch) {
       try {

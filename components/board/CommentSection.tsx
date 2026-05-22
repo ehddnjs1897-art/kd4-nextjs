@@ -121,7 +121,7 @@ export default function CommentSection({
 
       {/* 댓글 목록 */}
       {loading ? (
-        <p style={{ color: 'var(--gray)', fontSize: '0.875rem' }}>댓글을 불러오는 중...</p>
+        <p role="status" aria-live="polite" style={{ color: 'var(--gray)', fontSize: '0.875rem' }}>댓글을 불러오는 중...</p>
       ) : comments.length === 0 ? (
         <p style={{ color: 'var(--gray)', fontSize: '0.875rem', marginBottom: '32px' }}>
           첫 댓글을 남겨보세요.

@@ -28,7 +28,7 @@ async function requireAdmin(): Promise<{ userId: string } | NextResponse> {
     .from('profiles')
     .select('role')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
 
   if (profileErr || !profile || profile.role !== 'admin') {
     return NextResponse.json(
@@ -74,7 +74,7 @@ export async function PATCH(
       .update({ is_public })
       .eq('id', id)
       .select('id, name, is_public')
-      .single()
+      .maybeSingle()
 
     if (error) {
       console.error('[PATCH /api/admin/actors/[id]] Supabase 오류:', error.message)
@@ -82,6 +82,9 @@ export async function PATCH(
         { error: '공개 설정 변경에 실패했습니다.' },
         { status: 500 }
       )
+    }
+    if (!data) {
+      return NextResponse.json({ error: '배우를 찾을 수 없습니다.' }, { status: 404 })
     }
 
     revalidateTag('actors')

@@ -30,7 +30,7 @@ async function requireAdmin(): Promise<{ userId: string } | NextResponse> {
     .from('profiles')
     .select('role')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
 
   if (profileErr || !profile || profile.role !== 'admin') {
     return NextResponse.json(
@@ -107,7 +107,7 @@ export async function PATCH(request: NextRequest) {
       .update({ role: role as ValidRole })
       .eq('id', id)
       .select('id, name, email, role')
-      .single()
+      .maybeSingle()
 
     if (error) {
       console.error('[PATCH /api/admin/users] Supabase 오류:', error.message)
@@ -115,6 +115,9 @@ export async function PATCH(request: NextRequest) {
         { error: '역할 변경에 실패했습니다.' },
         { status: 500 }
       )
+    }
+    if (!data) {
+      return NextResponse.json({ error: '사용자를 찾을 수 없습니다.' }, { status: 404 })
     }
 
     return NextResponse.json({ user: data })

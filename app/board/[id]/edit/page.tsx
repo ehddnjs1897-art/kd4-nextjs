@@ -104,7 +104,7 @@ export default function EditPage() {
   if (error && !post) {
     return (
       <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <p style={{ color: '#e74c3c' }}>{error}</p>
+        <p role="alert" style={{ color: '#e74c3c' }}>{error}</p>
       </div>
     )
   }
@@ -151,12 +151,13 @@ export default function EditPage() {
 
           {/* 카테고리 */}
           <div style={{ marginBottom: '18px' }}>
-            <label style={labelStyle}>카테고리</label>
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <span id="edit-category-label" style={labelStyle}>카테고리</span>
+            <div role="group" aria-labelledby="edit-category-label" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '8px' }}>
               {CATEGORIES.map((cat) => (
                 <button
                   key={cat}
                   type="button"
+                  aria-pressed={category === cat}
                   onClick={() => setCategory(cat)}
                   style={{
                     padding: '7px 16px',

@@ -67,9 +67,10 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     .update(updates)
     .eq('id', id)
     .select()
-    .single()
+    .maybeSingle()
 
-  if (error) return withCors(NextResponse.json({ error: error.message }, { status: error.code === 'PGRST116' ? 404 : 500 }), origin)
+  if (error) return withCors(NextResponse.json({ error: error.message }, { status: 500 }), origin)
+  if (!data) return withCors(NextResponse.json({ error: '인사이트를 찾을 수 없습니다.' }, { status: 404 }), origin)
 
   return withCors(NextResponse.json(data), origin)
 }

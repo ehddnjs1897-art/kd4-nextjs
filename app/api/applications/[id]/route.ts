@@ -30,7 +30,7 @@ async function requireAdmin(): Promise<{ userId: string } | NextResponse> {
     .from('profiles')
     .select('role')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
 
   if (profileErr || !profile || profile.role !== 'admin') {
     return NextResponse.json({ error: '관리자 권한이 필요합니다.' }, { status: 403 })

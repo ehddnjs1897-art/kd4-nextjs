@@ -217,7 +217,7 @@ export default function AIToolsPage() {
               </div>
 
               {error && (
-                <div style={s.errorBox}>
+                <div role="alert" style={s.errorBox}>
                   <span style={s.errorIcon}>!</span>
                   {error}
                 </div>
@@ -236,7 +236,7 @@ export default function AIToolsPage() {
 
         {/* 로딩 */}
         {loading && (
-          <div style={s.loadingBox}>
+          <div role="status" aria-live="polite" style={s.loadingBox}>
             <div style={s.spinner} />
             <p style={s.loadingText}>AI가 분석 중입니다...</p>
             <p style={s.loadingSubText}>최대 30초 정도 소요될 수 있습니다.</p>

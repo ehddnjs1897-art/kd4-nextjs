@@ -21,7 +21,7 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
     if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
 
     const { data: profile } = await supabaseAdmin
-      .from('profiles').select('actor_id, role').eq('id', user.id).single()
+      .from('profiles').select('actor_id, role').eq('id', user.id).maybeSingle()
     if (!profile || (profile.actor_id !== id && profile.role !== 'admin')) {
       return NextResponse.json({ error: '권한 없음' }, { status: 403 })
     }

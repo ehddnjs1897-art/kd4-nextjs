@@ -290,7 +290,7 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
 
       {/* 성공 메시지 */}
       {success && !editing && (
-        <p style={{
+        <p role="status" style={{
           fontSize: '0.82rem', color: '#4ade80',
           marginTop: 14, padding: '8px 12px',
           background: 'rgba(74,222,128,0.08)',
@@ -302,7 +302,7 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
       )}
       {/* 배우 자동 재매칭 성공 */}
       {matchedMsg && (
-        <p style={{
+        <p role="status" style={{
           fontSize: '0.82rem', color: '#fbbf24',
           marginTop: 8, padding: '8px 12px',
           background: 'rgba(251,191,36,0.08)',
