@@ -4,70 +4,76 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 
 // POST /api/comments — 로그인 필요
 export async function POST(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user }, error: authError } = await supabase.auth.getUser()
-
-  if (authError || !user) {
-    return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
-  }
-
-  let body: { post_id?: string; content?: string }
   try {
-    body = await request.json()
-  } catch {
-    return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })
-  }
+    const supabase = await createClient()
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
 
-  const { post_id, content } = body
+    if (authError || !user) {
+      return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
+    }
 
-  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-  if (!post_id || !UUID_RE.test(post_id)) {
-    return NextResponse.json({ error: '게시글 ID가 필요합니다.' }, { status: 400 })
-  }
-  if (!content || content.trim().length === 0) {
-    return NextResponse.json({ error: '댓글 내용을 입력해주세요.' }, { status: 400 })
-  }
-  if (content.trim().length > 2000) {
-    return NextResponse.json({ error: '댓글은 2,000자 이하로 입력해주세요.' }, { status: 400 })
-  }
+    let body: { post_id?: string; content?: string }
+    try {
+      body = await request.json()
+    } catch {
+      return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })
+    }
 
-  // 레이트 리밋: 1분에 최대 10개 (스팸 방지)
-  const oneMinAgo = new Date(Date.now() - 60_000).toISOString()
-  const { count: recentCommentCount } = await supabaseAdmin
-    .from('comments')
-    .select('id', { count: 'exact', head: true })
-    .eq('author_id', user.id)
-    .gte('created_at', oneMinAgo)
-  if ((recentCommentCount ?? 0) >= 10) {
-    return NextResponse.json({ error: '잠시 후 다시 시도해주세요. (1분 최대 10개)' }, { status: 429 })
-  }
+    const { post_id, content } = body
 
-  // 게시글 존재 확인 + 작성자 이름 병렬 조회 (supabaseAdmin: RLS 우회로 정확한 결과)
-  const [{ data: post, error: postError }, { data: profile }] = await Promise.all([
-    supabaseAdmin.from('posts').select('id').eq('id', post_id).maybeSingle(),
-    supabaseAdmin.from('profiles').select('name').eq('id', user.id).maybeSingle(),
-  ])
+    const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+    if (!post_id || !UUID_RE.test(post_id)) {
+      return NextResponse.json({ error: '게시글 ID가 필요합니다.' }, { status: 400 })
+    }
+    if (!content || content.trim().length === 0) {
+      return NextResponse.json({ error: '댓글 내용을 입력해주세요.' }, { status: 400 })
+    }
+    if (content.trim().length > 2000) {
+      return NextResponse.json({ error: '댓글은 2,000자 이하로 입력해주세요.' }, { status: 400 })
+    }
 
-  if (postError || !post) {
-    return NextResponse.json({ error: '게시글을 찾을 수 없습니다.' }, { status: 404 })
-  }
+    // 레이트 리밋: 1분에 최대 10개 (스팸 방지)
+    const oneMinAgo = new Date(Date.now() - 60_000).toISOString()
+    const { count: recentCommentCount } = await supabaseAdmin
+      .from('comments')
+      .select('id', { count: 'exact', head: true })
+      .eq('author_id', user.id)
+      .gte('created_at', oneMinAgo)
+    if ((recentCommentCount ?? 0) >= 10) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요. (1분 최대 10개)' }, { status: 429 })
+    }
 
-  const authorName = profile?.name ?? user.email?.split('@')[0] ?? '익명'
+    // 게시글 존재 확인 + 작성자 이름 병렬 조회 (supabaseAdmin: RLS 우회로 정확한 결과)
+    const [{ data: post, error: postError }, { data: profile }] = await Promise.all([
+      supabaseAdmin.from('posts').select('id').eq('id', post_id).maybeSingle(),
+      supabaseAdmin.from('profiles').select('name').eq('id', user.id).maybeSingle(),
+    ])
 
-  const { data, error } = await supabase
-    .from('comments')
-    .insert({
-      post_id,
-      content: content.trim(),
-      author_id: user.id,
-      author_name: authorName,
-    })
-    .select('id, post_id, author_id, author_name, content, created_at')
-    .single()
+    if (postError || !post) {
+      return NextResponse.json({ error: '게시글을 찾을 수 없습니다.' }, { status: 404 })
+    }
 
-  if (error) {
+    const authorName = profile?.name ?? user.email?.split('@')[0] ?? '익명'
+
+    // supabaseAdmin: 서비스 롤로 INSERT — RLS 정책 변경에 무관하게 안전하게 작성
+    const { data, error } = await supabaseAdmin
+      .from('comments')
+      .insert({
+        post_id,
+        content: content.trim(),
+        author_id: user.id,
+        author_name: authorName,
+      })
+      .select('id, post_id, author_id, author_name, content, created_at')
+      .single()
+
+    if (error) {
+      return NextResponse.json({ error: '댓글 작성 중 오류가 발생했습니다.' }, { status: 500 })
+    }
+
+    return NextResponse.json(data, { status: 201 })
+  } catch (err) {
+    console.error('[POST /api/comments]', err)
     return NextResponse.json({ error: '댓글 작성 중 오류가 발생했습니다.' }, { status: 500 })
   }
-
-  return NextResponse.json(data, { status: 201 })
 }

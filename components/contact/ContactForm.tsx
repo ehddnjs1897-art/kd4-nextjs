@@ -128,14 +128,19 @@ export default function ContactForm() {
       {/* 무엇을 원하시나요 — 카드형 택1 */}
       <div>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '8px' }}>
-          <label style={{ ...labelStyle, marginBottom: 0 }}>무엇을 원하시나요?</label>
+          <label id="contact-inquiry-label" style={{ ...labelStyle, marginBottom: 0 }}>무엇을 원하시나요?</label>
           <span style={{ fontSize: '0.68rem', color: 'var(--gray-light)', letterSpacing: '0.02em' }}>택 1</span>
         </div>
-        <div className="inquiry-cards" style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '10px',
-        }}>
+        <div
+          role="group"
+          aria-labelledby="contact-inquiry-label"
+          className="inquiry-cards"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '10px',
+          }}
+        >
           {INQUIRY_OPTIONS.map(opt => {
             const selected = form.inquiry_type === opt.value
             const anySelected = form.inquiry_type !== ''
@@ -144,6 +149,7 @@ export default function ContactForm() {
               <button
                 key={opt.value}
                 type="button"
+                aria-pressed={selected}
                 onClick={() => setForm(f => ({ ...f, inquiry_type: opt.value }))}
                 style={{
                   display: 'flex',

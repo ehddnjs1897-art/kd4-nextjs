@@ -4,30 +4,35 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 
 // GET /api/game/scores?period=weekly&limit=10
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url)
-  const period = searchParams.get('period') || 'weekly'
-  const limit = Math.min(50, parseInt(searchParams.get('limit') ?? '10', 10))
+  try {
+    const { searchParams } = new URL(request.url)
+    const period = searchParams.get('period') || 'weekly'
+    const limit = Math.min(50, parseInt(searchParams.get('limit') ?? '10', 10))
 
-  let query = supabaseAdmin
-    .from('game_scores')
-    .select('id, score, stage, items_collected, duration_ms, created_at, profiles(name)')
-    .order('score', { ascending: false })
-    .limit(limit)
+    let query = supabaseAdmin
+      .from('game_scores')
+      .select('id, score, stage, items_collected, duration_ms, created_at, profiles(name)')
+      .order('score', { ascending: false })
+      .limit(limit)
 
-  if (period === 'weekly') {
-    const weekAgo = new Date()
-    weekAgo.setDate(weekAgo.getDate() - 7)
-    query = query.gte('created_at', weekAgo.toISOString())
-  }
+    if (period === 'weekly') {
+      const weekAgo = new Date()
+      weekAgo.setDate(weekAgo.getDate() - 7)
+      query = query.gte('created_at', weekAgo.toISOString())
+    }
 
-  const { data, error } = await query
+    const { data, error } = await query
 
-  if (error) {
-    console.error('[GET /api/game/scores] error:', error)
+    if (error) {
+      console.error('[GET /api/game/scores] error:', error)
+      return NextResponse.json({ error: '리더보드 조회 실패' }, { status: 500 })
+    }
+
+    return NextResponse.json({ data })
+  } catch (err) {
+    console.error('[GET /api/game/scores]', err)
     return NextResponse.json({ error: '리더보드 조회 실패' }, { status: 500 })
   }
-
-  return NextResponse.json({ data })
 }
 
 // POST /api/game/scores

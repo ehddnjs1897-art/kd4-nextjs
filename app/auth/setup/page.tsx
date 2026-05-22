@@ -83,10 +83,11 @@ export default function SetupPage() {
 
         {error && <div style={styles.errorBox}>{error}</div>}
 
-        <form onSubmit={handleSubmit}>
-          <div style={styles.typeGrid}>
+        <form onSubmit={handleSubmit} aria-label="회원 유형 선택">
+          <div role="group" aria-label="회원 유형" style={styles.typeGrid}>
             <button
               type="button"
+              aria-pressed={memberType === 'actor'}
               style={{
                 ...styles.typeCard,
                 ...(memberType === 'actor' ? styles.typeCardActive : {}),
@@ -103,6 +104,7 @@ export default function SetupPage() {
 
             <button
               type="button"
+              aria-pressed={memberType === 'director'}
               style={{
                 ...styles.typeCard,
                 ...(memberType === 'director' ? styles.typeCardActive : {}),

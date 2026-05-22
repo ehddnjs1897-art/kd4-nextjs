@@ -21,67 +21,72 @@ const requestMap = new Map<string, number>()
 const COOLDOWN_MS = 60_000
 
 export async function POST() {
-  const supabase = await createClient()
-  const { data: { user }, error: authErr } = await supabase.auth.getUser()
+  try {
+    const supabase = await createClient()
+    const { data: { user }, error: authErr } = await supabase.auth.getUser()
 
-  if (authErr || !user) {
-    return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
-  }
+    if (authErr || !user) {
+      return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
+    }
 
-  // 레이트 리밋 체크
-  const now = Date.now()
-  const last = requestMap.get(user.id)
-  if (last && now - last < COOLDOWN_MS) {
-    return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
-  }
-  requestMap.set(user.id, now)
+    // 레이트 리밋 체크
+    const now = Date.now()
+    const last = requestMap.get(user.id)
+    if (last && now - last < COOLDOWN_MS) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
+    requestMap.set(user.id, now)
 
-  // 현재 역할 + 이름 조회
-  const { data: profile } = await supabaseAdmin
-    .from('profiles')
-    .select('role, name')
-    .eq('id', user.id)
-    .maybeSingle()
+    // 현재 역할 + 이름 조회
+    const { data: profile } = await supabaseAdmin
+      .from('profiles')
+      .select('role, name')
+      .eq('id', user.id)
+      .maybeSingle()
 
-  const currentRole = (profile?.role ?? 'user') as string
+    const currentRole = (profile?.role ?? 'user') as string
 
-  if (ALREADY.includes(currentRole)) {
-    return NextResponse.json(
-      { error: '이미 신청되었거나 디렉터 권한이 있습니다.', role: currentRole },
-      { status: 409 }
-    )
-  }
+    if (ALREADY.includes(currentRole)) {
+      return NextResponse.json(
+        { error: '이미 신청되었거나 디렉터 권한이 있습니다.', role: currentRole },
+        { status: 409 }
+      )
+    }
 
-  // role → director_pending (service_role 로만 가능 — RLS가 본인 role 변경 차단)
-  const { error: updateErr } = await supabaseAdmin
-    .from('profiles')
-    .upsert(
-      {
-        id: user.id,
-        name: profile?.name ?? user.user_metadata?.name ?? user.email?.split('@')[0] ?? null,
-        email: user.email ?? null,
-        role: 'director_pending',
-      },
-      { onConflict: 'id' }
-    )
+    // role → director_pending (service_role 로만 가능 — RLS가 본인 role 변경 차단)
+    const { error: updateErr } = await supabaseAdmin
+      .from('profiles')
+      .upsert(
+        {
+          id: user.id,
+          name: profile?.name ?? user.user_metadata?.name ?? user.email?.split('@')[0] ?? null,
+          email: user.email ?? null,
+          role: 'director_pending',
+        },
+        { onConflict: 'id' }
+      )
 
-  if (updateErr) {
-    console.error('[POST /api/director-request] 업데이트 오류:', updateErr.message)
+    if (updateErr) {
+      console.error('[POST /api/director-request] 업데이트 오류:', updateErr.message)
+      return NextResponse.json({ error: '신청 처리 중 오류가 발생했습니다.' }, { status: 500 })
+    }
+
+    // 관리자 알림 (실패해도 신청은 완료)
+    const applicantName = profile?.name ?? user.user_metadata?.name ?? user.email?.split('@')[0] ?? '(이름 없음)'
+    const applicantEmail = user.email ?? '(이메일 없음)'
+
+    notifyDirectorRequest(applicantName, applicantEmail, user.id).catch(console.error)
+
+    if (ADMIN_PHONE) {
+      sendSMS(
+        ADMIN_PHONE,
+        `[KD4] 디렉터 권한 신청\n${applicantName} / ${applicantEmail}\n승인 시 배우 연락처 열람 가능. 관리자 페이지에서 승인 처리`,
+      ).catch(console.error)
+    }
+
+    return NextResponse.json({ success: true, role: 'director_pending' })
+  } catch (err) {
+    console.error('[POST /api/director-request]', err)
     return NextResponse.json({ error: '신청 처리 중 오류가 발생했습니다.' }, { status: 500 })
   }
-
-  // 관리자 알림 (실패해도 신청은 완료)
-  const applicantName = profile?.name ?? user.user_metadata?.name ?? user.email?.split('@')[0] ?? '(이름 없음)'
-  const applicantEmail = user.email ?? '(이메일 없음)'
-
-  notifyDirectorRequest(applicantName, applicantEmail, user.id).catch(console.error)
-
-  if (ADMIN_PHONE) {
-    sendSMS(
-      ADMIN_PHONE,
-      `[KD4] 디렉터 권한 신청\n${applicantName} / ${applicantEmail}\n승인 시 배우 연락처 열람 가능. 관리자 페이지에서 승인 처리`,
-    ).catch(console.error)
-  }
-
-  return NextResponse.json({ success: true, role: 'director_pending' })
 }
