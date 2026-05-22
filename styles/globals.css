@@ -216,7 +216,7 @@ ul, ol { list-style: none; }
   letter-spacing: 0.12em;
   padding: 14px 32px;
   background: var(--gold);
-  color: #15488A;
+  color: #ffffff;
   text-transform: uppercase;
   border-radius: var(--radius);
   transition: background var(--transition), transform 0.15s;
@@ -632,7 +632,7 @@ ul, ol { list-style: none; }
   letter-spacing: 0.1em;
   padding: 10px 20px;
   background: var(--gold);
-  color: #15488A;
+  color: #ffffff;
   border-radius: var(--radius);
   transition: background var(--transition);
   white-space: nowrap;
@@ -699,7 +699,7 @@ ul, ol { list-style: none; }
   margin-top: 24px;
   padding: 16px;
   background: var(--gold);
-  color: #15488A;
+  color: #ffffff;
   text-align: center;
   font-size: 1rem;
   border: none;

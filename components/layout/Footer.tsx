@@ -264,7 +264,7 @@ export default function Footer() {
                 { label: '클래스 안내', href: '/classes' },
                 { label: '마이즈너 정규 클래스', href: '/meisner-technique-class' },
                 { label: '출연영상 클래스', href: '/reel-production-class' },
-                { label: '강사 권동원', href: '/acting-coach-dongwon-kwon' },
+                { label: 'KD4 액팅 코치', href: '/acting-coach-dongwon-kwon' },
                 { label: '신촌 위치 안내', href: '/sinchon-acting-academy' },
                 { label: '배우 DB', href: '/actors' },
                 { label: '커뮤니티', href: '/board' },
