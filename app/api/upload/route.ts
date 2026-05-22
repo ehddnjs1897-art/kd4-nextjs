@@ -120,6 +120,16 @@ export async function POST(request: NextRequest) {
     // ── Storage 업로드 ──
     const result = await uploadFile(file, bucket, actorId, file.name)
 
+    // ── sort_order 계산 (기존 최대값 + 1 — 항상 0으로 삽입하면 순서 충돌 가능) ──
+    const { data: maxRow } = await supabaseAdmin
+      .from('actor_photos')
+      .select('sort_order')
+      .eq('actor_id', actorId)
+      .order('sort_order', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+    const nextSortOrder = (maxRow?.sort_order ?? -1) + 1
+
     // ── actor_photos 테이블 삽입 ──
     const { data: photoRow, error: dbErr } = await supabaseAdmin
       .from('actor_photos')
@@ -128,7 +138,7 @@ export async function POST(request: NextRequest) {
         url: result.url,
         storage_path: result.path,
         is_profile: false,
-        sort_order: 0,
+        sort_order: nextSortOrder,
       })
       .select('id')
       .single()
