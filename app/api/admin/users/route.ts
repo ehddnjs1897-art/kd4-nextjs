@@ -44,15 +44,22 @@ async function requireAdmin(): Promise<{ userId: string } | NextResponse> {
 
 // ─── GET ─────────────────────────────────────────────────────────────────────
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const check = await requireAdmin()
   if (check instanceof NextResponse) return check
 
   try {
-    const { data, error } = await supabaseAdmin
+    // 페이지네이션 — 한 번에 최대 500행. page 쿼리로 추가 페이지 조회 가능
+    const { searchParams } = new URL(request.url)
+    const PAGE_SIZE = 500
+    const page = Math.max(0, parseInt(searchParams.get('page') ?? '0', 10))
+    const from = page * PAGE_SIZE
+
+    const { data, error, count } = await supabaseAdmin
       .from('profiles')
-      .select('id, name, email, role, created_at, actor_id')
+      .select('id, name, email, role, created_at, actor_id', { count: 'exact' })
       .order('created_at', { ascending: false })
+      .range(from, from + PAGE_SIZE - 1)
 
     if (error) {
       console.error('[GET /api/admin/users] Supabase 오류:', error.message)
@@ -62,7 +69,7 @@ export async function GET() {
       )
     }
 
-    return NextResponse.json({ users: data ?? [] })
+    return NextResponse.json({ users: data ?? [], total: count ?? 0, page, pageSize: PAGE_SIZE })
   } catch (err) {
     console.error('[GET /api/admin/users] 예상치 못한 오류:', err)
     return NextResponse.json({ error: '서버 내부 오류가 발생했습니다.' }, { status: 500 })

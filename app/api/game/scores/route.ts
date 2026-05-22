@@ -75,6 +75,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '유효하지 않은 아이템 수입니다.' }, { status: 400 })
   }
 
+  // 시간당 점수 제출 횟수 제한 (리더보드 오염 방지)
+  const MAX_SCORES_PER_HOUR = 20
+  const hourAgo = new Date(Date.now() - 3_600_000).toISOString()
+  const { count: recentScoreCount } = await supabaseAdmin
+    .from('game_scores')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', user.id)
+    .gte('created_at', hourAgo)
+  if ((recentScoreCount ?? 0) >= MAX_SCORES_PER_HOUR) {
+    return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+  }
+
   const { data, error } = await supabaseAdmin
     .from('game_scores')
     .insert({

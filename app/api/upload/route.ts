@@ -139,6 +139,19 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // 배우별 최대 사진 수 제한 (Storage + DB 폭주 방지)
+    const MAX_PHOTOS_PER_ACTOR = 200
+    const { count: photoCount } = await supabaseAdmin
+      .from('actor_photos')
+      .select('id', { count: 'exact', head: true })
+      .eq('actor_id', actorId)
+    if ((photoCount ?? 0) >= MAX_PHOTOS_PER_ACTOR) {
+      return NextResponse.json(
+        { error: `사진은 최대 ${MAX_PHOTOS_PER_ACTOR}장까지 등록할 수 있습니다.` },
+        { status: 400 }
+      )
+    }
+
     // ── Storage 업로드 ──
     const result = await uploadFile(file, bucket, actorId, file.name)
 

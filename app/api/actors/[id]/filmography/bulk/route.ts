@@ -65,6 +65,11 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     if (!Array.isArray(items)) {
       return NextResponse.json({ error: 'items 배열이 필요합니다.' }, { status: 400 })
     }
+    // DoS 방지: 한 번에 최대 200개 — 초과 시 DB 커넥션 풀 고갈 방지
+    const MAX_BULK_ITEMS = 200
+    if (items.length > MAX_BULK_ITEMS) {
+      return NextResponse.json({ error: `한 번에 최대 ${MAX_BULK_ITEMS}개까지 처리할 수 있습니다.` }, { status: 400 })
+    }
 
     // ── 유효 항목 분류 ────────────────────────────────────
     const toUpdate: (FilmItem & { id: string })[] = []

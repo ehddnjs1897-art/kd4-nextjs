@@ -35,6 +35,13 @@ export const metadata: Metadata = {
   description: '소수정예 마이즈너 테크닉 연기 클래스. 봄맞이 첫 달 10만원 할인. 서울 신촌.',
   robots: { index: false, follow: false },
   alternates: { canonical: `${SITE_URL}/join` },
+  // 광고 랜딩페이지: 명시적 OG 이미지 — root layout 변경에도 영향 없도록
+  openGraph: {
+    title: '무료 상담 신청 | KD4 액팅 스튜디오',
+    description: '소수정예 마이즈너 테크닉 연기 클래스. 봄맞이 첫 달 10만원 할인. 서울 신촌.',
+    url: `${SITE_URL}/join`,
+    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오' }],
+  },
 }
 
 // isDeadlineExpired는 new Date()를 사용 → 빌드 시 정적 캐싱되면 마감일 이후에도 stale 값이 됨

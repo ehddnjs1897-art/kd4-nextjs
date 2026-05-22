@@ -26,6 +26,7 @@ async function fetchProfiles(): Promise<Profile[]> {
     .from('profiles')
     .select('id, name, email, role, created_at, actor_id')
     .order('created_at', { ascending: false })
+    .limit(500)  // 전체 테이블 dump 방지 — 500명 이상 시 /api/admin/users 페이지네이션 사용
   if (error) {
     console.error('[admin/users] profiles 조회 오류:', error.message)
     return []
