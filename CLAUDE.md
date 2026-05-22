@@ -71,7 +71,7 @@ AI가 학습 기억으로 방송사·플랫폼을 추측 입력하면 사고 →
 
 ### 🔴 남은 미완료 작업
 
-- [ ] **GA4 데이터 누적 검증** — 5/6 trim fix 후 1~2일 누적되면 GA4 콘솔에서 활성 사용자 1+ 잡혀야. 안 잡히면 다른 원인 추가 점검
+- [ ] **GA4 데이터 누적 검증** — 5/6 trim fix 후 18일 경과 (2026-05-24). GA4 콘솔에서 직접 확인 필요. curl/grep으로 라이브 코드 확인은 완료, 실제 트래킹 수신은 GA4 콘솔에서만 확인 가능
 - [ ] **PSI 모바일 점수 직접 측정** — 자동 PSI API는 일일 quota 초과 상태(공유 IP). pagespeed.web.dev 사용자 직접 1회 측정 권장
 - [x] **`director.jpg` / `heart-logo.png` Cache-Control** — 해결됨 (commit af90b1e, max-age=2592000 라이브 확인 2026-05-11)
 - [x] **자동 일일 트래픽 리포트 재가동** — 4/27 이후 14일치 누락됐으나 RemoteTrigger `trig_018ENRkD9xeDByXnnGKX5oHw` 등록 완료 (매일 00:00 UTC = 09:00 KST, 첫 실행 2026-05-12). ⚠️ GA4 API 자격증명 미설정 → 실행 시 Notion에 "수동 확인 필요" 페이지만 생성됨 (실제 데이터는 Google 서비스계정 키 설정 필요)
@@ -114,8 +114,8 @@ Supabase 대시보드 → Settings → API에서:
 - KAKAO_CLIENT_ID=[REST API Key]
 - KAKAO_CLIENT_SECRET=[Client Secret]
 
-Gemini:
-- NEXT_PUBLIC_GEMINI_KEY=[API Key]
+Gemini (서버 전용 — NEXT_PUBLIC_ 절대 사용 금지):
+- GEMINI_KEY=[API Key]
 
 SMS 알림 (Solapi — console.solapi.com):
 - SOLAPI_API_KEY=[API Key]

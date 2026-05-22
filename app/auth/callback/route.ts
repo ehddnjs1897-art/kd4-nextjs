@@ -82,9 +82,9 @@ export async function GET(request: Request) {
       }
     }
 
-    // 비밀번호 재설정 타입이면 reset 페이지로
+    // 비밀번호 재설정 타입이면 새 비밀번호 입력 페이지로
     if (type === 'recovery') {
-      return NextResponse.redirect(`${origin}/auth/reset?verified=1`)
+      return NextResponse.redirect(`${origin}/auth/update-password`)
     }
 
     return NextResponse.redirect(`${origin}${next}`)

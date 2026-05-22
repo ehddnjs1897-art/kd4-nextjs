@@ -97,7 +97,7 @@ export default function SetupPage() {
               <span style={styles.typeLabel}>배우 회원</span>
               <span style={styles.typeDesc}>
                 KD4에서 활동하는 배우
-                <br />내 프로필·갤러리 관리 + 동료 배우 열람
+                <br />내 프로필·갤러리 관리 + KD4 멤버 열람
               </span>
             </button>
 

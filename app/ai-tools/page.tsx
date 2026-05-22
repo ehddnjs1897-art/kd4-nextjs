@@ -62,16 +62,41 @@ export default function AIToolsPage() {
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<TabKey>('utaHagen')
 
-  // 비로그인 → 로그인 페이지
+  const [hasAccess, setHasAccess] = useState(false)
+
+  // 비로그인 → 로그인 / 권한 부족 → 접근 차단
   useEffect(() => {
     const supabase = createClient()
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) router.replace('/auth/login?next=/ai-tools')
-      else setAuthChecked(true)
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) {
+        router.replace('/auth/login?next=/ai-tools')
+        return
+      }
+      const { data: profile } = await supabase
+        .from('profiles').select('role').eq('id', user.id).maybeSingle()
+      const role = profile?.role ?? ''
+      setHasAccess(['crew', 'editor', 'director', 'admin'].includes(role))
+      setAuthChecked(true)
     })
   }, [router])
 
-  if (!authChecked) return null
+  if (!authChecked) return (
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <p style={{ color: 'var(--gray)', fontSize: '0.88rem' }}>확인 중...</p>
+    </div>
+  )
+
+  if (!hasAccess) return (
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ textAlign: 'center', maxWidth: 360, padding: '0 20px' }}>
+        <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.68rem', letterSpacing: '0.35em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 12 }}>AI TOOLS</p>
+        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--white)', marginBottom: 12 }}>KD4 크루 전용</h2>
+        <p style={{ color: 'var(--gray)', fontSize: '0.88rem', lineHeight: 1.7 }}>
+          AI 대본 분석은 KD4 크루 이상 회원만 이용할 수 있습니다.
+        </p>
+      </div>
+    </div>
+  )
 
   async function handleAnalyze() {
     if (!scriptText.trim()) {
@@ -171,7 +196,11 @@ export default function AIToolsPage() {
                   placeholder="분석할 대본을 여기에 붙여넣으세요..."
                   style={s.textarea}
                   disabled={loading}
+                  maxLength={8000}
                 />
+                <p style={{ fontSize: '0.72rem', color: scriptText.length > 7000 ? 'var(--gold)' : 'var(--gray)', textAlign: 'right', marginTop: 4 }}>
+                  {scriptText.length.toLocaleString()} / 8,000자
+                </p>
               </div>
 
               {error && (

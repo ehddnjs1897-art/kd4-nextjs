@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
     if (adminPhone && record) {
       const { name, phone, class_name } = record
       const msg = `[KD4 신규상담] ${name} / ${phone}${class_name ? ` / ${class_name}` : ''}`
-      sendSMS(adminPhone, msg).catch((err) =>
+      await sendSMS(adminPhone, msg).catch((err) =>
         console.error('[notify] 관리자 SMS 실패:', err)
       )
     }

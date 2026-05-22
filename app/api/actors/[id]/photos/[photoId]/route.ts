@@ -29,10 +29,15 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
     const body = await request.json()
 
     if (body.is_profile) {
-      // 기존 대표 해제 후 새 대표 지정
-      await supabaseAdmin.from('actor_photos').update({ is_profile: false }).eq('actor_id', id)
-      await supabaseAdmin.from('actor_photos').update({ is_profile: true }).eq('id', photoId)
-      // actors 테이블 profile_photo URL 업데이트
+      // 1. 기존 대표 해제
+      const { error: clearErr } = await supabaseAdmin
+        .from('actor_photos').update({ is_profile: false }).eq('actor_id', id)
+      if (clearErr) throw new Error(`대표 해제 실패: ${clearErr.message}`)
+      // 2. 새 대표 지정
+      const { error: setErr } = await supabaseAdmin
+        .from('actor_photos').update({ is_profile: true }).eq('id', photoId)
+      if (setErr) throw new Error(`대표 지정 실패: ${setErr.message}`)
+      // 3. actors 테이블 profile_photo URL 업데이트
       const { data: photo } = await supabaseAdmin.from('actor_photos').select('url').eq('id', photoId).single()
       if (photo) await supabaseAdmin.from('actors').update({ profile_photo: photo.url }).eq('id', id)
     }

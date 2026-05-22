@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
 
 export interface ActorRow {
@@ -24,12 +24,23 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
   const [actors, setActors] = useState<ActorRow[]>(initialActors)
   const [loadingId, setLoadingId] = useState<string | null>(null)
   const [errorMsg, setErrorMsg] = useState('')
+  const [query, setQuery] = useState('')
+  const [statusFilter, setStatusFilter] = useState<'all' | 'public' | 'private'>('all')
 
   const totalPublic = actors.filter(a => a.is_public).length
   const totalWithPhoto = actors.filter(a => a.photoCount > 0).length
   const totalWithVideo = actors.filter(a => a.videoCount > 0).length
   const totalWithFilm = actors.filter(a => a.filmCount > 0).length
   const totalWithPpt = actors.filter(a => !!a.profile_doc_path).length
+
+  const filtered = useMemo(() => {
+    let list = actors
+    if (statusFilter === 'public') list = list.filter(a => a.is_public)
+    if (statusFilter === 'private') list = list.filter(a => !a.is_public)
+    const q = query.trim().toLowerCase()
+    if (q) list = list.filter(a => a.name.toLowerCase().includes(q) || (a.age_group ?? '').toLowerCase().includes(q))
+    return list
+  }, [actors, query, statusFilter])
 
   async function handleToggle(actor: ActorRow) {
     if (loadingId) return
@@ -78,6 +89,39 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
         ))}
       </div>
 
+      {/* 검색 + 필터 */}
+      <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center' }}>
+        <div style={{ position: 'relative', flex: '1 1 200px', minWidth: 180 }}>
+          <span style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--gray)', fontSize: '0.85rem', pointerEvents: 'none' }}>🔍</span>
+          <input
+            type="search"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            placeholder="이름으로 검색..."
+            aria-label="배우 이름 검색"
+            style={{
+              width: '100%', paddingLeft: 32, paddingRight: 10, paddingTop: 8, paddingBottom: 8,
+              background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 6,
+              color: 'var(--white)', fontSize: '0.82rem', fontFamily: 'var(--font-sans)', outline: 'none',
+            }}
+          />
+        </div>
+        {(['all', 'public', 'private'] as const).map(f => (
+          <button key={f} onClick={() => setStatusFilter(f)} style={{
+            padding: '7px 14px', borderRadius: 6, fontSize: '0.78rem', cursor: 'pointer',
+            background: statusFilter === f ? 'var(--gold)' : 'var(--bg2)',
+            color: statusFilter === f ? 'var(--bg)' : 'var(--gray)',
+            border: `1px solid ${statusFilter === f ? 'var(--gold)' : 'var(--border)'}`,
+            fontWeight: statusFilter === f ? 700 : 400, fontFamily: 'var(--font-sans)',
+          }}>
+            {f === 'all' ? '전체' : f === 'public' ? '공개만' : '비공개만'}
+          </button>
+        ))}
+        {(query || statusFilter !== 'all') && (
+          <span style={{ fontSize: '0.78rem', color: 'var(--gray)' }}>{filtered.length}명</span>
+        )}
+      </div>
+
       {/* 테이블 */}
       <div style={{ overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
@@ -97,7 +141,7 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
             </tr>
           </thead>
           <tbody>
-            {actors.map(actor => (
+            {filtered.map(actor => (
               <tr key={actor.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}
                 onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.02)')}
                 onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
@@ -176,9 +220,9 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
             ))}
           </tbody>
         </table>
-        {actors.length === 0 && (
+        {filtered.length === 0 && (
           <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--gray)', fontSize: '0.88rem' }}>
-            등록된 배우가 없습니다.
+            {query || statusFilter !== 'all' ? '검색 결과가 없습니다.' : '등록된 배우가 없습니다.'}
           </div>
         )}
       </div>

@@ -57,7 +57,10 @@ export async function GET(request: NextRequest) {
     director_pending: { role: 'director', label: '디렉터' },
     director: { role: 'director', label: '디렉터' },
   }
-  const mapped = APPROVE_MAP[target.role ?? ''] ?? { role: 'crew', label: '크루' }
+  const mapped = APPROVE_MAP[target.role ?? '']
+  if (!mapped) {
+    return NextResponse.redirect(`${origin}/admin?error=invalid_role`)
+  }
 
   const { error: updateErr } = await supabaseAdmin
     .from('profiles')

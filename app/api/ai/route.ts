@@ -9,6 +9,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   }
 
+  // 역할 확인 — crew 이상만 AI 기능 이용 가능
+  const { data: profile } = await supabase
+    .from('profiles').select('role').eq('id', user.id).maybeSingle()
+  if (!['crew', 'editor', 'director', 'admin'].includes(profile?.role ?? '')) {
+    return NextResponse.json({ error: 'AI 기능은 KD4 크루 이상 회원만 이용할 수 있습니다.' }, { status: 403 })
+  }
+
   const apiKey = process.env.GEMINI_KEY // NEXT_PUBLIC_ 접두사 제거 — 서버 전용
   if (!apiKey) {
     return NextResponse.json({ error: 'AI 기능이 설정되지 않았습니다.' }, { status: 500 })
@@ -19,6 +26,9 @@ export async function POST(request: NextRequest) {
 
     if (!scriptText?.trim() || !characterName?.trim()) {
       return NextResponse.json({ error: '대본과 캐릭터 이름을 입력해주세요.' }, { status: 400 })
+    }
+    if (scriptText.length > 8000) {
+      return NextResponse.json({ error: '대본이 너무 깁니다. 8,000자 이하로 입력해주세요.' }, { status: 400 })
     }
 
     const prompt = `
