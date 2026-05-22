@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
-import { matchActorOnSignup } from '@/lib/actor-matching'
+import { matchActorOnSignup, linkEnrollmentsOnSignup } from '@/lib/actor-matching'
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
@@ -52,11 +52,16 @@ export async function GET(request: Request) {
       { onConflict: 'id' }
     )
 
-    if (memberType !== 'director' && name && phone) {
+    if (name) {
       try {
-        await matchActorOnSignup(user.id, name, phone)
+        const res =
+          memberType !== 'director' && phone
+            ? await matchActorOnSignup(user.id, name, phone)
+            : { actorId: undefined as string | undefined }
+        // 미리 넣어둔 수강 기록(user_id 없는)을 이름으로 연결
+        await linkEnrollmentsOnSignup(user.id, name, res.actorId)
       } catch (e) {
-        console.error('[auth/callback] 배우 매칭 오류:', e)
+        console.error('[auth/callback] 매칭/수강연결 오류:', e)
       }
     }
 
@@ -132,12 +137,16 @@ export async function GET(request: Request) {
     console.error('[auth/callback] profiles upsert 실패:', upsertErr.message)
   }
 
-  // 배우 회원만 배우 DB 자동 매칭
-  if (memberType !== 'director' && name && phone) {
+  // 배우 DB + 미리 넣어둔 수강기록 자동 연결 (이름 기준)
+  if (name) {
     try {
-      await matchActorOnSignup(user.id, name, phone)
+      const res =
+        memberType !== 'director' && phone
+          ? await matchActorOnSignup(user.id, name, phone)
+          : { actorId: undefined as string | undefined }
+      await linkEnrollmentsOnSignup(user.id, name, res.actorId)
     } catch (e) {
-      console.error('[auth/callback] 배우 매칭 오류:', e)
+      console.error('[auth/callback] 매칭/수강연결 오류:', e)
     }
   }
 

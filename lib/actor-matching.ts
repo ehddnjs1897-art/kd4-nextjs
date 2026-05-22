@@ -80,3 +80,36 @@ export async function matchActorOnSignup(
 
   return { matched: true, actorId: matched.id }
 }
+
+/**
+ * 회원가입 직후 호출.
+ * 운영 시트에서 미리 넣어둔 수강 기록(enrollments) 중
+ * user_id가 비어있고 이름이 일치하는 것을 가입 계정과 연결한다.
+ * (회원이 아직 가입 안 한 상태로 수강 데이터를 먼저 넣어둔 경우 대응)
+ *
+ * @returns 연결된 수강 기록 수
+ */
+export async function linkEnrollmentsOnSignup(
+  profileId: string,
+  name: string,
+  actorId?: string | null
+): Promise<number> {
+  const trimmed = (name ?? '').trim()
+  if (!trimmed) return 0
+
+  const patch: { user_id: string; actor_id?: string } = { user_id: profileId }
+  if (actorId) patch.actor_id = actorId
+
+  const { data, error } = await supabaseAdmin
+    .from('enrollments')
+    .update(patch)
+    .is('user_id', null)
+    .eq('name', trimmed)
+    .select('id')
+
+  if (error) {
+    console.error('[enrollment-link] 연결 실패:', error.message)
+    return 0
+  }
+  return data?.length ?? 0
+}
