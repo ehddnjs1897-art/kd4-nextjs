@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { pixel } from '@/lib/meta-pixel'
+import { pixel } from '@/lib/analytics'
 
 const socialLinks = [
   {

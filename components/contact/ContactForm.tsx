@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { CLASSES } from '@/lib/classes'
-import { pixel } from '@/lib/meta-pixel'
+import { pixel } from '@/lib/analytics'
 import { SOURCE_VALUES, INQUIRY_OPTIONS } from '@/lib/form-options'
 
 const inputStyle: React.CSSProperties = {

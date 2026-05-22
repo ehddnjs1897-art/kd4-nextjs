@@ -8,12 +8,12 @@ import { MEISNER_FAQ } from '@/lib/landing-faqs'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import JoinCTALink from '@/components/join/JoinCTALink'
 import { buildBreadcrumb, buildFaqPage, buildCourseFromClass } from '@/lib/seo-schemas'
+import { SITE_URL } from '@/lib/constants'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
 const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
 const YouTubeFacade = dynamic(() => import('@/components/youtube/YouTubeFacade'))
 
-const SITE_URL = 'https://kd4.club'
 const PAGE_URL = `${SITE_URL}/meisner-technique-class`
 
 const MAIN_CLASS = CLASSES.find((c) => c.nameKo === '마이즈너 테크닉 정규 클래스')!

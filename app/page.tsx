@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { KD4_STATS } from "@/lib/stats";
 
-import { pixel } from "@/lib/meta-pixel";
+import { pixel } from "@/lib/analytics";
 import { CASTING_PHOTOS } from "@/lib/casting-photos"
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";

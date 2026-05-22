@@ -7,11 +7,11 @@ import { COACH_FAQ } from '@/lib/landing-faqs'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import JoinCTALink from '@/components/join/JoinCTALink'
 import { buildBreadcrumb, buildFaqPage, buildPersonDongwonDetailed } from '@/lib/seo-schemas'
+import { SITE_URL } from '@/lib/constants'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
 const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
 
-const SITE_URL = 'https://kd4.club'
 const PAGE_URL = `${SITE_URL}/acting-coach-dongwon-kwon`
 
 // 권동원 직강 클래스 (오디션 테크닉·움직임·베이직 제외 — 전부 대표 직강)

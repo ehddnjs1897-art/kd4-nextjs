@@ -6,11 +6,11 @@ import { SINCHON_FAQ } from '@/lib/landing-faqs'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import JoinCTALink from '@/components/join/JoinCTALink'
 import { buildBreadcrumb, buildFaqPage } from '@/lib/seo-schemas'
+import { SITE_URL } from '@/lib/constants'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
 const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
 
-const SITE_URL = 'https://kd4.club'
 const PAGE_URL = `${SITE_URL}/sinchon-acting-academy`
 
 // 위치 / 길찾기 (구글 지도 임베드 제거 — 약도가 메인)

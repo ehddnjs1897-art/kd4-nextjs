@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { CLASSES } from '@/lib/classes'
-import { pixel } from '@/lib/meta-pixel'
+import { pixel } from '@/lib/analytics'
 import { ArrowRight } from 'lucide-react'
 
 /** 신규 SEO 상세 페이지 매핑 — 마이즈너/출연영상 카드 하단에 상세 페이지 링크 노출 */
