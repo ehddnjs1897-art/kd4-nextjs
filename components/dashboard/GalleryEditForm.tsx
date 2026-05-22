@@ -229,6 +229,12 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     role: '',
   })
 
+  // inline 확인 상태 (삭제 2단계 확인)
+  const [confirmingPhotoId, setConfirmingPhotoId] = useState<string | null>(null)
+  const [confirmingVideoId, setConfirmingVideoId] = useState<string | null>(null)
+  const [confirmingR2VideoId, setConfirmingR2VideoId] = useState<string | null>(null)
+  const [confirmingFilmIdx, setConfirmingFilmIdx] = useState<number | null>(null)
+
   // ── 기본 정보 저장 ──────────────────────────────────────────────────────────
   async function saveInfo() {
     setInfoSaving(true)
@@ -322,7 +328,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   }
 
   async function deleteR2Video(id: string) {
-    if (!confirm('영상을 삭제하시겠습니까?')) return
+    if (confirmingR2VideoId !== id) { setConfirmingR2VideoId(id); return }
+    setConfirmingR2VideoId(null)
     try {
       const res = await fetch(`/api/actors/${actorId}/videos/${id}`, { method: 'DELETE' })
       if (!res.ok) throw new Error((await res.json()).error || '삭제 실패')
@@ -362,7 +369,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   }
 
   async function deletePhoto(id: string, isProfile: boolean) {
-    if (!confirm('이 사진을 삭제하시겠습니까?')) return
+    if (confirmingPhotoId !== id) { setConfirmingPhotoId(id); return }
+    setConfirmingPhotoId(null)
     try {
       const res = await fetch(`/api/actors/${actorId}/photos/${id}`, { method: 'DELETE' })
       if (!res.ok) throw new Error((await res.json()).error || '삭제 실패')
@@ -417,7 +425,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   }
 
   async function deleteVideo(id: string) {
-    if (!confirm('영상을 삭제하시겠습니까?')) return
+    if (confirmingVideoId !== id) { setConfirmingVideoId(id); return }
+    setConfirmingVideoId(null)
     try {
       const res = await fetch(`/api/actors/${actorId}/videos/${id}`, { method: 'DELETE' })
       if (!res.ok) throw new Error((await res.json()).error || '삭제 실패')
@@ -487,7 +496,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
 
   async function deleteFilm(idx: number) {
     const f = filmography[idx]
-    if (!confirm('필모그래피 항목을 삭제하시겠습니까?')) return
+    if (confirmingFilmIdx !== idx) { setConfirmingFilmIdx(idx); return }
+    setConfirmingFilmIdx(null)
     if (f.id) {
       try {
         const res = await fetch(`/api/actors/${actorId}/filmography/${f.id}`, { method: 'DELETE' })
@@ -640,14 +650,23 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
               <Image src={p.url} alt="배우 사진" fill style={{ objectFit: 'cover' }} sizes="160px" />
               {p.is_profile && <span style={s.profileBadge}>대표</span>}
               <div style={s.photoActions}>
-                {!p.is_profile && (
-                  <button onClick={() => setProfile(p.id)} style={{ ...s.btn, ...s.btnGhost, padding: '4px 10px', fontSize: '0.72rem' }}>
-                    대표 지정
-                  </button>
+                {confirmingPhotoId === p.id ? (
+                  <div style={{ display: 'flex', gap: 5 }}>
+                    <button onClick={() => setConfirmingPhotoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '4px 8px', fontSize: '0.7rem' }}>취소</button>
+                    <button onClick={() => deletePhoto(p.id, p.is_profile)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '4px 8px', fontSize: '0.7rem', border: 'none' }}>확인</button>
+                  </div>
+                ) : (
+                  <>
+                    {!p.is_profile && (
+                      <button onClick={() => setProfile(p.id)} style={{ ...s.btn, ...s.btnGhost, padding: '4px 10px', fontSize: '0.72rem' }}>
+                        대표 지정
+                      </button>
+                    )}
+                    <button onClick={() => deletePhoto(p.id, p.is_profile)} style={{ ...s.btn, ...s.btnDanger }}>
+                      삭제
+                    </button>
+                  </>
                 )}
-                <button onClick={() => deletePhoto(p.id, p.is_profile)} style={{ ...s.btn, ...s.btnDanger }}>
-                  삭제
-                </button>
               </div>
             </div>
           ))}
@@ -681,7 +700,14 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                       {v.video_type === 'monologue' ? '독백' : '출연영상'}
                     </span>
                   </p>
-                  <button onClick={() => deleteR2Video(v.id)} style={{ ...s.btn, ...s.btnDanger }}>삭제</button>
+                  {confirmingR2VideoId === v.id ? (
+                    <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
+                      <button onClick={() => setConfirmingR2VideoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '4px 8px', fontSize: '0.7rem' }}>취소</button>
+                      <button onClick={() => deleteR2Video(v.id)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '4px 8px', fontSize: '0.7rem', border: 'none' }}>확인</button>
+                    </div>
+                  ) : (
+                    <button onClick={() => deleteR2Video(v.id)} style={{ ...s.btn, ...s.btnDanger, flexShrink: 0 }}>삭제</button>
+                  )}
                 </div>
               ))}
             </div>
@@ -710,7 +736,14 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                   <p style={{ flex: 1, fontSize: '0.84rem', color: 'var(--white)', margin: 0 }}>
                     {v.title || v.youtube_id}
                   </p>
-                  <button onClick={() => deleteVideo(v.id)} style={{ ...s.btn, ...s.btnDanger }}>삭제</button>
+                  {confirmingVideoId === v.id ? (
+                    <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
+                      <button onClick={() => setConfirmingVideoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '4px 8px', fontSize: '0.7rem' }}>취소</button>
+                      <button onClick={() => deleteVideo(v.id)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '4px 8px', fontSize: '0.7rem', border: 'none' }}>확인</button>
+                    </div>
+                  ) : (
+                    <button onClick={() => deleteVideo(v.id)} style={{ ...s.btn, ...s.btnDanger, flexShrink: 0 }}>삭제</button>
+                  )}
                 </div>
               ))}
             </div>
@@ -754,7 +787,14 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                 <input type="number" value={f.year} onChange={e => updateFilm(i, 'year', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} />
                 <input value={f.title} onChange={e => updateFilm(i, 'title', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} placeholder="작품명" />
                 <input value={f.role} onChange={e => updateFilm(i, 'role', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} placeholder="배역" />
-                <button onClick={() => deleteFilm(i)} style={{ ...s.btn, ...s.btnDanger }}>삭제</button>
+                {confirmingFilmIdx === i ? (
+                  <div style={{ display: 'flex', gap: 5 }}>
+                    <button onClick={() => setConfirmingFilmIdx(null)} style={{ ...s.btn, ...s.btnGhost, padding: '4px 8px', fontSize: '0.7rem' }}>취소</button>
+                    <button onClick={() => deleteFilm(i)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '4px 8px', fontSize: '0.7rem', border: 'none' }}>확인</button>
+                  </div>
+                ) : (
+                  <button onClick={() => deleteFilm(i)} style={{ ...s.btn, ...s.btnDanger }}>삭제</button>
+                )}
               </div>
             ))}
           </div>

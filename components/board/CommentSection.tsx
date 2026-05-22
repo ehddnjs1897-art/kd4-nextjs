@@ -33,6 +33,7 @@ export default function CommentSection({
   const [content, setContent] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const fetchComments = useCallback(async () => {
@@ -80,19 +81,23 @@ export default function CommentSection({
   }
 
   async function handleDelete(commentId: string) {
-    if (!confirm('댓글을 삭제하시겠습니까?')) return
+    if (confirmingDeleteId !== commentId) {
+      setConfirmingDeleteId(commentId)
+      return
+    }
+    setConfirmingDeleteId(null)
     setDeletingId(commentId)
 
     try {
       const res = await fetch(`/api/comments/${commentId}`, { method: 'DELETE' })
       const json = await res.json()
       if (!res.ok) {
-        alert(json.error ?? '댓글 삭제 중 오류가 발생했습니다.')
+        setError(json.error ?? '댓글 삭제 중 오류가 발생했습니다.')
       } else {
         setComments((prev) => prev.filter((c) => c.id !== commentId))
       }
     } catch {
-      alert('댓글 삭제 중 오류가 발생했습니다.')
+      setError('댓글 삭제 중 오류가 발생했습니다.')
     } finally {
       setDeletingId(null)
     }
@@ -166,22 +171,40 @@ export default function CommentSection({
                     </p>
                   </div>
                   {canDelete && (
-                    <button
-                      onClick={() => handleDelete(comment.id)}
-                      disabled={deletingId === comment.id}
-                      style={{
-                        fontSize: '0.78rem',
-                        color: 'var(--gray)',
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        padding: '2px 6px',
-                        flexShrink: 0,
-                        opacity: deletingId === comment.id ? 0.5 : 1,
-                      }}
-                    >
-                      삭제
-                    </button>
+                    confirmingDeleteId === comment.id ? (
+                      <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
+                        <button
+                          onClick={() => setConfirmingDeleteId(null)}
+                          style={{ fontSize: '0.75rem', color: 'var(--gray)', background: 'none', border: '1px solid var(--border)', borderRadius: 4, cursor: 'pointer', padding: '2px 8px' }}
+                        >
+                          취소
+                        </button>
+                        <button
+                          onClick={() => handleDelete(comment.id)}
+                          disabled={deletingId === comment.id}
+                          style={{ fontSize: '0.75rem', color: '#fff', background: '#ef4444', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '2px 8px' }}
+                        >
+                          삭제
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => handleDelete(comment.id)}
+                        disabled={deletingId === comment.id}
+                        style={{
+                          fontSize: '0.78rem',
+                          color: 'var(--gray)',
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          padding: '2px 6px',
+                          flexShrink: 0,
+                          opacity: deletingId === comment.id ? 0.5 : 1,
+                        }}
+                      >
+                        삭제
+                      </button>
+                    )
                   )}
                 </div>
               </li>
