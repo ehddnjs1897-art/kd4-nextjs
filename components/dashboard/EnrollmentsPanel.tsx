@@ -37,6 +37,7 @@ export default function EnrollmentsPanel({
   const [items, setItems] = useState<Enrollment[]>(enrollments)
   const [loading, setLoading] = useState(false)
   const [msg, setMsg] = useState('')
+  const [confirmingRestId, setConfirmingRestId] = useState<string | null>(null)
 
   // 이번 달 '확정' 클래스 (이어서 수강 대상)
   const thisMonthActive = items.filter((e) => e.year_month === thisMonth && e.status === '확정')
@@ -74,7 +75,8 @@ export default function EnrollmentsPanel({
   }
 
   async function setRest(id: string) {
-    if (!confirm('이 수강을 휴강 처리할까요?')) return
+    if (confirmingRestId !== id) { setConfirmingRestId(id); return }
+    setConfirmingRestId(null)
     setLoading(true)
     try {
       const res = await fetch(`/api/enrollments/${id}`, {
@@ -137,9 +139,16 @@ export default function EnrollmentsPanel({
               </span>
               {/* 휴강 버튼 (확정 상태만) */}
               {e.status === '확정' && (
-                <button onClick={() => setRest(e.id)} disabled={loading} style={S.btnGhost}>
-                  휴강
-                </button>
+                confirmingRestId === e.id ? (
+                  <div style={{ display: 'flex', gap: 5 }}>
+                    <button onClick={() => setConfirmingRestId(null)} style={{ ...S.btnGhost, fontSize: '0.75rem', padding: '4px 8px' }}>취소</button>
+                    <button onClick={() => setRest(e.id)} disabled={loading} style={{ ...S.btnGhost, background: 'rgba(239,68,68,0.1)', borderColor: 'rgba(239,68,68,0.3)', color: '#ef4444', fontSize: '0.75rem', padding: '4px 8px' }}>확인</button>
+                  </div>
+                ) : (
+                  <button onClick={() => setRest(e.id)} disabled={loading} style={S.btnGhost}>
+                    휴강
+                  </button>
+                )
               )}
             </div>
           ))}

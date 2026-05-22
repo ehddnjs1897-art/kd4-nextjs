@@ -104,6 +104,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
   const [newEntry, setNewEntry] = useState({ year: '', title: '', role: '', broadcaster: '', film_type: '' })
   const [saving, setSaving] = useState(false)
   const [editErr, setEditErr] = useState('')
+  const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null)
 
   function startEdit(entry: FilmoEntry) {
     setEditingId(entry.id)
@@ -148,7 +149,8 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
   }
 
   async function deleteEntry(filmId: string) {
-    if (!confirm('이 항목을 삭제할까요?')) return
+    if (confirmingDeleteId !== filmId) { setConfirmingDeleteId(filmId); return }
+    setConfirmingDeleteId(null)
     setSaving(true)
     try {
       const res = await fetch(`/api/actors/${actor.id}/filmography/${filmId}`, { method: 'DELETE' })
@@ -503,7 +505,14 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                         <td style={{ ...s.td, whiteSpace: 'nowrap' }}>
                           <button onClick={() => saveEdit(entry)} disabled={saving} style={s.saveBtn} title="저장">✓</button>
                           <button onClick={() => setEditingId(null)} disabled={saving} style={s.cancelBtn} title="취소">✕</button>
-                          <button onClick={() => deleteEntry(entry.id)} disabled={saving} style={s.deleteBtn} title="삭제">🗑</button>
+                          {confirmingDeleteId === entry.id ? (
+                            <>
+                              <button onClick={() => setConfirmingDeleteId(null)} style={{ ...s.cancelBtn }} title="취소">✕</button>
+                              <button onClick={() => deleteEntry(entry.id)} disabled={saving} style={{ ...s.deleteBtn, background: '#ef4444', color: '#fff', opacity: 1 }} title="삭제 확인">✓</button>
+                            </>
+                          ) : (
+                            <button onClick={() => deleteEntry(entry.id)} disabled={saving} style={s.deleteBtn} title="삭제">🗑</button>
+                          )}
                         </td>
                       </tr>
                     )
@@ -542,7 +551,14 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                       {canEdit && (
                         <td style={{ ...s.td, whiteSpace: 'nowrap' }}>
                           <button onClick={() => startEdit(entry)} disabled={saving} style={s.editBtn} title="편집">✎</button>
-                          <button onClick={() => deleteEntry(entry.id)} disabled={saving} style={s.deleteBtn} title="삭제">🗑</button>
+                          {confirmingDeleteId === entry.id ? (
+                            <>
+                              <button onClick={() => setConfirmingDeleteId(null)} style={{ ...s.cancelBtn }} title="취소">✕</button>
+                              <button onClick={() => deleteEntry(entry.id)} disabled={saving} style={{ ...s.deleteBtn, background: '#ef4444', color: '#fff', opacity: 1 }} title="삭제 확인">✓</button>
+                            </>
+                          ) : (
+                            <button onClick={() => deleteEntry(entry.id)} disabled={saving} style={s.deleteBtn} title="삭제">🗑</button>
+                          )}
                         </td>
                       )}
                     </tr>
