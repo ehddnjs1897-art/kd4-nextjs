@@ -24,7 +24,7 @@ export default function OnboardingForm({
   const [ppt, setPpt] = useState<File | null>(null)
   const [photos, setPhotos] = useState<File[]>([])
   const [landscapeIdx, setLandscapeIdx] = useState<number>(-1) // 가로사진 index
-  const [video, setVideo] = useState<File | null>(null)
+  const [videos, setVideos] = useState<(File | null)[]>([null, null])
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
@@ -70,13 +70,13 @@ export default function OnboardingForm({
     setPpt(f)
   }
 
-  function pickVideo(f: File | null) {
+  function pickVideo(idx: number, f: File | null) {
     if (f && f.size > 300 * MB) {
       setError('영상은 300MB 이하여야 합니다.')
       return
     }
     setError('')
-    setVideo(f)
+    setVideos(prev => prev.map((v, i) => i === idx ? f : v))
   }
 
   async function uploadToBucket(bucket: string, file: File, contentType?: string): Promise<string> {
@@ -114,7 +114,8 @@ export default function OnboardingForm({
 
   async function submit() {
     setError('')
-    if (!ppt && photos.length === 0 && !video) {
+    const videoFiles = videos.filter(Boolean) as File[]
+    if (!ppt && photos.length === 0 && videoFiles.length === 0) {
       setError('하나 이상 첨부해 주세요.')
       return
     }
@@ -139,21 +140,20 @@ export default function OnboardingForm({
         photoPaths.push({ path: p })
       }
 
-      let videoMeta: { key: string; size: number; filename: string } | undefined
-      if (video) {
-        setStatus('영상 업로드 중... (용량이 크면 시간이 걸려요)')
-        videoMeta = await uploadVideo(video)
+      const videoMetas: { key: string; size: number; filename: string }[] = []
+      for (let i = 0; i < videoFiles.length; i++) {
+        setStatus(`영상 업로드 중... (${i + 1}/${videoFiles.length}) 용량이 크면 시간이 걸려요`)
+        videoMetas.push(await uploadVideo(videoFiles[i]))
       }
 
       setStatus('등록 마무리 중...')
-      // 가로사진이 있으면 ogPhotoPath로 전달 (카카오톡 썸네일)
       const ogPhotoPath = landscapeIdx >= 0 && photoPaths[landscapeIdx]
         ? photoPaths[landscapeIdx].path
         : undefined
       const res = await fetch('/api/profile/intake', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ docPath, photos: photoPaths, video: videoMeta, ogPhotoPath }),
+        body: JSON.stringify({ docPath, photos: photoPaths, videos: videoMetas, ogPhotoPath }),
       })
       const j = await res.json()
       if (!res.ok) throw new Error(j.error || '등록에 실패했습니다.')
@@ -208,18 +208,25 @@ export default function OnboardingForm({
         )}
       </div>
 
-      {/* 영상 */}
-      <div style={s.field}>
-        <label style={s.label}>출연 영상 <span style={s.hint}>(300MB 이하)</span></label>
-        <input
-          type="file"
-          accept="video/*"
-          disabled={loading}
-          onChange={(e) => pickVideo(e.target.files?.[0] ?? null)}
-          style={s.input}
-        />
-        {video && <p style={s.picked}>✓ {video.name} ({(video.size / MB).toFixed(0)}MB)</p>}
-      </div>
+      {/* 영상 1, 2 */}
+      {[0, 1].map((idx) => (
+        <div key={idx} style={s.field}>
+          <label style={s.label}>
+            출연 영상 {idx + 1}{idx === 0 ? '' : ' (선택)'}
+            <span style={s.hint}> (300MB 이하, mp4 권장)</span>
+          </label>
+          <input
+            type="file"
+            accept="video/*"
+            disabled={loading}
+            onChange={(e) => pickVideo(idx, e.target.files?.[0] ?? null)}
+            style={s.input}
+          />
+          {videos[idx] && (
+            <p style={s.picked}>✓ {videos[idx]!.name} ({(videos[idx]!.size / MB).toFixed(0)}MB)</p>
+          )}
+        </div>
+      ))}
 
       {error && <p style={s.error}>{error}</p>}
       {loading && status && <p style={s.status}>⏳ {status}</p>}

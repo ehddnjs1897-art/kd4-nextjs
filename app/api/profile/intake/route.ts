@@ -45,17 +45,22 @@ export async function POST(request: NextRequest) {
     ? body.photos.filter((p: unknown): p is { path: string } =>
         !!p && typeof (p as { path?: unknown }).path === 'string')
     : []
-  const video =
-    body?.video && typeof body.video?.key === 'string'
+  // videos 배열 (신규) + 하위호환: 기존 video 단일 필드도 처리
+  const parseVideoItem = (v: unknown) =>
+    v && typeof (v as { key?: unknown }).key === 'string'
       ? {
-          key: body.video.key as string,
-          size: Number(body.video.size ?? 0) || null,
-          filename: typeof body.video.filename === 'string' ? body.video.filename : null,
+          key: (v as { key: string }).key,
+          size: Number((v as { size?: unknown }).size ?? 0) || null,
+          filename: typeof (v as { filename?: unknown }).filename === 'string' ? (v as { filename: string }).filename : null,
         }
       : null
+  const videos: NonNullable<ReturnType<typeof parseVideoItem>>[] = Array.isArray(body?.videos)
+    ? body.videos.map(parseVideoItem).filter(Boolean)
+    : body?.video ? [parseVideoItem(body.video)].filter(Boolean) : []
+
   const ogPhotoPath: string | null = typeof body?.ogPhotoPath === 'string' ? body.ogPhotoPath : null
 
-  if (!docPath && photos.length === 0 && !video) {
+  if (!docPath && photos.length === 0 && videos.length === 0) {
     return NextResponse.json({ error: '제출할 파일이 없습니다.' }, { status: 400 })
   }
 
@@ -125,13 +130,13 @@ export async function POST(request: NextRequest) {
     if (photoErr) console.error('[profile/intake] 사진 등록 실패:', photoErr.message)
   }
 
-  // 4. 영상 row (R2)
-  if (video) {
+  // 4. 영상 rows (R2, 최대 2개)
+  for (const vid of videos.slice(0, 2)) {
     const { error: videoErr } = await supabaseAdmin.from('actor_videos').insert({
       actor_id: actorId,
-      title: video.filename,
-      r2_key: video.key,
-      file_size_bytes: video.size,
+      title: vid.filename,
+      r2_key: vid.key,
+      file_size_bytes: vid.size,
       uploaded_at: nowIso,
       is_public: false,
     })
