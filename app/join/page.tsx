@@ -37,6 +37,10 @@ export const metadata: Metadata = {
   alternates: { canonical: `${SITE_URL}/join` },
 }
 
+// isDeadlineExpired는 new Date()를 사용 → 빌드 시 정적 캐싱되면 마감일 이후에도 stale 값이 됨
+// revalidate = 3600으로 최대 1시간 내 반드시 재생성
+export const revalidate = 3600
+
 /* ── 상수 ────────────────────────────────────────────────────────── */
 /* 강사 사진은 DIRECTOR.photo 참조 (/director.jpg) — Director 섹션용 */
 const DEADLINE = '2026-05-31T23:59:59'  // 5월 모집 마감 (날짜 확정 시 업데이트)
@@ -51,9 +55,6 @@ const OPEN_COHORTS = [
   { name: '마이즈너', cohort: '3기', seats: MAIN_CLASS.remainingSeats ?? 0, price: parseInt(MAIN_CLASS.price.replace(/,/g, '')) },
   { name: '출연영상', cohort: '19기', seats: FILM_CLASS.remainingSeats ?? 0, price: parseInt(FILM_CLASS.price.replace(/,/g, '')) },
 ]
-
-/* 첫 달 할인액 (Anchor Price 시각화) */
-const FIRST_MONTH_DISCOUNT = 100000
 
 /* ── 할인 혜택 목록 ─────────────────────────────────────────── */
 const DISCOUNTS = [

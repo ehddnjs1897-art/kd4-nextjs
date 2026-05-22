@@ -65,6 +65,10 @@ export async function POST(request: NextRequest) {
     if (!name || !phone) {
       return NextResponse.json({ error: '이름과 연락처는 필수입니다.' }, { status: 400 })
     }
+    // 연락처 형식 검증 (한국 번호 — 공백/하이픈 허용)
+    if (!/^0[0-9]{1,2}[\-\s]?[0-9]{3,4}[\-\s]?[0-9]{4}$/.test(phone.replace(/\s/g, ''))) {
+      return NextResponse.json({ error: '연락처 형식이 올바르지 않습니다. (예: 010-1234-5678)' }, { status: 400 })
+    }
     // 이메일 형식 검증 (선택 필드 — 있을 때만 검증)
     const emailRaw = typeof record?.email === 'string' ? record.email.trim() : null
     if (emailRaw && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailRaw)) {

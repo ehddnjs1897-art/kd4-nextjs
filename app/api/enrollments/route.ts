@@ -52,11 +52,25 @@ export async function POST(request: Request) {
   if (class_names.length > 20) {
     return NextResponse.json({ error: '한 번에 최대 20개 클래스까지 신청할 수 있습니다.' }, { status: 400 })
   }
+  if (!class_names.every((cn) => typeof cn === 'string')) {
+    return NextResponse.json({ error: '잘못된 클래스 데이터입니다.' }, { status: 400 })
+  }
   if (!year_month || !/^\d{4}-\d{2}$/.test(year_month)) {
     return NextResponse.json({ error: '수강 월이 올바르지 않습니다.' }, { status: 400 })
   }
-  if (phone && phone.length > 20) {
-    return NextResponse.json({ error: '연락처 형식이 올바르지 않습니다.' }, { status: 400 })
+  if (phone && !/^0[0-9]{1,2}[\-\s]?[0-9]{3,4}[\-\s]?[0-9]{4}$/.test(phone.replace(/\s/g, ''))) {
+    return NextResponse.json({ error: '연락처 형식이 올바르지 않습니다. (예: 010-1234-5678)' }, { status: 400 })
+  }
+
+  // 레이트 리밋: 5분 내 30행 초과 시 차단 (정상 신청 최대 20행/회)
+  const fiveMinAgo = new Date(Date.now() - 5 * 60_000).toISOString()
+  const { count: recentCount } = await supabaseAdmin
+    .from('enrollments')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', user.id)
+    .gte('created_at', fiveMinAgo)
+  if ((recentCount ?? 0) >= 30) {
+    return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
   }
 
   // 프로필 (이름·이메일·연락처·배우 연결)

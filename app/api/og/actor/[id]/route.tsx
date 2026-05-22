@@ -36,7 +36,7 @@ interface ActorOg {
 async function fetchActor(id: string): Promise<ActorOg | null> {
   if (!SUPABASE_URL || !SERVICE_KEY) return null
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/actors?id=eq.${id}&select=name,gender,age_group,height,drive_photo_id,storage_photo_path,profile_photo,casting_tags,casting_summary&limit=1`,
+    `${SUPABASE_URL}/rest/v1/actors?id=eq.${encodeURIComponent(id)}&select=name,gender,age_group,height,drive_photo_id,storage_photo_path,profile_photo,casting_tags,casting_summary&limit=1`,
     {
       headers: {
         apikey: SERVICE_KEY,
@@ -61,11 +61,30 @@ function getPhotoUrl(actor: ActorOg): string | null {
   return null
 }
 
+const UUID_RE_OG = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+const fallbackImage = (
+  <div
+    style={{
+      width: '100%', height: '100%', display: 'flex',
+      alignItems: 'center', justifyContent: 'center',
+      background: '#0A0A0A', fontSize: 24,
+      color: 'rgba(255,255,255,0.2)', fontFamily: 'sans-serif', letterSpacing: '0.15em',
+    }}
+  >
+    kd4.club
+  </div>
+)
+
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
+  // UUID 검증 — 비 UUID id가 24h CDN 캐시를 오염시키는 DoS 방지
+  if (!UUID_RE_OG.test(id)) {
+    return new ImageResponse(fallbackImage, { width: 1200, height: 630 })
+  }
   const actor = await fetchActor(id)
 
   if (!actor) {

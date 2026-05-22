@@ -56,7 +56,7 @@ async function fetchActors(gender: string, ageGroup: string, tag: string): Promi
       .order('created_at', { ascending: false })
     if (gender && gender !== 'all') q = q.eq('gender', gender)
     if (ageGroup && ageGroup !== 'all') q = q.eq('age_group', ageGroup)
-    return q
+    return q.limit(500)  // Supabase 기본 1,000행 캡 — 명시적 상한으로 silent truncation 방지
   }
 
   // 1차: 새 스키마 시도
