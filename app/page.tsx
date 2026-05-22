@@ -13,7 +13,10 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
-gsap.registerPlugin(ScrollTrigger);
+// SSR 가드: module eval 시점에 window가 없으면 GSAP 플러그인 등록 생략
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
 
 const HeroScene = dynamic(() => import("@/components/hero/HeroScene"), {
   ssr: false,

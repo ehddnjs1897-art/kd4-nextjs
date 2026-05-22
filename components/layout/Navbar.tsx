@@ -403,6 +403,7 @@ export default function Navbar() {
               onClick={() => setMobileOpen(v => !v)}
               aria-label={mobileOpen ? '메뉴 닫기' : '메뉴 열기'}
               aria-expanded={mobileOpen}
+              aria-controls="mobile-nav-overlay"
               className="hamburger-btn"
               style={{
                 display: 'none',
@@ -449,6 +450,7 @@ export default function Navbar() {
       {/* ── 모바일 오버레이 ── */}
       {mobileOpen && (
         <div
+          id="mobile-nav-overlay"
           style={{
             position: 'fixed',
             inset: 0,

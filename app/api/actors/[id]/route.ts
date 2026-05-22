@@ -28,7 +28,8 @@ export async function GET(
     let canSeeContact = false   // 연락처 열람 가능 여부 (director/admin or 본인)
 
     if (user) {
-      const { data: profile } = await supabase
+      // supabaseAdmin: RLS 우회로 정확한 role/actor_id 조회 (다른 auth 체크와 일관성 유지)
+      const { data: profile } = await supabaseAdmin
         .from('profiles').select('role, actor_id').eq('id', user.id).maybeSingle()
       const role = profile?.role ?? ''
       const isOwn = profile?.actor_id === id
@@ -80,8 +81,8 @@ export async function PATCH(
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
 
-    // 본인 actor_id 확인
-    const { data: profile } = await supabase
+    // 본인 actor_id + 역할 확인 (supabaseAdmin: RLS 정책 무관 — 정확한 role 보장)
+    const { data: profile } = await supabaseAdmin
       .from('profiles')
       .select('actor_id, role')
       .eq('id', user.id)

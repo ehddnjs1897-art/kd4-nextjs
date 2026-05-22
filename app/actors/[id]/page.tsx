@@ -1,5 +1,8 @@
 import { Metadata } from 'next'
 import { unstable_cache } from 'next/cache'
+
+// 배우 상세 페이지 ISR: unstable_cache 데이터 TTL(120s)과 동기화
+export const revalidate = 120
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
