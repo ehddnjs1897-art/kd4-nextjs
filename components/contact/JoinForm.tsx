@@ -145,9 +145,16 @@ export default function JoinForm() {
     ].filter(Boolean)
     const motivation = motivationParts.join(' / ')
 
+    // Meta 중복제거용 이벤트 ID — 픽셀 Lead 와 서버 CAPI Lead 에 동일 값 전달 → Meta 가 1건으로 dedup
+    const eventId =
+      typeof crypto !== 'undefined' && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `lead_${Date.now()}_${Math.random().toString(36).slice(2)}`
+
     analytics.lead({
       source: 'join_form_instagram_ad',
       className: className || undefined,
+      eventId,
     })
 
     fetch('/api/notify', {
@@ -165,6 +172,8 @@ export default function JoinForm() {
           created_at: new Date().toISOString(),
           // 2026-05-14: 광고 채널 추적용 UTM 파라미터
           ...utmRef.current,
+          // 2026-05-22: Meta CAPI 중복제거용 — 위 픽셀 Lead 와 동일 eventId
+          event_id: eventId,
         },
       }),
     }).catch(() => {})

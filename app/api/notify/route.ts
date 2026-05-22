@@ -18,7 +18,7 @@ function normalizePhone(phone: string) {
   return digits
 }
 
-async function sendMetaCAPI(record: { name?: string | null; phone?: string | null; email?: string | null }) {
+async function sendMetaCAPI(record: { name?: string | null; phone?: string | null; email?: string | null; event_id?: string | null }) {
   const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim()
   const token = process.env.META_CAPI_TOKEN?.trim()
   if (!pixelId || !token) return  // env 없으면 silent skip — 운영자 직접 추가
@@ -36,6 +36,8 @@ async function sendMetaCAPI(record: { name?: string | null; phone?: string | nul
     body: JSON.stringify({
       data: [{
         event_name: 'Lead',
+        // 클라이언트 픽셀 Lead 와 동일 event_id → Meta 중복제거(dedup). 없으면 미전송(서버 단독 집계)
+        ...(record.event_id ? { event_id: record.event_id } : {}),
         event_time: Math.floor(Date.now() / 1000),
         event_source_url: 'https://kd4.club/join',
         action_source: 'website',

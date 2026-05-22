@@ -23,10 +23,12 @@ function isProd(): boolean {
   )
 }
 
-function fbTrack(event: string, params?: GAParams) {
+function fbTrack(event: string, params?: GAParams, eventID?: string) {
   if (!isProd() || !window.fbq) return
   try {
-    window.fbq('track', event, params)
+    // eventID 전달 시 서버 CAPI 와 중복제거(dedup) — 같은 eventID + event_name 이면 Meta 가 1건으로 합산
+    if (eventID) window.fbq('track', event, params, { eventID })
+    else window.fbq('track', event, params)
   } catch {
     /* 추적 실패는 UX 를 막지 않음 */
   }
@@ -112,15 +114,16 @@ export const analytics = {
   },
 
   /** 폼 제출 성공 — 핵심 전환 */
-  lead: (params?: { source?: string; className?: string; value?: number }) => {
-    const { source = 'unknown', className, value = 0 } = params ?? {}
+  lead: (params?: { source?: string; className?: string; value?: number; eventId?: string }) => {
+    const { source = 'unknown', className, value = 0, eventId } = params ?? {}
+    /* eventId 는 서버 CAPI 와 동일 값 → Meta 가 픽셀 Lead + CAPI Lead 를 1건으로 dedup */
     fbTrack('Lead', {
       content_name: className ?? '상담 접수',
       content_category: source,
       value,
       currency: 'KRW',
-    })
-    /* CompleteRegistration 도 같이 쏴서 광고 최적화 폭 확장 */
+    }, eventId)
+    /* CompleteRegistration 은 클라이언트 단독(서버 미발화)이라 중복 없음 — dedup 불필요 */
     fbTrack('CompleteRegistration', {
       content_name: className ?? '상담 접수',
       status: 'pending',
