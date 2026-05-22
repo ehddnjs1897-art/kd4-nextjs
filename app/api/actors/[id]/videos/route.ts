@@ -35,6 +35,17 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: '유효하지 않은 YouTube ID입니다.' }, { status: 400 })
     }
 
+    const VALID_VIDEO_TYPES = new Set(['reel', 'monologue', 'commercial', 'short_film', 'drama', 'movie'])
+    if (title && typeof title === 'string' && title.length > 200) {
+      return NextResponse.json({ error: '제목은 200자 이하입니다.' }, { status: 400 })
+    }
+    if (r2_key && typeof r2_key === 'string' && r2_key.length > 500) {
+      return NextResponse.json({ error: 'r2_key가 너무 깁니다.' }, { status: 400 })
+    }
+    if (video_type && !VALID_VIDEO_TYPES.has(video_type)) {
+      return NextResponse.json({ error: '유효하지 않은 video_type입니다.' }, { status: 400 })
+    }
+
     const insertData: Record<string, unknown> = {
       actor_id: id,
       title: title || null,

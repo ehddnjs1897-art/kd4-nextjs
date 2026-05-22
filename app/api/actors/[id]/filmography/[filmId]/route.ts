@@ -41,6 +41,12 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
     if (typeof patch.broadcaster === 'string' && patch.broadcaster.length > 100)
       return NextResponse.json({ error: '방송사·배급사는 100자 이하입니다.' }, { status: 400 })
 
+    // 카테고리 allowlist
+    const VALID_FILM_CATEGORIES = new Set(['drama', 'movie', 'musical', 'theater', 'commercial', 'etc'])
+    if (patch.category !== undefined && !VALID_FILM_CATEGORIES.has(patch.category as string)) {
+      return NextResponse.json({ error: '유효하지 않은 카테고리입니다.' }, { status: 400 })
+    }
+
     const { error } = await supabaseAdmin
       .from('actor_filmography').update(patch).eq('id', filmId).eq('actor_id', id)
     if (error) {

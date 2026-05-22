@@ -218,6 +218,9 @@ export async function POST(request: NextRequest) {
   if (!url || !isSafeExternalUrl(url)) {
     return withCors(NextResponse.json({ error: '유효한 외부 URL을 입력해주세요.' }, { status: 400 }), origin)
   }
+  if (memo && memo.length > 2000) {
+    return withCors(NextResponse.json({ error: 'memo는 2,000자 이하로 입력해주세요.' }, { status: 400 }), origin)
+  }
 
   const [og, ai] = await Promise.all([
     fetchOgMeta(url),

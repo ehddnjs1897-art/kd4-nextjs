@@ -70,10 +70,12 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     const toUpdate: (FilmItem & { id: string })[] = []
     const toInsert: FilmItem[] = []
 
+    const VALID_FILM_CATEGORIES = new Set(['drama', 'movie', 'musical', 'theater', 'commercial', 'etc'])
+
     for (const item of items) {
       if (!item.title?.trim()) continue
       const clean: FilmItem = {
-        category: item.category || 'drama',
+        category: (item.category && VALID_FILM_CATEGORIES.has(item.category)) ? item.category : 'drama',
         year: item.year ? Number(item.year) : undefined,
         title: item.title.trim().slice(0, 200),
         role: item.role?.trim().slice(0, 100) || undefined,
