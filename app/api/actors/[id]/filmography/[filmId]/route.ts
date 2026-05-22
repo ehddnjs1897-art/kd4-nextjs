@@ -54,6 +54,7 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: '필모그래피 수정에 실패했습니다.' }, { status: 500 })
     }
     revalidateTag('actors')
+    revalidateTag(`actor-${id}`)
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error(err)
@@ -79,6 +80,7 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: '필모그래피 삭제에 실패했습니다.' }, { status: 500 })
     }
     revalidateTag('actors')
+    revalidateTag(`actor-${id}`)
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error(err)

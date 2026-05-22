@@ -19,7 +19,7 @@ export default function ResetPasswordPage() {
 
     const supabase = createClient()
     const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/update-password`,
+      redirectTo: `${typeof window !== 'undefined' ? window.location.origin : 'https://kd4.club'}/auth/update-password`,
     })
 
     if (resetError) {

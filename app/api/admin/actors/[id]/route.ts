@@ -88,6 +88,7 @@ export async function PATCH(
     }
 
     revalidateTag('actors')
+    revalidateTag(`actor-${id}`)
     return NextResponse.json({ actor: data })
   } catch (err) {
     console.error('[PATCH /api/admin/actors/[id]] 예상치 못한 오류:', err)

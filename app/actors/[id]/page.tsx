@@ -129,11 +129,15 @@ async function getActor(id: string): Promise<Actor | null> {
   }
 }
 
-// 배우 상세는 공유 데이터 → 120초 캐시 (id별). 'actors' 태그로 즉시 갱신 가능.
-const getActorCached = unstable_cache(getActor, ['actor-detail-v2'], {
-  revalidate: 120,
-  tags: ['actors'],
-})
+// 배우 상세는 공유 데이터 → 120초 캐시 (id별).
+// 'actors' 태그: 전체 무효화. `actor-${id}` 태그: 해당 배우만 무효화 (cache stampede 방지).
+function getActorCached(id: string) {
+  return unstable_cache(
+    () => getActor(id),
+    ['actor-detail-v2', id],
+    { revalidate: 120, tags: ['actors', `actor-${id}`] }
+  )()
+}
 
 function profilePhotoUrl(actor: Actor): string {
   // 우선순위: profile_photo (수동 업로드) → Storage → Drive → 플레이스홀더

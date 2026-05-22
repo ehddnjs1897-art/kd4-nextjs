@@ -59,6 +59,7 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
     }
 
     revalidateTag('actors')
+    revalidateTag(`actor-${id}`)
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error(err)
@@ -112,6 +113,7 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
     }
 
     revalidateTag('actors')
+    revalidateTag(`actor-${id}`)
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error(err)

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import CommentSection from '@/components/board/CommentSection'
 import DeletePostButton from '@/components/board/DeletePostButton'
+import PostViewTracker from '@/components/board/PostViewTracker'
 
 type Params = Promise<{ id: string }>
 
@@ -87,11 +88,9 @@ export default async function PostDetailPage({ params }: { params: Params }) {
   if (error || !post) notFound()
   if (!user) redirect(`/auth/login?next=/board/${id}`)
 
-  // 조회수 증가 + 역할 조회 병렬 (둘 다 위 결과에 의존하지 않음)
-  const [, { data: profile }] = await Promise.all([
-    supabase.rpc('increment_views', { post_id: id }),
-    supabase.from('profiles').select('role').eq('id', user.id).maybeSingle(),
-  ])
+  // 조회수 증가 → 클라이언트 PostViewTracker로 이전 (봇/SSR 스팸 방지 + sessionStorage 중복 제거)
+  // 역할 조회만 수행
+  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle()
   const currentUserRole: string | null = profile?.role ?? null
 
   const isAdmin = currentUserRole === 'admin'
@@ -102,6 +101,8 @@ export default async function PostDetailPage({ params }: { params: Params }) {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '80px 0 120px' }}>
+      {/* 조회수 클라이언트 추적 — SSR/봇 제외, sessionStorage 중복 방지 */}
+      <PostViewTracker postId={id} />
       <div className="container" style={{ maxWidth: '860px' }}>
         {/* 뒤로가기 */}
         <Link

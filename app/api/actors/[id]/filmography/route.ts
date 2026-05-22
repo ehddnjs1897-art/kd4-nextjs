@@ -57,6 +57,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: '필모그래피 추가에 실패했습니다.' }, { status: 500 })
     }
     revalidateTag('actors')
+    revalidateTag(`actor-${id}`)
     return NextResponse.json({ id: data.id })
   } catch (err) {
     console.error(err)

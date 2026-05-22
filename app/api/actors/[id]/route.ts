@@ -139,6 +139,7 @@ export async function PATCH(
 
     if (error) return NextResponse.json({ error: '배우 정보 수정에 실패했습니다.' }, { status: 500 })
     revalidateTag('actors')
+    revalidateTag(`actor-${id}`)
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error('[PATCH /api/actors/[id]]', err)

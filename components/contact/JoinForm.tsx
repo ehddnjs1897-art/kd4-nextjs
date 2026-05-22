@@ -29,7 +29,7 @@ const UTM_STORAGE_KEY = 'kd4_utm'
 
 function readUTMFromURL(): UTMData {
   const empty: UTMData = { utm_source: null, utm_medium: null, utm_campaign: null, utm_content: null, utm_term: null, referrer: null }
-  if (typeof window === 'undefined') return empty
+  if (typeof window === 'undefined' || typeof document === 'undefined') return empty
 
   const params = new URLSearchParams(window.location.search)
   const fromURL: UTMData = {
