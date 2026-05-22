@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
@@ -396,20 +397,13 @@ export default function BenefitsPage() {
           }}
         >
           <span aria-hidden style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 3, background: 'var(--gold)' }} />
-          {/* seowoo 로고 (실제 로고 파일 수령 후 <img>로 교체) */}
-          <span
-            style={{
-              display: 'inline-flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 4,
-              flexShrink: 0,
-              lineHeight: 1,
-            }}
-          >
-            <span style={{ fontFamily: 'var(--font-sans)', fontSize: '1.25rem', fontWeight: 500, color: '#1a1a1a', textTransform: 'lowercase' }}>seowoo</span>
-            <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.55rem', fontWeight: 500, letterSpacing: '0.4em', color: '#1a1a1a', textTransform: 'uppercase', paddingLeft: '0.4em' }}>studio</span>
-          </span>
+          <Image
+            src="/partners/seowoo-logo.webp"
+            alt="seowoo studio"
+            width={80}
+            height={80}
+            style={{ borderRadius: 6, flexShrink: 0 }}
+          />
           {/* 텍스트 */}
           <span style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 180, flex: 1 }}>
             <span style={{ fontFamily: 'var(--font-sans)', fontSize: '1.05rem', fontWeight: 700, color: 'var(--white)' }}>배우 프로필 촬영 제휴</span>

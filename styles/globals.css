@@ -2041,3 +2041,8 @@ main {
   border-color: rgba(21, 72, 138, 0.3);
 }
 
+/* seowoo 캐러셀 — WebKit 스크롤바 숨김 */
+.seowoo-carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
