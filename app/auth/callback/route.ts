@@ -121,8 +121,8 @@ export async function GET(request: Request) {
     .eq('id', user.id)
     .maybeSingle()
 
-  const isNewUser = isOAuth && !existingProfile &&
-    (Date.now() - new Date(user.created_at).getTime() < 60_000)
+  // !existingProfile 만으로 신규 여부를 판단 — 60초 시간창은 콜드스타트 지연 시 오작동
+  const isNewUser = isOAuth && !existingProfile
 
   // 신규 OAuth 유저: 임시 프로필 생성 후 유형 선택 페이지로
   if (isNewUser) {

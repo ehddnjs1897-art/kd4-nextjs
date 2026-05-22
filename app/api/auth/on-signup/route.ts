@@ -64,5 +64,5 @@ export async function POST() {
     }
   }
 
-  return NextResponse.json({ ok: true, role: newRole, matched: !!actorId })
+  return NextResponse.json({ ok: true })
 }

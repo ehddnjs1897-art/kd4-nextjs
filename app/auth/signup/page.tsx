@@ -69,13 +69,16 @@ export default function SignupPage() {
     if (authError) {
       const msg = authError.message
       if (msg.includes('already registered') || msg.includes('User already registered')) {
-        setError('이미 가입된 이메일입니다. 로그인 페이지로 이동해 주세요.')
+        // 이미 존재하는 이메일과 아닌 경우를 구분하지 않음 — 이메일 열거 공격 방지
+        setError('입력하신 정보를 다시 확인해 주세요.')
       } else if (msg.includes('rate limit') || msg.includes('Email rate limit')) {
         setError('이메일 발송 한도를 초과했습니다. 잠시 후 다시 시도해 주세요.')
       } else if (msg.includes('disabled') || msg.includes('not enabled')) {
         setError('이메일 회원가입이 현재 비활성화되어 있습니다.')
       } else {
-        setError(`오류: ${msg}`)
+        // 내부 오류 메시지 노출 금지 — 서버 로그로만 확인
+        console.error('[signup] authError:', msg)
+        setError('가입 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.')
       }
       setLoading(false)
       return
