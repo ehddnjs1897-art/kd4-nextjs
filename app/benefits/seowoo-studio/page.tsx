@@ -146,13 +146,27 @@ export default function SeowooPartnershipPage() {
             marginBottom: '32px',
           }}
         >
-          <Image
-            src="/partners/kd4-logo-stamp.webp"
-            alt="KD4 액팅 스튜디오"
-            width={176}
-            height={176}
-            style={{ borderRadius: 8, display: 'block' }}
-          />
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+            <Image
+              src="/heart-logo.png"
+              alt="KD4 액팅 스튜디오"
+              width={140}
+              height={140}
+              style={{ display: 'block', objectFit: 'contain' }}
+            />
+            <span
+              style={{
+                fontFamily: 'var(--font-display), Oswald, sans-serif',
+                fontSize: '0.58rem',
+                letterSpacing: '0.22em',
+                color: 'var(--gold)',
+                fontWeight: 700,
+                textTransform: 'uppercase',
+              }}
+            >
+              KD4 ACTING STUDIO
+            </span>
+          </div>
           <span aria-hidden style={{ fontSize: '1.4rem', color: 'var(--gray)', fontWeight: 300 }}>
             ×
           </span>

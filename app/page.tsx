@@ -37,6 +37,12 @@ const REVIEW_ITEMS_2 = [
   { text: "지금 이 순간, 진짜 감정에 솔직하게 느끼는 것. 그게 마이즈너의 핵심이었습니다", author: "서*린", emoji: "🥺" },
 ]
 
+const PARTNERS = [
+  '서울대학교', '고려대학교', '(주)컴플렉시온', '(주)needs.z',
+  'CGV 신촌아트레온 아트하우스', '리플레이', '서우스튜디오',
+  '액터길드', 'spectrum8 스튜디오', '(주)마이엠', 'neez.n', '찍어주다',
+]
+
 const reviewCardStyle: React.CSSProperties = {
   flex: "0 0 auto",
   width: "360px",
@@ -1170,6 +1176,22 @@ export default function HomePage() {
                 <span style={reviewEmojiStyle}>{r.emoji}</span>
                 <p style={reviewTextStyle}>&ldquo;{r.text}&rdquo; <span style={reviewAuthorStyle}>— {r.author}</span></p>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Partners ─────────────────────────────────────────────────────────── */}
+      <section style={{ padding: 'clamp(32px, 5vw, 56px) 0', borderTop: '1px solid var(--border)' }}>
+        <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.65rem', letterSpacing: '0.3em', color: 'var(--secondary)', textTransform: 'uppercase', textAlign: 'center', marginBottom: '20px', opacity: 0.45 }}>
+          PARTNERS &amp; COLLABORATORS
+        </p>
+        <div className="partner-marquee">
+          <div className="partner-marquee-track">
+            {[...PARTNERS, ...PARTNERS].map((p, i) => (
+              <span key={i} className="partner-marquee-item">
+                {p}<span className="partner-marquee-dot" aria-hidden> · </span>
+              </span>
             ))}
           </div>
         </div>
