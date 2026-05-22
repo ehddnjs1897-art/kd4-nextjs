@@ -19,6 +19,7 @@ import { KD4_STATS } from '@/lib/stats'
 import { FAQ_ITEMS } from '@/lib/faq-items'
 import StickyTopBar from '@/components/join/StickyTopBar'
 import JoinCTALink from '@/components/join/JoinCTALink'
+import { SITE_URL } from '@/lib/constants'
 
 /* 폴드 아래 / 비즈니스 크리티컬하지 않은 컴포넌트 — 지연 로딩 */
 const JoinPageView = dynamic(() => import('@/components/analytics/JoinPageView'))
@@ -33,7 +34,7 @@ export const metadata: Metadata = {
   title: '무료 상담 신청 | KD4 액팅 스튜디오',
   description: '소수정예 마이즈너 테크닉 연기 클래스. 봄맞이 첫 달 10만원 할인. 서울 신촌.',
   robots: { index: false, follow: false },
-  alternates: { canonical: 'https://kd4.club/join' },
+  alternates: { canonical: `${SITE_URL}/join` },
 }
 
 /* ── 상수 ────────────────────────────────────────────────────────── */

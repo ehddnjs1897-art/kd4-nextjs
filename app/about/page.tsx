@@ -1,11 +1,21 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
+import { SITE_URL } from '@/lib/constants'
 
 export const metadata: Metadata = {
   title: '스튜디오 소개 | KD4 액팅 스튜디오',
   description:
     '마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 현장에서 통하는 배우를 키웁니다. 삶의 변화, 좋은 연기, 커리어의 성장.',
+  alternates: { canonical: `${SITE_URL}/about` },
+  openGraph: {
+    type: 'website',
+    url: `${SITE_URL}/about`,
+    title: '스튜디오 소개 | KD4 액팅 스튜디오',
+    description: '마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 현장에서 통하는 배우를 키웁니다. 삶의 변화, 좋은 연기, 커리어의 성장.',
+    locale: 'ko_KR',
+    siteName: 'KD4 액팅 스튜디오',
+  },
 }
 
 const PARTNERS = [

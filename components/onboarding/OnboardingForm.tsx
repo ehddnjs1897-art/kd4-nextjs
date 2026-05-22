@@ -202,6 +202,7 @@ export default function OnboardingForm({
           rows={2}
           disabled={loading}
           placeholder="한 줄로 나를 소개해주세요."
+          aria-label="캐스팅 한 줄 소개"
           style={{ ...inp, resize: 'vertical', minHeight: 64, lineHeight: 1.6 }}
         />
         <p style={{ fontSize: '0.72rem', color: 'var(--gray)', textAlign: 'right', marginTop: 4 }}>{castingSummary.length}/120</p>

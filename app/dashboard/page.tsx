@@ -46,7 +46,7 @@ export default async function DashboardPage() {
 
   // profile + enrollments 병렬 조회 (enrollments는 user.id만 있으면 됨)
   const now = new Date()
-  const [{ data: profile }, { data: enrData }] = await Promise.all([
+  const [{ data: profile, error: profileErr }, { data: enrData }] = await Promise.all([
     supabase
       .from('profiles')
       .select('id, name, email, phone, role, created_at, actor_id')
@@ -59,6 +59,9 @@ export default async function DashboardPage() {
       .order('year_month', { ascending: false })
       .order('created_at', { ascending: false }),
   ])
+
+  // DB 오류 시 (일시적 네트워크/RLS 문제 등) → error boundary로 전달
+  if (profileErr) throw new Error(`프로필 조회 실패: ${profileErr.message}`)
 
   const name = profile?.name || user.user_metadata?.name || user.email?.split('@')[0] || '이름 없음'
   const email = profile?.email || user.email || '—'

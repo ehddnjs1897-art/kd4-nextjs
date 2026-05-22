@@ -221,19 +221,19 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
 
           {/* 이메일 (읽기 전용) */}
           <div>
-            <label style={labelStyle}>이메일</label>
+            <span style={labelStyle}>이메일</span>
             <p style={{ ...readonlyStyle, color: 'var(--gray-light)' }}>{email}</p>
           </div>
 
           {/* 가입일 (읽기 전용) */}
           <div>
-            <label style={labelStyle}>가입일</label>
+            <span style={labelStyle}>가입일</span>
             <p style={{ ...readonlyStyle, color: 'var(--gray-light)' }}>{formatDate(createdAt)}</p>
           </div>
 
           {/* 역할 (읽기 전용) */}
           <div>
-            <label style={labelStyle}>역할</label>
+            <span style={labelStyle}>역할</span>
             <p style={{ ...readonlyStyle, color: 'var(--gray-light)' }}>{ROLE_LABEL[role] ?? role}</p>
           </div>
 
