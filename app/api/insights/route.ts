@@ -8,10 +8,8 @@ import type { InsightSourceType, InsightCategory } from '@/lib/types'
 const GEMINI_KEY = process.env.GEMINI_KEY
 
 // CORS는 자체 도메인 + 로컬 dev만 허용 (이전 '*'은 SSRF·CSRF 위험)
-const ALLOWED_ORIGINS = new Set([
-  'https://kd4.club',
-  'http://localhost:3000',
-])
+import { SITE_URL } from '@/lib/constants'
+const ALLOWED_ORIGINS = new Set([SITE_URL, 'http://localhost:3000'])
 
 function corsHeaders(origin: string | null): Record<string, string> {
   const allowed = origin && ALLOWED_ORIGINS.has(origin) ? origin : 'https://kd4.club'

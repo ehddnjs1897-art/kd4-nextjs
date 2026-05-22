@@ -2,13 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
-const ALLOWED_ORIGINS = new Set([
-  'https://kd4.club',
-  'http://localhost:3000',
-])
+import { SITE_URL } from '@/lib/constants'
+const ALLOWED_ORIGINS = new Set([SITE_URL, 'http://localhost:3000'])
 
 function corsHeaders(origin: string | null): Record<string, string> {
-  const allowed = origin && ALLOWED_ORIGINS.has(origin) ? origin : 'https://kd4.club'
+  const allowed = origin && ALLOWED_ORIGINS.has(origin) ? origin : SITE_URL
   return {
     'Access-Control-Allow-Origin': allowed,
     'Access-Control-Allow-Methods': 'GET, PATCH, DELETE, OPTIONS',

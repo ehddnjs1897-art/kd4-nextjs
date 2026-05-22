@@ -12,8 +12,7 @@
  */
 import type { ClassItem } from './classes'
 import { DIRECTOR } from './classes'
-
-const SITE_URL = 'https://kd4.club'
+import { SITE_URL } from './constants'
 
 const ADDRESS = {
   '@type': 'PostalAddress',
