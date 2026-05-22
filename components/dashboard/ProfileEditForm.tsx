@@ -183,9 +183,10 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
 
           {/* 이름 */}
           <div>
-            <label style={labelStyle}>이름</label>
+            <label htmlFor="profile-name" style={labelStyle}>이름</label>
             {editing ? (
               <input
+                id="profile-name"
                 type="text"
                 value={name}
                 onChange={e => setName(e.target.value)}
@@ -200,9 +201,10 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
 
           {/* 전화번호 */}
           <div>
-            <label style={labelStyle}>전화번호</label>
+            <label htmlFor="profile-phone" style={labelStyle}>전화번호</label>
             {editing ? (
               <input
+                id="profile-phone"
                 type="tel"
                 value={phone}
                 onChange={e => setPhone(e.target.value)}

@@ -388,7 +388,8 @@ export default function Navbar() {
             {/* 햄버거 */}
             <button
               onClick={() => setMobileOpen(v => !v)}
-              aria-label="메뉴 열기"
+              aria-label={mobileOpen ? '메뉴 닫기' : '메뉴 열기'}
+              aria-expanded={mobileOpen}
               className="hamburger-btn"
               style={{
                 display: 'none',

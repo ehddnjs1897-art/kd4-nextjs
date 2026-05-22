@@ -22,6 +22,7 @@ export default function FaqAccordion({ items }: { items: FaqItem[] }) {
               className="faq-question"
               onClick={() => setOpenIndex(isOpen ? null : i)}
               aria-expanded={isOpen}
+              aria-controls={`faq-panel-${i}`}
             >
               <span>{item.q}</span>
               <ChevronDown
@@ -35,7 +36,7 @@ export default function FaqAccordion({ items }: { items: FaqItem[] }) {
                 }}
               />
             </button>
-            <div className="faq-answer">{item.a}</div>
+            <div id={`faq-panel-${i}`} className="faq-answer">{item.a}</div>
           </div>
         )
       })}

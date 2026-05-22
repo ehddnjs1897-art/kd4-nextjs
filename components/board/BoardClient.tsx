@@ -74,6 +74,7 @@ export default function BoardClient({
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
+              aria-pressed={activeCategory === cat}
               style={{
                 padding: '8px 18px',
                 borderRadius: 'var(--radius)',

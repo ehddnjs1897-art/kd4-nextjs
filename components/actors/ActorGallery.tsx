@@ -26,6 +26,8 @@ export default function ActorGallery({
     <div>
       {/* 메인 사진 */}
       <div
+        role="img"
+        aria-label={`프로필 사진`}
         style={{
           ...s.main,
           backgroundImage: `url("${activeUrl}")`,
