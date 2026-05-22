@@ -88,6 +88,13 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
   const [localPosts, setLocalPosts] = useState(posts)
   const [localApplications, setLocalApplications] = useState(applications)
   const [loadingId, setLoadingId] = useState<string | null>(null)
+  const [confirmingDeletePostId, setConfirmingDeletePostId] = useState<string | null>(null)
+  const [toastMsg, setToastMsg] = useState<{ text: string; type: 'error' | 'ok' } | null>(null)
+
+  function showToast(text: string, type: 'error' | 'ok' = 'error') {
+    setToastMsg({ text, type })
+    setTimeout(() => setToastMsg(null), 4000)
+  }
 
   // ── 회원 역할 변경 ──
   async function handleRoleChange(profileId: string, currentRole: string) {
@@ -101,14 +108,14 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
       })
       if (!res.ok) {
         const { error } = await res.json()
-        alert(`역할 변경 실패: ${error}`)
+        showToast(`역할 변경 실패: ${error}`)
         return
       }
       setLocalProfiles((prev) =>
         prev.map((p) => (p.id === profileId ? { ...p, role: newRole } : p))
       )
     } catch {
-      alert('역할 변경 중 오류가 발생했습니다.')
+      showToast('역할 변경 중 오류가 발생했습니다.')
     } finally {
       setLoadingId(null)
     }
@@ -125,14 +132,14 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
       })
       if (!res.ok) {
         const { error } = await res.json()
-        alert(`공개 설정 변경 실패: ${error}`)
+        showToast(`공개 설정 변경 실패: ${error}`)
         return
       }
       setLocalActors((prev) =>
         prev.map((a) => (a.id === actorId ? { ...a, is_public: !current } : a))
       )
     } catch {
-      alert('공개 설정 변경 중 오류가 발생했습니다.')
+      showToast('공개 설정 변경 중 오류가 발생했습니다.')
     } finally {
       setLoadingId(null)
     }
@@ -140,7 +147,8 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
 
   // ── 게시글 삭제 ──
   async function handleDeletePost(postId: string) {
-    if (!confirm('이 게시글을 삭제하시겠습니까?')) return
+    if (confirmingDeletePostId !== postId) { setConfirmingDeletePostId(postId); return }
+    setConfirmingDeletePostId(null)
     setLoadingId(postId)
     try {
       const res = await fetch(`/api/posts/${postId}`, {
@@ -148,12 +156,12 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
       })
       if (!res.ok) {
         const { error } = await res.json().catch(() => ({ error: '알 수 없는 오류' }))
-        alert(`삭제 실패: ${error}`)
+        showToast(`삭제 실패: ${error}`)
         return
       }
       setLocalPosts((prev) => prev.filter((p) => p.id !== postId))
     } catch {
-      alert('게시글 삭제 중 오류가 발생했습니다.')
+      showToast('게시글 삭제 중 오류가 발생했습니다.')
     } finally {
       setLoadingId(null)
     }
@@ -171,14 +179,14 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
       })
       if (!res.ok) {
         const { error } = await res.json().catch(() => ({ error: '알 수 없는 오류' }))
-        alert(`상태 변경 실패: ${error}`)
+        showToast(`상태 변경 실패: ${error}`)
         return
       }
       setLocalApplications((prev) =>
         prev.map((a) => (a.id === appId ? { ...a, status: newStatus } : a))
       )
     } catch {
-      alert('상태 변경 중 오류가 발생했습니다.')
+      showToast('상태 변경 중 오류가 발생했습니다.')
     } finally {
       setLoadingId(null)
     }
@@ -192,6 +200,21 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
           <p style={s.eyebrow}>ADMIN</p>
           <h1 style={s.pageTitle}>관리자 대시보드</h1>
         </div>
+
+        {/* 에러/성공 토스트 */}
+        {toastMsg && (
+          <div style={{
+            padding: '12px 18px',
+            background: toastMsg.type === 'error' ? 'rgba(239,68,68,0.1)' : 'rgba(74,222,128,0.1)',
+            border: `1px solid ${toastMsg.type === 'error' ? 'rgba(239,68,68,0.3)' : 'rgba(74,222,128,0.3)'}`,
+            borderRadius: 8,
+            color: toastMsg.type === 'error' ? '#ef4444' : '#4ade80',
+            fontSize: '0.85rem',
+            marginBottom: 20,
+          }}>
+            {toastMsg.text}
+          </div>
+        )}
 
         {/* 승인 완료 알림 */}
         {approvedMsg && (
@@ -363,13 +386,20 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                         <td style={s.td}>{p.category || '—'}</td>
                         <td style={s.td}>{formatDate(p.created_at)}</td>
                         <td style={s.td}>
-                          <button
-                            onClick={() => handleDeletePost(p.id)}
-                            disabled={loadingId === p.id}
-                            style={s.actionBtnDanger}
-                          >
-                            {loadingId === p.id ? '...' : '삭제'}
-                          </button>
+                          {confirmingDeletePostId === p.id ? (
+                            <div style={{ display: 'flex', gap: 4 }}>
+                              <button onClick={() => setConfirmingDeletePostId(null)} style={{ ...s.actionBtn, fontSize: '0.72rem', padding: '4px 8px' }}>취소</button>
+                              <button onClick={() => handleDeletePost(p.id)} disabled={loadingId === p.id} style={{ ...s.actionBtnDanger, background: '#ef4444', color: '#fff' }}>확인</button>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => handleDeletePost(p.id)}
+                              disabled={loadingId === p.id}
+                              style={s.actionBtnDanger}
+                            >
+                              {loadingId === p.id ? '...' : '삭제'}
+                            </button>
+                          )}
                         </td>
                       </tr>
                     ))
