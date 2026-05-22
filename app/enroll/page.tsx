@@ -59,6 +59,7 @@ export default async function EnrollPage() {
     price: c.originalPrice ?? c.price,
     course: c.course ?? null,
     capacity: c.capacity,
+    isNewMemberOpen: c.isNewMemberOpen ?? false,
   }))
 
   return (

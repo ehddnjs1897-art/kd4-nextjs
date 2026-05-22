@@ -11,7 +11,28 @@ interface ClassOption {
   price: string
   course: string | null
   capacity: string
+  isNewMemberOpen?: boolean
 }
+
+// 브랜딩 서비스 목록 (lib/classes.ts에 없는 커리어 서비스)
+const BRANDING_SERVICES: ClassOption[] = [
+  {
+    nameKo: '출연영상 편집 서비스',
+    nameEn: 'Film Editing Service',
+    step: '서비스',
+    price: '50,000',
+    course: null,
+    capacity: '-',
+  },
+  {
+    nameKo: '프로필 편집 서비스',
+    nameEn: 'Profile Editing Service',
+    step: '서비스',
+    price: '30,000',
+    course: null,
+    capacity: '-',
+  },
+]
 
 const TYPES = ['신규 등록', '기존 KD4 멤버', '브랜딩 서비스'] as const
 
@@ -47,10 +68,25 @@ export default function EnrollForm({
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
 
+  // 유형별 표시 목록
+  const visibleClasses: ClassOption[] = (() => {
+    if (type === '신규 등록') return classes.filter((c) => c.isNewMemberOpen)
+    if (type === '브랜딩 서비스') return BRANDING_SERVICES
+    return classes // 기존 KD4 멤버: 전체
+  })()
+
+  // 합계 계산 — 전체 풀(classes + 브랜딩)에서 탐색
+  const allItems = [...classes, ...BRANDING_SERVICES]
   const total = selected.reduce((sum, cn) => {
-    const c = classes.find((x) => x.nameKo === cn)
+    const c = allItems.find((x) => x.nameKo === cn)
     return sum + (c ? priceToInt(c.price) : 0)
   }, 0)
+
+  function handleTypeChange(t: string) {
+    setType(t)
+    setSelected([]) // 유형 바뀌면 선택 초기화
+    setError('')
+  }
 
   function toggle(cn: string) {
     setSelected((prev) => (prev.includes(cn) ? prev.filter((x) => x !== cn) : [...prev, cn]))
@@ -135,7 +171,7 @@ export default function EnrollForm({
               <button
                 key={t}
                 type="button"
-                onClick={() => setType(t)}
+                onClick={() => handleTypeChange(t)}
                 style={{
                   flex: '1 1 auto',
                   minHeight: 44,
@@ -160,7 +196,7 @@ export default function EnrollForm({
         <div style={{ marginBottom: 28 }}>
           <label style={labelStyle}>2. 수강 클래스 (복수 선택 가능)</label>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {classes.map((c) => {
+            {visibleClasses.map((c) => {
               const on = selected.includes(c.nameKo)
               return (
                 <button
