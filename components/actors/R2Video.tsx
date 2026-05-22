@@ -1,52 +1,103 @@
 'use client'
 
 /**
- * R2에 저장된 출연영상 재생 (비공개 → 클릭 시 signed URL 발급받아 재생).
- * 멤버(배우/크루/디렉터/관리자)만 /api/videos/[id]/signed-url 로 URL을 받음.
+ * R2에 저장된 출연영상 재생
+ * - 마운트 즉시 signed URL 미리 발급 → 재생 버튼 클릭 즉시 영상 시작
+ * - poster: 재생 전 썸네일 이미지 (배우 프로필 사진 등)
  */
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import Image from 'next/image'
 
-export default function R2Video({ videoId, title }: { videoId: string; title?: string | null }) {
+export default function R2Video({
+  videoId,
+  title,
+  poster,
+}: {
+  videoId: string
+  title?: string | null
+  poster?: string | null
+}) {
   const [url, setUrl] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [playing, setPlaying] = useState(false)
+  const [prefetching, setPrefetching] = useState(true)
   const [error, setError] = useState('')
+  const videoRef = useRef<HTMLVideoElement>(null)
 
-  async function load() {
-    setLoading(true)
-    setError('')
-    try {
-      const res = await fetch(`/api/videos/${videoId}/signed-url`)
-      const j = await res.json()
-      if (!res.ok) throw new Error(j.error || '영상을 불러올 수 없습니다.')
-      setUrl(j.url)
-    } catch (e) {
-      setError(e instanceof Error ? e.message : '오류가 발생했습니다.')
-    } finally {
-      setLoading(false)
-    }
+  // 마운트 시 URL 미리 발급
+  useEffect(() => {
+    fetch(`/api/videos/${videoId}/signed-url`)
+      .then((r) => r.json())
+      .then((j) => {
+        if (j.url) setUrl(j.url)
+        else setError(j.error || '영상을 불러올 수 없습니다.')
+      })
+      .catch(() => setError('영상을 불러올 수 없습니다.'))
+      .finally(() => setPrefetching(false))
+  }, [videoId])
+
+  function handlePlay() {
+    if (!url) return
+    setPlaying(true)
+    setTimeout(() => videoRef.current?.play(), 50)
   }
 
   return (
     <div style={s.item}>
       <div style={s.wrapper}>
-        {url ? (
+        {/* 영상 (항상 렌더, playing일 때만 보임) */}
+        {url && (
           <video
+            ref={videoRef}
             src={url}
             controls
-            autoPlay
+            preload="none"
             controlsList="nodownload"
             onContextMenu={(e) => e.preventDefault()}
-            style={s.video}
+            style={{ ...s.video, opacity: playing ? 1 : 0, pointerEvents: playing ? 'auto' : 'none' }}
           />
-        ) : (
-          <button type="button" onClick={load} disabled={loading} style={s.playBtn}>
-            {loading ? '불러오는 중...' : '▶  영상 재생'}
-          </button>
+        )}
+
+        {/* 썸네일 + 재생 오버레이 (playing 전) */}
+        {!playing && (
+          <div style={s.overlay}>
+            {/* 썸네일 배경 */}
+            {poster ? (
+              <Image
+                src={poster}
+                alt={title || '영상 썸네일'}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                style={{ objectFit: 'cover', opacity: 0.7 }}
+                unoptimized
+              />
+            ) : (
+              <div style={s.darkBg} />
+            )}
+
+            {/* 재생 버튼 */}
+            <button
+              type="button"
+              onClick={handlePlay}
+              disabled={prefetching || !!error}
+              style={s.playBtn}
+              aria-label="영상 재생"
+            >
+              {prefetching ? (
+                <span style={s.spinner} />
+              ) : error ? (
+                <span style={{ fontSize: '0.75rem', color: '#fff', padding: '0 12px', textAlign: 'center' }}>{error}</span>
+              ) : (
+                /* 재생 삼각형 */
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+                  <polygon points="5,3 19,12 5,21" />
+                </svg>
+              )}
+            </button>
+          </div>
         )}
       </div>
       {title && <p style={s.title}>{title}</p>}
-      {error && <p style={s.error}>{error}</p>}
     </div>
   )
 }
@@ -59,23 +110,39 @@ const s: Record<string, React.CSSProperties> = {
     height: 0,
     overflow: 'hidden',
     borderRadius: 6,
-    background: '#000',
+    background: '#111',
   },
-  video: { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none', background: '#000' },
+  video: {
+    position: 'absolute', top: 0, left: 0,
+    width: '100%', height: '100%',
+    border: 'none', background: '#000',
+    transition: 'opacity 0.2s',
+  },
+  overlay: {
+    position: 'absolute', inset: 0,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+  },
+  darkBg: {
+    position: 'absolute', inset: 0,
+    background: 'linear-gradient(135deg, #1a1a2e, #0d0d0d)',
+  },
   playBtn: {
-    position: 'absolute',
-    inset: 0,
-    width: '100%',
-    height: '100%',
-    border: 'none',
-    background: 'linear-gradient(135deg,#1a1a1a,#000)',
-    color: 'var(--gold)',
-    fontSize: '1rem',
-    fontWeight: 700,
-    fontFamily: 'var(--font-display)',
-    letterSpacing: '0.05em',
+    position: 'relative', zIndex: 2,
+    width: 60, height: 60,
+    borderRadius: '50%',
+    border: '2px solid rgba(255,255,255,0.8)',
+    background: 'rgba(0,0,0,0.55)',
+    backdropFilter: 'blur(4px)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
     cursor: 'pointer',
+    transition: 'transform 0.15s, background 0.15s',
+  },
+  spinner: {
+    width: 20, height: 20,
+    border: '2.5px solid rgba(255,255,255,0.3)',
+    borderTop: '2.5px solid #fff',
+    borderRadius: '50%',
+    animation: 'spin 0.8s linear infinite',
   },
   title: { fontSize: '0.85rem', color: 'var(--gray)' },
-  error: { fontSize: '0.78rem', color: 'var(--accent-red, #f87171)' },
 }
