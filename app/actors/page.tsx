@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { unstable_cache } from 'next/cache'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { getActorPhotoUrl, shouldOptimize } from '@/lib/actor-photo'
@@ -99,6 +100,14 @@ async function fetchActors(gender: string, ageGroup: string, tag: string): Promi
   return { actors, dbError: false, allTags }
 }
 
+// 배우 목록은 모든 회원에게 동일(공개 데이터) → 120초 캐시.
+// 매 요청마다 DB 조회 X → 캐시 1회 + 메모리 반환 (속도 대폭 개선).
+// 배우 추가/수정 시 revalidateTag('actors')로 즉시 갱신 가능.
+const fetchActorsCached = unstable_cache(fetchActors, ['actors-list-v1'], {
+  revalidate: 120,
+  tags: ['actors'],
+})
+
 // 사진 URL은 lib/actor-photo의 getActorPhotoUrl 사용 (Storage 우선, Drive 폴백)
 
 const GENDER_OPTIONS: { value: GenderFilter; label: string }[] = [
@@ -139,7 +148,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
   const gender = params.gender ?? 'all'
   const ageGroup = params.ageGroup ?? 'all'
   const tag = params.tag ?? 'all'
-  const { actors, dbError, allTags } = await fetchActors(gender, ageGroup, tag)
+  const { actors, dbError, allTags } = await fetchActorsCached(gender, ageGroup, tag)
 
   function filterHref(key: string, value: string) {
     const next = new URLSearchParams()
