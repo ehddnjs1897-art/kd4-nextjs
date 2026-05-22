@@ -71,7 +71,6 @@ export default async function DashboardPage() {
 
   const isAdmin = role === 'admin'
   const isActorMember = role === 'member' || role === 'actor' || isAdmin
-  const canEdit = role === 'editor' || role === 'admin' || isActorMember
   const canViewActorDb = ['crew', 'editor', 'director', 'admin'].includes(role)
   const isCrewPending = role === 'crew_pending'
   const isDirectorPending = role === 'director_pending'
