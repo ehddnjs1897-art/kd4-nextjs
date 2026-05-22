@@ -128,9 +128,18 @@ export default async function ActorsPage({ searchParams }: PageProps) {
   /* ---- 접근 권한 확인 (배우 DB는 회원 전용) ---- */
   // getSession: 쿠키에서 로컬 판독(네트워크 왕복 없음). 토큰 갱신은 middleware가 담당.
   const supabase = await createClient()
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
+
+  // searchParams 먼저 resolve → 필터 파라미터 확정 후 session + actors 병렬
+  const params = await searchParams
+  const gender = params.gender ?? 'all'
+  const ageGroup = params.ageGroup ?? 'all'
+  const tag = params.tag ?? 'all'
+
+  const [{ data: { session } }, { actors, dbError, allTags }] = await Promise.all([
+    supabase.auth.getSession(),
+    fetchActorsCached(gender, ageGroup, tag),
+  ])
+
   const user = session?.user ?? null
   let role: UserRole | null = null
   if (user) {
@@ -144,13 +153,6 @@ export default async function ActorsPage({ searchParams }: PageProps) {
   if (!canViewActorDb(role)) {
     return <ActorDbLocked role={role} />
   }
-
-  /* ---- 데이터 fetch ---- */
-  const params = await searchParams
-  const gender = params.gender ?? 'all'
-  const ageGroup = params.ageGroup ?? 'all'
-  const tag = params.tag ?? 'all'
-  const { actors, dbError, allTags } = await fetchActorsCached(gender, ageGroup, tag)
 
   function filterHref(key: string, value: string) {
     const next = new URLSearchParams()
