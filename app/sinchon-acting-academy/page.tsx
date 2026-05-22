@@ -18,10 +18,12 @@ const PAGE_URL = `${SITE_URL}/sinchon-acting-academy`
 const ADDRESS = '서울특별시 서대문구 대현동 90-7 아리움3차'
 const ADDRESS_FULL = '서울시 서대문구 대현동 90-7 아리움3차 1층 101호'
 const Q = encodeURIComponent(ADDRESS)
+const PLACE_Q = encodeURIComponent('KD4 액팅 스튜디오')
 const MAP_EMBED = `https://maps.google.com/maps?q=${Q}&z=17&hl=ko&output=embed`
-const NAVER_MAP = `https://map.naver.com/p/search/${Q}`
-const KAKAO_MAP = `https://map.kakao.com/?q=${Q}`
-const GOOGLE_MAP = `https://www.google.com/maps/search/?api=1&query=${Q}`
+// 길찾기 버튼은 상호명으로 검색 (주소로 하면 '아리움3차오피스텔'이 떠서)
+const NAVER_MAP = `https://map.naver.com/p/search/${PLACE_Q}`
+const KAKAO_MAP = `https://map.kakao.com/?q=${PLACE_Q}`
+const GOOGLE_MAP = `https://www.google.com/maps/search/?api=1&query=${PLACE_Q}`
 
 // SEO 랜딩은 정가(첫달 할인 전) 표시
 const priceOf = (c: { price: string; originalPrice?: string }) => c.originalPrice ?? c.price
