@@ -154,6 +154,7 @@ export default function EnrollForm({
         setLoading(false)
         return
       }
+      setLoading(false)
       setDone(true)
     } catch {
       setError('네트워크 오류가 발생했습니다. 다시 시도해 주세요.')
@@ -362,7 +363,7 @@ export default function EnrollForm({
                 return (
                   <div key={cn} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem' }}>
                     <span style={{ color: '#333' }}>{cn}</span>
-                    <span style={{ fontWeight: 700, color: 'var(--navy)' }}>{c?.price}원</span>
+                    <span style={{ fontWeight: 700, color: 'var(--navy)' }}>{c?.price ?? '—'}원</span>
                   </div>
                 )
               })}

@@ -35,12 +35,20 @@ const ROLE_CYCLE: Record<string, string> = {
   crew: 'editor',
   editor: 'admin',
   admin: 'user',
+  member: 'crew',
+  actor: 'crew',
+  director_pending: 'director',
+  director: 'user',
 }
 const ROLE_LABEL: Record<string, string> = {
   user: '일반회원',
   crew_pending: '크루 신청 대기',
   crew: 'KD4 크루',
+  member: '배우 멤버',
+  actor: '배우 멤버',
   editor: '편집자',
+  director_pending: '디렉터 승인 대기',
+  director: '디렉터',
   admin: '관리자',
 }
 const STATUS_LABEL: Record<string, string> = {
@@ -292,14 +300,20 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                         <button
                           onClick={() => handleRoleChange(p.id, p.role)}
                           disabled={loadingId === p.id}
-                          style={p.role === 'crew_pending'
-                            ? { ...s.actionBtn, borderColor: 'rgba(74,158,255,0.5)', color: '#7ab8ff' }
-                            : s.actionBtn}
+                          style={
+                            p.role === 'crew_pending'
+                              ? { ...s.actionBtn, borderColor: 'rgba(74,158,255,0.5)', color: '#7ab8ff' }
+                              : p.role === 'director_pending'
+                              ? { ...s.actionBtn, borderColor: 'rgba(196,165,90,0.5)', color: 'var(--gold)' }
+                              : s.actionBtn
+                          }
                         >
                           {loadingId === p.id
                             ? '...'
                             : p.role === 'crew_pending'
                             ? '✓ 크루 승인'
+                            : p.role === 'director_pending'
+                            ? '✓ 디렉터 승인'
                             : `→ ${ROLE_LABEL[ROLE_CYCLE[p.role] ?? 'user']}`}
                         </button>
                       </td>

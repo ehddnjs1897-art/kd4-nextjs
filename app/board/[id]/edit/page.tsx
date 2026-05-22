@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
-const CATEGORIES = ['일반', '공지', '질문', '자유'] as const
+const CATEGORIES = ['일반', '공지', '질문', '자유', '수업'] as const
 type Category = typeof CATEGORIES[number]
 
 interface PostData {
@@ -37,24 +37,17 @@ export default function EditPage() {
       return
     }
 
-    const { data, error: fetchError } = await supabase
-      .from('posts')
-      .select('id, title, content, category, author_id')
-      .eq('id', id)
-      .single()
+    // post + profile 병렬 조회
+    const [{ data, error: fetchError }, { data: profile }] = await Promise.all([
+      supabase.from('posts').select('id, title, content, category, author_id').eq('id', id).single(),
+      supabase.from('profiles').select('role').eq('id', user.id).single(),
+    ])
 
     if (fetchError || !data) {
       setError('게시글을 찾을 수 없습니다.')
       setLoading(false)
       return
     }
-
-    // 권한 확인 (admin 여부도 클라이언트에서 확인)
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single()
 
     const isAdmin = profile?.role === 'admin'
     if (data.author_id !== user.id && !isAdmin) {

@@ -40,22 +40,15 @@ export async function PATCH(
     return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   }
 
-  const { data: post, error: fetchError } = await supabase
-    .from('posts')
-    .select('author_id')
-    .eq('id', id)
-    .single()
+  // post + profile 병렬 조회
+  const [{ data: post, error: fetchError }, { data: profile }] = await Promise.all([
+    supabase.from('posts').select('author_id').eq('id', id).single(),
+    supabase.from('profiles').select('role').eq('id', user.id).single(),
+  ])
 
   if (fetchError || !post) {
     return NextResponse.json({ error: '게시글을 찾을 수 없습니다.' }, { status: 404 })
   }
-
-  // 권한 확인 — 본인 또는 admin
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single()
 
   const isAdmin = profile?.role === 'admin'
   if (post.author_id !== user.id && !isAdmin) {
@@ -73,7 +66,7 @@ export async function PATCH(
   if (body.title?.trim()) updates.title = body.title.trim()
   if (body.content?.trim()) updates.content = body.content.trim()
   if (body.category) {
-    const validCategories = ['일반', '공지', '질문', '자유']
+    const validCategories = ['일반', '공지', '질문', '자유', '수업']
     if (!validCategories.includes(body.category)) {
       return NextResponse.json({ error: '올바른 카테고리를 선택해주세요.' }, { status: 400 })
     }
@@ -105,21 +98,15 @@ export async function DELETE(
     return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   }
 
-  const { data: post, error: fetchError } = await supabase
-    .from('posts')
-    .select('author_id')
-    .eq('id', id)
-    .single()
+  // post + profile 병렬 조회
+  const [{ data: post, error: fetchError }, { data: profile }] = await Promise.all([
+    supabase.from('posts').select('author_id').eq('id', id).single(),
+    supabase.from('profiles').select('role').eq('id', user.id).single(),
+  ])
 
   if (fetchError || !post) {
     return NextResponse.json({ error: '게시글을 찾을 수 없습니다.' }, { status: 404 })
   }
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single()
 
   const isAdmin = profile?.role === 'admin'
   if (post.author_id !== user.id && !isAdmin) {
