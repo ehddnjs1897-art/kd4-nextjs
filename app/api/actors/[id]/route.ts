@@ -79,7 +79,7 @@ export async function PATCH(
       .eq('id', user.id)
       .single()
 
-    if (!profile || (profile.actor_id !== id && profile.role !== 'admin')) {
+    if (!profile || (profile.actor_id !== id && profile.role !== 'admin' && profile.role !== 'editor')) {
       return NextResponse.json({ error: '수정 권한이 없습니다.' }, { status: 403 })
     }
 

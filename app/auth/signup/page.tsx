@@ -88,7 +88,14 @@ export default function SignupPage() {
 
     if (userId && hasSession) {
       // role 설정 + 배우 매칭은 서버에서 처리 (클라이언트에선 role 변경 불가 - RLS)
-      await fetch('/api/auth/on-signup', { method: 'POST' })
+      const onSignupRes = await fetch('/api/auth/on-signup', { method: 'POST' })
+      if (!onSignupRes.ok) {
+        // 초기화 실패 시 사용자에게 알림 (role이 user로 남아 배우 기능 못 쓸 수 있음)
+        console.error('[signup] on-signup failed:', await onSignupRes.text())
+        setError('계정 초기 설정에 실패했습니다. 잠시 후 다시 시도하거나 관리자에게 문의하세요.')
+        setLoading(false)
+        return
+      }
     }
 
     setLoading(false)
@@ -302,6 +309,7 @@ export default function SignupPage() {
               <input
                 id="phone"
                 type="tel"
+                inputMode="numeric"
                 value={phone}
                 onChange={(e) => setPhone(formatPhone(e.target.value))}
                 placeholder="010-0000-0000"
