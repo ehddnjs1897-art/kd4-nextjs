@@ -9,6 +9,7 @@ import ActorGallery from '@/components/actors/ActorGallery'
 import ActorDbLocked from '@/components/actors/ActorDbLocked'
 import { UserRole } from '@/lib/types'
 import { canViewActorDb, canViewActorContact } from '@/lib/access'
+import { getVideoSignedUrl, isR2Configured } from '@/lib/r2'
 import { getActorPersonSchema, getActorVideoSchemas, serializeJsonLd } from '@/lib/seo'
 
 /* ---- 타입 정의 ---- */
@@ -29,6 +30,7 @@ interface Actor {
   casting_tags: string[] | null
   casting_summary: string | null
   profile_pdf_url: string | null
+  profile_doc_path: string | null
   actor_photos: ActorPhoto[]
   actor_videos: ActorVideo[]
   actor_filmography: FilmoEntry[]
@@ -72,7 +74,7 @@ async function getActor(id: string): Promise<Actor | null> {
     .select(
       `
       id, name, gender, age_group, height, weight, skills,
-      drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram,
+      drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram, profile_doc_path,
       casting_tags, casting_summary, profile_pdf_url,
       actor_photos ( id, drive_photo_id, url, storage_path, caption, sort_order ),
       actor_videos ( id, youtube_id, r2_key, title ),
@@ -92,7 +94,7 @@ async function getActor(id: string): Promise<Actor | null> {
     .select(
       `
       id, name, gender, age_group, height, weight, skills,
-      drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram,
+      drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram, profile_doc_path,
       actor_photos ( id, drive_photo_id, url, storage_path, caption, sort_order ),
       actor_videos ( id, youtube_id, r2_key, title ),
       actor_filmography ( id, category, title, role, year, production )
@@ -235,6 +237,17 @@ export default async function ActorDetailPage({
   const galleryPhotos = photoUrl.includes('placeholder')
     ? (extraPhotos.length ? extraPhotos : [photoUrl])
     : [photoUrl, ...extraPhotos]
+
+  // 프로필 문서 다운로드 URL (디렉터/관리자만, R2 비공개 → signed URL)
+  let profileDocUrl: string | null = actor.profile_pdf_url ?? null
+  if (canViewActorContact(role) && actor.profile_doc_path && isR2Configured()) {
+    try {
+      profileDocUrl = await getVideoSignedUrl(actor.profile_doc_path, 3600)
+    } catch (e) {
+      console.error('[actor] 프로필 문서 signed URL 실패:', e)
+    }
+  }
+
   const pageUrl =
     process.env.NEXT_PUBLIC_SITE_URL
       ? `${process.env.NEXT_PUBLIC_SITE_URL}/actors/${actor.id}`
@@ -343,10 +356,10 @@ export default async function ActorDetailPage({
               {/* 카카오 공유 버튼 */}
               <ShareButton webUrl={pageUrl} />
 
-              {/* 프로필 PDF 다운로드 (있을 때만 노출) */}
-              {actor.profile_pdf_url && (
+              {/* 프로필 PDF 다운로드 (디렉터/관리자만) */}
+              {canViewActorContact(role) && profileDocUrl && (
                 <a
-                  href={actor.profile_pdf_url}
+                  href={profileDocUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={styles.pdfButton}
