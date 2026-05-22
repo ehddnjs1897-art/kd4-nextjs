@@ -286,139 +286,168 @@ export default async function ActorDetailPage({
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingBottom: 100 }}>
       {/* JSON-LD */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: serializeJsonLd(personSchema) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(personSchema) }} />
       {videoSchemas.map((v, i) => (
-        <script
-          key={`vid-${i}`}
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: serializeJsonLd(v) }}
-        />
+        <script key={`vid-${i}`} type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(v) }} />
       ))}
 
-      {/* 히어로 배너 — 네이비 다크 배경 + 배우 사진 */}
-      <div style={{ paddingTop: 70 }}>
-        <div style={{
-          position: 'relative',
-          width: '100%',
-          height: 460,
-          overflow: 'hidden',
-          background: '#1A1F2B',
-        }}>
-          {/* 배우 사진 배경 */}
-          {photoUrl !== '/placeholder-actor.svg' && (
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              backgroundImage: `url("${photoUrl}")`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center top',
-            }} />
-          )}
-          {/* 다크 그라디언트 오버레이 */}
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'linear-gradient(to top, rgba(15,20,30,0.97) 0%, rgba(15,20,30,0.45) 50%, rgba(15,20,30,0.1) 100%)',
-          }} />
-          {/* 하단 텍스트 */}
-          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '0 clamp(20px,4vw,48px) 36px' }}>
-            {/* 캐스팅 태그 */}
-            {actor.casting_tags && actor.casting_tags.length > 0 && (
-              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
-                {actor.casting_tags.map(t => (
-                  <span key={t} style={{
-                    fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.08em',
-                    color: 'rgba(255,255,255,0.88)',
-                    background: 'rgba(255,255,255,0.12)',
-                    border: '1px solid rgba(255,255,255,0.28)',
-                    borderRadius: 3, padding: '3px 10px',
-                    fontFamily: 'var(--font-display)',
-                  }}>{t}</span>
-                ))}
+      {/* 반응형 헬퍼 */}
+      <style>{`
+        .actor-profile-wrap { display:flex; gap:48px; align-items:flex-start; }
+        .actor-profile-photo { flex:0 0 290px; position:sticky; top:86px; }
+        .actor-profile-info { flex:1 1 0; min-width:0; }
+        @media(max-width:660px){
+          .actor-profile-wrap { flex-direction:column; gap:28px; }
+          .actor-profile-photo { flex:none; width:200px; margin:0 auto; position:static; }
+        }
+      `}</style>
+
+      {/* 배우 프로필 헤더 */}
+      <div style={{ paddingTop: 80 }}>
+        <div style={{ maxWidth: 960, margin: '0 auto', padding: '48px clamp(20px,4vw,32px) 40px' }}>
+          <div className="actor-profile-wrap">
+
+            {/* 왼쪽: 세로형 사진 */}
+            <div className="actor-profile-photo">
+              <div style={{
+                aspectRatio: '2/3',
+                borderRadius: 10,
+                overflow: 'hidden',
+                background: 'var(--bg2)',
+                boxShadow: '0 12px 40px rgba(0,0,0,0.5)',
+              }}>
+                {photoUrl !== '/placeholder-actor.svg' ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={photoUrl}
+                    alt={actor.name}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center', display: 'block' }}
+                  />
+                ) : (
+                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray)', fontSize: '3rem' }}>👤</div>
+                )}
               </div>
-            )}
-            {/* 이름 */}
-            <h1 style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(2.4rem, 7vw, 3.6rem)',
-              fontWeight: 800, color: '#ffffff',
-              letterSpacing: '0.01em', lineHeight: 1.05, margin: 0,
-            }}>{actor.name}</h1>
-            {/* 서브라인 */}
-            <p style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.55)', marginTop: 8, letterSpacing: '0.04em' }}>
-              {genderLabel}{actor.age_group ? ` · ${actor.age_group}` : ''}{actor.name_en ? `  ·  ${actor.name_en}` : ''}
-            </p>
+              {/* 공유/다운로드 — 사진 아래 */}
+              <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <ShareButton webUrl={pageUrl} />
+                {canContact && <ActorDownloadButton profileUrl={profileDocUrl} videoIds={downloadVideoIds} />}
+              </div>
+            </div>
+
+            {/* 오른쪽: 정보 */}
+            <div className="actor-profile-info" style={{ paddingTop: 8 }}>
+
+              {/* 캐스팅 태그 */}
+              {actor.casting_tags && actor.casting_tags.length > 0 && (
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 18 }}>
+                  {actor.casting_tags.map(t => (
+                    <span key={t} style={{
+                      fontSize: '0.67rem', fontWeight: 700, letterSpacing: '0.09em',
+                      color: 'var(--gold)',
+                      background: 'rgba(200,168,100,0.1)',
+                      border: '1px solid rgba(200,168,100,0.22)',
+                      borderRadius: 3, padding: '3px 10px',
+                      fontFamily: 'var(--font-display)',
+                    }}>{t}</span>
+                  ))}
+                </div>
+              )}
+
+              {/* 이름 */}
+              <h1 style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(2rem, 5vw, 3rem)',
+                fontWeight: 800, color: 'var(--white)',
+                letterSpacing: '0.01em', lineHeight: 1.05,
+                margin: '0 0 10px',
+              }}>{actor.name}</h1>
+
+              {/* 서브라인 */}
+              <p style={{ fontSize: '0.86rem', color: 'var(--gray)', letterSpacing: '0.04em', marginBottom: 28 }}>
+                {genderLabel}{actor.age_group ? ` · ${actor.age_group}` : ''}{actor.name_en ? ` · ${actor.name_en}` : ''}
+              </p>
+
+              {/* 한줄소개 */}
+              {actor.casting_summary && (
+                <p style={{
+                  fontFamily: 'var(--font-serif)',
+                  fontSize: '0.97rem', color: 'rgba(255,255,255,0.85)',
+                  fontWeight: 400, lineHeight: 1.8,
+                  marginBottom: 28, paddingBottom: 28,
+                  borderBottom: '1px solid var(--border)',
+                }}>
+                  &ldquo;{actor.casting_summary}&rdquo;
+                </p>
+              )}
+
+              {/* 스펙 */}
+              {(actor.height || actor.weight) && (
+                <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', marginBottom: 14 }}>
+                  {actor.height && (
+                    <span style={{ fontSize: '0.88rem' }}>
+                      <span style={{ color: 'var(--gray)', marginRight: 7, fontSize: '0.72rem', letterSpacing: '0.05em', textTransform: 'uppercase' }}>신장</span>
+                      <strong style={{ color: 'var(--white)', fontWeight: 600 }}>{actor.height} cm</strong>
+                    </span>
+                  )}
+                  {actor.weight && (
+                    <span style={{ fontSize: '0.88rem' }}>
+                      <span style={{ color: 'var(--gray)', marginRight: 7, fontSize: '0.72rem', letterSpacing: '0.05em', textTransform: 'uppercase' }}>체중</span>
+                      <strong style={{ color: 'var(--white)', fontWeight: 600 }}>{actor.weight} kg</strong>
+                    </span>
+                  )}
+                </div>
+              )}
+
+              {/* 특기 */}
+              {actor.skills && actor.skills.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 28 }}>
+                  {actor.skills.map((sk, i) => (
+                    <span key={i} style={{
+                      padding: '4px 12px',
+                      background: 'rgba(255,255,255,0.05)',
+                      border: '1px solid var(--border)',
+                      borderRadius: 4,
+                      fontSize: '0.78rem',
+                      color: 'var(--gray)',
+                      letterSpacing: '0.03em',
+                    }}>{sk}</span>
+                  ))}
+                </div>
+              )}
+
+              {/* 구분선 */}
+              <div style={{ borderTop: '1px solid var(--border)', marginBottom: 22 }} />
+
+              {/* 연락처 */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'center' }}>
+                {canContact ? (
+                  <>
+                    {actor.phone && <a href={`tel:${actor.phone}`} style={{ fontSize: '0.9rem', color: 'var(--gold)', textDecoration: 'none', fontWeight: 600 }}>☎ {actor.phone}</a>}
+                    {actor.email && <a href={`mailto:${actor.email}`} style={{ fontSize: '0.9rem', color: 'var(--gold)', textDecoration: 'none', fontWeight: 600 }}>✉ {actor.email}</a>}
+                  </>
+                ) : (
+                  <p style={{ fontSize: '0.82rem', color: 'var(--gray)' }}>
+                    {user ? '연락처 열람은 디렉터 회원 전용입니다.' : '연락처 및 자료 다운로드는 KD4 멤버 전용입니다.'}
+                    {!user && <Link href="/auth/login" style={{ color: 'var(--gold)', marginLeft: 6 }}>로그인</Link>}
+                  </p>
+                )}
+                {actor.instagram && (
+                  <a href={`https://instagram.com/${actor.instagram.replace('@','')}`} target="_blank" rel="noopener noreferrer"
+                    style={{ fontSize: '0.85rem', color: 'var(--gray)', textDecoration: 'none' }}>
+                    @ {actor.instagram.startsWith('@') ? actor.instagram.slice(1) : actor.instagram}
+                  </a>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* 정보 + 콘텐츠 컨테이너 */}
-      <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 clamp(20px,4vw,32px)', paddingTop: 36, display: 'flex', flexDirection: 'column', gap: 40 }}>
-        {/* 캐스팅 서머리 */}
-        {actor.casting_summary && (
-          <p style={{
-            fontFamily: 'var(--font-serif)',
-            fontSize: '1rem', color: 'var(--white)', fontWeight: 600, lineHeight: 1.7,
-            padding: '14px 20px',
-            background: 'var(--navy-tint-1)',
-            borderLeft: '3px solid var(--navy)',
-            borderRadius: 4,
-          }}>{actor.casting_summary}</p>
-        )}
+      {/* 메인 구분선 */}
+      <div style={{ borderTop: '2px solid var(--border)' }} />
 
-        {/* 스펙 + 스킬 */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {(actor.height || actor.weight) && (
-            <div style={{ display: 'flex', gap: 28, flexWrap: 'wrap' }}>
-              {actor.height && <span style={{ fontSize: '0.88rem' }}><span style={{ color: 'var(--gray)', marginRight: 8, fontSize: '0.75rem', letterSpacing: '0.05em' }}>신장</span><strong style={{ color: 'var(--white)', fontWeight: 600 }}>{actor.height} cm</strong></span>}
-              {actor.weight && <span style={{ fontSize: '0.88rem' }}><span style={{ color: 'var(--gray)', marginRight: 8, fontSize: '0.75rem', letterSpacing: '0.05em' }}>체중</span><strong style={{ color: 'var(--white)', fontWeight: 600 }}>{actor.weight} kg</strong></span>}
-            </div>
-          )}
-          {actor.skills && actor.skills.length > 0 && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-              {actor.skills.map((sk, i) => (
-                <span key={i} style={{ padding: '4px 12px', background: 'var(--navy-tint-1)', border: '1px solid var(--navy-tint-3)', borderRadius: 3, fontSize: '0.78rem', color: 'var(--navy)', letterSpacing: '0.03em' }}>{sk}</span>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* 구분선 */}
-        <div style={{ borderTop: '1px solid var(--border)' }} />
-
-        {/* 연락처 */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'center' }}>
-          {canContact ? (
-            <>
-              {actor.phone && <a href={`tel:${actor.phone}`} style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>☎ {actor.phone}</a>}
-              {actor.email && <a href={`mailto:${actor.email}`} style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>✉ {actor.email}</a>}
-            </>
-          ) : (
-            <p style={{ fontSize: '0.85rem', color: 'var(--gray)' }}>
-              {user ? '연락처 열람은 디렉터 회원 전용입니다.' : '연락처 및 자료 다운로드는 KD4 멤버 전용입니다.'}
-              {!user && <Link href="/auth/login" style={{ color: 'var(--navy)', marginLeft: 6 }}>로그인</Link>}
-            </p>
-          )}
-          {actor.instagram && (
-            <a href={`https://instagram.com/${actor.instagram.replace('@','')}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.88rem', color: 'var(--gray)', textDecoration: 'none' }}>
-              @ {actor.instagram.startsWith('@') ? actor.instagram.slice(1) : actor.instagram}
-            </a>
-          )}
-        </div>
-
-        {/* 액션 버튼 */}
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-          <div style={{ flex: 1, minWidth: 140 }}><ShareButton webUrl={pageUrl} /></div>
-          {canContact && <div style={{ flex: 1, minWidth: 140 }}><ActorDownloadButton profileUrl={profileDocUrl} videoIds={downloadVideoIds} /></div>}
-        </div>
-
-        {/* 메인 구분선 */}
-        <div style={{ borderTop: '2px solid var(--border)' }} />
-
-        {/* ActorTabs */}
+      {/* ActorTabs — 전체 폭 */}
+      <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 clamp(20px,4vw,32px)', paddingTop: 44 }}>
         <ActorTabs actor={actor} canViewContact={canContact} imageProtected={!canContact} canEdit={isOwner} />
       </div>
     </div>

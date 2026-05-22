@@ -39,6 +39,7 @@ interface InitialData {
   weight?: number
   skills?: string
   instagram?: string
+  castingSummary?: string
   photos: PhotoItem[]
   videos: VideoItem[]
   filmography: FilmItem[]
@@ -175,6 +176,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   const [weight, setWeight] = useState(initialData.weight ?? '')
   const [skills, setSkills] = useState(initialData.skills ?? '')
   const [instagram, setInstagram] = useState(initialData.instagram ?? '')
+  const [castingSummary, setCastingSummary] = useState(initialData.castingSummary ?? '')
   const [infoMsg, setInfoMsg] = useState('')
   const [infoSaving, setInfoSaving] = useState(false)
 
@@ -209,7 +211,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       const res = await fetch(`/api/actors/${actorId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ height: height || null, weight: weight || null, skills: skills || null, instagram: instagram || null }),
+        body: JSON.stringify({ height: height || null, weight: weight || null, skills: skills || null, instagram: instagram || null, casting_summary: castingSummary.trim() || null }),
       })
       if (!res.ok) throw new Error((await res.json()).error || '저장 실패')
       setInfoMsg('저장되었습니다.')
@@ -397,6 +399,18 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         <div style={{ ...s.field, marginBottom: 20 }}>
           <label style={s.label}>인스타그램 ID</label>
           <input value={instagram} onChange={e => setInstagram(e.target.value)} style={{ ...s.input, maxWidth: 280 }} placeholder="@username" />
+        </div>
+        <div style={{ ...s.field, marginBottom: 20 }}>
+          <label style={s.label}>한줄소개 <span style={{ fontWeight: 400, fontSize: '0.75rem', color: 'var(--gray)' }}>(캐스팅 디렉터에게 보이는 자기소개, 50자 내외)</span></label>
+          <textarea
+            value={castingSummary}
+            onChange={e => setCastingSummary(e.target.value)}
+            maxLength={120}
+            rows={2}
+            placeholder='예: "장르를 넘나드는 탄탄한 기본기의 배우"'
+            style={{ ...s.input, resize: 'vertical', minHeight: 64, lineHeight: 1.6, fontFamily: 'inherit' }}
+          />
+          <span style={{ fontSize: '0.72rem', color: 'var(--gray)', textAlign: 'right' }}>{castingSummary.length}/120</span>
         </div>
         <button onClick={saveInfo} disabled={infoSaving} style={{ ...s.btn, ...s.btnPrimary, opacity: infoSaving ? 0.6 : 1 }}>
           {infoSaving ? '저장 중…' : '저장'}

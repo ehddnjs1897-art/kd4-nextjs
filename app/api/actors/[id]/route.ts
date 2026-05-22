@@ -84,7 +84,7 @@ export async function PATCH(
     }
 
     const body = await request.json()
-    const allowed = ['height', 'weight', 'skills', 'instagram']
+    const allowed = ['height', 'weight', 'skills', 'instagram', 'casting_summary', 'casting_tags', 'name_en', 'age_group']
     const patch: Record<string, unknown> = {}
     for (const k of allowed) {
       if (k in body) patch[k] = body[k]

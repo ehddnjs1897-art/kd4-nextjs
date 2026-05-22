@@ -68,8 +68,9 @@ export async function POST(request: NextRequest) {
     : body?.video ? [parseVideoItem(body.video)].filter(Boolean) : []
 
   const ogPhotoPath: string | null = typeof body?.ogPhotoPath === 'string' ? body.ogPhotoPath : null
+  const castingSummary: string | null = typeof body?.castingSummary === 'string' && body.castingSummary.trim() ? body.castingSummary.trim() : null
 
-  if (!docPath && photos.length === 0 && videos.length === 0) {
+  if (!docPath && photos.length === 0 && videos.length === 0 && !castingSummary) {
     return NextResponse.json({ error: '제출할 파일이 없습니다.' }, { status: 400 })
   }
 
@@ -117,6 +118,7 @@ export async function POST(request: NextRequest) {
   const actorPatch: Record<string, unknown> = { intake_submitted_at: nowIso }
   if (docPath) actorPatch.profile_doc_path = docPath
   if (ogPhotoPath) actorPatch.profile_photo = photoPublicUrl(ogPhotoPath)
+  if (castingSummary) actorPatch.casting_summary = castingSummary
   await supabaseAdmin.from('actors').update(actorPatch).eq('id', actorId)
 
   // 3. 사진 rows — 기존 sort_order 다음부터 append

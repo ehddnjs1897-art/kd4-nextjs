@@ -21,6 +21,7 @@ interface ActorRow {
   weight: number | null
   skills: string | null
   instagram: string | null
+  casting_summary: string | null
 }
 
 interface PhotoRow {
@@ -100,7 +101,7 @@ export default async function GalleryEditPage() {
   const [actorRes, photosRes, videosRes, filmRes] = await Promise.all([
     supabaseAdmin
       .from('actors')
-      .select('height, weight, skills, instagram')
+      .select('height, weight, skills, instagram, casting_summary')
       .eq('id', actor_id)
       .single(),
     supabaseAdmin
@@ -130,6 +131,7 @@ export default async function GalleryEditPage() {
     weight: actor.weight ?? undefined,
     skills: actor.skills ?? undefined,
     instagram: actor.instagram ?? undefined,
+    castingSummary: actor.casting_summary ?? undefined,
     photos: photos.map((p) => ({
       id: p.id,
       url: p.url,

@@ -25,6 +25,7 @@ export default function OnboardingForm({
   const [photos, setPhotos] = useState<File[]>([])
   const [landscapeIdx, setLandscapeIdx] = useState<number>(-1) // 가로사진 index
   const [videos, setVideos] = useState<(File | null)[]>([null, null, null]) // 0,1=reel, 2=monologue
+  const [castingSummary, setCastingSummary] = useState('')
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
@@ -126,12 +127,13 @@ export default function OnboardingForm({
   async function submit() {
     setError('')
     const videoFiles = videos.filter(Boolean) as File[]
-    if (!ppt && photos.length === 0 && videoFiles.length === 0) {
-      setError('하나 이상 첨부해 주세요.')
+    if (!ppt && photos.length === 0 && videoFiles.length === 0 && !castingSummary.trim()) {
+      setError('한줄소개 또는 파일을 하나 이상 입력해 주세요.')
       return
     }
     setLoading(true)
     try {
+      // 한줄소개만 있어도 제출 가능 (파일 없어도)
       let docPath: string | undefined
       if (ppt) {
         setStatus('프로필(PPT) 업로드 중...')
@@ -175,7 +177,7 @@ export default function OnboardingForm({
       const res = await fetch('/api/profile/intake', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ docPath, photos: photoPaths, currentPhotos: currentPhotoPaths, videos: videoMetas, ogPhotoPath }),
+        body: JSON.stringify({ docPath, photos: photoPaths, currentPhotos: currentPhotoPaths, videos: videoMetas, ogPhotoPath, castingSummary: castingSummary.trim() || undefined }),
       })
       const j = await res.json()
       if (!res.ok) throw new Error(j.error || '등록에 실패했습니다.')
@@ -196,6 +198,24 @@ export default function OnboardingForm({
         <p style={s.sub}>
           {userName ? `${userName}님, ` : ''}프로필 자료를 올려 주세요. 검토 후 배우 DB에 공개됩니다.
         </p>
+      </div>
+
+      {/* 한줄소개 */}
+      <div style={s.field}>
+        <label style={s.label}>한줄소개 <span style={s.hint}>(캐스팅 디렉터에게 보이는 짧은 자기소개, 50자 내외)</span></label>
+        <p style={{ fontSize: '0.78rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 4 }}>
+          예: <em style={{ color: 'rgba(255,255,255,0.55)' }}>"장르를 넘나드는 탄탄한 기본기의 배우"</em> — 나를 한 문장으로 표현해보세요.
+        </p>
+        <textarea
+          value={castingSummary}
+          onChange={(e) => setCastingSummary(e.target.value)}
+          maxLength={120}
+          rows={2}
+          disabled={loading}
+          placeholder="한 줄로 나를 소개해주세요."
+          style={{ ...s.input, resize: 'vertical', minHeight: 64, lineHeight: 1.6 }}
+        />
+        <p style={{ fontSize: '0.72rem', color: 'var(--gray)', textAlign: 'right' }}>{castingSummary.length}/120</p>
       </div>
 
       {/* PPT */}
