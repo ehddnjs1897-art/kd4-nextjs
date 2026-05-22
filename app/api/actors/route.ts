@@ -20,8 +20,13 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
 
-    const gender = searchParams.get('gender')
-    const ageGroup = searchParams.get('ageGroup')
+    // 허용 목록 — 예상치 않은 값은 무시 (불필요한 DB 쿼리 방지)
+    const ALLOWED_GENDERS = new Set(['남', '여'])
+    const ALLOWED_AGE_GROUPS = new Set(['10대', '20대', '30대', '40대', '50대이상'])
+    const rawGender = searchParams.get('gender')
+    const rawAgeGroup = searchParams.get('ageGroup')
+    const gender = rawGender && ALLOWED_GENDERS.has(rawGender) ? rawGender : null
+    const ageGroup = rawAgeGroup && ALLOWED_AGE_GROUPS.has(rawAgeGroup) ? rawAgeGroup : null
     // parseInt → NaN 방어: Math.max/min(NaN) = NaN → .range(NaN,NaN) → DB 500 방지
     const rawPage = parseInt(searchParams.get('page') ?? '1', 10)
     const rawLimit = parseInt(searchParams.get('limit') ?? '20', 10)

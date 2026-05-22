@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
   if (authErr || !user) {
     // 로그인 안 된 경우 → 로그인 후 다시 이 URL로 리디렉트
     return NextResponse.redirect(
-      `${origin}/auth/login?next=/api/admin/approve-crew?uid=${uid}`
+      `${origin}/auth/login?next=${encodeURIComponent(`/api/admin/approve-crew?uid=${uid}`)}`
     )
   }
 
