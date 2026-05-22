@@ -89,7 +89,7 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
           <Link href="/admin" style={{ fontSize: '0.85rem', color: '#15488a', textDecoration: 'underline' }}>← 관리자 홈</Link>
         </div>
         {toastMsg && (
-          <p style={{ fontSize: '0.82rem', color: '#c0392b', background: 'rgba(192,57,43,0.08)', border: '1px solid rgba(192,57,43,0.2)', borderRadius: 6, padding: '8px 12px', marginBottom: 16 }}>
+          <p role="alert" style={{ fontSize: '0.82rem', color: '#c0392b', background: 'rgba(192,57,43,0.08)', border: '1px solid rgba(192,57,43,0.2)', borderRadius: 6, padding: '8px 12px', marginBottom: 16 }}>
             {toastMsg}
           </p>
         )}

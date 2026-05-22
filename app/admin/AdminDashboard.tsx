@@ -211,7 +211,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
 
         {/* 에러/성공 토스트 */}
         {toastMsg && (
-          <div style={{
+          <div role="alert" aria-live={toastMsg.type === 'error' ? 'assertive' : 'polite'} style={{
             padding: '12px 18px',
             background: toastMsg.type === 'error' ? 'rgba(239,68,68,0.1)' : 'rgba(74,222,128,0.1)',
             border: `1px solid ${toastMsg.type === 'error' ? 'rgba(239,68,68,0.3)' : 'rgba(74,222,128,0.3)'}`,

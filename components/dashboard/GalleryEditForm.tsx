@@ -222,7 +222,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   const [filmMsg, setFilmMsg] = useState('')
   const [filmSaving, setFilmSaving] = useState(false)
   const newFilm = (): FilmItem => ({
-    id: '',
+    id: crypto.randomUUID(),
     category: 'drama',
     year: new Date().getFullYear(),
     title: '',
@@ -775,7 +775,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
               ))}
             </div>
             {filmography.map((f, i) => (
-              <div key={i} style={s.filmRow}>
+              <div key={f.id || i} style={s.filmRow}>
                 <select value={f.category} onChange={e => updateFilm(i, 'category', e.target.value)} style={{ ...s.input, padding: '8px 10px' }}>
                   <option value="drama">드라마</option>
                   <option value="film">영화</option>

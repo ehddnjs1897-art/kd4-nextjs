@@ -108,7 +108,7 @@ export default function WritePage() {
 
         <form onSubmit={handleSubmit}>
           {error && (
-            <div style={{
+            <div role="alert" style={{
               padding: '12px 16px',
               background: '#e74c3c22',
               border: '1px solid #e74c3c55',

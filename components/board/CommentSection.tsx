@@ -217,7 +217,7 @@ export default function CommentSection({
       {currentUserId ? (
         <form onSubmit={handleSubmit}>
           {error && (
-            <p style={{
+            <p role="alert" style={{
               color: '#e74c3c',
               fontSize: '0.85rem',
               marginBottom: '10px',

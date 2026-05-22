@@ -47,7 +47,7 @@ export default function EnrollmentsPanel({
   const continuable = thisMonthActive.filter((e) => !nextMonthNames.includes(e.class_name))
 
   async function continueNext() {
-    if (continuable.length === 0) return
+    if (continuable.length === 0 || loading) return
     setLoading(true)
     setMsg('')
     try {
@@ -55,7 +55,7 @@ export default function EnrollmentsPanel({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          enrollment_type: '기존 KD4 멤버',
+          enrollment_type: '수업 유지',
           class_names: continuable.map((e) => e.class_name),
           year_month: nextMonth,
         }),
@@ -63,15 +63,15 @@ export default function EnrollmentsPanel({
       const json = await res.json()
       if (!res.ok) {
         setMsg(json.error || '처리 중 오류가 발생했습니다.')
-        setLoading(false)
         return
       }
       setMsg(`${ymLabel(nextMonth)} 수강이 신청되었습니다.`)
       router.refresh()
     } catch {
       setMsg('네트워크 오류가 발생했습니다.')
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   async function setRest(id: string) {
@@ -86,11 +86,15 @@ export default function EnrollmentsPanel({
       })
       if (res.ok) {
         setItems((prev) => prev.map((e) => (e.id === id ? { ...e, status: '휴강' } : e)))
+      } else {
+        const json = await res.json().catch(() => ({}))
+        setMsg(json.error || '휴강 처리 중 오류가 발생했습니다.')
       }
     } catch {
-      /* noop */
+      setMsg('네트워크 오류가 발생했습니다.')
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   return (
@@ -112,7 +116,7 @@ export default function EnrollmentsPanel({
         </div>
       )}
 
-      {msg && <p style={{ fontSize: '0.8rem', color: 'var(--gold)' }}>{msg}</p>}
+      {msg && <p role="alert" style={{ fontSize: '0.8rem', color: 'var(--gold)' }}>{msg}</p>}
 
       {/* 수강 내역 */}
       {items.length === 0 ? (

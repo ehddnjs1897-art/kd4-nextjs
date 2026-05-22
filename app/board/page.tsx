@@ -18,6 +18,7 @@ export default async function BoardPage() {
     .from('posts')
     .select('id, title, category, author_name, views, created_at')
     .order('created_at', { ascending: false })
+    .limit(300)
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '80px 0 120px' }}>

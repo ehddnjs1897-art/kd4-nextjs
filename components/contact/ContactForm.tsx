@@ -191,8 +191,9 @@ export default function ContactForm() {
       {/* 이름 + 연락처 */}
       <div className="contact-form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
         <div>
-          <label style={labelStyle}>이름 <span style={{ color: 'var(--navy)' }}>*</span></label>
+          <label htmlFor="contact-name" style={labelStyle}>이름 <span style={{ color: 'var(--navy)' }}>*</span></label>
           <input
+            id="contact-name"
             style={focusStyle('name')}
             type="text"
             placeholder="홍길동"
@@ -204,8 +205,9 @@ export default function ContactForm() {
           />
         </div>
         <div>
-          <label style={labelStyle}>연락처 <span style={{ color: 'var(--navy)' }}>*</span></label>
+          <label htmlFor="contact-phone" style={labelStyle}>연락처 <span style={{ color: 'var(--navy)' }}>*</span></label>
           <input
+            id="contact-phone"
             style={focusStyle('phone')}
             type="tel"
             placeholder="010-0000-0000"
@@ -220,13 +222,14 @@ export default function ContactForm() {
 
       {/* 이메일 (뉴스레터 수신 · 필수) */}
       <div>
-        <label style={labelStyle}>
+        <label htmlFor="contact-email" style={labelStyle}>
           이메일 <span style={{ color: 'var(--navy)' }}>*</span>{' '}
           <span style={{ color: 'var(--gray-light)', fontSize: '0.7rem' }}>
             (뉴스레터·연기 자료 수신)
           </span>
         </label>
         <input
+          id="contact-email"
           style={focusStyle('email')}
           type="email"
           placeholder="your@email.com"
@@ -240,8 +243,9 @@ export default function ContactForm() {
 
       {/* 마이즈너 테크닉 경험 여부 */}
       <div>
-        <label style={labelStyle}>마이즈너 테크닉 경험 여부 <span style={{ color: 'var(--gray-light)', fontSize: '0.7rem' }}>(선택)</span></label>
+        <label htmlFor="contact-meisner" style={labelStyle}>마이즈너 테크닉 경험 여부 <span style={{ color: 'var(--gray-light)', fontSize: '0.7rem' }}>(선택)</span></label>
         <select
+          id="contact-meisner"
           style={{ ...focusStyle('meisner'), cursor: 'pointer' }}
           value={maiznerExp}
           onChange={(e) => setMaiznerExp(e.target.value)}
@@ -257,8 +261,9 @@ export default function ContactForm() {
 
       {/* 관심 클래스 */}
       <div>
-        <label style={labelStyle}>관심 클래스 <span style={{ color: 'var(--gray-light)', fontSize: '0.7rem' }}>(선택)</span></label>
+        <label htmlFor="contact-class" style={labelStyle}>관심 클래스 <span style={{ color: 'var(--gray-light)', fontSize: '0.7rem' }}>(선택)</span></label>
         <select
+          id="contact-class"
           style={{ ...focusStyle('class_name'), cursor: 'pointer' }}
           value={form.class_name}
           onChange={set('class_name')}
@@ -274,8 +279,9 @@ export default function ContactForm() {
 
       {/* KD4를 어떻게 알게 되셨나요 */}
       <div>
-        <label style={labelStyle}>KD4를 어떻게 알게 되셨나요?</label>
+        <label htmlFor="contact-source" style={labelStyle}>KD4를 어떻게 알게 되셨나요?</label>
         <select
+          id="contact-source"
           style={{ ...focusStyle('source'), cursor: 'pointer' }}
           value={form.source}
           onChange={set('source')}

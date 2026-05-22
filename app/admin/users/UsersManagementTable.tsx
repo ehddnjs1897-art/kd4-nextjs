@@ -106,7 +106,7 @@ export default function UsersManagementTable({ profiles: initialProfiles }: Prop
   return (
     <div>
       {toast && (
-        <p style={{ fontSize: '0.82rem', color: '#ef4444', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 6, padding: '8px 12px', marginBottom: 16 }}>
+        <p role="alert" style={{ fontSize: '0.82rem', color: '#ef4444', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 6, padding: '8px 12px', marginBottom: 16 }}>
           {toast}
         </p>
       )}

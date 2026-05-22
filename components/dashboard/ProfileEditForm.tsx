@@ -239,7 +239,7 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
 
         {/* 에러 */}
         {error && (
-          <p style={{
+          <p role="alert" style={{
             fontSize: '0.8rem', color: '#ff6b6b', marginTop: 14,
             padding: '8px 12px', background: 'rgba(220,38,38,0.08)',
             border: '1px solid rgba(220,38,38,0.2)', borderRadius: 5,
