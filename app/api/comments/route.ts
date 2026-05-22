@@ -19,7 +19,8 @@ export async function POST(request: NextRequest) {
 
   const { post_id, content } = body
 
-  if (!post_id) {
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  if (!post_id || !UUID_RE.test(post_id)) {
     return NextResponse.json({ error: '게시글 ID가 필요합니다.' }, { status: 400 })
   }
   if (!content || content.trim().length === 0) {

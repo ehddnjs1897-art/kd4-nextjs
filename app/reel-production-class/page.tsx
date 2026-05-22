@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     url: PAGE_URL,
     title: '출연영상 클래스 — 배우 포트폴리오 제작 | KD4',
     description: '전문 영화팀과 함께 만드는 캐스팅용 출연영상 포트폴리오.',
-    images: ['/og-image.jpg'],
+    images: [`${SITE_URL}/og-image.jpg`],
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
   },
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: '출연영상 클래스 — KD4',
     description: '전문 영화팀과 함께 만드는 배우 포트폴리오.',
-    images: ['/og-image.jpg'],
+    images: [`${SITE_URL}/og-image.jpg`],
   },
 }
 
