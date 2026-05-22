@@ -34,6 +34,7 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  const [matchedMsg, setMatchedMsg] = useState('')
   const router = useRouter()
 
   async function handleSave(e: React.FormEvent) {
@@ -55,6 +56,10 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
       } else {
         setSuccess(true)
         setEditing(false)
+        // 배우 재매칭 성공 시 안내
+        if (data.matched && data.actorId) {
+          setMatchedMsg('✅ 배우 프로필이 자동 연결됐습니다! 페이지를 새로고침하면 프로필을 확인할 수 있어요.')
+        }
         router.refresh()
       }
     } catch {
@@ -289,6 +294,18 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
           borderRadius: 5,
         }}>
           ✓ 정보가 저장되었습니다.
+        </p>
+      )}
+      {/* 배우 자동 재매칭 성공 */}
+      {matchedMsg && (
+        <p style={{
+          fontSize: '0.82rem', color: '#fbbf24',
+          marginTop: 8, padding: '8px 12px',
+          background: 'rgba(251,191,36,0.08)',
+          border: '1px solid rgba(251,191,36,0.2)',
+          borderRadius: 5,
+        }}>
+          {matchedMsg}
         </p>
       )}
     </div>
