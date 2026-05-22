@@ -44,6 +44,8 @@ interface ActorPhoto {
   storage_path: string | null
   caption: string | null
   sort_order: number
+  photo_type?: string | null
+  label?: string | null
 }
 
 interface ActorVideo {
@@ -51,6 +53,7 @@ interface ActorVideo {
   youtube_id: string | null
   r2_key: string | null
   title: string | null
+  video_type?: string | null
 }
 
 interface FilmoEntry {
@@ -80,8 +83,8 @@ async function getActor(id: string): Promise<Actor | null> {
       id, name, name_en, gender, age_group, height, weight, skills,
       drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram, profile_doc_path,
       casting_tags, casting_summary, profile_pdf_url,
-      actor_photos ( id, drive_photo_id, url, storage_path, caption, sort_order ),
-      actor_videos ( id, youtube_id, r2_key, title ),
+      actor_photos ( id, drive_photo_id, url, storage_path, caption, sort_order, photo_type, label ),
+      actor_videos ( id, youtube_id, r2_key, title, video_type ),
       actor_filmography ( id, category, title, role, year, production, broadcaster, film_type, award )
     `
     )
@@ -99,8 +102,8 @@ async function getActor(id: string): Promise<Actor | null> {
       `
       id, name, name_en, gender, age_group, height, weight, skills,
       drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram, profile_doc_path,
-      actor_photos ( id, drive_photo_id, url, storage_path, caption, sort_order ),
-      actor_videos ( id, youtube_id, r2_key, title ),
+      actor_photos ( id, drive_photo_id, url, storage_path, caption, sort_order, photo_type, label ),
+      actor_videos ( id, youtube_id, r2_key, title, video_type ),
       actor_filmography ( id, category, title, role, year, production )
     `
     )

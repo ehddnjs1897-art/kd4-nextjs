@@ -24,10 +24,12 @@ export default function OnboardingForm({
   const [ppt, setPpt] = useState<File | null>(null)
   const [photos, setPhotos] = useState<File[]>([])
   const [landscapeIdx, setLandscapeIdx] = useState<number>(-1) // 가로사진 index
-  const [videos, setVideos] = useState<(File | null)[]>([null, null])
+  const [videos, setVideos] = useState<(File | null)[]>([null, null, null]) // 0,1=reel, 2=monologue
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
+  const CURRENT_PHOTO_LABELS = ['앞면', '좌측면', '우측면', '뒷면'] as const
+  const [currentPhotos, setCurrentPhotos] = useState<(File | null)[]>([null, null, null, null])
 
   // 이미지 파일의 가로/세로 비율 체크
   function checkLandscape(file: File): Promise<boolean> {
@@ -59,6 +61,15 @@ export default function OnboardingForm({
     setLandscapeIdx(idx)
     setError('')
     setPhotos(arr)
+  }
+
+  function pickCurrentPhoto(idx: number, f: File | null) {
+    if (f && f.size > 5 * MB) {
+      setError(`현재사진은 5MB 이하여야 합니다: ${f?.name}`)
+      return
+    }
+    setError('')
+    setCurrentPhotos(prev => prev.map((p, i) => i === idx ? f : p))
   }
 
   function pickPpt(f: File | null) {
@@ -140,10 +151,21 @@ export default function OnboardingForm({
         photoPaths.push({ path: p })
       }
 
-      const videoMetas: { key: string; size: number; filename: string }[] = []
+      // 현재사진 업로드
+      const currentPhotoPaths: { path: string; label: string }[] = []
+      const currentPhotoFiles = CURRENT_PHOTO_LABELS.map((label, i) => ({ file: currentPhotos[i], label })).filter(x => x.file)
+      for (let i = 0; i < currentPhotoFiles.length; i++) {
+        setStatus(`현재사진 업로드 중... (${i + 1}/${currentPhotoFiles.length})`)
+        const p = await uploadToBucket('actor-photos', currentPhotoFiles[i].file!)
+        currentPhotoPaths.push({ path: p, label: currentPhotoFiles[i].label })
+      }
+
+      // 영상 업로드 (0,1=reel / 2=monologue)
+      const videoMetas: { key: string; size: number; filename: string; video_type: string }[] = []
       for (let i = 0; i < videoFiles.length; i++) {
         setStatus(`영상 업로드 중... (${i + 1}/${videoFiles.length}) 용량이 크면 시간이 걸려요`)
-        videoMetas.push(await uploadVideo(videoFiles[i]))
+        const meta = await uploadVideo(videoFiles[i])
+        videoMetas.push({ ...meta, video_type: i === 2 ? 'monologue' : 'reel' })
       }
 
       setStatus('등록 마무리 중...')
@@ -153,7 +175,7 @@ export default function OnboardingForm({
       const res = await fetch('/api/profile/intake', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ docPath, photos: photoPaths, videos: videoMetas, ogPhotoPath }),
+        body: JSON.stringify({ docPath, photos: photoPaths, currentPhotos: currentPhotoPaths, videos: videoMetas, ogPhotoPath }),
       })
       const j = await res.json()
       if (!res.ok) throw new Error(j.error || '등록에 실패했습니다.')
@@ -208,11 +230,38 @@ export default function OnboardingForm({
         )}
       </div>
 
-      {/* 영상 1, 2 */}
-      {[0, 1].map((idx) => (
+      {/* 현재사진 (선택) */}
+      <div style={{ ...s.field, marginTop: 8, padding: '16px', background: 'var(--bg3)', borderRadius: 8 }}>
+        <label style={s.label}>
+          현재사진 <span style={s.hint}>(선택, 앞/좌/우/뒤 각 1장, 5MB 이하)</span>
+        </label>
+        <p style={{ fontSize: '0.78rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 12 }}>
+          앞면·좌측면·우측면·뒷면 각도로 촬영한 현재 모습 사진입니다. 캐스팅 디렉터에게 현재 외모를 정확히 전달할 수 있습니다.
+        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          {CURRENT_PHOTO_LABELS.map((labelText, idx) => (
+            <div key={labelText} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--white)', letterSpacing: '0.03em' }}>{labelText}</span>
+              <input
+                type="file"
+                accept="image/*"
+                disabled={loading}
+                onChange={(e) => pickCurrentPhoto(idx, e.target.files?.[0] ?? null)}
+                style={{ ...s.input, padding: '7px 10px', fontSize: '0.78rem' }}
+              />
+              {currentPhotos[idx] && (
+                <p style={s.picked}>✓ {currentPhotos[idx]!.name}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 영상 1, 2, 전략적 독백 */}
+      {[0, 1, 2].map((idx) => (
         <div key={idx} style={s.field}>
           <label style={s.label}>
-            출연 영상 {idx + 1}{idx === 0 ? '' : ' (선택)'}
+            {idx === 2 ? '전략적 독백 (선택)' : `출연 영상 ${idx + 1}${idx === 0 ? '' : ' (선택)'}`}
             <span style={s.hint}> (300MB 이하, mp4 권장)</span>
           </label>
           <input

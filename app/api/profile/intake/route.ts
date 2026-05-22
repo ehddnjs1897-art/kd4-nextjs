@@ -45,6 +45,14 @@ export async function POST(request: NextRequest) {
     ? body.photos.filter((p: unknown): p is { path: string } =>
         !!p && typeof (p as { path?: unknown }).path === 'string')
     : []
+  const currentPhotoItems: { path: string; label: string }[] = Array.isArray(body?.currentPhotos)
+    ? body.currentPhotos.filter(
+        (p: unknown): p is { path: string; label: string } =>
+          !!p &&
+          typeof (p as { path?: unknown }).path === 'string' &&
+          typeof (p as { label?: unknown }).label === 'string'
+      )
+    : []
   // videos 배열 (신규) + 하위호환: 기존 video 단일 필드도 처리
   const parseVideoItem = (v: unknown) =>
     v && typeof (v as { key?: unknown }).key === 'string'
@@ -52,6 +60,7 @@ export async function POST(request: NextRequest) {
           key: (v as { key: string }).key,
           size: Number((v as { size?: unknown }).size ?? 0) || null,
           filename: typeof (v as { filename?: unknown }).filename === 'string' ? (v as { filename: string }).filename : null,
+          video_type: typeof (v as { video_type?: unknown }).video_type === 'string' ? (v as { video_type: string }).video_type : 'reel',
         }
       : null
   const videos: NonNullable<ReturnType<typeof parseVideoItem>>[] = Array.isArray(body?.videos)
@@ -130,8 +139,30 @@ export async function POST(request: NextRequest) {
     if (photoErr) console.error('[profile/intake] 사진 등록 실패:', photoErr.message)
   }
 
-  // 4. 영상 rows (R2, 최대 2개)
-  for (const vid of videos.slice(0, 2)) {
+  // 3b. 현재사진 rows
+  if (currentPhotoItems.length > 0) {
+    const { data: existingCurrent } = await supabaseAdmin
+      .from('actor_photos')
+      .select('sort_order')
+      .eq('actor_id', actorId)
+      .order('sort_order', { ascending: false })
+      .limit(1)
+    const baseC = (existingCurrent?.[0]?.sort_order ?? -1) + 1
+
+    const currentRows = currentPhotoItems.map((p, i) => ({
+      actor_id: actorId,
+      url: photoPublicUrl(p.path),
+      storage_path: p.path,
+      sort_order: baseC + i,
+      photo_type: 'current',
+      label: p.label,
+    }))
+    const { error: cpErr } = await supabaseAdmin.from('actor_photos').insert(currentRows)
+    if (cpErr) console.error('[profile/intake] 현재사진 등록 실패:', cpErr.message)
+  }
+
+  // 4. 영상 rows (R2, 최대 3개 — reel 2 + monologue 1)
+  for (const vid of videos.slice(0, 3)) {
     const { error: videoErr } = await supabaseAdmin.from('actor_videos').insert({
       actor_id: actorId,
       title: vid.filename,
@@ -139,6 +170,7 @@ export async function POST(request: NextRequest) {
       file_size_bytes: vid.size,
       uploaded_at: nowIso,
       is_public: false,
+      video_type: vid.video_type ?? 'reel',
     })
     if (videoErr) console.error('[profile/intake] 영상 등록 실패:', videoErr.message)
   }

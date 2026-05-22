@@ -11,6 +11,8 @@ interface ActorPhoto {
   storage_path?: string | null
   caption: string | null
   sort_order: number
+  photo_type?: string | null   // 'profile' | 'current'
+  label?: string | null        // '앞면' | '좌측면' | '우측면' | '뒷면'
 }
 
 interface ActorVideo {
@@ -18,6 +20,7 @@ interface ActorVideo {
   youtube_id: string | null
   r2_key?: string | null
   title: string | null
+  video_type?: string | null  // 'reel' | 'monologue'
 }
 
 interface FilmoEntry {
@@ -99,16 +102,24 @@ export default function ActorTabs({ actor, canViewContact, imageProtected }: Pro
       ? `https://drive.google.com/thumbnail?id=${actor.drive_photo_id}&sz=w1200`
       : null)
   const sortedPhotos = [...actor.actor_photos].sort((a, b) => a.sort_order - b.sort_order)
+
+  // 프로필사진: photo_type='profile' 또는 null/undefined
+  const profilePhotos = sortedPhotos.filter(p => !p.photo_type || p.photo_type === 'profile')
   const stripPhotos: string[] = []
   if (mainPhotoUrl) stripPhotos.push(mainPhotoUrl)
-  for (const p of sortedPhotos) {
+  for (const p of profilePhotos) {
     const src = photoSrc(p)
     if (src && !stripPhotos.includes(src)) stripPhotos.push(src)
     if (stripPhotos.length >= 3) break
   }
 
-  // 영상 (최대 2개)
-  const videos = (actor.actor_videos ?? []).slice(0, 2)
+  // 현재사진: photo_type='current'
+  const currentPhotos = sortedPhotos.filter(p => p.photo_type === 'current')
+  const CURRENT_LABELS = ['앞면', '좌측면', '우측면', '뒷면']
+
+  // 영상 분리
+  const reelVideos = (actor.actor_videos ?? []).filter(v => !v.video_type || v.video_type === 'reel').slice(0, 2)
+  const monologueVideos = (actor.actor_videos ?? []).filter(v => v.video_type === 'monologue').slice(0, 1)
 
   // 최근 출연 (year >= 2025)
   const recentWorks = allFilmo.filter((f) => (f.year ?? 0) >= 2025)
@@ -162,15 +173,80 @@ export default function ActorTabs({ actor, canViewContact, imageProtected }: Pro
         </section>
       )}
 
+      {/* ============ 현재사진 (앞/좌/우/뒤) ============ */}
+      {currentPhotos.length > 0 && (
+        <section style={s.section}>
+          <h2 style={s.sectionHeading}>
+            <span style={s.sectionTitle}>현재사진</span>
+          </h2>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: 12,
+          }}
+            onContextMenu={imageProtected ? (e) => e.preventDefault() : undefined}
+            onDragStart={(e) => e.preventDefault()}
+          >
+            {CURRENT_LABELS.map((labelText) => {
+              const photo = currentPhotos.find(p => p.label === labelText)
+              const src = photo ? photoSrc(photo) : null
+              return (
+                <div key={labelText} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <div style={{
+                    position: 'relative',
+                    width: '100%',
+                    paddingBottom: '133%', // 3:4 portrait
+                    background: 'var(--bg3)',
+                    borderRadius: 6,
+                    overflow: 'hidden',
+                  }}>
+                    {src ? (
+                      imageProtected ? (
+                        <div style={{
+                          position: 'absolute', inset: 0,
+                          backgroundImage: `url("${src}")`,
+                          backgroundSize: 'cover',
+                          backgroundPosition: 'center top',
+                        }} />
+                      ) : (
+                        <Image
+                          src={src}
+                          alt={`${actor.name} ${labelText}`}
+                          fill
+                          sizes="(max-width:640px) 50vw, 25vw"
+                          style={{ objectFit: 'cover', objectPosition: 'center top' }}
+                          unoptimized
+                        />
+                      )
+                    ) : (
+                      <div style={{
+                        position: 'absolute', inset: 0,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        color: 'var(--border-strong)', fontSize: '0.75rem',
+                      }}>
+                        {labelText}
+                      </div>
+                    )}
+                  </div>
+                  <p style={{ fontSize: '0.72rem', color: 'var(--gray)', textAlign: 'center', letterSpacing: '0.05em' }}>
+                    {labelText}
+                  </p>
+                </div>
+              )
+            })}
+          </div>
+        </section>
+      )}
+
       {/* ============ 01 · REEL ============ */}
-      {videos.length > 0 && (
+      {reelVideos.length > 0 && (
         <section style={s.section}>
           <h2 style={s.sectionHeading}>
             <span style={s.sectionNum}>01</span>
             <span style={s.sectionTitle}>REEL</span>
           </h2>
           <div style={s.videoGrid}>
-            {videos.map((video) =>
+            {reelVideos.map((video) =>
               video.youtube_id ? (
                 <div key={video.id} style={s.videoItem}>
                   <div style={s.videoWrapper}>
@@ -189,6 +265,40 @@ export default function ActorTabs({ actor, canViewContact, imageProtected }: Pro
                   key={video.id}
                   videoId={video.id}
                   title={video.title}
+                  poster={actor.profile_photo}
+                  allowDownload={canViewContact}
+                />
+              ) : null
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* ============ 전략적 독백 ============ */}
+      {monologueVideos.length > 0 && (
+        <section style={s.section}>
+          <h2 style={s.sectionHeading}>
+            <span style={s.sectionTitle}>전략적 독백</span>
+          </h2>
+          <div style={s.videoGrid}>
+            {monologueVideos.map((video) =>
+              video.youtube_id ? (
+                <div key={video.id} style={s.videoItem}>
+                  <div style={s.videoWrapper}>
+                    <iframe
+                      src={`https://www.youtube.com/embed/${video.youtube_id}`}
+                      title={video.title || '전략적 독백'}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      style={s.iframe}
+                    />
+                  </div>
+                </div>
+              ) : video.r2_key ? (
+                <R2Video
+                  key={video.id}
+                  videoId={video.id}
+                  title="전략적 독백"
                   poster={actor.profile_photo}
                   allowDownload={canViewContact}
                 />
