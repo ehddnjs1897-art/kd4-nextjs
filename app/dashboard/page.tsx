@@ -8,65 +8,58 @@ import ProfileEditForm from '@/components/dashboard/ProfileEditForm'
 import EnrollmentsPanel from '@/components/dashboard/EnrollmentsPanel'
 import { UserRole } from '@/lib/types'
 
-interface UserProfile {
-  id: string
-  name: string | null
-  email: string | null
-  phone: string | null
-  role: UserRole
-  created_at: string
+const ROLE_LABEL: Record<string, string> = {
+  admin: '관리자',
+  editor: '편집자',
+  director: '디렉터',
+  director_pending: '디렉터 승인 대기',
+  crew: 'KD4 크루',
+  crew_pending: '크루 신청 대기',
+  actor: '배우 멤버',
+  member: '배우 멤버',
+  user: '일반 회원',
 }
 
-async function getUserProfile(userId: string): Promise<UserProfile | null> {
-  const supabase = await createClient()
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('id, name, email, phone, role, created_at')
-    .eq('id', userId)
-    .maybeSingle()
-
-  if (error || !data) return null
-  return data as UserProfile
+const ROLE_COLOR: Record<string, string> = {
+  admin: '#c9403a',
+  editor: 'var(--navy)',
+  director: 'var(--navy)',
+  director_pending: '#999',
+  crew: 'var(--navy)',
+  crew_pending: '#999',
+  actor: 'var(--gold)',
+  member: 'var(--gold)',
+  user: 'var(--gray)',
 }
 
 export default async function DashboardPage() {
-  /* ---- 인증 확인 ---- */
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/auth/login')
 
-  if (!user) {
-    redirect('/auth/login')
-  }
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('id, name, email, phone, role, created_at, actor_id')
+    .eq('id', user.id)
+    .maybeSingle()
 
-  /* ---- 프로필 fetch ---- */
-  const profile = await getUserProfile(user.id)
-
-  const name =
-    profile?.name ||
-    user.user_metadata?.name ||
-    user.email?.split('@')[0] ||
-    '이름 없음'
-
+  const name = profile?.name || user.user_metadata?.name || user.email?.split('@')[0] || '이름 없음'
   const email = profile?.email || user.email || '—'
   const role: UserRole = (profile?.role as UserRole) || 'user'
   const createdAt = profile?.created_at || user.created_at
-  const canEdit = role === 'editor' || role === 'admin'
-  const isActorMember = role === 'actor'
-  const canViewActorDb = role === 'crew' || role === 'editor' || role === 'director' || role === 'admin'
+  const actorId: string | null = profile?.actor_id ?? null
+
+  const isAdmin = role === 'admin'
+  const isActorMember = role === 'member' || role === 'actor' || isAdmin
+  const canEdit = role === 'editor' || role === 'admin' || isActorMember
+  const canViewActorDb = ['crew', 'editor', 'director', 'admin'].includes(role)
   const isCrewPending = role === 'crew_pending'
-  const canRequestCrew = role === 'user'
-
-  // 디렉터 승인 흐름 — member_type(메타데이터) 기준 + 모든 가입경로 커버
-  const memberType = user.user_metadata?.member_type as string | undefined
-  const isDirector = role === 'director'
   const isDirectorPending = role === 'director_pending'
-  // 디렉터로 가입했으나 아직 승인 신청 전(일반/배우 역할) → 신청 버튼 노출
-  const canRequestDirector =
-    memberType === 'director' && (role === 'user' || role === 'member' || role === 'actor')
+  const isDirector = role === 'director'
+  const canRequestCrew = role === 'user'
+  const memberType = user.user_metadata?.member_type as string | undefined
+  const canRequestDirector = memberType === 'director' && ['user', 'member', 'actor'].includes(role)
 
-  /* ---- 수강 내역 (enrollments 테이블 없으면 빈 배열로 graceful) ---- */
   const now = new Date()
   const thisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
   const nextDate = new Date(now.getFullYear(), now.getMonth() + 1, 1)
@@ -80,331 +73,266 @@ export default async function DashboardPage() {
     .order('created_at', { ascending: false })
   const enrollments = enrData ?? []
 
+  const joinedDate = new Date(createdAt).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })
+  const roleLabel = ROLE_LABEL[role] || role
+  const roleColor = ROLE_COLOR[role] || 'var(--gray)'
+
   return (
-    <div style={styles.page}>
-      <div className="container">
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingTop: 80, paddingBottom: 80 }}>
+      <div style={{ maxWidth: 680, margin: '0 auto', padding: '0 20px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+
         {/* 페이지 헤더 */}
-        <div style={styles.header}>
-          <p style={styles.eyebrow}>MY PAGE</p>
-          <h1 style={styles.pageTitle}>마이페이지</h1>
+        <div style={{ marginBottom: 8 }}>
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.68rem', letterSpacing: '0.35em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 8 }}>MY PAGE</p>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.6rem, 4vw, 2rem)', fontWeight: 700, color: 'var(--white)' }}>마이페이지</h1>
         </div>
 
-        <div style={styles.layout} className="dashboard-layout">
-          {/* ---- 내 정보 카드 (수정 포함) ---- */}
-          <section style={styles.card}>
-            <ProfileEditForm
-              initialName={name}
-              initialPhone={profile?.phone || ''}
-              email={email}
-              role={role}
-              createdAt={createdAt}
-            />
-          </section>
-
-          {/* ---- 우측 사이드 ---- */}
-          <div style={styles.sideCol}>
-            {/* 내 수강 (모든 멤버) */}
-            <EnrollmentsPanel
-              enrollments={enrollments}
-              thisMonth={thisMonth}
-              nextMonth={nextMonth}
-            />
-
-            {/* 배우 회원: 갤러리 관리 */}
-            {canEdit && (
-              <section style={styles.card}>
-                <h2 style={styles.cardTitle}>갤러리 관리</h2>
-                <p style={styles.cardDesc}>
-                  내 배우 프로필 사진, 영상, 필모그래피를 관리합니다.
-                </p>
-                <Link href="/dashboard/edit" style={styles.btnPrimary}>
-                  내 갤러리 편집
-                </Link>
-              </section>
-            )}
-
-            {/* 배우 회원: 프로필 등록(온보딩) */}
-            {isActorMember && (
-              <section style={{
-                ...styles.card,
-                border: '1px solid rgba(196,165,90,0.25)',
-                background: 'rgba(196,165,90,0.04)',
-              }}>
-                <h2 style={styles.cardTitle}>프로필 등록</h2>
-                <p style={styles.cardDesc}>
-                  프로필 PPT·사진·출연영상을 올리면 검토 후 배우 DB에 공개됩니다.
-                </p>
-                <Link href="/onboarding" style={styles.btnPrimary}>
-                  프로필 올리기
-                </Link>
-              </section>
-            )}
-
-            {/* KD4 크루 신청 (일반 회원) */}
-            {canRequestCrew && (
-              <section style={{
-                ...styles.card,
-                border: '1px solid rgba(196,165,90,0.25)',
-                background: 'rgba(196,165,90,0.04)',
-              }}>
-                <h2 style={styles.cardTitle}>KD4 크루 신청</h2>
-                <p style={styles.cardDesc}>
-                  배우 DB, 커뮤니티, 대본 분석 등 크루 전용 기능에 접근하려면
-                  관리자 승인이 필요합니다.
-                </p>
-                <CrewRequestButton />
-              </section>
-            )}
-
-            {/* KD4 크루 대기 중 */}
-            {isCrewPending && (
-              <section style={{
-                ...styles.card,
-                border: '1px solid rgba(240,173,78,0.3)',
-                background: 'rgba(240,173,78,0.04)',
-              }}>
-                <h2 style={{ ...styles.cardTitle, color: '#f0ad4e' }}>KD4 크루 승인 대기 중</h2>
-                <p style={styles.cardDesc}>
-                  크루 신청이 접수되었습니다. 관리자 승인 후 배우 DB, 커뮤니티,
-                  대본 분석 기능을 이용하실 수 있습니다.
-                </p>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  padding: '10px 14px',
-                  background: 'rgba(240,173,78,0.08)',
-                  border: '1px solid rgba(240,173,78,0.2)',
-                  borderRadius: 6,
-                  fontSize: '0.82rem',
-                  color: '#f0ad4e',
+        {/* 내 계정 카드 */}
+        <section style={card}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid var(--border)' }}>
+            <div style={{
+              width: 48, height: 48, borderRadius: '50%',
+              background: 'var(--navy)', color: '#fff',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontFamily: 'var(--font-display)', fontSize: '1.1rem', fontWeight: 700,
+              flexShrink: 0,
+            }}>
+              {name[0]}
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                <span style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', fontWeight: 700, color: 'var(--white)' }}>{name}</span>
+                <span style={{
+                  fontSize: '0.7rem', fontWeight: 700, padding: '2px 8px',
+                  borderRadius: 20, border: `1px solid ${roleColor}`,
+                  color: roleColor, background: 'transparent',
+                  fontFamily: 'var(--font-display)', letterSpacing: '0.03em',
                 }}>
-                  <span>⏳</span>
-                  <span>승인 검토 중입니다</span>
-                </div>
-              </section>
-            )}
-
-            {/* 디렉터 권한 신청 (디렉터로 가입했으나 아직 미승인) */}
-            {canRequestDirector && (
-              <section style={{
-                ...styles.card,
-                border: '1px solid rgba(196,165,90,0.25)',
-                background: 'rgba(196,165,90,0.04)',
-              }}>
-                <h2 style={styles.cardTitle}>디렉터 권한 신청</h2>
-                <p style={styles.cardDesc}>
-                  승인되면 배우들의 <strong style={{ color: 'var(--gold)' }}>연락처</strong>와
-                  사진·프로필 <strong style={{ color: 'var(--gold)' }}>다운로드</strong>를 이용할 수 있습니다.
-                  관리자 승인이 필요합니다.
-                </p>
-                <DirectorRequestButton />
-              </section>
-            )}
-
-            {/* 디렉터 승인 대기 중 */}
-            {isDirectorPending && (
-              <section style={{
-                ...styles.card,
-                border: '1px solid rgba(240,173,78,0.3)',
-                background: 'rgba(240,173,78,0.04)',
-              }}>
-                <h2 style={{ ...styles.cardTitle, color: '#f0ad4e' }}>디렉터 승인 대기 중</h2>
-                <p style={styles.cardDesc}>
-                  디렉터 권한 신청이 접수되었습니다. 관리자 승인 후 배우 연락처·다운로드를
-                  이용하실 수 있습니다. (승인 전에는 배우 프로필 열람만 가능합니다.)
-                </p>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  padding: '10px 14px',
-                  background: 'rgba(240,173,78,0.08)',
-                  border: '1px solid rgba(240,173,78,0.2)',
-                  borderRadius: 6,
-                  fontSize: '0.82rem',
-                  color: '#f0ad4e',
-                }}>
-                  <span>⏳</span>
-                  <span>승인 검토 중입니다</span>
-                </div>
-              </section>
-            )}
-
-            {/* 승인된 디렉터 안내 */}
-            {isDirector && (
-              <section style={{
-                ...styles.card,
-                border: '1px solid rgba(196,165,90,0.3)',
-                background: 'rgba(196,165,90,0.05)',
-              }}>
-                <h2 style={{ ...styles.cardTitle, color: 'var(--gold)' }}>디렉터 승인 완료</h2>
-                <p style={styles.cardDesc}>
-                  배우 DB에서 <strong style={{ color: 'var(--gold)' }}>연락처 열람 + 사진·프로필 다운로드</strong>가
-                  가능합니다.
-                </p>
-              </section>
-            )}
-
-            {/* KD4 크루 전용: 배우 DB 바로가기 */}
-            {canViewActorDb && (
-              <section style={styles.card}>
-                <h2 style={styles.cardTitle}>KD4 크루 전용</h2>
-                <p style={styles.cardDesc}>
-                  배우 DB, 커뮤니티, 대본 분석 등 크루 전용 기능을 이용합니다.
-                </p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  <Link href="/actors" style={styles.btnSecondary}>
-                    배우 DB 보기
-                  </Link>
-                  <Link href="/board" style={styles.btnSecondary}>
-                    커뮤니티
-                  </Link>
-                  <Link href="/ai-tools" style={styles.btnSecondary}>
-                    대본 분석
-                  </Link>
-                </div>
-              </section>
-            )}
-
-            {/* 관리자 메뉴 */}
-            {role === 'admin' && (
-              <section style={styles.card}>
-                <h2 style={styles.cardTitle}>관리자 메뉴</h2>
-                <div style={styles.adminLinks}>
-                  <Link href="/admin/enrollments" style={styles.adminLink}>
-                    수강 현황
-                  </Link>
-                  <Link href="/admin/actors" style={styles.adminLink}>
-                    배우 목록 관리
-                  </Link>
-                  <Link href="/admin/users" style={styles.adminLink}>
-                    회원 관리
-                  </Link>
-                </div>
-              </section>
-            )}
-
-            {/* 커뮤니티 */}
-            <section style={styles.card}>
-              <h2 style={styles.cardTitle}>커뮤니티</h2>
-              <p style={styles.cardDesc}>내가 작성한 게시글을 확인합니다.</p>
-              <Link href="/board?my=1" style={styles.btnSecondary}>
-                내 게시글 보기
-              </Link>
-            </section>
-
-            {/* 로그아웃 */}
-            <LogoutButton />
+                  {roleLabel}
+                </span>
+              </div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--gray)', marginTop: 3 }}>가입일 {joinedDate}</div>
+            </div>
           </div>
+          <ProfileEditForm
+            initialName={name}
+            initialPhone={profile?.phone || ''}
+            email={email}
+            role={role}
+            createdAt={createdAt}
+          />
+        </section>
+
+        {/* 배우 프로필 섹션 — member/actor/admin */}
+        {isActorMember && (
+          <section style={{ ...card, borderColor: 'rgba(21,72,138,0.2)', background: 'rgba(21,72,138,0.03)' }}>
+            <h2 style={sectionTitle}>내 배우 프로필</h2>
+            {actorId ? (
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <Link href={`/actors/${actorId}`} style={tileBtn}>
+                  <span style={tileIcon}>👤</span>
+                  <span>배우 페이지 보기</span>
+                </Link>
+                <Link href="/onboarding" style={tileBtn}>
+                  <span style={tileIcon}>📂</span>
+                  <span>자료 업로드</span>
+                </Link>
+                {canEdit && (
+                  <Link href="/dashboard/edit" style={{ ...tileBtn, gridColumn: '1 / -1' }}>
+                    <span style={tileIcon}>✏️</span>
+                    <span>배우 DB 수정하기</span>
+                  </Link>
+                )}
+              </div>
+            ) : (
+              <div>
+                <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 14 }}>
+                  프로필 PPTX·사진·출연영상을 올리면 검토 후 배우 DB에 공개됩니다.
+                </p>
+                <Link href="/onboarding" style={primaryBtn}>프로필 자료 올리기</Link>
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* 내 수강 */}
+        <EnrollmentsPanel enrollments={enrollments} thisMonth={thisMonth} nextMonth={nextMonth} />
+
+        {/* KD4 크루 전용 */}
+        {canViewActorDb && (
+          <section style={card}>
+            <h2 style={sectionTitle}>KD4 크루</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
+              <Link href="/actors" style={tileBtn}>
+                <span style={tileIcon}>🎬</span>
+                <span>배우 DB</span>
+              </Link>
+              <Link href="/board" style={tileBtn}>
+                <span style={tileIcon}>💬</span>
+                <span>커뮤니티</span>
+              </Link>
+              <Link href="/ai-tools" style={tileBtn}>
+                <span style={tileIcon}>🤖</span>
+                <span>대본 분석</span>
+              </Link>
+            </div>
+          </section>
+        )}
+
+        {/* 디렉터 승인 완료 */}
+        {isDirector && (
+          <section style={{ ...card, borderColor: 'rgba(196,165,90,0.3)' }}>
+            <h2 style={{ ...sectionTitle, color: 'var(--gold)' }}>디렉터 승인 완료</h2>
+            <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.6 }}>
+              배우 DB에서 <strong style={{ color: 'var(--gold)' }}>연락처 열람 + 사진·프로필 다운로드</strong>가 가능합니다.
+            </p>
+          </section>
+        )}
+
+        {/* 디렉터 권한 신청 */}
+        {canRequestDirector && (
+          <section style={{ ...card, borderColor: 'rgba(196,165,90,0.2)' }}>
+            <h2 style={sectionTitle}>디렉터 권한 신청</h2>
+            <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 8 }}>
+              승인 시 배우 <strong style={{ color: 'var(--gold)' }}>연락처 열람 + 사진·프로필 다운로드</strong> 가능.
+            </p>
+            <DirectorRequestButton />
+          </section>
+        )}
+
+        {/* 디렉터 승인 대기 */}
+        {isDirectorPending && (
+          <section style={{ ...card, borderColor: 'rgba(240,173,78,0.3)' }}>
+            <h2 style={{ ...sectionTitle, color: '#f0ad4e' }}>디렉터 승인 대기 중</h2>
+            <div style={pendingBadge}>⏳ 관리자 승인 검토 중입니다</div>
+          </section>
+        )}
+
+        {/* KD4 크루 신청 */}
+        {canRequestCrew && (
+          <section style={card}>
+            <h2 style={sectionTitle}>KD4 크루 신청</h2>
+            <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 8 }}>
+              배우 DB · 커뮤니티 · 대본 분석 등 크루 전용 기능 이용 시 필요.
+            </p>
+            <CrewRequestButton />
+          </section>
+        )}
+
+        {/* KD4 크루 대기 */}
+        {isCrewPending && (
+          <section style={card}>
+            <h2 style={{ ...sectionTitle, color: '#f0ad4e' }}>KD4 크루 신청 대기 중</h2>
+            <div style={pendingBadge}>⏳ 관리자 승인 검토 중입니다</div>
+          </section>
+        )}
+
+        {/* 관리자 */}
+        {isAdmin && (
+          <section style={{ ...card, borderColor: 'rgba(201,64,58,0.2)' }}>
+            <h2 style={{ ...sectionTitle, color: '#c9403a' }}>관리자</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              {[
+                { href: '/admin/enrollments', label: '수강 현황' },
+                { href: '/admin/actors', label: '배우 목록 관리' },
+                { href: '/admin/users', label: '회원 관리' },
+                { href: '/admin', label: '관리자 홈' },
+              ].map(({ href, label }) => (
+                <Link key={href} href={href} style={{
+                  display: 'block', padding: '10px 14px',
+                  background: 'rgba(201,64,58,0.05)', border: '1px solid rgba(201,64,58,0.15)',
+                  borderRadius: 6, fontSize: '0.84rem', color: 'var(--white)', textDecoration: 'none',
+                }}>
+                  {label}
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* 커뮤니티 */}
+        <section style={card}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <h2 style={sectionTitle}>커뮤니티</h2>
+            <Link href="/board?my=1" style={{ fontSize: '0.82rem', color: 'var(--navy)', textDecoration: 'none' }}>내 게시글 →</Link>
+          </div>
+        </section>
+
+        {/* 로그아웃 */}
+        <div style={{ marginTop: 4 }}>
+          <LogoutButton />
         </div>
+
       </div>
     </div>
   )
 }
 
-const styles: Record<string, React.CSSProperties> = {
-  page: {
-    minHeight: '100vh',
-    background: 'var(--bg)',
-    paddingTop: 80,
-    paddingBottom: 80,
-  },
-  header: {
-    marginBottom: 40,
-  },
-  eyebrow: {
-    fontFamily: 'var(--font-display)',
-    fontSize: '0.7rem',
-    fontWeight: 300,
-    letterSpacing: '0.35em',
-    color: 'var(--gold)',
-    textTransform: 'uppercase',
-    marginBottom: 10,
-  },
-  pageTitle: {
-    fontFamily: 'var(--font-display)',
-    fontSize: 'clamp(1.8rem, 4vw, 2.4rem)',
-    fontWeight: 700,
-    color: 'var(--white)',
-  },
-  layout: {
-    /* layout handled by .dashboard-layout CSS class */
-    gap: 28,
-    alignItems: 'start',
-  },
-  card: {
-    background: 'var(--bg2)',
-    border: '1px solid var(--border)',
-    borderRadius: 8,
-    padding: '28px 28px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 18,
-  },
-  cardTitle: {
-    fontFamily: 'var(--font-display)',
-    fontSize: '1rem',
-    fontWeight: 600,
-    color: 'var(--white)',
-    letterSpacing: '0.05em',
-    textTransform: 'uppercase',
-    paddingBottom: 14,
-    borderBottom: '1px solid var(--border)',
-    marginBottom: 2,
-  },
-  cardDesc: {
-    fontSize: '0.85rem',
-    color: 'var(--gray)',
-    lineHeight: 1.6,
-    marginTop: -4,
-  },
-  sideCol: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 16,
-  },
-  btnPrimary: {
-    display: 'block',
-    textAlign: 'center',
-    background: 'var(--gold)',
-    color: '#ffffff',
-    border: 'none',
-    borderRadius: 6,
-    padding: '11px 0',
-    fontSize: '0.88rem',
-    fontWeight: 700,
-    fontFamily: 'var(--font-display)',
-    letterSpacing: '0.05em',
-    textDecoration: 'none',
-    marginTop: 4,
-  },
-  btnSecondary: {
-    display: 'block',
-    textAlign: 'center',
-    border: '1px solid var(--gold)',
-    color: 'var(--gold)',
-    borderRadius: 6,
-    padding: '10px 0',
-    fontSize: '0.85rem',
-    fontWeight: 500,
-    textDecoration: 'none',
-    marginTop: 4,
-  },
-  adminLinks: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 8,
-  },
-  adminLink: {
-    display: 'block',
-    padding: '10px 14px',
-    background: 'var(--bg3)',
-    border: '1px solid var(--border)',
-    borderRadius: 5,
-    fontSize: '0.85rem',
-    color: 'var(--white)',
-    textDecoration: 'none',
-    transition: 'border-color 0.2s',
-  },
+const card: React.CSSProperties = {
+  background: 'var(--bg2)',
+  border: '1px solid var(--border)',
+  borderRadius: 10,
+  padding: '20px 20px',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 12,
+}
+
+const sectionTitle: React.CSSProperties = {
+  fontFamily: 'var(--font-display)',
+  fontSize: '0.78rem',
+  fontWeight: 700,
+  color: 'var(--gray)',
+  letterSpacing: '0.12em',
+  textTransform: 'uppercase',
+  marginBottom: 4,
+}
+
+const tileBtn: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: 6,
+  padding: '14px 10px',
+  background: 'var(--bg)',
+  border: '1px solid var(--border)',
+  borderRadius: 8,
+  fontSize: '0.8rem',
+  color: 'var(--white)',
+  textDecoration: 'none',
+  fontFamily: 'var(--font-display)',
+  textAlign: 'center',
+  fontWeight: 500,
+}
+
+const tileIcon: React.CSSProperties = {
+  fontSize: '1.3rem',
+  lineHeight: 1,
+}
+
+const primaryBtn: React.CSSProperties = {
+  display: 'block',
+  textAlign: 'center',
+  background: 'var(--navy)',
+  color: '#ffffff',
+  border: 'none',
+  borderRadius: 7,
+  padding: '12px 0',
+  fontSize: '0.88rem',
+  fontWeight: 700,
+  fontFamily: 'var(--font-display)',
+  letterSpacing: '0.04em',
+  textDecoration: 'none',
+}
+
+const pendingBadge: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 8,
+  padding: '10px 14px',
+  background: 'rgba(240,173,78,0.08)',
+  border: '1px solid rgba(240,173,78,0.2)',
+  borderRadius: 6,
+  fontSize: '0.82rem',
+  color: '#f0ad4e',
 }

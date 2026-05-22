@@ -63,7 +63,7 @@ export default function OnboardingForm({
 
   function pickPpt(f: File | null) {
     if (f && f.size > 10 * MB) {
-      setError('프로필 파일(PPT/PDF)은 10MB 이하여야 합니다.')
+      setError('프로필 파일은 .pptx 형식, 10MB 이하여야 합니다.')
       return
     }
     setError('')
@@ -178,10 +178,13 @@ export default function OnboardingForm({
 
       {/* PPT */}
       <div style={s.field}>
-        <label style={s.label}>프로필 PPT / PDF <span style={s.hint}>(가로형, 10MB 이하)</span></label>
+        <label style={s.label}>프로필 PPTX <span style={s.hint}>(.pptx 형식만 가능, 10MB 이하)</span></label>
+        <p style={{ fontSize: '0.78rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 4 }}>
+          파일 형식은 <strong>.pptx</strong>만 받습니다. PDF가 있으신 경우 PowerPoint에서 파일 → 저장 → .pptx로 변환 후 올려주세요.
+        </p>
         <input
           type="file"
-          accept=".pptx,.pdf,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation"
+          accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation"
           disabled={loading}
           onChange={(e) => pickPpt(e.target.files?.[0] ?? null)}
           style={s.input}

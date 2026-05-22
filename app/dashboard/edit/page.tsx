@@ -70,7 +70,7 @@ export default async function GalleryEditPage() {
 
   const { role, actor_id } = profile as Profile
 
-  if (role !== 'editor' && role !== 'admin') {
+  if (role !== 'editor' && role !== 'admin' && role !== 'member' && role !== 'actor') {
     redirect('/dashboard')
   }
 
