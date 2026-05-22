@@ -10,7 +10,12 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
-export default async function EnrollPage() {
+export default async function EnrollPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ type?: string; select?: string }>
+}) {
+  const params = await searchParams
   const supabase = await createClient()
   const {
     data: { user },
@@ -72,6 +77,8 @@ export default async function EnrollPage() {
       userName={profile?.name ?? (user.user_metadata?.name as string) ?? ''}
       userPhone={profile?.phone ?? ''}
       userEmail={user.email ?? ''}
+      initialType={params.type ?? '기존 KD4 멤버'}
+      initialSelect={params.select ? [params.select] : []}
     />
   )
 }

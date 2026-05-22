@@ -19,8 +19,18 @@ interface ClassOption {
   highlight?: boolean
 }
 
-// 브랜딩 서비스 목록
+// 퍼스널 브랜딩 서비스 목록
 const BRANDING_SERVICES: ClassOption[] = [
+  {
+    nameKo: '프로필 투어 서비스',
+    nameEn: 'Profile Tour Service (Replay)',
+    step: '서비스',
+    price: '30,000',
+    course: null,
+    capacity: '-',
+    schedule: '40장 기준',
+    duration: '캐스팅 에이전시 배포',
+  },
   {
     nameKo: '출연영상 편집 서비스',
     nameEn: 'Film Editing Service',
@@ -46,10 +56,10 @@ const BRANDING_SERVICES: ClassOption[] = [
 const TYPE_META: Record<string, { desc: string }> = {
   '신규 등록': { desc: 'KD4를 처음 시작하시는 분' },
   '기존 KD4 멤버': { desc: '이미 수강 중이거나 수료하신 분' },
-  '브랜딩 서비스': { desc: '출연영상·프로필 편집 서비스만 필요하신 분' },
+  '퍼스널 브랜딩 서비스': { desc: '프로필 투어·출연영상·프로필 편집 서비스' },
 }
 
-const TYPES = ['신규 등록', '기존 KD4 멤버', '브랜딩 서비스'] as const
+const TYPES = ['신규 등록', '기존 KD4 멤버', '퍼스널 브랜딩 서비스'] as const
 
 const STEP_STYLE: Record<string, { bg: string; color: string }> = {
   'STEP 1': { bg: 'rgba(21,72,138,0.10)', color: '#15488A' },
@@ -75,17 +85,21 @@ export default function EnrollForm({
   userName,
   userPhone,
   userEmail,
+  initialType = '기존 KD4 멤버',
+  initialSelect = [],
 }: {
   classes: ClassOption[]
   userName: string
   userPhone: string
   userEmail: string
+  initialType?: string
+  initialSelect?: string[]
 }) {
   const now = new Date()
   const nextMonth = ym(new Date(now.getFullYear(), now.getMonth() + 1, 1))
 
-  const [type, setType] = useState<string>('기존 KD4 멤버')
-  const [selected, setSelected] = useState<string[]>([])
+  const [type, setType] = useState<string>(initialType)
+  const [selected, setSelected] = useState<string[]>(initialSelect)
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
