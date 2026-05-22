@@ -132,6 +132,7 @@ export default function SignupPage() {
                 ...(memberType === 'actor' ? styles.typeCardActive : {}),
               }}
               onClick={() => setMemberType('actor')}
+              aria-pressed={memberType === 'actor'}
             >
               <span style={styles.typeIcon}>🎬</span>
               <span style={styles.typeLabel}>배우 회원</span>
@@ -147,6 +148,7 @@ export default function SignupPage() {
                 ...(memberType === 'director' ? styles.typeCardActive : {}),
               }}
               onClick={() => setMemberType('director')}
+              aria-pressed={memberType === 'director'}
             >
               <span style={styles.typeIcon}>🎥</span>
               <span style={styles.typeLabel}>디렉터 회원</span>

@@ -37,7 +37,7 @@ async function requireAdmin(): Promise<{ userId: string } | NextResponse> {
   if (authErr || !user) {
     return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   }
-  const { data: profile, error: profileErr } = await supabase
+  const { data: profile, error: profileErr } = await supabaseAdmin
     .from('profiles').select('role').eq('id', user.id).single()
   if (profileErr || !profile || profile.role !== 'admin') {
     return NextResponse.json({ error: '관리자 권한이 필요합니다.' }, { status: 403 })
@@ -179,7 +179,7 @@ export async function GET(request: NextRequest) {
 
   let query = supabaseAdmin
     .from('insights')
-    .select('*', { count: 'exact' })
+    .select('id, url, title, description, image_url, memo, category, tags, source_type, is_favorite, created_at', { count: 'exact' })
     .order('created_at', { ascending: false })
 
   if (category && category !== '전체') query = query.eq('category', category)

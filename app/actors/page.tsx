@@ -8,12 +8,13 @@ import ActorDbLocked from '@/components/actors/ActorDbLocked'
 import ActorsSearchGrid from '@/components/actors/ActorsSearchGrid'
 import { canViewActorDb } from '@/lib/access'
 import type { UserRole } from '@/lib/types'
+import { SITE_URL } from '@/lib/constants'
 
 export const metadata: Metadata = {
   title: '배우 DB | KD4 액팅 스튜디오',
   description: 'KD4 액팅 스튜디오 배우 데이터베이스. 멤버 전용.',
   robots: { index: false, follow: false },
-  alternates: { canonical: 'https://kd4.club/actors' },
+  alternates: { canonical: `${SITE_URL}/actors` },
 }
 
 interface Actor {
@@ -88,21 +89,33 @@ async function fetchActors(gender: string, ageGroup: string, tag: string): Promi
   }
 
   // 필터 UI용 distinct 태그 (마이그레이션 안 됐으면 빈 배열)
+  // 최적화: tag 필터가 없으면 이미 가져온 actors 배열에서 파생 (DB 왕복 1회 절약)
+  //         tag 필터가 있으면 필터 미적용 별도 쿼리로 전체 태그 목록 조회
   let allTags: string[] = []
   if (castingSchemaAvailable) {
-    let tagsQuery = supabaseAdmin
-      .from('actors')
-      .select('casting_tags')
-      .eq('is_public', true)
-      .not('casting_tags', 'is', null)
-    if (gender && gender !== 'all') tagsQuery = tagsQuery.eq('gender', gender)
-    if (ageGroup && ageGroup !== 'all') tagsQuery = tagsQuery.eq('age_group', ageGroup)
-    const { data: tagsData } = await tagsQuery
-    const tagSet = new Set<string>()
-    for (const row of (tagsData ?? []) as Array<{ casting_tags: string[] | null }>) {
-      if (row.casting_tags) for (const t of row.casting_tags) tagSet.add(t)
+    if (!tag || tag === 'all') {
+      // 태그 필터 없음 → 이미 가져온 actors에서 직접 추출
+      const tagSet = new Set<string>()
+      for (const actor of actors) {
+        if (actor.casting_tags) for (const t of actor.casting_tags) tagSet.add(t)
+      }
+      allTags = Array.from(tagSet).sort()
+    } else {
+      // 태그 필터 활성화 → gender/ageGroup 기준으로만 필터링한 전체 태그 조회
+      let tagsQuery = supabaseAdmin
+        .from('actors')
+        .select('casting_tags')
+        .eq('is_public', true)
+        .not('casting_tags', 'is', null)
+      if (gender && gender !== 'all') tagsQuery = tagsQuery.eq('gender', gender)
+      if (ageGroup && ageGroup !== 'all') tagsQuery = tagsQuery.eq('age_group', ageGroup)
+      const { data: tagsData } = await tagsQuery
+      const tagSet = new Set<string>()
+      for (const row of (tagsData ?? []) as Array<{ casting_tags: string[] | null }>) {
+        if (row.casting_tags) for (const t of row.casting_tags) tagSet.add(t)
+      }
+      allTags = Array.from(tagSet).sort()
     }
-    allTags = Array.from(tagSet).sort()
   }
 
   return { actors, dbError: false, allTags }

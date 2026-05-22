@@ -86,6 +86,37 @@ export async function PATCH(
     }
 
     const body = await request.json()
+
+    // 입력값 검증
+    const ALLOWED_AGE_GROUPS = new Set(['10대', '20대', '30대', '40대', '50대 이상', null, ''])
+    if ('age_group' in body && !ALLOWED_AGE_GROUPS.has(body.age_group)) {
+      return NextResponse.json({ error: '잘못된 나이대입니다.' }, { status: 400 })
+    }
+    if ('height' in body && body.height !== null) {
+      const h = Number(body.height)
+      if (!Number.isFinite(h) || h < 100 || h > 250)
+        return NextResponse.json({ error: '키는 100–250 범위여야 합니다.' }, { status: 400 })
+    }
+    if ('weight' in body && body.weight !== null) {
+      const w = Number(body.weight)
+      if (!Number.isFinite(w) || w < 20 || w > 200)
+        return NextResponse.json({ error: '몸무게는 20–200 범위여야 합니다.' }, { status: 400 })
+    }
+    if (typeof body.casting_summary === 'string' && body.casting_summary.length > 2000)
+      return NextResponse.json({ error: '캐스팅 소개는 2000자 이하로 입력해주세요.' }, { status: 400 })
+    if (typeof body.instagram === 'string' && body.instagram.length > 200)
+      return NextResponse.json({ error: '인스타그램은 200자 이하로 입력해주세요.' }, { status: 400 })
+    if (typeof body.name_en === 'string' && body.name_en.length > 100)
+      return NextResponse.json({ error: '영문 이름은 100자 이하로 입력해주세요.' }, { status: 400 })
+    if (typeof body.profile_doc_path === 'string' && body.profile_doc_path.length > 500)
+      return NextResponse.json({ error: '프로필 문서 경로가 너무 깁니다.' }, { status: 400 })
+    if (Array.isArray(body.casting_tags)) {
+      if (body.casting_tags.length > 30 || body.casting_tags.some((t: unknown) => typeof t !== 'string' || t.length > 50))
+        return NextResponse.json({ error: '태그 형식이 잘못되었습니다.' }, { status: 400 })
+    }
+    if (Array.isArray(body.skills) && body.skills.length > 50)
+      return NextResponse.json({ error: '스킬은 50개 이하로 입력해주세요.' }, { status: 400 })
+
     const allowed = ['height', 'weight', 'skills', 'instagram', 'casting_summary', 'casting_tags', 'name_en', 'age_group', 'profile_doc_path']
     const patch: Record<string, unknown> = {}
     for (const k of allowed) {
@@ -97,7 +128,7 @@ export async function PATCH(
       .update({ ...patch, updated_at: new Date().toISOString() })
       .eq('id', id)
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) return NextResponse.json({ error: '배우 정보 수정에 실패했습니다.' }, { status: 500 })
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error('[PATCH /api/actors/[id]]', err)

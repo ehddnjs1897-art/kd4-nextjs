@@ -1843,6 +1843,13 @@ select:focus {
   box-shadow: 0 0 0 2px rgba(21,72,138,0.15);
 }
 
+/* 버튼 키보드 포커스 인디케이터 (접근성 — outline:none 보완) */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
 /* FloatingCTA가 하단 콘텐츠 가리지 않도록 페이지 여백 */
 main {
   padding-bottom: 80px;
