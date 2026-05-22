@@ -38,17 +38,28 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('id, name, email, phone, role, created_at, actor_id')
-    .eq('id', user.id)
-    .maybeSingle()
+  // profile + enrollments 병렬 조회 (enrollments는 user.id만 있으면 됨)
+  const now = new Date()
+  const [{ data: profile }, { data: enrData }] = await Promise.all([
+    supabase
+      .from('profiles')
+      .select('id, name, email, phone, role, created_at, actor_id')
+      .eq('id', user.id)
+      .maybeSingle(),
+    supabase
+      .from('enrollments')
+      .select('id, class_name, year_month, amount, status, payment_status')
+      .eq('user_id', user.id)
+      .order('year_month', { ascending: false })
+      .order('created_at', { ascending: false }),
+  ])
 
   const name = profile?.name || user.user_metadata?.name || user.email?.split('@')[0] || '이름 없음'
   const email = profile?.email || user.email || '—'
   const role: UserRole = (profile?.role as UserRole) || 'user'
   const createdAt = profile?.created_at || user.created_at
   const actorId: string | null = profile?.actor_id ?? null
+  const enrollments = enrData ?? []
 
   // actor_id가 있어도 실제 DB row가 없으면 404 → 미리 확인
   let actorExists = false
@@ -69,18 +80,9 @@ export default async function DashboardPage() {
   const memberType = user.user_metadata?.member_type as string | undefined
   const canRequestDirector = memberType === 'director' && ['user', 'member', 'actor'].includes(role)
 
-  const now = new Date()
   const thisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
   const nextDate = new Date(now.getFullYear(), now.getMonth() + 1, 1)
   const nextMonth = `${nextDate.getFullYear()}-${String(nextDate.getMonth() + 1).padStart(2, '0')}`
-
-  const { data: enrData } = await supabase
-    .from('enrollments')
-    .select('id, class_name, year_month, amount, status, payment_status')
-    .eq('user_id', user.id)
-    .order('year_month', { ascending: false })
-    .order('created_at', { ascending: false })
-  const enrollments = enrData ?? []
 
   const joinedDate = new Date(createdAt).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })
   const roleLabel = ROLE_LABEL[role] || role
