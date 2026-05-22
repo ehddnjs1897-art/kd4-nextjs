@@ -17,7 +17,7 @@ export default async function AdminActorsPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const { data: profile } = await supabase
+  const { data: profile } = await supabaseAdmin
     .from('profiles').select('role').eq('id', user.id).single()
   if (!profile || profile.role !== 'admin') redirect('/dashboard')
 

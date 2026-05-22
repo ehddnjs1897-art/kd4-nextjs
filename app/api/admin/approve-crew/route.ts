@@ -50,13 +50,17 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/admin?error=user_not_found`)
   }
 
-  // 승인 대상 역할 매핑 — 크루/디렉터 신청 모두 처리
-  //   crew_pending → crew, director_pending → director (이미 승인된 경우는 그대로 유지)
+  // 이미 승인된 경우 — 재실행 방지 (DB 쓰기·SMS 중복 방지)
+  if (target.role === 'crew' || target.role === 'director') {
+    return NextResponse.redirect(
+      `${origin}/admin?already_approved=${encodeURIComponent(target.name ?? target.email ?? uid)}`
+    )
+  }
+
+  // 승인 대상 역할 매핑 — 신청 상태만 처리
   const APPROVE_MAP: Record<string, { role: string; label: string }> = {
     crew_pending: { role: 'crew', label: '크루' },
-    crew: { role: 'crew', label: '크루' },
     director_pending: { role: 'director', label: '디렉터' },
-    director: { role: 'director', label: '디렉터' },
   }
   const mapped = APPROVE_MAP[target.role ?? '']
   if (!mapped) {

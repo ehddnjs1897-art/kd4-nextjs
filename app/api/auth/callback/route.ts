@@ -15,6 +15,16 @@ export async function GET(request: NextRequest) {
   const rawNext = searchParams.get('next') ?? '/'
   const next = rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/'
 
+  // OAuth 공급자가 에러를 돌려준 경우 (access_denied, mismatched_state 등)
+  const oauthError = searchParams.get('error')
+  if (oauthError) {
+    const desc = searchParams.get('error_description') ?? oauthError
+    console.error('[auth/callback] OAuth 오류:', oauthError, desc)
+    return NextResponse.redirect(
+      `${origin}/auth/login?error=${encodeURIComponent(oauthError)}`
+    )
+  }
+
   if (code) {
     try {
       const supabase = await createClient()

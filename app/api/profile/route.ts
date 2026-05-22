@@ -33,8 +33,11 @@ export async function PATCH(request: NextRequest) {
   if (name.trim().length > 100) {
     return NextResponse.json({ error: '이름은 100자 이하로 입력해주세요.' }, { status: 400 })
   }
-  if (phone !== undefined && phone.trim().length > 20) {
-    return NextResponse.json({ error: '전화번호 형식이 올바르지 않습니다.' }, { status: 400 })
+  if (phone !== undefined && phone.trim() !== '') {
+    const phoneClean = phone.trim()
+    if (phoneClean.length > 20 || !/^[0-9\-+\s]{7,20}$/.test(phoneClean)) {
+      return NextResponse.json({ error: '전화번호 형식이 올바르지 않습니다.' }, { status: 400 })
+    }
   }
 
   const updates: Record<string, string> = { name: name.trim() }
