@@ -12,6 +12,7 @@ import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
 const VALID_STATUSES = ['pending', 'confirmed', 'completed', '대기', '확인', '완료'] as const
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 async function requireAdmin(): Promise<{ userId: string } | NextResponse> {
   const supabase = await createClient()
@@ -24,7 +25,8 @@ async function requireAdmin(): Promise<{ userId: string } | NextResponse> {
     return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   }
 
-  const { data: profile, error: profileErr } = await supabase
+  // supabaseAdmin으로 조회 — RLS 우회, 실제 DB 값 기준 권한 확인
+  const { data: profile, error: profileErr } = await supabaseAdmin
     .from('profiles')
     .select('role')
     .eq('id', user.id)
@@ -45,6 +47,9 @@ export async function PATCH(
   if (check instanceof NextResponse) return check
 
   const { id } = await params
+  if (!UUID_RE.test(id)) {
+    return NextResponse.json({ error: '유효하지 않은 ID 형식입니다.' }, { status: 400 })
+  }
   const { status } = await request.json().catch(() => ({}))
 
   if (!status || !VALID_STATUSES.includes(status)) {
