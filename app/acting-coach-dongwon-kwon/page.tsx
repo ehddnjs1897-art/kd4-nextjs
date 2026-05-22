@@ -145,7 +145,7 @@ export default function CoachPage() {
             &ldquo;{DIRECTOR.quote}&rdquo;
           </p>
           <p style={{ fontSize: '0.96rem', color: 'var(--gray-light)', lineHeight: 1.85, wordBreak: 'keep-all' }}>
-            마이즈너 테크닉은 한국에서 아직 깊이 가르쳐지지 않은 미국 정통 액팅 메소드입니다. LA Meisner Workshop과 한국 마이즈너테크닉 아카데미를 모두 수료한 후 한국 배우들에게 맞게 재해석된 커리큘럼으로 운영합니다. 현역 배우로 매년 작품에 출연하며 가르치기 때문에 책의 이론이 아닌 지금 촬영장에서 통하는 감각을 매주 수업에 가져옵니다.
+            마이즈너 테크닉은 한국에 아직 깊이 알려지지 않은 미국 정통 액팅 메소드입니다. LA Meisner Workshop과 한국 마이즈너 테크닉 아카데미를 모두 수료하고, 한국 배우에게 맞게 재해석한 커리큘럼으로 가르칩니다. 현역 배우로 매년 작품에 출연하기에, 책 속 이론이 아니라 지금 촬영장에서 통하는 감각을 매주 수업에 담습니다.
           </p>
         </div>
       </section>
