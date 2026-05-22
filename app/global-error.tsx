@@ -47,6 +47,19 @@ export default function GlobalError({
             >
               다시 시도
             </button>
+            <a
+              href="/"
+              style={{
+                display: 'inline-block',
+                marginTop: 12,
+                color: '#888',
+                fontSize: '0.85rem',
+                textDecoration: 'underline',
+                cursor: 'pointer',
+              }}
+            >
+              홈으로
+            </a>
           </div>
         </div>
       </body>

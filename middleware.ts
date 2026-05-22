@@ -2,12 +2,18 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
+  // OPTIONS preflight — CORS 핸들링은 route별로 처리, 미들웨어 세션 로직 불필요
+  if (request.method === 'OPTIONS') {
+    return NextResponse.next()
+  }
+
   const { pathname } = request.nextUrl
 
   // 정적 자산은 대소문자 그대로 유지 (Vercel은 대소문자 구분 — KoPub*.woff2 등)
   // 폰트·이미지·CSS·JS·맵 등 모든 정적 확장자
+  // /fonts/ 는 대소문자 무시 (case-insensitive) — /Fonts/, /FONTS/ 우회 방지
   if (
-    pathname.startsWith('/fonts/') ||
+    /^\/fonts\//i.test(pathname) ||
     pathname.startsWith('/images/') ||
     /\.(woff2?|ttf|otf|eot|css|js|map|json|webmanifest)$/i.test(pathname)
   ) {
