@@ -41,14 +41,14 @@ export async function GET(
       .select('*, actor_photos(*), actor_videos(*), actor_filmography(*)')
       .eq('id', id)
       .eq('is_public', true)
-      .single()
+      .maybeSingle()
 
     if (error) {
-      if (error.code === 'PGRST116') {
-        return NextResponse.json({ error: '배우를 찾을 수 없습니다.' }, { status: 404 })
-      }
       console.error('[GET /api/actors/[id]] Supabase 오류:', error.message)
       return NextResponse.json({ error: '배우 조회에 실패했습니다.' }, { status: 500 })
+    }
+    if (!actor) {
+      return NextResponse.json({ error: '배우를 찾을 수 없습니다.' }, { status: 404 })
     }
 
     const typedActor = actor as unknown as ActorDetail
@@ -85,7 +85,7 @@ export async function PATCH(
       .from('profiles')
       .select('actor_id, role')
       .eq('id', user.id)
-      .single()
+      .maybeSingle()
 
     if (!profile || (profile.actor_id !== id && profile.role !== 'admin' && profile.role !== 'editor')) {
       return NextResponse.json({ error: '수정 권한이 없습니다.' }, { status: 403 })
@@ -120,8 +120,10 @@ export async function PATCH(
       if (body.casting_tags.length > 30 || body.casting_tags.some((t: unknown) => typeof t !== 'string' || t.length > 50))
         return NextResponse.json({ error: '태그 형식이 잘못되었습니다.' }, { status: 400 })
     }
-    if (Array.isArray(body.skills) && body.skills.length > 50)
-      return NextResponse.json({ error: '스킬은 50개 이하로 입력해주세요.' }, { status: 400 })
+    if (Array.isArray(body.skills)) {
+      if (body.skills.length > 50 || body.skills.some((s: unknown) => typeof s !== 'string' || s.length > 100))
+        return NextResponse.json({ error: '스킬 형식이 올바르지 않습니다. (최대 50개, 각 100자 이하)' }, { status: 400 })
+    }
 
     const allowed = ['height', 'weight', 'skills', 'instagram', 'casting_summary', 'casting_tags', 'name_en', 'age_group', 'profile_doc_path']
     const patch: Record<string, unknown> = {}

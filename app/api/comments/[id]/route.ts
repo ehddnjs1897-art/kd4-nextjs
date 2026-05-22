@@ -23,11 +23,12 @@ export async function DELETE(
     return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   }
 
-  const { data: comment, error: fetchError } = await supabase
+  // supabaseAdmin으로 ownership 조회 — RLS가 comments 읽기를 제한해도 본인 글 조회 보장
+  const { data: comment, error: fetchError } = await supabaseAdmin
     .from('comments')
     .select('author_id')
     .eq('id', id)
-    .single()
+    .maybeSingle()
 
   if (fetchError || !comment) {
     return NextResponse.json({ error: '댓글을 찾을 수 없습니다.' }, { status: 404 })
@@ -37,7 +38,7 @@ export async function DELETE(
     .from('profiles')
     .select('role')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
 
   const isAdmin = profile?.role === 'admin'
   if (comment.author_id !== user.id && !isAdmin) {

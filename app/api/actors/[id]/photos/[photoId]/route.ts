@@ -33,9 +33,14 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
     if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
     if (!(await authorize(id, user.id))) return NextResponse.json({ error: '권한 없음' }, { status: 403 })
 
-    const body = await request.json()
+    let body: Record<string, unknown>
+    try {
+      body = await request.json()
+    } catch {
+      return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })
+    }
 
-    if (body.is_profile) {
+    if (body.is_profile === true) {
       // photoId가 이 actor의 사진인지 먼저 검증 (IDOR 방어)
       const { data: owned } = await supabaseAdmin
         .from('actor_photos').select('id').eq('id', photoId).eq('actor_id', id).maybeSingle()
@@ -49,7 +54,7 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
         .from('actor_photos').update({ is_profile: true }).eq('id', photoId).eq('actor_id', id)
       if (setErr) throw new Error('대표 지정 실패')
       // 3. actors 테이블 profile_photo URL 업데이트
-      const { data: photo } = await supabaseAdmin.from('actor_photos').select('url').eq('id', photoId).eq('actor_id', id).single()
+      const { data: photo } = await supabaseAdmin.from('actor_photos').select('url').eq('id', photoId).eq('actor_id', id).maybeSingle()
       if (photo) await supabaseAdmin.from('actors').update({ profile_photo: photo.url }).eq('id', id)
     }
 
@@ -78,7 +83,7 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
       .select('storage_path, is_profile')
       .eq('id', photoId)
       .eq('actor_id', id)
-      .single()
+      .maybeSingle()
 
     if (!photo) return NextResponse.json({ error: '사진을 찾을 수 없습니다.' }, { status: 404 })
 
@@ -97,7 +102,7 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
         .select('id, url')
         .eq('actor_id', id)
         .limit(1)
-        .single()
+        .maybeSingle()
       if (next) {
         await supabaseAdmin.from('actor_photos').update({ is_profile: true }).eq('id', next.id)
         await supabaseAdmin.from('actors').update({ profile_photo: next.url }).eq('id', id)

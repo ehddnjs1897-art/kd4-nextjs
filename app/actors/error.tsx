@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useEffect } from 'react'
 
 export default function ActorsError({
@@ -43,21 +44,39 @@ export default function ActorsError({
         <p style={{ color: 'var(--gray)', fontSize: '0.88rem', marginBottom: 24 }}>
           잠시 후 다시 시도해주세요.
         </p>
-        <button
-          onClick={reset}
-          style={{
-            background: 'var(--gold)',
-            color: '#fff',
-            border: 'none',
-            borderRadius: 6,
-            padding: '11px 24px',
-            fontSize: '0.88rem',
-            fontWeight: 700,
-            cursor: 'pointer',
-          }}
-        >
-          다시 시도
-        </button>
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <button
+            onClick={reset}
+            style={{
+              background: 'var(--gold)',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 6,
+              padding: '11px 24px',
+              fontSize: '0.88rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            다시 시도
+          </button>
+          <Link
+            href="/"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              background: 'transparent',
+              border: '1px solid var(--border)',
+              borderRadius: 6,
+              padding: '11px 24px',
+              fontSize: '0.88rem',
+              color: 'var(--gray)',
+              textDecoration: 'none',
+            }}
+          >
+            홈으로
+          </Link>
+        </div>
       </div>
     </div>
   )

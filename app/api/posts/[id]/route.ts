@@ -21,7 +21,7 @@ export async function GET(
     .from('posts')
     .select('*')
     .eq('id', id)
-    .single()
+    .maybeSingle()
 
   if (error || !post) {
     return NextResponse.json({ error: '게시글을 찾을 수 없습니다.' }, { status: 404 })
@@ -49,10 +49,10 @@ export async function PATCH(
     return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   }
 
-  // post + profile 병렬 조회 (profile은 supabaseAdmin — RLS 우회)
+  // post + profile 병렬 조회 (둘 다 supabaseAdmin — RLS 우회, .maybeSingle()으로 PGRST116 로그 노이즈 방지)
   const [{ data: post, error: fetchError }, { data: profile }] = await Promise.all([
-    supabase.from('posts').select('author_id').eq('id', id).single(),
-    supabaseAdmin.from('profiles').select('role').eq('id', user.id).single(),
+    supabaseAdmin.from('posts').select('author_id').eq('id', id).maybeSingle(),
+    supabaseAdmin.from('profiles').select('role').eq('id', user.id).maybeSingle(),
   ])
 
   if (fetchError || !post) {
@@ -120,10 +120,10 @@ export async function DELETE(
     return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   }
 
-  // post + profile 병렬 조회 (profile은 supabaseAdmin — RLS 우회)
+  // post + profile 병렬 조회 (둘 다 supabaseAdmin — RLS 우회, .maybeSingle()으로 PGRST116 로그 노이즈 방지)
   const [{ data: post, error: fetchError }, { data: profile }] = await Promise.all([
-    supabase.from('posts').select('author_id').eq('id', id).single(),
-    supabaseAdmin.from('profiles').select('role').eq('id', user.id).single(),
+    supabaseAdmin.from('posts').select('author_id').eq('id', id).maybeSingle(),
+    supabaseAdmin.from('profiles').select('role').eq('id', user.id).maybeSingle(),
   ])
 
   if (fetchError || !post) {
