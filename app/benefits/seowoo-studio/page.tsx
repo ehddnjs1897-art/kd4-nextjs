@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
+import SeowooCarousel from '@/components/seowoo/SeowooCarousel'
 
 export const metadata: Metadata = {
   title: '서우스튜디오 프로필 촬영 제휴 | KD4 액팅 스튜디오',
@@ -26,54 +28,21 @@ const GUIDE = [
 
 const STEPS = [
   '서우스튜디오 인스타그램 DM으로 예약 · 문의하세요.',
-  '“KD4 액팅 스튜디오 멤버예요”라고 알려주세요. (멤버 확인)',
+  '"KD4 액팅 스튜디오 멤버예요"라고 알려주세요. (멤버 확인)',
   '촬영 날짜와 옵션(헤어 · 메이크업 포함 / 미포함)을 정하세요.',
   '촬영 진행 — KD4 멤버 할인이 적용됩니다.',
 ]
 
-/* 서우스튜디오 로고 — 실제 로고 파일 수령 후 이 칩 안의 텍스트를 <img>로 교체 */
-function SeowooWordmark({ size = 'lg' }: { size?: 'lg' | 'sm' }) {
-  const big = size === 'lg'
+function SeowooLogo({ size = 'lg' }: { size?: 'lg' | 'sm' }) {
+  const px = size === 'lg' ? 176 : 120
   return (
-    <span
-      style={{
-        display: 'inline-flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: big ? 6 : 4,
-        background: '#ffffff',
-        border: '1px solid var(--border)',
-        borderRadius: 8,
-        padding: big ? '22px 34px' : '14px 22px',
-        lineHeight: 1,
-      }}
-    >
-      <span
-        style={{
-          fontFamily: 'var(--font-sans)',
-          fontSize: big ? 'clamp(1.8rem, 6vw, 2.6rem)' : '1.3rem',
-          fontWeight: 500,
-          letterSpacing: '0.02em',
-          color: '#1a1a1a',
-          textTransform: 'lowercase',
-        }}
-      >
-        seowoo
-      </span>
-      <span
-        style={{
-          fontFamily: 'var(--font-sans)',
-          fontSize: big ? '0.85rem' : '0.6rem',
-          fontWeight: 500,
-          letterSpacing: big ? '0.5em' : '0.4em',
-          color: '#1a1a1a',
-          textTransform: 'uppercase',
-          paddingLeft: big ? '0.5em' : '0.4em',
-        }}
-      >
-        studio
-      </span>
-    </span>
+    <Image
+      src="/partners/seowoo-logo.webp"
+      alt="seowoo studio"
+      width={px}
+      height={px}
+      style={{ borderRadius: 8, display: 'block' }}
+    />
   )
 }
 
@@ -191,7 +160,7 @@ export default function SeowooPartnershipPage() {
           <span aria-hidden style={{ fontSize: '1.4rem', color: 'var(--gray)', fontWeight: 300 }}>
             ×
           </span>
-          <SeowooWordmark size="lg" />
+          <SeowooLogo size="lg" />
         </div>
 
         <h1
@@ -414,6 +383,18 @@ export default function SeowooPartnershipPage() {
 
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
+      {/* 촬영 안내 캐러셀 */}
+      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
+        <SectionHeader
+          eyebrow="SHOOTING GUIDE"
+          title="서우스튜디오 촬영 안내"
+          desc="프로필 촬영 A to Z — 처음이라도 걱정 마세요."
+        />
+        <SeowooCarousel />
+      </section>
+
+      <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
+
       {/* 문의하기 */}
       <section
         style={{
@@ -423,7 +404,9 @@ export default function SeowooPartnershipPage() {
           textAlign: 'center',
         }}
       >
-        <SeowooWordmark size="sm" />
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <SeowooLogo size="sm" />
+        </div>
         <h2
           style={{
             fontFamily: 'var(--font-serif)',
