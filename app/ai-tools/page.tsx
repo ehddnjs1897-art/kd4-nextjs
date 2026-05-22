@@ -135,9 +135,17 @@ export default function AIToolsPage() {
       const text: string = data.text ?? ''
 
       try {
-        const parsed: AnalysisResult = JSON.parse(text)
-        setResult(parsed)
-        setActiveTab('utaHagen')
+        const parsed = JSON.parse(text)
+        // 필수 키 존재 여부 검증 — 구조 불일치 시 rawText 폴백
+        if (
+          parsed?.utaHagen && parsed?.ivanaChubbuck && parsed?.meisner &&
+          parsed?.lineByLine && parsed?.onSetSummary
+        ) {
+          setResult(parsed as AnalysisResult)
+          setActiveTab('utaHagen')
+        } else {
+          setRawText(text)
+        }
       } catch {
         setRawText(text)
       }

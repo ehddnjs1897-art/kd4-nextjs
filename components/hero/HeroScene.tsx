@@ -396,6 +396,12 @@ export default function HeroScene() {
       };
     } catch (err) {
       console.error("[HeroScene] Three.js 초기화 실패:", err);
+      // WebGL 미지원 환경 — 캔버스 숨기고 배경색 fallback (콘텐츠 가림 방지)
+      if (canvasRef.current) {
+        canvasRef.current.style.display = "none";
+        const parent = canvasRef.current.parentElement;
+        if (parent) parent.style.background = "#E8E4D8";
+      }
     }
   }, []);
 

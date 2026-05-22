@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
+// 모듈 레벨 쿨다운 Map (Vercel 인스턴스 유지 기간 내 — Gemini 비용 폭탄 방지)
+const aiCooldowns = new Map<string, number>()
+
 export async function POST(request: NextRequest) {
   // 인증 확인
   const supabase = await createClient()
@@ -14,6 +17,19 @@ export async function POST(request: NextRequest) {
     .from('profiles').select('role').eq('id', user.id).maybeSingle()
   if (!['crew', 'editor', 'director', 'admin'].includes(profile?.role ?? '')) {
     return NextResponse.json({ error: 'AI 기능은 KD4 크루 이상 회원만 이용할 수 있습니다.' }, { status: 403 })
+  }
+
+  // Rate limit: 30초 쿨다운 (Gemini 비용 폭탄 방지)
+  const now = Date.now()
+  const lastCall = aiCooldowns.get(user.id) ?? 0
+  if (now - lastCall < 30_000) {
+    const wait = Math.ceil((30_000 - (now - lastCall)) / 1000)
+    return NextResponse.json({ error: `${wait}초 후 다시 시도해주세요.` }, { status: 429 })
+  }
+  aiCooldowns.set(user.id, now)
+  // 1분 이상 지난 항목 정리 (메모리 누수 방지)
+  for (const [uid, ts] of aiCooldowns) {
+    if (now - ts > 60_000) aiCooldowns.delete(uid)
   }
 
   const apiKey = process.env.GEMINI_KEY // NEXT_PUBLIC_ 접두사 제거 — 서버 전용

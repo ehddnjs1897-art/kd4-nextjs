@@ -91,6 +91,7 @@ export async function POST(request: NextRequest) {
   }
 
   const nowIso = new Date().toISOString()
+  const partialErrors: string[] = []
 
   // 1. 대상 배우 row 결정 — 없으면 비공개로 신규 생성
   let actorId = profile.actor_id as string | null
@@ -143,7 +144,10 @@ export async function POST(request: NextRequest) {
       sort_order: base + i,
     }))
     const { error: photoErr } = await supabaseAdmin.from('actor_photos').insert(rows)
-    if (photoErr) console.error('[profile/intake] 사진 등록 실패:', photoErr.message)
+    if (photoErr) {
+      console.error('[profile/intake] 사진 등록 실패:', photoErr.message)
+      partialErrors.push(`사진 등록 실패: ${photoErr.message}`)
+    }
   }
 
   // 3b. 현재사진 rows
@@ -165,7 +169,10 @@ export async function POST(request: NextRequest) {
       label: p.label,
     }))
     const { error: cpErr } = await supabaseAdmin.from('actor_photos').insert(currentRows)
-    if (cpErr) console.error('[profile/intake] 현재사진 등록 실패:', cpErr.message)
+    if (cpErr) {
+      console.error('[profile/intake] 현재사진 등록 실패:', cpErr.message)
+      partialErrors.push(`현재사진 등록 실패: ${cpErr.message}`)
+    }
   }
 
   // 4. 영상 rows (R2, 최대 3개 — reel 2 + monologue 1)
@@ -179,8 +186,15 @@ export async function POST(request: NextRequest) {
       is_public: false,
       video_type: vid.video_type ?? 'reel',
     })
-    if (videoErr) console.error('[profile/intake] 영상 등록 실패:', videoErr.message)
+    if (videoErr) {
+      console.error('[profile/intake] 영상 등록 실패:', videoErr.message)
+      partialErrors.push(`영상 등록 실패: ${videoErr.message}`)
+    }
   }
 
-  return NextResponse.json({ ok: true, actorId })
+  return NextResponse.json({
+    ok: true,
+    actorId,
+    ...(partialErrors.length > 0 && { warnings: partialErrors }),
+  })
 }
