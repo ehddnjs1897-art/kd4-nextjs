@@ -163,6 +163,79 @@ export default function SinchonPage() {
         </div>
       </section>
 
+      {/* ===== 오시는 길 약도 ===== */}
+      <section style={{ padding: 'clamp(48px, 8vw, 72px) 0', background: 'var(--bg2)' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 28px', textAlign: 'center' }}>
+            <p className="section-eyebrow">길찾기 약도</p>
+            <h2 className="section-title-serif" style={{ marginBottom: '8px' }}>이대역에서 걸어오는 길</h2>
+            <p className="section-desc">5번 출구에서 이화여대길 따라 북쪽으로, 도보 약 3분.</p>
+          </div>
+          <div className="sinchon-route-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(280px, 340px) 1fr', gap: '24px', maxWidth: '880px', margin: '0 auto', alignItems: 'center' }}>
+            {/* SVG 약도 (실제 도보 경로 기반) */}
+            <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '16px', padding: '10px', boxShadow: '0 14px 40px -28px rgba(15,51,100,0.5)' }}>
+              <svg viewBox="0 0 380 480" width="100%" style={{ display: 'block' }} role="img" aria-label="이대역 5번 출구에서 KD4 액팅 스튜디오까지 도보 경로 약도" fontFamily="var(--font-display), sans-serif">
+                <rect x="0" y="0" width="380" height="480" rx="14" fill="#EBEBE0" />
+                {/* 도시 블록 느낌 */}
+                <g fill="#E1E1D4">
+                  <rect x="24" y="120" width="120" height="150" rx="6" />
+                  <rect x="220" y="150" width="130" height="120" rx="6" />
+                  <rect x="232" y="300" width="120" height="120" rx="6" />
+                  <rect x="30" y="300" width="118" height="110" rx="6" />
+                </g>
+                {/* 경로 (흰 테두리 + 네이비 점선) */}
+                <polyline points="275.8,424 188.1,401.6 182.9,289.3 171.3,157 154.2,58.2 104.2,52.6" fill="none" stroke="#ffffff" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
+                <polyline points="275.8,424 188.1,401.6 182.9,289.3 171.3,157 154.2,58.2 104.2,52.6" fill="none" stroke="#15488A" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="1 12" />
+                {/* 거리 라벨 */}
+                <g transform="rotate(-89 205 240)">
+                  <rect x="170" y="231" width="70" height="19" rx="9" fill="#15488A" />
+                  <text x="205" y="244" textAnchor="middle" fontSize="11" fontWeight="700" fill="#ffffff">이화여대길</text>
+                </g>
+                {/* 북 표시 */}
+                <g>
+                  <text x="350" y="34" textAnchor="middle" fontSize="13" fontWeight="700" fill="#9a958c">N</text>
+                  <path d="M350,38 L346,50 L350,46 L354,50 Z" fill="#9a958c" />
+                </g>
+                {/* 도착: KD4 핀 */}
+                <g>
+                  <circle cx="104" cy="40" r="14" fill="#C73E3E" />
+                  <path d="M93,49 L115,49 L104,62 Z" fill="#C73E3E" />
+                  <circle cx="104" cy="40" r="5" fill="#ffffff" />
+                  <rect x="40" y="74" width="128" height="22" rx="11" fill="#15488A" />
+                  <text x="104" y="89" textAnchor="middle" fontSize="12" fontWeight="700" fill="#ffffff">KD4 액팅 스튜디오</text>
+                </g>
+                {/* 출발: 이대역 5번출구 */}
+                <g>
+                  <circle cx="276" cy="424" r="16" fill="#00A84D" />
+                  <text x="276" y="430" textAnchor="middle" fontSize="16" fontWeight="800" fill="#ffffff">2</text>
+                  <rect x="212" y="446" width="128" height="22" rx="11" fill="#2A2F3A" />
+                  <text x="276" y="461" textAnchor="middle" fontSize="12" fontWeight="700" fill="#ffffff">이대역 5번 출구</text>
+                </g>
+              </svg>
+            </div>
+            {/* 단계 안내 */}
+            <ol style={{ display: 'flex', flexDirection: 'column', gap: '12px', listStyle: 'none', padding: 0, margin: 0 }}>
+              {[
+                { t: '이대역(2호선) 5번 출구', d: '출구로 나와 신촌로 방향으로' },
+                { t: '이화여대길로 진입', d: '신촌로에서 이화여대길로 들어섭니다' },
+                { t: '북쪽으로 직진 (약 480m)', d: '이화여대길 따라 쭉 올라옵니다' },
+                { t: 'KD4 액팅 스튜디오 도착', d: '아리움3차 1층 101호' },
+              ].map((s, i, arr) => (
+                <li key={i} style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+                  <div style={{ flexShrink: 0, width: '30px', height: '30px', borderRadius: '50%', background: i === arr.length - 1 ? 'var(--accent-red)' : 'var(--navy)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.9rem' }}>
+                    {i + 1}
+                  </div>
+                  <div>
+                    <p style={{ fontSize: '0.98rem', fontWeight: 700, marginBottom: '2px', wordBreak: 'keep-all' }}>{s.t}</p>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--gray-light)', lineHeight: 1.5, wordBreak: 'keep-all' }}>{s.d}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </section>
+
       {/* ===== CLASSES — 전체 라인업 ===== */}
       <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
@@ -247,6 +320,7 @@ export default function SinchonPage() {
       <style>{`
         @media (max-width: 760px) {
           .sinchon-map-grid { grid-template-columns: 1fr !important; }
+          .sinchon-route-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
     </div>
