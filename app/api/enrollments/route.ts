@@ -52,6 +52,9 @@ export async function POST(request: Request) {
   if (!year_month || !/^\d{4}-\d{2}$/.test(year_month)) {
     return NextResponse.json({ error: '수강 월이 올바르지 않습니다.' }, { status: 400 })
   }
+  if (phone && phone.length > 20) {
+    return NextResponse.json({ error: '연락처 형식이 올바르지 않습니다.' }, { status: 400 })
+  }
 
   // 프로필 (이름·이메일·연락처·배우 연결)
   const { data: profile } = await supabaseAdmin

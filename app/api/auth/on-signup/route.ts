@@ -17,7 +17,10 @@ export async function POST() {
 
   const name: string = user.user_metadata?.name ?? ''
   const phone: string = user.user_metadata?.phone ?? ''
-  const memberType: string = user.user_metadata?.member_type ?? 'actor'
+  // 사용자 메타데이터는 신뢰할 수 없는 값 — 허용 목록 외 값은 기본값으로 강제
+  const ALLOWED_MEMBER_TYPES = new Set(['actor', 'director'])
+  const rawMemberType: string = user.user_metadata?.member_type ?? 'actor'
+  const memberType: string = ALLOWED_MEMBER_TYPES.has(rawMemberType) ? rawMemberType : 'actor'
 
   // 기존 역할 확인 (이미 승급된 역할이면 강등 금지)
   const { data: existing } = await supabaseAdmin

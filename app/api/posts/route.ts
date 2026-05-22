@@ -55,8 +55,14 @@ export async function POST(request: NextRequest) {
   if (!title || title.trim().length === 0) {
     return NextResponse.json({ error: '제목을 입력해주세요.' }, { status: 400 })
   }
+  if (title.trim().length > 200) {
+    return NextResponse.json({ error: '제목은 200자 이하로 입력해주세요.' }, { status: 400 })
+  }
   if (!content || content.trim().length === 0) {
     return NextResponse.json({ error: '내용을 입력해주세요.' }, { status: 400 })
+  }
+  if (content.trim().length > 10000) {
+    return NextResponse.json({ error: '내용은 10,000자 이하로 입력해주세요.' }, { status: 400 })
   }
 
   const validCategories = ['일반', '공지', '질문', '자유', '수업']
@@ -106,7 +112,7 @@ export async function POST(request: NextRequest) {
 
   if (error) {
     console.error('[POST /api/posts] insert error:', error)
-    return NextResponse.json({ error: error.message ?? '게시글 작성 중 오류가 발생했습니다.' }, { status: 500 })
+    return NextResponse.json({ error: '게시글 작성 중 오류가 발생했습니다.' }, { status: 500 })
   }
 
   return NextResponse.json({ id: data.id }, { status: 201 })
