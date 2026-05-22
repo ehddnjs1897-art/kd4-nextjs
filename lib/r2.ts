@@ -34,6 +34,10 @@ function getClient(): S3Client {
       accessKeyId: ACCESS_KEY_ID,
       secretAccessKey: SECRET_ACCESS_KEY,
     },
+    // AWS SDK v3가 기본으로 presigned URL에 x-amz-checksum-* 서명 헤더를 넣어
+    // 브라우저 재생/다운로드 시 SignatureDoesNotMatch 발생 → 체크섬 비활성화.
+    requestChecksumCalculation: 'WHEN_REQUIRED',
+    responseChecksumValidation: 'WHEN_REQUIRED',
   })
   return client
 }
