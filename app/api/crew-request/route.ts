@@ -42,10 +42,10 @@ export async function POST() {
 
   // 이미 신청했거나 승인된 경우
   if (currentRole !== 'user' && currentRole !== 'member') {
-    return NextResponse.json({
-      message: '이미 신청되었거나 크루 권한이 있습니다.',
-      role: currentRole,
-    })
+    return NextResponse.json(
+      { error: '이미 신청되었거나 크루 권한이 있습니다.', role: currentRole },
+      { status: 409 }
+    )
   }
 
   // 프로필 없으면 먼저 생성 후 crew_pending으로 upsert

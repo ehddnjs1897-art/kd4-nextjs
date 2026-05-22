@@ -46,10 +46,10 @@ export async function POST() {
   const currentRole = (profile?.role ?? 'user') as string
 
   if (ALREADY.includes(currentRole)) {
-    return NextResponse.json({
-      message: '이미 신청되었거나 디렉터 권한이 있습니다.',
-      role: currentRole,
-    })
+    return NextResponse.json(
+      { error: '이미 신청되었거나 디렉터 권한이 있습니다.', role: currentRole },
+      { status: 409 }
+    )
   }
 
   // role → director_pending (service_role 로만 가능 — RLS가 본인 role 변경 차단)

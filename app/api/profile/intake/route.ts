@@ -124,7 +124,9 @@ export async function POST(request: NextRequest) {
     actorId = created.id
 
     // 프로필에 actor_id 연결
-    await supabaseAdmin.from('profiles').update({ actor_id: actorId }).eq('id', user.id)
+    const { error: linkErr } = await supabaseAdmin
+      .from('profiles').update({ actor_id: actorId }).eq('id', user.id)
+    if (linkErr) console.error('[profile/intake] actor_id 연결 실패:', linkErr.message)
   }
 
   // 2. PPT(문서) 경로 + 제출 시점 + 가로사진(OG 썸네일) 기록
@@ -132,7 +134,8 @@ export async function POST(request: NextRequest) {
   if (docPath) actorPatch.profile_doc_path = docPath
   if (ogPhotoPath) actorPatch.profile_photo = photoPublicUrl(ogPhotoPath)
   if (castingSummary) actorPatch.casting_summary = castingSummary
-  await supabaseAdmin.from('actors').update(actorPatch).eq('id', actorId)
+  const { error: patchErr } = await supabaseAdmin.from('actors').update(actorPatch).eq('id', actorId)
+  if (patchErr) console.error('[profile/intake] actor 패치 실패:', patchErr.message)
 
   // 3. 사진 rows — 기존 sort_order 다음부터 append
   if (photos.length > 0) {
