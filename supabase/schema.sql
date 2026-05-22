@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   name TEXT,
   phone TEXT,
-  role TEXT DEFAULT 'member' CHECK (role IN ('member', 'actor', 'crew_pending', 'crew', 'editor', 'director', 'admin')),
+  email TEXT,
+  role TEXT DEFAULT 'member' CHECK (role IN ('member', 'actor', 'crew_pending', 'crew', 'editor', 'director_pending', 'director', 'admin')),
   actor_id UUID,  -- actors 테이블 참조 (순환 참조 방지위해 FK 나중에 추가)
   matched_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW()
@@ -23,10 +24,14 @@ CREATE TABLE IF NOT EXISTS profiles (
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "profiles_own" ON profiles
   FOR ALL USING (auth.uid() = id);
+
+-- is_admin(): SECURITY DEFINER로 RLS 우회 → profiles_admin_all 재귀 방지
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS boolean LANGUAGE sql SECURITY DEFINER STABLE SET search_path = public AS $$
+  SELECT EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
+$$;
 CREATE POLICY "profiles_admin_all" ON profiles
-  FOR ALL USING (
-    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
-  );
+  FOR ALL USING (public.is_admin());
 
 -- 신규 가입 시 profile 자동 생성 트리거
 CREATE OR REPLACE FUNCTION handle_new_user()

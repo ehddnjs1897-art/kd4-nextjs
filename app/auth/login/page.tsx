@@ -56,7 +56,7 @@ function LoginContent() {
       return
     }
 
-    router.push('/')
+    router.push(searchParams.get('next') || '/dashboard')
     router.refresh()
   }
 
