@@ -65,7 +65,7 @@ export async function GET(request: Request) {
 
     // ignoreDuplicates: false → role을 항상 올바르게 덮어씀
     await supabase.from('profiles').upsert(
-      { id: user.id, name: name || null, email: user.email ?? null, phone: phone || null, role: initialRole },
+      { id: user.id, name: name || null, phone: phone || null, role: initialRole },
       { onConflict: 'id' }
     )
 
@@ -125,7 +125,7 @@ export async function GET(request: Request) {
   // 신규 OAuth 유저: 임시 프로필 생성 후 유형 선택 페이지로
   if (isNewUser) {
     await supabase.from('profiles').upsert(
-      { id: user.id, name: name || null, email: user.email ?? null, role: 'actor' },
+      { id: user.id, name: name || null, role: 'actor' },
       { onConflict: 'id' }
     )
     return NextResponse.redirect(`${origin}/auth/setup`)
@@ -140,7 +140,6 @@ export async function GET(request: Request) {
     {
       id: user.id,
       name: name || null,
-      email: user.email ?? null,
       phone: phone || null,
       role: initialRole,
     },
