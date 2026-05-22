@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import type { ReactNode } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import SeowooCarousel from '@/components/seowoo/SeowooCarousel'
@@ -22,12 +23,23 @@ const GUIDE = [
     label: '서우스튜디오',
     desc: '있는 그대로의 당신을, 자연스럽고 편안하게 담는 프로필 · 포트레이트 촬영 스튜디오입니다.',
   },
+  { label: '위치', desc: '서울 서초구 신반포로45길 50-2 1동 지하1층 (신사역 · 논현역 인근)' },
   { label: '대상', desc: 'KD4 액팅 스튜디오 멤버' },
   { label: '이용 방법', desc: '예약 시 KD4 멤버임을 알려주세요 (확인 필요)' },
 ]
 
-const STEPS = [
-  '서우스튜디오 인스타그램 DM으로 예약 · 문의하세요.',
+const STEPS: ReactNode[] = [
+  <>
+    <a
+      href={INSTAGRAM_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{ color: 'var(--gold)', fontWeight: 700, textDecoration: 'underline', textUnderlineOffset: 3 }}
+    >
+      서우스튜디오 인스타그램
+    </a>{' '}
+    DM으로 예약 · 문의하세요.
+  </>,
   '"KD4 액팅 스튜디오 멤버예요"라고 알려주세요. (멤버 확인)',
   '촬영 날짜와 옵션(헤어 · 메이크업 포함 / 미포함)을 정하세요.',
   '촬영 진행 — KD4 멤버 할인이 적용됩니다.',
@@ -134,29 +146,13 @@ export default function SeowooPartnershipPage() {
             marginBottom: '32px',
           }}
         >
-          <span
-            style={{
-              fontFamily: 'var(--font-display), Oswald, sans-serif',
-              fontSize: 'clamp(1.4rem, 5vw, 2.1rem)',
-              fontWeight: 700,
-              letterSpacing: '0.04em',
-              color: 'var(--gold)',
-              lineHeight: 1.1,
-            }}
-          >
-            KD4
-            <span
-              style={{
-                display: 'block',
-                fontSize: '0.4em',
-                letterSpacing: '0.2em',
-                color: 'var(--secondary)',
-                marginTop: 4,
-              }}
-            >
-              ACTING STUDIO
-            </span>
-          </span>
+          <Image
+            src="/partners/kd4-logo-stamp.webp"
+            alt="KD4 액팅 스튜디오"
+            width={176}
+            height={176}
+            style={{ borderRadius: 8, display: 'block' }}
+          />
           <span aria-hidden style={{ fontSize: '1.4rem', color: 'var(--gray)', fontWeight: 300 }}>
             ×
           </span>
@@ -379,6 +375,87 @@ export default function SeowooPartnershipPage() {
             </li>
           ))}
         </ol>
+      </section>
+
+      <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
+
+      {/* 포트폴리오 */}
+      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
+        <SectionHeader
+          eyebrow="PORTFOLIO"
+          title="포트폴리오"
+          desc="서우스튜디오의 실제 촬영 작품을 인스타그램에서 바로 확인하세요."
+        />
+        <a
+          href={INSTAGRAM_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ textDecoration: 'none', display: 'block', maxWidth: 480, margin: '0 auto' }}
+        >
+          <div
+            style={{
+              background: '#ffffff',
+              border: '1px solid var(--border)',
+              borderRadius: 16,
+              padding: 'clamp(28px, 6vw, 48px) clamp(24px, 5vw, 40px)',
+              textAlign: 'center',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 16,
+            }}
+          >
+            <Image
+              src="/partners/seowoo-logo.webp"
+              alt="seowoo studio"
+              width={64}
+              height={64}
+              style={{ borderRadius: 8, display: 'block' }}
+            />
+            <div>
+              <p
+                style={{
+                  fontFamily: 'var(--font-display), Oswald, sans-serif',
+                  fontSize: '1rem',
+                  fontWeight: 700,
+                  color: '#111',
+                  letterSpacing: '0.05em',
+                  marginBottom: 6,
+                }}
+              >
+                @seowoo_studio
+              </p>
+              <p
+                style={{
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '0.88rem',
+                  color: '#777',
+                  lineHeight: 1.7,
+                  wordBreak: 'keep-all',
+                }}
+              >
+                배우·가수 프로필 전문 작가의 실제 촬영 작품을 인스타그램에서 확인하세요.
+              </p>
+            </div>
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                background: 'var(--gold)',
+                color: '#ffffff',
+                padding: '12px 24px',
+                borderRadius: 8,
+                fontFamily: 'var(--font-sans)',
+                fontSize: '0.92rem',
+                fontWeight: 700,
+                letterSpacing: '0.01em',
+              }}
+            >
+              인스타그램에서 포트폴리오 보기 →
+            </span>
+          </div>
+        </a>
       </section>
 
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
