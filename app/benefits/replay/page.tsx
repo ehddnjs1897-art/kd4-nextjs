@@ -75,8 +75,7 @@ export default function ReplayPartnershipPage() {
           </div>
           <span aria-hidden style={{ fontSize: '1.4rem', color: 'var(--gray)', fontWeight: 300 }}>×</span>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/heart-logo.png" alt="KD4 액팅 스튜디오" width={120} height={120} style={{ objectFit: 'contain' }} />
+            <Image src="/heart-logo.png" alt="KD4 액팅 스튜디오" width={120} height={120} style={{ objectFit: 'contain' }} />
             <span style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.58rem', letterSpacing: '0.22em', color: 'var(--gold)', fontWeight: 700, textTransform: 'uppercase' }}>
               KD4 ACTING STUDIO
             </span>

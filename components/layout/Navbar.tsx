@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
 const publicLinks = [
@@ -148,9 +149,12 @@ export default function Navbar() {
         >
           {/* ── 로고 ── */}
           <Link href="/" style={{ display: 'flex', alignItems: 'center' }}>
-            <img
+            <Image
               src="/heart-logo.png"
               alt="KD4 Acting Studio"
+              width={400}
+              height={400}
+              priority
               style={{
                 height: '44px',
                 width: 'auto',
@@ -610,8 +614,7 @@ export default function Navbar() {
                   letterSpacing: '0.06em',
                 }}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/icons/kakao.png" alt="" width={18} height={18} style={{ objectFit: 'contain' }} />
+                <Image src="/icons/kakao.png" alt="" width={18} height={18} style={{ objectFit: 'contain' }} />
                 카카오로 문의하기
               </a>
             </div>
