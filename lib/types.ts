@@ -33,6 +33,7 @@ export interface Actor {
   casting_tags: string[] | null
   casting_summary: string | null
   profile_doc_path: string | null
+  profile_pdf_url: string | null
 }
 
 export type ActorPublic = Omit<Actor, 'phone' | 'email'>

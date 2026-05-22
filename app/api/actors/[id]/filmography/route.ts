@@ -22,6 +22,9 @@ export async function POST(request: NextRequest, { params }: Ctx) {
 
     const { category, year, title, role, broadcaster, film_type } = await request.json()
     if (!title) return NextResponse.json({ error: '작품명이 필요합니다.' }, { status: 400 })
+    if (typeof title === 'string' && title.length > 200) {
+      return NextResponse.json({ error: '작품명은 200자 이하로 입력해주세요.' }, { status: 400 })
+    }
 
     const { data, error } = await supabaseAdmin
       .from('actor_filmography')

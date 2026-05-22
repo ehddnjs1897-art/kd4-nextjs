@@ -21,7 +21,10 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
     }
 
     const { error } = await supabaseAdmin.from('actor_videos').delete().eq('id', videoId).eq('actor_id', id)
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) {
+      console.error('[videos DELETE] DB 오류:', error.message)
+      return NextResponse.json({ error: '영상 삭제에 실패했습니다.' }, { status: 500 })
+    }
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error(err)

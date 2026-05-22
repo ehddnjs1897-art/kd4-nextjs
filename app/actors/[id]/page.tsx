@@ -436,7 +436,7 @@ export default async function ActorDetailPage({
                           <Link href="/dashboard" style={{ color: 'var(--gold)' }}>마이페이지에서 신청 →</Link>
                         </>
                       : <>연락처 및 자료 다운로드는 KD4 멤버 전용입니다.{' '}
-                          <Link href="/auth/login" style={{ color: 'var(--gold)' }}>로그인</Link>
+                          <Link href={`/auth/login?next=/actors/${actor.id}`} style={{ color: 'var(--gold)' }}>로그인</Link>
                         </>
                     }
                   </p>
