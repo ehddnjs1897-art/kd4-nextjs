@@ -37,17 +37,18 @@ export async function GET(
     )
   }
 
-  // role 확인 — admin/crew/editor/director는 모든 영상 접근 가능
+  // role 확인 — admin/crew/editor/director는 모든 영상 접근 가능, actor는 본인 영상만
   const { data: profile } = await supabase
     .from('profiles')
-    .select('role')
+    .select('role, actor_id')
     .eq('id', user.id)
     .single()
 
   const role = profile?.role
-  // 영상 시청 가능 역할 = 배우 DB 열람 가능 역할(배우/크루/편집자/디렉터/관리자)
-  const elevated =
-    role === 'admin' || role === 'crew' || role === 'editor' || role === 'director' || role === 'actor'
+  // admin/crew/editor/director: 모든 영상 열람 가능
+  const elevated = role === 'admin' || role === 'crew' || role === 'editor' || role === 'director'
+  // actor 역할: 영상 fetch 후 본인 소유 여부 검증 (아래)
+  const isActorRole = role === 'actor'
 
   const { id } = await params
   const url = new URL(request.url)
@@ -72,10 +73,18 @@ export async function GET(
     )
   }
 
-  // 권한: 배우 DB 열람 가능 역할(배우/크루/디렉터/관리자)만 시청
-  if (!elevated) {
+  // 권한: 최소 actor 역할 이상이어야 접근 가능
+  if (!elevated && !isActorRole) {
     return NextResponse.json(
       { error: '이 영상은 권한이 있는 사용자만 접근 가능합니다.' },
+      { status: 403 }
+    )
+  }
+
+  // actor 역할: 본인 영상만 열람 가능 (다른 배우 리일 무단 열람 방지)
+  if (isActorRole && video.actor_id !== profile?.actor_id) {
+    return NextResponse.json(
+      { error: '본인 영상만 열람할 수 있습니다.' },
       { status: 403 }
     )
   }

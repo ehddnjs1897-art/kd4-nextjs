@@ -25,6 +25,9 @@ export async function POST(request: NextRequest) {
   if (!content || content.trim().length === 0) {
     return NextResponse.json({ error: '댓글 내용을 입력해주세요.' }, { status: 400 })
   }
+  if (content.trim().length > 2000) {
+    return NextResponse.json({ error: '댓글은 2,000자 이하로 입력해주세요.' }, { status: 400 })
+  }
 
   // 게시글 존재 확인 + 작성자 이름 병렬 조회
   const [{ data: post, error: postError }, { data: profile }] = await Promise.all([

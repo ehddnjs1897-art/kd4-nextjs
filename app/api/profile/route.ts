@@ -30,6 +30,12 @@ export async function PATCH(request: NextRequest) {
   if (!name || name.trim().length === 0) {
     return NextResponse.json({ error: '이름을 입력해주세요.' }, { status: 400 })
   }
+  if (name.trim().length > 100) {
+    return NextResponse.json({ error: '이름은 100자 이하로 입력해주세요.' }, { status: 400 })
+  }
+  if (phone !== undefined && phone.trim().length > 20) {
+    return NextResponse.json({ error: '전화번호 형식이 올바르지 않습니다.' }, { status: 400 })
+  }
 
   const updates: Record<string, string> = { name: name.trim() }
   if (phone !== undefined) updates.phone = phone.trim()

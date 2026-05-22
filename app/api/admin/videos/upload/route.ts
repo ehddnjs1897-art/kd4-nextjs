@@ -112,7 +112,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ video: data })
   } catch (err) {
     console.error('[upload] 예상치 못한 오류:', err)
-    const msg = err instanceof Error ? err.message : '서버 오류'
-    return NextResponse.json({ error: msg }, { status: 500 })
+    return NextResponse.json({ error: '업로드 처리 중 오류가 발생했습니다.' }, { status: 500 })
   }
 }

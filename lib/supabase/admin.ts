@@ -2,6 +2,7 @@
  * Service Role 클라이언트 — RLS를 우회하므로 절대 클라이언트(브라우저)에 노출 금지.
  * 서버 컴포넌트, API Route, Server Action 전용.
  */
+import 'server-only'
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
 let _admin: SupabaseClient | null = null

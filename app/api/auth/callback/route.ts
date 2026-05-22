@@ -11,8 +11,9 @@ import { createClient } from '@/lib/supabase/server'
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
-  // 로그인 성공 후 이동할 경로 (기본값: 홈)
-  const next = searchParams.get('next') ?? '/'
+  // 로그인 성공 후 이동할 경로 — 오픈 리다이렉트 방지: '/'로 시작하고 '//evil.com' 형식 아닌 것만 허용
+  const rawNext = searchParams.get('next') ?? '/'
+  const next = rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/'
 
   if (code) {
     try {
