@@ -9,6 +9,7 @@ const ERROR_MESSAGES: Record<string, string> = {
   missing_code: '인증 코드가 없습니다. 다시 시도해 주세요.',
   exchange_failed: 'OAuth 인증에 실패했습니다. 다시 시도해 주세요.',
   verification_failed: '이메일 인증에 실패했습니다. 링크가 만료되었을 수 있습니다.',
+  callback_failed: '인증 처리 중 오류가 발생했습니다. 다시 시도해 주세요.',
 }
 
 // useSearchParams를 Suspense로 감싸야 함 (Next.js 빌드 요구사항)

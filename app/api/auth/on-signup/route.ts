@@ -26,7 +26,7 @@ export async function POST() {
 
   let newRole = existingRole
   if (!existingRole || !ELEVATED_ROLES.includes(existingRole)) {
-    newRole = memberType === 'director' ? 'member' : 'actor'
+    newRole = memberType === 'director' ? 'user' : 'actor'
   }
 
   // supabaseAdmin으로 role + name + phone 업데이트 (클라이언트 RLS 우회)

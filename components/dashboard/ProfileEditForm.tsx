@@ -15,9 +15,11 @@ const ROLE_LABEL: Record<string, string> = {
   user: '일반 회원',
   crew_pending: 'KD4 크루 (승인 대기)',
   crew: 'KD4 크루',
-  actor: '배우 회원 (승인 대기)',
-  editor: '배우 회원',
-  director: '디렉터 회원',
+  actor: '배우 멤버',
+  member: '배우 멤버',
+  editor: '편집자',
+  director: '디렉터',
+  director_pending: '디렉터 (승인 대기)',
   admin: '관리자',
 }
 
