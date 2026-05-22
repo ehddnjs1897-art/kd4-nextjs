@@ -38,6 +38,8 @@ async function requireAdmin(): Promise<{ userId: string } | NextResponse> {
   return { userId: user.id }
 }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 // PATCH /api/insights/[id]
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const origin = request.headers.get('origin')
@@ -45,6 +47,9 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   if (auth instanceof NextResponse) return withCors(auth, origin)
 
   const { id } = await params
+  if (!UUID_RE.test(id)) {
+    return withCors(NextResponse.json({ error: '잘못된 ID입니다.' }, { status: 400 }), origin)
+  }
   let body: Record<string, unknown>
   try {
     body = await request.json()
@@ -76,6 +81,9 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
   if (auth instanceof NextResponse) return withCors(auth, origin)
 
   const { id } = await params
+  if (!UUID_RE.test(id)) {
+    return withCors(NextResponse.json({ error: '잘못된 ID입니다.' }, { status: 400 }), origin)
+  }
 
   const { error } = await supabaseAdmin.from('insights').delete().eq('id', id)
 

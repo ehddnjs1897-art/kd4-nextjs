@@ -9,12 +9,16 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 
 const VALID_STATUS = ['확정', '휴강', '취소']
 const VALID_PAYMENT = ['결제대기', '결제완료']
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
+  if (!UUID_RE.test(id)) {
+    return NextResponse.json({ error: '잘못된 수강 ID입니다.' }, { status: 400 })
+  }
 
   const supabase = await createClient()
   const {

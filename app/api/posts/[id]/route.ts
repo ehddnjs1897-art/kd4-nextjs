@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 
 type Params = Promise<{ id: string }>
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 // GET /api/posts/[id] — 조회수 +1 포함
 export async function GET(
@@ -9,6 +12,9 @@ export async function GET(
   { params }: { params: Params }
 ) {
   const { id } = await params
+  if (!UUID_RE.test(id)) {
+    return NextResponse.json({ error: '잘못된 게시글 ID입니다.' }, { status: 400 })
+  }
   const supabase = await createClient()
 
   const { data: post, error } = await supabase
@@ -33,6 +39,9 @@ export async function PATCH(
   { params }: { params: Params }
 ) {
   const { id } = await params
+  if (!UUID_RE.test(id)) {
+    return NextResponse.json({ error: '잘못된 게시글 ID입니다.' }, { status: 400 })
+  }
   const supabase = await createClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
 
@@ -40,10 +49,10 @@ export async function PATCH(
     return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   }
 
-  // post + profile 병렬 조회
+  // post + profile 병렬 조회 (profile은 supabaseAdmin — RLS 우회)
   const [{ data: post, error: fetchError }, { data: profile }] = await Promise.all([
     supabase.from('posts').select('author_id').eq('id', id).single(),
-    supabase.from('profiles').select('role').eq('id', user.id).single(),
+    supabaseAdmin.from('profiles').select('role').eq('id', user.id).single(),
   ])
 
   if (fetchError || !post) {
@@ -101,6 +110,9 @@ export async function DELETE(
   { params }: { params: Params }
 ) {
   const { id } = await params
+  if (!UUID_RE.test(id)) {
+    return NextResponse.json({ error: '잘못된 게시글 ID입니다.' }, { status: 400 })
+  }
   const supabase = await createClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
 
@@ -108,10 +120,10 @@ export async function DELETE(
     return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   }
 
-  // post + profile 병렬 조회
+  // post + profile 병렬 조회 (profile은 supabaseAdmin — RLS 우회)
   const [{ data: post, error: fetchError }, { data: profile }] = await Promise.all([
     supabase.from('posts').select('author_id').eq('id', id).single(),
-    supabase.from('profiles').select('role').eq('id', user.id).single(),
+    supabaseAdmin.from('profiles').select('role').eq('id', user.id).single(),
   ])
 
   if (fetchError || !post) {

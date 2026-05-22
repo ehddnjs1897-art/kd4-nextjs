@@ -7,6 +7,10 @@ import type { InsightSourceType, InsightCategory } from '@/lib/types'
 // GEMINI_KEY는 서버 전용. NEXT_PUBLIC_* 접두사 사용 금지.
 const GEMINI_KEY = process.env.GEMINI_KEY
 
+// 런타임 허용 목록 (TypeScript 타입만으로는 런타임 검증 불가)
+const VALID_CATEGORIES = new Set<string>(['연기', '오디션', '산업', '마케팅', '기타', '전체'])
+const VALID_SOURCE_TYPES = new Set<string>(['video', 'article', 'tweet', 'podcast', '기타', '전체'])
+
 // CORS는 자체 도메인 + 로컬 dev만 허용 (이전 '*'은 SSRF·CSRF 위험)
 import { SITE_URL } from '@/lib/constants'
 const ALLOWED_ORIGINS = new Set([SITE_URL, 'http://localhost:3000'])
@@ -182,8 +186,8 @@ export async function GET(request: NextRequest) {
     .select('id, url, title, description, image_url, memo, category, tags, source_type, is_favorite, created_at', { count: 'exact' })
     .order('created_at', { ascending: false })
 
-  if (category && category !== '전체') query = query.eq('category', category)
-  if (sourceType && sourceType !== '전체') query = query.eq('source_type', sourceType)
+  if (category && VALID_CATEGORIES.has(category) && category !== '전체') query = query.eq('category', category)
+  if (sourceType && VALID_SOURCE_TYPES.has(sourceType) && sourceType !== '전체') query = query.eq('source_type', sourceType)
   if (favorite === 'true') query = query.eq('is_favorite', true)
   if (q) {
     const safe = sanitizeSearchTerm(q)

@@ -8,6 +8,8 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 import { revalidateTag } from '@/lib/revalidate'
 import type { Actor, ActorDetail } from '@/lib/types'
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -15,7 +17,7 @@ export async function GET(
   try {
     const { id } = await params
 
-    if (!id) {
+    if (!id || !UUID_RE.test(id)) {
       return NextResponse.json({ error: '배우 ID가 필요합니다.' }, { status: 400 })
     }
 
@@ -71,6 +73,9 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params
+    if (!UUID_RE.test(id)) {
+      return NextResponse.json({ error: '잘못된 배우 ID입니다.' }, { status: 400 })
+    }
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
