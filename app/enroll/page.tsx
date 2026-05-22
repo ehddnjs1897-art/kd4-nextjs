@@ -60,6 +60,11 @@ export default async function EnrollPage() {
     course: c.course ?? null,
     capacity: c.capacity,
     isNewMemberOpen: c.isNewMemberOpen ?? false,
+    promoLabel: c.promoLabel,
+    remainingSeats: c.remainingSeats,
+    schedule: c.schedule,
+    duration: c.duration,
+    highlight: c.highlight ?? false,
   }))
 
   return (
