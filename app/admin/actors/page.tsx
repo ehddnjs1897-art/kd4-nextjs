@@ -18,7 +18,7 @@ export default async function AdminActorsPage() {
   if (!user) redirect('/auth/login')
 
   const { data: profile } = await supabaseAdmin
-    .from('profiles').select('role').eq('id', user.id).single()
+    .from('profiles').select('role').eq('id', user.id).maybeSingle()
   if (!profile || profile.role !== 'admin') redirect('/dashboard')
 
   // ── 데이터 fetch (Opus 설계: 4쿼리 병렬, actor_id별 집계) ──────────────────

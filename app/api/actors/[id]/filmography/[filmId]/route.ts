@@ -14,7 +14,7 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 async function authorize(actorId: string, userId: string) {
   const { data: profile } = await supabaseAdmin
     .from('profiles').select('actor_id, role').eq('id', userId).maybeSingle()
-  return profile && (profile.actor_id === actorId || profile.role === 'admin')
+  return profile && (profile.actor_id === actorId || profile.role === 'admin' || profile.role === 'editor')
 }
 
 export async function PATCH(request: NextRequest, { params }: Ctx) {

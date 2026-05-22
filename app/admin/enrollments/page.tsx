@@ -12,17 +12,16 @@ export default async function AdminEnrollmentsPage() {
   } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  // 권한 확인 + 데이터 병렬 조회
-  const [{ data: profile }, enrollRes] = await Promise.all([
-    supabase.from('profiles').select('role').eq('id', user.id).single(),
-    supabaseAdmin
-      .from('enrollments')
-      .select('id, name, phone, class_name, year_month, amount, status, payment_status, created_at')
-      .order('year_month', { ascending: false })
-      .order('created_at', { ascending: false }),
-  ])
-
+  // 권한 확인 먼저 — PII 데이터(enrollments)는 role 확인 후에만 조회
+  const { data: profile } = await supabaseAdmin
+    .from('profiles').select('role').eq('id', user.id).maybeSingle()
   if (!profile || profile.role !== 'admin') redirect('/')
+
+  const enrollRes = await supabaseAdmin
+    .from('enrollments')
+    .select('id, name, phone, class_name, year_month, amount, status, payment_status, created_at')
+    .order('year_month', { ascending: false })
+    .order('created_at', { ascending: false })
 
   if (enrollRes.error) {
     return (

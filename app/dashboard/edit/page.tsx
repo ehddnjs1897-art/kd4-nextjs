@@ -72,7 +72,7 @@ export default async function GalleryEditPage() {
     .from('profiles')
     .select('role, actor_id')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
 
   if (profileErr || !profile) {
     redirect('/dashboard')
@@ -112,7 +112,7 @@ export default async function GalleryEditPage() {
       .from('actors')
       .select('height, weight, skills, instagram, casting_summary, profile_doc_path')
       .eq('id', actor_id)
-      .single(),
+      .maybeSingle(),
     supabaseAdmin
       .from('actor_photos')
       .select('id, url, is_profile, storage_path')
@@ -137,6 +137,10 @@ export default async function GalleryEditPage() {
       .order('created_at', { ascending: false }),
   ])
 
+  // actorRes.data가 null이면 orphaned actor_id — 빈 초기값으로 폼 표시 (덮어쓰기 방지)
+  if (actorRes.error) {
+    console.error('[dashboard/edit] actor 조회 오류:', actorRes.error)
+  }
   const actor = (actorRes.data ?? {}) as ActorRow
   const photos = (photosRes.data ?? []) as PhotoRow[]
   const videos = (videosRes.data ?? []) as VideoRow[]

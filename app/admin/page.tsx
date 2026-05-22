@@ -123,14 +123,14 @@ export default async function AdminPage() {
     redirect('/auth/login')
   }
 
-  // role 확인
-  const { data: profile, error: profileError } = await supabase
+  // role 확인 (supabaseAdmin — RLS 우회, .maybeSingle()으로 PGRST116 로그 노이즈 방지)
+  const { data: profile } = await supabaseAdmin
     .from('profiles')
     .select('role')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
 
-  if (profileError || !profile || profile.role !== 'admin') {
+  if (!profile || profile.role !== 'admin') {
     redirect('/')
   }
 

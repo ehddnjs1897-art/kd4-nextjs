@@ -19,7 +19,7 @@ async function authorize(actorId: string, userId: string) {
     .select('actor_id, role')
     .eq('id', userId)
     .maybeSingle()
-  return profile && (profile.actor_id === actorId || profile.role === 'admin')
+  return profile && (profile.actor_id === actorId || profile.role === 'admin' || profile.role === 'editor')
 }
 
 export async function PATCH(request: NextRequest, { params }: Ctx) {

@@ -22,7 +22,7 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
 
     const { data: profile } = await supabaseAdmin
       .from('profiles').select('actor_id, role').eq('id', user.id).maybeSingle()
-    if (!profile || (profile.actor_id !== id && profile.role !== 'admin')) {
+    if (!profile || (profile.actor_id !== id && profile.role !== 'admin' && profile.role !== 'editor')) {
       return NextResponse.json({ error: '권한 없음' }, { status: 403 })
     }
 

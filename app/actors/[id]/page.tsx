@@ -33,6 +33,7 @@ interface Actor {
   casting_summary: string | null
   profile_pdf_url: string | null
   profile_doc_path: string | null
+  is_public: boolean | null
   actor_photos: ActorPhoto[]
   actor_videos: ActorVideo[]
   actor_filmography: FilmoEntry[]
@@ -69,7 +70,9 @@ interface FilmoEntry {
   award?: string | null
 }
 
-/* ---- 데이터 fetch (admin 클라이언트로 공개 조회) ---- */
+const UUID_RE_ACTOR = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+/* ---- 데이터 fetch (admin 클라이언트 — is_public 포함, 페이지에서 접근 제어) ---- */
 function isUndefinedColumnError(err: { code?: string; message?: string } | null): boolean {
   if (!err) return false
   return err.code === '42703' || /column .* does not exist/i.test(err.message ?? '')
@@ -81,7 +84,7 @@ async function getActor(id: string): Promise<Actor | null> {
     .from('actors')
     .select(
       `
-      id, name, name_en, gender, age_group, height, weight, skills,
+      id, name, name_en, gender, age_group, height, weight, skills, is_public,
       drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram, profile_doc_path,
       casting_tags, casting_summary, profile_pdf_url,
       actor_photos ( id, drive_photo_id, url, storage_path, caption, sort_order, photo_type, label ),
@@ -90,10 +93,13 @@ async function getActor(id: string): Promise<Actor | null> {
     `
     )
     .eq('id', id)
-    .single()
+    .maybeSingle()
 
-  if (!newSchema.error && newSchema.data) return newSchema.data as Actor
-  if (newSchema.error && !isUndefinedColumnError(newSchema.error)) return null
+  if (newSchema.data) return newSchema.data as Actor
+  // maybeSingle: data=null + error=null → not found
+  if (!newSchema.error) return null
+  // real error (not a missing-column error) → propagate as not found
+  if (!isUndefinedColumnError(newSchema.error)) return null
 
   // 2차: fallback (마이그레이션 미실행 시 — 새 컬럼 없이)
   console.warn('[ActorDetail] casting_tags 컬럼 미존재 — fallback 스키마로 조회')
@@ -101,7 +107,7 @@ async function getActor(id: string): Promise<Actor | null> {
     .from('actors')
     .select(
       `
-      id, name, name_en, gender, age_group, height, weight, skills,
+      id, name, name_en, gender, age_group, height, weight, skills, is_public,
       drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram, profile_doc_path,
       actor_photos ( id, drive_photo_id, url, storage_path, caption, sort_order, photo_type, label ),
       actor_videos ( id, youtube_id, r2_key, title, video_type ),
@@ -109,9 +115,9 @@ async function getActor(id: string): Promise<Actor | null> {
     `
     )
     .eq('id', id)
-    .single()
+    .maybeSingle()
 
-  if (oldSchema.error || !oldSchema.data) return null
+  if (!oldSchema.data) return null
   return {
     ...(oldSchema.data as Omit<Actor, 'casting_tags' | 'casting_summary' | 'profile_pdf_url'>),
     casting_tags: null,
@@ -145,6 +151,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>
 }): Promise<Metadata> {
   const { id } = await params
+  if (!UUID_RE_ACTOR.test(id)) return { title: '배우 프로필 | kd4.club', robots: { index: false, follow: false } }
   const actor = await getActorCached(id)
   if (!actor) return { title: '배우 프로필 | kd4.club', robots: { index: false, follow: false } }
 
@@ -205,6 +212,7 @@ export default async function ActorDetailPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
+  if (!UUID_RE_ACTOR.test(id)) notFound()
 
   /* ---- 비로그인도 접근 가능 (공개 페이지) ---- */
   const supabase = await createClient()
@@ -228,6 +236,9 @@ export default async function ActorDetailPage({
     role = (profile?.role ?? 'user') as UserRole
     isOwner = profile?.actor_id === id || role === 'admin'
   }
+
+  // 비공개 프로필은 본인(isOwner) 또는 관리자만 접근 가능
+  if (!actor.is_public && !isOwner) notFound()
 
   const photoUrl = profilePhotoUrl(actor)
   const canContact = canViewActorContact(role)
