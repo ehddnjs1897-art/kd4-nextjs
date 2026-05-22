@@ -17,9 +17,9 @@ export function getSupabaseAdmin(): SupabaseClient {
   return _admin
 }
 
-// 하위 호환 alias (기존 import 유지)
+// 하위 호환 alias (기존 import 유지) — Reflect.get으로 타입 안전하게 위임
 export const supabaseAdmin = new Proxy({} as SupabaseClient, {
-  get(_t, prop) {
-    return (getSupabaseAdmin() as unknown as Record<string | symbol, unknown>)[prop]
+  get(_t, prop, receiver) {
+    return Reflect.get(getSupabaseAdmin(), prop, receiver)
   },
 })

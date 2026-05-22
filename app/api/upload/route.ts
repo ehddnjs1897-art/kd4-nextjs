@@ -96,12 +96,26 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // MIME 타입 확인
+    // MIME 타입 확인 (클라이언트 선언)
     if (!ALLOWED_TYPES.includes(file.type)) {
       return NextResponse.json(
         {
           error: `허용되지 않는 파일 형식입니다. 허용 형식: ${ALLOWED_TYPES.join(', ')}`,
         },
+        { status: 400 }
+      )
+    }
+
+    // Magic byte 검증 — 실제 파일 내용이 이미지인지 확인 (MIME 위조 방어)
+    const headerBuf = Buffer.from(await file.slice(0, 12).arrayBuffer())
+    const isJpeg = headerBuf[0] === 0xff && headerBuf[1] === 0xd8 && headerBuf[2] === 0xff
+    const isPng = headerBuf[0] === 0x89 && headerBuf[1] === 0x50 && headerBuf[2] === 0x4e && headerBuf[3] === 0x47
+    const isGif = headerBuf[0] === 0x47 && headerBuf[1] === 0x49 && headerBuf[2] === 0x46
+    const isWebp = headerBuf[0] === 0x52 && headerBuf[1] === 0x49 && headerBuf[2] === 0x46 && headerBuf[3] === 0x46
+      && headerBuf[8] === 0x57 && headerBuf[9] === 0x45 && headerBuf[10] === 0x42 && headerBuf[11] === 0x50
+    if (!isJpeg && !isPng && !isGif && !isWebp) {
+      return NextResponse.json(
+        { error: '파일 내용이 이미지 형식이 아닙니다.' },
         { status: 400 }
       )
     }

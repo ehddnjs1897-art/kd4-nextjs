@@ -12,8 +12,9 @@ export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url)
   const uid = searchParams.get('uid')
 
-  if (!uid) {
-    return NextResponse.redirect(`${origin}/admin?error=missing_uid`)
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  if (!uid || !UUID_RE.test(uid)) {
+    return NextResponse.redirect(`${origin}/admin?error=invalid_uid`)
   }
 
   // 관리자 인증 확인

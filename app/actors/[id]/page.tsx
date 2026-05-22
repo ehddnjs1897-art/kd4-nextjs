@@ -208,14 +208,12 @@ export default async function ActorDetailPage({
   /* ---- 비로그인도 접근 가능 (공개 페이지) ---- */
   const supabase = await createClient()
 
-  // getSession + actor 병렬 조회 (actor는 인증과 무관)
-  const [{ data: { session } }, actor] = await Promise.all([
-    supabase.auth.getSession(),
+  // getUser() + actor 병렬 조회 — getUser는 서버에서 JWT 검증 (getSession은 조작 쿠키 우회 가능)
+  const [{ data: { user } }, actor] = await Promise.all([
+    supabase.auth.getUser(),
     getActorCached(id),
   ])
   if (!actor) notFound()
-
-  const user = session?.user ?? null
 
   // 역할 조회 (로그인 시에만, 비로그인은 null)
   let role: UserRole | null = null

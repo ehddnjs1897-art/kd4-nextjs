@@ -126,21 +126,19 @@ const AGE_OPTIONS: { value: AgeFilter; label: string }[] = [
 
 export default async function ActorsPage({ searchParams }: PageProps) {
   /* ---- 접근 권한 확인 (배우 DB는 회원 전용) ---- */
-  // getSession: 쿠키에서 로컬 판독(네트워크 왕복 없음). 토큰 갱신은 middleware가 담당.
   const supabase = await createClient()
 
-  // searchParams 먼저 resolve → 필터 파라미터 확정 후 session + actors 병렬
+  // searchParams 먼저 resolve → 필터 파라미터 확정 후 user + actors 병렬
+  // getUser(): 서버에서 JWT 검증 (getSession은 쿠키 로컬 파싱만 — 조작 쿠키 우회 가능)
   const params = await searchParams
   const gender = params.gender ?? 'all'
   const ageGroup = params.ageGroup ?? 'all'
   const tag = params.tag ?? 'all'
 
-  const [{ data: { session } }, { actors, dbError, allTags }] = await Promise.all([
-    supabase.auth.getSession(),
+  const [{ data: { user } }, { actors, dbError, allTags }] = await Promise.all([
+    supabase.auth.getUser(),
     fetchActorsCached(gender, ageGroup, tag),
   ])
-
-  const user = session?.user ?? null
   let role: UserRole | null = null
   if (user) {
     const { data: roleRow } = await supabaseAdmin

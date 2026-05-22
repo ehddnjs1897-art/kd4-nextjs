@@ -26,7 +26,7 @@ async function sendEmail(to: string, subject: string, html: string) {
 
   if (!res.ok) {
     const body = await res.text()
-    console.error('[email] Resend 오류:', res.status, body)
+    throw new Error(`[email] Resend ${res.status}: ${body}`)
   }
 }
 
@@ -50,7 +50,11 @@ export async function notifyCrewRequest(name: string, email: string, userId: str
       </a>
     </div>
   `
-  await sendEmail(ADMIN_EMAIL, `[KD4] 크루 신청 — ${name}`, html)
+  try {
+    await sendEmail(ADMIN_EMAIL, `[KD4] 크루 신청 — ${name}`, html)
+  } catch (err) {
+    console.error('[notifyCrewRequest] 이메일 발송 실패:', err instanceof Error ? err.message : err)
+  }
 }
 
 /** KD4 디렉터 권한 신청 관리자 알림 (승인 시 배우 연락처·다운로드 열람 가능) */
@@ -74,5 +78,9 @@ export async function notifyDirectorRequest(name: string, email: string, userId:
       </a>
     </div>
   `
-  await sendEmail(ADMIN_EMAIL, `[KD4] 디렉터 권한 신청 — ${name}`, html)
+  try {
+    await sendEmail(ADMIN_EMAIL, `[KD4] 디렉터 권한 신청 — ${name}`, html)
+  } catch (err) {
+    console.error('[notifyDirectorRequest] 이메일 발송 실패:', err instanceof Error ? err.message : err)
+  }
 }

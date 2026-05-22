@@ -100,12 +100,14 @@ export async function linkEnrollmentsOnSignup(
   const patch: { user_id: string; actor_id?: string } = { user_id: profileId }
   if (actorId) patch.actor_id = actorId
 
-  const { data, error } = await supabaseAdmin
+  // actor_id가 있으면 추가 조건으로 동명이인 오연결 방지
+  let q = supabaseAdmin
     .from('enrollments')
     .update(patch)
     .is('user_id', null)
     .eq('name', trimmed)
-    .select('id')
+  if (actorId) q = q.eq('actor_id', actorId)
+  const { data, error } = await q.select('id')
 
   if (error) {
     console.error('[enrollment-link] 연결 실패:', error.message)
