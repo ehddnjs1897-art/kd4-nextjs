@@ -40,6 +40,8 @@ interface FilmItem {
   year: number
   title: string
   role: string
+  broadcaster?: string
+  film_type?: string
 }
 
 interface InitialData {
@@ -258,7 +260,14 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       const ext = file.name.split('.').pop()?.toLowerCase() || 'pptx'
       const path = `${actorId}/${Date.now()}.${ext}`
       const { error: upErr } = await supabase.storage.from('actor-docs').upload(path, file, { upsert: true })
-      if (upErr) throw new Error(upErr.message)
+      if (upErr) {
+        // RLS 오류 → 사용자 친화적 메시지
+        const msg = upErr.message.toLowerCase()
+        if (msg.includes('policy') || msg.includes('permission') || msg.includes('not authorized') || msg.includes('violates')) {
+          throw new Error('업로드 권한 확인 중입니다. 잠시 후 다시 시도하거나 관리자에게 문의하세요.')
+        }
+        throw new Error(upErr.message)
+      }
       const res = await fetch(`/api/actors/${actorId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -431,31 +440,49 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     const hasContent = filmography.some(f => f.title.trim())
     if (!hasContent) { setFilmMsg('저장할 항목이 없습니다.'); return }
     setFilmSaving(true); setFilmMsg('')
-    let errors = 0
-    const updated = [...filmography]
-    for (let i = 0; i < filmography.length; i++) {
-      const f = filmography[i]
-      if (!f.title.trim()) continue
-      try {
-        const body = { category: f.category, year: Number(f.year), title: f.title.trim(), role: f.role.trim() }
-        if (f.id) {
-          const res = await fetch(`/api/actors/${actorId}/filmography/${f.id}`, {
-            method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
-          })
-          if (!res.ok) errors++
-        } else {
-          const res = await fetch(`/api/actors/${actorId}/filmography`, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
-          })
-          if (!res.ok) errors++
-          else { const row = await res.json(); updated[i] = { ...updated[i], id: row.id } }
+    try {
+      const items = filmography
+        .filter(f => f.title.trim())
+        .map(f => ({
+          id: f.id || undefined,
+          category: f.category,
+          year: f.year ? Number(f.year) : undefined,
+          title: f.title.trim(),
+          role: f.role?.trim() || undefined,
+          broadcaster: f.broadcaster?.trim() || undefined,
+          film_type: f.film_type?.trim() || undefined,
+        }))
+      const res = await fetch(`/api/actors/${actorId}/filmography/bulk`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setFilmMsg(data.error || '저장 중 오류가 발생했습니다.')
+      } else {
+        // 새로 삽입된 항목에 DB id 반영
+        const insertResults = (data.results ?? []).filter((r: { id: string; ok: boolean; originalIdx?: number }) => r.originalIdx !== undefined)
+        if (insertResults.length > 0) {
+          const updated = [...filmography]
+          let insertIdx = 0
+          for (let i = 0; i < updated.length; i++) {
+            if (!updated[i].id && updated[i].title.trim() && insertResults[insertIdx]) {
+              updated[i] = { ...updated[i], id: insertResults[insertIdx].id }
+              insertIdx++
+            }
+          }
+          setFilmography(updated)
         }
-      } catch { errors++ }
+        const errors = data.errors ?? 0
+        setFilmMsg(errors > 0 ? `${errors}개 항목 저장 실패` : '저장되었습니다.')
+      }
+    } catch {
+      setFilmMsg('네트워크 오류가 발생했습니다.')
+    } finally {
+      setFilmSaving(false)
+      setTimeout(() => setFilmMsg(''), 3000)
     }
-    setFilmography(updated)
-    setFilmSaving(false)
-    setFilmMsg(errors > 0 ? `${errors}개 항목 저장 실패` : '저장되었습니다.')
-    setTimeout(() => setFilmMsg(''), 3000)
   }
 
   async function deleteFilm(idx: number) {
@@ -474,8 +501,69 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   }
 
   // ── 렌더 ────────────────────────────────────────────────────────────────────
+
+  // 프로필 완성도 계산 (저장된 값 기준 + 실시간 state)
+  const completionItems = [
+    { label: '프로필 사진', done: photos.length > 0, icon: '📸' },
+    { label: '출연 영상', done: videos.length > 0 || r2Videos.length > 0, icon: '🎬' },
+    { label: '필모그래피', done: filmography.length > 0, icon: '📋' },
+    { label: '한줄소개', done: castingSummary.trim().length > 0, icon: '✍️' },
+  ]
+  const completionCount = completionItems.filter(i => i.done).length
+  const completionPct = Math.round((completionCount / completionItems.length) * 100)
+
   return (
     <div style={{ maxWidth: 820 }}>
+
+      {/* ── 프로필 완성도 ── */}
+      <div style={{
+        background: 'var(--bg2)',
+        border: '1px solid var(--border)',
+        borderRadius: 8,
+        padding: '20px 24px',
+        marginBottom: 24,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase' }}>Profile Completion</p>
+          <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.85rem', fontWeight: 700, color: completionPct === 100 ? '#4ade80' : 'var(--white)' }}>{completionPct}%</span>
+        </div>
+        {/* 프로그레스 바 */}
+        <div style={{ height: 4, borderRadius: 4, background: 'var(--bg3)', marginBottom: 14, overflow: 'hidden' }}>
+          <div style={{
+            height: '100%',
+            width: `${completionPct}%`,
+            borderRadius: 4,
+            background: completionPct === 100 ? '#4ade80' : 'var(--gold)',
+            transition: 'width 0.3s ease',
+          }} />
+        </div>
+        {/* 항목별 체크리스트 */}
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          {completionItems.map(item => (
+            <span key={item.label} style={{
+              display: 'inline-flex', alignItems: 'center', gap: 5,
+              padding: '4px 10px', borderRadius: 20,
+              fontSize: '0.75rem', fontWeight: 600,
+              background: item.done ? 'rgba(74,222,128,0.1)' : 'rgba(255,255,255,0.05)',
+              border: `1px solid ${item.done ? 'rgba(74,222,128,0.3)' : 'var(--border)'}`,
+              color: item.done ? '#4ade80' : 'var(--gray)',
+            }}>
+              <span>{item.done ? '✓' : '○'}</span>
+              <span>{item.icon} {item.label}</span>
+            </span>
+          ))}
+        </div>
+        {completionPct === 100 && (
+          <p style={{ fontSize: '0.78rem', color: '#4ade80', marginTop: 10, fontWeight: 500 }}>
+            ✨ 프로필이 완성됐어요! 관리자 검토 후 배우 DB에 공개됩니다.
+          </p>
+        )}
+        {completionPct === 0 && (
+          <p style={{ fontSize: '0.78rem', color: 'var(--gray)', marginTop: 10 }}>
+            아래 항목을 채우면 캐스팅 디렉터들에게 더 잘 노출됩니다.
+          </p>
+        )}
+      </div>
 
       {/* ── 기본 정보 ── */}
       <section style={s.section}>
