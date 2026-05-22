@@ -23,7 +23,7 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
     if (!(await authorize(id, user.id))) return NextResponse.json({ error: '권한 없음' }, { status: 403 })
 
     const body = await request.json()
-    const allowed = ['category', 'year', 'title', 'role']
+    const allowed = ['category', 'year', 'title', 'role', 'broadcaster', 'film_type']
     const patch: Record<string, unknown> = {}
     for (const k of allowed) { if (k in body) patch[k] = body[k] }
 

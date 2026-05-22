@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Image from 'next/image'
 import R2Video from '@/components/actors/R2Video'
 
@@ -54,6 +55,8 @@ interface Props {
   canViewContact: boolean
   /** true: 이미지 우클릭/드래그 차단 */
   imageProtected: boolean
+  /** 본인 or admin: true → 필모그래피 인라인 편집 가능 */
+  canEdit?: boolean
 }
 
 type FilmoCategory = 'drama' | 'film' | 'cf' | 'musical' | 'theater' | 'etc'
@@ -92,9 +95,106 @@ function photoSrc(p: ActorPhoto): string {
   return '/placeholder-actor.svg'
 }
 
-export default function ActorTabs({ actor, canViewContact, imageProtected }: Props) {
+export default function ActorTabs({ actor, canViewContact, imageProtected, canEdit = false }: Props) {
+  // ── 편집 상태 ──
+  const [filmo, setFilmo] = useState<FilmoEntry[]>(actor.actor_filmography)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editFields, setEditFields] = useState({ year: '', title: '', role: '', broadcaster: '', film_type: '' })
+  const [addingCat, setAddingCat] = useState<FilmoCategory | null>(null)
+  const [newEntry, setNewEntry] = useState({ year: '', title: '', role: '', broadcaster: '', film_type: '' })
+  const [saving, setSaving] = useState(false)
+  const [editErr, setEditErr] = useState('')
+
+  function startEdit(entry: FilmoEntry) {
+    setEditingId(entry.id)
+    setEditFields({
+      year: entry.year?.toString() ?? '',
+      title: entry.title,
+      role: entry.role ?? '',
+      broadcaster: entry.broadcaster ?? '',
+      film_type: entry.film_type ?? '',
+    })
+    setAddingCat(null)
+    setEditErr('')
+  }
+
+  async function saveEdit(entry: FilmoEntry) {
+    if (!editFields.title.trim()) return
+    setSaving(true); setEditErr('')
+    try {
+      const res = await fetch(`/api/actors/${actor.id}/filmography/${entry.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          year: editFields.year ? parseInt(editFields.year) : null,
+          title: editFields.title.trim(),
+          role: editFields.role || null,
+          broadcaster: editFields.broadcaster || null,
+          film_type: editFields.film_type || null,
+        }),
+      })
+      if (!res.ok) { const j = await res.json(); throw new Error(j.error || '저장 실패') }
+      setFilmo(prev => prev.map(f => f.id === entry.id ? {
+        ...f,
+        year: editFields.year ? parseInt(editFields.year) : null,
+        title: editFields.title.trim(),
+        role: editFields.role || null,
+        broadcaster: editFields.broadcaster || null,
+        film_type: editFields.film_type || null,
+      } : f))
+      setEditingId(null)
+    } catch (e) { setEditErr(e instanceof Error ? e.message : '오류') }
+    finally { setSaving(false) }
+  }
+
+  async function deleteEntry(filmId: string) {
+    if (!confirm('이 항목을 삭제할까요?')) return
+    setSaving(true)
+    try {
+      const res = await fetch(`/api/actors/${actor.id}/filmography/${filmId}`, { method: 'DELETE' })
+      if (!res.ok) { const j = await res.json(); throw new Error(j.error || '삭제 실패') }
+      setFilmo(prev => prev.filter(f => f.id !== filmId))
+      if (editingId === filmId) setEditingId(null)
+    } catch (e) { setEditErr(e instanceof Error ? e.message : '삭제 오류') }
+    finally { setSaving(false) }
+  }
+
+  async function addEntry(cat: FilmoCategory) {
+    if (!newEntry.title.trim()) return
+    setSaving(true); setEditErr('')
+    try {
+      const res = await fetch(`/api/actors/${actor.id}/filmography`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          category: cat,
+          year: newEntry.year ? parseInt(newEntry.year) : null,
+          title: newEntry.title.trim(),
+          role: newEntry.role || null,
+          broadcaster: newEntry.broadcaster || null,
+          film_type: newEntry.film_type || null,
+        }),
+      })
+      const j = await res.json()
+      if (!res.ok) throw new Error(j.error || '추가 실패')
+      setFilmo(prev => [...prev, {
+        id: j.id, category: cat,
+        year: newEntry.year ? parseInt(newEntry.year) : null,
+        title: newEntry.title.trim(),
+        role: newEntry.role || null,
+        production: null,
+        broadcaster: newEntry.broadcaster || null,
+        film_type: newEntry.film_type || null,
+        award: null,
+      }])
+      setAddingCat(null)
+      setNewEntry({ year: '', title: '', role: '', broadcaster: '', film_type: '' })
+    } catch (e) { setEditErr(e instanceof Error ? e.message : '추가 오류') }
+    finally { setSaving(false) }
+  }
+
   // 필모 전체 (연도 내림차순)
-  const allFilmo = [...actor.actor_filmography].sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
+  const allFilmo = [...filmo].sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
 
   // 프로필 사진 목록 (profile_photo + actor_photos, 최대 3장)
   const mainPhotoUrl = actor.profile_photo
@@ -330,65 +430,166 @@ export default function ActorTabs({ actor, canViewContact, imageProtected }: Pro
       )}
 
       {/* ============ 필모그래피 카테고리별 독립 섹션 ============ */}
-      {CATEGORY_ORDER.map((cat) => {
+      {(canEdit
+        ? CATEGORY_ORDER  // 편집 모드에선 빈 카테고리도 표시 (추가 가능)
+        : CATEGORY_ORDER.filter((cat) => filmoByCategory(cat).length > 0)
+      ).map((cat) => {
         const entries = filmoByCategory(cat)
-        if (entries.length === 0) return null
         const num = SECTION_NUMS[cat]
         const isDrama = cat === 'drama'
         const isFilm = cat === 'film'
+        const isAdding = addingCat === cat
 
         return (
           <section key={cat} style={s.section}>
             <h2 style={s.sectionHeading}>
               <span style={s.sectionNum}>{num}</span>
               <span style={s.sectionTitle}>{CATEGORY_LABEL[cat].toUpperCase()}</span>
+              {canEdit && (
+                <button
+                  onClick={() => { setAddingCat(isAdding ? null : cat); setEditingId(null) }}
+                  disabled={saving}
+                  style={s.addRowBtn}
+                  title="행 추가"
+                >＋ 추가</button>
+              )}
             </h2>
             <table style={s.table}>
               <thead>
                 <tr>
-                  <th style={{ ...s.th, width: 56 }}>연도</th>
+                  <th style={{ ...s.th, width: 52 }}>연도</th>
+                  {isDrama && <th style={{ ...s.th, width: 76 }}>방송사</th>}
+                  {isFilm && <th style={{ ...s.th, width: 68 }}>구분</th>}
                   <th style={s.th}>작품명</th>
                   <th style={s.th}>역할</th>
-                  {isDrama && <th style={s.th}>방송사</th>}
-                  {isFilm && <th style={s.th}>구분</th>}
+                  {canEdit && <th style={{ ...s.th, width: 64 }}></th>}
                 </tr>
               </thead>
               <tbody>
-                {entries.map((entry) => (
-                  <tr key={entry.id} style={s.tr}>
-                    <td style={{ ...s.td, color: 'var(--gray)', fontSize: '0.82rem' }}>
-                      {entry.year ?? '—'}
-                    </td>
-                    <td style={{ ...s.td, fontWeight: 600, color: 'var(--white)' }}>
-                      {entry.title}
-                    </td>
-                    <td style={s.td}>{entry.role ?? '—'}</td>
-                    {isDrama && (
+                {entries.map((entry) => {
+                  const isEditing = editingId === entry.id
+                  if (isEditing) {
+                    return (
+                      <tr key={entry.id} style={{ ...s.tr, background: 'rgba(255,215,0,0.04)' }}>
+                        <td style={s.td}>
+                          <input value={editFields.year} onChange={e => setEditFields(p => ({ ...p, year: e.target.value }))}
+                            style={s.inlineInput} placeholder="연도" type="number" min={1990} max={2099} />
+                        </td>
+                        {isDrama && (
+                          <td style={s.td}>
+                            <input value={editFields.broadcaster} onChange={e => setEditFields(p => ({ ...p, broadcaster: e.target.value }))}
+                              style={s.inlineInput} placeholder="방송사" />
+                          </td>
+                        )}
+                        {isFilm && (
+                          <td style={s.td}>
+                            <select value={editFields.film_type} onChange={e => setEditFields(p => ({ ...p, film_type: e.target.value }))}
+                              style={s.inlineInput}>
+                              <option value="">구분</option>
+                              <option value="상업">상업</option>
+                              <option value="독립장편">독립장편</option>
+                              <option value="단편">단편</option>
+                            </select>
+                          </td>
+                        )}
+                        <td style={s.td}>
+                          <input value={editFields.title} onChange={e => setEditFields(p => ({ ...p, title: e.target.value }))}
+                            style={{ ...s.inlineInput, fontWeight: 600 }} placeholder="작품명 *" />
+                        </td>
+                        <td style={s.td}>
+                          <input value={editFields.role} onChange={e => setEditFields(p => ({ ...p, role: e.target.value }))}
+                            style={s.inlineInput} placeholder="역할" />
+                        </td>
+                        <td style={{ ...s.td, whiteSpace: 'nowrap' }}>
+                          <button onClick={() => saveEdit(entry)} disabled={saving} style={s.saveBtn} title="저장">✓</button>
+                          <button onClick={() => setEditingId(null)} disabled={saving} style={s.cancelBtn} title="취소">✕</button>
+                          <button onClick={() => deleteEntry(entry.id)} disabled={saving} style={s.deleteBtn} title="삭제">🗑</button>
+                        </td>
+                      </tr>
+                    )
+                  }
+                  return (
+                    <tr key={entry.id} style={s.tr}>
                       <td style={{ ...s.td, color: 'var(--gray)', fontSize: '0.82rem' }}>
-                        {entry.broadcaster ?? '—'}
+                        {entry.year ?? '—'}
+                      </td>
+                      {isDrama && (
+                        <td style={{ ...s.td, color: 'var(--gray)', fontSize: '0.82rem' }}>
+                          {entry.broadcaster ?? '—'}
+                        </td>
+                      )}
+                      {isFilm && (
+                        <td style={s.td}>
+                          {entry.film_type ? (
+                            <span style={{
+                              display: 'inline-block',
+                              padding: '2px 8px',
+                              borderRadius: 3,
+                              fontSize: '0.75rem',
+                              fontWeight: 600,
+                              letterSpacing: '0.03em',
+                              ...(FILM_TYPE_STYLE[entry.film_type] ?? {}),
+                            }}>
+                              {entry.film_type}
+                            </span>
+                          ) : '—'}
+                        </td>
+                      )}
+                      <td style={{ ...s.td, fontWeight: 600, color: 'var(--white)' }}>
+                        {entry.title}
+                      </td>
+                      <td style={s.td}>{entry.role ?? '—'}</td>
+                      {canEdit && (
+                        <td style={{ ...s.td, whiteSpace: 'nowrap' }}>
+                          <button onClick={() => startEdit(entry)} disabled={saving} style={s.editBtn} title="편집">✎</button>
+                          <button onClick={() => deleteEntry(entry.id)} disabled={saving} style={s.deleteBtn} title="삭제">🗑</button>
+                        </td>
+                      )}
+                    </tr>
+                  )
+                })}
+
+                {/* 새 행 추가 폼 */}
+                {isAdding && (
+                  <tr style={{ ...s.tr, background: 'rgba(255,215,0,0.06)' }}>
+                    <td style={s.td}>
+                      <input value={newEntry.year} onChange={e => setNewEntry(p => ({ ...p, year: e.target.value }))}
+                        style={s.inlineInput} placeholder="연도" type="number" min={1990} max={2099} />
+                    </td>
+                    {isDrama && (
+                      <td style={s.td}>
+                        <input value={newEntry.broadcaster} onChange={e => setNewEntry(p => ({ ...p, broadcaster: e.target.value }))}
+                          style={s.inlineInput} placeholder="방송사" />
                       </td>
                     )}
                     {isFilm && (
                       <td style={s.td}>
-                        {entry.film_type ? (
-                          <span style={{
-                            display: 'inline-block',
-                            padding: '2px 8px',
-                            borderRadius: 3,
-                            fontSize: '0.75rem',
-                            fontWeight: 600,
-                            letterSpacing: '0.03em',
-                            ...(FILM_TYPE_STYLE[entry.film_type] ?? {}),
-                          }}>
-                            {entry.film_type}
-                          </span>
-                        ) : '—'}
+                        <select value={newEntry.film_type} onChange={e => setNewEntry(p => ({ ...p, film_type: e.target.value }))}
+                          style={s.inlineInput}>
+                          <option value="">구분</option>
+                          <option value="상업">상업</option>
+                          <option value="독립장편">독립장편</option>
+                          <option value="단편">단편</option>
+                        </select>
                       </td>
                     )}
+                    <td style={s.td}>
+                      <input value={newEntry.title} onChange={e => setNewEntry(p => ({ ...p, title: e.target.value }))}
+                        style={{ ...s.inlineInput, fontWeight: 600 }} placeholder="작품명 *" />
+                    </td>
+                    <td style={s.td}>
+                      <input value={newEntry.role} onChange={e => setNewEntry(p => ({ ...p, role: e.target.value }))}
+                        style={s.inlineInput} placeholder="역할" />
+                    </td>
+                    <td style={{ ...s.td, whiteSpace: 'nowrap' }}>
+                      <button onClick={() => addEntry(cat)} disabled={saving || !newEntry.title.trim()} style={s.saveBtn} title="저장">✓</button>
+                      <button onClick={() => { setAddingCat(null); setNewEntry({ year: '', title: '', role: '', broadcaster: '', film_type: '' }) }} style={s.cancelBtn} title="취소">✕</button>
+                    </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
+            {editErr && <p style={{ color: '#f87171', fontSize: '0.8rem', marginTop: 4 }}>{editErr}</p>}
           </section>
         )
       })}
@@ -597,5 +798,65 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--gray)',
     verticalAlign: 'middle' as const,
     fontSize: '0.88rem',
+  },
+
+  /* ---- 인라인 편집 ---- */
+  inlineInput: {
+    background: 'var(--bg3)',
+    border: '1px solid var(--border)',
+    borderRadius: 4,
+    padding: '4px 8px',
+    color: 'var(--white)',
+    fontSize: '0.85rem',
+    fontFamily: 'inherit',
+    width: '100%',
+    minWidth: 0,
+  },
+  addRowBtn: {
+    marginLeft: 'auto',
+    padding: '3px 10px',
+    background: 'transparent',
+    border: '1px solid var(--border)',
+    borderRadius: 4,
+    color: 'var(--gold)',
+    fontSize: '0.72rem',
+    fontFamily: 'var(--font-display), inherit',
+    letterSpacing: '0.06em',
+    cursor: 'pointer',
+    fontWeight: 700,
+  },
+  editBtn: {
+    background: 'transparent',
+    border: 'none',
+    color: 'var(--gray)',
+    cursor: 'pointer',
+    fontSize: '0.9rem',
+    padding: '2px 4px',
+    opacity: 0.7,
+  },
+  saveBtn: {
+    background: 'transparent',
+    border: 'none',
+    color: 'var(--gold)',
+    cursor: 'pointer',
+    fontSize: '0.9rem',
+    padding: '2px 4px',
+    fontWeight: 700,
+  },
+  cancelBtn: {
+    background: 'transparent',
+    border: 'none',
+    color: 'var(--gray)',
+    cursor: 'pointer',
+    fontSize: '0.9rem',
+    padding: '2px 4px',
+  },
+  deleteBtn: {
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    fontSize: '0.82rem',
+    padding: '2px 4px',
+    opacity: 0.5,
   },
 }

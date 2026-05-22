@@ -213,13 +213,15 @@ export default async function ActorDetailPage({
 
   // 역할 조회 (로그인 시에만, 비로그인은 null)
   let role: UserRole | null = null
+  let isOwner = false
   if (user) {
     const { data: profile } = await supabaseAdmin
       .from('profiles')
-      .select('role')
+      .select('role, actor_id')
       .eq('id', user.id)
       .maybeSingle()
     role = (profile?.role ?? 'user') as UserRole
+    isOwner = profile?.actor_id === id || role === 'admin'
   }
 
   /* ---- 데이터 fetch ---- */
@@ -417,7 +419,7 @@ export default async function ActorDetailPage({
         <div style={{ borderTop: '2px solid var(--border)' }} />
 
         {/* ActorTabs */}
-        <ActorTabs actor={actor} canViewContact={canContact} imageProtected={!canContact} />
+        <ActorTabs actor={actor} canViewContact={canContact} imageProtected={!canContact} canEdit={isOwner} />
       </div>
     </div>
   )

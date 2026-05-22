@@ -20,12 +20,12 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: '권한 없음' }, { status: 403 })
     }
 
-    const { category, year, title, role } = await request.json()
+    const { category, year, title, role, broadcaster, film_type } = await request.json()
     if (!title) return NextResponse.json({ error: '작품명이 필요합니다.' }, { status: 400 })
 
     const { data, error } = await supabaseAdmin
       .from('actor_filmography')
-      .insert({ actor_id: id, category: category || '드라마', year: year || null, title, role: role || null, sort_order: 0 })
+      .insert({ actor_id: id, category: category || 'drama', year: year || null, title, role: role || null, broadcaster: broadcaster || null, film_type: film_type || null, sort_order: 0 })
       .select('id')
       .single()
 
