@@ -52,10 +52,16 @@ next-env.d.ts
 # Untracked local image files (not used in code)
 director2.JPG
 public/kd4-mascot.PNG
+public/partners/replay.JPG
 
 # Supabase CLI temp files
 supabase/.temp/
 
 # One-time diagnostic scripts (not for deployment)
 scripts/apply_utm_migration.ts
+scripts/convert-seowoo.mjs
+scripts/diag-video.mjs
+scripts/diagnose-actors.mjs
+scripts/faststart-videos.sh
+scripts/match-videos.mjs
 .env*.local
