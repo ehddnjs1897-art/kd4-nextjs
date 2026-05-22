@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import { MapPin, Train, Clock, Navigation, Map as MapIcon } from 'lucide-react'
 import { SINCHON_FAQ } from '@/lib/landing-faqs'
@@ -158,95 +159,23 @@ export default function SinchonPage() {
 
       {/* ===== 오시는 길 약도 ===== */}
       <section style={{ padding: 'clamp(48px, 8vw, 72px) 0', background: 'var(--bg2)' }}>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap" />
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 28px', textAlign: 'center' }}>
             <p className="section-eyebrow">길찾기 약도</p>
             <h2 className="section-title-serif" style={{ marginBottom: '8px' }}>이대역에서 걸어오는 길</h2>
-            <p className="section-desc">이대역 5번 출구 → YES apM·가인볼링장 코너에서 이화여대1길로, 도보 약 3분.</p>
+            <p className="section-desc">이대역 5번 출구 → 예스APM·가인볼링장 코너에서 이화여대1길로, 도보 약 3분.</p>
           </div>
           <div className="sinchon-route-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(280px, 340px) 1fr', gap: '24px', maxWidth: '880px', margin: '0 auto', alignItems: 'center' }}>
-            {/* SVG 약도 (실제 도보 경로 기반) */}
-            <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '16px', padding: '10px', boxShadow: '0 14px 40px -28px rgba(15,51,100,0.5)' }}>
-              <svg viewBox="0 0 380 480" width="100%" style={{ display: 'block', fontFamily: "'Nanum Pen Script', cursive" }} role="img" aria-label="이대역 5번 출구에서 KD4 액팅 스튜디오까지 도보 약도">
-                <defs>
-                  <filter id="ink" x="-6%" y="-6%" width="112%" height="112%">
-                    <feTurbulence type="fractalNoise" baseFrequency="0.014" numOctaves="2" seed="4" result="n" />
-                    <feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G" />
-                  </filter>
-                  <pattern id="dt" width="24" height="24" patternUnits="userSpaceOnUse">
-                    <circle cx="2" cy="2" r="1" fill="#E5DEC9" />
-                  </pattern>
-                </defs>
-
-                {/* 종이 배경 */}
-                <rect x="0" y="0" width="380" height="480" rx="16" fill="#F5F1E6" />
-                <rect x="0" y="0" width="380" height="480" rx="16" fill="url(#dt)" />
-
-                {/* 손그림 도식 (단색 네이비 잉크, 은은한 손맛) */}
-                <g filter="url(#ink)">
-                  {/* 포레스트 공원 */}
-                  <ellipse cx="252" cy="356" rx="38" ry="22" fill="#dfeac8" stroke="#9bb377" strokeWidth="1.4" />
-                  <g fill="#cfe0b0" stroke="#7d9a58" strokeWidth="1.6">
-                    <circle cx="240" cy="350" r="9" />
-                    <circle cx="264" cy="354" r="8" />
-                  </g>
-                  <g stroke="#7d9a58" strokeWidth="2.2" strokeLinecap="round">
-                    <path d="M240,359 L240,367" />
-                    <path d="M264,362 L264,369" />
-                  </g>
-                  {/* 도보 경로 (실선 + 화살표) */}
-                  <path d="M298,430 C 268,418 212,360 170,310 C 162,250 160,176 148,108" fill="none" stroke="#15488A" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                  <circle cx="170" cy="310" r="3.2" fill="#15488A" />
-                  <path d="M232,372 l9,-5 l-1,7" fill="none" stroke="#15488A" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M156,206 l-4,-9 l8,3" fill="none" stroke="#15488A" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-                  {/* 이대역 5번출구 (지하철 마커) */}
-                  <rect x="283" y="416" width="32" height="28" rx="6" fill="#15488A" />
-                  <rect x="290" y="423" width="18" height="11" rx="2" fill="#ffffff" />
-                  <rect x="292" y="425" width="5" height="5" fill="#15488A" />
-                  <rect x="301" y="425" width="5" height="5" fill="#15488A" />
-                  {/* YES apM·가인볼링장 건물 */}
-                  <rect x="190" y="286" width="64" height="46" rx="3" fill="rgba(21,72,138,0.06)" stroke="#15488A" strokeWidth="1.8" />
-                  <g fill="#15488A">
-                    <rect x="198" y="296" width="6" height="6" />
-                    <rect x="212" y="296" width="6" height="6" />
-                    <rect x="226" y="296" width="6" height="6" />
-                    <rect x="198" y="310" width="6" height="6" />
-                    <rect x="212" y="310" width="6" height="6" />
-                    <rect x="226" y="310" width="6" height="6" />
-                  </g>
-                  <path d="M243,299 q-3,4 0,11 q3,-7 0,-11 z" fill="#ffffff" stroke="#15488A" strokeWidth="1.1" />
-                  {/* 아리움3차 (목적지 건물) */}
-                  <rect x="126" y="84" width="44" height="56" rx="2" fill="rgba(21,72,138,0.07)" stroke="#15488A" strokeWidth="1.8" />
-                  <g fill="#15488A">
-                    <rect x="133" y="94" width="7" height="7" />
-                    <rect x="145" y="94" width="7" height="7" />
-                    <rect x="157" y="94" width="7" height="7" />
-                    <rect x="133" y="106" width="7" height="7" />
-                    <rect x="145" y="106" width="7" height="7" />
-                    <rect x="157" y="106" width="7" height="7" />
-                    <rect x="133" y="118" width="7" height="7" />
-                    <rect x="145" y="118" width="7" height="7" />
-                    <rect x="157" y="118" width="7" height="7" />
-                  </g>
-                  {/* 나침반 */}
-                  <circle cx="352" cy="40" r="13" fill="none" stroke="#b6ad98" strokeWidth="1.5" />
-                  <path d="M352,33 L348,45 L352,42 L356,45 Z" fill="#b6ad98" />
-                </g>
-
-                {/* 목적지 레드 핀 (선명) */}
-                <path d="M137,67 q11,17 11,22 q0,-5 11,-22 a11,11 0 1,0 -22,0 z" fill="#C73E3E" />
-                <circle cx="148" cy="66" r="4.2" fill="#ffffff" />
-
-                {/* 라벨 (손글씨 + 칩) */}
-                <g><rect x="88" y="149" width="116" height="19" rx="9" fill="rgba(255,255,255,0.86)" /><text x="146" y="164" textAnchor="middle" fontSize="15" fill="#15488A">아리움3차 1층 · KD4</text></g>
-                <g><rect x="249" y="449" width="98" height="19" rx="9" fill="rgba(255,255,255,0.86)" /><text x="298" y="464" textAnchor="middle" fontSize="15" fill="#2A2F3A">이대역 5번 출구</text></g>
-                <g><rect x="164" y="263" width="116" height="19" rx="9" fill="rgba(255,255,255,0.86)" /><text x="222" y="278" textAnchor="middle" fontSize="13" fill="#2A2F3A">YES apM · 가인볼링장</text></g>
-                <g><rect x="213" y="379" width="78" height="19" rx="9" fill="rgba(255,255,255,0.86)" /><text x="252" y="394" textAnchor="middle" fontSize="13" fill="#4a7a3a">포레스트 공원</text></g>
-                <g transform="rotate(-84 112 210)"><rect x="69" y="197" width="86" height="19" rx="9" fill="rgba(255,255,255,0.86)" /><text x="112" y="212" textAnchor="middle" fontSize="13" fill="#15488A">이화여대1길</text></g>
-                <g><rect x="207" y="405" width="74" height="19" rx="9" fill="rgba(255,255,255,0.86)" /><text x="244" y="420" textAnchor="middle" fontSize="15" fill="#15488A">도보 약 3분</text></g>
-                <text x="352" y="45" textAnchor="middle" fontSize="12" fill="#8a8270">N</text>
-              </svg>
+            {/* 도보 약도 (일러스트 이미지) */}
+            <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '16px', padding: '8px', boxShadow: '0 14px 40px -28px rgba(15,51,100,0.5)', overflow: 'hidden' }}>
+              <Image
+                src="/sinchon-route-map.png"
+                alt="이대역 5번 출구에서 KD4 액팅 스튜디오(아리움3차)까지 도보 약도 — 성산로 → 예스APM·가인볼링장 코너 → 이화여대1길"
+                width={1122}
+                height={1402}
+                sizes="(max-width: 760px) 100vw, 340px"
+                style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '10px' }}
+              />
             </div>
             {/* 단계 안내 */}
             <ol style={{ display: 'flex', flexDirection: 'column', gap: '12px', listStyle: 'none', padding: 0, margin: 0 }}>
