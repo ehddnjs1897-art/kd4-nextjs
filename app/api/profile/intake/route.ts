@@ -45,12 +45,18 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json().catch(() => null)
-  const docPath: string | null = typeof body?.docPath === 'string' ? body.docPath : null
-  const photos: { path: string }[] = Array.isArray(body?.photos)
+  // 최대 길이 상수
+  const MAX_PATH_LEN = 500   // Storage/R2 경로
+  const MAX_SUMMARY_LEN = 1000
+  const MAX_FILENAME_LEN = 200
+  const MAX_PHOTOS = 30      // 배열 크기 상한
+  const docPath: string | null = typeof body?.docPath === 'string' ? body.docPath.slice(0, MAX_PATH_LEN) : null
+  const photos: { path: string }[] = (Array.isArray(body?.photos)
     ? body.photos.filter((p: unknown): p is { path: string } =>
         !!p && typeof (p as { path?: unknown }).path === 'string')
     : []
-  const currentPhotoItems: { path: string; label: string }[] = Array.isArray(body?.currentPhotos)
+  ).slice(0, MAX_PHOTOS)
+  const currentPhotoItems: { path: string; label: string }[] = (Array.isArray(body?.currentPhotos)
     ? body.currentPhotos.filter(
         (p: unknown): p is { path: string; label: string } =>
           !!p &&
@@ -58,13 +64,14 @@ export async function POST(request: NextRequest) {
           typeof (p as { label?: unknown }).label === 'string'
       )
     : []
+  ).slice(0, MAX_PHOTOS)
   // videos 배열 (신규) + 하위호환: 기존 video 단일 필드도 처리
   const parseVideoItem = (v: unknown) =>
     v && typeof (v as { key?: unknown }).key === 'string'
       ? {
-          key: (v as { key: string }).key,
+          key: (v as { key: string }).key.slice(0, MAX_PATH_LEN),
           size: Number((v as { size?: unknown }).size ?? 0) || null,
-          filename: typeof (v as { filename?: unknown }).filename === 'string' ? (v as { filename: string }).filename : null,
+          filename: typeof (v as { filename?: unknown }).filename === 'string' ? (v as { filename: string }).filename.slice(0, MAX_FILENAME_LEN) : null,
           video_type: typeof (v as { video_type?: unknown }).video_type === 'string' ? (v as { video_type: string }).video_type : 'reel',
         }
       : null
@@ -72,8 +79,8 @@ export async function POST(request: NextRequest) {
     ? body.videos.map(parseVideoItem).filter(Boolean)
     : body?.video ? [parseVideoItem(body.video)].filter(Boolean) : []
 
-  const ogPhotoPath: string | null = typeof body?.ogPhotoPath === 'string' ? body.ogPhotoPath : null
-  const castingSummary: string | null = typeof body?.castingSummary === 'string' && body.castingSummary.trim() ? body.castingSummary.trim() : null
+  const ogPhotoPath: string | null = typeof body?.ogPhotoPath === 'string' ? body.ogPhotoPath.slice(0, MAX_PATH_LEN) : null
+  const castingSummary: string | null = typeof body?.castingSummary === 'string' && body.castingSummary.trim() ? body.castingSummary.trim().slice(0, MAX_SUMMARY_LEN) : null
 
   if (!docPath && photos.length === 0 && videos.length === 0 && !castingSummary) {
     return NextResponse.json({ error: '제출할 파일이 없습니다.' }, { status: 400 })
@@ -146,7 +153,7 @@ export async function POST(request: NextRequest) {
     const { error: photoErr } = await supabaseAdmin.from('actor_photos').insert(rows)
     if (photoErr) {
       console.error('[profile/intake] 사진 등록 실패:', photoErr.message)
-      partialErrors.push(`사진 등록 실패: ${photoErr.message}`)
+      partialErrors.push('사진 등록 실패')
     }
   }
 
@@ -171,7 +178,7 @@ export async function POST(request: NextRequest) {
     const { error: cpErr } = await supabaseAdmin.from('actor_photos').insert(currentRows)
     if (cpErr) {
       console.error('[profile/intake] 현재사진 등록 실패:', cpErr.message)
-      partialErrors.push(`현재사진 등록 실패: ${cpErr.message}`)
+      partialErrors.push('현재사진 등록 실패')
     }
   }
 
@@ -188,7 +195,7 @@ export async function POST(request: NextRequest) {
     })
     if (videoErr) {
       console.error('[profile/intake] 영상 등록 실패:', videoErr.message)
-      partialErrors.push(`영상 등록 실패: ${videoErr.message}`)
+      partialErrors.push('영상 등록 실패')
     }
   }
 
