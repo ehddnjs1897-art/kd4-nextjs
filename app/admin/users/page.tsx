@@ -35,11 +35,12 @@ export default async function AdminUsersPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login?next=/admin/users')
 
-  const { data: myProfile } = await supabaseAdmin
-    .from('profiles').select('role').eq('id', user.id).single()
+  // 권한 확인 + 전체 profiles 병렬 조회
+  const [{ data: myProfile }, profiles] = await Promise.all([
+    supabaseAdmin.from('profiles').select('role').eq('id', user.id).single(),
+    fetchProfiles(),
+  ])
   if (myProfile?.role !== 'admin') redirect('/dashboard')
-
-  const profiles = await fetchProfiles()
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingTop: 80, paddingBottom: 80 }}>
