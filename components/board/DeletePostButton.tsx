@@ -20,7 +20,7 @@ export default function DeletePostButton({ postId }: DeletePostButtonProps) {
     setDeleteError('')
 
     try {
-      const res = await fetch(`/api/posts/${postId}`, { method: 'DELETE' })
+      const res = await fetch(`/api/posts/${postId}`, { method: 'DELETE', signal: AbortSignal.timeout(10_000) })
       const json = await res.json()
       if (!res.ok) {
         setDeleteError(json.error || '삭제 중 오류가 발생했습니다.')

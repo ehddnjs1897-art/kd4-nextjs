@@ -65,6 +65,7 @@ export default function CommentSection({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ post_id: postId, content }),
+        signal: AbortSignal.timeout(10_000),
       })
       const json = await res.json()
       if (!res.ok) {
@@ -89,7 +90,7 @@ export default function CommentSection({
     setDeletingId(commentId)
 
     try {
-      const res = await fetch(`/api/comments/${commentId}`, { method: 'DELETE' })
+      const res = await fetch(`/api/comments/${commentId}`, { method: 'DELETE', signal: AbortSignal.timeout(10_000) })
       const json = await res.json()
       if (!res.ok) {
         setError(json.error ?? '댓글 삭제 중 오류가 발생했습니다.')

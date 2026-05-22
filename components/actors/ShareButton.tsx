@@ -10,6 +10,7 @@ interface Props {
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export default function ShareButton({ webUrl }: Props) {
   const [copied, setCopied] = useState(false)
+  const [shared, setShared] = useState(false)
 
   const share = useCallback(() => {
     const Kakao = (window as any).Kakao
@@ -19,6 +20,8 @@ export default function ShareButton({ webUrl }: Props) {
         if (!Kakao.isInitialized()) Kakao.init(key)
         // 페이지 OG 태그(캐스팅 카드)를 그대로 긁어 공유 → 이미지·제목 자동
         Kakao.Share.sendScrap({ requestUrl: webUrl })
+        setShared(true)
+        setTimeout(() => setShared(false), 2500)
         return
       } catch (e) {
         console.error('[kakao share] 실패, 링크 복사로 폴백:', e)
@@ -44,14 +47,14 @@ export default function ShareButton({ webUrl }: Props) {
         <Image src="/icons/kakao.png" alt="" width={18} height={18} style={{ flexShrink: 0 }} />
         카카오톡 공유
       </button>
-      {copied && (
+      {(copied || shared) && (
         <div style={{
           position: 'absolute', bottom: 'calc(100% + 8px)', left: '50%', transform: 'translateX(-50%)',
           background: 'rgba(30,30,30,0.92)', color: '#fff', fontSize: '0.78rem',
           padding: '6px 12px', borderRadius: 6, whiteSpace: 'nowrap',
           pointerEvents: 'none', zIndex: 10,
         }}>
-          ✓ 링크 복사됨 — 카카오톡에 붙여넣어 공유하세요
+          {shared ? '✓ 카카오톡 공유 완료' : '✓ 링크 복사됨 — 카카오톡에 붙여넣어 공유하세요'}
         </div>
       )}
     </div>
