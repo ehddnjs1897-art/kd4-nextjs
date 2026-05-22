@@ -381,7 +381,7 @@ const styles: Record<string, React.CSSProperties> = {
     background: 'var(--bg2)',
     border: '1px solid var(--border)',
     borderRadius: 8,
-    padding: '40px 36px',
+    padding: 'clamp(20px, 6vw, 40px) clamp(16px, 6vw, 36px)',
   },
   logoArea: {
     display: 'flex',

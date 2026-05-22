@@ -8,7 +8,7 @@
  * 업로드 완료 후 /api/profile/intake 로 경로만 기록.
  */
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
@@ -32,6 +32,18 @@ export default function OnboardingForm({
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
+  const [warning, setWarning] = useState('')
+
+  // 업로드 중 탭 닫기/새로고침 방지
+  useEffect(() => {
+    if (!loading) return
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+      e.returnValue = '업로드가 진행 중입니다. 페이지를 떠나면 업로드가 취소됩니다.'
+    }
+    window.addEventListener('beforeunload', handler)
+    return () => window.removeEventListener('beforeunload', handler)
+  }, [loading])
   const [currentPhotos, setCurrentPhotos] = useState<(File | null)[]>([null, null, null, null])
 
   const pptRef = useRef<HTMLInputElement>(null)
@@ -64,12 +76,14 @@ export default function OnboardingForm({
     }
     const checks = await Promise.all(arr.map(checkLandscape))
     const idx = checks.findIndex(Boolean)
+    // 가로 사진 없어도 업로드 허용 (경고만, 차단 안 함) — 핸드폰 세로사진 배려
     if (arr.length > 0 && idx === -1) {
-      setError('최소 1장은 가로(16:9 등) 형식으로 올려주세요. 카카오톡 공유 썸네일로 사용됩니다.')
-      return
+      setWarning('가로(16:9) 사진이 없어 첫 번째 사진이 썸네일로 사용됩니다. 가로 사진을 포함하면 더 좋아요!')
+    } else {
+      setWarning('')
     }
-    setLandscapeIdx(idx)
     setError('')
+    setLandscapeIdx(idx >= 0 ? idx : 0)
     setPhotos(arr)
   }
 
@@ -265,6 +279,7 @@ export default function OnboardingForm({
         </div>
       </section>
 
+      {warning && <p style={warnStyle}>{warning}</p>}
       {error && <p style={errStyle}>{error}</p>}
       {loading && status && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', background: 'rgba(196,165,90,0.08)', border: '1px solid rgba(196,165,90,0.2)', borderRadius: 8, marginBottom: 16 }}>
@@ -355,5 +370,15 @@ const errStyle: React.CSSProperties = {
   padding: '10px 14px',
   background: 'rgba(248,113,113,0.08)',
   border: '1px solid rgba(248,113,113,0.2)',
+  borderRadius: 8,
+}
+
+const warnStyle: React.CSSProperties = {
+  color: '#fbbf24',
+  fontSize: '0.85rem',
+  marginBottom: 14,
+  padding: '10px 14px',
+  background: 'rgba(251,191,36,0.08)',
+  border: '1px solid rgba(251,191,36,0.2)',
   borderRadius: 8,
 }
