@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import LogoutButton from '@/components/layout/LogoutButton'
 import CrewRequestButton from '@/components/dashboard/CrewRequestButton'
 import ProfileEditForm from '@/components/dashboard/ProfileEditForm'
+import EnrollmentsPanel from '@/components/dashboard/EnrollmentsPanel'
 import { UserRole } from '@/lib/types'
 
 interface UserProfile {
@@ -55,6 +56,20 @@ export default async function DashboardPage() {
   const isCrewPending = role === 'crew_pending'
   const canRequestCrew = role === 'user'
 
+  /* ---- 수강 내역 (enrollments 테이블 없으면 빈 배열로 graceful) ---- */
+  const now = new Date()
+  const thisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+  const nextDate = new Date(now.getFullYear(), now.getMonth() + 1, 1)
+  const nextMonth = `${nextDate.getFullYear()}-${String(nextDate.getMonth() + 1).padStart(2, '0')}`
+
+  const { data: enrData } = await supabase
+    .from('enrollments')
+    .select('id, class_name, year_month, amount, status, payment_status')
+    .eq('user_id', user.id)
+    .order('year_month', { ascending: false })
+    .order('created_at', { ascending: false })
+  const enrollments = enrData ?? []
+
   return (
     <div style={styles.page}>
       <div className="container">
@@ -78,6 +93,13 @@ export default async function DashboardPage() {
 
           {/* ---- 우측 사이드 ---- */}
           <div style={styles.sideCol}>
+            {/* 내 수강 (모든 멤버) */}
+            <EnrollmentsPanel
+              enrollments={enrollments}
+              thisMonth={thisMonth}
+              nextMonth={nextMonth}
+            />
+
             {/* 배우 회원: 갤러리 관리 */}
             {canEdit && (
               <section style={styles.card}>
@@ -162,6 +184,9 @@ export default async function DashboardPage() {
               <section style={styles.card}>
                 <h2 style={styles.cardTitle}>관리자 메뉴</h2>
                 <div style={styles.adminLinks}>
+                  <Link href="/admin/enrollments" style={styles.adminLink}>
+                    수강 현황
+                  </Link>
                   <Link href="/admin/actors" style={styles.adminLink}>
                     배우 목록 관리
                   </Link>

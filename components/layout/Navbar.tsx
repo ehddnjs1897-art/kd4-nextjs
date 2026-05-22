@@ -11,6 +11,7 @@ const publicLinks = [
 ]
 
 const crewLinks = [
+  { label: '클래스 신청', href: '/enroll', public: true },
   { label: '배우 DB', href: '/actors', public: true },
   { label: '커뮤니티', href: '/board', public: false },
   { label: '대본 분석', href: '/ai-tools', public: false },
