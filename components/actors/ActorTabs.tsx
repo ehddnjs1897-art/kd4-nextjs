@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Image from 'next/image'
 import R2Video from '@/components/actors/R2Video'
 
@@ -195,8 +195,8 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
     finally { setSaving(false) }
   }
 
-  // 필모 전체 (연도 내림차순)
-  const allFilmo = [...filmo].sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
+  // 필모 전체 (연도 내림차순) — 렌더마다 재정렬 방지
+  const allFilmo = useMemo(() => [...filmo].sort((a, b) => (b.year ?? 0) - (a.year ?? 0)), [filmo])
 
   // 프로필 사진 목록 (profile_photo + actor_photos, 최대 3장)
   const mainPhotoUrl = actor.profile_photo
@@ -226,8 +226,17 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
   // 최근 출연 (최근 2년 이내 동적 기준)
   const recentWorks = allFilmo.filter((f) => (f.year ?? 0) >= new Date().getFullYear() - 1)
 
-  // 카테고리별 필모
-  const filmoByCategory = (cat: FilmoCategory) => allFilmo.filter((f) => f.category === cat)
+  // 카테고리별 필모 (memoized Map — 렌더마다 6번 filter 방지)
+  const filmoMap = useMemo(() => {
+    const map: Partial<Record<FilmoCategory, typeof allFilmo>> = {}
+    for (const f of allFilmo) {
+      const cat = f.category as FilmoCategory
+      if (!map[cat]) map[cat] = []
+      map[cat]!.push(f)
+    }
+    return map
+  }, [allFilmo])
+  const filmoByCategory = (cat: FilmoCategory) => filmoMap[cat] ?? []
 
   // 수상이력
   const awardEntries = allFilmo.filter((f) => f.award != null && f.award !== '')

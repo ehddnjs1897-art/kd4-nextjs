@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     } = await supabase.auth.getUser()
     let canSeeContact = false
     if (user) {
-      const { data: profile } = await supabase
+      const { data: profile } = await supabaseAdmin
         .from('profiles').select('role').eq('id', user.id).maybeSingle()
       canSeeContact = ['director', 'admin'].includes(profile?.role ?? '')
     }

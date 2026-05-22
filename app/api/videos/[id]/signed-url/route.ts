@@ -15,6 +15,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 import { getVideoSignedUrl, isR2Configured } from '@/lib/r2'
 
 const MAX_EXPIRY_SEC = 7 * 24 * 60 * 60 // 7일
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 export async function GET(
   request: NextRequest,
@@ -38,11 +39,11 @@ export async function GET(
   }
 
   // role 확인 — admin/crew/editor/director는 모든 영상 접근 가능, actor는 본인 영상만
-  const { data: profile } = await supabase
+  const { data: profile } = await supabaseAdmin
     .from('profiles')
     .select('role, actor_id')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
 
   const role = profile?.role
   // admin/crew/editor/director: 모든 영상 열람 가능
@@ -51,6 +52,9 @@ export async function GET(
   const isActorRole = role === 'actor'
 
   const { id } = await params
+  if (!UUID_RE.test(id)) {
+    return NextResponse.json({ error: '잘못된 영상 ID입니다.' }, { status: 400 })
+  }
   const url = new URL(request.url)
   const requestedExpiry = parseInt(url.searchParams.get('expiry') ?? '86400', 10)
   const expirySec = Math.min(Math.max(requestedExpiry, 60), MAX_EXPIRY_SEC)

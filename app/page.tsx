@@ -158,6 +158,7 @@ export default function HomePage() {
 
     // 데스크톱: Lenis를 GSAP ticker에 통합 (raf 이중 실행 방지)
     let lenis: any
+    let lenisTicker: ((time: number) => void) | null = null
     import('lenis').then((mod) => {
       const Lenis = mod.default
       lenis = new Lenis({
@@ -167,10 +168,12 @@ export default function HomePage() {
         syncTouch: false,
       })
       lenis.on('scroll', ScrollTrigger.update)
-      gsap.ticker.add((time) => lenis.raf(time * 1000))
+      lenisTicker = (time: number) => lenis.raf(time * 1000)
+      gsap.ticker.add(lenisTicker)
       gsap.ticker.lagSmoothing(0)
-    })
+    }).catch(() => { /* Lenis 청크 로드 실패 시 기본 스크롤 유지 */ })
     return () => {
+      if (lenisTicker) gsap.ticker.remove(lenisTicker)
       if (lenis) lenis.destroy()
     }
   }, [])

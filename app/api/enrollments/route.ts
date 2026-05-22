@@ -49,6 +49,9 @@ export async function POST(request: Request) {
   if (!Array.isArray(class_names) || class_names.length === 0) {
     return NextResponse.json({ error: '수강할 클래스를 선택해 주세요.' }, { status: 400 })
   }
+  if (class_names.length > 20) {
+    return NextResponse.json({ error: '한 번에 최대 20개 클래스까지 신청할 수 있습니다.' }, { status: 400 })
+  }
   if (!year_month || !/^\d{4}-\d{2}$/.test(year_month)) {
     return NextResponse.json({ error: '수강 월이 올바르지 않습니다.' }, { status: 400 })
   }

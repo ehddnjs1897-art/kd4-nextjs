@@ -20,6 +20,8 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 
 type Ctx = { params: Promise<{ id: string }> }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 interface FilmItem {
   id?: string
   category?: string
@@ -33,6 +35,10 @@ interface FilmItem {
 export async function POST(request: NextRequest, { params }: Ctx) {
   try {
     const { id: actorId } = await params
+
+    if (!UUID_RE.test(actorId)) {
+      return NextResponse.json({ error: '잘못된 배우 ID입니다.' }, { status: 400 })
+    }
 
     // ── 인증 ────────────────────────────────────────────
     const supabase = await createClient()
@@ -69,12 +75,14 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       const clean: FilmItem = {
         category: item.category || 'drama',
         year: item.year ? Number(item.year) : undefined,
-        title: item.title.trim(),
-        role: item.role?.trim() || undefined,
-        broadcaster: item.broadcaster?.trim() || undefined,
-        film_type: item.film_type?.trim() || undefined,
+        title: item.title.trim().slice(0, 200),
+        role: item.role?.trim().slice(0, 100) || undefined,
+        broadcaster: item.broadcaster?.trim().slice(0, 100) || undefined,
+        film_type: item.film_type?.trim().slice(0, 50) || undefined,
       }
       if (item.id) {
+        // UUID 형식 아닌 id는 UPDATE 대신 INSERT로 처리 (오염된 id 방어)
+        if (!UUID_RE.test(item.id)) { toInsert.push(clean); continue }
         toUpdate.push({ ...clean, id: item.id })
       } else {
         toInsert.push(clean)

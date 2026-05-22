@@ -8,9 +8,14 @@ import { revalidateTag } from '@/lib/revalidate'
 
 type Ctx = { params: Promise<{ id: string; videoId: string }> }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 export async function DELETE(_request: NextRequest, { params }: Ctx) {
   try {
     const { id, videoId } = await params
+    if (!UUID_RE.test(id) || !UUID_RE.test(videoId)) {
+      return NextResponse.json({ error: '잘못된 ID입니다.' }, { status: 400 })
+    }
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })

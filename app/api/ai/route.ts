@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 
 // 모듈 레벨 쿨다운 Map (Vercel 인스턴스 유지 기간 내 — Gemini 비용 폭탄 방지)
 const aiCooldowns = new Map<string, number>()
@@ -12,8 +13,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   }
 
-  // 역할 확인 — crew 이상만 AI 기능 이용 가능
-  const { data: profile } = await supabase
+  // 역할 확인 — crew 이상만 AI 기능 이용 가능 (supabaseAdmin: RLS 우회로 정확한 role 조회)
+  const { data: profile } = await supabaseAdmin
     .from('profiles').select('role').eq('id', user.id).maybeSingle()
   if (!['crew', 'editor', 'director', 'admin'].includes(profile?.role ?? '')) {
     return NextResponse.json({ error: 'AI 기능은 KD4 크루 이상 회원만 이용할 수 있습니다.' }, { status: 403 })

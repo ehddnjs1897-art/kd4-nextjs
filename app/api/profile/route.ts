@@ -35,13 +35,14 @@ export async function PATCH(request: NextRequest) {
   }
   if (phone !== undefined && phone.trim() !== '') {
     const phoneClean = phone.trim()
-    if (phoneClean.length > 20 || !/^[0-9\-+\s]{7,20}$/.test(phoneClean)) {
+    // 최소 7자리 이상 숫자가 포함된 전화번호 형식 요구 (공백/하이픈/+ 허용)
+    if (phoneClean.length > 20 || !/^[+]?[\d\s\-().]{7,20}$/.test(phoneClean) || (phoneClean.match(/\d/g)?.length ?? 0) < 5) {
       return NextResponse.json({ error: '전화번호 형식이 올바르지 않습니다.' }, { status: 400 })
     }
   }
 
-  const updates: Record<string, string> = { name: name.trim() }
-  if (phone !== undefined) updates.phone = phone.trim()
+  const updates: Record<string, string | null> = { name: name.trim() }
+  if (phone !== undefined) updates.phone = phone.trim() || null
 
   // supabaseAdmin으로 RLS 우회
   const { error } = await supabaseAdmin

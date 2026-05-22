@@ -61,18 +61,20 @@ export async function POST(request: NextRequest) {
         (p: unknown): p is { path: string; label: string } =>
           !!p &&
           typeof (p as { path?: unknown }).path === 'string' &&
-          typeof (p as { label?: unknown }).label === 'string'
+          typeof (p as { label?: unknown }).label === 'string' &&
+          (p as { label: string }).label.length <= 100
       )
     : []
   ).slice(0, MAX_PHOTOS)
   // videos 배열 (신규) + 하위호환: 기존 video 단일 필드도 처리
+  const VALID_VIDEO_TYPES = new Set(['reel', 'monologue', 'commercial', 'short_film'])
   const parseVideoItem = (v: unknown) =>
     v && typeof (v as { key?: unknown }).key === 'string'
       ? {
           key: (v as { key: string }).key.slice(0, MAX_PATH_LEN),
           size: Number((v as { size?: unknown }).size ?? 0) || null,
           filename: typeof (v as { filename?: unknown }).filename === 'string' ? (v as { filename: string }).filename.slice(0, MAX_FILENAME_LEN) : null,
-          video_type: typeof (v as { video_type?: unknown }).video_type === 'string' ? (v as { video_type: string }).video_type : 'reel',
+          video_type: typeof (v as { video_type?: unknown }).video_type === 'string' && VALID_VIDEO_TYPES.has((v as { video_type: string }).video_type) ? (v as { video_type: string }).video_type : 'reel',
         }
       : null
   const videos: NonNullable<ReturnType<typeof parseVideoItem>>[] = Array.isArray(body?.videos)

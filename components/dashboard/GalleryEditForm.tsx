@@ -10,7 +10,7 @@
  * 4. 필모그래피 CRUD
  */
 
-import { useState, useRef, useMemo } from 'react'
+import { useState, useRef, useMemo, useEffect } from 'react'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 
@@ -240,6 +240,16 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   const [confirmingR2VideoId, setConfirmingR2VideoId] = useState<string | null>(null)
   const [confirmingFilmIdx, setConfirmingFilmIdx] = useState<number | null>(null)
 
+  // ── 타이머 관리 (언마운트 시 clearTimeout으로 메모리 누수 방지) ──────────────
+  const timerIds = useRef<ReturnType<typeof setTimeout>[]>([])
+  const flashMsg = (setter: (v: string) => void, delay = 3000) => {
+    const id = setTimeout(() => setter(''), delay)
+    timerIds.current.push(id)
+  }
+  useEffect(() => {
+    return () => timerIds.current.forEach(clearTimeout)
+  }, [])
+
   // ── 기본 정보 저장 ──────────────────────────────────────────────────────────
   async function saveInfo() {
     setInfoSaving(true)
@@ -256,7 +266,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       setInfoMsg((e as Error).message)
     } finally {
       setInfoSaving(false)
-      setTimeout(() => setInfoMsg(''), 3000)
+      flashMsg(setInfoMsg)
     }
   }
 
@@ -292,7 +302,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     } finally {
       setPptUploading(false)
       if (pptRef.current) pptRef.current.value = ''
-      setTimeout(() => setPptMsg(''), 5000)
+      flashMsg(setPptMsg, 5000)
     }
   }
 
@@ -328,7 +338,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     } finally {
       setR2Uploading(false); setR2UploadStatus('')
       if (r2VideoRef.current) r2VideoRef.current.value = ''
-      setTimeout(() => setR2VideoMsg(''), 5000)
+      flashMsg(setR2VideoMsg, 5000)
     }
   }
 
@@ -369,7 +379,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     } finally {
       setUploading(false)
       if (fileRef.current) fileRef.current.value = ''
-      setTimeout(() => setPhotoMsg(''), 3000)
+      flashMsg(setPhotoMsg)
     }
   }
 
@@ -381,7 +391,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       if (!res.ok) throw new Error((await res.json()).error || '삭제 실패')
       setPhotos(prev => {
         const next = prev.filter(p => p.id !== id)
-        if (isProfile && next.length > 0) next[0].is_profile = true
+        if (isProfile && next.length > 0) next[0] = { ...next[0], is_profile: true }
         return next
       })
     } catch (e) {
@@ -425,7 +435,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     } catch (e) {
       setVideoMsg((e as Error).message)
     } finally {
-      setTimeout(() => setVideoMsg(''), 3000)
+      flashMsg(setVideoMsg)
     }
   }
 
@@ -495,7 +505,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       setFilmMsg('네트워크 오류가 발생했습니다.')
     } finally {
       setFilmSaving(false)
-      setTimeout(() => setFilmMsg(''), 3000)
+      flashMsg(setFilmMsg)
     }
   }
 

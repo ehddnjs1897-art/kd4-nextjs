@@ -21,7 +21,8 @@ export async function GET(request: NextRequest) {
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1)
 
-  if (category && category !== '전체') {
+  const VALID_CATEGORIES_GET = new Set(['일반', '공지', '질문', '자유', '수업', '전체'])
+  if (category && category !== '전체' && VALID_CATEGORIES_GET.has(category)) {
     query = query.eq('category', category)
   }
 

@@ -8,9 +8,14 @@ import { revalidateTag } from '@/lib/revalidate'
 
 type Ctx = { params: Promise<{ id: string }> }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 export async function POST(request: NextRequest, { params }: Ctx) {
   try {
     const { id } = await params
+    if (!UUID_RE.test(id)) {
+      return NextResponse.json({ error: '잘못된 배우 ID입니다.' }, { status: 400 })
+    }
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
@@ -29,7 +34,16 @@ export async function POST(request: NextRequest, { params }: Ctx) {
 
     const { data, error } = await supabaseAdmin
       .from('actor_filmography')
-      .insert({ actor_id: id, category: category || 'drama', year: year || null, title, role: role || null, broadcaster: broadcaster || null, film_type: film_type || null, sort_order: 0 })
+      .insert({
+        actor_id: id,
+        category: category || 'drama',
+        year: year || null,
+        title: String(title).slice(0, 200),
+        role: role ? String(role).slice(0, 100) : null,
+        broadcaster: broadcaster ? String(broadcaster).slice(0, 100) : null,
+        film_type: film_type ? String(film_type).slice(0, 50) : null,
+        sort_order: 0,
+      })
       .select('id')
       .single()
 

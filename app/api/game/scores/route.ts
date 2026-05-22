@@ -62,6 +62,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '점수가 비정상적으로 높습니다.' }, { status: 400 })
   }
 
+  // stage / items_collected 검증
+  if (!Number.isInteger(stage) || stage < 1 || stage > 100) {
+    return NextResponse.json({ error: '유효하지 않은 스테이지입니다.' }, { status: 400 })
+  }
+  if (!Number.isInteger(items_collected) || items_collected < 0 || items_collected > 9999) {
+    return NextResponse.json({ error: '유효하지 않은 아이템 수입니다.' }, { status: 400 })
+  }
+
   const { data, error } = await supabaseAdmin
     .from('game_scores')
     .insert({

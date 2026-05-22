@@ -8,6 +8,7 @@
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 import { getUploadUrl, isR2Configured } from '@/lib/r2'
 
 const MAX_SIZE_BYTES = 300 * 1024 * 1024 // 300MB
@@ -34,7 +35,7 @@ export async function POST(request: NextRequest) {
   }
 
   // 역할 체크 — member/actor/editor/admin만 영상 업로드 가능
-  const { data: profile } = await supabase
+  const { data: profile } = await supabaseAdmin
     .from('profiles').select('role').eq('id', user.id).maybeSingle()
   if (!profile || !ALLOWED_UPLOAD_ROLES.has(profile.role ?? '')) {
     return NextResponse.json({ error: '업로드 권한이 없습니다.' }, { status: 403 })

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 
 // POST /api/comments — 로그인 필요
 export async function POST(request: NextRequest) {
@@ -30,10 +31,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '댓글은 2,000자 이하로 입력해주세요.' }, { status: 400 })
   }
 
-  // 게시글 존재 확인 + 작성자 이름 병렬 조회
+  // 게시글 존재 확인 + 작성자 이름 병렬 조회 (supabaseAdmin: RLS 우회로 정확한 결과)
   const [{ data: post, error: postError }, { data: profile }] = await Promise.all([
-    supabase.from('posts').select('id').eq('id', post_id).single(),
-    supabase.from('profiles').select('name').eq('id', user.id).single(),
+    supabaseAdmin.from('posts').select('id').eq('id', post_id).single(),
+    supabaseAdmin.from('profiles').select('name').eq('id', user.id).maybeSingle(),
   ])
 
   if (postError || !post) {
