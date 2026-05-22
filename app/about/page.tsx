@@ -562,7 +562,7 @@ export default function AboutPage() {
               letterSpacing: '0.04em',
             }}
           >
-            수강신청
+            클래스 신청
           </a>
           <Link
             href="/#classes"

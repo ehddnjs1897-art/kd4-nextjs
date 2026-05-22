@@ -240,7 +240,7 @@ export const DIRECTOR: DirectorProfile = {
     channels: ["Youtube 2000만뷰+"],
     education: [
       "LA Meisner Workshop 수료",
-      "한국 마이즈너테크닉 아카데미 수료",
+      "한국 마이즈너 테크닉 아카데미 수료",
       "건명원 / The Chora 졸업",
     ],
   },
@@ -267,13 +267,13 @@ export const DIRECTOR: DirectorProfile = {
     "Youtube 2000만뷰+",
     "건명원 / The Chora 졸업",
     "LA Meisner Workshop 수료",
-    "한국 마이즈너테크닉 아카데미 수료",
+    "한국 마이즈너 테크닉 아카데미 수료",
   ],
 
   // Join 등 짧은 랜딩용 하이라이트 5줄 (메인 이력을 축약·그룹핑)
   highlights: [
     "Disney+ 무빙2 (2026) · Netflix 중증외상센터 (2025)",
-    "LA Meisner Workshop 수료 · 한국 마이즈너테크닉 아카데미 수료",
+    "LA Meisner Workshop 수료 · 한국 마이즈너 테크닉 아카데미 수료",
     "유익액터스 대표 · 영화 경계선 제작·주연",
     "K-웹드라마 어워드 연기상 수상 · LG 크리에이터 특별상",
     "프로 배우 400명+ 액팅 코칭 · Youtube 2000만뷰+",

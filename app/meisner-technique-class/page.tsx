@@ -70,7 +70,7 @@ const COMPARISON_ROWS = [
   { label: '1인 피드백 시간', normal: '회당 5~10분', kd4: '회당 30분+' },
   { label: '정원', normal: '15~25명', kd4: '6~8명' },
   { label: '수업 길이', normal: '1.5~2시간', kd4: '4시간' },
-  { label: '강사', normal: '전임 강사 중심', kd4: '현역 배우·전문 액팅 코치' },
+  { label: '리더', normal: '전임 강사 중심', kd4: '현역 배우·전문 액팅 코치' },
 ]
 
 export default function MeisnerPage() {
@@ -177,7 +177,7 @@ export default function MeisnerPage() {
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
             <p className="section-eyebrow">03 — INSTRUCTOR</p>
-            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>강사 — 권동원 대표</h2>
+            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>액팅 코치 — 권동원 (리더)</h2>
           </div>
           <div className="meisner-director-grid" style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '32px', alignItems: 'start', maxWidth: '780px', margin: '0 auto' }}>
             <div style={{ position: 'relative', width: '200px', height: '266px', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--border)' }}>
@@ -196,7 +196,7 @@ export default function MeisnerPage() {
                 ))}
               </ul>
               <Link href="/acting-coach-dongwon-kwon" style={{ fontSize: '0.88rem', color: 'var(--navy)', fontWeight: 600 }}>
-                강사 프로필 자세히 보기 →
+                액팅 코치 프로필 자세히 보기 →
               </Link>
             </div>
           </div>

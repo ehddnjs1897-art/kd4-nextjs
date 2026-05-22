@@ -111,7 +111,7 @@ export default function SinchonPage() {
             <ol style={{ display: 'flex', flexDirection: 'column', gap: '14px', listStyle: 'none', padding: 0, margin: 0 }}>
               {[
                 { t: '이대역(2호선) 5번 출구', d: '출구로 나와 성산로 방향으로' },
-                { t: 'YES apM·가인볼링장 코너', d: '포레스트 공원 옆에서 이화여대1길로 진입' },
+                { t: '예스APM·가인볼링장 코너', d: '포레스트 공원 옆에서 이화여대1길로 진입' },
                 { t: '이화여대1길 직진 (약 480m)', d: '오피스텔촌 따라 북서쪽으로' },
                 { t: 'KD4 액팅 스튜디오 도착', d: '아리움3차 1층 101호' },
               ].map((s, i, arr) => (

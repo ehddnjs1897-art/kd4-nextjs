@@ -123,7 +123,7 @@ const COMPARISON_ROWS: { label: string; normal: string; kd4: string }[] = [
   { label: '1인 피드백 시간', normal: '회당 5~10분', kd4: '회당 30분+' },
   { label: '정원', normal: '15~25명', kd4: '6~8명' },
   { label: '수업 길이', normal: '1.5~2시간', kd4: '4시간' },
-  { label: '강사', normal: '전임 강사 중심', kd4: '전문 액팅코치' },
+  { label: '리더', normal: '전임 강사 중심', kd4: '전문 액팅 코치' },
   { label: '포트폴리오 제작', normal: '별도 과정 · 유료', kd4: '정규 과정 포함' },
   { label: '캐스팅 수수료', normal: '10~30%', kd4: '수수료 없음 · 직접 연결' },
   { label: '월 수강료', normal: '월 45~55만원', kd4: '월 32~37만원 · 최대 약 30%↓' },

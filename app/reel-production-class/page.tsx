@@ -164,7 +164,7 @@ export default function ReelPage() {
             ))}
           </div>
           <div style={{ textAlign: 'center', marginTop: '28px' }}>
-            <a href={PORTFOLIO_PLAYLIST} target="_blank" rel="noopener noreferrer" className="btn-primary">
+            <a href={PORTFOLIO_PLAYLIST} target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ background: 'var(--navy)', color: '#fff' }}>
               포트폴리오 더보기 (유튜브 재생목록) →
             </a>
           </div>
