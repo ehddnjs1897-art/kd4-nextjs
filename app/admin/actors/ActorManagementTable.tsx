@@ -193,12 +193,12 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
                 {/* 액션 */}
                 <td style={{ padding: '12px 12px', whiteSpace: 'nowrap' }}>
                   <div style={{ display: 'flex', gap: 6 }}>
-                    <Link href={`/admin?actor=${actor.id}`} style={{
+                    <Link href={`/actors/${actor.id}`} style={{
                       padding: '5px 10px', borderRadius: 5, fontSize: '0.74rem',
                       background: 'transparent', border: '1px solid var(--border)',
                       color: 'var(--gray)', textDecoration: 'none',
                     }}>
-                      편집
+                      보기
                     </Link>
                     <button
                       onClick={() => handleToggle(actor)}

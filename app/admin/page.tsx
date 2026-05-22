@@ -52,6 +52,7 @@ async function fetchProfiles(): Promise<AdminProfile[]> {
     .from('profiles')
     .select('id, name, email, role, created_at, actor_id')
     .order('created_at', { ascending: false })
+    .limit(200)
 
   if (error) {
     console.error('[admin] profiles fetch 오류:', error.message)
@@ -94,6 +95,7 @@ async function fetchApplications(): Promise<AdminApplication[]> {
     .from('consultations')
     .select('id, name, email, phone, class_name, status, created_at')
     .order('created_at', { ascending: false })
+    .limit(200)
 
   if (error) {
     console.error('[admin] consultations fetch 오류:', error.message)

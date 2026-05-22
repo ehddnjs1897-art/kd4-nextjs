@@ -65,19 +65,24 @@ export default function AIToolsPage() {
   const [hasAccess, setHasAccess] = useState(false)
 
   // 비로그인 → 로그인 / 권한 부족 → 접근 차단
+  // cancelled flag: 언마운트 후 비동기 setState 방지 (메모리 리크)
   useEffect(() => {
+    let cancelled = false
     const supabase = createClient()
     supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (cancelled) return
       if (!user) {
         router.replace('/auth/login?next=/ai-tools')
         return
       }
       const { data: profile } = await supabase
         .from('profiles').select('role').eq('id', user.id).maybeSingle()
+      if (cancelled) return
       const role = profile?.role ?? ''
       setHasAccess(['crew', 'editor', 'director', 'admin'].includes(role))
       setAuthChecked(true)
     })
+    return () => { cancelled = true }
   }, [router])
 
   if (!authChecked) return (

@@ -47,9 +47,17 @@ function cropTo9x16(file: File): Promise<Blob> {
 
       canvas.width = 900
       canvas.height = 1600
-      const ctx = canvas.getContext('2d')!
+      const ctx = canvas.getContext('2d')
+      if (!ctx) {
+        // 2D 컨텍스트 미지원 환경 — 원본 파일을 Blob으로 변환해 fallback
+        resolve(file.slice(0, file.size, file.type))
+        return
+      }
       ctx.drawImage(img, srcX, srcY, srcW, srcH, 0, 0, 900, 1600)
-      canvas.toBlob((blob) => resolve(blob!), 'image/jpeg', 0.92)
+      canvas.toBlob((blob) => {
+        // 인코딩 실패 시 원본 fallback
+        resolve(blob ?? file.slice(0, file.size, file.type))
+      }, 'image/jpeg', 0.92)
     }
     img.src = URL.createObjectURL(file)
   })

@@ -28,6 +28,11 @@ export interface Actor {
   is_public: boolean
   created_at: string
   updated_at: string
+  // 실제 DB에 존재하는 컬럼 — 누락 시 as unknown as 이중 단언 필요
+  storage_photo_path: string | null
+  casting_tags: string[] | null
+  casting_summary: string | null
+  profile_doc_path: string | null
 }
 
 export type ActorPublic = Omit<Actor, 'phone' | 'email'>

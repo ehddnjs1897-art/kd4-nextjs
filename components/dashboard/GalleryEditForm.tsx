@@ -10,7 +10,7 @@
  * 4. 필모그래피 CRUD
  */
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useMemo } from 'react'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 
@@ -73,6 +73,17 @@ function extractYoutubeId(url: string): string | null {
     if (m) return m[1]
   }
   return null
+}
+
+// 컴포넌트 외부 순수 함수 — 렌더마다 재생성되지 않도록
+function newFilm(): FilmItem {
+  return {
+    id: crypto.randomUUID(),
+    category: 'drama',
+    year: new Date().getFullYear(),
+    title: '',
+    role: '',
+  }
 }
 
 // ─── 스타일 ───────────────────────────────────────────────────────────────────
@@ -221,13 +232,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   const [filmography, setFilmography] = useState<FilmItem[]>(initialData.filmography)
   const [filmMsg, setFilmMsg] = useState('')
   const [filmSaving, setFilmSaving] = useState(false)
-  const newFilm = (): FilmItem => ({
-    id: crypto.randomUUID(),
-    category: 'drama',
-    year: new Date().getFullYear(),
-    title: '',
-    role: '',
-  })
+  // newFilm은 컴포넌트 외부 순수 함수로 이동 (렌더마다 재생성 방지)
 
   // inline 확인 상태 (삭제 2단계 확인)
   const [confirmingPhotoId, setConfirmingPhotoId] = useState<string | null>(null)
@@ -513,12 +518,13 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   // ── 렌더 ────────────────────────────────────────────────────────────────────
 
   // 프로필 완성도 계산 (저장된 값 기준 + 실시간 state)
-  const completionItems = [
+  // useMemo: 관련 state가 변할 때만 재계산 (키보드 입력마다 재계산 방지)
+  const completionItems = useMemo(() => [
     { label: '프로필 사진', done: photos.length > 0, icon: '📸' },
     { label: '출연 영상', done: videos.length > 0 || r2Videos.length > 0, icon: '🎬' },
     { label: '필모그래피', done: filmography.length > 0, icon: '📋' },
     { label: '한줄소개', done: castingSummary.trim().length > 0, icon: '✍️' },
-  ]
+  ], [photos.length, videos.length, r2Videos.length, filmography.length, castingSummary])
   const completionCount = completionItems.filter(i => i.done).length
   const completionPct = Math.round((completionCount / completionItems.length) * 100)
 
@@ -653,8 +659,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
               <div style={s.photoActions}>
                 {confirmingPhotoId === p.id ? (
                   <div style={{ display: 'flex', gap: 5 }}>
-                    <button onClick={() => setConfirmingPhotoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '4px 8px', fontSize: '0.7rem' }}>취소</button>
-                    <button onClick={() => deletePhoto(p.id, p.is_profile)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '4px 8px', fontSize: '0.7rem', border: 'none' }}>확인</button>
+                    <button onClick={() => setConfirmingPhotoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 36 }}>취소</button>
+                    <button onClick={() => deletePhoto(p.id, p.is_profile)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 36, border: 'none' }}>확인</button>
                   </div>
                 ) : (
                   <>
@@ -703,8 +709,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                   </p>
                   {confirmingR2VideoId === v.id ? (
                     <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
-                      <button onClick={() => setConfirmingR2VideoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '4px 8px', fontSize: '0.7rem' }}>취소</button>
-                      <button onClick={() => deleteR2Video(v.id)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '4px 8px', fontSize: '0.7rem', border: 'none' }}>확인</button>
+                      <button onClick={() => setConfirmingR2VideoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 36 }}>취소</button>
+                      <button onClick={() => deleteR2Video(v.id)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 36, border: 'none' }}>확인</button>
                     </div>
                   ) : (
                     <button onClick={() => deleteR2Video(v.id)} style={{ ...s.btn, ...s.btnDanger, flexShrink: 0 }}>삭제</button>
@@ -739,8 +745,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                   </p>
                   {confirmingVideoId === v.id ? (
                     <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
-                      <button onClick={() => setConfirmingVideoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '4px 8px', fontSize: '0.7rem' }}>취소</button>
-                      <button onClick={() => deleteVideo(v.id)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '4px 8px', fontSize: '0.7rem', border: 'none' }}>확인</button>
+                      <button onClick={() => setConfirmingVideoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 36 }}>취소</button>
+                      <button onClick={() => deleteVideo(v.id)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 36, border: 'none' }}>확인</button>
                     </div>
                   ) : (
                     <button onClick={() => deleteVideo(v.id)} style={{ ...s.btn, ...s.btnDanger, flexShrink: 0 }}>삭제</button>
@@ -769,7 +775,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         <p style={s.sectionTitle}>Filmography</p>
 
         {filmography.length > 0 && (
-          <div style={{ marginBottom: 20 }}>
+          <div style={{ marginBottom: 20, overflowX: 'auto' }}>
+            <div style={{ minWidth: 460 }}>
             <div style={{ ...s.filmRow, marginBottom: 4 }}>
               {['구분', '연도', '작품명', '배역', ''].map(h => (
                 <span key={h} style={{ fontSize: '0.72rem', color: 'var(--gray)', fontWeight: 600 }}>{h}</span>
@@ -790,14 +797,15 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                 <input value={f.role} onChange={e => updateFilm(i, 'role', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} placeholder="배역" />
                 {confirmingFilmIdx === i ? (
                   <div style={{ display: 'flex', gap: 5 }}>
-                    <button onClick={() => setConfirmingFilmIdx(null)} style={{ ...s.btn, ...s.btnGhost, padding: '4px 8px', fontSize: '0.7rem' }}>취소</button>
-                    <button onClick={() => deleteFilm(i)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '4px 8px', fontSize: '0.7rem', border: 'none' }}>확인</button>
+                    <button onClick={() => setConfirmingFilmIdx(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 36 }}>취소</button>
+                    <button onClick={() => deleteFilm(i)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 36, border: 'none' }}>확인</button>
                   </div>
                 ) : (
                   <button onClick={() => deleteFilm(i)} style={{ ...s.btn, ...s.btnDanger }}>삭제</button>
                 )}
               </div>
             ))}
+            </div>
           </div>
         )}
 

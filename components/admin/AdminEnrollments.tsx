@@ -151,7 +151,7 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
                     onClick={() => setEditingStatusId(e.id)}
                     disabled={busy === e.id}
                     style={{
-                      background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                      background: 'none', border: 'none', padding: '8px 10px', minHeight: 36, cursor: 'pointer',
                       fontSize: '0.74rem', fontWeight: 700,
                       color: e.status === '확정' ? '#2d8a56' : e.status === '취소' ? '#c0392b' : '#9a938b',
                     }}

@@ -84,6 +84,15 @@ export async function PATCH(request: NextRequest) {
       )
     }
 
+    // 자기 자신의 역할 변경 방지 (admin → user 격하 시 관리자 페이지 접근 차단 위험)
+    const { userId: adminId } = check as { userId: string }
+    if (id === adminId) {
+      return NextResponse.json(
+        { error: '자기 자신의 역할은 변경할 수 없습니다.' },
+        { status: 400 }
+      )
+    }
+
     if (!role || !VALID_ROLES.includes(role as ValidRole)) {
       return NextResponse.json(
         { error: `역할은 ${VALID_ROLES.join(', ')} 중 하나여야 합니다.` },
