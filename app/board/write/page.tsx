@@ -130,6 +130,7 @@ export default function WritePage() {
                 <button
                   key={cat}
                   type="button"
+                  aria-pressed={category === cat}
                   onClick={() => setCategory(cat as Category)}
                   style={{
                     padding: '7px 16px',
@@ -175,6 +176,7 @@ export default function WritePage() {
               placeholder="내용을 입력하세요"
               required
               rows={14}
+              maxLength={5000}
               style={{
                 ...inputStyle,
                 resize: 'vertical',

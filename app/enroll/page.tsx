@@ -37,7 +37,7 @@ export default async function EnrollPage({
             처음이시면 회원가입 후 신청해 주세요.
           </p>
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/auth/login" className="btn-primary" style={{ background: 'var(--navy)', color: '#fff' }}>
+            <Link href="/auth/login?next=/enroll" className="btn-primary" style={{ background: 'var(--navy)', color: '#fff' }}>
               로그인
             </Link>
             <Link href="/auth/signup" className="btn-outline" style={{ borderColor: 'var(--navy)', color: 'var(--navy)' }}>

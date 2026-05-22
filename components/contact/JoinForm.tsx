@@ -162,26 +162,38 @@ export default function JoinForm() {
       eventId,
     })
 
-    fetch('/api/notify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        record: {
-          name,
-          phone,
-          email: email || null,
-          class_name: className || null,
-          source: source || '/join 랜딩',
-          motivation,
-          status: '대기',
-          created_at: new Date().toISOString(),
-          // 2026-05-14: 광고 채널 추적용 UTM 파라미터
-          ...utmRef.current,
-          // 2026-05-22: Meta CAPI 중복제거용 — 위 픽셀 Lead 와 동일 eventId
-          event_id: eventId,
-        },
-      }),
-    }).catch(() => {})
+    let notifyOk = false
+    try {
+      const notifyRes = await fetch('/api/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          record: {
+            name,
+            phone,
+            email: email || null,
+            class_name: className || null,
+            source: source || '/join 랜딩',
+            motivation,
+            status: '대기',
+            created_at: new Date().toISOString(),
+            // 2026-05-14: 광고 채널 추적용 UTM 파라미터
+            ...utmRef.current,
+            // 2026-05-22: Meta CAPI 중복제거용 — 위 픽셀 Lead 와 동일 eventId
+            event_id: eventId,
+          },
+        }),
+      })
+      notifyOk = notifyRes.ok
+    } catch {
+      notifyOk = false
+    }
+
+    if (!notifyOk) {
+      setError('접수 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.')
+      setLoading(false)
+      return
+    }
 
     /* 간단한 접수번호 생성 (UX용) — KD 연-월-일-4자리 */
     const now = new Date()
@@ -546,6 +558,7 @@ export default function JoinForm() {
         onChange={(e) => setName(e.target.value)}
         onFocus={() => handleFieldFocus('name')}
         onBlur={() => setFocused(null)}
+        autoComplete="name"
         style={inputStyle('name')}
         required
       />
@@ -559,6 +572,7 @@ export default function JoinForm() {
         onChange={(e) => setPhone(e.target.value)}
         onFocus={() => handleFieldFocus('phone')}
         onBlur={() => setFocused(null)}
+        autoComplete="tel"
         style={inputStyle('phone')}
         required
       />
@@ -567,11 +581,12 @@ export default function JoinForm() {
       <input
         aria-label="이메일"
         type="email"
-        placeholder="이메일"
+        placeholder="이메일 *"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         onFocus={() => handleFieldFocus('email')}
         onBlur={() => setFocused(null)}
+        autoComplete="email"
         style={inputStyle('email')}
         required
       />

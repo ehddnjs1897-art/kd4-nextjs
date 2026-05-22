@@ -746,9 +746,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 14 }}>
               {videos.map(v => (
                 <div key={v.id} style={{ display: 'flex', gap: 12, alignItems: 'center', background: 'var(--bg3)', borderRadius: 6, padding: '10px 14px' }}>
-                  <div style={{ width: 60, height: 34, borderRadius: 4, overflow: 'hidden', flexShrink: 0 }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={`https://img.youtube.com/vi/${v.youtube_id}/mqdefault.jpg`} alt={v.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <div style={{ width: 60, height: 34, borderRadius: 4, overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
+                    <Image src={`https://img.youtube.com/vi/${v.youtube_id}/mqdefault.jpg`} alt={v.title || ''} fill sizes="60px" style={{ objectFit: 'cover' }} />
                   </div>
                   <p style={{ flex: 1, fontSize: '0.84rem', color: 'var(--white)', margin: 0 }}>
                     {v.title || v.youtube_id}

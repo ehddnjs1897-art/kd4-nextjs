@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { pixel } from '@/lib/analytics'
@@ -48,8 +49,7 @@ export default function FloatingCTA() {
           e.currentTarget.style.boxShadow = '0 3px 12px rgba(21,72,138,0.22)'
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/icons/kakao.png" alt="카카오톡" width={22} height={22} style={{ objectFit: 'contain' }} />
+        <Image src="/icons/kakao.png" alt="카카오톡" width={22} height={22} style={{ objectFit: 'contain' }} />
       </a>
 
       {/* 수강신청 바 */}

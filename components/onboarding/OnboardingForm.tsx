@@ -176,6 +176,7 @@ export default function OnboardingForm({
       })
       const j = await res.json()
       if (!res.ok) throw new Error(j.error || '등록에 실패했습니다.')
+      setLoading(false)
       router.push('/dashboard?intake=done')
     } catch (e) {
       setError(e instanceof Error ? e.message : '오류가 발생했습니다.')
@@ -196,6 +197,8 @@ export default function OnboardingForm({
           <em style={{ color: 'rgba(255,255,255,0.45)', marginLeft: 6 }}>"장르를 넘나드는 탄탄한 기본기의 배우"</em>
         </p>
         <textarea
+          id="casting-summary"
+          name="casting_summary"
           value={castingSummary}
           onChange={(e) => setCastingSummary(e.target.value)}
           maxLength={120}

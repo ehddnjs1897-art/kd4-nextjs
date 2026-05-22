@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: '*.supabase.co',
       },
+      // YouTube 썸네일 (img.youtube.com/vi/{id}/mqdefault.jpg)
+      {
+        protocol: 'https',
+        hostname: 'img.youtube.com',
+      },
     ],
     formats: ['image/avif', 'image/webp'],
   },
