@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -22,6 +22,14 @@ export default function SignupPage() {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  // 이미 로그인된 경우 대시보드로 리다이렉트
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) router.replace('/dashboard')
+    })
+  }, [router])
 
   function formatPhone(value: string) {
     const digits = value.replace(/\D/g, '')
@@ -62,7 +70,7 @@ export default function SignupPage() {
       password,
       options: {
         data: metadata,
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin}/auth/callback`,
       },
     })
 

@@ -29,10 +29,19 @@ function LoginContent() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
+  // 이미 로그인된 경우 대시보드로 리다이렉트
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) router.replace('/dashboard')
+    })
+  }, [router])
+
+  // URL error 파라미터 처리 (OAuth 콜백 오류 등)
   useEffect(() => {
     const errorCode = searchParams.get('error')
-    if (errorCode && ERROR_MESSAGES[errorCode]) {
-      setError(ERROR_MESSAGES[errorCode])
+    if (errorCode) {
+      setError(ERROR_MESSAGES[errorCode] ?? '인증 중 오류가 발생했습니다. 다시 시도해 주세요.')
     }
   }, [searchParams])
 
@@ -71,7 +80,7 @@ function LoginContent() {
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${location.origin}/auth/callback`,
+        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? location.origin}/auth/callback`,
       },
     })
     if (authError) {
@@ -87,7 +96,7 @@ function LoginContent() {
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: 'kakao',
       options: {
-        redirectTo: `${location.origin}/auth/callback`,
+        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? location.origin}/auth/callback`,
       },
     })
     if (authError) {
@@ -140,6 +149,7 @@ function LoginContent() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="비밀번호를 입력하세요"
               required
+              minLength={8}
               disabled={loading}
               autoComplete="current-password"
               style={styles.input}

@@ -23,9 +23,20 @@ const nextConfig: NextConfig = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   // URL 대소문자 정규화는 middleware.ts에서 처리 (Next.js 16 redirects 무한루프 회피)
-  // 정적 자산 장기 캐시 (Vercel edge에서 처리)
+  // 보안 헤더 + 정적 자산 장기 캐시
   async headers() {
     return [
+      // ── 전체 경로 보안 헤더 ───────────────────────────────────
+      {
+        source: '/(.*)',
+        headers: [
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+        ],
+      },
+      // ── 정적 자산 캐시 ────────────────────────────────────────
       {
         source: '/_next/static/:path*',
         headers: [
