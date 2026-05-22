@@ -87,16 +87,8 @@ export default function SignupPage() {
     const hasSession = !!signUpData?.session
 
     if (userId && hasSession) {
-      // profiles 트리거(handle_new_user)가 자동 생성하지만, name/phone 백필
-      // role 필드는 절대 클라이언트에서 변경 X (RLS WITH CHECK로 차단됨)
-      await supabase.from('profiles').upsert(
-        {
-          id: userId,
-          name: name || null,
-          phone: memberType === 'actor' ? (phone || null) : null,
-        },
-        { onConflict: 'id' }
-      )
+      // role 설정 + 배우 매칭은 서버에서 처리 (클라이언트에선 role 변경 불가 - RLS)
+      await fetch('/api/auth/on-signup', { method: 'POST' })
     }
 
     setLoading(false)
@@ -305,7 +297,7 @@ export default function SignupPage() {
           {memberType === 'actor' && (
             <div style={styles.fieldGroup}>
               <label htmlFor="phone" style={styles.label}>
-                전화번호
+                전화번호 <span style={styles.required}>*</span>
               </label>
               <input
                 id="phone"
@@ -315,10 +307,11 @@ export default function SignupPage() {
                 placeholder="010-0000-0000"
                 disabled={loading}
                 maxLength={13}
+                required
                 style={styles.input}
               />
               <p style={styles.hint}>
-                전화번호 입력 시 배우 DB와 자동 연결됩니다.
+                📌 KD4에 등록된 번호와 동일해야 배우 프로필과 자동 연결됩니다.
               </p>
             </div>
           )}
