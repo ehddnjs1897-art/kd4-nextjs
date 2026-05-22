@@ -333,38 +333,28 @@ export default function BenefitsPage() {
           ))}
         </div>
 
-        {/* 카카오채널 문의 버튼 */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            marginTop: '28px',
-          }}
-        >
-          <a
-            href="https://pf.kakao.com/_ximxdqn"
-            target="_blank"
-            rel="noopener noreferrer"
+        {/* 신청 버튼 */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '28px' }}>
+          <Link
+            href="/enroll?type=퍼스널 브랜딩 서비스"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: '10px',
               padding: '14px 28px',
-              background: '#FEE500',
-              color: '#191919',
+              background: 'var(--navy)',
+              color: '#fff',
               fontFamily: 'var(--font-sans)',
               fontSize: '0.92rem',
               fontWeight: 700,
               borderRadius: 'var(--radius)',
               letterSpacing: '0.03em',
               textDecoration: 'none',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
+              boxShadow: '0 2px 8px rgba(21,72,138,0.18)',
             }}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/icons/kakao.png" alt="" width={20} height={20} style={{ objectFit: 'contain' }} />
-            카카오채널로 편집 서비스 문의
-          </a>
+            편집 서비스 신청하기 →
+          </Link>
         </div>
       </section>
 
