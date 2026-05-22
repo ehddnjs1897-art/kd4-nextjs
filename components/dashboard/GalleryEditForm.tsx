@@ -12,6 +12,7 @@
 
 import { useState, useRef } from 'react'
 import Image from 'next/image'
+import { createClient } from '@/lib/supabase/client'
 
 // ─── 타입 ─────────────────────────────────────────────────────────────────────
 interface PhotoItem {
@@ -24,6 +25,13 @@ interface VideoItem {
   id: string
   youtube_id: string
   title: string
+}
+
+interface R2VideoItem {
+  id: string
+  r2_key: string
+  title: string
+  video_type: string
 }
 
 interface FilmItem {
@@ -40,8 +48,10 @@ interface InitialData {
   skills?: string
   instagram?: string
   castingSummary?: string
+  profileDocPath?: string | null
   photos: PhotoItem[]
   videos: VideoItem[]
+  r2Videos: R2VideoItem[]
   filmography: FilmItem[]
 }
 
@@ -186,11 +196,24 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   const [uploading, setUploading] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
 
-  // 영상
+  // PPTX
+  const pptRef = useRef<HTMLInputElement>(null)
+  const [pptUploading, setPptUploading] = useState(false)
+  const [pptMsg, setPptMsg] = useState('')
+  const [hasPpt, setHasPpt] = useState(!!initialData.profileDocPath)
+
+  // 유튜브 영상
   const [videos, setVideos] = useState<VideoItem[]>(initialData.videos)
   const [videoUrl, setVideoUrl] = useState('')
   const [videoTitle, setVideoTitle] = useState('')
   const [videoMsg, setVideoMsg] = useState('')
+
+  // R2 업로드 영상
+  const [r2Videos, setR2Videos] = useState<R2VideoItem[]>(initialData.r2Videos)
+  const r2VideoRef = useRef<HTMLInputElement>(null)
+  const [r2Uploading, setR2Uploading] = useState(false)
+  const [r2UploadStatus, setR2UploadStatus] = useState('')
+  const [r2VideoMsg, setR2VideoMsg] = useState('')
 
   // 필모그래피
   const [filmography, setFilmography] = useState<FilmItem[]>(initialData.filmography)
@@ -221,6 +244,82 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     } finally {
       setInfoSaving(false)
       setTimeout(() => setInfoMsg(''), 3000)
+    }
+  }
+
+  // ── PPTX 업로드 ────────────────────────────────────────────────────────────
+  async function uploadPpt(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (file.size > 10 * 1024 * 1024) { setPptMsg('10MB 이하 파일만 가능합니다.'); return }
+    setPptUploading(true); setPptMsg('')
+    try {
+      const supabase = createClient()
+      const ext = file.name.split('.').pop()?.toLowerCase() || 'pptx'
+      const path = `${actorId}/${Date.now()}.${ext}`
+      const { error: upErr } = await supabase.storage.from('actor-docs').upload(path, file, { upsert: true })
+      if (upErr) throw new Error(upErr.message)
+      const res = await fetch(`/api/actors/${actorId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ profile_doc_path: path }),
+      })
+      if (!res.ok) throw new Error((await res.json()).error || '저장 실패')
+      setHasPpt(true)
+      setPptMsg(`✓ ${file.name} 업로드 완료`)
+    } catch (e) {
+      setPptMsg((e as Error).message)
+    } finally {
+      setPptUploading(false)
+      if (pptRef.current) pptRef.current.value = ''
+      setTimeout(() => setPptMsg(''), 5000)
+    }
+  }
+
+  // ── R2 영상 업로드 ──────────────────────────────────────────────────────────
+  async function uploadR2Video(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (file.size > 300 * 1024 * 1024) { setR2VideoMsg('300MB 이하 파일만 가능합니다.'); return }
+    setR2Uploading(true); setR2UploadStatus('업로드 URL 발급 중...')
+    try {
+      const urlRes = await fetch('/api/r2/upload-url', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: file.name, contentType: file.type || 'video/mp4', size: file.size }),
+      })
+      if (!urlRes.ok) throw new Error('URL 발급 실패')
+      const { uploadUrl, key } = await urlRes.json()
+      setR2UploadStatus(`업로드 중... (${(file.size / 1024 / 1024).toFixed(0)}MB, 용량이 크면 시간이 걸려요)`)
+      const put = await fetch(uploadUrl, { method: 'PUT', body: file, headers: { 'Content-Type': file.type || 'video/mp4' } })
+      if (!put.ok) throw new Error('업로드 실패')
+      setR2UploadStatus('기록 중...')
+      const res = await fetch(`/api/actors/${actorId}/videos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ r2_key: key, title: file.name }),
+      })
+      if (!res.ok) throw new Error((await res.json()).error || '기록 실패')
+      const row = await res.json()
+      setR2Videos(prev => [...prev, { id: row.id, r2_key: key, title: file.name, video_type: 'reel' }])
+      setR2VideoMsg('영상 업로드 완료.')
+    } catch (e) {
+      setR2VideoMsg((e as Error).message)
+    } finally {
+      setR2Uploading(false); setR2UploadStatus('')
+      if (r2VideoRef.current) r2VideoRef.current.value = ''
+      setTimeout(() => setR2VideoMsg(''), 5000)
+    }
+  }
+
+  async function deleteR2Video(id: string) {
+    if (!confirm('영상을 삭제하시겠습니까?')) return
+    try {
+      const res = await fetch(`/api/actors/${actorId}/videos/${id}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error((await res.json()).error || '삭제 실패')
+      setR2Videos(prev => prev.filter(v => v.id !== id))
+    } catch (e) {
+      setR2VideoMsg((e as Error).message)
     }
   }
 
@@ -417,6 +516,33 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         {infoMsg && <p style={{ ...s.msg, color: infoMsg.includes('실패') || infoMsg.includes('오류') ? '#ef4444' : 'var(--gold)', marginTop: 10 }}>{infoMsg}</p>}
       </section>
 
+      {/* ── 프로필 자료 (PPTX) ── */}
+      <section style={s.section}>
+        <p style={s.sectionTitle}>Profile Document</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+          <div style={{
+            width: 40, height: 40, borderRadius: 6, background: 'rgba(196,165,90,0.12)',
+            border: '1px solid rgba(196,165,90,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '1.2rem', flexShrink: 0,
+          }}>
+            📄
+          </div>
+          <div>
+            <p style={{ fontSize: '0.85rem', color: 'var(--white)', fontWeight: 600, marginBottom: 2 }}>
+              {hasPpt ? '프로필 PPTX 등록됨' : '프로필 PPTX 미등록'}
+            </p>
+            <p style={{ fontSize: '0.75rem', color: 'var(--gray)' }}>
+              {hasPpt ? '새 파일을 올리면 기존 파일이 교체됩니다.' : '.pptx 형식, 10MB 이하'}
+            </p>
+          </div>
+        </div>
+        <input ref={pptRef} type="file" accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation" onChange={uploadPpt} style={{ display: 'none' }} />
+        <button onClick={() => pptRef.current?.click()} disabled={pptUploading} style={{ ...s.btn, ...s.btnGhost, opacity: pptUploading ? 0.6 : 1 }}>
+          {pptUploading ? '업로드 중…' : hasPpt ? '📄 파일 교체' : '📄 파일 올리기'}
+        </button>
+        {pptMsg && <p style={{ ...s.msg, color: pptMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{pptMsg}</p>}
+      </section>
+
       {/* ── 사진 ── */}
       <section style={s.section}>
         <p style={s.sectionTitle}>Photos</p>
@@ -453,35 +579,67 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       <section style={s.section}>
         <p style={s.sectionTitle}>Videos</p>
 
-        {videos.length > 0 && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24 }}>
-            {videos.map(v => (
-              <div key={v.id} style={{ display: 'flex', gap: 12, alignItems: 'center', background: 'var(--bg3)', borderRadius: 6, padding: '10px 14px' }}>
-                <div style={{ width: 60, height: 34, borderRadius: 4, overflow: 'hidden', flexShrink: 0 }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={`https://img.youtube.com/vi/${v.youtube_id}/mqdefault.jpg`} alt={v.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        {/* R2 업로드 영상 */}
+        <div style={{ marginBottom: 28 }}>
+          <p style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--gray)', letterSpacing: '0.08em', marginBottom: 12 }}>📁 직접 업로드 영상</p>
+          {r2Videos.length > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 14 }}>
+              {r2Videos.map(v => (
+                <div key={v.id} style={{ display: 'flex', gap: 12, alignItems: 'center', background: 'var(--bg3)', borderRadius: 6, padding: '10px 14px' }}>
+                  <span style={{ fontSize: '1rem', flexShrink: 0 }}>🎬</span>
+                  <p style={{ flex: 1, fontSize: '0.84rem', color: 'var(--white)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {v.title || v.r2_key.split('/').pop()}
+                    <span style={{ fontSize: '0.72rem', color: 'var(--gray)', marginLeft: 6 }}>
+                      {v.video_type === 'monologue' ? '독백' : '출연영상'}
+                    </span>
+                  </p>
+                  <button onClick={() => deleteR2Video(v.id)} style={{ ...s.btn, ...s.btnDanger }}>삭제</button>
                 </div>
-                <p style={{ flex: 1, fontSize: '0.85rem', color: 'var(--white)', margin: 0 }}>
-                  {v.title || v.youtube_id}
-                </p>
-                <button onClick={() => deleteVideo(v.id)} style={{ ...s.btn, ...s.btnDanger }}>삭제</button>
-              </div>
-            ))}
+              ))}
+            </div>
+          )}
+          <div>
+            <input ref={r2VideoRef} type="file" accept="video/*" onChange={uploadR2Video} style={{ display: 'none' }} />
+            <button onClick={() => r2VideoRef.current?.click()} disabled={r2Uploading} style={{ ...s.btn, ...s.btnGhost, opacity: r2Uploading ? 0.6 : 1 }}>
+              {r2Uploading ? r2UploadStatus || '업로드 중…' : '+ 영상 파일 업로드'}
+            </button>
+            <span style={{ fontSize: '0.74rem', color: 'var(--gray)', marginLeft: 12 }}>mp4 권장, 최대 300MB</span>
           </div>
-        )}
-
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'flex-end' }}>
-          <div style={{ ...s.field, flex: '2 1 240px' }}>
-            <label style={s.label}>유튜브 URL 또는 영상 ID</label>
-            <input value={videoUrl} onChange={e => setVideoUrl(e.target.value)} style={s.input} placeholder="https://youtu.be/..." />
-          </div>
-          <div style={{ ...s.field, flex: '1 1 160px' }}>
-            <label style={s.label}>제목 (선택)</label>
-            <input value={videoTitle} onChange={e => setVideoTitle(e.target.value)} style={s.input} placeholder="단편영화 주연" />
-          </div>
-          <button onClick={addVideo} style={{ ...s.btn, ...s.btnPrimary, marginBottom: 0 }}>추가</button>
+          {r2VideoMsg && <p style={{ ...s.msg, color: r2VideoMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{r2VideoMsg}</p>}
         </div>
-        {videoMsg && <p style={{ ...s.msg, color: videoMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{videoMsg}</p>}
+
+        {/* 유튜브 연결 영상 */}
+        <div style={{ paddingTop: 20, borderTop: '1px solid var(--border)' }}>
+          <p style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--gray)', letterSpacing: '0.08em', marginBottom: 12 }}>🎬 유튜브 영상 연결</p>
+          {videos.length > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 14 }}>
+              {videos.map(v => (
+                <div key={v.id} style={{ display: 'flex', gap: 12, alignItems: 'center', background: 'var(--bg3)', borderRadius: 6, padding: '10px 14px' }}>
+                  <div style={{ width: 60, height: 34, borderRadius: 4, overflow: 'hidden', flexShrink: 0 }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={`https://img.youtube.com/vi/${v.youtube_id}/mqdefault.jpg`} alt={v.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                  <p style={{ flex: 1, fontSize: '0.84rem', color: 'var(--white)', margin: 0 }}>
+                    {v.title || v.youtube_id}
+                  </p>
+                  <button onClick={() => deleteVideo(v.id)} style={{ ...s.btn, ...s.btnDanger }}>삭제</button>
+                </div>
+              ))}
+            </div>
+          )}
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'flex-end' }}>
+            <div style={{ ...s.field, flex: '2 1 200px' }}>
+              <label style={s.label}>유튜브 URL 또는 ID</label>
+              <input value={videoUrl} onChange={e => setVideoUrl(e.target.value)} style={s.input} placeholder="https://youtu.be/..." />
+            </div>
+            <div style={{ ...s.field, flex: '1 1 140px' }}>
+              <label style={s.label}>제목 (선택)</label>
+              <input value={videoTitle} onChange={e => setVideoTitle(e.target.value)} style={s.input} placeholder="단편영화 주연" />
+            </div>
+            <button onClick={addVideo} style={{ ...s.btn, ...s.btnPrimary, marginBottom: 0 }}>추가</button>
+          </div>
+          {videoMsg && <p style={{ ...s.msg, color: videoMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{videoMsg}</p>}
+        </div>
       </section>
 
       {/* ── 필모그래피 ── */}

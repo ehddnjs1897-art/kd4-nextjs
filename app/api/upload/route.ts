@@ -17,9 +17,9 @@ const DEFAULT_BUCKET = 'actor-media'
 
 // ─── 권한 확인 ───────────────────────────────────────────────────────────────
 
-async function requireEditorOrAdmin(): Promise<
-  { userId: string } | NextResponse
-> {
+async function requireUploadAccess(
+  targetActorId: string | null
+): Promise<{ userId: string } | NextResponse> {
   const supabase = await createClient()
   const {
     data: { user },
@@ -32,7 +32,7 @@ async function requireEditorOrAdmin(): Promise<
 
   const { data: profile, error: profileErr } = await supabase
     .from('profiles')
-    .select('role')
+    .select('role, actor_id')
     .eq('id', user.id)
     .single()
 
@@ -44,25 +44,39 @@ async function requireEditorOrAdmin(): Promise<
   }
 
   const role: string = profile.role ?? 'user'
-  if (role !== 'editor' && role !== 'admin') {
-    return NextResponse.json(
-      { error: '파일 업로드는 편집자 또는 관리자만 가능합니다.' },
-      { status: 403 }
-    )
+
+  // admin/editor: 전체 허용
+  if (role === 'admin' || role === 'editor') {
+    return { userId: user.id }
   }
 
-  return { userId: user.id }
+  // member/actor: 본인 actor_id 에만 허용
+  if (
+    (role === 'member' || role === 'actor') &&
+    targetActorId &&
+    profile.actor_id === targetActorId
+  ) {
+    return { userId: user.id }
+  }
+
+  return NextResponse.json(
+    { error: '파일 업로드 권한이 없습니다.' },
+    { status: 403 }
+  )
 }
 
 // ─── POST ────────────────────────────────────────────────────────────────────
 
 export async function POST(request: NextRequest) {
-  const check = await requireEditorOrAdmin()
+  // actorId를 먼저 읽어서 권한 체크에 사용
+  const formData = await request.formData()
+  const actorIdRaw = formData.get('actorId')
+  const targetActorId = typeof actorIdRaw === 'string' ? actorIdRaw : null
+
+  const check = await requireUploadAccess(targetActorId)
   if (check instanceof NextResponse) return check
 
   try {
-    const formData = await request.formData()
-
     const file = formData.get('file')
     const actorId = formData.get('actorId')
     const bucket = (formData.get('bucket') as string | null) ?? DEFAULT_BUCKET

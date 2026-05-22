@@ -20,12 +20,27 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: '권한 없음' }, { status: 403 })
     }
 
-    const { youtube_id, title } = await request.json()
-    if (!youtube_id) return NextResponse.json({ error: 'youtube_id가 필요합니다.' }, { status: 400 })
+    const { youtube_id, r2_key, title, video_type } = await request.json()
+    if (!youtube_id && !r2_key) {
+      return NextResponse.json({ error: 'youtube_id 또는 r2_key가 필요합니다.' }, { status: 400 })
+    }
+
+    const insertData: Record<string, unknown> = {
+      actor_id: id,
+      title: title || null,
+      sort_order: 0,
+    }
+    if (youtube_id) insertData.youtube_id = youtube_id
+    if (r2_key) {
+      insertData.r2_key = r2_key
+      insertData.video_type = video_type || 'reel'
+      insertData.is_public = false
+      insertData.uploaded_at = new Date().toISOString()
+    }
 
     const { data, error } = await supabaseAdmin
       .from('actor_videos')
-      .insert({ actor_id: id, youtube_id, title: title || null, sort_order: 0 })
+      .insert(insertData)
       .select('id')
       .single()
 

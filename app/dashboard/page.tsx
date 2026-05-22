@@ -138,35 +138,26 @@ export default async function DashboardPage() {
             <h2 style={sectionTitle}>내 배우 프로필</h2>
             {actorId ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {/* 배우 페이지 링크 — actor row 존재 확인 후 표시 */}
                 {actorExists ? (
                   <Link href={`/actors/${actorId}`} style={primaryBtn}>
                     내 배우 페이지 보기 →
                   </Link>
                 ) : (
-                  <p style={{ fontSize: '0.8rem', color: 'var(--gray)', padding: '8px 0' }}>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--gray)', padding: '4px 0' }}>
                     ⏳ 프로필 검토 준비 중 — 자료를 등록하면 관리자 검토 후 공개됩니다.
                   </p>
                 )}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                  {canEdit && (
-                    <Link href="/dashboard/edit" style={tileBtn}>
-                      <span style={tileIcon}>✏️</span>
-                      <span>프로필 편집</span>
-                    </Link>
-                  )}
-                  <Link href="/onboarding" style={tileBtn}>
-                    <span style={tileIcon}>📂</span>
-                    <span>이력서·영상 등록</span>
-                  </Link>
-                </div>
+                <Link href="/dashboard/edit" style={tileBtn}>
+                  <span style={tileIcon}>✏️</span>
+                  <span>프로필 관리</span>
+                </Link>
               </div>
             ) : (
               <div>
                 <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 14 }}>
-                  프로필 PPTX·사진·출연영상을 올리면 검토 후 배우 DB에 공개됩니다.
+                  PPTX·사진·영상을 올리면 검토 후 배우 DB에 공개됩니다.
                 </p>
-                <Link href="/onboarding" style={primaryBtn}>프로필 자료 올리기</Link>
+                <Link href="/dashboard/edit" style={primaryBtn}>프로필 자료 올리기</Link>
               </div>
             )}
           </section>

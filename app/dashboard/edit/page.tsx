@@ -9,6 +9,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import GalleryEditForm from '@/components/dashboard/GalleryEditForm'
+import OnboardingForm from '@/components/onboarding/OnboardingForm'
 import { UserRole } from '@/lib/types'
 
 interface Profile {
@@ -22,6 +23,14 @@ interface ActorRow {
   skills: string | null
   instagram: string | null
   casting_summary: string | null
+  profile_doc_path: string | null
+}
+
+interface R2VideoRow {
+  id: string
+  r2_key: string
+  title: string | null
+  video_type: string | null
 }
 
 interface PhotoRow {
@@ -75,33 +84,33 @@ export default async function GalleryEditPage() {
     redirect('/dashboard')
   }
 
-  // ── actor_id 미매칭 ────────────────────────────────────────────────────────
+  // ── actor_id 없으면 온보딩 폼 표시 ────────────────────────────────────────
   if (!actor_id) {
+    const { data: profileData } = await supabaseAdmin
+      .from('profiles').select('name').eq('id', user.id).maybeSingle()
+    const userName = profileData?.name || user.user_metadata?.name || ''
+
     return (
       <div style={styles.page}>
         <div className="container">
           <header style={styles.header}>
-            <p style={styles.eyebrow}>GALLERY EDIT</p>
-            <h1 style={styles.pageTitle}>갤러리 편집</h1>
-          </header>
-          <div style={styles.notice}>
-            <p style={styles.noticeTitle}>배우 DB와 매칭되지 않았습니다</p>
-            <p style={styles.noticeDesc}>
-              관리자에게 문의하여 계정을 배우 프로필과 연결해 주세요.
-              <br />
-              연결이 완료되면 갤러리 편집 기능을 이용할 수 있습니다.
+            <p style={styles.eyebrow}>PROFILE SETUP</p>
+            <h1 style={styles.pageTitle}>프로필 등록</h1>
+            <p style={styles.subtitle}>
+              자료를 올려 주세요. 검토 후 배우 DB에 공개됩니다.
             </p>
-          </div>
+          </header>
+          <OnboardingForm userId={user.id} userName={userName} />
         </div>
       </div>
     )
   }
 
   // ── 초기 데이터 로드 ───────────────────────────────────────────────────────
-  const [actorRes, photosRes, videosRes, filmRes] = await Promise.all([
+  const [actorRes, photosRes, videosRes, filmRes, r2VideosRes] = await Promise.all([
     supabaseAdmin
       .from('actors')
-      .select('height, weight, skills, instagram, casting_summary')
+      .select('height, weight, skills, instagram, casting_summary, profile_doc_path')
       .eq('id', actor_id)
       .single(),
     supabaseAdmin
@@ -113,18 +122,26 @@ export default async function GalleryEditPage() {
       .from('actor_videos')
       .select('id, youtube_id, title')
       .eq('actor_id', actor_id)
+      .not('youtube_id', 'is', null)
       .order('created_at', { ascending: false }),
     supabaseAdmin
       .from('actor_filmography')
       .select('id, category, year, title, role')
       .eq('actor_id', actor_id)
       .order('year', { ascending: false }),
+    supabaseAdmin
+      .from('actor_videos')
+      .select('id, r2_key, title, video_type')
+      .eq('actor_id', actor_id)
+      .not('r2_key', 'is', null)
+      .order('created_at', { ascending: false }),
   ])
 
   const actor = (actorRes.data ?? {}) as ActorRow
   const photos = (photosRes.data ?? []) as PhotoRow[]
   const videos = (videosRes.data ?? []) as VideoRow[]
   const filmography = (filmRes.data ?? []) as FilmRow[]
+  const r2Videos = (r2VideosRes.data ?? []) as R2VideoRow[]
 
   const initialData = {
     height: actor.height ?? undefined,
@@ -132,6 +149,7 @@ export default async function GalleryEditPage() {
     skills: actor.skills ?? undefined,
     instagram: actor.instagram ?? undefined,
     castingSummary: actor.casting_summary ?? undefined,
+    profileDocPath: actor.profile_doc_path ?? null,
     photos: photos.map((p) => ({
       id: p.id,
       url: p.url,
@@ -141,6 +159,12 @@ export default async function GalleryEditPage() {
       id: v.id,
       youtube_id: v.youtube_id,
       title: v.title ?? '',
+    })),
+    r2Videos: r2Videos.map((v) => ({
+      id: v.id,
+      r2_key: v.r2_key,
+      title: v.title ?? '',
+      video_type: v.video_type ?? 'reel',
     })),
     filmography: filmography.map((f) => ({
       id: f.id,
