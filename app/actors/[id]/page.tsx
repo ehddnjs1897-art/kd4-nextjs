@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { unstable_cache } from 'next/cache'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
@@ -112,6 +113,12 @@ async function getActor(id: string): Promise<Actor | null> {
   }
 }
 
+// 배우 상세는 공유 데이터 → 120초 캐시 (id별). 'actors' 태그로 즉시 갱신 가능.
+const getActorCached = unstable_cache(getActor, ['actor-detail-v1'], {
+  revalidate: 120,
+  tags: ['actors'],
+})
+
 function profilePhotoUrl(actor: Actor): string {
   // 우선순위: profile_photo (수동 업로드) → Storage → Drive → 플레이스홀더
   if (actor.profile_photo) return actor.profile_photo
@@ -142,7 +149,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>
 }): Promise<Metadata> {
   const { id } = await params
-  const actor = await getActor(id)
+  const actor = await getActorCached(id)
   if (!actor) return { title: 'KD4 액팅 스튜디오' }
 
   const SITE_URL = 'https://kd4.club'
@@ -203,15 +210,17 @@ export default async function ActorDetailPage({
   const { id } = await params
 
   /* ---- 비로그인도 접근 가능 (공개 페이지) ---- */
+  // getSession: 쿠키 로컬 판독(네트워크 X). 토큰 갱신은 middleware 담당.
   const supabase = await createClient()
   const {
-    data: { user },
-  } = await supabase.auth.getUser()
+    data: { session },
+  } = await supabase.auth.getSession()
+  const user = session?.user ?? null
 
-  // 역할 조회 (로그인 시에만, 비로그인은 null)
+  // 역할 조회 (로그인 시에만, 비로그인은 null) — service role로 RLS 우회(빠름)
   let role: UserRole | null = null
   if (user) {
-    const { data: profile } = await supabase
+    const { data: profile } = await supabaseAdmin
       .from('profiles')
       .select('role')
       .eq('id', user.id)
@@ -225,7 +234,7 @@ export default async function ActorDetailPage({
   }
 
   /* ---- 데이터 fetch ---- */
-  const actor = await getActor(id)
+  const actor = await getActorCached(id)
   if (!actor) notFound()
 
   const photoUrl = profilePhotoUrl(actor)

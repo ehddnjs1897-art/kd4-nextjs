@@ -126,13 +126,15 @@ const AGE_OPTIONS: { value: AgeFilter; label: string }[] = [
 
 export default async function ActorsPage({ searchParams }: PageProps) {
   /* ---- 접근 권한 확인 (배우 DB는 회원 전용) ---- */
+  // getSession: 쿠키에서 로컬 판독(네트워크 왕복 없음). 토큰 갱신은 middleware가 담당.
   const supabase = await createClient()
   const {
-    data: { user },
-  } = await supabase.auth.getUser()
+    data: { session },
+  } = await supabase.auth.getSession()
+  const user = session?.user ?? null
   let role: UserRole | null = null
   if (user) {
-    const { data: roleRow } = await supabase
+    const { data: roleRow } = await supabaseAdmin
       .from('profiles')
       .select('role')
       .eq('id', user.id)
