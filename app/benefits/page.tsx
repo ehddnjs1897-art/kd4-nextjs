@@ -369,6 +369,59 @@ export default function BenefitsPage() {
 
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
+      {/* 공식 제휴 — 서우스튜디오 프로필 촬영 */}
+      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
+        <SectionHeader
+          eyebrow="OFFICIAL PARTNERSHIP"
+          title="공식 제휴"
+          desc="배우에게 꼭 필요한 프로필 촬영, 제휴 스튜디오에서 멤버 할인으로."
+        />
+        <Link
+          href="/benefits/seowoo-studio"
+          className="kd4-card-hover"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 'clamp(16px, 4vw, 28px)',
+            maxWidth: 640,
+            margin: '0 auto',
+            background: '#ffffff',
+            border: '1.5px solid rgba(21,72,138,0.18)',
+            borderRadius: 12,
+            padding: 'clamp(20px, 4vw, 28px)',
+            textDecoration: 'none',
+            position: 'relative',
+            overflow: 'hidden',
+            flexWrap: 'wrap',
+          }}
+        >
+          <span aria-hidden style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 3, background: 'var(--gold)' }} />
+          {/* seowoo 로고 (실제 로고 파일 수령 후 <img>로 교체) */}
+          <span
+            style={{
+              display: 'inline-flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 4,
+              flexShrink: 0,
+              lineHeight: 1,
+            }}
+          >
+            <span style={{ fontFamily: 'var(--font-sans)', fontSize: '1.25rem', fontWeight: 500, color: '#1a1a1a', textTransform: 'lowercase' }}>seowoo</span>
+            <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.55rem', fontWeight: 500, letterSpacing: '0.4em', color: '#1a1a1a', textTransform: 'uppercase', paddingLeft: '0.4em' }}>studio</span>
+          </span>
+          {/* 텍스트 */}
+          <span style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 180, flex: 1 }}>
+            <span style={{ fontFamily: 'var(--font-sans)', fontSize: '1.05rem', fontWeight: 700, color: 'var(--white)' }}>배우 프로필 촬영 제휴</span>
+            <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.92rem', fontWeight: 600, color: 'var(--gold)' }}>KD4 멤버 최대 15% 할인</span>
+            <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', color: 'var(--secondary)' }}>서우스튜디오 · 프로필 · 포트레이트 촬영</span>
+          </span>
+          <span aria-hidden style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', fontWeight: 700, color: 'var(--gold)', whiteSpace: 'nowrap' }}>자세히 보기 →</span>
+        </Link>
+      </section>
+
+      <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
+
       {/* 멤버 커뮤니티 */}
       <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
         <SectionHeader
