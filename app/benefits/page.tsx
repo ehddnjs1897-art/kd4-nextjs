@@ -404,12 +404,10 @@ export default function BenefitsPage() {
             style={{ display: 'flex', alignItems: 'center', gap: 'clamp(16px, 4vw, 24px)', background: '#ffffff', border: '1.5px solid rgba(21,72,138,0.18)', borderRadius: 12, padding: 'clamp(18px, 3vw, 24px)', textDecoration: 'none', position: 'relative', overflow: 'hidden', flexWrap: 'wrap' }}
           >
             <span aria-hidden style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 3, background: 'var(--gold)' }} />
-            <span style={{ flexShrink: 0, width: 72, height: 72, borderRadius: 8, background: 'conic-gradient(from 200deg at 50% 50%, #43c643, #ffe000, #ff8c00, #e91e63, #9b27af, #43c643)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '2.6rem', fontWeight: 900, color: '#fff', lineHeight: 1, textShadow: '0 1px 4px rgba(0,0,0,0.25)' }}>R</span>
-            </span>
+            <Image src="/partners/replay-logo.webp" alt="REPLAY" width={72} height={72} style={{ flexShrink: 0, borderRadius: 6, objectFit: 'contain' }} />
             <span style={{ display: 'flex', flexDirection: 'column', gap: 5, minWidth: 160, flex: 1 }}>
               <span style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', fontWeight: 700, color: 'var(--white)' }}>배우 커뮤니티 리플레이</span>
-              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 600, color: 'var(--gold)' }}>KD4 멤버 3만원 (VAT 별도) / 50장</span>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 600, color: 'var(--gold)' }}>KD4 멤버 3만원 (VAT 별도) / 40장</span>
               <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: 'var(--secondary)' }}>일반 4만원 / 40장 · 프로필 투어 · 캐스팅 배포</span>
             </span>
             <span aria-hidden style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 700, color: 'var(--gold)', whiteSpace: 'nowrap' }}>신청하기 →</span>
