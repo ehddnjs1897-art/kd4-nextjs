@@ -130,15 +130,24 @@ export default function InsightsPage() {
     const arr = Array.from(files).filter(f => f.type.startsWith('image/'))
     if (!arr.length) return
     setUploading(true)
+    setSaveError('')
+    let failed = 0
     for (const file of arr) {
-      const fd = new FormData()
-      fd.append('file', file)
-      if (imageTitle) fd.append('title', imageTitle)
-      if (memo) fd.append('memo', memo)
-      await fetch('/api/insights/upload', { method: 'POST', body: fd })
+      try {
+        const fd = new FormData()
+        fd.append('file', file)
+        if (imageTitle) fd.append('title', imageTitle)
+        if (memo) fd.append('memo', memo)
+        const res = await fetch('/api/insights/upload', { method: 'POST', body: fd })
+        if (!res.ok) failed++
+      } catch { failed++ }
     }
     setImageTitle('')
     setMemo('')
+    if (failed > 0) {
+      setSaveError(`${failed}개 파일 업로드 실패. 나머지는 저장되었습니다.`)
+      setTimeout(() => setSaveError(''), 5000)
+    }
     await fetchInsights()
     setUploading(false)
   }
