@@ -24,6 +24,7 @@ export default function R2Video({
   const [playing, setPlaying] = useState(false)
   const [prefetching, setPrefetching] = useState(true)
   const [error, setError] = useState('')
+  const [downloading, setDownloading] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
 
   // 마운트 시 URL 미리 발급
@@ -45,6 +46,7 @@ export default function R2Video({
   }
 
   async function downloadVideo() {
+    setDownloading(true)
     try {
       const res = await fetch(`/api/videos/${videoId}/signed-url?download=1`)
       const j = await res.json()
@@ -60,6 +62,8 @@ export default function R2Video({
       a.remove()
     } catch {
       setError('다운로드 중 오류가 발생했습니다.')
+    } finally {
+      setDownloading(false)
     }
   }
 
@@ -120,8 +124,13 @@ export default function R2Video({
       </div>
       {title && <p style={s.title}>{title}</p>}
       {allowDownload && (
-        <button type="button" onClick={downloadVideo} style={s.dlBtn}>
-          ⤓ 영상 다운로드
+        <button
+          type="button"
+          onClick={downloadVideo}
+          disabled={downloading}
+          style={{ ...s.dlBtn, opacity: downloading ? 0.6 : 1, cursor: downloading ? 'not-allowed' : 'pointer' }}
+        >
+          {downloading ? '⏳ 다운로드 중...' : '⤓ 영상 다운로드'}
         </button>
       )}
     </div>

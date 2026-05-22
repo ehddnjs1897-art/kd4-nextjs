@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import { unstable_cache } from 'next/cache'
+import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
@@ -316,13 +317,17 @@ export default async function ActorDetailPage({
                 overflow: 'hidden',
                 background: 'var(--bg2)',
                 boxShadow: '0 12px 40px rgba(0,0,0,0.5)',
+                position: 'relative',
               }}>
                 {photoUrl !== '/placeholder-actor.svg' ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <Image
                     src={photoUrl}
                     alt={actor.name}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center', display: 'block' }}
+                    fill
+                    sizes="(max-width: 660px) 200px, 290px"
+                    style={{ objectFit: 'cover', objectPosition: 'top center' }}
+                    priority
+                    unoptimized
                   />
                 ) : (
                   <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray)', fontSize: '3rem' }}>👤</div>
@@ -428,8 +433,14 @@ export default async function ActorDetailPage({
                   </>
                 ) : (
                   <p style={{ fontSize: '0.82rem', color: 'var(--gray)' }}>
-                    {user ? '연락처 열람은 디렉터 회원 전용입니다.' : '연락처 및 자료 다운로드는 KD4 멤버 전용입니다.'}
-                    {!user && <Link href="/auth/login" style={{ color: 'var(--gold)', marginLeft: 6 }}>로그인</Link>}
+                    {user
+                      ? <>연락처 열람은 디렉터 회원 전용입니다.{' '}
+                          <Link href="/dashboard" style={{ color: 'var(--gold)' }}>마이페이지에서 신청 →</Link>
+                        </>
+                      : <>연락처 및 자료 다운로드는 KD4 멤버 전용입니다.{' '}
+                          <Link href="/auth/login" style={{ color: 'var(--gold)' }}>로그인</Link>
+                        </>
+                    }
                   </p>
                 )}
                 {actor.instagram && (

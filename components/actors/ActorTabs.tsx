@@ -223,8 +223,8 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
   const reelVideos = (actor.actor_videos ?? []).filter(v => !v.video_type || v.video_type === 'reel').slice(0, 2)
   const monologueVideos = (actor.actor_videos ?? []).filter(v => v.video_type === 'monologue').slice(0, 1)
 
-  // 최근 출연 (year >= 2025)
-  const recentWorks = allFilmo.filter((f) => (f.year ?? 0) >= 2025)
+  // 최근 출연 (최근 2년 이내 동적 기준)
+  const recentWorks = allFilmo.filter((f) => (f.year ?? 0) >= new Date().getFullYear() - 1)
 
   // 카테고리별 필모
   const filmoByCategory = (cat: FilmoCategory) => allFilmo.filter((f) => f.category === cat)
@@ -250,6 +250,8 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                 {imageProtected ? (
                   <>
                     <div
+                      role="img"
+                      aria-label={`${actor.name} 프로필 사진 ${i + 1}`}
                       style={{
                         ...s.photoImg,
                         backgroundImage: `url("${url}")`,
@@ -304,12 +306,16 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                   }}>
                     {src ? (
                       imageProtected ? (
-                        <div style={{
-                          position: 'absolute', inset: 0,
-                          backgroundImage: `url("${src}")`,
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center top',
-                        }} />
+                        <div
+                          role="img"
+                          aria-label={`${actor.name} ${labelText}`}
+                          style={{
+                            position: 'absolute', inset: 0,
+                            backgroundImage: `url("${src}")`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center top',
+                          }}
+                        />
                       ) : (
                         <Image
                           src={src}
@@ -456,6 +462,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                 >＋ 추가</button>
               )}
             </h2>
+            <div style={{ overflowX: 'auto' }}>
             <table style={s.table}>
               <thead>
                 <tr>
@@ -503,7 +510,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                             style={s.inlineInput} placeholder="역할" />
                         </td>
                         <td style={{ ...s.td, whiteSpace: 'nowrap' }}>
-                          <button onClick={() => saveEdit(entry)} disabled={saving} style={s.saveBtn} title="저장">✓</button>
+                          <button onClick={() => saveEdit(entry)} disabled={saving} style={{ ...s.saveBtn, color: saving ? 'var(--gray)' : 'var(--gold)' }} title="저장">{saving ? '…' : '✓'}</button>
                           <button onClick={() => setEditingId(null)} disabled={saving} style={s.cancelBtn} title="취소">✕</button>
                           {confirmingDeleteId === entry.id ? (
                             <>
@@ -598,13 +605,14 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                         style={s.inlineInput} placeholder="역할" />
                     </td>
                     <td style={{ ...s.td, whiteSpace: 'nowrap' }}>
-                      <button onClick={() => addEntry(cat)} disabled={saving || !newEntry.title.trim()} style={s.saveBtn} title="저장">✓</button>
+                      <button onClick={() => addEntry(cat)} disabled={saving || !newEntry.title.trim()} style={{ ...s.saveBtn, color: saving ? 'var(--gray)' : 'var(--gold)' }} title="저장">{saving ? '…' : '✓'}</button>
                       <button onClick={() => { setAddingCat(null); setNewEntry({ year: '', title: '', role: '', broadcaster: '', film_type: '' }) }} style={s.cancelBtn} title="취소">✕</button>
                     </td>
                   </tr>
                 )}
               </tbody>
             </table>
+            </div>
             {editErr && <p style={{ color: '#f87171', fontSize: '0.8rem', marginTop: 4 }}>{editErr}</p>}
           </section>
         )
@@ -617,6 +625,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
             <span style={{ ...s.sectionNum, color: 'var(--accent-red)' }}>🏆</span>
             <span style={{ ...s.sectionTitle, color: 'var(--accent-red)' }}>AWARD</span>
           </h2>
+          <div style={{ overflowX: 'auto' }}>
           <table style={s.table}>
             <thead>
               <tr>
@@ -641,6 +650,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
               ))}
             </tbody>
           </table>
+          </div>
         </section>
       )}
     </div>
