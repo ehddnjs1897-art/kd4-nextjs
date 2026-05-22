@@ -51,6 +51,15 @@ export default function Navbar() {
     return () => { document.body.style.overflow = '' }
   }, [mobileOpen])
 
+  /* ── Escape 키로 모바일 메뉴 닫기 ── */
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && mobileOpen) setMobileOpen(false)
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [mobileOpen])
+
   /* ── 인증 상태 & 역할 fetch — Supabase 클라이언트 동적 로드 (메인 페이지 초기 번들에서 제외) ── */
   useEffect(() => {
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
@@ -225,7 +234,7 @@ export default function Navbar() {
                   onMouseLeave={e => {
                     if (!crewDropOpen) e.currentTarget.style.color = '#111111'
                   }}
-                  aria-haspopup="true"
+                  aria-haspopup="menu"
                   aria-expanded={crewDropOpen}
                 >
                   KD4 크루
@@ -480,6 +489,8 @@ export default function Navbar() {
                 <li style={{ borderBottom: '1px solid var(--border)' }}>
                   <button
                     onClick={() => setMobileCrewOpen(v => !v)}
+                    aria-expanded={mobileCrewOpen}
+                    aria-haspopup="menu"
                     style={{
                       display: 'flex',
                       alignItems: 'center',

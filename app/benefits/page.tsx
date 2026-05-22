@@ -15,6 +15,13 @@ export const metadata: Metadata = {
     description: 'KD4 멤버가 누리는 혜택과 커뮤니티 — 보강제도, 출연영상·프로필 편집 서비스, 레피티션 스터디, 굿무비 굿액팅, 크리스쳔 액터스.',
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
+    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '멤버 혜택 | KD4 액팅 스튜디오',
+    description: 'KD4 멤버가 누리는 혜택과 커뮤니티 — 보강제도, 출연영상·프로필 편집 서비스, 레피티션 스터디.',
+    images: [`${SITE_URL}/og-image.jpg`],
   },
 }
 

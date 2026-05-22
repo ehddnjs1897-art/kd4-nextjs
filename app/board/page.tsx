@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import BoardClient from '@/components/board/BoardClient'
 import PublicLanding from '@/components/board/PublicLanding'
@@ -5,14 +6,24 @@ import { SITE_URL } from '@/lib/constants'
 
 const BOARD_URL = `${SITE_URL}/board`
 
-export const metadata = {
+export const metadata: Metadata = {
   title: '커뮤니티 — KD4 액팅 스튜디오',
   description: 'KD4 멤버들의 연기·오디션 이야기, 클래스 후기, 공지사항을 공유하는 커뮤니티입니다.',
   alternates: { canonical: BOARD_URL },
   openGraph: {
+    type: 'website',
     title: '커뮤니티 | KD4 액팅 스튜디오',
     description: 'KD4 멤버 커뮤니티 — 연기·오디션·클래스 이야기',
     url: BOARD_URL,
+    locale: 'ko_KR',
+    siteName: 'KD4 액팅 스튜디오',
+    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '커뮤니티 | KD4 액팅 스튜디오',
+    description: 'KD4 멤버 커뮤니티 — 연기·오디션·클래스 이야기',
+    images: [`${SITE_URL}/og-image.jpg`],
   },
 }
 

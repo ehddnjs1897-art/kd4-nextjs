@@ -65,6 +65,11 @@ export async function POST(request: NextRequest) {
     if (!name || !phone) {
       return NextResponse.json({ error: '이름과 연락처는 필수입니다.' }, { status: 400 })
     }
+    // 이메일 형식 검증 (선택 필드 — 있을 때만 검증)
+    const emailRaw = typeof record?.email === 'string' ? record.email.trim() : null
+    if (emailRaw && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailRaw)) {
+      return NextResponse.json({ error: '이메일 형식이 올바르지 않습니다.' }, { status: 400 })
+    }
 
     // Rate limit: 동일 연락처로 5분 내 3회 초과 차단 (SMS 비용 폭탄 방지)
     const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString()

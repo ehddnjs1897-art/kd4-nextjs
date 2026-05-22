@@ -64,6 +64,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'daily',
       priority: 0.6,
     },
+    {
+      url: `${BASE}/insights`,
+      lastModified: NOW,
+      changeFrequency: 'weekly',
+      priority: 0.6,
+    },
     // /join 은 noindex 페이지이므로 sitemap 제외
   ]
 }
