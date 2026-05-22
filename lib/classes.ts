@@ -147,9 +147,9 @@ export const CLASSES: ClassItem[] = [
   },
   {
     step: "STEP 3",
-    nameKo: "오디션 클래스",
+    nameKo: "오디션 테크닉 클래스",
     category: "step3",
-    nameEn: "Audition Class",
+    nameEn: "Audition Technique Class",
     quote: "캐스팅 디렉터의 시선을 멈추게 할 독백 만들기",
     bullets: [
       "오디션 독백 만들기 / 오디션 테크닉",

@@ -77,7 +77,7 @@ export default async function EnrollPage({
       userName={profile?.name ?? (user.user_metadata?.name as string) ?? ''}
       userPhone={profile?.phone ?? ''}
       userEmail={user.email ?? ''}
-      initialType={params.type ?? '기존 KD4 멤버'}
+      initialType={params.type ?? '신규 등록'}
       initialSelect={params.select ? [params.select] : []}
     />
   )

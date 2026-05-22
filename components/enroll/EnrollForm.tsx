@@ -54,12 +54,13 @@ const BRANDING_SERVICES: ClassOption[] = [
 ]
 
 const TYPE_META: Record<string, { desc: string }> = {
-  '신규 등록': { desc: 'KD4를 처음 시작하시는 분' },
-  '기존 KD4 멤버': { desc: '이미 수강 중이거나 수료하신 분' },
+  '신규 등록':         { desc: 'KD4를 처음 시작하시는 분' },
+  '수업 유지':         { desc: '지금 다니는 수업을 다음 달도 그대로 신청해요' },
+  '클래스 추가·변경':  { desc: '새로운 클래스나 추가 수강을 신청해요' },
   '퍼스널 브랜딩 서비스': { desc: '프로필 투어·출연영상·프로필 편집 서비스' },
 }
 
-const TYPES = ['신규 등록', '기존 KD4 멤버', '퍼스널 브랜딩 서비스'] as const
+const TYPES = ['신규 등록', '수업 유지', '클래스 추가·변경', '퍼스널 브랜딩 서비스'] as const
 
 const STEP_STYLE: Record<string, { bg: string; color: string }> = {
   'STEP 1': { bg: 'rgba(21,72,138,0.10)', color: '#15488A' },
@@ -76,8 +77,8 @@ function ym(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
 }
 function ymLabel(s: string): string {
-  const [y, m] = s.split('-')
-  return `${y}년 ${parseInt(m, 10)}월`
+  const [, m] = s.split('-')
+  return `${parseInt(m, 10)}월`
 }
 
 export default function EnrollForm({
@@ -85,7 +86,7 @@ export default function EnrollForm({
   userName,
   userPhone,
   userEmail,
-  initialType = '기존 KD4 멤버',
+  initialType = '수업 유지',
   initialSelect = [],
 }: {
   classes: ClassOption[]
@@ -104,10 +105,13 @@ export default function EnrollForm({
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
 
+  const isMaintain = type === '수업 유지'
+
   const visibleClasses: ClassOption[] = (() => {
     if (type === '신규 등록') return classes.filter((c) => c.isNewMemberOpen)
-    if (type === '브랜딩 서비스') return BRANDING_SERVICES
-    return classes
+    if (type === '퍼스널 브랜딩 서비스') return BRANDING_SERVICES
+    if (type === '수업 유지') return []
+    return classes // 클래스 추가·변경
   })()
 
   const allItems = [...classes, ...BRANDING_SERVICES]
@@ -127,7 +131,7 @@ export default function EnrollForm({
   }
 
   async function submit() {
-    if (selected.length === 0) {
+    if (!isMaintain && selected.length === 0) {
       setError('수강할 클래스를 1개 이상 선택해 주세요.')
       return
     }
@@ -138,10 +142,11 @@ export default function EnrollForm({
     setLoading(true)
     setError('')
     try {
+      const classNames = isMaintain ? ['수업 유지'] : selected
       const res = await fetch('/api/enrollments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ enrollment_type: type, class_names: selected, year_month: nextMonth }),
+        body: JSON.stringify({ enrollment_type: type, class_names: classNames, year_month: nextMonth }),
       })
       const json = await res.json()
       if (!res.ok) {
@@ -168,10 +173,11 @@ export default function EnrollForm({
             ENROLLMENT COMPLETE
           </p>
           <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.4rem,4vw,1.8rem)', fontWeight: 700, color: '#111', marginBottom: 14 }}>
-            수강 신청 완료
+            신청 완료
           </h1>
           <p style={{ fontSize: '0.92rem', color: 'var(--gray-light)', lineHeight: 1.9, marginBottom: 32 }}>
-            {ymLabel(nextMonth)} 기수 · {selected.length}개 클래스 신청이 접수되었습니다.<br />
+            {ymLabel(nextMonth)} 클래스 신청이 접수되었습니다.<br />
+            {isMaintain ? '현재 수업 유지로 접수되었어요.' : `${selected.length}개 클래스가 선택되었습니다.`}<br />
             결제 안내는 등록하신 연락처로 개별 안내드립니다.
           </p>
           <Link href="/dashboard" className="btn-primary" style={{ background: 'var(--navy)', color: '#fff' }}>
@@ -204,7 +210,7 @@ export default function EnrollForm({
           }}>
             <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--navy)', display: 'inline-block', flexShrink: 0 }} />
             <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--navy)' }}>
-              {ymLabel(nextMonth)} 기수 모집 중
+              {ymLabel(nextMonth)} 클래스 모집 중
             </span>
           </span>
         </div>
@@ -235,7 +241,7 @@ export default function EnrollForm({
                 >
                   <span style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                     <span style={{ fontWeight: 700, fontSize: '0.92rem', color: active ? 'var(--navy)' : '#222' }}>{t}</span>
-                    <span style={{ fontSize: '0.77rem', color: 'var(--gray)' }}>{TYPE_META[t].desc}</span>
+                    <span style={{ fontSize: '0.77rem', color: 'var(--gray)' }}>{TYPE_META[t]?.desc}</span>
                   </span>
                   <span style={{
                     width: 20, height: 20, borderRadius: '50%', flexShrink: 0,
@@ -251,80 +257,98 @@ export default function EnrollForm({
           </div>
         </div>
 
-        {/* ── 2. 클래스 선택 ── */}
-        <div style={{ marginBottom: 28 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-            <span style={{ width: 22, height: 22, borderRadius: '50%', background: 'var(--navy)', color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.68rem', fontWeight: 800, flexShrink: 0 }}>2</span>
-            <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--navy)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>클래스 선택</span>
-            <span style={{ fontSize: '0.72rem', color: 'var(--gray)' }}>(복수 선택 가능)</span>
+        {/* ── 2. 클래스 선택 (수업 유지는 생략) ── */}
+        {isMaintain ? (
+          /* 수업 유지 안내 박스 */
+          <div style={{
+            marginBottom: 28, padding: '20px 20px', borderRadius: 14,
+            background: 'rgba(21,72,138,0.04)', border: '1.5px solid rgba(21,72,138,0.18)',
+          }}>
+            <p style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--navy)', marginBottom: 6 }}>
+              현재 수업을 다음 달도 그대로 신청합니다
+            </p>
+            <p style={{ fontSize: '0.82rem', color: 'var(--gray)', lineHeight: 1.7 }}>
+              별도 클래스 선택 없이 지금 다니는 수업이 자동으로 접수돼요.<br />
+              다른 클래스를 추가하려면 위에서 <strong>클래스 추가·변경</strong>을 선택해 주세요.
+            </p>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {visibleClasses.map((c) => {
-              const on = selected.includes(c.nameKo)
-              const ss = STEP_STYLE[c.step] ?? STEP_STYLE['별도']
-              const isService = c.step === '서비스'
-              return (
-                <button
-                  key={c.nameKo}
-                  type="button"
-                  onClick={() => toggle(c.nameKo)}
-                  style={{
-                    display: 'flex', alignItems: 'flex-start', gap: 14,
-                    padding: '16px 18px', borderRadius: 14,
-                    border: `1.5px solid ${on ? 'var(--navy)' : c.highlight ? 'rgba(120,90,20,0.35)' : 'var(--border)'}`,
-                    background: on ? 'rgba(21,72,138,0.05)' : '#ffffff',
-                    cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
-                    position: 'relative', overflow: 'hidden',
-                  }}
-                >
-                  {c.highlight && !on && (
-                    <span style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 3, background: 'rgba(120,90,20,0.45)' }} />
-                  )}
-                  <span style={{
-                    width: 22, height: 22, borderRadius: 6, flexShrink: 0, marginTop: 3,
-                    border: `1.5px solid ${on ? 'var(--navy)' : 'var(--border)'}`,
-                    background: on ? 'var(--navy)' : '#fff',
-                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                  }}>
-                    {on && <CheckCircle size={13} color="#fff" strokeWidth={2.5} />}
-                  </span>
-                  <span style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap' }}>
-                      <span style={{ fontSize: '0.67rem', fontWeight: 700, padding: '2px 8px', borderRadius: 100, background: ss.bg, color: ss.color, letterSpacing: '0.03em', whiteSpace: 'nowrap' }}>
-                        {c.step}
-                      </span>
-                      {c.promoLabel && (
-                        <span style={{ fontSize: '0.67rem', fontWeight: 600, padding: '2px 8px', borderRadius: 100, background: 'rgba(120,90,20,0.10)', color: '#7A5A14', whiteSpace: 'nowrap' }}>
-                          {c.promoLabel}
-                        </span>
-                      )}
-                      {c.remainingSeats !== undefined && c.remainingSeats <= 3 && (
-                        <span style={{ fontSize: '0.67rem', fontWeight: 700, padding: '2px 8px', borderRadius: 100, background: 'rgba(199,62,62,0.10)', color: 'var(--accent-red)', whiteSpace: 'nowrap' }}>
-                          잔여 {c.remainingSeats}석
-                        </span>
-                      )}
-                    </span>
-                    <span style={{ fontWeight: 700, fontSize: '0.95rem', color: '#111', lineHeight: 1.3 }}>{c.nameKo}</span>
-                    <span style={{ fontSize: '0.76rem', color: 'var(--gray)', display: 'flex', flexWrap: 'wrap', gap: '3px 10px' }}>
-                      {c.schedule && <span>{c.schedule}</span>}
-                      {c.duration && <span>{c.duration}</span>}
-                      {c.capacity && c.capacity !== '-' && <span>정원 {c.capacity}</span>}
-                      {c.course && <span>{c.course}</span>}
-                    </span>
-                  </span>
-                  <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1, flexShrink: 0 }}>
-                    <span style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--navy)', whiteSpace: 'nowrap' }}>
-                      {c.price}원
-                    </span>
-                    {!isService && (
-                      <span style={{ fontSize: '0.7rem', color: 'var(--gray)' }}>/ 월</span>
+        ) : (
+          <div style={{ marginBottom: 28 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+              <span style={{ width: 22, height: 22, borderRadius: '50%', background: 'var(--navy)', color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.68rem', fontWeight: 800, flexShrink: 0 }}>2</span>
+              <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--navy)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                {type === '퍼스널 브랜딩 서비스' ? '서비스 선택' : '클래스 선택'}
+              </span>
+              <span style={{ fontSize: '0.72rem', color: 'var(--gray)' }}>(복수 선택 가능)</span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {visibleClasses.map((c) => {
+                const on = selected.includes(c.nameKo)
+                const ss = STEP_STYLE[c.step] ?? STEP_STYLE['별도']
+                const isService = c.step === '서비스'
+                return (
+                  <button
+                    key={c.nameKo}
+                    type="button"
+                    onClick={() => toggle(c.nameKo)}
+                    style={{
+                      display: 'flex', alignItems: 'flex-start', gap: 14,
+                      padding: '16px 18px', borderRadius: 14,
+                      border: `1.5px solid ${on ? 'var(--navy)' : c.highlight ? 'rgba(120,90,20,0.35)' : 'var(--border)'}`,
+                      background: on ? 'rgba(21,72,138,0.05)' : '#ffffff',
+                      cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
+                      position: 'relative', overflow: 'hidden',
+                    }}
+                  >
+                    {c.highlight && !on && (
+                      <span style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 3, background: 'rgba(120,90,20,0.45)' }} />
                     )}
-                  </span>
-                </button>
-              )
-            })}
+                    <span style={{
+                      width: 22, height: 22, borderRadius: 6, flexShrink: 0, marginTop: 3,
+                      border: `1.5px solid ${on ? 'var(--navy)' : 'var(--border)'}`,
+                      background: on ? 'var(--navy)' : '#fff',
+                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    }}>
+                      {on && <CheckCircle size={13} color="#fff" strokeWidth={2.5} />}
+                    </span>
+                    <span style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '0.67rem', fontWeight: 700, padding: '2px 8px', borderRadius: 100, background: ss.bg, color: ss.color, letterSpacing: '0.03em', whiteSpace: 'nowrap' }}>
+                          {c.step}
+                        </span>
+                        {c.promoLabel && (
+                          <span style={{ fontSize: '0.67rem', fontWeight: 600, padding: '2px 8px', borderRadius: 100, background: 'rgba(120,90,20,0.10)', color: '#7A5A14', whiteSpace: 'nowrap' }}>
+                            {c.promoLabel}
+                          </span>
+                        )}
+                        {c.remainingSeats !== undefined && c.remainingSeats <= 3 && (
+                          <span style={{ fontSize: '0.67rem', fontWeight: 700, padding: '2px 8px', borderRadius: 100, background: 'rgba(199,62,62,0.10)', color: 'var(--accent-red)', whiteSpace: 'nowrap' }}>
+                            잔여 {c.remainingSeats}석
+                          </span>
+                        )}
+                      </span>
+                      <span style={{ fontWeight: 700, fontSize: '0.95rem', color: '#111', lineHeight: 1.3 }}>{c.nameKo}</span>
+                      <span style={{ fontSize: '0.76rem', color: 'var(--gray)', display: 'flex', flexWrap: 'wrap', gap: '3px 10px' }}>
+                        {c.schedule && <span>{c.schedule}</span>}
+                        {c.duration && <span>{c.duration}</span>}
+                        {c.capacity && c.capacity !== '-' && <span>정원 {c.capacity}</span>}
+                        {c.course && <span>{c.course}</span>}
+                      </span>
+                    </span>
+                    <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1, flexShrink: 0 }}>
+                      <span style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--navy)', whiteSpace: 'nowrap' }}>
+                        {c.price}원
+                      </span>
+                      {!isService && (
+                        <span style={{ fontSize: '0.7rem', color: 'var(--gray)' }}>/ 월</span>
+                      )}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* ── 선택 요약 ── */}
         {selected.length > 0 && (
@@ -353,12 +377,8 @@ export default function EnrollForm({
           </div>
         )}
 
-        {/* ── 신청 기수 + 연락처 ── */}
+        {/* ── 연락처 ── */}
         <div style={{ marginBottom: 24, borderRadius: 12, border: '1px solid var(--border)', overflow: 'hidden' }}>
-          <div style={{ padding: '13px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border)', background: '#ffffff' }}>
-            <span style={{ fontSize: '0.83rem', color: 'var(--gray)' }}>신청 기수</span>
-            <span style={{ fontSize: '0.83rem', fontWeight: 700, color: 'var(--navy)' }}>{ymLabel(nextMonth)} 기수</span>
-          </div>
           <div style={{ padding: '13px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', background: '#ffffff', gap: 12 }}>
             <span style={{ fontSize: '0.83rem', color: 'var(--gray)', lineHeight: 1.5 }}>
               결제 안내 연락처
@@ -393,7 +413,7 @@ export default function EnrollForm({
         >
           {loading ? '신청 중...' : (
             <>
-              {parseInt(nextMonth.split('-')[1], 10)}월 클래스 신청하기
+              {ymLabel(nextMonth)} 클래스 신청하기
               <ArrowRight size={16} strokeWidth={2.5} />
             </>
           )}
