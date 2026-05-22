@@ -30,7 +30,9 @@ export async function uploadFile(
   actorId: string,
   filename: string
 ): Promise<UploadResult> {
-  const path = `actors/${actorId}/${Date.now()}_${filename}`
+  // 파일명 새니타이즈 — 경로 순회 공격 방지 (../), 특수문자 제거
+  const safeFilename = filename.replace(/[^a-zA-Z0-9._\-]/g, '_').replace(/\.{2,}/g, '_')
+  const path = `actors/${actorId}/${Date.now()}_${safeFilename}`
 
   if (PROVIDER === 'supabase') {
     const { error } = await supabaseAdmin.storage.from(bucket).upload(path, file, {

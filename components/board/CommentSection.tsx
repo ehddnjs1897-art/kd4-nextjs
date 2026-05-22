@@ -233,6 +233,7 @@ export default function CommentSection({
             aria-label="댓글 입력"
             rows={3}
             required
+            maxLength={2000}
             style={{
               width: '100%',
               background: 'var(--bg2)',
@@ -245,9 +246,17 @@ export default function CommentSection({
               lineHeight: 1.6,
               resize: 'vertical',
               outline: 'none',
-              marginBottom: '10px',
+              marginBottom: '6px',
             }}
           />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+            <span style={{
+              fontSize: '0.75rem',
+              color: content.length > 1800 ? '#e74c3c' : 'var(--gray)',
+            }}>
+              {content.length}/2000
+            </span>
+          </div>
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <button
               type="submit"

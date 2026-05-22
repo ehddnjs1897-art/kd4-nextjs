@@ -8,7 +8,7 @@
  *   onUploadComplete — 업로드 성공 시 { url, path } 콜백
  *   label            — 버튼 위에 표시할 레이블 (기본값: "사진 업로드")
  */
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 
 export interface UploadResult {
   url: string
@@ -75,6 +75,13 @@ export default function PhotoUpload({
   const [uploading, setUploading] = useState(false)
   const [done, setDone] = useState(false)
 
+  // 언마운트 시 objectURL 메모리 해제
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl)
+    }
+  }, [previewUrl])
+
   // ── 파일 선택 처리 ─────────────────────────────────────────────────────────
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -82,6 +89,12 @@ export default function PhotoUpload({
 
     setError(null)
     setDone(false)
+
+    // MIME 타입 체크 (accept 속성은 우회 가능하므로 JS에서도 검증)
+    if (!file.type.startsWith('image/')) {
+      setError('이미지 파일만 업로드할 수 있습니다.')
+      return
+    }
 
     // 클라이언트 사이즈 체크
     if (file.size > MAX_SIZE) {
@@ -138,6 +151,7 @@ export default function PhotoUpload({
   }
 
   function handleReset() {
+    if (previewUrl) URL.revokeObjectURL(previewUrl)
     setPreviewUrl(null)
     setCroppedBlob(null)
     setError(null)

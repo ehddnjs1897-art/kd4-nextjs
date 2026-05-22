@@ -9,12 +9,17 @@ function getService(): SolapiMessageService | null {
   return new SolapiMessageService(apiKey, apiSecret)
 }
 
+const SMS_TIMEOUT_MS = 10_000
+
 export async function sendSMS(to: string, text: string): Promise<boolean> {
   const service = getService()
   if (!service || !FROM_NUMBER) return false
 
   try {
-    await service.sendOne({ to, from: FROM_NUMBER, text })
+    const timeout = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('SMS timeout')), SMS_TIMEOUT_MS)
+    )
+    await Promise.race([service.sendOne({ to, from: FROM_NUMBER, text }), timeout])
     return true
   } catch (err) {
     console.error('[SMS] 발송 실패:', err)

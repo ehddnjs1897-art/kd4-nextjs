@@ -14,6 +14,7 @@ import DirectorRequestButton from '@/components/dashboard/DirectorRequestButton'
 import ProfileEditForm from '@/components/dashboard/ProfileEditForm'
 import EnrollmentsPanel from '@/components/dashboard/EnrollmentsPanel'
 import { UserRole } from '@/lib/types'
+import { canViewActorDb as canViewActorDbFn } from '@/lib/access'
 
 const ROLE_LABEL: Record<string, string> = {
   admin: '관리자',
@@ -80,7 +81,7 @@ export default async function DashboardPage() {
 
   const isAdmin = role === 'admin'
   const isActorMember = role === 'member' || role === 'actor' || isAdmin
-  const canViewActorDb = ['crew', 'editor', 'director', 'admin'].includes(role)
+  const canViewActorDb = canViewActorDbFn(role as UserRole)
   const isCrewPending = role === 'crew_pending'
   const isDirectorPending = role === 'director_pending'
   const isDirector = role === 'director'
