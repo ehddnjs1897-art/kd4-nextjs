@@ -27,6 +27,7 @@ function CategoryBadge({ category }: { category: string }) {
   const colorMap: Record<string, string> = {
     공지: '#e74c3c',
     질문: '#4a9eff',
+    수업: '#c4a55a',
     자유: '#888888',
     일반: '#888888',
   }

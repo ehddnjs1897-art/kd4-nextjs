@@ -131,6 +131,7 @@ export default function EnrollForm({
   }
 
   async function submit() {
+    if (loading) return  // 더블 클릭 방지
     if (!isMaintain && selected.length === 0) {
       setError('수강할 클래스를 1개 이상 선택해 주세요.')
       return

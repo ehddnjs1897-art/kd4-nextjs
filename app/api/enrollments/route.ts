@@ -11,7 +11,7 @@ import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { CLASSES } from '@/lib/classes'
 
-const VALID_TYPES = ['신규 등록', '기존 KD4 멤버', '브랜딩 서비스']
+const VALID_TYPES = ['신규 등록', '수업 유지', '클래스 추가·변경', '퍼스널 브랜딩 서비스']
 
 function priceToInt(p?: string): number {
   if (!p) return 0

@@ -26,23 +26,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '댓글 내용을 입력해주세요.' }, { status: 400 })
   }
 
-  // 게시글 존재 확인
-  const { data: post, error: postError } = await supabase
-    .from('posts')
-    .select('id')
-    .eq('id', post_id)
-    .single()
+  // 게시글 존재 확인 + 작성자 이름 병렬 조회
+  const [{ data: post, error: postError }, { data: profile }] = await Promise.all([
+    supabase.from('posts').select('id').eq('id', post_id).single(),
+    supabase.from('profiles').select('name').eq('id', user.id).single(),
+  ])
 
   if (postError || !post) {
     return NextResponse.json({ error: '게시글을 찾을 수 없습니다.' }, { status: 404 })
   }
-
-  // 작성자 이름 조회
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('name')
-    .eq('id', user.id)
-    .single()
 
   const authorName = profile?.name ?? user.email?.split('@')[0] ?? '익명'
 

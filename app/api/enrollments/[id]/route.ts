@@ -32,21 +32,14 @@ export async function PATCH(
     return NextResponse.json({ error: '잘못된 요청입니다.' }, { status: 400 })
   }
 
-  // 대상 수강 기록 + 권한 확인
-  const { data: enr } = await supabaseAdmin
-    .from('enrollments')
-    .select('user_id')
-    .eq('id', id)
-    .maybeSingle()
+  // 대상 수강 기록 + 권한 확인 병렬 조회
+  const [{ data: enr }, { data: profile }] = await Promise.all([
+    supabaseAdmin.from('enrollments').select('user_id').eq('id', id).maybeSingle(),
+    supabaseAdmin.from('profiles').select('role').eq('id', user.id).maybeSingle(),
+  ])
   if (!enr) {
     return NextResponse.json({ error: '수강 기록을 찾을 수 없습니다.' }, { status: 404 })
   }
-
-  const { data: profile } = await supabaseAdmin
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .maybeSingle()
   const isAdmin = profile?.role === 'admin'
   const isOwner = enr.user_id === user.id
   if (!isOwner && !isAdmin) {
