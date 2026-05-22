@@ -220,7 +220,7 @@ export default function SignupPage() {
 
         <h1 style={styles.title}>회원가입</h1>
 
-        {error && <div style={styles.errorBox}>{error}</div>}
+        {error && <div style={styles.errorBox} role="alert">{error}</div>}
 
         <form onSubmit={handleSignup} style={styles.form}>
           {/* 이름 */}

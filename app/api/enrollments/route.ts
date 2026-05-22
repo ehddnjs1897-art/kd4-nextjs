@@ -60,26 +60,37 @@ export async function POST(request: Request) {
     .eq('id', user.id)
     .maybeSingle()
 
-  // 유효 클래스만 추려서 서버에서 금액 주입
-  const rows = class_names
-    .map((cn) => CLASSES.find((c) => c.nameKo === cn))
-    .filter((c): c is NonNullable<typeof c> => Boolean(c))
-    .map((cls) => ({
-      user_id: user.id,
-      actor_id: profile?.actor_id ?? null,
-      name: profile?.name ?? (user.user_metadata?.name as string) ?? null,
-      phone: phone || profile?.phone || null,
-      email: user.email ?? profile?.email ?? null,
-      enrollment_type,
-      class_name: cls.nameKo,
-      year_month,
-      amount: priceToInt(cls.originalPrice ?? cls.price),
-      status: '확정',
-      payment_status: '결제대기',
-    }))
+  const baseRow = {
+    user_id: user.id,
+    actor_id: profile?.actor_id ?? null,
+    name: profile?.name ?? (user.user_metadata?.name as string) ?? null,
+    phone: phone || profile?.phone || null,
+    email: user.email ?? profile?.email ?? null,
+    enrollment_type,
+    year_month,
+    status: '확정',
+    payment_status: '결제대기',
+  }
 
-  if (rows.length === 0) {
-    return NextResponse.json({ error: '유효한 클래스가 없습니다.' }, { status: 400 })
+  let rows: (typeof baseRow & { class_name: string; amount: number })[]
+
+  if (enrollment_type === '수업 유지') {
+    // 수업 유지는 현재 클래스를 그대로 연장 — 관리자가 실제 클래스를 확인 후 처리
+    rows = [{ ...baseRow, class_name: '수업 유지', amount: 0 }]
+  } else {
+    // 유효 클래스만 추려서 서버에서 금액 주입
+    rows = class_names
+      .map((cn) => CLASSES.find((c) => c.nameKo === cn))
+      .filter((c): c is NonNullable<typeof c> => Boolean(c))
+      .map((cls) => ({
+        ...baseRow,
+        class_name: cls.nameKo,
+        amount: priceToInt(cls.originalPrice ?? cls.price),
+      }))
+
+    if (rows.length === 0) {
+      return NextResponse.json({ error: '유효한 클래스가 없습니다.' }, { status: 400 })
+    }
   }
 
   // 중복(같은 달·같은 클래스)은 무시

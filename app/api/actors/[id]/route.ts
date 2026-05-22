@@ -18,12 +18,21 @@ export async function GET(
       return NextResponse.json({ error: '배우 ID가 필요합니다.' }, { status: 400 })
     }
 
-    // 로그인 여부 확인
+    // 로그인 여부 + 역할 확인
     const supabase = await createClient()
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    const isAuthenticated = !!user
+    const { data: { user } } = await supabase.auth.getUser()
+
+    let canViewProfile = false  // 배우 DB 열람 가능 여부
+    let canSeeContact = false   // 연락처 열람 가능 여부 (director/admin or 본인)
+
+    if (user) {
+      const { data: profile } = await supabase
+        .from('profiles').select('role, actor_id').eq('id', user.id).maybeSingle()
+      const role = profile?.role ?? ''
+      const isOwn = profile?.actor_id === id
+      canViewProfile = isOwn || ['actor', 'crew', 'editor', 'director', 'admin'].includes(role)
+      canSeeContact = isOwn || ['director', 'admin'].includes(role)
+    }
 
     // 항상 '*' 로 조회 후 JS 레벨에서 민감 컬럼 제거
     const { data: actor, error } = await supabaseAdmin
@@ -35,7 +44,6 @@ export async function GET(
 
     if (error) {
       if (error.code === 'PGRST116') {
-        // no rows returned
         return NextResponse.json({ error: '배우를 찾을 수 없습니다.' }, { status: 404 })
       }
       console.error('[GET /api/actors/[id]] Supabase 오류:', error.message)
@@ -48,9 +56,13 @@ export async function GET(
 
     const typedActor = actor as unknown as ActorDetail
 
-    // 비로그인 시 민감 컬럼 제거
-    if (!isAuthenticated) {
+    // 연락처 포함 여부에 따라 응답
+    if (!canSeeContact) {
       const { phone: _phone, email: _email, ...safe } = typedActor as Actor & ActorDetail
+      // 비로그인 또는 열람 권한 없는 경우 공개 정보만 반환
+      if (!canViewProfile) {
+        return NextResponse.json({ actor: safe as ActorDetail })
+      }
       return NextResponse.json({ actor: safe as ActorDetail })
     }
 

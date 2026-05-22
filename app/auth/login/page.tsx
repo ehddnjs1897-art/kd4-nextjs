@@ -108,7 +108,7 @@ function LoginContent() {
         <h1 style={styles.title}>로그인</h1>
 
         {/* 에러 메시지 */}
-        {error && <div style={styles.errorBox}>{error}</div>}
+        {error && <div style={styles.errorBox} role="alert">{error}</div>}
 
         {/* 이메일 로그인 폼 */}
         <form onSubmit={handleEmailLogin} style={styles.form}>
@@ -124,6 +124,7 @@ function LoginContent() {
               placeholder="example@email.com"
               required
               disabled={loading}
+              autoComplete="email"
               style={styles.input}
             />
           </div>
@@ -140,6 +141,7 @@ function LoginContent() {
               placeholder="비밀번호를 입력하세요"
               required
               disabled={loading}
+              autoComplete="current-password"
               style={styles.input}
             />
           </div>
@@ -213,7 +215,7 @@ function LoginContent() {
 /* ---- 인라인 아이콘 ---- */
 function GoogleIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 18 18" style={{ flexShrink: 0 }}>
+    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" style={{ flexShrink: 0 }}>
       <path
         fill="#4285F4"
         d="M17.64 9.2a10.35 10.35 0 0 0-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"
@@ -241,6 +243,7 @@ function KakaoIcon() {
       height="18"
       viewBox="0 0 24 24"
       fill="#3C1E1E"
+      aria-hidden="true"
       style={{ flexShrink: 0 }}
     >
       <path d="M12 3C6.48 3 2 6.48 2 10.8c0 2.72 1.68 5.12 4.2 6.56l-1.08 4 4.36-2.88c.8.12 1.64.2 2.52.2 5.52 0 10-3.48 10-7.8S17.52 3 12 3z" />
