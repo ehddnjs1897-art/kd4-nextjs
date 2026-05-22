@@ -58,7 +58,7 @@ export async function PATCH(
 
   if (error) {
     console.error('[api/applications PATCH] consultations update 실패:', error.message)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: '상태 변경에 실패했습니다.' }, { status: 500 })
   }
 
   return NextResponse.json({ ok: true })

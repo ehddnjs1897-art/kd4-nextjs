@@ -2,7 +2,16 @@ import { createClient } from '@/lib/supabase/server'
 import BoardClient from '@/components/board/BoardClient'
 import PublicLanding from '@/components/board/PublicLanding'
 
-export const metadata = { title: '커뮤니티 — KD4 액팅 스튜디오' }
+export const metadata = {
+  title: '커뮤니티 — KD4 액팅 스튜디오',
+  description: 'KD4 멤버들의 연기·오디션 이야기, 클래스 후기, 공지사항을 공유하는 커뮤니티입니다.',
+  alternates: { canonical: 'https://kd4.club/board' },
+  openGraph: {
+    title: '커뮤니티 | KD4 액팅 스튜디오',
+    description: 'KD4 멤버 커뮤니티 — 연기·오디션·클래스 이야기',
+    url: 'https://kd4.club/board',
+  },
+}
 
 export default async function BoardPage() {
   const supabase = await createClient()

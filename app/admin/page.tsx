@@ -3,10 +3,16 @@
  * - 로그인 + role=admin 체크
  * - 회원 관리 / 배우 목록 / 게시판 관리 / 수강신청 목록
  */
+import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import AdminDashboard from './AdminDashboard'
+
+export const metadata: Metadata = {
+  title: '관리자 | KD4 액팅 스튜디오',
+  robots: { index: false, follow: false },
+}
 
 // ─── 타입 ────────────────────────────────────────────────────────────────────
 

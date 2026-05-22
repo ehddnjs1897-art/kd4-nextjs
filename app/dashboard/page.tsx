@@ -1,7 +1,13 @@
+import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
+
+export const metadata: Metadata = {
+  title: '마이페이지 | KD4 액팅 스튜디오',
+  robots: { index: false, follow: false },
+}
 import LogoutButton from '@/components/layout/LogoutButton'
 import CrewRequestButton from '@/components/dashboard/CrewRequestButton'
 import DirectorRequestButton from '@/components/dashboard/DirectorRequestButton'

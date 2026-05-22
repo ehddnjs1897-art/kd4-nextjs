@@ -29,7 +29,10 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
 
     const { error } = await supabaseAdmin
       .from('actor_filmography').update(patch).eq('id', filmId).eq('actor_id', id)
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) {
+      console.error('[filmography PATCH] DB 오류:', error.message)
+      return NextResponse.json({ error: '필모그래피 수정에 실패했습니다.' }, { status: 500 })
+    }
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error(err)
@@ -47,7 +50,10 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
 
     const { error } = await supabaseAdmin
       .from('actor_filmography').delete().eq('id', filmId).eq('actor_id', id)
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) {
+      console.error('[filmography DELETE] DB 오류:', error.message)
+      return NextResponse.json({ error: '필모그래피 삭제에 실패했습니다.' }, { status: 500 })
+    }
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error(err)

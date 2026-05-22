@@ -29,7 +29,10 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       .select('id')
       .single()
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) {
+      console.error('[filmography POST] DB 오류:', error.message)
+      return NextResponse.json({ error: '필모그래피 추가에 실패했습니다.' }, { status: 500 })
+    }
     return NextResponse.json({ id: data.id })
   } catch (err) {
     console.error(err)
