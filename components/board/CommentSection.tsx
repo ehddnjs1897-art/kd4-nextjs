@@ -229,6 +229,7 @@ export default function CommentSection({
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="댓글을 입력하세요..."
+            aria-label="댓글 입력"
             rows={3}
             required
             style={{

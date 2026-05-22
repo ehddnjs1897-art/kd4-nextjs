@@ -119,22 +119,12 @@ export default function BoardClient({
         overflow: 'hidden',
       }}>
         {/* 테이블 헤더 */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '80px 1fr 110px 100px 70px',
-          padding: '12px 20px',
-          background: 'var(--bg2)',
-          borderBottom: '1px solid var(--border)',
-          fontSize: '0.78rem',
-          color: 'var(--gray)',
-          fontWeight: 500,
-          letterSpacing: '0.03em',
-        }}>
+        <div className="board-header">
           <span>분류</span>
           <span>제목</span>
-          <span style={{ textAlign: 'center' }}>작성자</span>
-          <span style={{ textAlign: 'center' }}>날짜</span>
-          <span style={{ textAlign: 'right' }}>조회</span>
+          <span className="board-col-hide-sm" style={{ textAlign: 'center' }}>작성자</span>
+          <span className="board-col-hide-xs" style={{ textAlign: 'center' }}>날짜</span>
+          <span className="board-col-hide-xs" style={{ textAlign: 'right' }}>조회</span>
         </div>
 
         {/* 게시글 목록 */}
@@ -147,13 +137,7 @@ export default function BoardClient({
             <div
               key={post.id}
               className="board-row"
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '80px 1fr 110px 100px 70px',
-                padding: '14px 20px',
-                borderBottom: idx < filtered.length - 1 ? '1px solid var(--border)' : 'none',
-                alignItems: 'center',
-              }}
+              style={{ borderBottom: idx < filtered.length - 1 ? '1px solid var(--border)' : 'none' }}
             >
               <span><CategoryBadge category={post.category} /></span>
               <span>
@@ -164,13 +148,13 @@ export default function BoardClient({
                   {post.title}
                 </Link>
               </span>
-              <span style={{ textAlign: 'center', fontSize: '0.82rem', color: 'var(--gray)' }}>
+              <span className="board-col-hide-sm" style={{ textAlign: 'center', fontSize: '0.82rem', color: 'var(--gray)' }}>
                 {post.author_name ?? '익명'}
               </span>
-              <span style={{ textAlign: 'center', fontSize: '0.82rem', color: 'var(--gray)' }}>
+              <span className="board-col-hide-xs" style={{ textAlign: 'center', fontSize: '0.82rem', color: 'var(--gray)' }}>
                 {formatDate(post.created_at)}
               </span>
-              <span style={{ textAlign: 'right', fontSize: '0.82rem', color: 'var(--gray)' }}>
+              <span className="board-col-hide-xs" style={{ textAlign: 'right', fontSize: '0.82rem', color: 'var(--gray)' }}>
                 {post.views ?? 0}
               </span>
             </div>
@@ -179,8 +163,33 @@ export default function BoardClient({
       </div>
 
       <style>{`
-        .board-row:hover { background: var(--bg3) !important; }
+        .board-header {
+          display: grid;
+          grid-template-columns: 80px 1fr 110px 100px 70px;
+          padding: 12px 20px;
+          background: var(--bg2);
+          border-bottom: 1px solid var(--border);
+          font-size: 0.78rem;
+          color: var(--gray);
+          font-weight: 500;
+          letter-spacing: 0.03em;
+        }
+        .board-row {
+          display: grid;
+          grid-template-columns: 80px 1fr 110px 100px 70px;
+          padding: 14px 20px;
+          align-items: center;
+        }
+        .board-row:hover { background: var(--bg3); }
         .board-row:hover a { color: var(--gold) !important; }
+        @media (max-width: 560px) {
+          .board-header, .board-row { grid-template-columns: 72px 1fr; }
+          .board-col-hide-sm, .board-col-hide-xs { display: none; }
+        }
+        @media (min-width: 561px) and (max-width: 720px) {
+          .board-header, .board-row { grid-template-columns: 72px 1fr 90px; }
+          .board-col-hide-xs { display: none; }
+        }
       `}</style>
     </div>
   )
