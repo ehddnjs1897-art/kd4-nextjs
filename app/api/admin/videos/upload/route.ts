@@ -33,7 +33,8 @@ async function requireAdmin() {
   if (authErr || !user) {
     return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   }
-  const { data: profile } = await supabase
+  // supabaseAdmin으로 조회 — RLS 우회, 실제 DB 값 기준 권한 확인
+  const { data: profile } = await supabaseAdmin
     .from('profiles')
     .select('role')
     .eq('id', user.id)

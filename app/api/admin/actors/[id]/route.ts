@@ -9,6 +9,8 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 
 // ─── 공통: admin 권한 확인 ───────────────────────────────────────────────────
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 async function requireAdmin(): Promise<{ userId: string } | NextResponse> {
   const supabase = await createClient()
   const {
@@ -20,7 +22,8 @@ async function requireAdmin(): Promise<{ userId: string } | NextResponse> {
     return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   }
 
-  const { data: profile, error: profileErr } = await supabase
+  // supabaseAdmin으로 조회 — RLS 우회, 실제 DB 값 기준 권한 확인
+  const { data: profile, error: profileErr } = await supabaseAdmin
     .from('profiles')
     .select('role')
     .eq('id', user.id)
@@ -48,7 +51,7 @@ export async function PATCH(
   try {
     const { id } = await params
 
-    if (!id || typeof id !== 'string') {
+    if (!id || !UUID_RE.test(id)) {
       return NextResponse.json(
         { error: '유효한 배우 ID가 필요합니다.' },
         { status: 400 }
