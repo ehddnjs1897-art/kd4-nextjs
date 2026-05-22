@@ -36,12 +36,12 @@ export default async function BoardPage() {
     return <PublicLanding />
   }
 
-  // 전체 포스트 한 번에 fetch — 카테고리 필터링은 클라이언트에서 처리 (탭 딜레이 없음)
-  const { data: posts, error: postsError } = await supabase
+  // 첫 20개만 fetch + 총 개수 — BoardClient에서 페이지네이션
+  const { data: posts, error: postsError, count } = await supabase
     .from('posts')
-    .select('id, title, category, author_name, views, created_at')
+    .select('id, title, category, author_name, views, created_at', { count: 'exact' })
     .order('created_at', { ascending: false })
-    .limit(300)
+    .range(0, 19)
 
   if (postsError) {
     return (
@@ -80,8 +80,8 @@ export default async function BoardPage() {
           </h1>
         </div>
 
-        {/* 탭 + 목록 (클라이언트 컴포넌트 — 탭 전환 즉시) */}
-        <BoardClient posts={posts ?? []} isLoggedIn={!!user} />
+        {/* 탭 + 목록 (클라이언트 컴포넌트 — 페이지네이션) */}
+        <BoardClient initialPosts={posts ?? []} initialTotal={count ?? 0} isLoggedIn={!!user} />
       </div>
     </div>
   )

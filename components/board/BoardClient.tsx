@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import Link from 'next/link'
 
 type Category = '전체' | '공지' | '질문' | '자유' | '수업'
 const CATEGORIES: Category[] = ['전체', '질문', '자유', '수업', '공지']
+const PAGE_SIZE = 20
 
 interface Post {
   id: string
@@ -46,17 +47,61 @@ function CategoryBadge({ category }: { category: string }) {
 }
 
 export default function BoardClient({
-  posts,
+  initialPosts,
+  initialTotal,
   isLoggedIn,
 }: {
-  posts: Post[]
+  initialPosts: Post[]
+  initialTotal: number
   isLoggedIn: boolean
 }) {
   const [activeCategory, setActiveCategory] = useState<Category>('전체')
+  const [posts, setPosts] = useState<Post[]>(initialPosts)
+  const [total, setTotal] = useState(initialTotal)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [loading, setLoading] = useState(false)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [fetchError, setFetchError] = useState<string | null>(null)
 
-  const filtered = activeCategory === '전체'
-    ? posts
-    : posts.filter(p => p.category === activeCategory)
+  const fetchPosts = useCallback(async (category: Category, page: number, append: boolean) => {
+    if (append) setLoadingMore(true)
+    else setLoading(true)
+    setFetchError(null)
+
+    try {
+      const params = new URLSearchParams({ page: String(page), limit: String(PAGE_SIZE) })
+      if (category !== '전체') params.set('category', category)
+      const res = await fetch(`/api/posts?${params}`)
+      const json: { data?: Post[]; total?: number } = await res.json()
+      if (res.ok) {
+        const incoming = json.data ?? []
+        setPosts(prev => append ? [...prev, ...incoming] : incoming)
+        setTotal(json.total ?? 0)
+      } else {
+        setFetchError('게시글을 불러오지 못했습니다.')
+      }
+    } catch {
+      setFetchError('게시글을 불러오지 못했습니다.')
+    } finally {
+      if (append) setLoadingMore(false)
+      else setLoading(false)
+    }
+  }, [])
+
+  function handleCategoryChange(cat: Category) {
+    if (cat === activeCategory) return
+    setActiveCategory(cat)
+    setCurrentPage(1)
+    fetchPosts(cat, 1, false)
+  }
+
+  function handleLoadMore() {
+    const next = currentPage + 1
+    setCurrentPage(next)
+    fetchPosts(activeCategory, next, true)
+  }
+
+  const hasMore = posts.length < total
 
   return (
     <div>
@@ -73,7 +118,7 @@ export default function BoardClient({
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
-              onClick={() => setActiveCategory(cat)}
+              onClick={() => handleCategoryChange(cat)}
               aria-pressed={activeCategory === cat}
               style={{
                 padding: '8px 18px',
@@ -129,16 +174,24 @@ export default function BoardClient({
         </div>
 
         {/* 게시글 목록 */}
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div style={{ padding: '60px 20px', textAlign: 'center', color: 'var(--gray)' }}>
+            <p role="status" aria-live="polite">게시글을 불러오는 중...</p>
+          </div>
+        ) : fetchError ? (
+          <div style={{ padding: '60px 20px', textAlign: 'center' }}>
+            <p role="alert" style={{ color: '#e74c3c', fontSize: '0.875rem' }}>{fetchError}</p>
+          </div>
+        ) : posts.length === 0 ? (
           <div style={{ padding: '60px 20px', textAlign: 'center', color: 'var(--gray)' }}>
             {activeCategory !== '전체' ? `${activeCategory} 카테고리에 ` : ''}게시글이 없습니다.
           </div>
         ) : (
-          filtered.map((post, idx) => (
+          posts.map((post, idx) => (
             <div
               key={post.id}
               className="board-row"
-              style={{ borderBottom: idx < filtered.length - 1 ? '1px solid var(--border)' : 'none' }}
+              style={{ borderBottom: idx < posts.length - 1 ? '1px solid var(--border)' : 'none' }}
             >
               <span><CategoryBadge category={post.category} /></span>
               <span>
@@ -162,6 +215,41 @@ export default function BoardClient({
           ))
         )}
       </div>
+
+      {/* 더 보기 버튼 */}
+      {!loading && !fetchError && hasMore && (
+        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+          <button
+            onClick={handleLoadMore}
+            disabled={loadingMore}
+            style={{
+              padding: '10px 28px',
+              background: 'transparent',
+              border: '1px solid var(--border)',
+              borderRadius: 'var(--radius)',
+              color: loadingMore ? 'var(--gray)' : 'var(--white)',
+              fontSize: '0.875rem',
+              cursor: loadingMore ? 'not-allowed' : 'pointer',
+              fontFamily: 'var(--font-sans)',
+              transition: 'border-color 0.15s, color 0.15s',
+            }}
+            onMouseEnter={e => {
+              if (!loadingMore) {
+                e.currentTarget.style.borderColor = 'var(--gold)'
+                e.currentTarget.style.color = 'var(--gold)'
+              }
+            }}
+            onMouseLeave={e => {
+              if (!loadingMore) {
+                e.currentTarget.style.borderColor = 'var(--border)'
+                e.currentTarget.style.color = 'var(--white)'
+              }
+            }}
+          >
+            {loadingMore ? '불러오는 중...' : `더 보기 (${total - posts.length}개 남음)`}
+          </button>
+        </div>
+      )}
 
       <style>{`
         .board-header {

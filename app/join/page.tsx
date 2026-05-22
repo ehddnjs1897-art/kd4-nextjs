@@ -165,6 +165,8 @@ const GUARANTEES = [
 /* ══════════════════════════════════════════════════════════════════ */
 
 export default function JoinPage() {
+  const isDeadlineExpired = new Date() > new Date(DEADLINE)
+
   return (
     <div
       className="uplift-page"
@@ -711,36 +713,38 @@ export default function JoinPage() {
             </p>
           </div>
 
-          {/* 카운트다운 */}
-          <div
-            style={{
-              background: 'var(--bg2)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--radius)',
-              padding: '28px 20px',
-              maxWidth: '520px',
-              margin: '0 auto 28px',
-              textAlign: 'center',
-            }}
-          >
-            <p
+          {/* 카운트다운 — 마감 전에만 표시 */}
+          {!isDeadlineExpired && (
+            <div
               style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: '0.7rem',
-                letterSpacing: '0.2em',
-                color: 'var(--accent-red)',
-                marginBottom: '16px',
-                textTransform: 'uppercase',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
+                background: 'var(--bg2)',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius)',
+                padding: '28px 20px',
+                maxWidth: '520px',
+                margin: '0 auto 28px',
+                textAlign: 'center',
               }}
             >
-              <Clock size={13} strokeWidth={1.8} />
-              할인 마감까지
-            </p>
-            <CountdownTimer deadline={DEADLINE} />
-          </div>
+              <p
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: '0.7rem',
+                  letterSpacing: '0.2em',
+                  color: 'var(--accent-red)',
+                  marginBottom: '16px',
+                  textTransform: 'uppercase',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                }}
+              >
+                <Clock size={13} strokeWidth={1.8} />
+                할인 마감까지
+              </p>
+              <CountdownTimer deadline={DEADLINE} />
+            </div>
+          )}
 
           {/* 클래스 카드 */}
           <div
@@ -1003,9 +1007,11 @@ export default function JoinPage() {
                 지금 신청하기
                 <ArrowRight size={15} strokeWidth={2.2} />
               </JoinCTALink>
-              <p style={{ fontSize: '0.72rem', color: 'var(--gray)', marginTop: '8px' }}>
-                * 5월까지 · 선착순 마감 시 조기 종료
-              </p>
+              {!isDeadlineExpired && (
+                <p style={{ fontSize: '0.72rem', color: 'var(--gray)', marginTop: '8px' }}>
+                  * 5월까지 · 선착순 마감 시 조기 종료
+                </p>
+              )}
               <p style={{ fontSize: '0.72rem', color: 'var(--gray)', marginTop: '4px' }}>
                 * 모든 할인은 중복 적용되지 않으며, 가장 큰 혜택 하나만 적용됩니다
               </p>
