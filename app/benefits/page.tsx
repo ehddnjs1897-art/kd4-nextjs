@@ -396,10 +396,8 @@ export default function BenefitsPage() {
           </Link>
 
           {/* 리플레이 */}
-          <a
-            href="https://pf.kakao.com/_ximxdqn"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/benefits/replay"
             className="kd4-card-hover"
             style={{ display: 'flex', alignItems: 'center', gap: 'clamp(16px, 4vw, 24px)', background: '#ffffff', border: '1.5px solid rgba(21,72,138,0.18)', borderRadius: 12, padding: 'clamp(18px, 3vw, 24px)', textDecoration: 'none', position: 'relative', overflow: 'hidden', flexWrap: 'wrap' }}
           >
@@ -410,8 +408,8 @@ export default function BenefitsPage() {
               <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 600, color: 'var(--gold)' }}>KD4 멤버 3만원 (VAT 별도) / 40장</span>
               <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: 'var(--secondary)' }}>일반 4만원 / 40장 · 프로필 투어 · 캐스팅 배포</span>
             </span>
-            <span aria-hidden style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 700, color: 'var(--gold)', whiteSpace: 'nowrap' }}>신청하기 →</span>
-          </a>
+            <span aria-hidden style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 700, color: 'var(--gold)', whiteSpace: 'nowrap' }}>자세히 보기 →</span>
+          </Link>
 
           {/* CGV 신촌아트레온 아트하우스 */}
           <div

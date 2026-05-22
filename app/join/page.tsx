@@ -31,7 +31,7 @@ const YouTubeFacade = dynamic(() => import('@/components/youtube/YouTubeFacade')
 
 export const metadata: Metadata = {
   title: '무료 상담 신청 | KD4 액팅 스튜디오',
-  description: '소수정예 마이즈너 테크닉 연기 클래스. 봄맞이 첫 달 10만원 할인. 서울 신촌.',
+  description: '소수정예 마이즈너 테크닉 연기 클래스. 현직 캐스팅 디렉터 출신 원장. 서울 신촌.',
   robots: { index: false, follow: false },
 }
 
@@ -50,17 +50,8 @@ const OPEN_COHORTS = [
   { name: '출연영상', cohort: '19기', seats: FILM_CLASS.remainingSeats ?? 0, price: parseInt(FILM_CLASS.price.replace(/,/g, '')) },
 ]
 
-/* 첫 달 할인액 (Anchor Price 시각화) */
-const FIRST_MONTH_DISCOUNT = 100000
-
 /* ── 할인 혜택 목록 ─────────────────────────────────────────── */
 const DISCOUNTS = [
-  {
-    tag: '웰컴 할인',
-    title: '첫 달 10만원 할인',
-    desc: '또는 무료 오픈클래스 중 택1 · 신규 등록 시 적용',
-    isNew: false,
-  },
   {
     tag: '컴백 할인',
     title: '첫 달 5만원 할인',
@@ -314,12 +305,12 @@ export default function JoinPage() {
             <JoinCTALink
               href="#form-hero"
               location="hero"
-              label="잔여 2석 — 봄맞이 할인 받고 무료 상담"
+              label="잔여 2석 — 무료 상담 신청하기"
               fireLead
               className="btn-primary uplift-cta-pulse"
               style={{ background: 'var(--navy)', color: '#ffffff' }}
             >
-              잔여 2석 — 봄맞이 할인 받고 무료 상담
+              잔여 2석 — 무료 상담 신청하기
               <ArrowRight size={16} strokeWidth={2.2} />
             </JoinCTALink>
             <JoinCTALink
@@ -697,15 +688,15 @@ export default function JoinPage() {
       <section className="section uplift-fullscreen-offer" style={{ padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">04 — SPRING SPECIAL</p>
+            <p className="section-eyebrow">04 — PRICING</p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
             >
-              🌸 봄맞이 스페셜
+              클래스 가격 안내
             </h2>
             <p style={{ fontSize: '0.95rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-              <strong style={{ color: 'var(--accent-red)' }}>첫 달 10만원 할인</strong>
+              이번 기수 마감 전에 신청하세요
             </p>
           </div>
 
@@ -735,7 +726,7 @@ export default function JoinPage() {
               }}
             >
               <Clock size={13} strokeWidth={1.8} />
-              할인 마감까지
+              이번 기수 마감까지
             </p>
             <CountdownTimer deadline={DEADLINE} />
           </div>
@@ -803,21 +794,8 @@ export default function JoinPage() {
                   </div>
                 </div>
                 <div className="class-card-footer">
-                  {/* 첫 달 할인가 (강조) */}
+                  {/* 월 수강료 */}
                   <div style={{ marginBottom: '8px' }}>
-                    <span
-                      style={{
-                        display: 'inline-block',
-                        fontFamily: 'var(--font-display)',
-                        fontSize: '0.68rem',
-                        letterSpacing: '0.12em',
-                        color: 'var(--accent-red)',
-                        fontWeight: 700,
-                        marginBottom: '4px',
-                      }}
-                    >
-                      첫 달
-                    </span>
                     <div
                       style={{
                         display: 'flex',
@@ -827,30 +805,18 @@ export default function JoinPage() {
                       }}
                     >
                       <span className="class-price">
-                        {cls.price}<span>원</span>
+                        {cls.originalPrice ?? cls.price}<span>원</span>
                       </span>
-                      {cls.originalPrice && (
-                        <span
-                          style={{
-                            fontSize: '0.82rem',
-                            color: 'var(--gray)',
-                            textDecoration: 'line-through',
-                          }}
-                        >
-                          {cls.originalPrice}원
-                        </span>
-                      )}
                     </div>
                   </div>
 
-                  {/* 코스 총액 (첫달 할인 반영) */}
+                  {/* 코스 총액 */}
                   {cls.course && (() => {
                     const months = parseInt(cls.course.match(/\d+/)?.[0] ?? '1')
-                    const first = parseInt(cls.price.replace(/,/g, ''))
                     const regular = cls.originalPrice
                       ? parseInt(cls.originalPrice.replace(/,/g, ''))
-                      : first
-                    const total = first + regular * (months - 1)
+                      : parseInt(cls.price.replace(/,/g, ''))
+                    const total = regular * months
                     const lumpSumDiscount = cls.lumpSumDiscount ?? 50000
                     const lumpSumPrice = total - lumpSumDiscount
                     return (
