@@ -62,33 +62,21 @@ export default async function PostDetailPage({ params }: { params: Params }) {
   const { id } = await params
   const supabase = await createClient()
 
-  // 게시글 조회
-  const { data: post, error } = await supabase
-    .from('posts')
-    .select('*')
-    .eq('id', id)
-    .single()
+  // 게시글 조회 + 유저 인증 병렬
+  const [{ data: post, error }, { data: { user } }] = await Promise.all([
+    supabase.from('posts').select('*').eq('id', id).single(),
+    supabase.auth.getUser(),
+  ])
 
-  if (error || !post) {
-    notFound()
-  }
-
-  // 조회수 증가 (SQL로 atomic increment — race condition 방지)
-  await supabase.rpc('increment_views', { post_id: id })
-
-  // 현재 로그인 유저
-  const { data: { user } } = await supabase.auth.getUser()
+  if (error || !post) notFound()
   if (!user) redirect(`/auth/login?next=/board/${id}`)
 
-  let currentUserRole: string | null = null
-  if (user) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single()
-    currentUserRole = profile?.role ?? null
-  }
+  // 조회수 증가 + 역할 조회 병렬 (둘 다 위 결과에 의존하지 않음)
+  const [, { data: profile }] = await Promise.all([
+    supabase.rpc('increment_views', { post_id: id }),
+    supabase.from('profiles').select('role').eq('id', user.id).single(),
+  ])
+  const currentUserRole: string | null = profile?.role ?? null
 
   const isAdmin = currentUserRole === 'admin'
   const isAuthor = user?.id === post.author_id

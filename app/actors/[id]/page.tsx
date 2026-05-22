@@ -206,9 +206,14 @@ export default async function ActorDetailPage({
 
   /* ---- 비로그인도 접근 가능 (공개 페이지) ---- */
   const supabase = await createClient()
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
+
+  // getSession + actor 병렬 조회 (actor는 인증과 무관)
+  const [{ data: { session } }, actor] = await Promise.all([
+    supabase.auth.getSession(),
+    getActorCached(id),
+  ])
+  if (!actor) notFound()
+
   const user = session?.user ?? null
 
   // 역할 조회 (로그인 시에만, 비로그인은 null)
@@ -223,10 +228,6 @@ export default async function ActorDetailPage({
     role = (profile?.role ?? 'user') as UserRole
     isOwner = profile?.actor_id === id || role === 'admin'
   }
-
-  /* ---- 데이터 fetch ---- */
-  const actor = await getActorCached(id)
-  if (!actor) notFound()
 
   const photoUrl = profilePhotoUrl(actor)
   const canContact = canViewActorContact(role)
