@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
@@ -5,6 +6,17 @@ import CommentSection from '@/components/board/CommentSection'
 import DeletePostButton from '@/components/board/DeletePostButton'
 
 type Params = Promise<{ id: string }>
+
+// React cache() deduplicates the DB fetch across generateMetadata and PostDetailPage
+// (both run in the same request, so only 1 Supabase round-trip happens)
+const getPost = cache(async (id: string) => {
+  const supabase = await createClient()
+  return supabase
+    .from('posts')
+    .select('id, title, content, category, author_id, author_name, views, created_at, updated_at')
+    .eq('id', id)
+    .single()
+})
 
 interface Post {
   id: string
@@ -50,12 +62,7 @@ function CategoryBadge({ category }: { category: string }) {
 
 export async function generateMetadata({ params }: { params: Params }) {
   const { id } = await params
-  const supabase = await createClient()
-  const { data } = await supabase
-    .from('posts')
-    .select('title')
-    .eq('id', id)
-    .single()
+  const { data } = await getPost(id)
   return {
     title: data?.title ? `${data.title} — KD4 커뮤니티` : 'KD4 커뮤니티',
     robots: { index: false, follow: false },
@@ -67,9 +74,9 @@ export default async function PostDetailPage({ params }: { params: Params }) {
   const { id } = await params
   const supabase = await createClient()
 
-  // 게시글 조회 + 유저 인증 병렬
+  // 게시글 조회 + 유저 인증 병렬 (getPost는 cache()로 generateMetadata와 중복 제거됨)
   const [{ data: post, error }, { data: { user } }] = await Promise.all([
-    supabase.from('posts').select('*').eq('id', id).single(),
+    getPost(id),
     supabase.auth.getUser(),
   ])
 
