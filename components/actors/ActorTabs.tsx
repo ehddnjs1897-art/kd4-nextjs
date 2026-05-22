@@ -242,7 +242,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected }: Pro
                     {video.title && <p style={styles.videoTitle}>{video.title}</p>}
                   </div>
                 ) : video.r2_key ? (
-                  <R2Video key={video.id} videoId={video.id} title={video.title} poster={actor.profile_photo} allowDownload={canViewContact} />
+                  <R2Video key={video.id} videoId={video.id} title={video.title} poster={actor.profile_photo} />
                 ) : null
               )}
             </div>

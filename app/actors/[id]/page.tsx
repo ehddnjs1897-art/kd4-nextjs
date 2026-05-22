@@ -7,6 +7,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 import ActorTabs from '@/components/actors/ActorTabs'
 import ShareButton from '@/components/actors/ShareButton'
 import ActorGallery from '@/components/actors/ActorGallery'
+import ActorDownloadButton from '@/components/actors/ActorDownloadButton'
 import ActorDbLocked from '@/components/actors/ActorDbLocked'
 import { UserRole } from '@/lib/types'
 import { canViewActorDb, canViewActorContact } from '@/lib/access'
@@ -168,7 +169,7 @@ export async function generateMetadata({
       ? `${actor.name} · ${subline} · ${actor.casting_tags.slice(0, 3).join('·')} | KD4 액팅 스튜디오`
       : `${actor.name} · ${subline} | KD4 액팅 스튜디오`
 
-  const title = `${actor.name} | KD4 액팅 스튜디오`
+  const title = `배우 갤러리 | ${actor.name} | ${actor.age_group ?? ''}`
 
   return {
     title,
@@ -247,13 +248,22 @@ export default async function ActorDetailPage({
     ? (extraPhotos.length ? extraPhotos : [photoUrl])
     : [photoUrl, ...extraPhotos]
 
-  // 프로필 문서 다운로드 URL (디렉터/관리자만, R2 비공개 → signed URL)
-  let profileDocUrl: string | null = actor.profile_pdf_url ?? null
-  if (canViewActorContact(role) && actor.profile_doc_path && isR2Configured()) {
-    try {
-      profileDocUrl = await getVideoSignedUrl(actor.profile_doc_path, 3600)
-    } catch (e) {
-      console.error('[actor] 프로필 문서 signed URL 실패:', e)
+  // 디렉터/관리자: 자료(프로필+영상) 통합 다운로드용
+  let profileDocUrl: string | null = null
+  const downloadVideoIds: string[] = []
+  if (canViewActorContact(role)) {
+    if (actor.profile_doc_path && isR2Configured()) {
+      try {
+        const ext = actor.profile_doc_path.split('.').pop() || 'pdf'
+        profileDocUrl = await getVideoSignedUrl(actor.profile_doc_path, 3600, `${actor.name} 프로필.${ext}`)
+      } catch (e) {
+        console.error('[actor] 프로필 문서 signed URL 실패:', e)
+      }
+    } else if (actor.profile_pdf_url) {
+      profileDocUrl = actor.profile_pdf_url
+    }
+    for (const v of actor.actor_videos ?? []) {
+      if (v.r2_key) downloadVideoIds.push(v.id)
     }
   }
 
@@ -365,32 +375,9 @@ export default async function ActorDetailPage({
               {/* 카카오 공유 버튼 */}
               <ShareButton webUrl={pageUrl} />
 
-              {/* 프로필 PDF 다운로드 (디렉터/관리자만) */}
-              {canViewActorContact(role) && profileDocUrl && (
-                <a
-                  href={profileDocUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={styles.pdfButton}
-                >
-                  <svg
-                    aria-hidden
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                    <polyline points="14 2 14 8 20 8" />
-                    <line x1="12" y1="18" x2="12" y2="12" />
-                    <polyline points="9 15 12 18 15 15" />
-                  </svg>
-                  프로필 PDF 다운로드
-                </a>
+              {/* 자료(프로필+영상) 통합 다운로드 — 디렉터/관리자만 */}
+              {canViewActorContact(role) && (
+                <ActorDownloadButton profileUrl={profileDocUrl} videoIds={downloadVideoIds} />
               )}
             </div>
           </aside>
