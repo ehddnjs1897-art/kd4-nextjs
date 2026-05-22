@@ -45,7 +45,8 @@ interface ActorPhoto {
 
 interface ActorVideo {
   id: string
-  youtube_id: string
+  youtube_id: string | null
+  r2_key: string | null
   title: string | null
 }
 
@@ -74,7 +75,7 @@ async function getActor(id: string): Promise<Actor | null> {
       drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram,
       casting_tags, casting_summary, profile_pdf_url,
       actor_photos ( id, drive_photo_id, url, storage_path, caption, sort_order ),
-      actor_videos ( id, youtube_id, title ),
+      actor_videos ( id, youtube_id, r2_key, title ),
       actor_filmography ( id, category, title, role, year, production )
     `
     )
@@ -93,7 +94,7 @@ async function getActor(id: string): Promise<Actor | null> {
       id, name, gender, age_group, height, weight, skills,
       drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram,
       actor_photos ( id, drive_photo_id, url, storage_path, caption, sort_order ),
-      actor_videos ( id, youtube_id, title ),
+      actor_videos ( id, youtube_id, r2_key, title ),
       actor_filmography ( id, category, title, role, year, production )
     `
     )
@@ -258,8 +259,8 @@ export default async function ActorDetailPage({
   })
   const videoSchemas = getActorVideoSchemas(
     { id: actor.id, name: actor.name },
-    (actor.actor_videos ?? []).map((v) => ({
-      youtubeId: v.youtube_id,
+    (actor.actor_videos ?? []).filter((v) => v.youtube_id).map((v) => ({
+      youtubeId: v.youtube_id as string,
       title: v.title,
       // uploadDate: actor_videos.created_at 컬럼이 추가되면 여기로 ISO8601 전달
     }))

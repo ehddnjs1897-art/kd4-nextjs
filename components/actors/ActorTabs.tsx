@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import R2Video from '@/components/actors/R2Video'
 
 /* ---- 타입 ---- */
 interface ActorPhoto {
@@ -16,7 +17,8 @@ interface ActorPhoto {
 
 interface ActorVideo {
   id: string
-  youtube_id: string
+  youtube_id: string | null
+  r2_key?: string | null
   title: string | null
 }
 
@@ -225,20 +227,24 @@ export default function ActorTabs({ actor, canViewContact, imageProtected }: Pro
             <p style={styles.empty}>등록된 영상이 없습니다.</p>
           ) : (
             <div style={styles.videoGrid}>
-              {actor.actor_videos.map((video) => (
-                <div key={video.id} style={styles.videoItem}>
-                  <div style={styles.videoWrapper}>
-                    <iframe
-                      src={`https://www.youtube.com/embed/${video.youtube_id}`}
-                      title={video.title || actor.name}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      style={styles.iframe}
-                    />
+              {actor.actor_videos.map((video) =>
+                video.youtube_id ? (
+                  <div key={video.id} style={styles.videoItem}>
+                    <div style={styles.videoWrapper}>
+                      <iframe
+                        src={`https://www.youtube.com/embed/${video.youtube_id}`}
+                        title={video.title || actor.name}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        style={styles.iframe}
+                      />
+                    </div>
+                    {video.title && <p style={styles.videoTitle}>{video.title}</p>}
                   </div>
-                  {video.title && <p style={styles.videoTitle}>{video.title}</p>}
-                </div>
-              ))}
+                ) : video.r2_key ? (
+                  <R2Video key={video.id} videoId={video.id} title={video.title} />
+                ) : null
+              )}
             </div>
           )}
         </div>

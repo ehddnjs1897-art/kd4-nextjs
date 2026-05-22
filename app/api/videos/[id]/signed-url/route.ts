@@ -45,7 +45,9 @@ export async function GET(
     .single()
 
   const role = profile?.role
-  const elevated = role === 'admin' || role === 'crew' || role === 'editor' || role === 'director'
+  // 영상 시청 가능 역할 = 배우 DB 열람 가능 역할(배우/크루/편집자/디렉터/관리자)
+  const elevated =
+    role === 'admin' || role === 'crew' || role === 'editor' || role === 'director' || role === 'actor'
 
   const { id } = await params
   const url = new URL(request.url)
@@ -55,7 +57,7 @@ export async function GET(
   // 영상 row 조회
   const { data: video, error } = await supabaseAdmin
     .from('actor_videos')
-    .select('id, r2_key, is_public, actor_id')
+    .select('id, r2_key, actor_id')
     .eq('id', id)
     .single()
 
@@ -70,8 +72,8 @@ export async function GET(
     )
   }
 
-  // 권한: is_public=true (공개) 또는 elevated role
-  if (!video.is_public && !elevated) {
+  // 권한: 배우 DB 열람 가능 역할(배우/크루/디렉터/관리자)만 시청
+  if (!elevated) {
     return NextResponse.json(
       { error: '이 영상은 권한이 있는 사용자만 접근 가능합니다.' },
       { status: 403 }
