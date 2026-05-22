@@ -195,9 +195,10 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   // 필모그래피
   const [filmography, setFilmography] = useState<FilmItem[]>(initialData.filmography)
   const [filmMsg, setFilmMsg] = useState('')
+  const [filmSaving, setFilmSaving] = useState(false)
   const newFilm = (): FilmItem => ({
     id: '',
-    category: '드라마',
+    category: 'drama',
     year: new Date().getFullYear(),
     title: '',
     role: '',
@@ -327,37 +328,35 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     })
   }
 
-  async function saveFilm(idx: number) {
-    const f = filmography[idx]
-    if (!f.title.trim()) {
-      setFilmMsg('작품명을 입력하세요.')
-      return
+  async function saveAllFilms() {
+    const hasContent = filmography.some(f => f.title.trim())
+    if (!hasContent) { setFilmMsg('저장할 항목이 없습니다.'); return }
+    setFilmSaving(true); setFilmMsg('')
+    let errors = 0
+    const updated = [...filmography]
+    for (let i = 0; i < filmography.length; i++) {
+      const f = filmography[i]
+      if (!f.title.trim()) continue
+      try {
+        const body = { category: f.category, year: Number(f.year), title: f.title.trim(), role: f.role.trim() }
+        if (f.id) {
+          const res = await fetch(`/api/actors/${actorId}/filmography/${f.id}`, {
+            method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+          })
+          if (!res.ok) errors++
+        } else {
+          const res = await fetch(`/api/actors/${actorId}/filmography`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+          })
+          if (!res.ok) errors++
+          else { const row = await res.json(); updated[i] = { ...updated[i], id: row.id } }
+        }
+      } catch { errors++ }
     }
-    try {
-      const body = { category: f.category, year: Number(f.year), title: f.title.trim(), role: f.role.trim() }
-      if (f.id) {
-        const res = await fetch(`/api/actors/${actorId}/filmography/${f.id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
-        })
-        if (!res.ok) throw new Error((await res.json()).error || '저장 실패')
-      } else {
-        const res = await fetch(`/api/actors/${actorId}/filmography`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
-        })
-        if (!res.ok) throw new Error((await res.json()).error || '저장 실패')
-        const row = await res.json()
-        setFilmography(prev => { const next = [...prev]; next[idx] = { ...next[idx], id: row.id }; return next })
-      }
-      setFilmMsg('저장되었습니다.')
-    } catch (e) {
-      setFilmMsg((e as Error).message)
-    } finally {
-      setTimeout(() => setFilmMsg(''), 3000)
-    }
+    setFilmography(updated)
+    setFilmSaving(false)
+    setFilmMsg(errors > 0 ? `${errors}개 항목 저장 실패` : '저장되었습니다.')
+    setTimeout(() => setFilmMsg(''), 3000)
   }
 
   async function deleteFilm(idx: number) {
@@ -499,28 +498,32 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
             {filmography.map((f, i) => (
               <div key={i} style={s.filmRow}>
                 <select value={f.category} onChange={e => updateFilm(i, 'category', e.target.value)} style={{ ...s.input, padding: '8px 10px' }}>
-                  <option>드라마</option>
-                  <option>영화</option>
-                  <option>CF</option>
-                  <option>연극</option>
-                  <option>뮤지컬</option>
-                  <option>기타</option>
+                  <option value="drama">드라마</option>
+                  <option value="film">영화</option>
+                  <option value="cf">CF</option>
+                  <option value="theater">연극</option>
+                  <option value="musical">뮤지컬</option>
+                  <option value="etc">기타</option>
                 </select>
                 <input type="number" value={f.year} onChange={e => updateFilm(i, 'year', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} />
                 <input value={f.title} onChange={e => updateFilm(i, 'title', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} placeholder="작품명" />
                 <input value={f.role} onChange={e => updateFilm(i, 'role', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} placeholder="배역" />
-                <div style={{ display: 'flex', gap: 4 }}>
-                  <button onClick={() => saveFilm(i)} style={{ ...s.btn, padding: '6px 14px', fontSize: '0.78rem', background: 'rgba(196,165,90,0.15)', color: 'var(--gold)', border: '1px solid var(--gold)' }}>저장</button>
-                  <button onClick={() => deleteFilm(i)} style={{ ...s.btn, ...s.btnDanger }}>삭제</button>
-                </div>
+                <button onClick={() => deleteFilm(i)} style={{ ...s.btn, ...s.btnDanger }}>삭제</button>
               </div>
             ))}
           </div>
         )}
 
-        <button onClick={() => setFilmography(prev => [newFilm(), ...prev])} style={{ ...s.btn, ...s.btnGhost }}>
-          + 항목 추가
-        </button>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+          <button onClick={() => setFilmography(prev => [newFilm(), ...prev])} style={{ ...s.btn, ...s.btnGhost }}>
+            + 항목 추가
+          </button>
+          {filmography.length > 0 && (
+            <button onClick={saveAllFilms} disabled={filmSaving} style={{ ...s.btn, ...s.btnPrimary, opacity: filmSaving ? 0.6 : 1 }}>
+              {filmSaving ? '저장 중…' : '저장'}
+            </button>
+          )}
+        </div>
         {filmMsg && <p style={{ ...s.msg, color: filmMsg.includes('저장') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{filmMsg}</p>}
       </section>
     </div>
