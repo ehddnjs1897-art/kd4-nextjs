@@ -370,48 +370,66 @@ export default function BenefitsPage() {
 
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
-      {/* 공식 제휴 — 서우스튜디오 프로필 촬영 */}
+      {/* 공식 제휴 */}
       <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
         <SectionHeader
           eyebrow="OFFICIAL PARTNERSHIP"
           title="공식 제휴"
-          desc="배우에게 꼭 필요한 프로필 촬영, 제휴 스튜디오에서 멤버 할인으로."
+          desc="KD4 멤버에게 특별한 혜택을 제공하는 공식 파트너사입니다."
         />
-        <Link
-          href="/benefits/seowoo-studio"
-          className="kd4-card-hover"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'clamp(16px, 4vw, 28px)',
-            maxWidth: 640,
-            margin: '0 auto',
-            background: '#ffffff',
-            border: '1.5px solid rgba(21,72,138,0.18)',
-            borderRadius: 12,
-            padding: 'clamp(20px, 4vw, 28px)',
-            textDecoration: 'none',
-            position: 'relative',
-            overflow: 'hidden',
-            flexWrap: 'wrap',
-          }}
-        >
-          <span aria-hidden style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 3, background: 'var(--gold)' }} />
-          <Image
-            src="/partners/seowoo-logo.webp"
-            alt="seowoo studio"
-            width={80}
-            height={80}
-            style={{ borderRadius: 6, flexShrink: 0 }}
-          />
-          {/* 텍스트 */}
-          <span style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 180, flex: 1 }}>
-            <span style={{ fontFamily: 'var(--font-sans)', fontSize: '1.05rem', fontWeight: 700, color: 'var(--white)' }}>배우 프로필 촬영 제휴</span>
-            <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.92rem', fontWeight: 600, color: 'var(--gold)' }}>KD4 멤버 최대 15% 할인</span>
-            <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', color: 'var(--secondary)' }}>서우스튜디오 · 프로필 · 포트레이트 촬영</span>
-          </span>
-          <span aria-hidden style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', fontWeight: 700, color: 'var(--gold)', whiteSpace: 'nowrap' }}>자세히 보기 →</span>
-        </Link>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 640, margin: '0 auto' }}>
+
+          {/* 서우스튜디오 */}
+          <Link
+            href="/benefits/seowoo-studio"
+            className="kd4-card-hover"
+            style={{ display: 'flex', alignItems: 'center', gap: 'clamp(16px, 4vw, 24px)', background: '#ffffff', border: '1.5px solid rgba(21,72,138,0.18)', borderRadius: 12, padding: 'clamp(18px, 3vw, 24px)', textDecoration: 'none', position: 'relative', overflow: 'hidden', flexWrap: 'wrap' }}
+          >
+            <span aria-hidden style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 3, background: 'var(--gold)' }} />
+            <Image src="/partners/seowoo-logo.webp" alt="seowoo studio" width={72} height={72} style={{ borderRadius: 6, flexShrink: 0 }} />
+            <span style={{ display: 'flex', flexDirection: 'column', gap: 5, minWidth: 160, flex: 1 }}>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', fontWeight: 700, color: 'var(--white)' }}>배우 프로필 촬영 제휴</span>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 600, color: 'var(--gold)' }}>KD4 멤버 최대 15% 할인</span>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: 'var(--secondary)' }}>서우스튜디오 · 프로필 · 포트레이트 촬영</span>
+            </span>
+            <span aria-hidden style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 700, color: 'var(--gold)', whiteSpace: 'nowrap' }}>자세히 보기 →</span>
+          </Link>
+
+          {/* 리플레이 */}
+          <Link
+            href="/benefits/replay"
+            className="kd4-card-hover"
+            style={{ display: 'flex', alignItems: 'center', gap: 'clamp(16px, 4vw, 24px)', background: '#ffffff', border: '1.5px solid rgba(21,72,138,0.18)', borderRadius: 12, padding: 'clamp(18px, 3vw, 24px)', textDecoration: 'none', position: 'relative', overflow: 'hidden', flexWrap: 'wrap' }}
+          >
+            <span aria-hidden style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 3, background: 'var(--gold)' }} />
+            <span style={{ flexShrink: 0, width: 72, height: 72, borderRadius: 6, background: 'rgba(21,72,138,0.08)', border: '1px solid rgba(21,72,138,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '1rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.04em' }}>REPLAY</span>
+            </span>
+            <span style={{ display: 'flex', flexDirection: 'column', gap: 5, minWidth: 160, flex: 1 }}>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', fontWeight: 700, color: 'var(--white)' }}>배우 커뮤니티 리플레이</span>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 600, color: 'var(--gold)' }}>KD4 멤버 3만원 / 50장 (일반 4만원)</span>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: 'var(--secondary)' }}>리플레이 · 프로필 투어 서비스 · 배포</span>
+            </span>
+            <span aria-hidden style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 700, color: 'var(--gold)', whiteSpace: 'nowrap' }}>자세히 보기 →</span>
+          </Link>
+
+          {/* CGV 신촌아트레온 아트하우스 */}
+          <div
+            style={{ display: 'flex', alignItems: 'center', gap: 'clamp(16px, 4vw, 24px)', background: '#ffffff', border: '1.5px solid rgba(21,72,138,0.18)', borderRadius: 12, padding: 'clamp(18px, 3vw, 24px)', position: 'relative', overflow: 'hidden', flexWrap: 'wrap' }}
+          >
+            <span aria-hidden style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 3, background: 'rgba(21,72,138,0.3)' }} />
+            <span style={{ flexShrink: 0, width: 72, height: 72, borderRadius: 6, background: '#e8232a', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 2 }}>
+              <span style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '1.1rem', fontWeight: 700, color: '#ffffff', letterSpacing: '0.04em' }}>CGV</span>
+              <span style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.45rem', fontWeight: 700, color: 'rgba(255,255,255,0.85)', letterSpacing: '0.1em' }}>ARTHOUSE</span>
+            </span>
+            <span style={{ display: 'flex', flexDirection: 'column', gap: 5, minWidth: 160, flex: 1 }}>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', fontWeight: 700, color: 'var(--white)' }}>신촌 아트레온 CGV 아트하우스</span>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 600, color: 'var(--gold)' }}>공식 광고 파트너</span>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: 'var(--secondary)' }}>신촌 아트레온 아트하우스 상영관 내 KD4 공식 광고 운영 중</span>
+            </span>
+          </div>
+
+        </div>
       </section>
 
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />

@@ -1908,6 +1908,42 @@ main {
   100% { transform: translateX(0); }
 }
 
+/* ── 파트너 마퀴 ────────────────────────────────────────────────────────── */
+
+.partner-marquee {
+  overflow: hidden;
+  width: 100%;
+  mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+
+.partner-marquee-track {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  animation: partnerScroll 45s linear infinite;
+}
+
+.partner-marquee-item {
+  flex: 0 0 auto;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  color: var(--secondary);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  opacity: 0.55;
+}
+
+.partner-marquee-dot {
+  color: var(--border);
+  margin: 0 4px;
+}
+
+@keyframes partnerScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 /* === 모바일 성능 최적화 === */
 @media (max-width: 768px) {
   /* backdrop-filter는 모바일 GPU에 부담이 크므로 단색 처리 */
