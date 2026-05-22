@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
 
   // 게시글 존재 확인 + 작성자 이름 병렬 조회 (supabaseAdmin: RLS 우회로 정확한 결과)
   const [{ data: post, error: postError }, { data: profile }] = await Promise.all([
-    supabaseAdmin.from('posts').select('id').eq('id', post_id).single(),
+    supabaseAdmin.from('posts').select('id').eq('id', post_id).maybeSingle(),
     supabaseAdmin.from('profiles').select('name').eq('id', user.id).maybeSingle(),
   ])
 

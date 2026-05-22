@@ -64,7 +64,7 @@ export async function GET(
     .from('actor_videos')
     .select('id, r2_key, actor_id, title')
     .eq('id', id)
-    .single()
+    .maybeSingle()
 
   if (error || !video) {
     return NextResponse.json({ error: '영상을 찾을 수 없습니다.' }, { status: 404 })

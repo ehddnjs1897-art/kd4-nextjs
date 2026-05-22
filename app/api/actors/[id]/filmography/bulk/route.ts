@@ -46,7 +46,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
 
     const { data: profile } = await supabaseAdmin
-      .from('profiles').select('actor_id, role').eq('id', user.id).single()
+      .from('profiles').select('actor_id, role').eq('id', user.id).maybeSingle()
     const isAllowed = profile && (
       profile.actor_id === actorId ||
       profile.role === 'admin' ||

@@ -146,7 +146,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params
   const actor = await getActorCached(id)
-  if (!actor) return { title: '배우 프로필 | kd4.club' }
+  if (!actor) return { title: '배우 프로필 | kd4.club', robots: { index: false, follow: false } }
 
   const SITE_URL = 'https://kd4.club'
   const ogImage = `${SITE_URL}/api/og/actor/${actor.id}`
@@ -170,6 +170,7 @@ export async function generateMetadata({
     title,
     description,
     alternates: { canonical: pageUrl },
+    robots: { index: true, follow: true },
     openGraph: {
       title,
       description,

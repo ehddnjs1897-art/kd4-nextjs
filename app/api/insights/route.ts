@@ -42,7 +42,7 @@ async function requireAdmin(): Promise<{ userId: string } | NextResponse> {
     return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   }
   const { data: profile, error: profileErr } = await supabaseAdmin
-    .from('profiles').select('role').eq('id', user.id).single()
+    .from('profiles').select('role').eq('id', user.id).maybeSingle()
   if (profileErr || !profile || profile.role !== 'admin') {
     return NextResponse.json({ error: '관리자 권한이 필요합니다.' }, { status: 403 })
   }
