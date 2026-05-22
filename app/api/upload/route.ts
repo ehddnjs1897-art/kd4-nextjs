@@ -1,7 +1,7 @@
 /**
  * POST /api/upload — 파일 업로드
  *
- * - 로그인 필수 + role: editor 또는 admin
+ * - 로그인 필수 + admin/editor: 전체 허용, member/actor: 본인 actorId만 허용
  * - multipart/form-data: { file: File, actorId: string, bucket?: string }
  * - 이미지 파일 5MB 제한
  * - 반환: { url, path, provider }

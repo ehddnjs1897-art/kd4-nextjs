@@ -6,7 +6,7 @@
  *
  * 전제:
  * 1. supabase/migrations/2026-05-10_actor_casting_fields.sql 실행됨
- * 2. .env.local 에 GEMINI_KEY (또는 NEXT_PUBLIC_GEMINI_KEY) + Supabase 키
+ * 2. .env.local 에 GEMINI_KEY + Supabase 키
  *
  * 동작:
  * - is_public=true 배우 전체 조회 (필모그래피 join)
@@ -30,7 +30,7 @@ if (!SUPABASE_URL || !SERVICE_KEY) {
   process.exit(1)
 }
 
-if (!process.env.GEMINI_KEY && !process.env.NEXT_PUBLIC_GEMINI_KEY) {
+if (!process.env.GEMINI_KEY) {
   console.error('❌ GEMINI_KEY env 누락 — Gemini API 키 필요')
   process.exit(1)
 }

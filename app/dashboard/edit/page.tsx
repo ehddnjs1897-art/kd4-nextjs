@@ -1,7 +1,7 @@
 /**
  * /dashboard/edit — 배우 갤러리 편집 페이지 (서버 컴포넌트)
  *
- * - role: editor 또는 admin 만 접근 가능
+ * - role: member/actor/editor/admin 접근 가능 (본인 프로필만)
  * - actor_id 없으면 안내 메시지
  * - 실제 편집 UI는 GalleryEditForm(클라이언트) 위임
  */
