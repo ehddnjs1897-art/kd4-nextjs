@@ -3,8 +3,8 @@ import { unstable_cache } from 'next/cache'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { getActorPhotoUrl, shouldOptimize } from '@/lib/actor-photo'
-import ActorCardImage from '@/components/actors/ActorCardImage'
 import ActorDbLocked from '@/components/actors/ActorDbLocked'
+import ActorsSearchGrid from '@/components/actors/ActorsSearchGrid'
 import { canViewActorDb } from '@/lib/access'
 import type { UserRole } from '@/lib/types'
 
@@ -252,10 +252,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
           )}
         </div>
 
-        {/* 결과 수 */}
-        <p style={styles.resultCount}>{dbError ? '—' : `총 ${actors.length}명`}</p>
-
-        {/* 배우 그리드 */}
+        {/* 배우 그리드 + 검색 (클라이언트 컴포넌트) */}
         {dbError ? (
           <div style={styles.emptyState}>
             <p style={styles.emptyText}>데이터베이스 연결 오류가 발생했습니다.</p>
@@ -269,33 +266,19 @@ export default async function ActorsPage({ searchParams }: PageProps) {
             <Link href="/actors" style={styles.resetLink}>필터 초기화</Link>
           </div>
         ) : (
-          <div style={styles.grid} className="actors-grid">
-            {actors.map((actor) => (
-              <Link key={actor.id} href={`/actors/${actor.id}`} style={styles.card} className="actor-card">
-                <div style={styles.imageWrap}>
-                  <ActorCardImage
-                    src={getActorPhotoUrl(actor)}
-                    alt={actor.name}
-                    unoptimized={!shouldOptimize(actor)}
-                  />
-                  <div style={styles.cardOverlay}>
-                    <span style={styles.cardName}>{actor.name}</span>
-                    <span style={styles.cardMeta}>
-                      {actor.gender ?? ''}{actor.gender && actor.age_group ? ' · ' : ''}{actor.age_group ?? ''}
-                    </span>
-                    {/* 캐스팅 태그 — 자동 분류 결과 (있을 때만, 최대 3개) */}
-                    {actor.casting_tags && actor.casting_tags.length > 0 && (
-                      <div style={styles.cardTags}>
-                        {actor.casting_tags.slice(0, 3).map((t) => (
-                          <span key={t} style={styles.cardTag}>{t}</span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+          <ActorsSearchGrid
+            actors={actors.map((actor) => ({
+              id: actor.id,
+              name: actor.name,
+              gender: actor.gender,
+              age_group: actor.age_group,
+              casting_tags: actor.casting_tags,
+              casting_summary: actor.casting_summary,
+              photoSrc: getActorPhotoUrl(actor),
+              unoptimized: !shouldOptimize(actor),
+            }))}
+            totalBeforeSearch={actors.length}
+          />
         )}
       </div>
     </div>
