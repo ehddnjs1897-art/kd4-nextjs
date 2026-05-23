@@ -119,7 +119,7 @@ function GamePlayInner() {
 
 export default function GamePlayPage() {
   return (
-    <Suspense fallback={<div role="status" aria-label="게임 로딩 중" style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",color:"#444",fontFamily:"var(--font-oswald),sans-serif",letterSpacing:"0.15em"}}>LOADING...</div>}>
+    <Suspense fallback={<div role="status" aria-label="게임 로딩 중" style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",color:"#444",fontFamily:"var(--font-oswald),sans-serif",letterSpacing:"0.15em"}}><span lang="en">LOADING...</span></div>}>
       <GamePlayInner />
     </Suspense>
   )

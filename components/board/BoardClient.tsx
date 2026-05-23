@@ -283,7 +283,7 @@ export default function BoardClient({
                 {post.author_name ?? '익명'}
               </span>
               <span role="cell" className="board-col-hide-xs" style={{ textAlign: 'center', fontSize: '0.82rem', color: 'var(--gray)' }}>
-                {formatDate(post.created_at)}
+                <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
               </span>
               <span role="cell" className="board-col-hide-xs" style={{ textAlign: 'right', fontSize: '0.82rem', color: 'var(--gray)' }}>
                 {post.views ?? 0}

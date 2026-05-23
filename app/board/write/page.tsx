@@ -108,7 +108,7 @@ export default function WritePage() {
           </h1>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} aria-label="게시글 작성">
           {error && (
             <div role="alert" style={{
               padding: '12px 16px',

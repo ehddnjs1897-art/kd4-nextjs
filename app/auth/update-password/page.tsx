@@ -126,7 +126,7 @@ export default function UpdatePasswordPage() {
           <>
             <h1 style={styles.title}>새 비밀번호 입력</h1>
 
-            <form onSubmit={handleUpdate} style={styles.form}>
+            <form onSubmit={handleUpdate} style={styles.form} aria-label="새 비밀번호 입력">
               {error && <div role="alert" style={styles.errorBox}>{error}</div>}
 
               <div style={styles.fieldGroup}>

@@ -120,7 +120,7 @@ function LoginContent() {
         {error && <div id="login-error" style={styles.errorBox} role="alert">{error}</div>}
 
         {/* 이메일 로그인 폼 */}
-        <form onSubmit={handleEmailLogin} style={styles.form}>
+        <form onSubmit={handleEmailLogin} style={styles.form} aria-label="이메일 로그인">
           <div style={styles.fieldGroup}>
             <label htmlFor="email" style={styles.label}>
               이메일

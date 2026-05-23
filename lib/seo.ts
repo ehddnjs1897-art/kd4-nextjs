@@ -80,10 +80,11 @@ export function getActorPersonSchema(actor: ActorPersonInput) {
     ]
   }
 
-  // SNS — 공개된 인스타그램만 (이메일/전화는 PII 보호 차원에서 제외)
-  if (actor.instagram) {
-    personSchema.sameAs = [actor.instagram.startsWith('http') ? actor.instagram : `https://instagram.com/${actor.instagram.replace(/^@/, '')}`]
-  }
+  // SNS — KD4 프로필이 기본 sameAs 앵커, 인스타그램 있으면 추가 (이메일/전화는 PII 제외)
+  const actorProfileUrl = `${SITE_URL}/actors/${actor.id}`
+  personSchema.sameAs = actor.instagram
+    ? [actorProfileUrl, actor.instagram.startsWith('http') ? actor.instagram : `https://instagram.com/${actor.instagram.replace(/^@/, '')}`]
+    : [actorProfileUrl]
 
   // 필모그래피 → performerIn (creativeWork)
   if (actor.filmography && actor.filmography.length > 0) {

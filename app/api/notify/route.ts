@@ -79,8 +79,21 @@ async function sendMetaCAPI(record: { name?: string | null; phone?: string | nul
 const notifyPhoneMap = new Map<string, number>()
 const NOTIFY_DEBOUNCE_MS = 4000 // 4초 내 동일 번호 동시 요청 차단
 
+// 허용 출처 — kd4.club 및 로컬 개발 환경만 허용 (cross-origin 스팸 제출 방어)
+const NOTIFY_ALLOWED_ORIGINS = new Set([
+  'https://kd4.club',
+  'https://www.kd4.club',
+  'http://localhost:3000',
+])
+
 export async function POST(request: NextRequest) {
   try {
+    // Origin 검증 — 브라우저 요청만 허용 (null/undefined = non-browser server-to-server OK)
+    const origin = request.headers.get('origin')
+    if (origin && !NOTIFY_ALLOWED_ORIGINS.has(origin)) {
+      return NextResponse.json({ error: '허용되지 않는 출처입니다.' }, { status: 403 })
+    }
+
     // 본문 크기 검증 (DoS 방어 — 폼 제출은 최대 수 KB)
     const contentLength = parseInt(request.headers.get('content-length') ?? '0', 10)
     if (contentLength > 65_536) {
