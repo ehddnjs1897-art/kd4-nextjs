@@ -79,9 +79,12 @@ export async function POST(request: NextRequest, { params }: Ctx) {
 
     for (const item of items) {
       if (!item.title?.trim()) continue
+      // 연도 범위 검증
+      const rawYear = item.year !== undefined && item.year !== null ? Number(item.year) : undefined
+      if (rawYear !== undefined && (!Number.isInteger(rawYear) || rawYear < 1900 || rawYear > new Date().getFullYear() + 2)) continue
       const clean: FilmItem = {
         category: (item.category && VALID_FILM_CATEGORIES.has(item.category)) ? item.category : 'drama',
-        year: item.year ? Number(item.year) : undefined,
+        year: rawYear,
         title: item.title.trim().slice(0, 200),
         role: item.role?.trim().slice(0, 100) || undefined,
         broadcaster: item.broadcaster?.trim().slice(0, 100) || undefined,

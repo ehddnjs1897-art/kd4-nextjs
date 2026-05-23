@@ -559,6 +559,7 @@ export default function JoinForm() {
         onFocus={() => handleFieldFocus('name')}
         onBlur={() => setFocused(null)}
         autoComplete="name"
+        maxLength={50}
         style={inputStyle('name')}
         required
       />
@@ -573,6 +574,7 @@ export default function JoinForm() {
         onFocus={() => handleFieldFocus('phone')}
         onBlur={() => setFocused(null)}
         autoComplete="tel"
+        maxLength={20}
         style={inputStyle('phone')}
         required
       />
@@ -587,6 +589,7 @@ export default function JoinForm() {
         onFocus={() => handleFieldFocus('email')}
         onBlur={() => setFocused(null)}
         autoComplete="email"
+        maxLength={254}
         style={inputStyle('email')}
         required
       />

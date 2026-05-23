@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import type { Insight, InsightSourceType } from '@/lib/types'
 
 const CATEGORIES = ['전체', '연기', '비즈니스', '크리에이티브', '디자인', '기술', '라이프', '기타']
@@ -29,6 +29,7 @@ export default function InsightsPage() {
   const [imageTitle, setImageTitle] = useState('')
   const [dragOver, setDragOver] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [filterCategory, setFilterCategory] = useState('전체')
   const [filterSource, setFilterSource] = useState('전체')
@@ -205,6 +206,7 @@ export default function InsightsPage() {
                   value={url}
                   onChange={e => setUrl(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && !saving && handleSave()}
+                  maxLength={2000}
                 />
                 <button className="ins-btn" onClick={handleSave} disabled={saving || !url.trim()}>
                   {saving ? '저장 중…' : '저장'}
@@ -221,6 +223,7 @@ export default function InsightsPage() {
                   value={memo}
                   onChange={e => setMemo(e.target.value)}
                   rows={2}
+                  maxLength={500}
                   style={{ resize: 'vertical' }}
                 />
               )}
@@ -231,7 +234,7 @@ export default function InsightsPage() {
                 onDragOver={e => { e.preventDefault(); setDragOver(true) }}
                 onDragLeave={() => setDragOver(false)}
                 onDrop={e => { e.preventDefault(); setDragOver(false); uploadFiles(e.dataTransfer.files) }}
-                onClick={() => document.getElementById('img-file-input')?.click()}
+                onClick={() => fileInputRef.current?.click()}
                 style={{
                   border: `2px dashed ${dragOver ? 'var(--gold)' : 'var(--border)'}`,
                   borderRadius: 10,
@@ -247,7 +250,7 @@ export default function InsightsPage() {
                 <br />
                 <span style={{ fontSize: 11 }}>jpg / png / gif / webp · 최대 10MB · 여러 장 동시 가능</span>
                 <input
-                  id="img-file-input"
+                  ref={fileInputRef}
                   type="file"
                   accept="image/*"
                   multiple
@@ -260,6 +263,7 @@ export default function InsightsPage() {
                 placeholder="제목 (선택)"
                 value={imageTitle}
                 onChange={e => setImageTitle(e.target.value)}
+                maxLength={200}
                 style={{ marginBottom: 8 }}
               />
               <textarea
@@ -268,6 +272,7 @@ export default function InsightsPage() {
                 value={memo}
                 onChange={e => setMemo(e.target.value)}
                 rows={2}
+                maxLength={500}
                 style={{ resize: 'vertical' }}
               />
             </>
@@ -322,7 +327,12 @@ export default function InsightsPage() {
         </div>
 
         {/* 카드 목록 */}
-        {fetchError && <p style={{ fontSize: 13, color: '#ef4444', padding: '16px 0', textAlign: 'center' }}>{fetchError}</p>}
+        {fetchError && (
+          <div style={{ textAlign: 'center', padding: '16px 0' }}>
+            <p style={{ fontSize: 13, color: '#ef4444', marginBottom: 8 }}>{fetchError}</p>
+            <button className="ins-btn-ghost" style={{ fontSize: 13 }} onClick={fetchInsights}>다시 시도</button>
+          </div>
+        )}
         {loading ? (
           <p style={{ color: 'var(--gray)', textAlign: 'center', padding: '60px 0' }}>불러오는 중…</p>
         ) : insights.length === 0 ? (

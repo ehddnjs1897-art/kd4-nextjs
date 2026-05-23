@@ -46,6 +46,13 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
     if (patch.category !== undefined && !VALID_FILM_CATEGORIES.has(patch.category as string)) {
       return NextResponse.json({ error: '유효하지 않은 카테고리입니다.' }, { status: 400 })
     }
+    // 연도 범위 검증
+    if (patch.year !== undefined && patch.year !== null) {
+      const y = Number(patch.year)
+      if (!Number.isInteger(y) || y < 1900 || y > new Date().getFullYear() + 2) {
+        return NextResponse.json({ error: `연도는 1900~${new Date().getFullYear() + 2} 범위여야 합니다.` }, { status: 400 })
+      }
+    }
 
     const { error } = await supabaseAdmin
       .from('actor_filmography').update(patch).eq('id', filmId).eq('actor_id', id)

@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json().catch(() => null)
-  const filename = typeof body?.filename === 'string' ? body.filename : ''
+  const filename = typeof body?.filename === 'string' ? body.filename.slice(0, 500) : ''
   const contentType = typeof body?.contentType === 'string' ? body.contentType : ''
   const size = Number(body?.size ?? 0)
 

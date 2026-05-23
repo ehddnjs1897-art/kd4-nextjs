@@ -36,6 +36,12 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     if (category && !VALID_FILM_CATEGORIES.has(category)) {
       return NextResponse.json({ error: '유효하지 않은 카테고리입니다.' }, { status: 400 })
     }
+    if (year !== undefined && year !== null) {
+      const y = Number(year)
+      if (!Number.isInteger(y) || y < 1900 || y > new Date().getFullYear() + 2) {
+        return NextResponse.json({ error: `연도는 1900~${new Date().getFullYear() + 2} 범위여야 합니다.` }, { status: 400 })
+      }
+    }
 
     const { data, error } = await supabaseAdmin
       .from('actor_filmography')

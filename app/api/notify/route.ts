@@ -85,6 +85,16 @@ export async function POST(request: NextRequest) {
     if ((count ?? 0) >= 3) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
+    // IP 기반 2차 레이트 리밋 — 번호 열거 공격 방어 (5분 내 10회)
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
+    const { count: ipCount } = await getSupabaseAdmin()
+      .from('consultations')
+      .select('id', { count: 'exact', head: true })
+      .eq('raw_payload->>ip', ip)
+      .gte('created_at', fiveMinAgo)
+    if ((ipCount ?? 0) >= 10) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
 
     // 1. Supabase에 무조건 먼저 기록 — webhook·SMS 실패와 무관하게 데이터 보존
     let savedId: string | null = null
@@ -96,7 +106,7 @@ export async function POST(request: NextRequest) {
       source: record?.source ?? null,
       inquiry_type: record?.inquiry_type ?? null,
       motivation: record?.motivation ?? null,
-      status: record?.status ?? '대기',
+      status: (['대기', '확인', '완료'] as const).includes(record?.status as '대기' | '확인' | '완료') ? record.status : '대기',
       // raw_payload: 알려진 필드만 — 임의 extra 필드 저장 방지 (DoS / injection)
       raw_payload: {
         name, phone, email: emailRaw,

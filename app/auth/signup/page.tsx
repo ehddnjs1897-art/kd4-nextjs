@@ -74,7 +74,7 @@ export default function SignupPage() {
       password,
       options: {
         data: metadata,
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin}/auth/callback`,
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? (typeof window !== 'undefined' ? window.location.origin : 'https://kd4.club')}/auth/callback`,
       },
     })
 
@@ -254,6 +254,7 @@ export default function SignupPage() {
               required
               disabled={loading}
               autoComplete="name"
+              maxLength={50}
               style={styles.input}
             />
           </div>
@@ -272,6 +273,7 @@ export default function SignupPage() {
               required
               disabled={loading}
               autoComplete="email"
+              maxLength={254}
               style={styles.input}
             />
           </div>
@@ -290,6 +292,7 @@ export default function SignupPage() {
               required
               disabled={loading}
               autoComplete="new-password"
+              maxLength={128}
               style={styles.input}
             />
           </div>
@@ -308,6 +311,7 @@ export default function SignupPage() {
               required
               disabled={loading}
               autoComplete="new-password"
+              maxLength={128}
               style={{
                 ...styles.input,
                 borderColor:
