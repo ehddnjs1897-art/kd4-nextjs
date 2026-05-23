@@ -42,6 +42,7 @@ async function fetchActor(id: string): Promise<ActorOg | null> {
         apikey: SERVICE_KEY,
         Authorization: `Bearer ${SERVICE_KEY}`,
       },
+      signal: AbortSignal.timeout(10_000),
       next: { revalidate: 3600, tags: ['actors', `actor-${id}`] },
     }
   )

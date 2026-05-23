@@ -20,6 +20,19 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
+  // Vercel 프리뷰 배포에서 관리자 경로 차단 — 프로덕션 도메인(kd4.club) 전용
+  // 프리뷰 배포는 동일 env var 공유 → 관리자 기능 오픈 방지
+  const host = request.headers.get('host') ?? ''
+  if (
+    host.endsWith('.vercel.app') &&
+    (pathname.startsWith('/admin') || pathname.startsWith('/api/admin'))
+  ) {
+    return NextResponse.json(
+      { error: '관리자 접근은 프로덕션 도메인에서만 허용됩니다.' },
+      { status: 403 }
+    )
+  }
+
   // 대소문자 오타 정규화 — /Join → /join 등 (308 루프 없이 안전)
   const lowered = pathname.toLowerCase()
   if (pathname !== lowered) {

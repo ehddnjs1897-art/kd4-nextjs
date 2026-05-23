@@ -3,6 +3,7 @@ import { Noto_Sans_KR, Noto_Serif_KR, Oswald } from 'next/font/google'
 import Script from 'next/script'
 import '../styles/globals.css'
 import ConditionalShell from '@/components/layout/ConditionalShell'
+import { RouteAnnouncer } from '@/components/layout/RouteAnnouncer'
 import JsonLd from '@/components/seo/JsonLd'
 import { FAQ_ITEMS } from '@/lib/faq-items'
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
@@ -99,6 +100,7 @@ export default function RootLayout({
         className={`${notoSansKR.variable} ${notoSerifKR.variable} ${oswald.variable}`}
       >
         <a href="#main-content" className="skip-nav">본문으로 바로가기</a>
+        <RouteAnnouncer />
         <ConditionalShell>{children}</ConditionalShell>
         <GoogleAnalytics />
         <GAPageTracker />
