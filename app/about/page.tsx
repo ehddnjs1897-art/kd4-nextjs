@@ -512,12 +512,14 @@ export default function AboutPage() {
             <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <a
                 href="mailto:uikactors@gmail.com"
+                aria-label="이메일 보내기 uikactors@gmail.com"
                 style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: 'var(--secondary)', display: 'flex', gap: '8px', alignItems: 'center' }}
               >
                 <span aria-hidden="true">✉</span> uikactors@gmail.com
               </a>
               <a
                 href="tel:010-8564-0244"
+                aria-label="전화하기 010-8564-0244"
                 style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: 'var(--secondary)', display: 'flex', gap: '8px', alignItems: 'center' }}
               >
                 <span aria-hidden="true">☎</span> 010-8564-0244

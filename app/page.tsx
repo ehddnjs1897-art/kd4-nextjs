@@ -1180,7 +1180,7 @@ export default function HomePage() {
         <div className="partner-marquee">
           <div className="partner-marquee-track">
             {[...PARTNERS, ...PARTNERS].map((p, i) => (
-              <div key={`${p.name}-${i}`} className="partner-marquee-item">
+              <div key={`${p.name}-${i}`} className="partner-marquee-item" aria-hidden={i >= PARTNERS.length || undefined}>
                 <Image src={p.logo} alt={p.name} width={80} height={40} style={{ objectFit: 'contain' }} />
                 <span>{p.name}</span>
               </div>
