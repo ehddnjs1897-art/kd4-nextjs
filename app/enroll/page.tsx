@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { CLASSES } from '@/lib/classes'
 import EnrollForm from '@/components/enroll/EnrollForm'
+import PageJsonLd from '@/components/seo/PageJsonLd'
+import { buildBreadcrumb } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
 
 export const metadata: Metadata = {
@@ -94,13 +96,19 @@ export default async function EnrollPage({
   }))
 
   return (
-    <EnrollForm
-      classes={allClasses}
-      userName={profile?.name ?? (user.user_metadata?.name as string) ?? ''}
-      userPhone={profile?.phone ?? ''}
-      userEmail={user.email ?? ''}
-      initialType={params.type ?? '신규 등록'}
-      initialSelect={params.select ? [params.select] : []}
-    />
+    <>
+      <PageJsonLd schemas={[buildBreadcrumb([
+        { name: '홈', url: SITE_URL },
+        { name: '클래스 신청', url: `${SITE_URL}/enroll` },
+      ])]} />
+      <EnrollForm
+        classes={allClasses}
+        userName={profile?.name ?? (user.user_metadata?.name as string) ?? ''}
+        userPhone={profile?.phone ?? ''}
+        userEmail={user.email ?? ''}
+        initialType={params.type ?? '신규 등록'}
+        initialSelect={params.select ? [params.select] : []}
+      />
+    </>
   )
 }

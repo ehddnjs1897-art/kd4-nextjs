@@ -177,13 +177,14 @@ export async function POST(request: NextRequest) {
         status: typeof record?.status === 'string' ? record.status.trim().slice(0, 50) : '대기',
       },
     }
+    // UTM 컬럼(DB 상위 레벨) — raw_payload 내부와 동일 패턴으로 sanitize
     const utmFields = {
-      utm_source: record?.utm_source ?? null,
-      utm_medium: record?.utm_medium ?? null,
-      utm_campaign: record?.utm_campaign ?? null,
-      utm_content: record?.utm_content ?? null,
-      utm_term: record?.utm_term ?? null,
-      referrer: record?.referrer ?? null,
+      utm_source: typeof record?.utm_source === 'string' ? record.utm_source.trim().slice(0, 200) : null,
+      utm_medium: typeof record?.utm_medium === 'string' ? record.utm_medium.trim().slice(0, 200) : null,
+      utm_campaign: typeof record?.utm_campaign === 'string' ? record.utm_campaign.trim().slice(0, 200) : null,
+      utm_content: typeof record?.utm_content === 'string' ? record.utm_content.trim().slice(0, 200) : null,
+      utm_term: typeof record?.utm_term === 'string' ? record.utm_term.trim().slice(0, 200) : null,
+      referrer: typeof record?.referrer === 'string' ? record.referrer.trim().slice(0, 500) : null,
     }
     try {
       // UTM 컬럼 포함 시도 — Supabase migration(2026-05-14_utm_tracking.sql) 실행 후 완전 작동

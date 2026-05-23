@@ -286,9 +286,14 @@ export async function POST(request: NextRequest) {
       description: ai.description ?? (memo ? `- ${memo}` : null),
       image_url: (og.image_url && isSafeExternalUrl(og.image_url)) ? og.image_url : null,
       memo: memo ?? null,
-      category: (ai.category ?? '기타') as InsightCategory,
-      tags: (ai.tags ?? []) as string[],
-      source_type: (ai.source_type ?? 'other') as InsightSourceType,
+      // Gemini 출력 런타임 검증 — 비정상 출력값 차단 (TypeScript 캐스트만으로는 런타임 보호 불가)
+      category: (typeof ai.category === 'string' && VALID_CATEGORIES.has(ai.category) && ai.category !== '전체'
+        ? ai.category : '기타') as InsightCategory,
+      tags: Array.isArray(ai.tags)
+        ? (ai.tags as unknown[]).filter((t): t is string => typeof t === 'string').map(t => t.slice(0, 100)).slice(0, 20)
+        : [],
+      source_type: (typeof ai.source_type === 'string' && VALID_SOURCE_TYPES.has(ai.source_type) && ai.source_type !== '전체'
+        ? ai.source_type : 'other') as InsightSourceType,
       is_favorite: false,
       created_at: new Date().toISOString(),
     }

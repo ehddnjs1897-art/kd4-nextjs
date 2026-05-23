@@ -5,6 +5,8 @@ import { createClient } from '@/lib/supabase/server'
 import CommentSection from '@/components/board/CommentSection'
 import DeletePostButton from '@/components/board/DeletePostButton'
 import PostViewTracker from '@/components/board/PostViewTracker'
+import PageJsonLd from '@/components/seo/PageJsonLd'
+import { buildBreadcrumb } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
 
 export const dynamic = 'force-dynamic'
@@ -121,6 +123,11 @@ export default async function PostDetailPage({ params }: { params: Params }) {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '80px 0 120px' }}>
+      <PageJsonLd schemas={[buildBreadcrumb([
+        { name: '홈', url: SITE_URL },
+        { name: '커뮤니티', url: `${SITE_URL}/board` },
+        { name: typedPost.title, url: `${SITE_URL}/board/${id}` },
+      ])]} />
       {/* 조회수 클라이언트 추적 — SSR/봇 제외, sessionStorage 중복 방지 */}
       <PostViewTracker postId={id} />
       <div className="container" style={{ maxWidth: '860px' }}>

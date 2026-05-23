@@ -101,6 +101,10 @@ export async function GET(
 
   // path 1: R2 비공개 버킷 (profile_doc_path)
   if (actor.profile_doc_path && isR2Configured()) {
+    // 경로 탐색 공격 방지 — DB 값이어도 오염 가능 (admin 실수·직접 수정)
+    if (actor.profile_doc_path.split('/').some((seg: string) => seg === '..' || seg === '.')) {
+      return NextResponse.json({ error: '잘못된 프로필 경로입니다.' }, { status: 400 })
+    }
     try {
       const ext = (actor.profile_doc_path.split('?')[0].split('.').pop() || 'pdf').slice(0, 8)
       const obj = await getObjectStream(actor.profile_doc_path)

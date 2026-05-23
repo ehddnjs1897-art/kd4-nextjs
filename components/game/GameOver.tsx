@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 
 const STAGES = [
   "무명의 메모", "오디션 번호표", "엑스트라 콜시트", "단편의 사이드",
@@ -29,6 +29,31 @@ export default function GameOver({
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState("")
+  const dialogRef = useRef<HTMLDivElement>(null)
+
+  // 포커스 트랩 + Escape 핸들러 (role=dialog aria-modal=true 접근성 요건)
+  useEffect(() => {
+    const el = dialogRef.current
+    if (!el) return
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { onRestart(); return }
+      if (e.key === 'Tab') {
+        const focusable = Array.from(
+          el.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])')
+        )
+        if (focusable.length === 0) return
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+        if (e.shiftKey) {
+          if (document.activeElement === first) { e.preventDefault(); last.focus() }
+        } else {
+          if (document.activeElement === last) { e.preventDefault(); first.focus() }
+        }
+      }
+    }
+    document.addEventListener('keydown', handler)
+    return () => document.removeEventListener('keydown', handler)
+  }, [onRestart])
 
   const stageName = STAGES[Math.min(stageReached - 1, STAGES.length - 1)]
   const minutes = Math.floor(durationMs / 60000)
@@ -63,6 +88,7 @@ export default function GameOver({
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-label="게임 오버"
