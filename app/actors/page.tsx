@@ -2,26 +2,22 @@ import Link from 'next/link'
 import { unstable_cache } from 'next/cache'
 import type { Metadata } from 'next'
 import { supabaseAdmin } from '@/lib/supabase/admin'
-import { createClient } from '@/lib/supabase/server'
 import { getActorPhotoUrl, shouldOptimize } from '@/lib/actor-photo'
-import ActorDbLocked from '@/components/actors/ActorDbLocked'
 import ActorsSearchGrid from '@/components/actors/ActorsSearchGrid'
-import { canViewActorDb } from '@/lib/access'
-import type { UserRole } from '@/lib/types'
 import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { buildBreadcrumb } from '@/lib/seo-schemas'
 
 export const metadata: Metadata = {
   title: '배우 DB',
-  description: 'KD4 액팅 스튜디오 배우 데이터베이스. 멤버 전용.',
-  robots: { index: false, follow: false },
+  description: 'KD4 액팅 스튜디오 배우 데이터베이스. 검증된 배우들의 프로필을 만나보세요.',
+  robots: { index: true, follow: true },
   alternates: { canonical: `${SITE_URL}/actors` },
   openGraph: {
     type: 'website',
     url: `${SITE_URL}/actors`,
     title: '배우 DB | KD4 액팅 스튜디오',
-    description: 'KD4 액팅 스튜디오 배우 데이터베이스. 멤버 전용.',
+    description: 'KD4 액팅 스튜디오 배우 데이터베이스. 검증된 배우들의 프로필을 만나보세요.',
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
     images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 배우 DB' }],
@@ -29,7 +25,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: '배우 DB | KD4 액팅 스튜디오',
-    description: 'KD4 액팅 스튜디오 배우 데이터베이스. 멤버 전용.',
+    description: 'KD4 액팅 스튜디오 배우 데이터베이스. 검증된 배우들의 프로필을 만나보세요.',
     images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 배우 DB' }],
   },
 }
@@ -173,32 +169,13 @@ const AGE_OPTIONS: { value: AgeFilter; label: string }[] = [
 ]
 
 export default async function ActorsPage({ searchParams }: PageProps) {
-  /* ---- 접근 권한 확인 (배우 DB는 회원 전용) ---- */
-  const supabase = await createClient()
-
-  // searchParams 먼저 resolve → 필터 파라미터 확정 후 user + actors 병렬
-  // getUser(): 서버에서 JWT 검증 (getSession은 쿠키 로컬 파싱만 — 조작 쿠키 우회 가능)
+  /* ---- 배우 목록은 누구나 열람 가능 (비회원 포함). 연락처·다운로드만 디렉터/관리자 전용 ---- */
   const params = await searchParams
   const gender = params.gender ?? 'all'
   const ageGroup = params.ageGroup ?? 'all'
   const tag = params.tag ?? 'all'
 
-  const [{ data: { user } }, { actors, dbError, allTags }] = await Promise.all([
-    supabase.auth.getUser(),
-    getActorsCached(gender, ageGroup, tag),
-  ])
-  let role: UserRole | null = null
-  if (user) {
-    const { data: roleRow } = await supabaseAdmin
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .maybeSingle()
-    role = (roleRow?.role ?? null) as UserRole | null
-  }
-  if (!canViewActorDb(role)) {
-    return <ActorDbLocked role={role} />
-  }
+  const { actors, dbError, allTags } = await getActorsCached(gender, ageGroup, tag)
 
   function filterHref(key: string, value: string) {
     const next = new URLSearchParams()
