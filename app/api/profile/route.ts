@@ -74,7 +74,7 @@ export async function PATCH(request: NextRequest) {
       }
     }
 
-    return NextResponse.json({ success: true, matched, actorId })
+    return NextResponse.json({ success: true, matched })
   } catch (err) {
     console.error('[PATCH /api/profile] 예상치 못한 오류:', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '정보 수정 중 오류가 발생했습니다.' }, { status: 500 })

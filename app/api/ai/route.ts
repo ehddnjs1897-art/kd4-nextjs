@@ -130,7 +130,8 @@ ${scriptText}
       const msg =
         (errData as { error?: { message?: string } })?.error?.message ||
         `Gemini API 오류 (${res.status})`
-      return NextResponse.json({ error: msg }, { status: 502 })
+      console.error('[ai/route] Gemini API 오류:', msg)
+      return NextResponse.json({ error: 'AI 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' }, { status: 502 })
     }
 
     const data = await res.json()
