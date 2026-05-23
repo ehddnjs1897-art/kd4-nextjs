@@ -248,7 +248,7 @@ export default function AboutPage() {
           background: '#000',
         }}>
           <iframe
-            src="https://www.youtube.com/embed/tB7f4VnC6rM?autoplay=1&mute=1&loop=1&playlist=tB7f4VnC6rM&controls=1&rel=0&modestbranding=1"
+            src="https://www.youtube.com/embed/tB7f4VnC6rM?autoplay=0&mute=1&loop=1&playlist=tB7f4VnC6rM&controls=1&rel=0&modestbranding=1"
             title="KD4 연기하지 않는 연기"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
@@ -542,6 +542,7 @@ export default function AboutPage() {
               style={{ border: 0, display: 'block', filter: 'invert(0.85) hue-rotate(180deg)' }}
               loading="lazy"
               title="KD4 액팅 스튜디오 위치"
+              sandbox="allow-scripts allow-same-origin allow-popups"
             />
           </div>
         </div>

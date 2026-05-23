@@ -553,7 +553,7 @@ export default function Navbar() {
                     type="button"
                     onClick={() => setMobileCrewOpen(v => !v)}
                     aria-expanded={mobileCrewOpen}
-                    aria-haspopup="menu"
+                    aria-haspopup="true"
                     aria-label={mobileCrewOpen ? 'KD4 크루 메뉴 닫기' : 'KD4 크루 메뉴 열기'}
                     style={{
                       display: 'flex',

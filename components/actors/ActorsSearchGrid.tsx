@@ -70,7 +70,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
             style={{
               position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
               background: 'none', border: 'none', color: 'var(--gray)',
-              cursor: 'pointer', fontSize: '1rem', padding: 8,
+              cursor: 'pointer', fontSize: '1rem', padding: 8, minHeight: 44, minWidth: 44,
             }}
           >✕</button>
         )}
@@ -93,8 +93,8 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
             type="button"
             onClick={() => setQuery('')}
             style={{
-              display: 'inline-block', padding: '8px 20px',
-              border: '1px solid var(--gold)', borderRadius: 4,
+              display: 'inline-flex', alignItems: 'center', padding: '8px 20px',
+              minHeight: 44, border: '1px solid var(--gold)', borderRadius: 4,
               color: 'var(--gold)', fontSize: '0.85rem',
               background: 'none', cursor: 'pointer', fontFamily: 'inherit',
             }}

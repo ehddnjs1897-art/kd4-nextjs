@@ -24,9 +24,8 @@ const ACTORS_GET_RATE_WINDOW_MS = 60_000
 export async function GET(request: NextRequest) {
   try {
     // IP 레이트 리밋: 1분 60회 초과 차단
-    const ipActor = request.headers.get('x-real-ip')
-      ?? request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-      ?? null
+    // x-real-ip: Vercel이 직접 설정 — 클라이언트 위조 불가. x-forwarded-for는 위조 가능하므로 사용 안 함
+    const ipActor = request.headers.get('x-real-ip') ?? null
     if (ipActor) {
       const nowA = Date.now()
       const bucketA = actorsGetRateMap.get(ipActor)

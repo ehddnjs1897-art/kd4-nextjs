@@ -31,9 +31,8 @@ export async function GET(
     }
 
     // IP 레이트 리밋: 1분 60회 초과 차단
-    const ipAD = request.headers.get('x-real-ip')
-      ?? request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-      ?? null
+    // x-real-ip만 사용 — x-forwarded-for는 클라이언트 위조 가능
+    const ipAD = request.headers.get('x-real-ip') ?? null
     if (ipAD) {
       const nowAD = Date.now()
       const bucketAD = actorDetailGetMap.get(ipAD)

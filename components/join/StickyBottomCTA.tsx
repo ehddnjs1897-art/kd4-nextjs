@@ -73,6 +73,7 @@ export default function StickyBottomCTA() {
       <a
         href="#form-hero"
         className="pulse-cta"
+        tabIndex={shouldShow ? 0 : -1}
         onClick={() => analytics.ctaClick('sticky_bottom', '무료 상담 신청')}
         style={{
           display: 'flex',

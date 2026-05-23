@@ -87,6 +87,7 @@ export default function StickyTopBar({
           background: 'var(--navy)',
           color: '#ffffff',
           padding: '5px 12px',
+          minHeight: 44,
           borderRadius: 'var(--radius)',
           fontFamily: 'var(--font-display)',
           fontSize: '0.73rem',

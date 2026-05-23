@@ -152,11 +152,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
     // IP 기반 2차 레이트 리밋 — 번호 열거 공격 방어 (5분 내 5회)
-    // x-real-ip: Vercel 프록시가 직접 설정 (클라이언트 위조 불가) — 항상 우선 사용
-    // x-forwarded-for fallback: 첫 번째 항목 = 원본 클라이언트 IP (마지막 항목은 Vercel edge 공유 IP)
-    const ip = request.headers.get('x-real-ip')
-      ?? request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-      ?? null  // null: IP 불명 시 'unknown' 공유 버킷 DoS 방지 — IP 레이트 리밋 건너뜀
+    // x-real-ip만 사용 — x-forwarded-for는 클라이언트 위조 가능 → 레이트 리밋 우회 방지
+    const ip = request.headers.get('x-real-ip') ?? null  // null: IP 불명 시 IP 레이트 리밋 건너뜀
     if (ip) {
       const { count: ipCount } = await getSupabaseAdmin()
         .from('consultations')

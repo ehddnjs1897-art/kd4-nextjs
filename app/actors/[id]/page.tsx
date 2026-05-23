@@ -287,8 +287,6 @@ export default async function ActorDetailPage({
     height: actor.height,
     weight: actor.weight,
     skills: actor.skills ?? null,
-    email: actor.email,
-    phone: actor.phone,
     instagram: actor.instagram,
     imageUrl: photoUrl.startsWith('http') ? photoUrl : `${SITE_URL}${photoUrl}`,
     filmography: actor.actor_filmography ?? [],

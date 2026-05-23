@@ -14,8 +14,7 @@ interface ActorPersonInput {
   height: number | null
   weight: number | null
   skills: string[] | null
-  email: string | null
-  phone: string | null
+  // email / phone: PII — JSON-LD에 출력하지 않으므로 타입에서도 제외
   instagram: string | null
   /** 대표 사진 URL (절대경로 권장) */
   imageUrl?: string
