@@ -322,7 +322,7 @@ export default function JoinPage() {
               style={{ background: 'var(--navy)', color: '#ffffff' }}
             >
               잔여 {MAIN_CLASS.remainingSeats ?? 2}석 — 지금 무료 상담 신청
-              <ArrowRight size={16} strokeWidth={2.2} />
+              <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} />
             </JoinCTALink>
             <JoinCTALink
               href="https://pf.kakao.com/_ximxdqn"
@@ -640,7 +640,7 @@ export default function JoinPage() {
                       className="step-icon-glow"
                       style={{ margin: '0 auto 18px' }}
                     >
-                      <s.Icon size={26} color="var(--navy)" strokeWidth={1.6} />
+                      <s.Icon aria-hidden={true} size={26} color="var(--navy)" strokeWidth={1.6} />
                     </div>
 
                     {/* 제목 */}
@@ -739,7 +739,7 @@ export default function JoinPage() {
                   gap: '6px',
                 }}
               >
-                <Clock size={13} strokeWidth={1.8} />
+                <Clock aria-hidden={true} size={13} strokeWidth={1.8} />
                 할인 마감까지
               </p>
               <CountdownTimer deadline={DEADLINE} />
@@ -1005,7 +1005,7 @@ export default function JoinPage() {
                 style={{ background: 'var(--navy)', color: '#ffffff', width: '100%', justifyContent: 'center' }}
               >
                 지금 신청하기
-                <ArrowRight size={15} strokeWidth={2.2} />
+                <ArrowRight aria-hidden={true} size={15} strokeWidth={2.2} />
               </JoinCTALink>
               {!isDeadlineExpired && (
                 <p style={{ fontSize: '0.72rem', color: 'var(--gray)', marginTop: '8px' }}>
@@ -1028,7 +1028,7 @@ export default function JoinPage() {
               style={{ background: 'var(--navy)', color: '#ffffff' }}
             >
               무료 상담 신청
-              <ArrowRight size={16} strokeWidth={2.2} />
+              <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} />
             </JoinCTALink>
           </div>
         </div>
@@ -1282,7 +1282,7 @@ export default function JoinPage() {
               }}
             >
               출연영상 포트폴리오 전체 보기
-              <ArrowRight size={14} strokeWidth={2.2} />
+              <ArrowRight aria-hidden={true} size={14} strokeWidth={2.2} />
             </a>
           </div>
         </div>
@@ -1344,7 +1344,7 @@ export default function JoinPage() {
               }}
             >
               나도 진짜 배우로 · 무료 상담 신청
-              <ArrowRight size={14} strokeWidth={2.2} />
+              <ArrowRight aria-hidden={true} size={14} strokeWidth={2.2} />
             </JoinCTALink>
           </div>
         </div>

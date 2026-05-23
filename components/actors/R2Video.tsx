@@ -80,6 +80,7 @@ export default function R2Video({
           <video
             ref={videoRef}
             src={url}
+            title={title || '배우 출연영상'}
             controls
             preload="none"
             controlsList="nodownload"

@@ -105,11 +105,11 @@ export async function POST(request: NextRequest) {
   }
 }`
 
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`
-
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await fetch(
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
       signal: AbortSignal.timeout(30_000),
       body: JSON.stringify({
         // system_instruction: JSON 스키마 + 역할 설정 (사용자 대본과 역할 분리 — R90 프롬프트 인젝션 강화)

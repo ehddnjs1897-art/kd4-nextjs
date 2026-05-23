@@ -42,8 +42,11 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
     filmPatchMap.set(user.id, [...times, now])
 
     let body: Record<string, unknown>
-    try { body = await request.json() }
-    catch { return NextResponse.json({ error: '요청 형식이 올바르지 않습니다.' }, { status: 400 }) }
+    try {
+      const clFilmPatch = parseInt(request.headers.get('content-length') ?? '0', 10)
+      if (clFilmPatch > 16_384) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+      body = await request.json()
+    } catch { return NextResponse.json({ error: '요청 형식이 올바르지 않습니다.' }, { status: 400 }) }
     const allowed = ['category', 'year', 'title', 'role', 'broadcaster', 'film_type']
     const patch: Record<string, unknown> = {}
     for (const k of allowed) { if (k in body) patch[k] = body[k] }

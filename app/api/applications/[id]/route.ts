@@ -14,6 +14,10 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 const VALID_STATUSES = ['pending', 'confirmed', 'completed', '대기', '확인', '완료'] as const
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
+// 관리자 요청 속도 제한: 5초 냉각
+const appPatchMap = new Map<string, number>()
+const APP_PATCH_COOLDOWN_MS = 5_000
+
 async function requireAdmin(): Promise<{ userId: string } | NextResponse> {
   const supabase = await createClient()
   const {
@@ -46,6 +50,15 @@ export async function PATCH(
   try {
     const check = await requireAdmin()
     if (check instanceof NextResponse) return check
+
+    // 5초 냉각
+    const { userId: appAdminId } = check as { userId: string }
+    const nowAPM = Date.now()
+    const lastAPM = appPatchMap.get(appAdminId) ?? 0
+    if (nowAPM - lastAPM < APP_PATCH_COOLDOWN_MS) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
+    appPatchMap.set(appAdminId, nowAPM)
 
     const { id } = await params
     if (!UUID_RE.test(id)) {

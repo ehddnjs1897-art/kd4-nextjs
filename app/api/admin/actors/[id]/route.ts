@@ -12,6 +12,10 @@ import { revalidateTag } from '@/lib/revalidate'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
+// 관리자 요청 속도 제한: 5초 냉각
+const adminActorPatchMap = new Map<string, number>()
+const ADMIN_ACTOR_PATCH_COOLDOWN_MS = 5_000
+
 async function requireAdmin(): Promise<{ userId: string } | NextResponse> {
   const supabase = await createClient()
   const {
@@ -48,6 +52,15 @@ export async function PATCH(
 ) {
   const check = await requireAdmin()
   if (check instanceof NextResponse) return check
+
+  // 5초 냉각
+  const { userId: adminActorId } = check as { userId: string }
+  const nowAAP = Date.now()
+  const lastAAP = adminActorPatchMap.get(adminActorId) ?? 0
+  if (nowAAP - lastAAP < ADMIN_ACTOR_PATCH_COOLDOWN_MS) {
+    return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+  }
+  adminActorPatchMap.set(adminActorId, nowAAP)
 
   try {
     const { id } = await params

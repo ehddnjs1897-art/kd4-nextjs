@@ -145,6 +145,8 @@ export async function PATCH(
 
     let body: Record<string, unknown>
     try {
+      const clActorPatch = parseInt(request.headers.get('content-length') ?? '0', 10)
+      if (clActorPatch > 32_768) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
       body = await request.json()
     } catch {
       return NextResponse.json({ error: '요청 형식이 올바르지 않습니다.' }, { status: 400 })

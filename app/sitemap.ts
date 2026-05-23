@@ -8,7 +8,7 @@ export const revalidate = 86400 // 24시간
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const NOW = new Date()
 
-  // 공개 정적 페이지 (/actors는 noindex이므로 제외)
+  // 공개 정적 페이지 (/actors는 robots:index:true — 배우 목록 페이지도 sitemap에 포함)
   const staticPages: MetadataRoute.Sitemap = [
     { url: BASE, lastModified: NOW, changeFrequency: 'weekly', priority: 1.0 },
     { url: `${BASE}/about`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.9 },
@@ -17,6 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/reel-production-class`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.85 },
     { url: `${BASE}/sinchon-acting-academy`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/acting-coach-dongwon-kwon`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.75 },
+    { url: `${BASE}/actors`, lastModified: NOW, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${BASE}/benefits`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${BASE}/benefits/seowoo-studio`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.65 },
   ]

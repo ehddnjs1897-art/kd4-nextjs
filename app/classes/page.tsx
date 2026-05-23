@@ -199,7 +199,7 @@ export default function ClassesPage() {
             className="btn-primary"
             style={{ background: 'var(--navy)', color: '#fff', textDecoration: 'none' }}
           >
-            무료 상담 신청 <ArrowRight size={14} />
+            무료 상담 신청 <ArrowRight aria-hidden={true} size={14} />
           </Link>
         </div>
       </section>

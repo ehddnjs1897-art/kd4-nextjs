@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: '리더보드 조회 실패' }, { status: 500 })
     }
 
-    return NextResponse.json({ data })
+    return NextResponse.json({ data }, { headers: { 'Cache-Control': 'private, no-store' } })
   } catch (err) {
     console.error('[GET /api/game/scores]', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '리더보드 조회 실패' }, { status: 500 })

@@ -11,6 +11,11 @@ const postDetailGetMap = new Map<string, { count: number; resetAt: number }>()
 const POST_DETAIL_GET_LIMIT = 60
 const POST_DETAIL_GET_WINDOW_MS = 60_000
 
+// DELETE 레이트 리밋: 10 req/min (스팸 방지)
+const postDeleteMap = new Map<string, number[]>()
+const POST_DELETE_MAX = 10
+const POST_DELETE_WINDOW_MS = 60_000
+
 // GET /api/posts/[id] — 조회수 +1 포함
 export async function GET(
   request: NextRequest,
@@ -56,7 +61,7 @@ export async function GET(
 
     // 조회수 증가는 board/[id]/page.tsx 서버 컴포넌트에서만 수행
     // (API GET은 외부 호출도 가능 → 여기서 increment하면 이중 집계)
-    return NextResponse.json(post)
+    return NextResponse.json(post, { headers: { 'Cache-Control': 'private, no-store' } })
   } catch (err) {
     console.error('[GET /api/posts/[id]]', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '게시글 조회 중 오류가 발생했습니다.' }, { status: 500 })
@@ -97,6 +102,8 @@ export async function PATCH(
 
     let body: { title?: string; content?: string; category?: string }
     try {
+      const clPostPatch = parseInt(request.headers.get('content-length') ?? '0', 10)
+      if (clPostPatch > 32_768) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
       body = await request.json()
     } catch {
       return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })
@@ -160,6 +167,14 @@ export async function DELETE(
     if (authError || !user) {
       return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
     }
+
+    // DELETE 레이트 리밋: 1분 10회 초과 차단
+    const nowDel = Date.now()
+    const timesDel = (postDeleteMap.get(user.id) ?? []).filter(t => nowDel - t < POST_DELETE_WINDOW_MS)
+    if (timesDel.length >= POST_DELETE_MAX) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
+    postDeleteMap.set(user.id, [...timesDel, nowDel])
 
     // post + profile 병렬 조회 (둘 다 supabaseAdmin — RLS 우회, .maybeSingle()으로 PGRST116 로그 노이즈 방지)
     const [{ data: post, error: fetchError }, { data: profile }] = await Promise.all([

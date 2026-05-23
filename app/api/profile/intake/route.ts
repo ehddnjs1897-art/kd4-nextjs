@@ -62,6 +62,10 @@ export async function POST(request: NextRequest) {
     if (now - ts > INTAKE_COOLDOWN_MS) intakeCooldowns.delete(k)
   }
 
+  const clIntake = parseInt(request.headers.get('content-length') ?? '0', 10)
+  if (clIntake > 32_768) {
+    return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+  }
   const body = await request.json().catch(() => null)
   // 최대 길이 상수
   const MAX_PATH_LEN = 500   // Storage/R2 경로

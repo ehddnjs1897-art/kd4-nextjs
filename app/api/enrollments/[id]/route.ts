@@ -11,6 +11,10 @@ const VALID_STATUS = ['확정', '휴강', '취소']
 const VALID_PAYMENT = ['결제대기', '결제완료']
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
+// 레이트 리밋: 30초 냉각 (과도한 상태 변경 방지)
+const enrollmentPatchMap = new Map<string, number>()
+const ENROLLMENT_PATCH_COOLDOWN_MS = 30_000
+
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -29,6 +33,14 @@ export async function PATCH(
     if (authErr || !user) {
       return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
     }
+
+    // 30초 냉각
+    const nowEP = Date.now()
+    const lastEP = enrollmentPatchMap.get(user.id) ?? 0
+    if (nowEP - lastEP < ENROLLMENT_PATCH_COOLDOWN_MS) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
+    enrollmentPatchMap.set(user.id, nowEP)
 
     let body: { status?: string; payment_status?: string }
     try {
