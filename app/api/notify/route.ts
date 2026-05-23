@@ -297,7 +297,7 @@ export async function POST(request: NextRequest) {
 
     // 4. Meta CAPI (서버사이드 Lead 이벤트) — iOS14 ATT 추적 누락 회복
     if (record) {
-      await sendMetaCAPI(record).catch((err) =>
+      await sendMetaCAPI({ name, phone, email: emailRaw, event_id: typeof record?.event_id === 'string' ? record.event_id : null }).catch((err) =>
         console.error('[notify] Meta CAPI 실패:', err instanceof Error ? err.message : String(err))
       )
     }

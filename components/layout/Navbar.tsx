@@ -282,7 +282,6 @@ export default function Navbar() {
                   onMouseLeave={e => {
                     if (!crewDropOpen) e.currentTarget.style.color = '#111111'
                   }}
-                  aria-haspopup="true"
                   aria-expanded={crewDropOpen}
                   aria-controls="crew-nav-panel"
                   onClick={() => setCrewDropOpen(v => !v)}
@@ -308,7 +307,6 @@ export default function Navbar() {
                 {crewDropOpen && (
                   <div
                     id="crew-nav-panel"
-                    role="navigation"
                     aria-label="KD4 크루 메뉴"
                     onMouseEnter={handleDropEnter}
                     onMouseLeave={handleDropLeave}
@@ -556,7 +554,6 @@ export default function Navbar() {
                     type="button"
                     onClick={() => setMobileCrewOpen(v => !v)}
                     aria-expanded={mobileCrewOpen}
-                    aria-haspopup="menu"
                     aria-label={mobileCrewOpen ? 'KD4 크루 메뉴 닫기' : 'KD4 크루 메뉴 열기'}
                     style={{
                       display: 'flex',

@@ -172,7 +172,7 @@ export default function EnrollForm({
             <CheckCircle aria-hidden={true} size={30} color="var(--navy)" strokeWidth={1.8} />
           </div>
           <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--navy)', textTransform: 'uppercase', marginBottom: 12 }}>
-            ENROLLMENT COMPLETE
+            <span lang="en">ENROLLMENT COMPLETE</span>
           </p>
           <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.4rem,4vw,1.8rem)', fontWeight: 700, color: '#111', marginBottom: 14 }}>
             신청 완료
@@ -197,7 +197,7 @@ export default function EnrollForm({
         {/* ── 헤더 ── */}
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
           <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.7rem', letterSpacing: '0.28em', color: 'var(--navy)', textTransform: 'uppercase', marginBottom: 14, opacity: 0.7 }}>
-            CLASS ENROLLMENT
+            <span lang="en">CLASS ENROLLMENT</span>
           </p>
           <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.6rem,4vw,2.2rem)', fontWeight: 700, marginBottom: 12 }}>
             클래스 신청

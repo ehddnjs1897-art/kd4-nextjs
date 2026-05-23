@@ -153,7 +153,7 @@ export default function Footer() {
                 marginBottom: '12px',
               }}
             >
-              Location
+              <span lang="en">Location</span>
             </p>
             <p style={{ color: 'var(--gray-light)', fontSize: '0.85rem', lineHeight: 1.7 }}>
               서울시 서대문구 이화여대1안길 12<br />
@@ -173,7 +173,7 @@ export default function Footer() {
                 marginBottom: '12px',
               }}
             >
-              Contact
+              <span lang="en">Contact</span>
             </p>
             <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <li>
@@ -260,7 +260,7 @@ export default function Footer() {
                 marginBottom: '12px',
               }}
             >
-              Quick Links
+              <span lang="en">Quick Links</span>
             </p>
             <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {[
@@ -305,7 +305,7 @@ export default function Footer() {
             유익액터스 &middot; 대표 권동원 &middot; <abbr title="사업자등록번호">사업자등록번호</abbr> 284-11-02669
           </address>
           <p style={{ color: 'var(--gray)', fontSize: '0.75rem' }}>
-            &copy; {new Date().getFullYear()} KD4 액팅 스튜디오. All rights reserved.
+            &copy; {new Date().getFullYear()} KD4 액팅 스튜디오. <span lang="en">All rights reserved.</span>
           </p>
         </div>
       </div>

@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
     if (characterName.length > 200) {
       return NextResponse.json({ error: '캐릭터 이름이 너무 깁니다. 200자 이하로 입력해주세요.' }, { status: 400 })
     }
-    if (scriptText.length > 8000) {
+    if (scriptText.length > 8000 || Buffer.byteLength(scriptText, 'utf8') > 24_000) {
       return NextResponse.json({ error: '대본이 너무 깁니다. 8,000자 이하로 입력해주세요.' }, { status: 400 })
     }
 
