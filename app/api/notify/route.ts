@@ -50,6 +50,7 @@ async function sendMetaCAPI(record: { name?: string | null; phone?: string | nul
   const res = await fetch(`https://graph.facebook.com/v19.0/${pixelId}/events`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    signal: AbortSignal.timeout(8000),
     body: JSON.stringify({
       data: [{
         event_name: 'Lead',
