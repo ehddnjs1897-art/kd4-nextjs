@@ -615,8 +615,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       </div>
 
       {/* ── 기본 정보 ── */}
-      <section style={s.section}>
-        <h2 style={s.sectionTitle}>Basic Info</h2>
+      <section style={s.section} aria-labelledby="gallery-section-info">
+        <h2 id="gallery-section-info" style={s.sectionTitle}>기본 정보</h2>
         <div style={{ ...s.row, marginBottom: 20 }}>
           <div style={{ ...s.field, flex: '1 1 120px' }}>
             <label htmlFor="actor-height" style={s.label}>신장 (cm)</label>
@@ -655,8 +655,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       </section>
 
       {/* ── 프로필 자료 (PPTX) ── */}
-      <section style={s.section}>
-        <h2 style={s.sectionTitle}>Profile Document</h2>
+      <section style={s.section} aria-labelledby="gallery-section-ppt">
+        <h2 id="gallery-section-ppt" style={s.sectionTitle}>프로필 문서</h2>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
           <div style={{
             width: 40, height: 40, borderRadius: 6, background: 'rgba(196,165,90,0.12)',
@@ -682,8 +682,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       </section>
 
       {/* ── 사진 ── */}
-      <section style={s.section}>
-        <h2 style={s.sectionTitle}>Photos</h2>
+      <section style={s.section} aria-labelledby="gallery-section-photos">
+        <h2 id="gallery-section-photos" style={s.sectionTitle}>사진</h2>
         <div style={s.photoGrid}>
           {photos.map((p, idx) => (
             <div key={p.id} style={s.photoCard}>
@@ -723,8 +723,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       </section>
 
       {/* ── 영상 ── */}
-      <section style={s.section}>
-        <h2 style={s.sectionTitle}>Videos</h2>
+      <section style={s.section} aria-labelledby="gallery-section-videos">
+        <h2 id="gallery-section-videos" style={s.sectionTitle}>영상</h2>
 
         {/* R2 업로드 영상 */}
         <div style={{ marginBottom: 28 }}>
@@ -803,8 +803,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       </section>
 
       {/* ── 필모그래피 ── */}
-      <section style={s.section}>
-        <h2 style={s.sectionTitle}>Filmography</h2>
+      <section style={s.section} aria-labelledby="gallery-section-filmography">
+        <h2 id="gallery-section-filmography" style={s.sectionTitle}>필모그래피</h2>
 
         {filmography.length > 0 && (
           <div style={{ marginBottom: 20, overflowX: 'auto' }}>

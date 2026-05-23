@@ -79,7 +79,9 @@ export async function GET(request: NextRequest) {
 
     // 접촉 권한 없는 경우 DB에서 PII(phone/email)를 애초에 조회하지 않음 (defence-in-depth)
     // 타입 단언은 아래 as unknown as Actor 캐스트로 처리
-    const SAFE_COLS = 'id,name,name_en,gender,age_group,height,weight,skills,is_public,drive_photo_id,storage_photo_path,profile_photo,instagram,profile_doc_path,casting_tags,casting_summary,created_at,updated_at,source,drive_folder_id,drive_photo_position'
+    // Internal operational fields (drive IDs, storage paths, source provenance) omitted — not needed by public consumers
+    // Aligned with SAFE_ACTOR_DETAIL in /api/actors/[id]/route.ts
+    const SAFE_COLS = 'id,name,name_en,gender,age_group,height,weight,skills,is_public,profile_photo,instagram,casting_tags,casting_summary,created_at,updated_at'
     let query = supabaseAdmin
       .from('actors')
       .select(canSeeContact ? '*' : SAFE_COLS, { count: 'exact' })

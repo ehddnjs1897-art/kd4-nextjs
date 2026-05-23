@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: '스튜디오 소개',
   description:
     '마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 현장에서 통하는 배우를 키웁니다. 삶의 변화, 좋은 연기, 커리어의 성장. KD4 액팅 스튜디오 소개. 서울 신촌 이대역 도보 3분.',
+  robots: { index: true, follow: true },
   alternates: { canonical: `${SITE_URL}/about` },
   keywords: ['KD4 액팅 스튜디오', '마이즈너 테크닉', '신촌 연기학원', '권동원', '연기 코칭', '연기 스튜디오 소개', '배우 양성'],
   openGraph: {

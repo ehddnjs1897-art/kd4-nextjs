@@ -268,6 +268,8 @@ export default function InsightsPage() {
                   type="file"
                   accept="image/*"
                   multiple
+                  aria-hidden="true"
+                  tabIndex={-1}
                   style={{ display: 'none' }}
                   onChange={e => e.target.files && uploadFiles(e.target.files)}
                 />

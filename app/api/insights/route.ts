@@ -86,6 +86,11 @@ function isSafeExternalUrl(rawUrl: string): boolean {
   if (host.startsWith('fc') || host.startsWith('fd')) return false  // ULA
   if (host.startsWith('fe80:')) return false                          // 링크로컬
 
+  // 십진수 인코딩 IPv4 차단 (http://2130706433/ = 127.0.0.1 — dotted-decimal 정규식을 우회)
+  if (/^\d+$/.test(host)) return false
+  // 8진수 인코딩 IPv4 차단 (http://0177.0.0.1/ = 127.0.0.1)
+  if (/^0[0-7]+(\.[0-7]+)*$/.test(host)) return false
+
   return true
 }
 

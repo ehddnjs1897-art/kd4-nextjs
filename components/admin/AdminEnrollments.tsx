@@ -98,7 +98,7 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
         )}
 
         {/* 월 필터 */}
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
+        <div role="group" aria-label="월별 필터" style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
           <button type="button" onClick={() => setMonth('all')} style={chip(month === 'all')}>전체</button>
           {months.map((m) => (
             <button type="button" key={m} onClick={() => setMonth(m)} style={chip(month === m)}>{ymLabel(m)}</button>

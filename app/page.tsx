@@ -838,7 +838,13 @@ export default function HomePage() {
             {marqueePaused ? '▶ 재생' : '⏸ 일시정지'}
           </button>
         </div>
-        <div className="marquee-wrap">
+        {/* 스크린 리더용 배우 목록 — 마퀴는 시각적 전용 */}
+        <ul className="sr-only">
+          {CASTING_PHOTOS.map((photo) => (
+            <li key={photo.url}>{photo.name}{photo.work ? ` — ${photo.work}` : ''}</li>
+          ))}
+        </ul>
+        <div className="marquee-wrap" aria-hidden="true">
           <div className="marquee-track" style={{ animationPlayState: marqueePaused ? 'paused' : 'running' }}>
             {[...CASTING_PHOTOS, ...CASTING_PHOTOS].map((photo, i) => (
               <div

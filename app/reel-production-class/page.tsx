@@ -244,6 +244,7 @@ export default function ReelPage() {
               <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '8px' }}>
                 {item.yes ? <Check aria-hidden={true} size={18} color="var(--navy)" strokeWidth={2.2} /> : <X aria-hidden={true} size={18} color="var(--gray)" strokeWidth={2.2} />}
                 <span style={{ fontSize: '0.92rem', color: item.yes ? '#111' : 'var(--gray)', fontWeight: item.yes ? 600 : 400 }}>
+                  <span className="sr-only">{item.yes ? '포함:' : '미포함:'}</span>
                   {item.text}
                 </span>
               </li>

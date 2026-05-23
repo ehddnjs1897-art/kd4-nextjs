@@ -107,7 +107,6 @@ export default function RootLayout({
             이 사이트는 JavaScript가 필요합니다. 브라우저 설정에서 JavaScript를 활성화해주세요.
           </p>
         </noscript>
-        <a href="#main-content" className="skip-nav">본문으로 바로가기</a>
         <RouteAnnouncer />
         <ConditionalShell>{children}</ConditionalShell>
         <GoogleAnalytics />

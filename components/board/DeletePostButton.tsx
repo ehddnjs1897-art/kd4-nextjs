@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 
 interface DeletePostButtonProps {
@@ -12,6 +12,7 @@ export default function DeletePostButton({ postId }: DeletePostButtonProps) {
   const [deleting, setDeleting] = useState(false)
   const [confirming, setConfirming] = useState(false)
   const [deleteError, setDeleteError] = useState('')
+  const deleteButtonRef = useRef<HTMLButtonElement>(null)
 
   async function handleDelete() {
     if (!confirming) { setConfirming(true); return }
@@ -61,7 +62,9 @@ export default function DeletePostButton({ postId }: DeletePostButtonProps) {
       <div style={{ display: 'inline-flex', gap: 6 }}>
         <button
           type="button"
-          onClick={() => setConfirming(false)}
+          // eslint-disable-next-line jsx-a11y/no-autofocus
+          autoFocus
+          onClick={() => { setConfirming(false); setTimeout(() => deleteButtonRef.current?.focus(), 0) }}
           aria-label="삭제 취소"
           style={{ ...baseStyle, border: '1px solid var(--border)', color: 'var(--gray)', background: 'transparent' }}
         >
@@ -82,6 +85,7 @@ export default function DeletePostButton({ postId }: DeletePostButtonProps) {
 
   return (
     <button
+      ref={deleteButtonRef}
       type="button"
       onClick={handleDelete}
       disabled={deleting}

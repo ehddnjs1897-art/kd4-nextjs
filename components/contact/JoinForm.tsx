@@ -626,6 +626,8 @@ export default function JoinForm() {
         <div style={{ position: 'relative' }}>
           <select
             aria-label="희망 클래스"
+            aria-invalid={!!error}
+            aria-describedby={error ? "join-form-error" : undefined}
             value={className}
             onChange={(e) => setClassName(e.target.value)}
             onFocus={() => handleFieldFocus('class')}
@@ -661,6 +663,8 @@ export default function JoinForm() {
       <div style={{ position: 'relative' }}>
         <select
           aria-label="마이즈너 경험"
+          aria-invalid={!!error}
+          aria-describedby={error ? "join-form-error" : undefined}
           value={meisnerExp}
           onChange={(e) => setMeisnerExp(e.target.value)}
           onFocus={() => handleFieldFocus('meisner')}
@@ -694,6 +698,8 @@ export default function JoinForm() {
       <div style={{ position: 'relative' }}>
         <select
           aria-label="KD4를 어떻게 알게 되셨나요"
+          aria-invalid={!!error}
+          aria-describedby={error ? "join-form-error" : undefined}
           value={source}
           onChange={(e) => setSource(e.target.value)}
           onFocus={() => handleFieldFocus('source')}

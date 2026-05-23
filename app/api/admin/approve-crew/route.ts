@@ -28,7 +28,8 @@ export async function GET(request: NextRequest) {
   // CSRF 방어: Origin 헤더가 존재하고 자사 도메인이 아니면 차단
   // 이메일 링크 클릭 시 Origin 헤더가 없으므로 허용 (이메일 정상 플로우)
   const csrfOrigin = request.headers.get('origin') ?? ''
-  if (csrfOrigin && !csrfOrigin.startsWith(SITE_URL)) {
+  // Exact match — startsWith would allow kd4.club.evil.com subdomain bypass
+  if (csrfOrigin && csrfOrigin !== SITE_URL && csrfOrigin !== SITE_URL.replace(/\/$/, '')) {
     return NextResponse.redirect(`${origin}/admin?error=csrf`)
   }
 
