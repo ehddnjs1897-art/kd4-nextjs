@@ -588,18 +588,18 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                   <tr style={{ ...s.tr, background: 'rgba(255,215,0,0.06)' }}>
                     <td style={s.td}>
                       <input value={newEntry.year} onChange={e => setNewEntry(p => ({ ...p, year: e.target.value }))}
-                        style={s.inlineInput} placeholder="연도" type="number" min={1990} max={2099} />
+                        style={s.inlineInput} placeholder="연도" type="number" min={1990} max={2099} aria-label="연도" />
                     </td>
                     {isDrama && (
                       <td style={s.td}>
                         <input value={newEntry.broadcaster} onChange={e => setNewEntry(p => ({ ...p, broadcaster: e.target.value }))}
-                          style={s.inlineInput} placeholder="방송사" />
+                          style={s.inlineInput} placeholder="방송사" aria-label="방송사" />
                       </td>
                     )}
                     {isFilm && (
                       <td style={s.td}>
                         <select value={newEntry.film_type} onChange={e => setNewEntry(p => ({ ...p, film_type: e.target.value }))}
-                          style={s.inlineInput}>
+                          style={s.inlineInput} aria-label="영화 구분">
                           <option value="">구분</option>
                           <option value="상업">상업</option>
                           <option value="독립장편">독립장편</option>
@@ -609,11 +609,11 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                     )}
                     <td style={s.td}>
                       <input value={newEntry.title} onChange={e => setNewEntry(p => ({ ...p, title: e.target.value }))}
-                        style={{ ...s.inlineInput, fontWeight: 600 }} placeholder="작품명 *" />
+                        style={{ ...s.inlineInput, fontWeight: 600 }} placeholder="작품명 *" aria-label="작품명" />
                     </td>
                     <td style={s.td}>
                       <input value={newEntry.role} onChange={e => setNewEntry(p => ({ ...p, role: e.target.value }))}
-                        style={s.inlineInput} placeholder="역할" />
+                        style={s.inlineInput} placeholder="역할" aria-label="역할" />
                     </td>
                     <td style={{ ...s.td, whiteSpace: 'nowrap' }}>
                       <button onClick={() => addEntry(cat)} disabled={saving || !newEntry.title.trim()} style={{ ...s.saveBtn, color: saving ? 'var(--gray)' : 'var(--gold)' }} title="저장">{saving ? '…' : '✓'}</button>

@@ -107,7 +107,7 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
           />
         </div>
         {(['all', 'public', 'private'] as const).map(f => (
-          <button key={f} onClick={() => setStatusFilter(f)} style={{
+          <button key={f} onClick={() => setStatusFilter(f)} aria-pressed={statusFilter === f} style={{
             padding: '7px 14px', borderRadius: 6, fontSize: '0.78rem', cursor: 'pointer',
             background: statusFilter === f ? 'var(--gold)' : 'var(--bg2)',
             color: statusFilter === f ? 'var(--bg)' : 'var(--gray)',

@@ -67,12 +67,24 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // 세션 갱신 — Supabase 429/네트워크 에러 시 그냥 통과 (무한 리다이렉트 방지)
+  // 세션 갱신 + 인증 체크 — Supabase 오류 시 통과 (무한 리다이렉트 방지)
   // supabaseResponse 반환: 쿠키 갱신 유지 (NextResponse.next() 반환 시 쿠키 드롭됨)
+  let user: { id: string } | null = null
   try {
-    await supabase.auth.getUser()
+    const { data } = await supabase.auth.getUser()
+    user = data.user
   } catch {
     return supabaseResponse
+  }
+
+  // 회원 전용 경로 — 비로그인 시 로그인 페이지로 리다이렉트
+  // /actors, /board 는 페이지 단에서 세부 권한 처리 (일부 공개 가능)
+  const PROTECTED_PREFIXES = ['/dashboard', '/admin', '/ai-tools', '/insights', '/game', '/enroll']
+  if (!user && PROTECTED_PREFIXES.some((p) => pathname.startsWith(p))) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/auth/login'
+    url.searchParams.set('next', pathname)
+    return NextResponse.redirect(url, 307)
   }
 
   return supabaseResponse

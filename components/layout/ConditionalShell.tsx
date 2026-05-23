@@ -21,7 +21,7 @@ export default function ConditionalShell({
   return (
     <>
       <Navbar />
-      <main style={{ paddingBottom: '88px' }}>{children}</main>
+      <main id="main-content" style={{ paddingBottom: '88px' }}>{children}</main>
       <Footer />
       <FloatingCTA />
     </>

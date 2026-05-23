@@ -98,6 +98,7 @@ export default function RootLayout({
       <body
         className={`${notoSansKR.variable} ${notoSerifKR.variable} ${oswald.variable}`}
       >
+        <a href="#main-content" className="skip-nav">본문으로 바로가기</a>
         <ConditionalShell>{children}</ConditionalShell>
         <GoogleAnalytics />
         <GAPageTracker />

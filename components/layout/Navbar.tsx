@@ -451,6 +451,9 @@ export default function Navbar() {
       {mobileOpen && (
         <div
           id="mobile-nav-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="사이트 메뉴"
           style={{
             position: 'fixed',
             inset: 0,

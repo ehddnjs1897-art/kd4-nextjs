@@ -5,6 +5,11 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 // GET /api/game/scores?period=weekly&limit=10
 export async function GET(request: NextRequest) {
   try {
+    // 리더보드는 회원 전용
+    const supabaseClient = await createClient()
+    const { data: { user } } = await supabaseClient.auth.getUser()
+    if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
+
     const { searchParams } = new URL(request.url)
     const period = searchParams.get('period') || 'weekly'
     const limit = Math.min(50, parseInt(searchParams.get('limit') ?? '10', 10))

@@ -2093,3 +2093,23 @@ main {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+/* === SKIP NAV === */
+.skip-nav {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 9999;
+  padding: 10px 20px;
+  background: var(--gold);
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 0 0 6px 6px;
+  transition: left 0s;
+}
+.skip-nav:focus {
+  left: 16px;
+}

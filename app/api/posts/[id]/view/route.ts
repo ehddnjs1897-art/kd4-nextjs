@@ -18,9 +18,12 @@ export async function POST(
       return NextResponse.json({ ok: false }, { status: 400 })
     }
 
-    // 로그인 여부 확인 (익명 조회도 허용 — 단 클라이언트 sessionStorage로 1차 중복 방지됨)
+    // 로그인한 사용자만 조회수 증가 허용 (봇/스크레이퍼 스팸 방지)
     const supabase = await createClient()
-    await supabase.auth.getUser()  // 세션 갱신 목적; 실패해도 조회수 증가는 진행
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      return NextResponse.json({ ok: false }, { status: 401 })
+    }
 
     await supabase.rpc('increment_views', { post_id: id })
     return NextResponse.json({ ok: true })
