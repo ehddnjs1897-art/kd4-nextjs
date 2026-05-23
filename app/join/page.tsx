@@ -1302,8 +1302,8 @@ export default function JoinPage() {
             </h2>
           </div>
 
-          {/* 마퀴 1행만 (압축) */}
-          <div className="review-marquee">
+          {/* 마퀴 1행만 (압축) — 애니메이션 요소이므로 AT에서 숨김 */}
+          <div className="review-marquee" aria-hidden="true">
             <div className="review-marquee-track">
               {[...REVIEW_MARQUEE_ROW1, ...REVIEW_MARQUEE_ROW1].map((r, i) => (
                 <div key={`${r.author}-${i}`} style={{ flex: '0 0 auto', width: '320px', padding: '20px 24px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', marginRight: '14px' }}>

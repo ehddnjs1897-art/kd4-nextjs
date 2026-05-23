@@ -513,13 +513,13 @@ export default function AboutPage() {
                 href="mailto:uikactors@gmail.com"
                 style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: 'var(--secondary)', display: 'flex', gap: '8px', alignItems: 'center' }}
               >
-                <span>✉</span> uikactors@gmail.com
+                <span aria-hidden="true">✉</span> uikactors@gmail.com
               </a>
               <a
                 href="tel:01085640244"
                 style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: 'var(--secondary)', display: 'flex', gap: '8px', alignItems: 'center' }}
               >
-                <span>☎</span> 010-8564-0244
+                <span aria-hidden="true">☎</span> 010-8564-0244
               </a>
             </div>
           </div>

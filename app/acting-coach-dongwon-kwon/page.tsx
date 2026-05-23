@@ -6,7 +6,7 @@ import { CLASSES, DIRECTOR } from '@/lib/classes'
 import { COACH_FAQ } from '@/lib/landing-faqs'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import JoinCTALink from '@/components/join/JoinCTALink'
-import { buildBreadcrumb, buildFaqPage, buildPersonDongwonDetailed } from '@/lib/seo-schemas'
+import { buildBreadcrumb, buildFaqPage, buildPersonDongwonDetailed, buildOrganization } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
@@ -68,6 +68,7 @@ export default function CoachPage() {
             { name: '액팅 코치', url: PAGE_URL },
           ]),
           buildPersonDongwonDetailed(),
+          buildOrganization(),
           buildFaqPage(COACH_FAQ),
         ]}
       />

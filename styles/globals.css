@@ -56,35 +56,7 @@
   src: url('/fonts/KoPubWorldBatang-Bold.woff2') format('woff2');
 }
 
-/* Satoshi */
-@font-face {
-  font-family: 'Satoshi';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: local('Satoshi'), url('https://fonts.cdnfonts.com/s/85546/Satoshi-Light.woff') format('woff');
-}
-@font-face {
-  font-family: 'Satoshi';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: local('Satoshi'), url('https://fonts.cdnfonts.com/s/85546/Satoshi-Regular.woff') format('woff');
-}
-@font-face {
-  font-family: 'Satoshi';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: local('Satoshi'), url('https://fonts.cdnfonts.com/s/85546/Satoshi-Medium.woff') format('woff');
-}
-@font-face {
-  font-family: 'Satoshi';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: local('Satoshi'), url('https://fonts.cdnfonts.com/s/85546/Satoshi-Bold.woff') format('woff');
-}
+/* Satoshi @font-face 제거 (R88): fonts.cdnfonts.com이 CSP font-src에 없어 프로덕션에서 항상 차단됨 — 로컬 설치본만 사용 */
 
 /* === CSS VARIABLES === */
 :root {
@@ -329,6 +301,9 @@ ul, ol { list-style: none; }
 }
 
 @media (max-width: 768px) {
+  .hero-grain { animation: none; }
+}
+@media (prefers-reduced-motion: reduce) {
   .hero-grain { animation: none; }
 }
 

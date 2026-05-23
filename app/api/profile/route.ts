@@ -37,6 +37,9 @@ export async function PATCH(request: NextRequest) {
     if (/[\x00-\x1f\x7f]/.test(name.trim())) {
       return NextResponse.json({ error: '이름에 허용되지 않는 문자가 포함되어 있습니다.' }, { status: 400 })
     }
+    if (/[<>]/.test(name.trim())) {
+      return NextResponse.json({ error: '이름에 허용되지 않는 문자(<>)가 포함되어 있습니다.' }, { status: 400 })
+    }
     if (phone !== undefined && phone.trim() !== '') {
       const phoneClean = phone.trim()
       // 최소 7자리 이상 숫자가 포함된 전화번호 형식 요구 (공백/하이픈/+ 허용)

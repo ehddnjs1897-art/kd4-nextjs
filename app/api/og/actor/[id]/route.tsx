@@ -74,7 +74,7 @@ function getPhotoUrl(actor: ActorOg): string | null {
     return `${SUPABASE_URL}/storage/v1/object/public/actor-photos/${actor.storage_photo_path}`
   }
   if (actor.drive_photo_id) {
-    return `https://drive.google.com/thumbnail?id=${actor.drive_photo_id}&sz=w1200`
+    return `https://drive.google.com/thumbnail?id=${encodeURIComponent(actor.drive_photo_id)}&sz=w1200`
   }
   return null
 }

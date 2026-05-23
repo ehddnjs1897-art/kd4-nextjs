@@ -171,9 +171,12 @@ const AGE_OPTIONS: { value: AgeFilter; label: string }[] = [
 export default async function ActorsPage({ searchParams }: PageProps) {
   /* ---- 배우 목록은 누구나 열람 가능 (비회원 포함). 연락처·다운로드만 디렉터/관리자 전용 ---- */
   const params = await searchParams
-  const gender = params.gender ?? 'all'
-  const ageGroup = params.ageGroup ?? 'all'
-  const tag = params.tag ?? 'all'
+  // 캐시 슬롯 폭발 방지 (PERF-1): 허용 값 이외는 'all'로 정규화 + tag 길이 제한
+  const VALID_GENDERS = new Set(['all', '남', '여'])
+  const VALID_AGE_GROUPS = new Set(['all', '20대', '30대', '40대', '50대 이상'])
+  const gender = VALID_GENDERS.has(params.gender ?? '') ? (params.gender ?? 'all') : 'all'
+  const ageGroup = VALID_AGE_GROUPS.has(params.ageGroup ?? '') ? (params.ageGroup ?? 'all') : 'all'
+  const tag = (params.tag ?? 'all').slice(0, 50)  // 50자 이하로 제한 — 임의 긴 문자열 차단
 
   const { actors, dbError, allTags } = await getActorsCached(gender, ageGroup, tag)
 
