@@ -69,6 +69,8 @@ export default function BoardClient({
   const [posts, setPosts] = useState<Post[]>(initialPosts)
   const [total, setTotal] = useState(initialTotal)
   const [currentPage, setCurrentPage] = useState(1)
+  // 카테고리 전환 시 이전 fetch 취소 — 응답 순서 역전 방지
+  const fetchControllerRef = useRef<AbortController | null>(null)
   const [loading, setLoading] = useState(false)
   const [loadingMore, setLoadingMore] = useState(false)
   const [fetchError, setFetchError] = useState<string | null>(null)
@@ -76,6 +78,11 @@ export default function BoardClient({
   const searchMounted = useRef(false)
 
   const fetchPosts = useCallback(async (category: Category, page: number, append: boolean, q?: string) => {
+    // 이전 요청 취소 — 카테고리 전환 시 응답 순서 역전 방지
+    fetchControllerRef.current?.abort()
+    const controller = new AbortController()
+    fetchControllerRef.current = controller
+
     if (append) setLoadingMore(true)
     else setLoading(true)
     setFetchError(null)
@@ -88,7 +95,7 @@ export default function BoardClient({
         params.set('category', category)
       }
       if (q?.trim()) params.set('q', q.trim())
-      const res = await fetch(`/api/posts?${params}`)
+      const res = await fetch(`/api/posts?${params}`, { signal: controller.signal })
       const json: { data?: Post[]; total?: number } = await res.json()
       if (res.ok) {
         const incoming = json.data ?? []
@@ -97,11 +104,14 @@ export default function BoardClient({
       } else {
         setFetchError('게시글을 불러오지 못했습니다.')
       }
-    } catch {
+    } catch (e: unknown) {
+      if (e instanceof Error && e.name === 'AbortError') return
       setFetchError('게시글을 불러오지 못했습니다.')
     } finally {
-      if (append) setLoadingMore(false)
-      else setLoading(false)
+      if (!controller.signal.aborted) {
+        if (append) setLoadingMore(false)
+        else setLoading(false)
+      }
     }
   }, [currentUserId])
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
 interface Comment {
@@ -35,6 +35,12 @@ export default function CommentSection({
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const mountedRef = useRef(true)
+
+  useEffect(() => {
+    mountedRef.current = true
+    return () => { mountedRef.current = false }
+  }, [])
 
   const fetchComments = useCallback(async () => {
     const supabase = createClient()
@@ -44,6 +50,7 @@ export default function CommentSection({
       .eq('post_id', postId)
       .order('created_at', { ascending: true })
 
+    if (!mountedRef.current) return
     if (!fetchError && data) {
       setComments(data as Comment[])
     }

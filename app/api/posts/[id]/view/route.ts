@@ -36,6 +36,10 @@ export async function POST(
       return NextResponse.json({ ok: true })
     }
     viewCooldowns.set(cooldownKey, Date.now())
+    // 만료 항목 정리 — Map 무한 증가 방지
+    for (const [k, ts] of viewCooldowns) {
+      if (Date.now() - ts > VIEW_COOLDOWN_MS) viewCooldowns.delete(k)
+    }
 
     await supabase.rpc('increment_views', { post_id: id })
     return NextResponse.json({ ok: true })

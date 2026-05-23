@@ -119,6 +119,7 @@ export default function Navbar() {
   }
 
   /* ── 드롭다운 hover (딜레이로 떨림 방지) ── */
+  useEffect(() => () => { if (hoverTimeout.current) clearTimeout(hoverTimeout.current) }, [])
   const handleDropEnter = () => {
     if (hoverTimeout.current) clearTimeout(hoverTimeout.current)
     setCrewDropOpen(true)

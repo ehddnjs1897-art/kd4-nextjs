@@ -72,7 +72,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     .from('insights')
     .update(updates)
     .eq('id', id)
-    .select()
+    .select('id, url, title, description, image_url, memo, category, tags, source_type, is_favorite, created_at')
     .maybeSingle()
 
   if (error) {

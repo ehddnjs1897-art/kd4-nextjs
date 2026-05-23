@@ -51,11 +51,16 @@ export async function POST(request: NextRequest) {
   }
 
   // 동일 사용자 60초 내 중복 제출 차단 (actor row 중복 생성 race 방어)
+  const now = Date.now()
   const lastIntake = intakeCooldowns.get(user.id) ?? 0
-  if (Date.now() - lastIntake < INTAKE_COOLDOWN_MS) {
+  if (now - lastIntake < INTAKE_COOLDOWN_MS) {
     return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
   }
-  intakeCooldowns.set(user.id, Date.now())
+  intakeCooldowns.set(user.id, now)
+  // 만료 항목 정리 — Map 무한 증가 방지
+  for (const [k, ts] of intakeCooldowns) {
+    if (now - ts > INTAKE_COOLDOWN_MS) intakeCooldowns.delete(k)
+  }
 
   const body = await request.json().catch(() => null)
   // 최대 길이 상수

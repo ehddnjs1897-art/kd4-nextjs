@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 
 interface Enrollment {
@@ -26,10 +26,13 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
   const [busy, setBusy] = useState<string>('')
   const [editingStatusId, setEditingStatusId] = useState<string | null>(null)
   const [toastMsg, setToastMsg] = useState('')
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => () => { if (toastTimerRef.current) clearTimeout(toastTimerRef.current) }, [])
 
   function showToast(msg: string) {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
     setToastMsg(msg)
-    setTimeout(() => setToastMsg(''), 4000)
+    toastTimerRef.current = setTimeout(() => setToastMsg(''), 4000)
   }
 
   const months = Array.from(new Set(items.map((e) => e.year_month))).sort().reverse()

@@ -36,6 +36,10 @@ export async function POST() {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
     requestMap.set(user.id, now)
+    // 만료 항목 정리 — Map 무한 증가 방지
+    for (const [k, ts] of requestMap) {
+      if (now - ts > COOLDOWN_MS) requestMap.delete(k)
+    }
 
     // 현재 역할 + 이름 조회
     const { data: profile } = await supabaseAdmin
