@@ -151,7 +151,7 @@ export default function BoardClient({
         flexWrap: 'wrap',
         gap: '12px',
       }}>
-        <nav style={{ display: 'flex', gap: '4px' }} aria-label="게시판 카테고리 필터">
+        <div role="group" style={{ display: 'flex', gap: '4px' }} aria-label="게시판 카테고리 필터">
           {CATEGORIES.map((cat) => (
             <button
               type="button"
@@ -175,7 +175,7 @@ export default function BoardClient({
               {cat}
             </button>
           ))}
-        </nav>
+        </div>
 
         {isLoggedIn && (
           <Link

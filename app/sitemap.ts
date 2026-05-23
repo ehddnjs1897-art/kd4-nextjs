@@ -20,7 +20,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/actors`, lastModified: NOW, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${BASE}/benefits`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${BASE}/benefits/seowoo-studio`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.65 },
-    { url: `${BASE}/benefits/replay`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.6 },
+    // /benefits/replay 는 robots:noindex + robots.txt Disallow → 사이트맵 제외
   ]
 
   // 배우 프로필 페이지 (공개 배우만 — 비공개는 페이지 컴포넌트에서 404 반환)

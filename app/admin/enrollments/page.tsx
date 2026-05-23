@@ -18,6 +18,7 @@ export default async function AdminEnrollmentsPage() {
     .select('id, name, phone, class_name, year_month, amount, status, payment_status, created_at')
     .order('year_month', { ascending: false })
     .order('created_at', { ascending: false })
+    .limit(500) // 전체 스캔 방지 — 관리자 뷰 최대 500건
 
   if (enrollRes.error) {
     return (

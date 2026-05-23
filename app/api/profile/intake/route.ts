@@ -88,7 +88,11 @@ export async function POST(request: NextRequest) {
           typeof (p as { path?: unknown }).path === 'string' &&
           typeof (p as { label?: unknown }).label === 'string' &&
           (p as { label: string }).label.length <= 100
-      ).map((p: { path: string; label: string }) => ({ ...p, path: p.path.slice(0, MAX_PATH_LEN) }))
+      ).map((p: { path: string; label: string }) => ({
+        path: p.path.slice(0, MAX_PATH_LEN),
+        // 제어 문자 제거 — CSV 내보내기·관리자 뷰 데이터 오염 방지
+        label: p.label.replace(/[\x00-\x1f\x7f]/g, ' ').trim(),
+      }))
     : []
   ).slice(0, MAX_PHOTOS)
   // videos 배열 (신규) + 하위호환: 기존 video 단일 필드도 처리

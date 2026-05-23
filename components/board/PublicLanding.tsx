@@ -14,7 +14,7 @@ export default function PublicLanding() {
     <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingTop: 64, paddingBottom: 80 }}>
       <div className="container" style={{ maxWidth: 900, margin: '0 auto', padding: '0 24px' }}>
         {/* HERO */}
-        <section style={{ padding: 'clamp(56px, 9vw, 96px) 0 clamp(32px, 5vw, 48px)', textAlign: 'center' }}>
+        <section aria-label="KD4 커뮤니티 소개" style={{ padding: 'clamp(56px, 9vw, 96px) 0 clamp(32px, 5vw, 48px)', textAlign: 'center' }}>
           <p
             style={{
               fontFamily: 'var(--font-display), Oswald, sans-serif',
@@ -57,7 +57,7 @@ export default function PublicLanding() {
         <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 0 clamp(36px, 6vw, 56px)' }} />
 
         {/* FEATURES */}
-        <section>
+        <section aria-label="커뮤니티 기능">
           <p
             style={{
               fontFamily: 'var(--font-display), Oswald, sans-serif',
@@ -133,6 +133,7 @@ export default function PublicLanding() {
 
         {/* MEMBERS-ONLY 안내 */}
         <section
+          aria-label="멤버 전용 안내"
           style={{
             margin: 'clamp(48px, 7vw, 72px) 0 clamp(32px, 5vw, 48px)',
             padding: '28px 24px',
@@ -167,7 +168,7 @@ export default function PublicLanding() {
         </section>
 
         {/* CTA */}
-        <section style={{ textAlign: 'center', paddingBottom: 40 }}>
+        <section aria-label="가입 안내" style={{ textAlign: 'center', paddingBottom: 40 }}>
           <div
             style={{
               display: 'flex',
