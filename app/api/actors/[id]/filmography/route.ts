@@ -56,10 +56,10 @@ export async function POST(request: NextRequest, { params }: Ctx) {
         sort_order: 0,
       })
       .select('id')
-      .single()
+      .maybeSingle()
 
-    if (error) {
-      console.error('[filmography POST] DB 오류:', error.message)
+    if (error || !data) {
+      console.error('[filmography POST] DB 오류:', error?.message)
       return NextResponse.json({ error: '필모그래피 추가에 실패했습니다.' }, { status: 500 })
     }
     revalidateTag('actors')

@@ -14,6 +14,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { uploadVideo, deleteVideo, buildVideoKey, isR2Configured } from '@/lib/r2'
+import { revalidateTag } from '@/lib/revalidate'
 
 // 파일 크기 제한: 500MB (R2는 5TB까지 가능, 안전 한도)
 const MAX_SIZE_BYTES = 500 * 1024 * 1024
@@ -101,15 +102,17 @@ export async function POST(request: NextRequest) {
         is_public: false,
       })
       .select('id, r2_key, actor_id, title, file_size_bytes')
-      .single()
+      .maybeSingle()
 
-    if (error) {
-      console.error('[upload] DB insert 실패:', error.message)
+    if (error || !data) {
+      console.error('[upload] DB insert 실패:', error?.message)
       // R2 고아 파일 정리 (best-effort)
       try { await deleteVideo(r2Key) } catch { /* ignore */ }
       return NextResponse.json({ error: 'DB 저장 실패' }, { status: 500 })
     }
 
+    revalidateTag('actors')
+    revalidateTag(`actor-${actorId}`)
     return NextResponse.json({ video: data })
   } catch (err) {
     console.error('[upload] 예상치 못한 오류:', err)

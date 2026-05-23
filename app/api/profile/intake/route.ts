@@ -21,6 +21,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
+import { revalidateTag } from '@/lib/revalidate'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 
@@ -216,6 +217,8 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  revalidateTag('actors')
+  if (actorId) revalidateTag(`actor-${actorId}`)
   return NextResponse.json({
     ok: true,
     actorId,

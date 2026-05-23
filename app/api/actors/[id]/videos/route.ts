@@ -63,10 +63,10 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       .from('actor_videos')
       .insert(insertData)
       .select('id')
-      .single()
+      .maybeSingle()
 
-    if (error) {
-      console.error('[videos POST] DB 오류:', error.message)
+    if (error || !data) {
+      console.error('[videos POST] DB 오류:', error?.message)
       return NextResponse.json({ error: '영상 추가에 실패했습니다.' }, { status: 500 })
     }
     revalidateTag('actors')

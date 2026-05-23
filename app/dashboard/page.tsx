@@ -185,7 +185,13 @@ export default async function DashboardPage() {
         )}
 
         {/* 내 수강 */}
-        <EnrollmentsPanel enrollments={enrollments} thisMonth={thisMonth} nextMonth={nextMonth} />
+        {enrErr ? (
+          <section style={{ padding: '16px', borderRadius: 'var(--radius)', border: '1px solid #e74c3c44', marginBottom: 24 }}>
+            <p style={{ color: '#e74c3c', fontSize: '0.85rem', margin: 0 }}>수강 내역을 불러오지 못했습니다. 페이지를 새로고침해 주세요.</p>
+          </section>
+        ) : (
+          <EnrollmentsPanel enrollments={enrollments} thisMonth={thisMonth} nextMonth={nextMonth} />
+        )}
 
         {/* KD4 크루 전용 */}
         {canViewActorDb && (

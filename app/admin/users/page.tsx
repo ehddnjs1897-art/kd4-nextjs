@@ -41,7 +41,7 @@ export default async function AdminUsersPage() {
 
   // 권한 확인 + 전체 profiles 병렬 조회
   const [{ data: myProfile }, profiles] = await Promise.all([
-    supabaseAdmin.from('profiles').select('role').eq('id', user.id).single(),
+    supabaseAdmin.from('profiles').select('role').eq('id', user.id).maybeSingle(),
     fetchProfiles(),
   ])
   if (myProfile?.role !== 'admin') redirect('/dashboard')

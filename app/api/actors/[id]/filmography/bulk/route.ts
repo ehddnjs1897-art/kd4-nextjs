@@ -17,6 +17,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
+import { revalidateTag } from '@/lib/revalidate'
 
 type Ctx = { params: Promise<{ id: string }> }
 
@@ -126,40 +127,36 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       .maybeSingle()
     const baseSortOrder = (maxRow?.sort_order ?? -1) + 1
 
-    const insertPromises = toInsert.map((item, idx) =>
-      supabaseAdmin
-        .from('actor_filmography')
-        .insert({
-          actor_id: actorId,
-          category: item.category,
-          year: item.year ?? null,
-          title: item.title,
-          role: item.role ?? null,
-          broadcaster: item.broadcaster ?? null,
-          film_type: item.film_type ?? null,
-          sort_order: baseSortOrder + idx,
-        })
-        .select('id')
-        .single()
-        .then(({ data, error }) => ({
-          id: data?.id ?? '',
-          ok: !error,
-          error: error?.message,
-          originalIdx: toUpdate.length + idx,
-        }))
-    )
+    // 배치 INSERT — N개 개별 쿼리 대신 단일 쿼리로 처리
+    const insertRows = toInsert.map((item, idx) => ({
+      actor_id: actorId,
+      category: item.category,
+      year: item.year ?? null,
+      title: item.title,
+      role: item.role ?? null,
+      broadcaster: item.broadcaster ?? null,
+      film_type: item.film_type ?? null,
+      sort_order: baseSortOrder + idx,
+    }))
 
-    const [updateResults, insertResults] = await Promise.all([
+    const [updateResults, insertResult] = await Promise.all([
       Promise.all(updatePromises),
-      Promise.all(insertPromises),
+      insertRows.length > 0
+        ? supabaseAdmin.from('actor_filmography').insert(insertRows).select('id')
+        : Promise.resolve({ data: [], error: null }),
     ])
 
+    const insertedIds = (insertResult.data ?? []).map((r: { id: string }) => r.id)
     const results = [
       ...updateResults.map(r => ({ id: r.id, ok: r.ok })),
-      ...insertResults.map(r => ({ id: r.id, ok: r.ok, originalIdx: r.originalIdx })),
+      ...insertedIds.map((id: string) => ({ id, ok: true })),
     ]
 
-    const errors = results.filter(r => !r.ok).length
+    const errors = results.filter(r => !r.ok).length + (insertResult.error ? 1 : 0)
+    if (insertResult.error) console.error('[filmography/bulk] INSERT 오류:', insertResult.error.message)
+
+    revalidateTag('actors')
+    revalidateTag(`actor-${actorId}`)
     return NextResponse.json({ results, errors })
   } catch (err) {
     console.error('[POST /api/actors/[id]/filmography/bulk]', err)
