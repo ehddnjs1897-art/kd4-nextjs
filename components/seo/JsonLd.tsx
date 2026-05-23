@@ -93,7 +93,7 @@ function getCourseSchemas() {
     },
     offers: {
       '@type': 'Offer',
-      price: cls.price.replace(/,/g, ''),
+      price: Number(cls.price.replace(/,/g, '')),
       priceCurrency: 'KRW',
       availability: 'https://schema.org/InStock',
     },

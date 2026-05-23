@@ -35,6 +35,7 @@ export default function GameError({
       <p style={{ fontSize: 16, fontWeight: 600 }}>게임을 불러오지 못했습니다</p>
       <div style={{ display: 'flex', gap: 12 }}>
         <button
+          type="button"
           onClick={reset}
           style={{
             background: '#0057FF',

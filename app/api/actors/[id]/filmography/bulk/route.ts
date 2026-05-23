@@ -23,6 +23,11 @@ type Ctx = { params: Promise<{ id: string }> }
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
+// 레이트 리밋: 5분 내 10회 bulk 요청 초과 시 차단 (각 요청이 최대 200개 → DoS 방어)
+const bulkPostMap = new Map<string, number[]>()
+const BULK_WINDOW_MS = 5 * 60_000
+const BULK_MAX = 10
+
 interface FilmItem {
   id?: string
   category?: string
@@ -54,6 +59,14 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       profile.role === 'editor'
     )
     if (!isAllowed) return NextResponse.json({ error: '권한 없음' }, { status: 403 })
+
+    // 레이트 리밋: 5분 내 10회 초과 시 차단
+    const now = Date.now()
+    const times = (bulkPostMap.get(user.id) ?? []).filter(t => now - t < BULK_WINDOW_MS)
+    if (times.length >= BULK_MAX) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요. (5분 최대 10회)' }, { status: 429 })
+    }
+    bulkPostMap.set(user.id, [...times, now])
 
     // ── 본문 파싱 ────────────────────────────────────────
     let parsed: { items: FilmItem[] }

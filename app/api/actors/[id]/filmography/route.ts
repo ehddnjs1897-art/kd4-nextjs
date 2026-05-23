@@ -10,6 +10,11 @@ type Ctx = { params: Promise<{ id: string }> }
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
+// 레이트 리밋: 5분 내 30개 필모그래피 추가 초과 시 차단 (스팸 INSERT 방지)
+const filmographyPostMap = new Map<string, number[]>()
+const FILM_WINDOW_MS = 5 * 60_000
+const FILM_MAX = 30
+
 export async function POST(request: NextRequest, { params }: Ctx) {
   try {
     const { id } = await params
@@ -25,6 +30,14 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     if (!profile || (profile.actor_id !== id && profile.role !== 'admin' && profile.role !== 'editor')) {
       return NextResponse.json({ error: '권한 없음' }, { status: 403 })
     }
+
+    // 레이트 리밋: 5분 내 30회 초과 시 차단
+    const now = Date.now()
+    const times = (filmographyPostMap.get(user.id) ?? []).filter(t => now - t < FILM_WINDOW_MS)
+    if (times.length >= FILM_MAX) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요. (5분 최대 30개)' }, { status: 429 })
+    }
+    filmographyPostMap.set(user.id, [...times, now])
 
     let parsedBody: { category?: string; year?: number; title?: string; role?: string; broadcaster?: string; film_type?: string }
     try {

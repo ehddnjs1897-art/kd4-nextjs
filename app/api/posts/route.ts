@@ -35,7 +35,9 @@ export async function GET(request: NextRequest) {
     }
 
     // 제목 검색 (ilike — 대소문자 무시, 최대 100자)
-    const q = searchParams.get('q')?.trim().slice(0, 100)
+    // % 와 _ 이스케이프 — ilike wildcard 남용으로 인한 전체 테이블 스캔 DoS 방지 (insights와 동일 패턴)
+    const rawQ = searchParams.get('q')?.trim().slice(0, 100)
+    const q = rawQ ? rawQ.replace(/%/g, '\\%').replace(/_/g, '\\_') : rawQ
     if (q) query = query.ilike('title', `%${q}%`)
 
     const { data, error, count } = await query

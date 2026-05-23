@@ -10,7 +10,7 @@ import { buildBreadcrumb } from '@/lib/seo-schemas'
 const PAGE_URL = `${SITE_URL}/classes`
 
 export const metadata: Metadata = {
-  title: '연기 클래스 전체 보기 — KD4 액팅 스튜디오',
+  title: '연기 클래스 전체 보기',
   description:
     '베이직·마이즈너 정규·출연영상·심화·오디션·움직임·개인 레슨. 마이즈너 테크닉 기반 9개 클래스. 서울 신촌.',
   keywords: [

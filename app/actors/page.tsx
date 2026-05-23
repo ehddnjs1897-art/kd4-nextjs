@@ -13,7 +13,7 @@ import PageJsonLd from '@/components/seo/PageJsonLd'
 import { buildBreadcrumb } from '@/lib/seo-schemas'
 
 export const metadata: Metadata = {
-  title: '배우 DB | KD4 액팅 스튜디오',
+  title: '배우 DB',
   description: 'KD4 액팅 스튜디오 배우 데이터베이스. 멤버 전용.',
   robots: { index: false, follow: false },
   alternates: { canonical: `${SITE_URL}/actors` },

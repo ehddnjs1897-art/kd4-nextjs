@@ -46,6 +46,7 @@ export default function PostDetailError({
         </p>
         <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
           <button
+            type="button"
             onClick={reset}
             style={{
               background: 'var(--gold)',

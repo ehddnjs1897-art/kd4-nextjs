@@ -182,7 +182,7 @@ export function buildCourseFromClass(cls: ClassItem, opts: { url: string }) {
     provider: { '@id': `${SITE_URL}#school` },
     offers: {
       '@type': 'Offer',
-      price: cls.price.replace(/,/g, ''),
+      price: Number(cls.price.replace(/,/g, '')),
       priceCurrency: 'KRW',
       availability: 'https://schema.org/InStock',
       url: opts.url,

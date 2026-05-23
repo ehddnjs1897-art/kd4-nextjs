@@ -44,6 +44,7 @@ export default function BoardError({
           잠시 후 다시 시도해주세요.
         </p>
         <button
+          type="button"
           onClick={reset}
           style={{
             background: 'var(--gold)',

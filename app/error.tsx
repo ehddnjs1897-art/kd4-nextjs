@@ -53,6 +53,7 @@ export default function ErrorPage({
         </p>
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
           <button
+            type="button"
             onClick={reset}
             style={{
               padding: '10px 22px',

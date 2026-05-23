@@ -31,7 +31,7 @@ const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
 const YouTubeFacade = dynamic(() => import('@/components/youtube/YouTubeFacade'))
 
 export const metadata: Metadata = {
-  title: '무료 상담 신청 | KD4 액팅 스튜디오',
+  title: '무료 상담 신청',
   description: '소수정예 마이즈너 테크닉 연기 클래스. 무료 상담 신청. 서울 신촌. KD4 액팅 스튜디오.',
   robots: { index: false, follow: true },
   alternates: { canonical: `${SITE_URL}/join` },

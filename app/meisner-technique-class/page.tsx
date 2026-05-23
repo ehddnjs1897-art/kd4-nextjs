@@ -19,7 +19,7 @@ const PAGE_URL = `${SITE_URL}/meisner-technique-class`
 const MAIN_CLASS = CLASSES.find((c) => c.nameKo === '마이즈너 테크닉 정규 클래스')!
 
 export const metadata: Metadata = {
-  title: '마이즈너 테크닉 정규 클래스 — KD4 액팅 스튜디오',
+  title: '마이즈너 테크닉 정규 클래스',
   description:
     '반복연습·감정해방·실시간 반응. 권동원 대표 직강 4개월 정규 코스. 정원 8명 소수정예. 서울 신촌.',
   keywords: [

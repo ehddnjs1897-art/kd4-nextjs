@@ -8,7 +8,7 @@ import { buildBreadcrumb } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
 
 export const metadata: Metadata = {
-  title: '서우스튜디오 프로필 촬영 제휴 | KD4 액팅 스튜디오',
+  title: '서우스튜디오 프로필 촬영 제휴',
   description:
     'KD4 액팅 스튜디오 × 서우스튜디오 공식 제휴 — 배우 프로필·포트레이트 촬영. KD4 멤버 전용 할인(헤어·메이크업 포함 15%, 미포함 10%) 및 이용 절차 안내.',
   alternates: { canonical: `${SITE_URL}/benefits/seowoo-studio` },

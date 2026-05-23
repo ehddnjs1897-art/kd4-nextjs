@@ -46,6 +46,7 @@ export default function ActorsError({
         </p>
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
           <button
+            type="button"
             onClick={reset}
             style={{
               background: 'var(--gold)',

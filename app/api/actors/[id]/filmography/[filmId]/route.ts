@@ -11,6 +11,11 @@ type Ctx = { params: Promise<{ id: string; filmId: string }> }
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
+// 레이트 리밋: 1분 내 60회 PATCH/DELETE 초과 시 차단 (급속 반복 쓰기 방지)
+const filmPatchMap = new Map<string, number[]>()
+const FILM_PATCH_WINDOW_MS = 60_000
+const FILM_PATCH_MAX = 60
+
 async function authorize(actorId: string, userId: string) {
   const { data: profile } = await supabaseAdmin
     .from('profiles').select('actor_id, role').eq('id', userId).maybeSingle()
@@ -27,6 +32,14 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
     if (!(await authorize(id, user.id))) return NextResponse.json({ error: '권한 없음' }, { status: 403 })
+
+    // 레이트 리밋: 1분 내 60회 초과 시 차단
+    const now = Date.now()
+    const times = (filmPatchMap.get(user.id) ?? []).filter(t => now - t < FILM_PATCH_WINDOW_MS)
+    if (times.length >= FILM_PATCH_MAX) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
+    filmPatchMap.set(user.id, [...times, now])
 
     let body: Record<string, unknown>
     try { body = await request.json() }
@@ -84,6 +97,14 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
     if (!(await authorize(id, user.id))) return NextResponse.json({ error: '권한 없음' }, { status: 403 })
+
+    // 레이트 리밋: PATCH와 동일 Map 공유 — 1분 내 60회 초과 시 차단
+    const nowD = Date.now()
+    const timesD = (filmPatchMap.get(user.id) ?? []).filter(t => nowD - t < FILM_PATCH_WINDOW_MS)
+    if (timesD.length >= FILM_PATCH_MAX) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
+    filmPatchMap.set(user.id, [...timesD, nowD])
 
     const { data: deleted, error } = await supabaseAdmin
       .from('actor_filmography').delete().eq('id', filmId).eq('actor_id', id).select('id').maybeSingle()

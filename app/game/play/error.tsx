@@ -34,6 +34,7 @@ export default function PlayError({
       <p style={{ fontSize: 15, fontWeight: 600 }}>게임을 시작하지 못했습니다</p>
       <div style={{ display: 'flex', gap: 12 }}>
         <button
+          type="button"
           onClick={reset}
           style={{
             background: '#0057FF',

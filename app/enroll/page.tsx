@@ -6,7 +6,7 @@ import EnrollForm from '@/components/enroll/EnrollForm'
 import { SITE_URL } from '@/lib/constants'
 
 export const metadata: Metadata = {
-  title: '클래스 신청 | KD4 액팅 스튜디오',
+  title: '클래스 신청',
   description: 'KD4 멤버 클래스 수강 신청',
   robots: { index: false, follow: false },
   alternates: { canonical: `${SITE_URL}/enroll` },
@@ -18,6 +18,12 @@ export const metadata: Metadata = {
     images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오' }],
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '클래스 신청 | KD4 액팅 스튜디오',
+    description: 'KD4 멤버 클래스 수강 신청',
+    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오' }],
   },
 }
 

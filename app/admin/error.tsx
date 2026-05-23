@@ -43,6 +43,7 @@ export default function AdminError({
         )}
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
           <button
+            type="button"
             onClick={reset}
             style={{
               background: 'var(--gold)',

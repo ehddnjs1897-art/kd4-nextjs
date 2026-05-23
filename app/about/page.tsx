@@ -6,7 +6,7 @@ import PageJsonLd from '@/components/seo/PageJsonLd'
 import { buildBreadcrumb } from '@/lib/seo-schemas'
 
 export const metadata: Metadata = {
-  title: '스튜디오 소개 | KD4 액팅 스튜디오',
+  title: '스튜디오 소개',
   description:
     '마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 현장에서 통하는 배우를 키웁니다. 삶의 변화, 좋은 연기, 커리어의 성장.',
   alternates: { canonical: `${SITE_URL}/about` },

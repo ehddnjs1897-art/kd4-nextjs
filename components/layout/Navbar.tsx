@@ -244,6 +244,7 @@ export default function Navbar() {
                 >
                   KD4 크루
                   <svg
+                    aria-hidden="true"
                     width="12"
                     height="12"
                     viewBox="0 0 12 12"
@@ -526,6 +527,7 @@ export default function Navbar() {
                   >
                     KD4 크루
                     <svg
+                      aria-hidden="true"
                       width="18"
                       height="18"
                       viewBox="0 0 12 12"

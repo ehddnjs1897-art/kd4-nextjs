@@ -139,7 +139,8 @@ export function getActorVideoSchemas(
         },
       }
 
-      if (v.uploadDate) schema.uploadDate = v.uploadDate
+      // Google VideoObject rich result requires uploadDate — fall back to floor date if unknown
+      schema.uploadDate = v.uploadDate ?? '2024-01-01'
 
       return schema
     })

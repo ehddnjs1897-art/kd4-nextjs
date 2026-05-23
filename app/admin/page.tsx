@@ -70,6 +70,7 @@ async function fetchActors(): Promise<AdminActor[]> {
     .from('actors')
     .select('id, name, gender, age_group, is_public')
     .order('created_at', { ascending: false })
+    .limit(1000) // 상한: 비공개 포함 전체 배우 수 — 무제한 반환 방지
 
   if (error) {
     console.error('[admin] actors fetch 오류:', error.message)

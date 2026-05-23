@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { SITE_URL } from '@/lib/constants'
 
 export const metadata: Metadata = {
-  title: '리플레이 프로필 투어 제휴 | KD4 액팅 스튜디오',
+  title: '리플레이 프로필 투어 제휴',
   description:
     'KD4 액팅 스튜디오 × 리플레이 공식 제휴 — 배우 프로필 투어 서비스. KD4 멤버 전용 혜택: 40장 3만원 (일반가 4만원, 25% 할인).',
   robots: { index: false, follow: false },
