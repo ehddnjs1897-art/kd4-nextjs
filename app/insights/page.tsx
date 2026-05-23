@@ -391,16 +391,23 @@ export default function InsightsPage() {
                       className="ins-tag"
                       onClick={() => setEditingCategoryId(editingCategoryId === insight.id ? null : insight.id)}
                       aria-label={`카테고리 변경: ${insight.category ?? '기타'}`}
+                      aria-haspopup="listbox"
+                      aria-expanded={editingCategoryId === insight.id}
                       style={{ cursor: 'pointer', borderBottom: '1px dashed var(--gray)', background: 'none', border: 'none', padding: 0, font: 'inherit' }}
                     >
                       {insight.category ?? '기타'} ▾
                     </button>
                     {editingCategoryId === insight.id && (
-                      <div style={{
-                        position: 'absolute', top: '100%', left: 0, zIndex: 10,
-                        background: 'var(--bg2)', border: '1px solid var(--gold)',
-                        borderRadius: 8, padding: 6, display: 'flex', flexWrap: 'wrap', gap: 4, width: 220,
-                      }}>
+                      <div
+                        role="listbox"
+                        aria-label="카테고리 선택"
+                        onKeyDown={e => { if (e.key === 'Escape') { e.stopPropagation(); setEditingCategoryId(null) } }}
+                        style={{
+                          position: 'absolute', top: '100%', left: 0, zIndex: 10,
+                          background: 'var(--bg2)', border: '1px solid var(--gold)',
+                          borderRadius: 8, padding: 6, display: 'flex', flexWrap: 'wrap', gap: 4, width: 220,
+                        }}
+                      >
                         {CATEGORIES.filter(c => c !== '전체').map(c => (
                           <button
                             type="button"

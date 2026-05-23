@@ -46,7 +46,14 @@ export async function POST(request: NextRequest) {
     if (contentLengthAI > 32_768) {
       return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
     }
-    const { scriptText, characterName } = await request.json()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let aiBody: Record<string, any>
+    try {
+      aiBody = await request.json()
+    } catch {
+      return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })
+    }
+    const { scriptText, characterName } = aiBody
 
     if (!scriptText?.trim() || !characterName?.trim()) {
       return NextResponse.json({ error: '대본과 캐릭터 이름을 입력해주세요.' }, { status: 400 })

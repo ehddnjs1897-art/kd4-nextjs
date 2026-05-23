@@ -391,7 +391,7 @@ export default function HomePage() {
             opacity: 0,
           }}
         >
-          <span style={{ fontSize: "0.6rem", letterSpacing: "0.2em", color: "rgba(17,17,17,0.5)" }}>SCROLL</span>
+          <span aria-hidden="true" style={{ fontSize: "0.6rem", letterSpacing: "0.2em", color: "rgba(17,17,17,0.5)" }}>SCROLL</span>
           <svg aria-hidden="true" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="rgba(17,17,17,0.5)" strokeWidth="1.5">
             <path d="M8 3v10M3 9l5 5 5-5" />
           </svg>
@@ -517,7 +517,7 @@ export default function HomePage() {
           >
             {/* 텍스트 영역 */}
             <div>
-            <p className="section-eyebrow">LEADER</p>
+            <p className="section-eyebrow"><span lang="en">LEADER</span></p>
             <h2
               style={{
                 fontSize: "clamp(1.6rem, 4vw, 2.4rem)",
@@ -652,7 +652,7 @@ export default function HomePage() {
             <p
               className="section-eyebrow"
             >
-              ALL IN ONE SYSTEM
+              <span lang="en">ALL IN ONE SYSTEM</span>
             </p>
             <h2
               style={{
@@ -927,10 +927,10 @@ export default function HomePage() {
             <p
               className="section-eyebrow"
             >
-              PROCESS
+              <span lang="en">PROCESS</span>
             </p>
             <h2 style={{ fontSize: "clamp(1.6rem, 4vw, 2.4rem)", fontWeight: 700 }}>
-              How It Works
+              <span lang="en">How It Works</span>
             </h2>
           </div>
 
@@ -1010,7 +1010,7 @@ export default function HomePage() {
       <section id="classes" aria-label="클래스 소개" className="section" style={{ background: "var(--bg)" }}>
         <div className="container" style={{ maxWidth: 980 }}>
           <div style={{ textAlign: "center", marginBottom: "40px" }}>
-            <p className="section-eyebrow">CURRICULUM</p>
+            <p className="section-eyebrow"><span lang="en">CURRICULUM</span></p>
             <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.6rem, 4vw, 2.2rem)", fontWeight: 700, color: "var(--white)", lineHeight: 1.35, marginBottom: 12 }}>
               나에게 맞는 클래스 찾기
             </h2>
@@ -1255,7 +1255,7 @@ export default function HomePage() {
         }}
       >
         <div className="container">
-          <p className="section-eyebrow">START NOW</p>
+          <p className="section-eyebrow"><span lang="en">START NOW</span></p>
           <h2
             className="shimmer-text"
             style={{

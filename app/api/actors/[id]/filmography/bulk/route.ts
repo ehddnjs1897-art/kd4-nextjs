@@ -66,6 +66,9 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     if (times.length >= BULK_MAX) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요. (5분 최대 10회)' }, { status: 429 })
     }
+    const clBulk = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
+    if (clBulk > 65_536) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+
     bulkPostMap.set(user.id, [...times, now])
     if (bulkPostMap.size > 2000) {
       const cutoff = now - BULK_WINDOW_MS
@@ -75,8 +78,6 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     // ── 본문 파싱 ────────────────────────────────────────
     let parsed: { items: FilmItem[] }
     try {
-      const clBulk = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
-      if (clBulk > 65_536) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
       parsed = await request.json()
     } catch {
       return NextResponse.json({ error: '잘못된 JSON 형식입니다.' }, { status: 400 })

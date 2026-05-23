@@ -60,6 +60,9 @@ export async function PATCH(
   if (nowAAP - lastAAP < ADMIN_ACTOR_PATCH_COOLDOWN_MS) {
     return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
   }
+  const cl = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
+  if (cl > 256) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+
   adminActorPatchMap.set(adminActorId, nowAAP)
   if (adminActorPatchMap.size > 2000) {
     const cutoffAAP = nowAAP - ADMIN_ACTOR_PATCH_COOLDOWN_MS
@@ -76,10 +79,13 @@ export async function PATCH(
       )
     }
 
-    const cl = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
-    if (cl > 256) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
-    const body = await request.json()
-    const { is_public } = body as { is_public?: unknown }
+    let body: { is_public?: unknown }
+    try {
+      body = await request.json()
+    } catch {
+      return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })
+    }
+    const { is_public } = body
 
     if (typeof is_public !== 'boolean') {
       return NextResponse.json(

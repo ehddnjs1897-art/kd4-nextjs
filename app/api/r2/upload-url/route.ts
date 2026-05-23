@@ -52,6 +52,9 @@ export async function POST(request: NextRequest) {
   if (times.length >= PRESIGN_MAX) {
     return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
   }
+  const clPresign = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
+  if (clPresign > 4_096) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+
   presignedReqMap.set(user.id, [...times, now])
   if (presignedReqMap.size > 2000) {
     const now2 = Date.now()
@@ -59,9 +62,6 @@ export async function POST(request: NextRequest) {
       if (v.every(t => now2 - t > PRESIGN_WINDOW_MS)) presignedReqMap.delete(k)
     }
   }
-
-  const clPresign = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
-  if (clPresign > 4_096) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
 
   const body = await request.json().catch(() => null)
   const filename = typeof body?.filename === 'string' ? body.filename.slice(0, 500) : ''
