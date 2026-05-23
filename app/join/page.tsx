@@ -221,7 +221,7 @@ export default function JoinPage() {
         >
           <p
             className="section-eyebrow"
-            style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '20px', wordBreak: 'keep-all' }}
+            style={{ color: 'rgba(255,255,255,0.75)', marginBottom: '20px', wordBreak: 'keep-all' }}
           >
             캐스팅 디렉터 · 인물 조감독 공식 협업 아카데미
           </p>
@@ -298,7 +298,7 @@ export default function JoinPage() {
                 <div
                   style={{
                     fontSize: 'clamp(0.68rem, 1.8vw, 0.78rem)',
-                    color: 'rgba(255,255,255,0.6)',
+                    color: 'rgba(255,255,255,0.75)',
                     marginTop: '6px',
                     letterSpacing: '0.03em',
                   }}
@@ -312,7 +312,7 @@ export default function JoinPage() {
           <p
             style={{
               fontSize: 'clamp(0.8rem, 2vw, 0.88rem)',
-              color: 'rgba(255,255,255,0.55)',
+              color: 'rgba(255,255,255,0.7)',
               marginBottom: '24px',
               letterSpacing: '0.03em',
             }}

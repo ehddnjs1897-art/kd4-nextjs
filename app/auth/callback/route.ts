@@ -3,6 +3,7 @@ import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { matchActorOnSignup, linkEnrollmentsOnSignup } from '@/lib/actor-matching'
 import { supabaseAdmin } from '@/lib/supabase/admin'
+import { SITE_URL } from '@/lib/constants'
 
 // 신규 가입은 모두 'actor' 기본 역할로 시작한다.
 // 디렉터 권한은 자동 부여하지 않고 대시보드에서 승인 신청 → 관리자 승인(director_pending → director).
@@ -16,7 +17,8 @@ function resolveInitialRole(memberType: string | undefined, existingRole: string
 }
 
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url)
+  const { searchParams } = new URL(request.url)
+  const origin = SITE_URL
   const code = searchParams.get('code')
   const token_hash = searchParams.get('token_hash')
   const type = searchParams.get('type') as 'signup' | 'recovery' | 'email' | 'invite' | null

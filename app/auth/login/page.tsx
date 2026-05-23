@@ -68,7 +68,7 @@ function LoginContent() {
 
     // 오픈 리다이렉트 방지: 동일 출처(/) 경로만 허용
     const rawNext = searchParams.get('next')
-    const safeDest = rawNext && rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/dashboard'
+    const safeDest = rawNext && rawNext.startsWith('/') && !rawNext.startsWith('//') && !rawNext.startsWith('/\\') ? rawNext : '/dashboard'
     router.push(safeDest)
     router.refresh()
   }

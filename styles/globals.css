@@ -443,6 +443,10 @@ ul, ol { list-style: none; }
   100% { transform: scaleY(0); transform-origin: bottom; }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .scroll-line { animation: none; opacity: 1; }
+}
+
 .hero-studio-label {
   position: absolute;
   bottom: clamp(60px,10vh,90px);
