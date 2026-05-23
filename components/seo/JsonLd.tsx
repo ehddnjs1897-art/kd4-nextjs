@@ -45,12 +45,12 @@ function getLocalBusinessSchema() {
       latitude: 37.5577,
       longitude: 126.9465,
     },
-    openingHoursSpecification: {
+    openingHoursSpecification: [{
       '@type': 'OpeningHoursSpecification',
       dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
       opens: '10:00',
       closes: '22:00',
-    },
+    }],
     sameAs: [
       'https://www.instagram.com/kd4actingstudio',
       'https://pf.kakao.com/_ximxdqn',

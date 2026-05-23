@@ -230,6 +230,68 @@ lib/storage.ts에 R2 구현 추가 (TODO 표시됨)
   - 사용자가 "opus 검토해줘" 요청 시
 - Opus 검토 결과를 사용자에게 보여준 후 승인받고 진행
 
+## 🚨 Dispatch 자율 승인 원칙 (2026-05-23 확정)
+
+**코드 에이전트는 AskUserQuestion을 절대 사용하지 않는다.**
+
+모든 작업은 Dispatch 오케스트레이터(Cowork 메인 채팅)가 지시하고, 승인도 Dispatch를 통해서만 받는다. 코드 에이전트가 UI 팝업으로 사용자를 직접 차단하는 것은 금지.
+
+### 판단이 필요한 상황별 기본 처리 원칙
+
+| 상황 | 기본 행동 |
+|---|---|
+| feature 브랜치 → main 머지 여부 | 머지충돌 없으면 즉시 머지 후 push |
+| Vercel 배포 여부 | main push 후 자동 배포 기다림 (별도 확인 불요) |
+| 커밋 범위 판단 | 작업 지시 범위 내 파일만 커밋, 무관한 파일 제외 |
+| 작업 범위 외 추가 발견 사항 | 트랜스크립트에 기록 후 계속 진행 (멈추지 않음) |
+| 진짜 판단 불가한 상황 | 트랜스크립트에 "❓ Dispatch 확인 필요: [내용]" 명시 후 idle 상태로 대기 |
+
+### 진짜 Dispatch 승인이 필요한 경우 (이것만)
+- DB 스키마 변경 (되돌릴 수 없음)
+- 환경변수 삭제 또는 이름 변경
+- 인증/권한 로직 구조 변경
+- 사용자 데이터에 영향을 주는 마이그레이션
+
+위 경우에만 트랜스크립트에 "❓ Dispatch 확인 필요" 남기고 대기. 나머지는 모두 자율 판단 후 진행.
+
+## 🚫 Code 세션 절대 금지 행동 (빌드·프리뷰·충돌)
+
+| 금지 | 대신 |
+|---|---|
+| `npm run build` / `next build` 로컬 실행 | TypeScript 에러는 `tsc --noEmit`으로만 확인 |
+| `preview_start` / 로컬 dev 서버 기동 | 바로 push → Vercel 자동 빌드로 검증 |
+| AskUserQuestion 팝업 | transcript에 "❓ Dispatch 확인 필요" 후 idle |
+| 다른 Code 세션이 작업 중인 파일 동시 수정 | transcript에 "⚠️ 충돌 위험" 남기고 대기 |
+| 같은 repo를 여러 Code 세션이 동시 push | 순차 처리 — 앞 세션 완료(SHA 확인) 후 시작 |
+| git index.lock 강제 삭제 후 push | Dispatch에 "❓ index.lock 발견" 보고 후 대기 |
+
+> 로컬 빌드는 10~20분 낭비. Vercel이 실제 환경과 동일하고 더 빠르다.
+
+## 🔄 세션 완료 핸드오프 규칙
+
+작업 완료 후 transcript 마지막에 반드시 아래 형식으로 요약:
+
+```
+✅ 완료: [작업 내용 한 줄]
+📁 수정 파일: [파일 목록]
+🔀 커밋: [SHA]
+🚀 배포: [Vercel 자동 배포 대기 중 / URL]
+⚠️ 후속 필요: [있으면 기재, 없으면 "없음"]
+```
+
+다음 세션이 이 요약을 보고 즉시 이어받을 수 있도록 구체적으로 기재. SHA는 `git rev-parse --short HEAD`로 확인.
+
+## 📡 Vercel 배포 상태 확인
+
+배포 상태 확인 시 `curl` 폴링 / `vercel` CLI 반복 호출 금지.
+push 완료 후 transcript에 아래 메시지만 남기고 대기:
+
+```
+✅ push 완료 (SHA: [커밋SHA]). Dispatch에서 Vercel MCP → list_deployments로 확인 바람.
+```
+
+Dispatch(상위 오케스트레이터)가 Vercel MCP `list_deployments` / `get_deployment`로 배포 상태를 확인한다. Code 에이전트가 직접 확인하려 하지 않는다.
+
 ## 자산 관리 원칙 (폴더 구조)
 
 | 폴더 | 용도 | 규칙 |

@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     template: '%s | KD4 액팅 스튜디오',
   },
   description:
-    '서울 신촌 마이즈너 테크닉 연기학원. 연기 훈련·포트폴리오 제작·캐스팅 연계. KD4 액팅 스튜디오',
+    '서울 신촌 마이즈너 테크닉 기반 연기학원. 연기 훈련부터 출연영상 포트폴리오 제작, 캐스팅 연계까지. 배우를 성장시키는 KD4 액팅 스튜디오.',
   keywords: [
     '연기학원', '마이즈너 테크닉', '신촌 연기학원', '배우 포트폴리오',
     '출연영상 제작', '캐스팅 연계', '연기 입문', '배우 훈련',
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     'KD4', 'KD4 액팅 스튜디오', '서울 연기학원',
   ],
   robots: { index: true, follow: true },
-  alternates: { canonical: SITE_URL },
+  alternates: { canonical: SITE_URL, languages: { 'ko': SITE_URL, 'x-default': SITE_URL } },
   verification: {
     google: 'W0fUOZTRh2Bays8786YMujcbOqWkA66OiOreK_OO2rw',
     other: { 'naver-site-verification': '55356c87afb0497963a7979c98e2cdf68ac09044' },

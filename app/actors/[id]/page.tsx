@@ -306,7 +306,7 @@ export default async function ActorDetailPage({
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingBottom: 100 }}>
       {/* JSON-LD */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(personSchema) }} />
+      {personSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(personSchema) }} />}
       {videoSchemas.map((v, i) => (
         <script key={`vid-${i}`} type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(v) }} />
       ))}
