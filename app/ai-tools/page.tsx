@@ -274,7 +274,7 @@ export default function AIToolsPage() {
 
         {/* 결과 섹션 */}
         {(result || rawText) && !loading && (
-          <div style={s.resultSection}>
+          <div aria-live="polite" style={s.resultSection}>
             {/* 결과 헤더 */}
             <div style={s.resultHeader}>
               <div>

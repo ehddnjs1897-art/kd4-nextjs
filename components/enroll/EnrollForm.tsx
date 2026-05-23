@@ -221,6 +221,7 @@ export default function EnrollForm({
 
         {/* ── 1. 신청 유형 ── */}
         <div style={{ marginBottom: 36 }}>
+          <h2 className="sr-only">1단계: 신청 유형</h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
             <span style={{ width: 22, height: 22, borderRadius: '50%', background: 'var(--navy)', color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.68rem', fontWeight: 800, flexShrink: 0 }}>1</span>
             <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--navy)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>신청 유형</span>
@@ -261,6 +262,7 @@ export default function EnrollForm({
         </div>
 
         {/* ── 2. 클래스 선택 (수업 유지는 생략) ── */}
+        <h2 className="sr-only">2단계: 클래스 선택</h2>
         {isMaintain ? (
           /* 수업 유지 안내 박스 */
           <div style={{
@@ -356,7 +358,7 @@ export default function EnrollForm({
 
         {/* ── 선택 요약 ── */}
         {selected.length > 0 && (
-          <div style={{ marginBottom: 20, padding: '16px 18px', background: 'rgba(21,72,138,0.05)', borderRadius: 12, border: '1px solid rgba(21,72,138,0.14)' }}>
+          <div aria-live="polite" style={{ marginBottom: 20, padding: '16px 18px', background: 'rgba(21,72,138,0.05)', borderRadius: 12, border: '1px solid rgba(21,72,138,0.14)' }}>
             <p style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--navy)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 10 }}>
               선택 항목
             </p>
