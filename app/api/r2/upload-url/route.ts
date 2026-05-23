@@ -15,6 +15,11 @@ const MAX_SIZE_BYTES = 300 * 1024 * 1024 // 300MB
 const ALLOWED_VIDEO_TYPES = new Set(['video/mp4', 'video/quicktime', 'video/x-msvideo', 'video/webm', 'video/x-m4v'])
 const ALLOWED_UPLOAD_ROLES = new Set(['member', 'actor', 'editor', 'admin'])
 
+// 레이트 리밋: 10분 내 10회 presigned URL 발급 초과 시 차단
+const presignedReqMap = new Map<string, number[]>()
+const PRESIGN_WINDOW_MS = 10 * 60_000
+const PRESIGN_MAX = 10
+
 export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
@@ -40,6 +45,14 @@ export async function POST(request: NextRequest) {
   if (!profile || !ALLOWED_UPLOAD_ROLES.has(profile.role ?? '')) {
     return NextResponse.json({ error: '업로드 권한이 없습니다.' }, { status: 403 })
   }
+
+  // 레이트 리밋: 10분 내 10회 초과 시 차단
+  const now = Date.now()
+  const times = (presignedReqMap.get(user.id) ?? []).filter(t => now - t < PRESIGN_WINDOW_MS)
+  if (times.length >= PRESIGN_MAX) {
+    return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+  }
+  presignedReqMap.set(user.id, [...times, now])
 
   const body = await request.json().catch(() => null)
   const filename = typeof body?.filename === 'string' ? body.filename.slice(0, 500) : ''

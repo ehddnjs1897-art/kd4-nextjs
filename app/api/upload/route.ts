@@ -90,6 +90,17 @@ export async function POST(request: NextRequest) {
     const rawBucket = (formData.get('bucket') as string | null) ?? DEFAULT_BUCKET
     const bucket = ALLOWED_BUCKETS.has(rawBucket) ? rawBucket : DEFAULT_BUCKET
 
+    // 레이트 리밋: 5분 내 동일 배우 20장 초과 시 차단
+    const fiveMinAgo = new Date(Date.now() - 5 * 60_000).toISOString()
+    const { count: recentUploads } = await supabaseAdmin
+      .from('actor_photos')
+      .select('id', { count: 'exact', head: true })
+      .eq('actor_id', actorId)
+      .gte('created_at', fiveMinAgo)
+    if ((recentUploads ?? 0) >= 20) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요. (5분 최대 20장)' }, { status: 429 })
+    }
+
     // ── 유효성 검사 ──
     if (!file || !(file instanceof File)) {
       return NextResponse.json(

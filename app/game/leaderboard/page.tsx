@@ -24,7 +24,10 @@ export default function LeaderboardPage() {
     setLoading(true)
     setFetchError(false)
     fetch(`/api/game/scores?period=${period}&limit=20`)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(`리더보드 조회 실패 (${r.status})`)
+        return r.json()
+      })
       .then((res) => {
         setData(res.data || [])
         setLoading(false)

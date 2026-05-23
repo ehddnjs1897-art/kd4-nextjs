@@ -10,6 +10,10 @@ import type { Actor, ActorDetail } from '@/lib/types'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
+// PATCH 레이트 리밋: 30초 냉각
+const actorPatchMap = new Map<string, number>()
+const PATCH_COOLDOWN_MS = 30_000
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -95,6 +99,14 @@ export async function PATCH(
     if (!profile || (profile.actor_id !== id && profile.role !== 'admin' && profile.role !== 'editor')) {
       return NextResponse.json({ error: '수정 권한이 없습니다.' }, { status: 403 })
     }
+
+    // 레이트 리밋: 30초 냉각
+    const nowTs = Date.now()
+    const lastPatch = actorPatchMap.get(user.id) ?? 0
+    if (nowTs - lastPatch < PATCH_COOLDOWN_MS) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
+    actorPatchMap.set(user.id, nowTs)
 
     let body: Record<string, unknown>
     try {

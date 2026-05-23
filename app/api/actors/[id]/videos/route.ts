@@ -11,6 +11,11 @@ type Ctx = { params: Promise<{ id: string }> }
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const YOUTUBE_ID_RE = /^[a-zA-Z0-9_-]{11}$/
 
+// 레이트 리밋: 5분 내 10개 영상 추가 초과 시 차단
+const videoAddMap = new Map<string, number[]>()
+const VIDEO_WINDOW_MS = 5 * 60_000
+const VIDEO_MAX = 10
+
 export async function POST(request: NextRequest, { params }: Ctx) {
   try {
     const { id } = await params
@@ -26,6 +31,14 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     if (!profile || (profile.actor_id !== id && profile.role !== 'admin' && profile.role !== 'editor')) {
       return NextResponse.json({ error: '권한 없음' }, { status: 403 })
     }
+
+    // 레이트 리밋: 5분 내 10회 초과 시 차단
+    const now = Date.now()
+    const times = (videoAddMap.get(user.id) ?? []).filter(t => now - t < VIDEO_WINDOW_MS)
+    if (times.length >= VIDEO_MAX) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요. (5분 최대 10개)' }, { status: 429 })
+    }
+    videoAddMap.set(user.id, [...times, now])
 
     let parsedBody: { youtube_id?: string; r2_key?: string; title?: string; video_type?: string }
     try {
