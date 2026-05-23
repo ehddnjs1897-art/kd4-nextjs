@@ -37,6 +37,8 @@ interface ActorPersonInput {
  * 한국어 배우명 + 출연작품으로 검색되면 KD4 배우 DB가 source로 잡힘.
  */
 export function getActorPersonSchema(actor: ActorPersonInput) {
+  if (!actor.name?.trim() || !actor.id?.trim()) return null
+
   const ageMap: Record<string, string> = { '20대': '20s', '30대': '30s', '40대': '40s', '50대 이상': '50+' }
 
   const ageDesc = actor.age_group ? `${actor.age_group} ` : ''

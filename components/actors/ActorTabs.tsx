@@ -644,9 +644,9 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
           <table style={s.table}>
             <thead>
               <tr>
-                <th style={{ ...s.th, width: 56 }}>연도</th>
-                <th style={s.th}>작품명</th>
-                <th style={s.th}>수상내역</th>
+                <th scope="col" style={{ ...s.th, width: 56 }}>연도</th>
+                <th scope="col" style={s.th}>작품명</th>
+                <th scope="col" style={s.th}>수상내역</th>
               </tr>
             </thead>
             <tbody>

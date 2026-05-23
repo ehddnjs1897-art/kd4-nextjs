@@ -67,11 +67,28 @@ function CategoryBadge({ category }: { category: string }) {
 export async function generateMetadata({ params }: { params: Params }) {
   const { id } = await params
   const { data } = await getPost(id)
+  const title = data?.title ? `${data.title} — KD4 커뮤니티` : 'KD4 커뮤니티'
+  const description = data?.content ? data.content.slice(0, 120).replace(/\n/g, ' ') + '…' : 'KD4 커뮤니티 게시글'
   return {
-    title: data?.title ? `${data.title} — KD4 커뮤니티` : 'KD4 커뮤니티',
-    description: data?.content ? data.content.slice(0, 120).replace(/\n/g, ' ') + '…' : 'KD4 커뮤니티 게시글',
+    title,
+    description,
     robots: { index: false, follow: false },
     alternates: { canonical: `${SITE_URL}/board/${id}` },
+    openGraph: {
+      title,
+      description,
+      url: `${SITE_URL}/board/${id}`,
+      siteName: 'KD4 액팅 스튜디오',
+      images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오' }],
+      locale: 'ko_KR',
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [`${SITE_URL}/og-image.jpg`],
+    },
   }
 }
 

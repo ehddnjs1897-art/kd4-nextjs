@@ -6,6 +6,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 const aiCooldowns = new Map<string, number>()
 
 export async function POST(request: NextRequest) {
+  try {
   // 인증 확인
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -135,10 +136,20 @@ ${scriptText}
     }
 
     const data = await res.json()
-    const text: string = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
+    const rawText: string = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
+    if (!rawText.trim()) {
+      console.error('[ai/route] Gemini 빈 응답:', JSON.stringify(data).slice(0, 200))
+      return NextResponse.json({ error: 'AI 분석 결과가 비어있습니다. 잠시 후 다시 시도해주세요.' }, { status: 502 })
+    }
+    const text = rawText.slice(0, 40_000)
 
     return NextResponse.json({ text })
-  } catch {
+  } catch (innerErr) {
+    console.error('[ai/route] 내부 오류:', innerErr instanceof Error ? innerErr.message : String(innerErr))
     return NextResponse.json({ error: '분석 중 오류가 발생했습니다.' }, { status: 500 })
+  }
+  } catch (outerErr) {
+    console.error('[ai/route] 예상치 못한 오류:', outerErr instanceof Error ? outerErr.message : String(outerErr))
+    return NextResponse.json({ error: '서버 오류가 발생했습니다.' }, { status: 500 })
   }
 }

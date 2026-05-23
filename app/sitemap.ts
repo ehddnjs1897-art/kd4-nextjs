@@ -8,9 +8,10 @@ export const revalidate = 86400 // 24시간
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const NOW = new Date()
 
-  // 공개 정적 페이지 (노인덱스 페이지는 제외: /join, /actors, /board 등)
+  // 공개 정적 페이지
   const staticPages: MetadataRoute.Sitemap = [
     { url: BASE, lastModified: NOW, changeFrequency: 'weekly', priority: 1.0 },
+    { url: `${BASE}/actors`, lastModified: NOW, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${BASE}/about`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${BASE}/classes`, lastModified: NOW, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${BASE}/meisner-technique-class`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.85 },
@@ -31,8 +32,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const actorPages: MetadataRoute.Sitemap = (actors ?? []).map((a) => ({
     url: `${BASE}/actors/${a.id}`,
     lastModified: NOW,
-    changeFrequency: 'monthly' as const,
-    priority: 0.7,
+    changeFrequency: 'weekly' as const,
+    priority: 0.75,
   }))
 
   return [...staticPages, ...actorPages]
