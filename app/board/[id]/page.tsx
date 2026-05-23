@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import CommentSection from '@/components/board/CommentSection'
 import DeletePostButton from '@/components/board/DeletePostButton'
 import PostViewTracker from '@/components/board/PostViewTracker'
+import { SITE_URL } from '@/lib/constants'
 
 type Params = Promise<{ id: string }>
 
@@ -70,7 +71,7 @@ export async function generateMetadata({ params }: { params: Params }) {
     title: data?.title ? `${data.title} — KD4 커뮤니티` : 'KD4 커뮤니티',
     description: data?.content ? data.content.slice(0, 120).replace(/\n/g, ' ') + '…' : 'KD4 커뮤니티 게시글',
     robots: { index: false, follow: false },
-    alternates: { canonical: `https://kd4.club/board/${id}` },
+    alternates: { canonical: `${SITE_URL}/board/${id}` },
   }
 }
 
