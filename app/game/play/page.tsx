@@ -24,7 +24,7 @@ const SpotlightRush = dynamic(() => import("@/components/game/SpotlightRush"), {
         letterSpacing: "0.15em",
       }}
     >
-      LOADING...
+      <span lang="en">LOADING...</span>
     </div>
   ),
 })

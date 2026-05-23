@@ -155,7 +155,7 @@ export default function EnrollmentsPanel({
                     <button type="button" aria-label={`${e.class_name} 휴강 확인`} onClick={() => setRest(e.id)} disabled={loading} style={{ ...S.btnGhost, background: 'rgba(239,68,68,0.1)', borderColor: 'rgba(239,68,68,0.3)', color: '#ef4444', fontSize: '0.75rem', padding: '4px 8px', minHeight: 44, minWidth: 44 }}>확인</button>
                   </div>
                 ) : (
-                  <button type="button" aria-label={`${e.class_name} 휴강 신청`} onClick={() => setRest(e.id)} disabled={loading} style={S.btnGhost}>
+                  <button type="button" aria-label={`${e.class_name} 휴강 신청`} onClick={() => setRest(e.id)} disabled={loading} style={{ ...S.btnGhost, minHeight: 44, minWidth: 44 }}>
                     휴강
                   </button>
                 )

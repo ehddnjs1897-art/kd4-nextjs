@@ -85,7 +85,7 @@ export default function UpdatePasswordPage() {
         <div style={styles.card}>
           <div style={styles.logoArea}>
             <span style={styles.logoText}>KD4</span>
-            <span style={styles.logoSub}>ACTING STUDIO</span>
+            <span lang="en" style={styles.logoSub}>ACTING STUDIO</span>
           </div>
           <h1 style={styles.title}>링크가 만료되었습니다</h1>
           <p style={styles.sentMsg}>
@@ -278,6 +278,7 @@ const styles: Record<string, React.CSSProperties> = {
     border: 'none',
     borderRadius: 6,
     padding: '12px 0',
+    minHeight: 44,
     fontSize: '0.95rem',
     fontWeight: 700,
     fontFamily: 'var(--font-display)',

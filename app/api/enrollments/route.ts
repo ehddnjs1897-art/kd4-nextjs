@@ -47,7 +47,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
     enrollDebounceMap.set(user.id, nowED)
-    if (enrollDebounceMap.size > 1000) {
+    if (enrollDebounceMap.size > 2000) {
       for (const [k, v] of enrollDebounceMap) {
         if (nowED - v > ENROLL_DEBOUNCE_MS) enrollDebounceMap.delete(k)
       }

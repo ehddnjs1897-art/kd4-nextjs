@@ -51,7 +51,7 @@ export default async function AdminUsersPage() {
             </Link>
           </div>
           <p style={{ fontSize: '0.68rem', letterSpacing: '0.35em', color: 'var(--gold)', textTransform: 'uppercase', fontFamily: 'var(--font-display)', marginBottom: 8 }}>
-            ADMIN
+            <span lang="en">ADMIN</span>
           </p>
           <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 700, color: 'var(--white)' }}>
             회원 관리

@@ -79,7 +79,7 @@ export async function GET(
     return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
   }
   profileDownloadMap.set(user.id, [...timesPD, nowPD])
-  if (profileDownloadMap.size > 500) {
+  if (profileDownloadMap.size > 2000) {
     for (const [k, v] of profileDownloadMap) {
       if (v.every(t => nowPD - t > PROFILE_DOWNLOAD_WINDOW_MS)) profileDownloadMap.delete(k)
     }

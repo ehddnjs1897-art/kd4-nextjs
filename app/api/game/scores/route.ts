@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
       bucketSG.count++
     } else {
       scoresGetMap.set(user.id, { count: 1, resetAt: nowSG + SCORES_GET_WINDOW_MS })
-      if (scoresGetMap.size > 1000) {
+      if (scoresGetMap.size > 2000) {
         for (const [k, v] of scoresGetMap) {
           if (nowSG > v.resetAt) scoresGetMap.delete(k)
         }
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
   }
   scoreSubmitMap.set(user.id, [...ssTimes, nowSS])
-  if (scoreSubmitMap.size > 1000) {
+  if (scoreSubmitMap.size > 2000) {
     for (const [k, v] of scoreSubmitMap) {
       if (v.every(t => t <= ssHourAgo)) scoreSubmitMap.delete(k)
     }

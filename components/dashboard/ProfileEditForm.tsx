@@ -136,6 +136,7 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 5,
               padding: '10px 14px',
+              minHeight: 44,
               background: 'transparent',
               border: '1px solid var(--border)',
               borderRadius: 6,

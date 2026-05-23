@@ -53,7 +53,7 @@ export async function GET(
     bucketSU.count++
   } else {
     signedUrlMap.set(user.id, { count: 1, resetAt: nowSU + SIGNED_URL_WINDOW_MS })
-    if (signedUrlMap.size > 1000) {
+    if (signedUrlMap.size > 2000) {
       for (const [k, v] of signedUrlMap) {
         if (nowSU > v.resetAt) signedUrlMap.delete(k)
       }

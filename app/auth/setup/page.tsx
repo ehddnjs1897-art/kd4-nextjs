@@ -75,7 +75,7 @@ export default function SetupPage() {
       <div style={styles.card}>
         <div style={styles.logoArea}>
           <span style={styles.logoText}>KD4</span>
-          <span style={styles.logoSub}>ACTING STUDIO</span>
+          <span lang="en" style={styles.logoSub}>ACTING STUDIO</span>
         </div>
 
         <h1 style={styles.title}>회원 유형을 선택하세요</h1>
@@ -209,6 +209,7 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     gap: 8,
     padding: '20px 12px',
+    minWidth: 44,
     background: 'var(--bg3)',
     border: '1px solid var(--border)',
     borderRadius: 8,

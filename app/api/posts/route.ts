@@ -136,7 +136,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
     postsPostDebounceMap.set(user.id, Date.now())
-    if (postsPostDebounceMap.size > 1000) {
+    if (postsPostDebounceMap.size > 2000) {
       const cutoffP = Date.now() - POSTS_POST_DEBOUNCE_MS
       for (const [k, v] of postsPostDebounceMap) {
         if (v < cutoffP) postsPostDebounceMap.delete(k)

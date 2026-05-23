@@ -39,6 +39,9 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
     if (times.length >= FILM_PATCH_MAX) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
+    const clFilmPatch = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
+    if (clFilmPatch > 16_384) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+
     filmPatchMap.set(user.id, [...times, now])
     if (filmPatchMap.size > 2000) {
       for (const [k, v] of filmPatchMap) { if (v.every(t => now - t > FILM_PATCH_WINDOW_MS)) filmPatchMap.delete(k) }
@@ -46,8 +49,6 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
 
     let body: Record<string, unknown>
     try {
-      const clFilmPatch = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
-      if (clFilmPatch > 16_384) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
       body = await request.json()
     } catch { return NextResponse.json({ error: '요청 형식이 올바르지 않습니다.' }, { status: 400 }) }
     const allowed = ['category', 'year', 'title', 'role', 'broadcaster', 'film_type']

@@ -30,8 +30,11 @@ export async function PATCH(request: NextRequest) {
     if (nowPP - lastPP < PROFILE_PATCH_COOLDOWN_MS) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
+    const clProfile = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
+    if (clProfile > 16_384) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+
     profilePatchMap.set(user.id, nowPP)
-    if (profilePatchMap.size > 1000) {
+    if (profilePatchMap.size > 2000) {
       const cutoffPP = nowPP - PROFILE_PATCH_COOLDOWN_MS
       for (const [k, v] of profilePatchMap) {
         if (v < cutoffPP) profilePatchMap.delete(k)
@@ -40,8 +43,6 @@ export async function PATCH(request: NextRequest) {
 
     let body: { name?: string; phone?: string }
     try {
-      const clProfile = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
-      if (clProfile > 16_384) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
       body = await request.json()
     } catch {
       return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })

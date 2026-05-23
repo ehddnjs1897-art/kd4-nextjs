@@ -75,7 +75,7 @@ export default function GameStartPage() {
           padding: "0 8px",
         }}
       >
-        LEADERBOARD →
+        <span lang="en">LEADERBOARD →</span>
       </Link>
 
       {/* Title */}
@@ -89,7 +89,7 @@ export default function GameStartPage() {
           fontFamily: "var(--font-oswald), sans-serif",
         }}
       >
-        OFF THE PLASTIC<span className="sr-only"> — 게임 로비</span>
+        <span lang="en">OFF THE PLASTIC</span><span className="sr-only"> — 게임 로비</span>
       </h1>
 
       <p
@@ -101,13 +101,13 @@ export default function GameStartPage() {
           fontFamily: "var(--font-oswald), sans-serif",
         }}
       >
-        KD4 ACTING STUDIO
+        <span lang="en">KD4 ACTING STUDIO</span>
       </p>
 
       {/* Character select */}
       <div style={{ marginBottom: 36, width: "100%", maxWidth: 420 }}>
         <p style={{ fontSize: 12, color: "#999", letterSpacing: "0.12em", marginBottom: 14, fontFamily: "var(--font-oswald)" }}>
-          SELECT CHARACTER
+          <span lang="en">SELECT CHARACTER</span>
         </p>
         <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
           {CHARACTERS.map((c) => (
@@ -213,7 +213,7 @@ export default function GameStartPage() {
           e.currentTarget.style.boxShadow = "0 0 40px rgba(0,87,255,0.3)"
         }}
       >
-        PLAY
+        <span lang="en">PLAY</span>
       </button>
 
       <p style={{ fontSize: 12, color: "#999", marginTop: 14 }}>

@@ -161,9 +161,12 @@ export async function PATCH(
     if (nowTs - lastPatch < PATCH_COOLDOWN_MS) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
+    const clActorPatch = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
+    if (clActorPatch > 32_768) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+
     actorPatchMap.set(user.id, nowTs)
     // 오래된 항목 정리 (메모리 누수 방지)
-    if (actorPatchMap.size > 1000) {
+    if (actorPatchMap.size > 2000) {
       const cutoff = nowTs - PATCH_COOLDOWN_MS
       for (const [k, v] of actorPatchMap) {
         if (v < cutoff) actorPatchMap.delete(k)
@@ -172,8 +175,6 @@ export async function PATCH(
 
     let body: Record<string, unknown>
     try {
-      const clActorPatch = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
-      if (clActorPatch > 32_768) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
       body = await request.json()
     } catch {
       return NextResponse.json({ error: '요청 형식이 올바르지 않습니다.' }, { status: 400 })

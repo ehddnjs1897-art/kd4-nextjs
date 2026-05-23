@@ -130,7 +130,7 @@ export default function EditPage() {
             textTransform: 'uppercase',
             marginBottom: '10px',
           }}>
-            Community
+            <span lang="en">Community</span>
           </p>
           <h1 style={{
             fontFamily: 'var(--font-display)',

@@ -164,6 +164,7 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
                       fontSize: '0.74rem', fontWeight: 700,
                       color: e.status === '확정' ? '#2d8a56' : e.status === '취소' ? '#c0392b' : '#9a938b',
                     }}
+                    aria-label={`${e.name || '(이름없음)'} ${e.class_name} 상태: ${e.status} — 클릭해서 변경`}
                     title="클릭해서 상태 변경"
                   >
                     {e.status} ▾
@@ -207,6 +208,7 @@ const summaryNum: React.CSSProperties = { fontFamily: 'var(--font-serif)', fontS
 function chip(active: boolean): React.CSSProperties {
   return {
     padding: '6px 14px',
+    minHeight: 44,
     borderRadius: 20,
     border: `1px solid ${active ? '#15488a' : '#e4ddd3'}`,
     background: active ? '#15488a' : '#fff',

@@ -40,14 +40,15 @@ export async function PATCH(
     if (nowEP - lastEP < ENROLLMENT_PATCH_COOLDOWN_MS) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
+    const clEnroll = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
+    if (clEnroll > 4_096) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+
     enrollmentPatchMap.set(user.id, nowEP)
-    if (enrollmentPatchMap.size > 1000) {
+    if (enrollmentPatchMap.size > 2000) {
       const cutoffEP = nowEP - ENROLLMENT_PATCH_COOLDOWN_MS
       for (const [k, v] of enrollmentPatchMap) { if (v < cutoffEP) enrollmentPatchMap.delete(k) }
     }
 
-    const clEnroll = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
-    if (clEnroll > 4_096) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
     let body: { status?: string; payment_status?: string }
     try {
       body = await request.json()

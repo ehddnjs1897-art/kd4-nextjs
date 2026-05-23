@@ -36,7 +36,7 @@ export async function DELETE(
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
     commentsDeleteMap.set(user.id, [...deleteTimes, nowD])
-    if (commentsDeleteMap.size > 1000) {
+    if (commentsDeleteMap.size > 2000) {
       const cutoffD = nowD - DELETE_WINDOW_MS
       for (const [k, v] of commentsDeleteMap) {
         if (v.every(t => t < cutoffD)) commentsDeleteMap.delete(k)

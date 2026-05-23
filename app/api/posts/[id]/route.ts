@@ -101,8 +101,11 @@ export async function PATCH(
     if (nowPatch - lastPatch < POST_PATCH_COOLDOWN_MS) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
+    const clPostPatch = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
+    if (clPostPatch > 32_768) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+
     postPatchMap.set(user.id, nowPatch)
-    if (postPatchMap.size > 1000) {
+    if (postPatchMap.size > 2000) {
       const cutoff = nowPatch - POST_PATCH_COOLDOWN_MS
       for (const [k, v] of postPatchMap) { if (v < cutoff) postPatchMap.delete(k) }
     }
@@ -124,8 +127,6 @@ export async function PATCH(
 
     let body: { title?: string; content?: string; category?: string }
     try {
-      const clPostPatch = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
-      if (clPostPatch > 32_768) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
       body = await request.json()
     } catch {
       return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })
@@ -199,7 +200,7 @@ export async function DELETE(
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
     postDeleteMap.set(user.id, [...timesDel, nowDel])
-    if (postDeleteMap.size > 1000) {
+    if (postDeleteMap.size > 2000) {
       const cutoffDel = nowDel - POST_DELETE_WINDOW_MS
       for (const [k, v] of postDeleteMap) { if (v.every(t => t < cutoffDel)) postDeleteMap.delete(k) }
     }
