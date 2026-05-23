@@ -18,19 +18,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/admin?error=invalid_uid`)
   }
 
-  // CSRF 방어 보조 — Referer 또는 Origin이 같은 사이트에서 온 요청인지 확인
-  // 주의: Referrer-Policy:no-referrer 환경에서 referer/origin 모두 빈 값이 될 수 있어 우회 가능.
-  // 실질적인 보안 게이트는 하단 admin 역할 확인 — 이 체크는 추가 방어층에 불과함.
-  // SameSite=Lax 쿠키는 cross-site link/img GET 요청에서 쿠키를 전송하므로 단독으로 불충분.
-  const referer = request.headers.get('referer') ?? ''
-  const reqOrigin = request.headers.get('origin') ?? ''
-  const refererOriginMatch = (() => { try { return new URL(referer).origin === origin } catch { return false } })()
-  const isSameSite = refererOriginMatch || reqOrigin === origin
-  if (!isSameSite) {
-    return NextResponse.redirect(`${origin}/admin?error=invalid_request`)
-  }
-
   // 관리자 인증 확인
+  // (이메일 링크 클릭 시 Referer/Origin 헤더가 없어 isSameSite 체크는 항상 false → 제거됨)
+  // 실질적인 보안 게이트: getUser() + admin 역할 확인 (아래)
   const supabase = await createClient()
   const { data: { user }, error: authErr } = await supabase.auth.getUser()
 

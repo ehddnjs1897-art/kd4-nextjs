@@ -94,10 +94,7 @@ export function buildPersonDongwon() {
       '캐스팅',
       '연기 훈련',
     ],
-    sameAs: [
-      'https://www.instagram.com/kd4actingstudio',
-      'https://www.youtube.com/@kd4actingstudio',
-    ],
+    sameAs: [...SAMEAS],
   }
 }
 

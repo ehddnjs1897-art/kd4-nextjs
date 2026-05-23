@@ -91,6 +91,7 @@ export const CLASSES: ClassItem[] = [
     originalPrice: "400,000",
     promoLabel: "🌸 봄맞이 스페셜 · 첫 달 10만원 할인",
     remainingSeats: 2,
+    instructor: "권동원 대표",
     highlight: true,
     isNewMemberOpen: true,
     lumpSumDiscount: 50000,
