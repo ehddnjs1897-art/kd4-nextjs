@@ -182,7 +182,8 @@ async function classifyWithGemini(url: string, title: string | null, memo: strin
 // PostgREST .or() 인젝션 방어: 메타문자 escape
 function sanitizeSearchTerm(s: string): string {
   // %와 _ 이스케이프 — PostgREST ilike wildcard DoS 방지 (SQL 인젝션 아님, 성능 문제)
-  return s.replace(/[,()*]/g, '').replace(/%/g, '\\%').replace(/_/g, '\\_').slice(0, 100)
+  // .~{}\ 도 제거 — PostgREST .or() 필터 메타문자 인젝션 방어
+  return s.replace(/[,()*.\~{}\\]/g, '').replace(/%/g, '\\%').replace(/_/g, '\\_').slice(0, 100)
 }
 
 // GET /api/insights?category=연기&source_type=video&favorite=true&q=검색어

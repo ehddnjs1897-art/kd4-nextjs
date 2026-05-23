@@ -63,7 +63,7 @@ export default function LeaderboardPage() {
         <Link href="/game" aria-label="게임 로비로 돌아가기" style={{ color: "#999", fontSize: 14, textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44, padding: "0 8px" }}>
           ← <span lang="en">BACK</span>
         </Link>
-        <h1 style={{ fontSize: 20, fontWeight: 700, letterSpacing: "0.1em" }}>LEADERBOARD</h1>
+        <h1 style={{ fontSize: 20, fontWeight: 700, letterSpacing: "0.1em" }}><span lang="en">LEADERBOARD</span></h1>
         <div style={{ width: 60 }} />
       </div>
 

@@ -197,7 +197,7 @@ export async function POST(request: NextRequest) {
         utm_content: typeof record?.utm_content === 'string' ? record.utm_content.trim().slice(0, 200) : null,
         utm_term: typeof record?.utm_term === 'string' ? record.utm_term.trim().slice(0, 200) : null,
         referrer: typeof record?.referrer === 'string' ? record.referrer.trim().slice(0, 500) : null,
-        status: typeof record?.status === 'string' ? record.status.trim().slice(0, 50) : '대기',
+        status: (['대기', '확인', '완료'] as const).includes(record?.status as '대기' | '확인' | '완료') ? record.status : '대기',
       },
     }
     // UTM 컬럼(DB 상위 레벨) — raw_payload 내부와 동일 패턴으로 sanitize
@@ -263,7 +263,7 @@ export async function POST(request: NextRequest) {
         utm_content: typeof record?.utm_content === 'string' ? record.utm_content.trim().slice(0, 200) : null,
         utm_term: typeof record?.utm_term === 'string' ? record.utm_term.trim().slice(0, 200) : null,
         referrer: typeof record?.referrer === 'string' ? record.referrer.trim().slice(0, 500) : null,
-        status: typeof record?.status === 'string' ? record.status.trim().slice(0, 50) : '대기',
+        status: (['대기', '확인', '완료'] as const).includes(record?.status as '대기' | '확인' | '완료') ? record.status : '대기',
         ...(savedId ? { id: savedId } : {}),
       }
       try {

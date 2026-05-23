@@ -324,7 +324,7 @@ export default function AIToolsPage() {
                       role="tab"
                       id={`tab-${key}`}
                       aria-selected={activeTab === key}
-                      aria-controls={activeTab === key ? `tabpanel-${key}` : undefined}
+                      aria-controls={`tabpanel-${key}`}
                       tabIndex={activeTab === key ? 0 : -1}
                       onClick={() => setActiveTab(key)}
                       style={activeTab === key ? { ...s.tab, ...s.tabActive } : s.tab}

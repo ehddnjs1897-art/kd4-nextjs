@@ -287,6 +287,7 @@ export default function CommentSection({
               disabled={submitting || !content.trim()}
               style={{
                 padding: '12px 22px',
+                minHeight: 44,
                 background: submitting || !content.trim() ? 'var(--border)' : 'var(--gold)',
                 color: submitting || !content.trim() ? 'var(--gray)' : 'var(--bg)',
                 border: 'none',

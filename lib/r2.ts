@@ -46,7 +46,7 @@ function getClient(): S3Client {
 
 /** R2가 셋업되었는지 빠르게 확인 (env 기반) */
 export function isR2Configured(): boolean {
-  return Boolean(ACCOUNT_ID && ACCESS_KEY_ID && SECRET_ACCESS_KEY)
+  return Boolean(ACCOUNT_ID && ACCESS_KEY_ID && SECRET_ACCESS_KEY && BUCKET_NAME)
 }
 
 /**
