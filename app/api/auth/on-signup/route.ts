@@ -15,8 +15,9 @@ export async function POST() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
 
-  const name: string = user.user_metadata?.name ?? ''
-  const phone: string = user.user_metadata?.phone ?? ''
+  // 사용자 메타데이터는 신뢰할 수 없는 입력 — 길이 제한 적용
+  const name: string = (user.user_metadata?.name ?? '').toString().slice(0, 100)
+  const phone: string = (user.user_metadata?.phone ?? '').toString().slice(0, 20)
   // 사용자 메타데이터는 신뢰할 수 없는 값 — 허용 목록 외 값은 기본값으로 강제
   const ALLOWED_MEMBER_TYPES = new Set(['actor', 'director'])
   const rawMemberType: string = user.user_metadata?.member_type ?? 'actor'

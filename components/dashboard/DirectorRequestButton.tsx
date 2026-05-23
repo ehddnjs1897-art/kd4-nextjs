@@ -62,6 +62,7 @@ export default function DirectorRequestButton() {
         </p>
       )}
       <button
+        type="button"
         onClick={handleRequest}
         disabled={loading}
         style={{

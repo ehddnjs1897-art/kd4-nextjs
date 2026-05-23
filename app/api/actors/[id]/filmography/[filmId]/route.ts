@@ -28,7 +28,9 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
     if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
     if (!(await authorize(id, user.id))) return NextResponse.json({ error: '권한 없음' }, { status: 403 })
 
-    const body = await request.json()
+    let body: Record<string, unknown>
+    try { body = await request.json() }
+    catch { return NextResponse.json({ error: '요청 형식이 올바르지 않습니다.' }, { status: 400 }) }
     const allowed = ['category', 'year', 'title', 'role', 'broadcaster', 'film_type']
     const patch: Record<string, unknown> = {}
     for (const k of allowed) { if (k in body) patch[k] = body[k] }
@@ -40,6 +42,8 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: '역할은 100자 이하입니다.' }, { status: 400 })
     if (typeof patch.broadcaster === 'string' && patch.broadcaster.length > 100)
       return NextResponse.json({ error: '방송사·배급사는 100자 이하입니다.' }, { status: 400 })
+    if (typeof patch.film_type === 'string' && patch.film_type.length > 50)
+      return NextResponse.json({ error: '영화 유형은 50자 이하입니다.' }, { status: 400 })
 
     // 카테고리 allowlist
     const VALID_FILM_CATEGORIES = new Set(['drama', 'movie', 'musical', 'theater', 'commercial', 'etc'])
