@@ -134,10 +134,10 @@ export default function SignupPage() {
             <span style={styles.logoSub}>ACTING STUDIO</span>
           </div>
 
-          <h1 style={styles.title}>회원 유형을 선택하세요</h1>
+          <h1 id="type-group-label" style={styles.title}>회원 유형을 선택하세요</h1>
           <p style={styles.subtitle}>가입 목적에 맞는 유형을 선택해 주세요.</p>
 
-          <div style={styles.typeGrid}>
+          <div role="group" aria-labelledby="type-group-label" style={styles.typeGrid}>
             <button
               type="button"
               style={{

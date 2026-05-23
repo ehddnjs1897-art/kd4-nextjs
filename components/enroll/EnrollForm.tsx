@@ -221,12 +221,12 @@ export default function EnrollForm({
 
         {/* ── 1. 신청 유형 ── */}
         <div style={{ marginBottom: 36 }}>
-          <h2 className="sr-only">1단계: 신청 유형</h2>
+          <h2 id="enroll-type-heading" className="sr-only">1단계: 신청 유형</h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
             <span style={{ width: 22, height: 22, borderRadius: '50%', background: 'var(--navy)', color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.68rem', fontWeight: 800, flexShrink: 0 }}>1</span>
             <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--navy)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>신청 유형</span>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div role="group" aria-labelledby="enroll-type-heading" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {TYPES.map((t) => {
               const active = type === t
               return (
@@ -262,7 +262,7 @@ export default function EnrollForm({
         </div>
 
         {/* ── 2. 클래스 선택 (수업 유지는 생략) ── */}
-        <h2 className="sr-only">2단계: 클래스 선택</h2>
+        <h2 id="enroll-class-heading" className="sr-only">2단계: 클래스 선택</h2>
         {isMaintain ? (
           /* 수업 유지 안내 박스 */
           <div style={{
@@ -286,7 +286,7 @@ export default function EnrollForm({
               </span>
               <span style={{ fontSize: '0.72rem', color: 'var(--gray)' }}>(복수 선택 가능)</span>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div role="group" aria-labelledby="enroll-class-heading" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {visibleClasses.map((c) => {
                 const on = selected.includes(c.nameKo)
                 const ss = STEP_STYLE[c.step] ?? STEP_STYLE['별도']

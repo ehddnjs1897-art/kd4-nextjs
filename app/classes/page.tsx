@@ -149,7 +149,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
           aria-label={`${cls.nameKo} 무료 상담 신청`}
           onClick={() => { pixel.viewContent(cls.nameKo); pixel.contact() }}
           style={{
-            display: 'block', textAlign: 'center', padding: '12px 0',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '12px 0', minHeight: 44,
             background: 'var(--gold)', color: '#fff', fontWeight: 700,
             fontSize: '0.88rem', fontFamily: 'var(--font-display)', letterSpacing: '0.06em',
             borderRadius: 'var(--radius)', textDecoration: 'none',

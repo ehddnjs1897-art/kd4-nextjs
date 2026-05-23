@@ -165,7 +165,7 @@ export default function WritePage() {
               maxLength={200}
               style={inputStyle}
             />
-            <div style={{ textAlign: 'right', fontSize: '0.72rem', marginTop: '4px', color: title.length > 180 ? '#e74c3c' : 'var(--gray)' }}>
+            <div aria-live="polite" style={{ textAlign: 'right', fontSize: '0.72rem', marginTop: '4px', color: title.length > 180 ? '#e74c3c' : 'var(--gray)' }}>
               {title.length}/200
             </div>
           </div>
@@ -187,7 +187,7 @@ export default function WritePage() {
                 lineHeight: 1.7,
               }}
             />
-            <div style={{ textAlign: 'right', fontSize: '0.72rem', marginTop: '4px', color: content.length > 9000 ? '#e74c3c' : 'var(--gray)' }}>
+            <div aria-live="polite" style={{ textAlign: 'right', fontSize: '0.72rem', marginTop: '4px', color: content.length > 9000 ? '#e74c3c' : 'var(--gray)' }}>
               {content.length}/10000
             </div>
           </div>
@@ -199,6 +199,7 @@ export default function WritePage() {
               onClick={() => { if (window.history.length > 1) router.back(); else router.push('/board') }}
               style={{
                 padding: '10px 22px',
+                minHeight: 44,
                 border: '1px solid var(--border)',
                 borderRadius: 'var(--radius)',
                 background: 'transparent',
@@ -215,6 +216,7 @@ export default function WritePage() {
               disabled={submitting || !title.trim() || !content.trim()}
               style={{
                 padding: '10px 26px',
+                minHeight: 44,
                 background: submitting || !title.trim() || !content.trim() ? 'var(--border)' : 'var(--gold)',
                 color: submitting || !title.trim() || !content.trim() ? 'var(--gray)' : 'var(--bg)',
                 border: 'none',

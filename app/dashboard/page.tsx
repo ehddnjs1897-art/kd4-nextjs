@@ -362,13 +362,15 @@ const tileIcon: React.CSSProperties = {
 }
 
 const primaryBtn: React.CSSProperties = {
-  display: 'block',
-  textAlign: 'center',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
   background: 'var(--navy)',
   color: '#ffffff',
   border: 'none',
   borderRadius: 7,
   padding: '12px 0',
+  minHeight: 44,
   fontSize: '0.88rem',
   fontWeight: 700,
   fontFamily: 'var(--font-display)',

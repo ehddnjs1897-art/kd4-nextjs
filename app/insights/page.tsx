@@ -188,7 +188,7 @@ export default function InsightsPage() {
         .ins-input:focus { outline: 2px solid var(--gold); outline-offset: -1px; border-color: var(--gold); box-shadow: 0 0 0 2px rgba(21,72,138,0.15); }
         .ins-btn { padding: 10px 22px; background: var(--gold); color: #000; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; white-space: nowrap; min-height: 44px; }
         .ins-btn:disabled { opacity: .5; cursor: not-allowed; }
-        .ins-btn-ghost { padding: 10px 22px; background: transparent; color: var(--gray); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 14px; }
+        .ins-btn-ghost { padding: 10px 22px; background: transparent; color: var(--gray); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 14px; min-height: 44px; }
       `}</style>
 
       <div style={{ maxWidth: 960, margin: '0 auto', padding: '40px 20px' }}>
