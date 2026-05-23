@@ -84,7 +84,9 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
             borderRadius: 8, padding: '14px 16px',
           }}>
             <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', fontWeight: 700, color: s.color }}>{s.value}</div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--gray)', marginTop: 4 }}>{s.label}</div>
+            <div style={{ fontSize: '0.72rem', color: 'var(--gray)', marginTop: 4 }}>
+              {s.label === 'PPTX 있음' ? <><span lang="en">PPTX</span> 있음</> : s.label}
+            </div>
           </div>
         ))}
       </div>
@@ -110,6 +112,7 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
         {(['all', 'public', 'private'] as const).map(f => (
           <button type="button" key={f} onClick={() => setStatusFilter(f)} aria-pressed={statusFilter === f} style={{
             padding: '7px 14px', borderRadius: 6, fontSize: '0.78rem', cursor: 'pointer',
+            minHeight: 44,
             background: statusFilter === f ? 'var(--gold)' : 'var(--bg2)',
             color: statusFilter === f ? 'var(--bg)' : 'var(--gray)',
             border: `1px solid ${statusFilter === f ? 'var(--gold)' : 'var(--border)'}`,
@@ -137,7 +140,7 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
                   textTransform: 'uppercase', fontWeight: 600,
                   whiteSpace: 'nowrap',
                 }}>
-                  {h}
+                  {h === 'PPTX' ? <span lang="en">PPTX</span> : h}
                 </th>
               ))}
             </tr>

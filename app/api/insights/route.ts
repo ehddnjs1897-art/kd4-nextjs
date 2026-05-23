@@ -122,13 +122,16 @@ async function fetchOgMeta(url: string) {
       chunks.push(value)
     }
     const html = new TextDecoder().decode(Buffer.concat(chunks))
+    // ReDoS 방어: <head> 섹션만 추출 (OG 태그는 항상 <head> 내부) — 최대 10KB로 제한
+    const headEnd = html.indexOf('</head>')
+    const headHtml = headEnd > 0 ? html.slice(0, headEnd) : html.slice(0, 10_000)
     const getTag = (property: string) => {
       const m =
-        html.match(new RegExp(`<meta[^>]+property=["']og:${property}["'][^>]+content=["']([^"']+)["']`, 'i')) ||
-        html.match(new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:${property}["']`, 'i'))
+        headHtml.match(new RegExp(`<meta[^>]+property=["']og:${property}["'][^>]+content=["']([^"']+)["']`, 'i')) ||
+        headHtml.match(new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:${property}["']`, 'i'))
       return m?.[1] ?? null
     }
-    const titleTag = html.match(/<title[^>]*>([^<]+)<\/title>/i)
+    const titleTag = headHtml.match(/<title[^>]*>([^<]+)<\/title>/i)
     return {
       title: getTag('title') ?? titleTag?.[1]?.trim() ?? null,
       description: getTag('description'),

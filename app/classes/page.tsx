@@ -115,7 +115,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
 
         {/* 가격 */}
         <div>
-          <span style={{ fontSize: '0.65rem', color: 'var(--gray)', letterSpacing: '0.06em' }}>월 수강료</span>
+          <span style={{ fontSize: '0.75rem', color: 'var(--gray)', letterSpacing: '0.06em' }}>월 수강료</span>
           {cls.originalPrice && (
             <p style={{ margin: '4px 0 0', lineHeight: 1 }}>
               <span className="sr-only">(이전 가격)</span><span style={{ fontSize: '0.78rem', color: 'var(--gray)', textDecoration: 'line-through' }}>₩{cls.originalPrice}</span>

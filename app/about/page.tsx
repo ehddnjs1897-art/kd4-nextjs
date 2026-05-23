@@ -327,7 +327,7 @@ export default function AboutPage() {
               }}
             >
               <div style={{ textAlign: 'center' }}>
-                <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.6rem', letterSpacing: '0.2em', color: 'var(--gold)', textTransform: 'uppercase' }}><span lang="en">STEP</span></p>
+                <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.68rem', letterSpacing: '0.2em', color: 'var(--gold)', textTransform: 'uppercase' }}><span lang="en">STEP</span></p>
                 <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '2.4rem', fontWeight: 700, color: 'var(--gold)', lineHeight: 1 }}>{step.num}</p>
               </div>
               <div>
