@@ -49,6 +49,19 @@ export async function GET(request: NextRequest) {
   const check = await requireAdmin()
   if (check instanceof NextResponse) return check
 
+  // 레이트 리밋: 동일 admin 60초 내 10회 초과 차단
+  const nowGet = Date.now()
+  const getTimes = (usersGetMap.get(check.userId) ?? []).filter(t => nowGet - t < USERS_GET_WINDOW_MS)
+  if (getTimes.length >= USERS_GET_MAX) {
+    return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+  }
+  usersGetMap.set(check.userId, [...getTimes, nowGet])
+  if (usersGetMap.size > 100) {
+    for (const [k, v] of usersGetMap) {
+      if (v.every(t => nowGet - t > USERS_GET_WINDOW_MS)) usersGetMap.delete(k)
+    }
+  }
+
   try {
     // 페이지네이션 — 한 번에 최대 500행. page 쿼리로 추가 페이지 조회 가능
     const { searchParams } = new URL(request.url)
@@ -77,6 +90,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: '서버 내부 오류가 발생했습니다.' }, { status: 500 })
   }
 }
+
+// ─── GET 레이트 리밋 ──────────────────────────────────────────────────────────
+// 관리자 계정 탈취 시 전체 회원 목록 대량 수집 방지 — 10회/분 제한
+const usersGetMap = new Map<string, number[]>()
+const USERS_GET_MAX = 10
+const USERS_GET_WINDOW_MS = 60_000
 
 // ─── PATCH 레이트 리밋 ─────────────────────────────────────────────────────────
 // 역할 변경 오남용 방지 — 관리자 계정 탈취 시 일괄 권한 상승 속도 제한

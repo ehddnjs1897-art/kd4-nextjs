@@ -360,7 +360,10 @@ export default async function ActorDetailPage({
                     unoptimized={!actor.storage_photo_path || !!actor.profile_photo}
                   />
                 ) : (
-                  <div aria-hidden="true" style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray)', fontSize: '3rem' }}>👤</div>
+                  <>
+                    <span className="sr-only">{actor.name} 프로필 사진 없음</span>
+                    <div aria-hidden="true" style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray)', fontSize: '3rem' }}>👤</div>
+                  </>
                 )}
               </div>
               {/* 공유/다운로드 — 사진 아래 */}
@@ -468,7 +471,7 @@ export default async function ActorDetailPage({
                           <Link href="/dashboard" aria-label="디렉터 권한 신청하기 (마이페이지로 이동)" style={{ color: 'var(--gold)' }}>마이페이지에서 신청 →</Link>
                         </>
                       : <>연락처 및 자료 다운로드는 KD4 멤버 전용입니다.{' '}
-                          <Link href={`/auth/login?next=/actors/${actor.id}`} style={{ color: 'var(--gold)' }}>로그인</Link>
+                          <Link href={`/auth/login?next=/actors/${actor.id}`} aria-label="연락처 열람을 위해 로그인" style={{ color: 'var(--gold)' }}>로그인</Link>
                         </>
                     }
                   </p>
