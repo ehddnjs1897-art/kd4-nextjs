@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'DB 저장에 실패했습니다.' }, { status: 500 })
     }
 
-    return NextResponse.json(data, { status: 201 })
+    return NextResponse.json(data, { status: 201, headers: { 'Cache-Control': 'private, no-store' } })
   } catch (e) {
     console.error('[insights/upload] 예상치 못한 오류:', e instanceof Error ? e.message : String(e))
     return NextResponse.json({ error: '업로드 처리 중 오류가 발생했습니다.' }, { status: 500 })

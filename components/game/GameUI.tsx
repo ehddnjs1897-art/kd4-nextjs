@@ -75,7 +75,7 @@ export default function GameUI({ score, lives, height, stage, combo, specialText
       >
         {/* Score */}
         <div>
-          <div style={{ fontSize: 11, color: "#aaa", letterSpacing: "0.1em" }}>SCORE</div>
+          <div style={{ fontSize: 12, color: "#aaa", letterSpacing: "0.1em" }}>SCORE</div>
           <div style={{ fontSize: 32, fontWeight: 700, letterSpacing: "0.05em" }}>
             {score.toLocaleString()}
           </div>
@@ -105,8 +105,8 @@ export default function GameUI({ score, lives, height, stage, combo, specialText
           position: "absolute",
           top: 70,
           left: 16,
-          fontSize: 11,
-          color: "#888",
+          fontSize: 12,
+          color: "#aaa",
           letterSpacing: "0.1em",
         }}
       >
@@ -121,7 +121,7 @@ export default function GameUI({ score, lives, height, stage, combo, specialText
             top: 70,
             right: 16,
             textAlign: "right",
-            fontSize: 11,
+            fontSize: 12,
             color: "#aaa",
           }}
         >
@@ -163,7 +163,7 @@ export default function GameUI({ score, lives, height, stage, combo, specialText
           >
             {stageFlash.title}
           </div>
-          <div style={{ fontSize: 14, color: "#888", fontStyle: "italic" }}>
+          <div style={{ fontSize: 14, color: "#aaa", fontStyle: "italic" }}>
             {stageFlash.sub}
           </div>
         </div>

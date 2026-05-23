@@ -129,7 +129,7 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
                 <div style={{ width: 80, fontSize: '0.78rem', color: '#6b6560' }}>{ymLabel(e.year_month)}</div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: '0.9rem', fontWeight: 700 }}>{e.name || '(이름없음)'} · {e.class_name}</div>
-                  <div style={{ fontSize: '0.76rem', color: '#9a938b' }}>{e.phone || '-'} · {e.amount.toLocaleString()}원</div>
+                  <div style={{ fontSize: '0.76rem', color: '#4A4A4A' }}>{e.phone || '-'} · {e.amount.toLocaleString()}원</div>
                 </div>
                 {editingStatusId === e.id ? (
                   <div style={{ display: 'flex', gap: 4 }}>
@@ -148,7 +148,7 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
                         }}
                       >{s}</button>
                     ))}
-                    <button type="button" onClick={() => setEditingStatusId(null)} aria-label="닫기" style={{ padding: '3px 6px', borderRadius: 4, border: '1px solid #e4ddd3', background: '#fff', fontSize: '0.72rem', cursor: 'pointer', fontFamily: 'inherit' }}>✕</button>
+                    <button type="button" onClick={() => setEditingStatusId(null)} aria-label="닫기" style={{ padding: '3px 6px', minHeight: 44, minWidth: 44, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', borderRadius: 4, border: '1px solid #e4ddd3', background: '#fff', fontSize: '0.72rem', cursor: 'pointer', fontFamily: 'inherit' }}>✕</button>
                   </div>
                 ) : (
                   <button
@@ -156,7 +156,7 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
                     onClick={() => setEditingStatusId(e.id)}
                     disabled={busy === e.id}
                     style={{
-                      background: 'none', border: 'none', padding: '8px 10px', minHeight: 36, cursor: 'pointer',
+                      background: 'none', border: 'none', padding: '8px 10px', minHeight: 44, cursor: 'pointer',
                       fontSize: '0.74rem', fontWeight: 700,
                       color: e.status === '확정' ? '#2d8a56' : e.status === '취소' ? '#c0392b' : '#9a938b',
                     }}

@@ -98,7 +98,8 @@ export async function PATCH(
       return NextResponse.json({ error: '변경할 내용이 없습니다.' }, { status: 400 })
     }
 
-    const { error } = await supabaseAdmin.from('enrollments').update(update).eq('id', id)
+    // Defence-in-depth: also filter by the owner's user_id to prevent TOCTOU race
+    const { error } = await supabaseAdmin.from('enrollments').update(update).eq('id', id).eq('user_id', enr.user_id)
     if (error) {
       console.error('[PATCH /api/enrollments/[id]]', error.message)
       return NextResponse.json({ error: '변경 중 오류가 발생했습니다.' }, { status: 500 })

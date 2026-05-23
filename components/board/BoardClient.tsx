@@ -25,10 +25,10 @@ function CategoryBadge({ category }: { category: string }) {
   const colorMap: Record<string, string> = {
     공지: '#e74c3c',
     질문: '#4a9eff',
-    자유: '#888888',
+    자유: '#5a5652',
     수업: '#a855f7',
   }
-  const color = colorMap[category] ?? '#888888'
+  const color = colorMap[category] ?? '#5a5652'
   return (
     <span style={{
       display: 'inline-block',
@@ -36,7 +36,7 @@ function CategoryBadge({ category }: { category: string }) {
       borderRadius: '2px',
       fontSize: '0.72rem',
       fontWeight: 600,
-      color: color === '#888888' ? 'var(--gray)' : '#fff',
+      color: '#fff',
       background: color + '22',
       border: `1px solid ${color}55`,
       letterSpacing: '0.03em',
@@ -182,6 +182,9 @@ export default function BoardClient({
             href="/board/write"
             style={{
               padding: '9px 22px',
+              minHeight: 44,
+              display: 'inline-flex',
+              alignItems: 'center',
               background: 'var(--gold)',
               color: '#ffffff',
               borderRadius: 'var(--radius)',

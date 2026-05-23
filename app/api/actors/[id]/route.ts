@@ -72,12 +72,16 @@ export async function GET(
     // 접촉 권한 없는 경우 PII+내부 컬럼을 DB에서 처음부터 제외 (defence-in-depth)
     // JS 레벨 destructure는 하위 호환 안전망으로 유지
     const SAFE_ACTOR_DETAIL = 'id,name,name_en,gender,age_group,height,weight,skills,is_public,profile_photo,casting_tags,casting_summary,instagram,profile_pdf_url,created_at,updated_at'
+    // Public sub-selects omit internal fields (r2_key, storage_path, file sizes, upload timestamps)
+    const SAFE_PHOTOS = 'id,url,is_profile,sort_order'
+    const SAFE_VIDEOS = 'id,title,youtube_id,video_type,sort_order'
+    const SAFE_FILMOGRAPHY = 'id,category,year,title,role,broadcaster,film_type,sort_order'
     let query = supabaseAdmin
       .from('actors')
       .select(
         canSeeContact
           ? '*, actor_photos(*), actor_videos(*), actor_filmography(*)'
-          : `${SAFE_ACTOR_DETAIL}, actor_photos(*), actor_videos(*), actor_filmography(*)`
+          : `${SAFE_ACTOR_DETAIL}, actor_photos(${SAFE_PHOTOS}), actor_videos(${SAFE_VIDEOS}), actor_filmography(${SAFE_FILMOGRAPHY})`
       )
       .eq('id', id)
     if (!canSeeNonPublic) query = query.eq('is_public', true)

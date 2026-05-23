@@ -145,15 +145,15 @@ export default function GameOver({
         }}
       >
         <div>
-          <div style={{ fontSize: 11, color: "#aaa" }}>STAGE</div>
+          <div style={{ fontSize: 12, color: "#aaa" }}>STAGE</div>
           <div style={{ fontSize: 24, fontWeight: 600 }}>{stageReached}</div>
         </div>
         <div>
-          <div style={{ fontSize: 11, color: "#aaa" }}>ITEMS</div>
+          <div style={{ fontSize: 12, color: "#aaa" }}>ITEMS</div>
           <div style={{ fontSize: 24, fontWeight: 600 }}>{itemsCollected}</div>
         </div>
         <div>
-          <div style={{ fontSize: 11, color: "#aaa" }}>TIME</div>
+          <div style={{ fontSize: 12, color: "#aaa" }}>TIME</div>
           <div style={{ fontSize: 24, fontWeight: 600 }}>
             {minutes}:{seconds.toString().padStart(2, "0")}
           </div>

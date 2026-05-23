@@ -37,6 +37,9 @@ export default function DeletePostButton({ postId }: DeletePostButtonProps) {
 
   const baseStyle: React.CSSProperties = {
     padding: '6px 14px',
+    minHeight: 44,
+    display: 'inline-flex',
+    alignItems: 'center',
     borderRadius: 'var(--radius)',
     fontSize: '0.82rem',
     cursor: deleting ? 'not-allowed' : 'pointer',

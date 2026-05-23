@@ -305,7 +305,7 @@ export default async function DashboardPage() {
         <section aria-label="커뮤니티" style={card}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <h2 style={sectionTitle}>커뮤니티</h2>
-            <Link href="/board?my=1" style={{ fontSize: '0.82rem', color: 'var(--navy)', textDecoration: 'none' }}>내 게시글 →</Link>
+            <Link href="/board?my=1" style={{ fontSize: '0.82rem', color: 'var(--navy)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: 44, padding: '0 4px' }}>내 게시글 →</Link>
           </div>
         </section>
 

@@ -198,6 +198,9 @@ export default async function PostDetailPage({ params }: { params: Params }) {
                   href={`/board/${id}/edit`}
                   style={{
                     padding: '6px 14px',
+                    minHeight: 44,
+                    display: 'inline-flex',
+                    alignItems: 'center',
                     border: '1px solid var(--border)',
                     borderRadius: 'var(--radius)',
                     fontSize: '0.82rem',

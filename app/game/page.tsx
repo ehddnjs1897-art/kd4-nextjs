@@ -50,6 +50,10 @@ export default function GameStartPage() {
           color: "#999",
           fontSize: 14,
           textDecoration: "none",
+          display: "inline-flex",
+          alignItems: "center",
+          minHeight: 44,
+          padding: "0 8px",
         }}
       >
         ← KD4.club
@@ -65,6 +69,10 @@ export default function GameStartPage() {
           color: "#0057FF",
           fontSize: 14,
           textDecoration: "none",
+          display: "inline-flex",
+          alignItems: "center",
+          minHeight: 44,
+          padding: "0 8px",
         }}
       >
         LEADERBOARD →
@@ -98,7 +106,7 @@ export default function GameStartPage() {
 
       {/* Character select */}
       <div style={{ marginBottom: 36, width: "100%", maxWidth: 420 }}>
-        <p style={{ fontSize: 11, color: "#999", letterSpacing: "0.12em", marginBottom: 14, fontFamily: "var(--font-oswald)" }}>
+        <p style={{ fontSize: 12, color: "#999", letterSpacing: "0.12em", marginBottom: 14, fontFamily: "var(--font-oswald)" }}>
           SELECT CHARACTER
         </p>
         <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
@@ -126,7 +134,7 @@ export default function GameStartPage() {
               <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.08em", color: selected === c.id ? "#4488ff" : "#aaa" }}>
                 {c.name}
               </div>
-              <div style={{ fontSize: 11, color: "#999", marginTop: 2 }}>{c.sub}</div>
+              <div style={{ fontSize: 12, color: "#999", marginTop: 2 }}>{c.sub}</div>
             </button>
           ))}
         </div>
@@ -151,14 +159,14 @@ export default function GameStartPage() {
               border: "1px solid rgba(255,255,255,0.08)",
               borderRadius: 8,
               padding: "6px 12px",
-              fontSize: 11,
+              fontSize: 12,
               lineHeight: 1.5,
             }}
           >
             <div style={{ color: "#0057FF", fontWeight: 600, fontFamily: "var(--font-oswald)" }}>
               ACT {s.act}
             </div>
-            <div style={{ color: "#888" }}>{s.title}</div>
+            <div style={{ color: "#aaa" }}>{s.title}</div>
           </div>
         ))}
       </div>
@@ -208,7 +216,7 @@ export default function GameStartPage() {
         PLAY
       </button>
 
-      <p style={{ fontSize: 11, color: "#999", marginTop: 14 }}>
+      <p style={{ fontSize: 12, color: "#999", marginTop: 14 }}>
         무대 위로, 더 높이.
       </p>
     </div>

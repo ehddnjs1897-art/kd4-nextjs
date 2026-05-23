@@ -41,10 +41,11 @@ export async function POST() {
   const rawMemberType: string = user.user_metadata?.member_type ?? 'actor'
   const memberType: string = ALLOWED_MEMBER_TYPES.has(rawMemberType) ? rawMemberType : 'actor'
 
-  // 기존 역할 확인 (이미 승급된 역할이면 강등 금지)
+  // 기존 역할 + actor_id 확인 (이미 승급된 역할이면 강등 금지; actor_id 있으면 매칭 스킵)
   const { data: existing } = await supabaseAdmin
-    .from('profiles').select('role').eq('id', user.id).maybeSingle()
+    .from('profiles').select('role, actor_id').eq('id', user.id).maybeSingle()
   const existingRole: string | null = existing?.role ?? null
+  const alreadyLinked: boolean = !!existing?.actor_id
 
   let newRole = existingRole
   if (!existingRole || !ELEVATED_ROLES.includes(existingRole)) {
@@ -67,9 +68,9 @@ export async function POST() {
     return NextResponse.json({ error: '프로필 설정 실패' }, { status: 500 })
   }
 
-  // 배우 매칭 (이름 + 전화번호 기준)
+  // 배우 매칭 (이름 + 전화번호 기준) — actor_id 이미 연결된 경우 스킵 (중복 매칭 방지)
   let actorId: string | undefined
-  if (name && memberType !== 'director' && phone) {
+  if (name && memberType !== 'director' && phone && !alreadyLinked) {
     try {
       const res = await matchActorOnSignup(user.id, name, phone)
       actorId = res.actorId

@@ -90,6 +90,7 @@ export default function LeaderboardPage() {
               border: period === p ? "none" : "1px solid rgba(255,255,255,0.1)",
               borderRadius: 8,
               padding: "8px 20px",
+              minHeight: 44,
               fontSize: 13,
               fontWeight: 600,
               cursor: "pointer",
@@ -117,7 +118,7 @@ export default function LeaderboardPage() {
           </button>
         </div>
       ) : data.length === 0 ? (
-        <div style={{ textAlign: "center", color: "#444", padding: 40 }}>
+        <div style={{ textAlign: "center", color: "#aaa", padding: 40 }}>
           <p>아직 기록이 없어요</p>
           <Link
             href="/game/play"
@@ -164,7 +165,7 @@ export default function LeaderboardPage() {
                 <div style={{ fontSize: 15, fontWeight: 500 }}>
                   {entry.profiles?.name || "익명"}
                 </div>
-                <div style={{ fontSize: 11, color: "#888" }}>
+                <div style={{ fontSize: 12, color: "#aaa" }}>
                   Stage {entry.stage} · {formatTime(entry.duration_ms)}
                 </div>
               </div>

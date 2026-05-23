@@ -181,8 +181,8 @@ export default function InsightsPage() {
       <style>{`
         .ins-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color .2s; }
         .ins-card:hover { border-color: var(--gold); }
-        .ins-tag { background: var(--bg3); border-radius: 4px; padding: 2px 8px; font-size: 12px; color: #5A5550; }
-        .filter-btn { padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--gray); cursor: pointer; font-size: 13px; transition: all .15s; }
+        .ins-tag { background: var(--bg3); border-radius: 4px; padding: 2px 8px; font-size: 12px; color: #3E3A37; }
+        .filter-btn { padding: 5px 14px; min-height: 44px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--gray); cursor: pointer; font-size: 13px; transition: all .15s; }
         .filter-btn.active { background: var(--gold); color: #000; border-color: var(--gold); font-weight: 600; }
         .ins-input { width: 100%; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--white); font-size: 14px; font-family: var(--font-sans); }
         .ins-input:focus { outline: 2px solid var(--gold); outline-offset: -1px; border-color: var(--gold); box-shadow: 0 0 0 2px rgba(21,72,138,0.15); }
@@ -400,7 +400,7 @@ export default function InsightsPage() {
                             key={c}
                             onClick={() => changeCategory(insight, c)}
                             style={{
-                              padding: '3px 10px', borderRadius: 12, border: 'none', cursor: 'pointer', fontSize: 12,
+                              padding: '3px 10px', minHeight: 44, borderRadius: 12, border: 'none', cursor: 'pointer', fontSize: 12,
                               background: insight.category === c ? 'var(--gold)' : 'var(--bg3)',
                               color: insight.category === c ? '#000' : 'var(--white)',
                               fontWeight: insight.category === c ? 700 : 400,
