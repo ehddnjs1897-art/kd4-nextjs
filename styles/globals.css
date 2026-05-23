@@ -2137,3 +2137,13 @@ main {
   white-space: nowrap;
   border-width: 0;
 }
+
+/* === PRINT STYLES — 배우 프로필 인쇄 최적화 === */
+@media print {
+  nav, footer, .no-print { display: none !important; }
+  body { background: #fff !important; color: #000 !important; }
+  a { color: #000 !important; text-decoration: none !important; }
+  img { max-width: 100% !important; page-break-inside: avoid; }
+  section, article { page-break-inside: avoid; }
+  h1, h2, h3 { page-break-after: avoid; }
+}

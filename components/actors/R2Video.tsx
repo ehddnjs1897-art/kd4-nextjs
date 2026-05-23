@@ -120,7 +120,7 @@ export default function R2Video({
                 <span role="alert" style={{ fontSize: '0.75rem', color: '#fff', padding: '0 12px', textAlign: 'center' }}>{error}</span>
               ) : (
                 /* 재생 삼각형 */
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="white" aria-hidden="true">
                   <polygon points="5,3 19,12 5,21" />
                 </svg>
               )}

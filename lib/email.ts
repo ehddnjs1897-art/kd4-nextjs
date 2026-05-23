@@ -11,6 +11,11 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'uikactors@gmail.com'
 // Resend 무료 플랜 기본 발신자 (도메인 인증 전까지)
 const FROM = 'KD4 알림 <onboarding@resend.dev>'
 
+/** 이메일 제목 내 SMTP 헤더 인젝션 방어 — \r\n 제거 (RFC 5321) */
+function safeSubject(s: string): string {
+  return s.replace(/[\r\n]/g, ' ').trim()
+}
+
 /** HTML 특수문자 이스케이프 — 이메일 본문 내 XSS/인젝션 방어 */
 function esc(s: string): string {
   return s
@@ -65,7 +70,7 @@ export async function notifyCrewRequest(name: string, email: string, userId: str
     </div>
   `
   try {
-    await sendEmail(ADMIN_EMAIL, `[KD4] 크루 신청 — ${name}`, html)
+    await sendEmail(ADMIN_EMAIL, `[KD4] 크루 신청 — ${safeSubject(name)}`, html)
   } catch (err) {
     console.error('[notifyCrewRequest] 이메일 발송 실패:', err instanceof Error ? err.message : err)
   }
@@ -93,7 +98,7 @@ export async function notifyDirectorRequest(name: string, email: string, userId:
     </div>
   `
   try {
-    await sendEmail(ADMIN_EMAIL, `[KD4] 디렉터 권한 신청 — ${name}`, html)
+    await sendEmail(ADMIN_EMAIL, `[KD4] 디렉터 권한 신청 — ${safeSubject(name)}`, html)
   } catch (err) {
     console.error('[notifyDirectorRequest] 이메일 발송 실패:', err instanceof Error ? err.message : err)
   }

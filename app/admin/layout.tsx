@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: '관리자',
   description: 'KD4 액팅 스튜디오 관리자 패널',
   robots: { index: false, follow: false },
+  openGraph: { siteName: 'KD4 액팅 스튜디오' },
 }
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {

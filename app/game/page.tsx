@@ -115,6 +115,7 @@ export default function GameStartPage() {
                 border: selected === c.id ? "1.5px solid #0057FF" : "1px solid rgba(255,255,255,0.1)",
                 borderRadius: 12,
                 padding: "14px 8px",
+                minHeight: 44,
                 cursor: "pointer",
                 color: "#fff",
                 fontFamily: "var(--font-oswald), sans-serif",
