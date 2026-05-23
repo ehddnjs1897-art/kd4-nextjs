@@ -554,7 +554,7 @@ export default function JoinForm() {
       <input
         aria-label="이름"
         aria-invalid={!!error}
-        aria-describedby="join-form-error"
+        aria-describedby={error ? "join-form-error" : undefined}
         type="text"
         placeholder="이름 *"
         value={name}
@@ -571,7 +571,7 @@ export default function JoinForm() {
       <input
         aria-label="연락처"
         aria-invalid={!!error}
-        aria-describedby="join-form-error"
+        aria-describedby={error ? "join-form-error" : undefined}
         type="tel"
         placeholder="연락처 * 010-0000-0000"
         value={phone}
@@ -588,7 +588,7 @@ export default function JoinForm() {
       <input
         aria-label="이메일"
         aria-invalid={!!error}
-        aria-describedby="join-form-error"
+        aria-describedby={error ? "join-form-error" : undefined}
         type="email"
         placeholder="이메일 *"
         value={email}

@@ -153,7 +153,11 @@ export async function POST(request: NextRequest) {
     }
     // IP 기반 2차 레이트 리밋 — 번호 열거 공격 방어 (5분 내 5회)
     // x-real-ip만 사용 — x-forwarded-for는 클라이언트 위조 가능 → 레이트 리밋 우회 방지
-    const ip = request.headers.get('x-real-ip') ?? null  // null: IP 불명 시 IP 레이트 리밋 건너뜀
+    const ip = request.headers.get('x-real-ip') ?? null
+    // Vercel 프로덕션에서 x-real-ip 누락은 프록시 오류 → fail-closed (번호 열거 공격 방어)
+    if (!ip && process.env.VERCEL === '1') {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
     if (ip) {
       const { count: ipCount } = await getSupabaseAdmin()
         .from('consultations')

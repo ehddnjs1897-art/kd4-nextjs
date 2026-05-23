@@ -60,11 +60,12 @@ export async function GET(request: NextRequest) {
     const limit = Math.min(100, Math.max(1, Number.isFinite(rawLimit) ? rawLimit : 20))
     const offset = (page - 1) * limit
 
-    // 로그인 여부 + 역할 확인 (director/admin만 연락처 열람 가능)
+    // 배우 DB는 회원 전용 콘텐츠 — 비로그인 요청 차단 (미들웨어가 페이지 접근을 막지만 API 레이어도 독립적으로 강제)
     const supabase = await createClient()
     const {
       data: { user },
     } = await supabase.auth.getUser()
+    if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
     let canSeeContact = false
     let isAdmin = false
     if (user) {

@@ -51,6 +51,9 @@ export async function GET(
       }
     }
     const supabase = await createClient()
+    // 게시판은 회원 전용 — 비로그인 요청 차단
+    const { data: { user: postDetailUser } } = await supabase.auth.getUser()
+    if (!postDetailUser) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
 
     const { data: post, error } = await supabase
       .from('posts')

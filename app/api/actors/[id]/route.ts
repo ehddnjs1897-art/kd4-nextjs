@@ -51,9 +51,10 @@ export async function GET(
       }
     }
 
-    // 로그인 여부 + 역할 확인
+    // 배우 DB는 회원 전용 콘텐츠 — 비로그인 요청 차단
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
 
     let canSeeContact = false   // 연락처 열람 가능 여부 (director/admin or 본인)
     let canSeeNonPublic = false // 비공개 프로필 열람 가능 여부 (본인 or admin/editor)
