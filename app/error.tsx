@@ -15,7 +15,9 @@ export default function ErrorPage({
   reset: () => void
 }) {
   useEffect(() => {
-    console.error('[ErrorBoundary]', error)
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('[ErrorBoundary]', error)
+    }
   }, [error])
 
   return (

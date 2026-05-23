@@ -56,6 +56,9 @@ interface PageProps {
   }>
 }
 
+/** casting_tags 컬럼 미존재 경고 — 콜드스타트 당 1회만 출력 */
+let _castingTagsWarnedOnce = false
+
 /** Postgres 'undefined_column' (42703) — 마이그레이션 미실행 시 발생 */
 function isUndefinedColumnError(err: { code?: string; message?: string } | null): boolean {
   if (!err) return false
@@ -84,7 +87,10 @@ async function fetchActors(gender: string, ageGroup: string, tag: string): Promi
     if (tag && tag !== 'all') query = query.contains('casting_tags', [tag])
     const { data, error } = await query
     if (error && isUndefinedColumnError(error)) {
-      console.warn('[ActorsPage] casting_tags 컬럼 미존재 — 마이그레이션 미실행. 기본 스키마로 fallback')
+      if (!_castingTagsWarnedOnce) {
+        console.warn('[ActorsPage] casting_tags 컬럼 미존재 — 마이그레이션 미실행. 기본 스키마로 fallback')
+        _castingTagsWarnedOnce = true
+      }
       castingSchemaAvailable = false
     } else if (error) {
       console.error('[ActorsPage] Supabase 오류:', error.message)

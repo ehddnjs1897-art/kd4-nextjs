@@ -595,37 +595,60 @@ export default function JoinForm() {
       />
 
       {/* 희망 클래스 (필수) */}
-      <div style={{ position: 'relative' }}>
-        <select
-          aria-label="희망 클래스"
-          value={className}
-          onChange={(e) => setClassName(e.target.value)}
-          onFocus={() => handleFieldFocus('class')}
-          onBlur={() => setFocused(null)}
-          style={{ ...inputStyle('class'), cursor: 'pointer' }}
-          required
-        >
-          <option value="">희망 클래스</option>
-          {OPEN_CLASSES.map((c) => (
-            <option key={c.nameKo} value={c.nameKo}>
-              {c.nameKo}
-            </option>
-          ))}
-        </select>
-        <span
-          style={{
-            position: 'absolute',
-            right: '16px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            pointerEvents: 'none',
-            color: 'var(--gray)',
-            fontSize: '0.8rem',
-          }}
-        >
-          ▼
-        </span>
-      </div>
+      {OPEN_CLASSES.length === 0 ? (
+        <div style={{
+          padding: '14px 16px',
+          background: 'rgba(196,165,90,0.06)',
+          border: '1px solid rgba(196,165,90,0.25)',
+          borderRadius: 'var(--radius)',
+          fontSize: '0.85rem',
+          color: 'var(--secondary)',
+          lineHeight: 1.6,
+        }}>
+          현재 신청 가능한 클래스가 없습니다.{' '}
+          <a
+            href="https://pf.kakao.com/_ximxdqn"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: 'var(--gold)', textDecoration: 'underline' }}
+          >
+            카카오 채널
+          </a>
+          로 문의해 주세요.
+        </div>
+      ) : (
+        <div style={{ position: 'relative' }}>
+          <select
+            aria-label="희망 클래스"
+            value={className}
+            onChange={(e) => setClassName(e.target.value)}
+            onFocus={() => handleFieldFocus('class')}
+            onBlur={() => setFocused(null)}
+            style={{ ...inputStyle('class'), cursor: 'pointer' }}
+            required
+          >
+            <option value="">희망 클래스</option>
+            {OPEN_CLASSES.map((c) => (
+              <option key={c.nameKo} value={c.nameKo}>
+                {c.nameKo}
+              </option>
+            ))}
+          </select>
+          <span
+            style={{
+              position: 'absolute',
+              right: '16px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              pointerEvents: 'none',
+              color: 'var(--gray)',
+              fontSize: '0.8rem',
+            }}
+          >
+            ▼
+          </span>
+        </div>
+      )}
 
       {/* 마이즈너 경험 (필수) */}
       <div style={{ position: 'relative' }}>
