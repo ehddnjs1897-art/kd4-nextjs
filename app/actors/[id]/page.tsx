@@ -13,7 +13,7 @@ import ShareButton from '@/components/actors/ShareButton'
 import ActorDownloadButton from '@/components/actors/ActorDownloadButton'
 import { UserRole } from '@/lib/types'
 import { canViewActorContact } from '@/lib/access'
-import { getVideoSignedUrl, isR2Configured } from '@/lib/r2'
+import { isR2Configured } from '@/lib/r2'
 import { getActorPersonSchema, getActorVideoSchemas, serializeJsonLd } from '@/lib/seo'
 import { SITE_URL } from '@/lib/constants'
 
@@ -252,18 +252,15 @@ export default async function ActorDetailPage({
   const canContact = canViewActorContact(role)
 
   // 다운로드용 URL/ID (디렉터/관리자만)
+  // 프로필 문서는 same-origin 프록시(/api/actors/[id]/profile)로 받는다.
+  // R2 presigned 직링크는 브라우저가 inline 렌더해 강제 다운로드가 안 되기 때문.
   let profileDocUrl: string | null = null
   const downloadVideoIds: string[] = []
   if (canContact) {
-    if (actor.profile_doc_path && isR2Configured()) {
-      try {
-        const ext = actor.profile_doc_path.split('.').pop() || 'pdf'
-        profileDocUrl = await getVideoSignedUrl(actor.profile_doc_path, 3600, `${actor.name} 프로필.${ext}`)
-      } catch (e) {
-        console.error('[actor] 프로필 문서 signed URL 실패:', e)
-      }
-    } else if (actor.profile_pdf_url) {
-      profileDocUrl = actor.profile_pdf_url
+    const hasProfileDoc =
+      (!!actor.profile_doc_path && isR2Configured()) || !!actor.profile_pdf_url
+    if (hasProfileDoc) {
+      profileDocUrl = `/api/actors/${actor.id}/profile`
     }
     for (const v of actor.actor_videos ?? []) {
       if (v.r2_key) downloadVideoIds.push(v.id)

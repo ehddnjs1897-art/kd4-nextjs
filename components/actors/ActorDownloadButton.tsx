@@ -20,6 +20,9 @@ export default function ActorDownloadButton({
     const a = document.createElement('a')
     a.href = url
     a.rel = 'noopener'
+    // same-origin(프로필 프록시)에서는 강제 다운로드, cross-origin(영상 presigned)에서는
+    // 무시되고 서버의 Content-Disposition 헤더가 다운로드를 처리한다.
+    a.download = ''
     document.body.appendChild(a)
     a.click()
     a.remove()

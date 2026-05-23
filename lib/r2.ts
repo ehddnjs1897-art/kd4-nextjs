@@ -115,6 +115,24 @@ export async function getVideoSignedUrl(
   )
 }
 
+/**
+ * 객체를 서버에서 직접 스트림으로 가져온다 (same-origin 프록시 다운로드용).
+ * presigned URL을 브라우저에 직접 주면 R2가 inline 렌더하거나 CORS에 막혀
+ * 강제 다운로드가 보장되지 않음 → 우리 서버가 Content-Disposition을 붙여 재서빙.
+ * @param key R2 경로
+ */
+export async function getObjectStream(key: string): Promise<{
+  body: ReadableStream
+  contentType?: string
+  contentLength?: number
+}> {
+  const c = getClient()
+  const res = await c.send(new GetObjectCommand({ Bucket: BUCKET_NAME, Key: key }))
+  if (!res.Body) throw new Error('[r2] 객체 본문이 비어있음')
+  const body = (res.Body as { transformToWebStream: () => ReadableStream }).transformToWebStream()
+  return { body, contentType: res.ContentType, contentLength: res.ContentLength }
+}
+
 /** 영상 삭제 (admin) */
 export async function deleteVideo(key: string): Promise<void> {
   const c = getClient()
