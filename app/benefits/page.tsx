@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
-import { buildBreadcrumb } from '@/lib/seo-schemas'
+import { buildBreadcrumb, buildOrganization } from '@/lib/seo-schemas'
 
 export const metadata: Metadata = {
   title: '멤버 혜택',
@@ -149,10 +149,13 @@ export default function BenefitsPage() {
         paddingTop: '64px',
       }}
     >
-      <PageJsonLd schemas={[buildBreadcrumb([
-        { name: '홈', url: SITE_URL },
-        { name: '멤버 혜택', url: `${SITE_URL}/benefits` },
-      ])]} />
+      <PageJsonLd schemas={[
+        buildOrganization(),
+        buildBreadcrumb([
+          { name: '홈', url: SITE_URL },
+          { name: '멤버 혜택', url: `${SITE_URL}/benefits` },
+        ]),
+      ]} />
       {/* HERO */}
       <section
         aria-label="멤버 혜택 소개"

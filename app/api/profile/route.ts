@@ -73,15 +73,20 @@ export async function PATCH(request: NextRequest) {
     const updates: Record<string, string | null> = { name: name.trim() }
     if (phone !== undefined) updates.phone = phone.trim() || null
 
-    // supabaseAdmin으로 RLS 우회
-    const { error } = await supabaseAdmin
+    // supabaseAdmin으로 RLS 우회 + .select로 rows-affected 확인 (silent no-op 방지)
+    const { data: updatedProfile, error } = await supabaseAdmin
       .from('profiles')
       .update(updates)
       .eq('id', user.id)
+      .select('id')
+      .maybeSingle()
 
     if (error) {
       console.error('[PATCH /api/profile] error:', error instanceof Error ? error.message : String(error))
       return NextResponse.json({ error: '정보 수정 중 오류가 발생했습니다.' }, { status: 500 })
+    }
+    if (!updatedProfile) {
+      return NextResponse.json({ error: '프로필을 찾을 수 없습니다.' }, { status: 404 })
     }
 
     // ── 자동 재매칭: actor_id 없는 사용자가 이름/전화번호 변경 시 ──────────────

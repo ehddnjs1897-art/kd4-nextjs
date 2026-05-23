@@ -52,6 +52,7 @@ const STEPS = [
     title: '마이즈너 테크닉 / 이바나 처벅 테크닉 훈련',
     sub: '연기력 확장 · 카메라 연기 최적화',
     desc: '마이즈너의 Repetition 훈련과 이바나 처벅 테크닉을 결합하여, 억지로 짜내는 감정 없이 상대방의 반응에 진정성 있게 살아있는 연기를 만듭니다.',
+    descNode: (<>마이즈너의 <span lang="en">Repetition</span> 훈련과 이바나 처벅 테크닉을 결합하여, 억지로 짜내는 감정 없이 상대방의 반응에 진정성 있게 살아있는 연기를 만듭니다.</>),
   },
   {
     num: '02',
@@ -342,7 +343,7 @@ export default function AboutPage() {
               <div>
                 <h3 style={{ fontFamily: 'var(--font-sans)', fontSize: '1.05rem', fontWeight: 700, color: 'var(--white)', marginBottom: '4px' }}>{step.title}</h3>
                 <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', color: 'var(--gold)', marginBottom: '8px' }}>{step.sub}</p>
-                <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: 'var(--secondary)', lineHeight: 1.7 }}>{step.desc}</p>
+                <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: 'var(--secondary)', lineHeight: 1.7 }}>{'descNode' in step ? step.descNode : step.desc}</p>
               </div>
             </div>
           ))}

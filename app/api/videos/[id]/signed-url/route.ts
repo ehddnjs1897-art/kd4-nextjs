@@ -60,20 +60,7 @@ export async function GET(
     }
   }
 
-  // role 확인 — admin/crew/editor/director는 모든 영상 접근 가능, actor는 본인 영상만
-  const { data: profile } = await supabaseAdmin
-    .from('profiles')
-    .select('role, actor_id')
-    .eq('id', user.id)
-    .maybeSingle()
-
-  const role = profile?.role
-  // admin/crew/editor/director/member: 모든 영상 열람 가능
-  // member = 미승인 디렉터 — 로그인된 멤버는 영상 시청 허용 (주석: "멤버 이상 인증 필요")
-  const elevated = role === 'admin' || role === 'crew' || role === 'editor' || role === 'director' || role === 'member'
-  // actor 역할: 영상 fetch 후 본인 소유 여부 검증 (아래)
-  const isActorRole = role === 'actor'
-
+  // params 먼저 해결 → UUID 검증 → role + video 병렬 조회 (round-trip 1개 절감)
   const { id } = await params
   if (!UUID_RE.test(id)) {
     return NextResponse.json({ error: '잘못된 영상 ID입니다.' }, { status: 400 })
@@ -82,14 +69,18 @@ export async function GET(
   const requestedExpiry = parseInt(url.searchParams.get('expiry') ?? '86400', 10)
   const expirySec = Math.min(Math.max(Math.floor(requestedExpiry || 86400), 60), MAX_EXPIRY_SEC)
 
-  // 영상 row 조회
-  const { data: video, error } = await supabaseAdmin
-    .from('actor_videos')
-    .select('id, r2_key, actor_id, title')
-    .eq('id', id)
-    .maybeSingle()
+  // role 확인 + 영상 row 병렬 조회 (admin/crew/editor/director는 모든 영상, actor는 본인 영상만)
+  const [{ data: profile }, { data: video, error: videoError }] = await Promise.all([
+    supabaseAdmin.from('profiles').select('role, actor_id').eq('id', user.id).maybeSingle(),
+    supabaseAdmin.from('actor_videos').select('id, r2_key, actor_id, title').eq('id', id).maybeSingle(),
+  ])
 
-  if (error || !video) {
+  const role = profile?.role
+  // member = 미승인 디렉터 — 로그인된 멤버는 영상 시청 허용
+  const elevated = role === 'admin' || role === 'crew' || role === 'editor' || role === 'director' || role === 'member'
+  const isActorRole = role === 'actor'
+
+  if (videoError || !video) {
     return NextResponse.json({ error: '영상을 찾을 수 없습니다.' }, { status: 404 })
   }
 

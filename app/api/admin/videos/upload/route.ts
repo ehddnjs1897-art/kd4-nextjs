@@ -89,14 +89,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '유효하지 않은 actor_id 형식입니다.' }, { status: 400 })
     }
 
-    // 배우 존재 여부 확인 — 고아 R2 파일 방지
-    const { data: actorExists } = await supabaseAdmin
-      .from('actors')
-      .select('id')
-      .eq('id', actorId)
-      .maybeSingle()
+    // 배우 존재 여부 + 현재 영상 수 병렬 확인 (고아 R2 파일 방지 + 50개 캡 강제)
+    const MAX_VIDEOS_PER_ACTOR = 50
+    const [{ data: actorExists }, { count: currentVideoCount }] = await Promise.all([
+      supabaseAdmin.from('actors').select('id').eq('id', actorId).maybeSingle(),
+      supabaseAdmin.from('actor_videos').select('id', { count: 'exact', head: true }).eq('actor_id', actorId),
+    ])
     if (!actorExists) {
       return NextResponse.json({ error: '존재하지 않는 배우입니다.' }, { status: 404 })
+    }
+    if ((currentVideoCount ?? 0) >= MAX_VIDEOS_PER_ACTOR) {
+      return NextResponse.json({ error: `영상은 최대 ${MAX_VIDEOS_PER_ACTOR}개까지 등록할 수 있습니다.` }, { status: 400 })
     }
 
     if (file.size > MAX_SIZE_BYTES) {
