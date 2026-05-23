@@ -163,7 +163,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: '신청 처리 중 오류가 발생했습니다.' }, { status: 500 })
     }
 
-    return NextResponse.json({ ok: true, count: rows.length })
+    return NextResponse.json({ ok: true, count: rows.length }, { headers: { 'Cache-Control': 'private, no-store' } })
   } catch (err) {
     console.error('[POST /api/enrollments] 예상치 못한 오류:', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '신청 처리 중 오류가 발생했습니다.' }, { status: 500 })

@@ -424,20 +424,21 @@ export default function AboutPage() {
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
           {TESTIMONIALS.map(t => (
-            <div
+            <blockquote
               key={t.name}
               style={{
                 background: 'var(--bg2)',
                 border: '1px solid var(--border)',
                 borderRadius: '14px',
                 padding: '28px 24px',
+                margin: 0,
               }}
             >
               <p style={{ fontFamily: 'var(--font-serif)', fontSize: '0.95rem', color: 'var(--secondary)', lineHeight: 1.85, marginBottom: '16px', fontStyle: 'italic' }}>
                 &ldquo;{t.text}&rdquo;
               </p>
-              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', color: 'var(--gold)' }}>— {t.name}</p>
-            </div>
+              <cite style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', color: 'var(--gold)', fontStyle: 'normal' }}>— {t.name}</cite>
+            </blockquote>
           ))}
         </div>
       </section>

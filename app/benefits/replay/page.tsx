@@ -177,7 +177,7 @@ export default function ReplayPartnershipPage() {
       {/* 이용 절차 */}
       <section aria-label="이용 절차" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
         <SectionHeader eyebrow="HOW IT WORKS" title="이용 절차" />
-        <ol style={{ listStyle: 'none', padding: 0, margin: '0 auto', maxWidth: 560, display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <ol role="list" style={{ listStyle: 'none', padding: 0, margin: '0 auto', maxWidth: 560, display: 'flex', flexDirection: 'column', gap: 14 }}>
           {STEPS.map((step, i) => (
             <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
               <span style={{ flexShrink: 0, width: 28, height: 28, borderRadius: '50%', background: 'rgba(21,72,138,0.12)', border: '1px solid rgba(21,72,138,0.3)', color: 'var(--gold)', fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.85rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1 }}>
@@ -194,7 +194,7 @@ export default function ReplayPartnershipPage() {
       {/* 파일 제출 규격 */}
       <section aria-label="파일 제출 규격" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
         <SectionHeader eyebrow="FILE GUIDE" title="파일 제출 규격" desc="고화질 잡지 출력을 위해 규격을 꼭 지켜주세요." />
-        <ul style={{ listStyle: 'none', padding: 0, margin: '0 auto', maxWidth: 560, display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <ul role="list" style={{ listStyle: 'none', padding: 0, margin: '0 auto', maxWidth: 560, display: 'flex', flexDirection: 'column', gap: 10 }}>
           {FILE_GUIDE.map((item, i) => (
             <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
               <span style={{ flexShrink: 0, width: 6, height: 6, borderRadius: '50%', background: 'var(--gold)', marginTop: 8 }} />

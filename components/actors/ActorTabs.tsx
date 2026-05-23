@@ -368,7 +368,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
         <section style={s.section} aria-label={`${actor.name} REEL 영상`}>
           <h2 style={s.sectionHeading}>
             <span style={s.sectionNum}>01</span>
-            <span style={s.sectionTitle}>REEL</span>
+            <span lang="en" style={s.sectionTitle}>REEL</span>
           </h2>
           <div style={s.videoGrid}>
             {reelVideos.map((video) =>
@@ -440,7 +440,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
         <section aria-label="최근 출연" style={s.section}>
           <h2 style={s.sectionHeading}>
             <span style={s.sectionNum}>02</span>
-            <span style={s.sectionTitle}>CURRENT WORKS</span>
+            <span lang="en" style={s.sectionTitle}>CURRENT WORKS</span>
             <span style={s.sectionSub}>최근 출연 &amp; 방영</span>
           </h2>
           <div style={s.recentGrid}>
@@ -645,7 +645,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
         <section aria-label="수상 이력" style={s.section}>
           <h2 style={{ ...s.sectionHeading, borderBottomColor: 'var(--accent-red)' }}>
             <span aria-hidden="true" style={{ ...s.sectionNum, color: 'var(--accent-red)' }}>🏆</span>
-            <span style={{ ...s.sectionTitle, color: 'var(--accent-red)' }}>AWARD</span>
+            <span lang="en" style={{ ...s.sectionTitle, color: 'var(--accent-red)' }}>AWARD</span>
           </h2>
           <div style={{ overflowX: 'auto' }}>
           <table style={s.table}>

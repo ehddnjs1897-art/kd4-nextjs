@@ -76,6 +76,7 @@ export default function Footer() {
               KD4
             </span>
             <span
+              aria-hidden="true"
               style={{
                 fontFamily: 'var(--font-display), Oswald, sans-serif',
                 fontSize: '0.55rem',

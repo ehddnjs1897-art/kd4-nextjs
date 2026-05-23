@@ -204,6 +204,9 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
                     </Link>
                     <button
                       type="button"
+                      aria-label={`${actor.name} ${actor.is_public ? '공개 → 비공개로 변경' : '비공개 → 공개로 변경'}`}
+                      aria-pressed={actor.is_public}
+                      aria-busy={loadingId === actor.id}
                       onClick={() => handleToggle(actor)}
                       disabled={loadingId === actor.id}
                       style={{

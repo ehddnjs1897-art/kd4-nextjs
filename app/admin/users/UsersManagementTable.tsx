@@ -173,7 +173,8 @@ export default function UsersManagementTable({ profiles: initialProfiles }: Prop
                   <button
                     onClick={() => handleRoleChange(p.id, p.role)}
                     disabled={loadingId === p.id}
-                    title="클릭 시 역할 순환 변경"
+                    aria-label={`${p.name || p.email || p.id} 역할: ${ROLE_LABEL[p.role] ?? p.role}. 클릭 시 순환 변경`}
+                    aria-busy={loadingId === p.id}
                     style={{
                       padding: '3px 10px', borderRadius: 12,
                       border: `1px solid ${ROLE_COLOR[p.role] ?? 'var(--border)'}`,

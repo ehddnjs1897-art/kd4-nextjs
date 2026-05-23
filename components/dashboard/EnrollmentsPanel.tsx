@@ -37,6 +37,7 @@ export default function EnrollmentsPanel({
   const [items, setItems] = useState<Enrollment[]>(enrollments)
   const [loading, setLoading] = useState(false)
   const [msg, setMsg] = useState('')
+  const [msgType, setMsgType] = useState<'success' | 'error'>('success')
   const [confirmingRestId, setConfirmingRestId] = useState<string | null>(null)
 
   // 이번 달 '확정' 클래스 (이어서 수강 대상)
@@ -62,12 +63,15 @@ export default function EnrollmentsPanel({
       })
       const json = await res.json()
       if (!res.ok) {
+        setMsgType('error')
         setMsg(json.error || '처리 중 오류가 발생했습니다.')
         return
       }
+      setMsgType('success')
       setMsg(`${ymLabel(nextMonth)} 수강이 신청되었습니다.`)
       router.refresh()
     } catch {
+      setMsgType('error')
       setMsg('네트워크 오류가 발생했습니다.')
     } finally {
       setLoading(false)
@@ -88,9 +92,11 @@ export default function EnrollmentsPanel({
         setItems((prev) => prev.map((e) => (e.id === id ? { ...e, status: '휴강' } : e)))
       } else {
         const json = await res.json().catch(() => ({}))
+        setMsgType('error')
         setMsg(json.error || '휴강 처리 중 오류가 발생했습니다.')
       }
     } catch {
+      setMsgType('error')
       setMsg('네트워크 오류가 발생했습니다.')
     } finally {
       setLoading(false)
@@ -116,7 +122,7 @@ export default function EnrollmentsPanel({
         </div>
       )}
 
-      {msg && <p role="status" aria-live="polite" style={{ fontSize: '0.8rem', color: 'var(--gold)' }}>{msg}</p>}
+      {msg && <p role={msgType === 'error' ? 'alert' : 'status'} aria-live={msgType === 'error' ? 'assertive' : 'polite'} style={{ fontSize: '0.8rem', color: msgType === 'error' ? '#f87171' : 'var(--gold)' }}>{msg}</p>}
 
       {/* 수강 내역 */}
       {items.length === 0 ? (
@@ -145,11 +151,11 @@ export default function EnrollmentsPanel({
               {e.status === '확정' && (
                 confirmingRestId === e.id ? (
                   <div style={{ display: 'flex', gap: 5 }}>
-                    <button type="button" onClick={() => setConfirmingRestId(null)} style={{ ...S.btnGhost, fontSize: '0.75rem', padding: '4px 8px' }}>취소</button>
-                    <button type="button" onClick={() => setRest(e.id)} disabled={loading} style={{ ...S.btnGhost, background: 'rgba(239,68,68,0.1)', borderColor: 'rgba(239,68,68,0.3)', color: '#ef4444', fontSize: '0.75rem', padding: '4px 8px' }}>확인</button>
+                    <button type="button" aria-label={`${e.class_name} 휴강 취소`} onClick={() => setConfirmingRestId(null)} style={{ ...S.btnGhost, fontSize: '0.75rem', padding: '4px 8px' }}>취소</button>
+                    <button type="button" aria-label={`${e.class_name} 휴강 확인`} onClick={() => setRest(e.id)} disabled={loading} style={{ ...S.btnGhost, background: 'rgba(239,68,68,0.1)', borderColor: 'rgba(239,68,68,0.3)', color: '#ef4444', fontSize: '0.75rem', padding: '4px 8px' }}>확인</button>
                   </div>
                 ) : (
-                  <button type="button" onClick={() => setRest(e.id)} disabled={loading} style={S.btnGhost}>
+                  <button type="button" aria-label={`${e.class_name} 휴강 신청`} onClick={() => setRest(e.id)} disabled={loading} style={S.btnGhost}>
                     휴강
                   </button>
                 )

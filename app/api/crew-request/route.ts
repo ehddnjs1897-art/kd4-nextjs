@@ -48,8 +48,8 @@ export async function POST() {
 
     const currentRole = (profile?.role ?? 'user') as string
 
-    // 이미 신청했거나 승인된 경우 — actor/member 포함: 역할 강등 방지
-    const CREW_ALREADY = ['actor', 'member', 'crew_pending', 'crew', 'editor', 'director_pending', 'director', 'admin']
+    // 이미 신청했거나 승인된 경우 — actor/member는 기본 가입 역할이므로 제외 (제외 시 100% 사용자 차단)
+    const CREW_ALREADY = ['crew_pending', 'crew', 'editor', 'director_pending', 'director', 'admin']
     if (CREW_ALREADY.includes(currentRole)) {
       return NextResponse.json(
         { error: '이미 신청되었거나 크루 권한이 있습니다.', role: currentRole },
@@ -57,7 +57,7 @@ export async function POST() {
       )
     }
 
-    // role='user'인 행만 원자적으로 업데이트 — 관리자 승인 경쟁 조건 방지
+    // actor/member 역할(기본 가입 역할)인 행만 원자적으로 업데이트 — 관리자 승인 경쟁 조건 방지
     const applicantName = profile?.name ?? user.user_metadata?.name ?? user.email?.split('@')[0] ?? null
     const { data: updated, error: updateErr } = await supabaseAdmin
       .from('profiles')
@@ -67,7 +67,7 @@ export async function POST() {
         email: user.email ?? null,
       })
       .eq('id', user.id)
-      .eq('role', 'user')
+      .in('role', ['actor', 'member'])
       .select('id')
 
     if (updateErr) {

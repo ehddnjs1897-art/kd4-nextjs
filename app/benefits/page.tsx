@@ -233,7 +233,7 @@ export default function BenefitsPage() {
             letterSpacing: '0.02em',
           }}>보강제도 안내</h3>
 
-          <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <ol role="list" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
             {RESCHEDULE_STEPS.map((step, i) => (
               <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
                 <span style={{

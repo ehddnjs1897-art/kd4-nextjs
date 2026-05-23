@@ -191,8 +191,8 @@ export default function OnboardingForm({
     <div style={{ maxWidth: 680 }}>
 
       {/* 한줄소개 */}
-      <section style={sec}>
-        <h3 style={secTitle}>한줄소개</h3>
+      <section style={sec} aria-labelledby="onb-casting-summary">
+        <h3 id="onb-casting-summary" style={secTitle}>한줄소개</h3>
         <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 12 }}>
           캐스팅 디렉터에게 보이는 짧은 자기소개입니다.
           <em style={{ color: 'rgba(255,255,255,0.45)', marginLeft: 6 }}>"장르를 넘나드는 탄탄한 기본기의 배우"</em>
@@ -213,8 +213,8 @@ export default function OnboardingForm({
       </section>
 
       {/* PPTX */}
-      <section style={sec}>
-        <h3 style={secTitle}>프로필 PPTX</h3>
+      <section style={sec} aria-labelledby="onb-pptx">
+        <h3 id="onb-pptx" style={secTitle}>프로필 PPTX</h3>
         <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 14 }}>
           <strong>.pptx 형식</strong>만 가능, 10MB 이하. PDF는 PowerPoint에서 .pptx로 변환 후 올려주세요.
         </p>
@@ -226,8 +226,8 @@ export default function OnboardingForm({
       </section>
 
       {/* 사진 */}
-      <section style={sec}>
-        <h3 style={secTitle}>프로필 사진</h3>
+      <section style={sec} aria-labelledby="onb-photos">
+        <h3 id="onb-photos" style={secTitle}>프로필 사진</h3>
         <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 14 }}>
           최대 3장, 가로·세로 무관, 장당 5MB 이하.
           카카오톡 공유용 <strong>가로(16:9·4:3)</strong> 사진을 1장 이상 포함해 주세요.
@@ -265,8 +265,8 @@ export default function OnboardingForm({
       </section>
 
       {/* 영상 */}
-      <section style={sec}>
-        <h3 style={secTitle}>출연영상</h3>
+      <section style={sec} aria-labelledby="onb-videos">
+        <h3 id="onb-videos" style={secTitle}>출연영상</h3>
         <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 14 }}>
           mp4 권장, 최대 300MB. 용량이 크면 업로드에 시간이 걸릴 수 있습니다.
         </p>

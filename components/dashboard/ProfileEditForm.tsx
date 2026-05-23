@@ -201,6 +201,8 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
                 onChange={e => setName(e.target.value)}
                 required maxLength={50}
                 autoComplete="name"
+                aria-invalid={!!error}
+                aria-describedby={error ? 'profile-edit-error' : undefined}
                 style={inputStyle}
                 autoFocus
               />
@@ -221,6 +223,8 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
                 placeholder="010-0000-0000"
                 maxLength={20}
                 autoComplete="tel"
+                aria-invalid={!!error}
+                aria-describedby={error ? 'profile-edit-error' : undefined}
                 style={inputStyle}
               />
             ) : (
@@ -252,7 +256,7 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
 
         {/* 에러 */}
         {error && (
-          <p role="alert" aria-live="assertive" style={{
+          <p id="profile-edit-error" role="alert" aria-live="assertive" style={{
             fontSize: '0.8rem', color: '#ff6b6b', marginTop: 14,
             padding: '8px 12px', background: 'rgba(220,38,38,0.08)',
             border: '1px solid rgba(220,38,38,0.2)', borderRadius: 5,
