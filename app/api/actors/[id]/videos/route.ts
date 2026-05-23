@@ -39,6 +39,13 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요. (5분 최대 10개)' }, { status: 429 })
     }
     videoAddMap.set(user.id, [...times, now])
+    // 오래된 항목 정리 (메모리 누수 방지)
+    if (videoAddMap.size > 1000) {
+      const cutoffV = now - VIDEO_WINDOW_MS
+      for (const [k, v] of videoAddMap) {
+        if (v.every(t => t < cutoffV)) videoAddMap.delete(k)
+      }
+    }
 
     let parsedBody: { youtube_id?: string; r2_key?: string; title?: string; video_type?: string }
     try {

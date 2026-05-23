@@ -38,6 +38,13 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요. (5분 최대 30개)' }, { status: 429 })
     }
     filmographyPostMap.set(user.id, [...times, now])
+    // 오래된 항목 정리 (메모리 누수 방지)
+    if (filmographyPostMap.size > 1000) {
+      const cutoffF = now - FILM_WINDOW_MS
+      for (const [k, v] of filmographyPostMap) {
+        if (v.every(t => t < cutoffF)) filmographyPostMap.delete(k)
+      }
+    }
 
     let parsedBody: { category?: string; year?: number; title?: string; role?: string; broadcaster?: string; film_type?: string }
     try {

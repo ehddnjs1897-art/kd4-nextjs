@@ -20,6 +20,14 @@ function sha256(value: string) {
   return createHash('sha256').update(value.trim().toLowerCase()).digest('hex')
 }
 
+// Make.com 웹훅 URL 호스트 허용 목록 검증 (SSRF 방어)
+function isWebhookUrlSafe(url: string): boolean {
+  try {
+    const u = new URL(url)
+    return u.protocol === 'https:' && /(?:^|\.)make\.com$/.test(u.hostname)
+  } catch { return false }
+}
+
 function normalizePhone(phone: string) {
   const digits = phone.replace(/\D/g, '')
   // 한국 번호: 010xxxx → 82010xxxx (국가코드 추가, 앞 0 제거)
@@ -97,6 +105,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
     notifyPhoneMap.set(phone, Date.now())
+    // 오래된 항목 정리 (메모리 누수 방지 — 디바운스 창 경과 항목 삭제)
+    if (notifyPhoneMap.size > 500) {
+      const cutoff = Date.now() - NOTIFY_DEBOUNCE_MS
+      for (const [k, v] of notifyPhoneMap) {
+        if (v < cutoff) notifyPhoneMap.delete(k)
+      }
+    }
 
     // Rate limit: 동일 연락처로 5분 내 3회 초과 차단 (SMS 비용 폭탄 방지)
     const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString()
@@ -200,7 +215,7 @@ export async function POST(request: NextRequest) {
     //   background fetch 가 발사되지 못함 (5/11 안현빈, 5/12 최문일 새벽 신청 누락 사고).
     //   이제 응답 전 webhook 완료 대기. 단 webhook 자체가 실패해도 Supabase 데이터는 보존됨.
     const webhookUrl = process.env.MAKE_WEBHOOK_URL
-    if (webhookUrl) {
+    if (webhookUrl && isWebhookUrlSafe(webhookUrl)) {
       // 선택 필드 trim + length cap → 오염된 입력이 Make 시나리오에 그대로 흘러들어가지 않도록
       const sanitizedPayload = {
         name,

@@ -106,6 +106,7 @@ export default function GameStartPage() {
             <button
               key={c.id}
               onClick={() => setSelected(c.id)}
+              aria-pressed={selected === c.id}
               style={{
                 flex: 1,
                 maxWidth: 130,

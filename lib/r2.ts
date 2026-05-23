@@ -1,3 +1,5 @@
+import 'server-only'
+
 /**
  * Cloudflare R2 클라이언트 (S3 호환)
  *

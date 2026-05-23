@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
+// POST 엔드포인트 인메모리 유저 디바운스 (30초 — DB count 경쟁 조건 완화)
+const postsPostDebounceMap = new Map<string, number>()
+const POSTS_POST_DEBOUNCE_MS = 30_000
+
 // GET 엔드포인트 IP 기반 레이트 리밋 (60 req/min — DoS 방어)
 const postsGetRateMap = new Map<string, { count: number; resetAt: number }>()
 const POSTS_GET_RATE_LIMIT = 60
@@ -118,6 +122,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '올바른 카테고리를 선택해주세요.' }, { status: 400 })
     }
   
+    // 인메모리 디바운스 — DB count 비원자적 경쟁 조건 완화 (30초 내 재시도 차단)
+    const lastPost = postsPostDebounceMap.get(user.id) ?? 0
+    if (Date.now() - lastPost < POSTS_POST_DEBOUNCE_MS) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
+    postsPostDebounceMap.set(user.id, Date.now())
+    if (postsPostDebounceMap.size > 1000) {
+      const cutoffP = Date.now() - POSTS_POST_DEBOUNCE_MS
+      for (const [k, v] of postsPostDebounceMap) {
+        if (v < cutoffP) postsPostDebounceMap.delete(k)
+      }
+    }
+
     // 레이트 리밋: 1분에 최대 5개 (스팸 방지)
     const oneMinAgo = new Date(Date.now() - 60_000).toISOString()
     const { count: recentPostCount } = await supabaseAdmin

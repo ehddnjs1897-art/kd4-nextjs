@@ -1313,6 +1313,12 @@ export default function JoinPage() {
               ))}
             </div>
           </div>
+          {/* 스크린리더 전용 후기 목록 (마퀴는 aria-hidden이므로 텍스트 대안 제공) */}
+          <ul className="sr-only">
+            {REVIEW_MARQUEE_ROW1.map((r) => (
+              <li key={r.author}>&ldquo;{r.text}&rdquo; — {r.author}</li>
+            ))}
+          </ul>
 
           {/* 인라인 CTA */}
           <div style={{ textAlign: 'center', marginTop: '24px' }}>

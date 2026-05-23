@@ -1,3 +1,5 @@
+import 'server-only'
+
 /**
  * 배우 캐스팅 태그 자동 분류 — Gemini 2.0 Flash
  *

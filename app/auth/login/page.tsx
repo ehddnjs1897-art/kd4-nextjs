@@ -181,7 +181,7 @@ function LoginContent() {
         </form>
 
         {/* 구분선 */}
-        <div style={styles.divider}>
+        <div style={styles.divider} aria-hidden="true">
           <span style={styles.dividerLine} />
           <span style={styles.dividerText}>또는</span>
           <span style={styles.dividerLine} />

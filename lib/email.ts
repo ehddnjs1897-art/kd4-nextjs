@@ -1,3 +1,5 @@
+import 'server-only'
+
 /**
  * lib/email.ts — Resend 기반 이메일 발송 유틸
  * RESEND_API_KEY 없으면 콘솔 경고만 출력 (에러 안 냄)

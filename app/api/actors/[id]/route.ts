@@ -108,6 +108,13 @@ export async function PATCH(
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
     actorPatchMap.set(user.id, nowTs)
+    // 오래된 항목 정리 (메모리 누수 방지)
+    if (actorPatchMap.size > 1000) {
+      const cutoff = nowTs - PATCH_COOLDOWN_MS
+      for (const [k, v] of actorPatchMap) {
+        if (v < cutoff) actorPatchMap.delete(k)
+      }
+    }
 
     let body: Record<string, unknown>
     try {

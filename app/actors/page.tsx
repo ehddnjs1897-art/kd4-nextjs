@@ -216,8 +216,8 @@ export default async function ActorsPage({ searchParams }: PageProps) {
         {/* 필터바 */}
         <div style={styles.filterSection}>
           <div style={styles.filterGroup}>
-            <span style={styles.filterLabel}>성별</span>
-            <div style={styles.filterBtnGroup}>
+            <span id="filter-label-gender" style={styles.filterLabel}>성별</span>
+            <div role="group" aria-labelledby="filter-label-gender" style={styles.filterBtnGroup}>
               {GENDER_OPTIONS.map((opt) => (
                 <Link
                   key={opt.value}
@@ -235,8 +235,8 @@ export default async function ActorsPage({ searchParams }: PageProps) {
           </div>
 
           <div style={styles.filterGroup}>
-            <span style={styles.filterLabel}>연령대</span>
-            <div style={styles.filterBtnGroup}>
+            <span id="filter-label-age" style={styles.filterLabel}>연령대</span>
+            <div role="group" aria-labelledby="filter-label-age" style={styles.filterBtnGroup}>
               {AGE_OPTIONS.map((opt) => (
                 <Link
                   key={opt.value}
@@ -256,8 +256,8 @@ export default async function ActorsPage({ searchParams }: PageProps) {
           {/* 캐스팅 타입 — 자동 분류된 태그 (회사원/형사/엄마 등) */}
           {(allTags.length > 0 || tag !== 'all') && (
             <div style={styles.filterGroup}>
-              <span style={styles.filterLabel}>캐스팅 타입</span>
-              <div style={styles.filterBtnGroup}>
+              <span id="filter-label-tag" style={styles.filterLabel}>캐스팅 타입</span>
+              <div role="group" aria-labelledby="filter-label-tag" style={styles.filterBtnGroup}>
                 <Link
                   href={filterHref('tag', 'all')}
                   aria-current={tag === 'all' ? 'true' : undefined}

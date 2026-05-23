@@ -16,8 +16,35 @@ import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import type { Actor, ActorPublic } from '@/lib/types'
 
+// GET 엔드포인트 IP 기반 레이트 리밋 (60 req/min — DoS 방어)
+const actorsGetRateMap = new Map<string, { count: number; resetAt: number }>()
+const ACTORS_GET_RATE_LIMIT = 60
+const ACTORS_GET_RATE_WINDOW_MS = 60_000
+
 export async function GET(request: NextRequest) {
   try {
+    // IP 레이트 리밋: 1분 60회 초과 차단
+    const ipActor = request.headers.get('x-real-ip')
+      ?? request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+      ?? null
+    if (ipActor) {
+      const nowA = Date.now()
+      const bucketA = actorsGetRateMap.get(ipActor)
+      if (bucketA && nowA < bucketA.resetAt) {
+        if (bucketA.count >= ACTORS_GET_RATE_LIMIT) {
+          return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+        }
+        bucketA.count++
+      } else {
+        actorsGetRateMap.set(ipActor, { count: 1, resetAt: nowA + ACTORS_GET_RATE_WINDOW_MS })
+        if (actorsGetRateMap.size > 2000) {
+          for (const [k, v] of actorsGetRateMap) {
+            if (nowA > v.resetAt) actorsGetRateMap.delete(k)
+          }
+        }
+      }
+    }
+
     const { searchParams } = new URL(request.url)
 
     // 허용 목록 — 예상치 않은 값은 무시 (불필요한 DB 쿼리 방지)

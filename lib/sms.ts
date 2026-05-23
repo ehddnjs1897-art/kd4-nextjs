@@ -1,3 +1,4 @@
+import 'server-only'
 import { SolapiMessageService } from 'solapi'
 
 const FROM_NUMBER = process.env.SOLAPI_FROM_NUMBER ?? ''

@@ -210,6 +210,7 @@ export default function InsightsPage() {
               <div style={{ display: 'flex', gap: 8, marginBottom: showMemo ? 10 : 0 }}>
                 <input
                   className="ins-input"
+                  aria-label="링크 URL"
                   placeholder="링크 붙여넣기 (https://...)"
                   value={url}
                   onChange={e => setUrl(e.target.value)}
@@ -227,6 +228,7 @@ export default function InsightsPage() {
               {showMemo && (
                 <textarea
                   className="ins-input"
+                  aria-label="메모"
                   placeholder="짧은 메모 — AI가 3줄 요약으로 확장해줌"
                   value={memo}
                   onChange={e => setMemo(e.target.value)}
@@ -239,10 +241,14 @@ export default function InsightsPage() {
           ) : (
             <>
               <div
+                role="button"
+                tabIndex={0}
+                aria-label="이미지 파일 드래그 또는 클릭해서 업로드"
                 onDragOver={e => { e.preventDefault(); setDragOver(true) }}
                 onDragLeave={() => setDragOver(false)}
                 onDrop={e => { e.preventDefault(); setDragOver(false); uploadFiles(e.dataTransfer.files) }}
                 onClick={() => fileInputRef.current?.click()}
+                onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && fileInputRef.current?.click()}
                 style={{
                   border: `2px dashed ${dragOver ? 'var(--gold)' : 'var(--border)'}`,
                   borderRadius: 10,
@@ -268,6 +274,7 @@ export default function InsightsPage() {
               </div>
               <input
                 className="ins-input"
+                aria-label="이미지 제목"
                 placeholder="제목 (선택)"
                 value={imageTitle}
                 onChange={e => setImageTitle(e.target.value)}
@@ -276,6 +283,7 @@ export default function InsightsPage() {
               />
               <textarea
                 className="ins-input"
+                aria-label="메모"
                 placeholder="메모 (선택) — 왜 저장했는지"
                 value={memo}
                 onChange={e => setMemo(e.target.value)}
@@ -295,6 +303,7 @@ export default function InsightsPage() {
               <button
                 key={c}
                 className={`filter-btn${filterCategory === c ? ' active' : ''}`}
+                aria-pressed={filterCategory === c}
                 onClick={() => setFilterCategory(c)}
               >{c}</button>
             ))}
@@ -307,11 +316,13 @@ export default function InsightsPage() {
               <button
                 key={s.key}
                 className={`filter-btn${filterSource === s.key ? ' active' : ''}`}
+                aria-pressed={filterSource === s.key}
                 onClick={() => setFilterSource(s.key)}
               >{s.label}</button>
             ))}
             <button
               className={`filter-btn${filterFavorite ? ' active' : ''}`}
+              aria-pressed={filterFavorite}
               onClick={() => setFilterFavorite(v => !v)}
             >★ 즐겨찾기</button>
           </div>
@@ -321,6 +332,7 @@ export default function InsightsPage() {
         <div style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
           <input
             className="ins-input"
+            aria-label="인사이트 검색"
             placeholder="검색…"
             value={searchInput}
             onChange={e => setSearchInput(e.target.value)}
