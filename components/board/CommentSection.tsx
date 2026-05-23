@@ -317,8 +317,10 @@ export default function CommentSection({
           <a
             href="/auth/login"
             style={{
-              display: 'inline-block',
+              display: 'inline-flex',
+              alignItems: 'center',
               padding: '8px 20px',
+              minHeight: 44,
               background: 'var(--gold)',
               color: '#ffffff',
               borderRadius: 'var(--radius)',

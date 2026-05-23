@@ -442,7 +442,8 @@ export default function HomePage() {
             style={{
               padding: "14px 32px", border: "1px solid rgba(17,17,17,0.35)", color: "#111111",
               fontWeight: 600, fontSize: "0.85rem", letterSpacing: "0.08em",
-              borderRadius: "var(--radius)", display: "inline-block",
+              borderRadius: "var(--radius)", display: "inline-flex", alignItems: "center",
+              minHeight: 44,
               background: "rgba(255,255,255,0.35)", backdropFilter: "blur(4px)", transition: "background var(--transition)",
             }}
           >

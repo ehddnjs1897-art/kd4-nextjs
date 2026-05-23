@@ -211,7 +211,7 @@ export default function GameOver({
       </div>
 
       {error && (
-        <p style={{ color: "#ff6666", fontSize: 12, marginTop: 12 }}>{error}</p>
+        <p role="alert" style={{ color: "#ff6666", fontSize: 12, marginTop: 12 }}>{error}</p>
       )}
 
       <Link

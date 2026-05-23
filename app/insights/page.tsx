@@ -186,7 +186,7 @@ export default function InsightsPage() {
         .filter-btn.active { background: var(--gold); color: #000; border-color: var(--gold); font-weight: 600; }
         .ins-input { width: 100%; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--white); font-size: 14px; font-family: var(--font-sans); }
         .ins-input:focus { outline: 2px solid var(--gold); outline-offset: -1px; border-color: var(--gold); box-shadow: 0 0 0 2px rgba(21,72,138,0.15); }
-        .ins-btn { padding: 10px 22px; background: var(--gold); color: #000; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; white-space: nowrap; }
+        .ins-btn { padding: 10px 22px; background: var(--gold); color: #000; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; white-space: nowrap; min-height: 44px; }
         .ins-btn:disabled { opacity: .5; cursor: not-allowed; }
         .ins-btn-ghost { padding: 10px 22px; background: transparent; color: var(--gray); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 14px; }
       `}</style>

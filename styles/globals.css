@@ -187,6 +187,7 @@ ul, ol { list-style: none; }
   font-weight: 600;
   letter-spacing: 0.12em;
   padding: 14px 32px;
+  min-height: 44px;
   background: var(--gold);
   color: #ffffff;
   text-transform: uppercase;

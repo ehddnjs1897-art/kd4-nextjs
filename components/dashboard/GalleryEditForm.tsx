@@ -144,6 +144,7 @@ const s: Record<string, React.CSSProperties> = {
     border: '1px solid rgba(239,68,68,0.3)',
     padding: '6px 14px',
     fontSize: '0.78rem',
+    minHeight: 44,
   },
   photoGrid: {
     display: 'grid',
@@ -701,7 +702,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                         대표 지정
                       </button>
                     )}
-                    <button type="button" onClick={() => deletePhoto(p.id, p.is_profile)} style={{ ...s.btn, ...s.btnDanger }}>
+                    <button type="button" onClick={() => deletePhoto(p.id, p.is_profile)} aria-label={p.is_profile ? '대표 프로필 사진 삭제' : `사진 ${idx + 1} 삭제`} style={{ ...s.btn, ...s.btnDanger }}>
                       삭제
                     </button>
                   </>
@@ -745,7 +746,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                       <button type="button" onClick={() => deleteR2Video(v.id)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 44, border: 'none' }}>확인</button>
                     </div>
                   ) : (
-                    <button type="button" onClick={() => deleteR2Video(v.id)} style={{ ...s.btn, ...s.btnDanger, flexShrink: 0 }}>삭제</button>
+                    <button type="button" onClick={() => deleteR2Video(v.id)} aria-label={`${v.title || '영상'} 삭제`} style={{ ...s.btn, ...s.btnDanger, flexShrink: 0 }}>삭제</button>
                   )}
                 </div>
               ))}
@@ -780,7 +781,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                       <button type="button" onClick={() => deleteVideo(v.id)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 44, border: 'none' }}>확인</button>
                     </div>
                   ) : (
-                    <button type="button" onClick={() => deleteVideo(v.id)} style={{ ...s.btn, ...s.btnDanger, flexShrink: 0 }}>삭제</button>
+                    <button type="button" onClick={() => deleteVideo(v.id)} aria-label={`${v.title || v.youtube_id} 삭제`} style={{ ...s.btn, ...s.btnDanger, flexShrink: 0 }}>삭제</button>
                   )}
                 </div>
               ))}
@@ -832,7 +833,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                     <button type="button" onClick={() => deleteFilm(i)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 44, border: 'none' }}>확인</button>
                   </div>
                 ) : (
-                  <button type="button" onClick={() => deleteFilm(i)} style={{ ...s.btn, ...s.btnDanger }}>삭제</button>
+                  <button type="button" onClick={() => deleteFilm(i)} aria-label={`필모그래피 ${i + 1}번 삭제`} style={{ ...s.btn, ...s.btnDanger }}>삭제</button>
                 )}
               </div>
             ))}
