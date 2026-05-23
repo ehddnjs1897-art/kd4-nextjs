@@ -21,12 +21,16 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
 export function getActorPhotoUrl(actor: ActorPhotoSource): string {
   // 1순위: Storage
   if (actor.storage_photo_path && SUPABASE_URL) {
+    // 경로 순회 공격 방지
+    if (actor.storage_photo_path.split('/').some((seg: string) => seg === '..' || seg === '.')) {
+      return '/placeholder-actor.svg'
+    }
     return `${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKET}/${actor.storage_photo_path}`
   }
 
   // 2순위: Drive 썸네일
   if (actor.drive_photo_id) {
-    return `https://drive.google.com/thumbnail?id=${actor.drive_photo_id}&sz=w600`
+    return `https://drive.google.com/thumbnail?id=${encodeURIComponent(actor.drive_photo_id)}&sz=w600`
   }
 
   // 3순위: 플레이스홀더

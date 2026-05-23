@@ -352,7 +352,7 @@ export default async function ActorDetailPage({
                     sizes="(max-width: 660px) 200px, 290px"
                     style={{ objectFit: 'cover', objectPosition: 'top center' }}
                     priority
-                    unoptimized
+                    unoptimized={!actor.storage_photo_path || !!actor.profile_photo}
                   />
                 ) : (
                   <div aria-hidden="true" style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray)', fontSize: '3rem' }}>👤</div>

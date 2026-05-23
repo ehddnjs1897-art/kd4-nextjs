@@ -280,7 +280,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                       fill
                       sizes="(max-width:640px) 100vw, 33vw"
                       style={{ objectFit: 'cover', objectPosition: 'center top' }}
-                      unoptimized
+                      unoptimized={!url.includes('.supabase.co/storage/')}
                     />
                   </div>
                 )}
@@ -336,7 +336,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                           fill
                           sizes="(max-width:640px) 50vw, 25vw"
                           style={{ objectFit: 'cover', objectPosition: 'center top' }}
-                          unoptimized
+                          unoptimized={!photo?.storage_path}
                         />
                       )
                     ) : (

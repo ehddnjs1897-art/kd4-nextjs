@@ -71,6 +71,8 @@ function isSafeOgUrl(url: string): boolean {
 function getPhotoUrl(actor: ActorOg): string | null {
   if (actor.profile_photo && isSafeOgUrl(actor.profile_photo)) return actor.profile_photo
   if (actor.storage_photo_path && SUPABASE_URL) {
+    // 경로 순회 공격 방지
+    if (actor.storage_photo_path.split('/').some((seg: string) => seg === '..' || seg === '.')) return null
     return `${SUPABASE_URL}/storage/v1/object/public/actor-photos/${actor.storage_photo_path}`
   }
   if (actor.drive_photo_id) {
