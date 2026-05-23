@@ -151,11 +151,12 @@ function profilePhotoUrl(actor: Actor): string {
   // 우선순위: profile_photo (수동 업로드) → Storage → Drive → 플레이스홀더
   if (actor.profile_photo) return actor.profile_photo
   if (actor.storage_photo_path) {
+    if (actor.storage_photo_path.split('/').some((seg: string) => seg === '..' || seg === '.')) return '/placeholder-actor.svg'
     const base = process.env.NEXT_PUBLIC_SUPABASE_URL
     if (base) return `${base}/storage/v1/object/public/actor-photos/${actor.storage_photo_path}`
   }
   if (actor.drive_photo_id)
-    return `https://drive.google.com/thumbnail?id=${actor.drive_photo_id}&sz=w900`
+    return `https://drive.google.com/thumbnail?id=${encodeURIComponent(actor.drive_photo_id)}&sz=w900`
   return '/placeholder-actor.svg'
 }
 

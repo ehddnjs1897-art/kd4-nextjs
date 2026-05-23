@@ -213,7 +213,7 @@ export async function POST(request: NextRequest) {
       }
     } catch (dbError) {
       // PII 제거 — Vercel 로그에 개인정보 평문 저장 방지
-      console.error('[notify] Supabase insert 실패:', dbError, {
+      console.error('[notify] Supabase insert 실패:', dbError instanceof Error ? dbError.message : (dbError as { message?: string })?.message ?? String(dbError), {
         phone: typeof record?.phone === 'string' ? record.phone.slice(0, 3) + '****' : null,
         name: '[redacted]', email: '[redacted]',
       })

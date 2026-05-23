@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
   if (typeof score !== 'number' || !Number.isFinite(score) || !Number.isInteger(score) || score < 0 || score > 99999) {
     return NextResponse.json({ error: '유효하지 않은 점수입니다.' }, { status: 400 })
   }
-  if (typeof duration_ms !== 'number' || !Number.isFinite(duration_ms) || duration_ms <= 0 || duration_ms > 3_600_000) {
+  if (typeof duration_ms !== 'number' || !Number.isFinite(duration_ms) || !Number.isInteger(duration_ms) || duration_ms <= 0 || duration_ms > 3_600_000) {
     return NextResponse.json({ error: '유효하지 않은 게임 시간입니다.' }, { status: 400 })
   }
 
