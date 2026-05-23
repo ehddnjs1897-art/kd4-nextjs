@@ -57,10 +57,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     return withCors(NextResponse.json({ error: '잘못된 요청' }, { status: 400 }), origin)
   }
 
+  const VALID_INSIGHT_CATEGORIES = new Set(['연기', '비즈니스', '크리에이티브', '디자인', '기술', '라이프', '기타'])
+
   const updates: Record<string, unknown> = {}
   if (typeof body.is_favorite === 'boolean') updates.is_favorite = body.is_favorite
-  if (typeof body.memo === 'string') updates.memo = body.memo
-  if (typeof body.category === 'string') updates.category = body.category
+  if (typeof body.memo === 'string') updates.memo = body.memo.slice(0, 2000)
+  if (typeof body.category === 'string' && VALID_INSIGHT_CATEGORIES.has(body.category)) updates.category = body.category
 
   const { data, error } = await supabaseAdmin
     .from('insights')

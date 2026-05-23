@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { matchActorOnSignup, linkEnrollmentsOnSignup } from '@/lib/actor-matching'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 
 // 신규 가입은 모두 'actor' 기본 역할로 시작한다.
 // 디렉터 권한은 자동 부여하지 않고 대시보드에서 승인 신청 → 관리자 승인(director_pending → director).
@@ -58,7 +59,8 @@ export async function GET(request: Request) {
     const phone = user.user_metadata?.phone ?? ''
     const memberType = user.user_metadata?.member_type
     // 기존 역할 조회 — 승급된 역할(director/editor 등) 강등 방지
-    const { data: existingForRole } = await supabase
+    // supabaseAdmin: RLS 우회로 정확한 role 조회 (세션 초기화 전 RLS가 null 반환 방지)
+    const { data: existingForRole } = await supabaseAdmin
       .from('profiles')
       .select('role')
       .eq('id', user.id)
@@ -66,10 +68,11 @@ export async function GET(request: Request) {
     const initialRole = resolveInitialRole(memberType, existingForRole?.role)
 
     // ignoreDuplicates: false → role을 항상 올바르게 덮어씀
-    await supabase.from('profiles').upsert(
+    const { error: otpUpsertErr } = await supabaseAdmin.from('profiles').upsert(
       { id: user.id, name: name || null, phone: phone || null, role: initialRole },
       { onConflict: 'id' }
     )
+    if (otpUpsertErr) console.error('[auth/callback] OTP profile upsert 실패:', otpUpsertErr.message)
 
     if (name) {
       try {
@@ -115,7 +118,8 @@ export async function GET(request: Request) {
   const isOAuth = provider === 'google' || provider === 'kakao'
 
   // profiles 테이블에서 기존 프로필 확인
-  const { data: existingProfile } = await supabase
+  // supabaseAdmin: RLS 우회로 OAuth 콜백 시 정확한 role 보장
+  const { data: existingProfile } = await supabaseAdmin
     .from('profiles')
     .select('id, role')
     .eq('id', user.id)
@@ -126,10 +130,11 @@ export async function GET(request: Request) {
 
   // 신규 OAuth 유저: 임시 프로필 생성 후 유형 선택 페이지로
   if (isNewUser) {
-    await supabase.from('profiles').upsert(
+    const { error: newUserErr } = await supabaseAdmin.from('profiles').upsert(
       { id: user.id, name: name || null, role: 'actor' },
       { onConflict: 'id' }
     )
+    if (newUserErr) console.error('[auth/callback] 신규 OAuth 프로필 upsert 실패:', newUserErr.message)
     return NextResponse.redirect(`${origin}/auth/setup`)
   }
 
@@ -138,7 +143,7 @@ export async function GET(request: Request) {
   // 신규는 actor/member 기본, 기존 승급 역할은 유지 (디렉터 자동부여 X — 승인 절차로만)
   const initialRole = resolveInitialRole(memberType, existingProfile?.role)
 
-  const { error: upsertErr } = await supabase.from('profiles').upsert(
+  const { error: upsertErr } = await supabaseAdmin.from('profiles').upsert(
     {
       id: user.id,
       name: name || null,

@@ -18,16 +18,18 @@ export default function LeaderboardPage() {
   const [period, setPeriod] = useState<"weekly" | "alltime">("weekly")
   const [data, setData] = useState<LeaderboardEntry[]>([])
   const [loading, setLoading] = useState(true)
+  const [fetchError, setFetchError] = useState(false)
 
   useEffect(() => {
     setLoading(true)
+    setFetchError(false)
     fetch(`/api/game/scores?period=${period}&limit=20`)
       .then((r) => r.json())
       .then((res) => {
         setData(res.data || [])
         setLoading(false)
       })
-      .catch(() => setLoading(false))
+      .catch(() => { setFetchError(true); setLoading(false) })
   }, [period])
 
   const formatTime = (ms: number) => {
@@ -76,6 +78,7 @@ export default function LeaderboardPage() {
           <button
             key={p}
             onClick={() => setPeriod(p)}
+            aria-pressed={period === p}
             style={{
               background: period === p ? "#0057FF" : "rgba(255,255,255,0.05)",
               color: period === p ? "#fff" : "#666",
@@ -97,6 +100,16 @@ export default function LeaderboardPage() {
       {/* Leaderboard table */}
       {loading ? (
         <div style={{ textAlign: "center", color: "#444", padding: 40 }}>LOADING...</div>
+      ) : fetchError ? (
+        <div style={{ textAlign: "center", color: "#555", padding: 40 }}>
+          <p style={{ marginBottom: 12 }}>불러오기 실패</p>
+          <button
+            onClick={() => { setFetchError(false); setLoading(true) }}
+            style={{ color: "#0057FF", background: "none", border: "none", cursor: "pointer", fontSize: 14 }}
+          >
+            다시 시도
+          </button>
+        </div>
       ) : data.length === 0 ? (
         <div style={{ textAlign: "center", color: "#444", padding: 40 }}>
           <p>아직 기록이 없어요</p>

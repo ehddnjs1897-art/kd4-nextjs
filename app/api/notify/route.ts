@@ -97,7 +97,21 @@ export async function POST(request: NextRequest) {
       inquiry_type: record?.inquiry_type ?? null,
       motivation: record?.motivation ?? null,
       status: record?.status ?? '대기',
-      raw_payload: record,
+      // raw_payload: 알려진 필드만 — 임의 extra 필드 저장 방지 (DoS / injection)
+      raw_payload: {
+        name, phone, email: emailRaw,
+        class_name: typeof record?.class_name === 'string' ? record.class_name.trim().slice(0, 100) : null,
+        source: typeof record?.source === 'string' ? record.source.trim().slice(0, 100) : null,
+        inquiry_type: typeof record?.inquiry_type === 'string' ? record.inquiry_type.trim().slice(0, 100) : null,
+        motivation: typeof record?.motivation === 'string' ? record.motivation.trim().slice(0, 2000) : null,
+        utm_source: typeof record?.utm_source === 'string' ? record.utm_source.trim().slice(0, 200) : null,
+        utm_medium: typeof record?.utm_medium === 'string' ? record.utm_medium.trim().slice(0, 200) : null,
+        utm_campaign: typeof record?.utm_campaign === 'string' ? record.utm_campaign.trim().slice(0, 200) : null,
+        utm_content: typeof record?.utm_content === 'string' ? record.utm_content.trim().slice(0, 200) : null,
+        utm_term: typeof record?.utm_term === 'string' ? record.utm_term.trim().slice(0, 200) : null,
+        referrer: typeof record?.referrer === 'string' ? record.referrer.trim().slice(0, 500) : null,
+        status: typeof record?.status === 'string' ? record.status.trim().slice(0, 50) : '대기',
+      },
     }
     const utmFields = {
       utm_source: record?.utm_source ?? null,

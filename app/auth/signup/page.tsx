@@ -50,6 +50,10 @@ export default function SignupPage() {
       setError('비밀번호가 일치하지 않습니다.')
       return
     }
+    if (memberType === 'actor' && phone && !/^0[0-9]{1,2}-[0-9]{3,4}-[0-9]{4}$/.test(phone)) {
+      setError('연락처 형식이 올바르지 않습니다. (예: 010-1234-5678)')
+      return
+    }
 
     setLoading(true)
     const supabase = createClient()

@@ -93,12 +93,19 @@ export default function InsightsPage() {
   }
 
   const toggleFavorite = async (insight: Insight) => {
-    await fetch(`/api/insights/${insight.id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ is_favorite: !insight.is_favorite }),
-    })
+    // 낙관적 업데이트 먼저
     setInsights((prev: Insight[]) => prev.map((i: Insight) => i.id === insight.id ? { ...i, is_favorite: !i.is_favorite } : i))
+    try {
+      const res = await fetch(`/api/insights/${insight.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_favorite: !insight.is_favorite }),
+      })
+      if (!res.ok) throw new Error()
+    } catch {
+      // 실패 시 낙관적 업데이트 롤백
+      setInsights((prev: Insight[]) => prev.map((i: Insight) => i.id === insight.id ? { ...i, is_favorite: insight.is_favorite } : i))
+    }
   }
 
   const deleteInsight = async (id: string) => {
@@ -115,12 +122,20 @@ export default function InsightsPage() {
 
   const changeCategory = async (insight: Insight, category: string) => {
     setEditingCategoryId(null)
-    await fetch(`/api/insights/${insight.id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ category }),
-    })
+    const prevCategory = insight.category
+    // 낙관적 업데이트 먼저
     setInsights(prev => prev.map(i => i.id === insight.id ? { ...i, category: category as Insight['category'] } : i))
+    try {
+      const res = await fetch(`/api/insights/${insight.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category }),
+      })
+      if (!res.ok) throw new Error()
+    } catch {
+      // 실패 시 롤백
+      setInsights(prev => prev.map(i => i.id === insight.id ? { ...i, category: prevCategory } : i))
+    }
   }
 
   const sourceLabel = (t: InsightSourceType | null) =>

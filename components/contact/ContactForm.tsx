@@ -77,23 +77,35 @@ export default function ContactForm() {
 
     pixel.lead()
 
-    fetch('/api/notify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        record: {
-          name: form.name,
-          phone: form.phone,
-          email: form.email || null,
-          class_name: form.class_name || null,
-          source: form.source || null,
-          inquiry_type: form.inquiry_type || null,
-          motivation,
-          status: '대기',
-          created_at: new Date().toISOString(),
-        }
+    try {
+      const res = await fetch('/api/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          record: {
+            name: form.name,
+            phone: form.phone,
+            email: form.email || null,
+            class_name: form.class_name || null,
+            source: form.source || null,
+            inquiry_type: form.inquiry_type || null,
+            motivation,
+            status: '대기',
+            created_at: new Date().toISOString(),
+          }
+        })
       })
-    }).catch(() => {})
+      if (!res.ok) {
+        const json = await res.json().catch(() => ({}))
+        setError(json.error || '접수에 실패했습니다. 다시 시도해주세요.')
+        setLoading(false)
+        return
+      }
+    } catch {
+      setError('네트워크 오류가 발생했습니다. 다시 시도해주세요.')
+      setLoading(false)
+      return
+    }
 
     setDone(true)
     setLoading(false)
