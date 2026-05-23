@@ -3,7 +3,10 @@ import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
 import { SITE_URL } from '@/lib/constants'
-const ALLOWED_ORIGINS = new Set([SITE_URL, 'http://localhost:3000'])
+const ALLOWED_ORIGINS = new Set([
+  SITE_URL,
+  ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:3000'] : []),
+])
 
 function corsHeaders(origin: string | null): Record<string, string> {
   const allowed = origin && ALLOWED_ORIGINS.has(origin) ? origin : SITE_URL

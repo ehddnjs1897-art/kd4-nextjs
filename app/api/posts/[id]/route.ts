@@ -191,6 +191,10 @@ export async function DELETE(
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
     postDeleteMap.set(user.id, [...timesDel, nowDel])
+    if (postDeleteMap.size > 1000) {
+      const cutoffDel = nowDel - POST_DELETE_WINDOW_MS
+      for (const [k, v] of postDeleteMap) { if (v.every(t => t < cutoffDel)) postDeleteMap.delete(k) }
+    }
 
     // post + profile 병렬 조회 (둘 다 supabaseAdmin — RLS 우회, .maybeSingle()으로 PGRST116 로그 노이즈 방지)
     const [{ data: post, error: fetchError }, { data: profile }] = await Promise.all([

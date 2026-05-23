@@ -57,7 +57,7 @@ export default function ResetPasswordPage() {
           </div>
         ) : (
           <form onSubmit={handleReset} style={styles.form}>
-            {error && <div style={styles.errorBox}>{error}</div>}
+            {error && <div role="alert" style={styles.errorBox}>{error}</div>}
 
             <div style={styles.fieldGroup}>
               <label htmlFor="email" style={styles.label}>

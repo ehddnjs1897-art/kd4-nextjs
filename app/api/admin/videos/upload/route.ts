@@ -75,6 +75,9 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  const clAdminVideo = parseInt(request.headers.get('content-length') ?? '0', 10)
+  if (clAdminVideo > 520 * 1024 * 1024) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+
   try {
     const formData = await request.formData()
     const file = formData.get('file') as File | null

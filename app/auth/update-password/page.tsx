@@ -127,7 +127,7 @@ export default function UpdatePasswordPage() {
             <h1 style={styles.title}>새 비밀번호 입력</h1>
 
             <form onSubmit={handleUpdate} style={styles.form}>
-              {error && <div style={styles.errorBox}>{error}</div>}
+              {error && <div role="alert" style={styles.errorBox}>{error}</div>}
 
               <div style={styles.fieldGroup}>
                 <label htmlFor="password" style={styles.label}>

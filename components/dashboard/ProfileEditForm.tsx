@@ -131,6 +131,7 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
 
         {!editing ? (
           <button
+            type="button"
             onClick={() => { setEditing(true); setSuccess(false) }}
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 5,

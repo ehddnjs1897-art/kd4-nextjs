@@ -52,7 +52,7 @@ export async function POST() {
   }
 
   // supabaseAdmin으로 role + name + phone 업데이트 (클라이언트 RLS 우회)
-  await supabaseAdmin.from('profiles').upsert(
+  const { error: upsertErr } = await supabaseAdmin.from('profiles').upsert(
     {
       id: user.id,
       name: name || null,
@@ -62,6 +62,10 @@ export async function POST() {
     },
     { onConflict: 'id' }
   )
+  if (upsertErr) {
+    console.error('[on-signup] profiles upsert 실패:', upsertErr.message)
+    return NextResponse.json({ error: '프로필 설정 실패' }, { status: 500 })
+  }
 
   // 배우 매칭 (이름 + 전화번호 기준)
   let actorId: string | undefined

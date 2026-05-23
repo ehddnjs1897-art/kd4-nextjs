@@ -13,7 +13,10 @@ const VALID_SOURCE_TYPES = new Set<string>(['video', 'article', 'tweet', 'podcas
 
 // CORS는 자체 도메인 + 로컬 dev만 허용 (이전 '*'은 SSRF·CSRF 위험)
 import { SITE_URL } from '@/lib/constants'
-const ALLOWED_ORIGINS = new Set([SITE_URL, 'http://localhost:3000'])
+const ALLOWED_ORIGINS = new Set([
+  SITE_URL,
+  ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:3000'] : []),
+])
 
 function corsHeaders(origin: string | null): Record<string, string> {
   const allowed = origin && ALLOWED_ORIGINS.has(origin) ? origin : SITE_URL

@@ -7,7 +7,7 @@ import 'server-only'
 
 import { SITE_URL } from '@/lib/constants'
 
-const ADMIN_EMAIL = 'uikactors@gmail.com'
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'uikactors@gmail.com'
 // Resend 무료 플랜 기본 발신자 (도메인 인증 전까지)
 const FROM = 'KD4 알림 <onboarding@resend.dev>'
 

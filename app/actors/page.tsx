@@ -191,10 +191,20 @@ export default async function ActorsPage({ searchParams }: PageProps) {
 
   return (
     <div style={styles.page}>
-      <PageJsonLd schemas={[buildBreadcrumb([
-        { name: '홈', url: SITE_URL },
-        { name: '배우 DB', url: `${SITE_URL}/actors` },
-      ])]} />
+      <PageJsonLd schemas={[
+        buildBreadcrumb([
+          { name: '홈', url: SITE_URL },
+          { name: '배우 DB', url: `${SITE_URL}/actors` },
+        ]),
+        {
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          '@id': `${SITE_URL}/actors#list`,
+          name: 'KD4 배우 DB',
+          url: `${SITE_URL}/actors`,
+          numberOfItems: actors.length,
+        },
+      ]} />
       <style>{`
         @media (max-width: 640px) {
           .actors-grid { grid-template-columns: 1fr !important; }

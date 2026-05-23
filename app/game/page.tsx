@@ -104,6 +104,7 @@ export default function GameStartPage() {
         <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
           {CHARACTERS.map((c) => (
             <button
+              type="button"
               key={c.id}
               onClick={() => setSelected(c.id)}
               aria-pressed={selected === c.id}
@@ -177,6 +178,7 @@ export default function GameStartPage() {
 
       {/* Play button */}
       <button
+        type="button"
         onClick={() => router.push(`/game/play?char=${selected}`)}
         style={{
           background: "#0057FF",
