@@ -1,21 +1,10 @@
-import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import AdminEnrollments from '@/components/admin/AdminEnrollments'
 
 export const metadata = { title: '수강 현황 (관리자) | KD4', robots: { index: false, follow: false } }
 
 export default async function AdminEnrollmentsPage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login?next=/admin/enrollments')
-
-  // 권한 확인 먼저 — PII 데이터(enrollments)는 role 확인 후에만 조회
-  const { data: profile } = await supabaseAdmin
-    .from('profiles').select('role').eq('id', user.id).maybeSingle()
-  if (!profile || profile.role !== 'admin') redirect('/')
+  // auth/role은 app/admin/layout.tsx에서 처리
 
   const enrollRes = await supabaseAdmin
     .from('enrollments')

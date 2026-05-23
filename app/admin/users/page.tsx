@@ -1,9 +1,7 @@
 /**
  * /admin/users — 회원 관리 전용 페이지 (admin 전용)
  */
-import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import UsersManagementTable from './UsersManagementTable'
 
@@ -35,16 +33,8 @@ async function fetchProfiles(): Promise<Profile[]> {
 }
 
 export default async function AdminUsersPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login?next=/admin')
-
-  // 권한 확인 + 전체 profiles 병렬 조회
-  const [{ data: myProfile }, profiles] = await Promise.all([
-    supabaseAdmin.from('profiles').select('role').eq('id', user.id).maybeSingle(),
-    fetchProfiles(),
-  ])
-  if (myProfile?.role !== 'admin') redirect('/dashboard')
+  // auth/role은 app/admin/layout.tsx에서 처리
+  const profiles = await fetchProfiles()
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingTop: 80, paddingBottom: 80 }}>

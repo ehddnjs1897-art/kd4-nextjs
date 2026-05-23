@@ -5,21 +5,12 @@
  * - 공개/비공개 토글
  * - 50명 배우 가입 후 관리자가 검토하는 메인 페이지
  */
-import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import Link from 'next/link'
 import ActorManagementTable, { ActorRow } from './ActorManagementTable'
 
 export default async function AdminActorsPage() {
-  // ── 관리자 인증 ──────────────────────────────────────────────────────────────
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login?next=/admin/actors')
-
-  const { data: profile } = await supabaseAdmin
-    .from('profiles').select('role').eq('id', user.id).maybeSingle()
-  if (!profile || profile.role !== 'admin') redirect('/dashboard')
+  // auth/role은 app/admin/layout.tsx에서 처리
 
   // ── 데이터 fetch (Opus 설계: 4쿼리 병렬, actor_id별 집계) ──────────────────
   const [actorsRes, photosRes, videosRes, filmRes, profilesRes] = await Promise.all([
