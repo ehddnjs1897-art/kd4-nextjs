@@ -19,8 +19,7 @@ export default function FloatingCTA() {
       {/* 카카오 플로팅 버블 */}
       <a
         href="https://pf.kakao.com/_ximxdqn"
-        target="_blank"
-        rel="noopener noreferrer"
+        target="_blank" rel="noopener noreferrer"
         aria-label="카카오 채널 상담"
         onClick={() => pixel.contact()}
         style={{

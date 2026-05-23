@@ -52,8 +52,7 @@ const STEPS: ReactNode[] = [
   <>
     <a
       href={INSTAGRAM_URL}
-      target="_blank"
-      rel="noopener noreferrer"
+      target="_blank" rel="noopener noreferrer"
       style={{ color: 'var(--gold)', fontWeight: 700, textDecoration: 'underline', textUnderlineOffset: 3 }}
     >
       서우스튜디오 인스타그램
@@ -430,8 +429,7 @@ export default function SeowooPartnershipPage() {
         />
         <a
           href={INSTAGRAM_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+          target="_blank" rel="noopener noreferrer"
           style={{ textDecoration: 'none', display: 'block', maxWidth: 480, margin: '0 auto' }}
         >
           <div
@@ -551,8 +549,7 @@ export default function SeowooPartnershipPage() {
         </p>
         <a
           href={INSTAGRAM_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+          target="_blank" rel="noopener noreferrer"
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -584,8 +581,7 @@ export default function SeowooPartnershipPage() {
           Instagram{' '}
           <a
             href={INSTAGRAM_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+            target="_blank" rel="noopener noreferrer"
             style={{ color: 'var(--gold)', fontWeight: 700, textDecoration: 'none' }}
           >
             {INSTAGRAM_HANDLE}

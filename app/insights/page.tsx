@@ -416,8 +416,7 @@ export default function InsightsPage() {
                   </div>
                   <a
                     href={insight.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    target="_blank" rel="noopener noreferrer"
                     aria-label={`${insight.title || insight.url} (새 탭에서 열림)`}
                     style={{ display: 'block', fontWeight: 600, fontSize: 14, color: 'var(--white)', textDecoration: 'none', marginBottom: 6, lineHeight: 1.4 }}
                   >

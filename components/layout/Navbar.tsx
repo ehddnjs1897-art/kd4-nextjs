@@ -660,8 +660,7 @@ export default function Navbar() {
               </Link>
               <a
                 href="https://pf.kakao.com/_ximxdqn"
-                target="_blank"
-                rel="noopener noreferrer"
+                target="_blank" rel="noopener noreferrer"
                 onClick={closeMobile}
                 style={{
                   display: 'flex',

@@ -356,10 +356,10 @@ export default function SignupPage() {
                 required
                 autoComplete="tel"
                 aria-invalid={!!error || undefined}
-                aria-describedby={error ? 'signup-error' : undefined}
+                aria-describedby={['phone-hint', error ? 'signup-error' : ''].filter(Boolean).join(' ') || undefined}
                 style={styles.input}
               />
-              <p style={styles.hint}>
+              <p id="phone-hint" style={styles.hint}>
                 📌 KD4에 등록된 번호와 동일해야 배우 프로필과 자동 연결됩니다.
               </p>
             </div>

@@ -1233,8 +1233,7 @@ export default function HomePage() {
             </Link>
             <a
               href="https://pf.kakao.com/_ximxdqn"
-              target="_blank"
-              rel="noopener noreferrer"
+              target="_blank" rel="noopener noreferrer"
               aria-label="카카오로 문의하기 (새 탭에서 열림)"
               onClick={() => pixel.contact()}
               style={{

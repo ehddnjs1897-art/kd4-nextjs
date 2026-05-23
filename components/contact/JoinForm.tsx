@@ -288,8 +288,7 @@ export default function JoinForm() {
         {/* 리드마그넷 — 가이드 PDF */}
         <a
           href="https://pf.kakao.com/_ximxdqn"
-          target="_blank"
-          rel="noopener noreferrer"
+          target="_blank" rel="noopener noreferrer"
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -312,8 +311,7 @@ export default function JoinForm() {
           급하시면{' '}
           <a
             href="https://pf.kakao.com/_ximxdqn"
-            target="_blank"
-            rel="noopener noreferrer"
+            target="_blank" rel="noopener noreferrer"
             style={{
               color: 'var(--navy)',
               textDecoration: 'underline',
@@ -608,8 +606,7 @@ export default function JoinForm() {
           현재 신청 가능한 클래스가 없습니다.{' '}
           <a
             href="https://pf.kakao.com/_ximxdqn"
-            target="_blank"
-            rel="noopener noreferrer"
+            target="_blank" rel="noopener noreferrer"
             style={{ color: 'var(--gold)', textDecoration: 'underline' }}
           >
             카카오 채널

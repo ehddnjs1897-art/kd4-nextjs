@@ -585,8 +585,7 @@ export default function AboutPage() {
         <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
           <a
             href="https://forms.gle/68E7yFFFoDiPCRwD9"
-            target="_blank"
-            rel="noopener noreferrer"
+            target="_blank" rel="noopener noreferrer"
             aria-label="클래스 신청 (새 탭에서 열림)"
             style={{
               display: 'inline-block',

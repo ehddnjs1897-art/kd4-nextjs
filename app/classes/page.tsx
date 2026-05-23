@@ -419,8 +419,7 @@ export default function ClassesPage() {
               </Link>
               <a
                 href="https://pf.kakao.com/_ximxdqn"
-                target="_blank"
-                rel="noopener noreferrer"
+                target="_blank" rel="noopener noreferrer"
                 aria-label="카카오 채널 상담 (새 탭에서 열림)"
                 onClick={() => pixel.contact()}
                 style={{

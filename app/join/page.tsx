@@ -1278,8 +1278,7 @@ export default function JoinPage() {
           <div style={{ textAlign: 'center', marginTop: '40px' }}>
             <a
               href="https://youtube.com/playlist?list=PLMbZlnkLfP7iaE41p_g9dzGKp5eU9VZk2"
-              target="_blank"
-              rel="noopener noreferrer"
+              target="_blank" rel="noopener noreferrer"
               aria-label="출연영상 포트폴리오 전체 보기 (새 탭에서 열림)"
               style={{
                 display: 'inline-flex',
@@ -1544,8 +1543,7 @@ export default function JoinPage() {
                 >
                   <a
                     href={c.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    target="_blank" rel="noopener noreferrer"
                     aria-label={`${c.label} (새 탭에서 열림)`}
                     style={{
                       color: 'var(--navy)',
