@@ -301,7 +301,19 @@ export default function AIToolsPage() {
             {/* 탭 + 내용 */}
             {result && (
               <>
-                <div style={s.tabBar} role="tablist" aria-label="분석 메소드 탭">
+                <div
+                  style={s.tabBar}
+                  role="tablist"
+                  aria-label="분석 메소드 탭"
+                  onKeyDown={e => {
+                    const keys = Object.keys(TAB_LABELS) as TabKey[]
+                    const idx = keys.indexOf(activeTab)
+                    if (e.key === 'ArrowRight') { e.preventDefault(); setActiveTab(keys[(idx + 1) % keys.length]) }
+                    if (e.key === 'ArrowLeft')  { e.preventDefault(); setActiveTab(keys[(idx - 1 + keys.length) % keys.length]) }
+                    if (e.key === 'Home')       { e.preventDefault(); setActiveTab(keys[0]) }
+                    if (e.key === 'End')        { e.preventDefault(); setActiveTab(keys[keys.length - 1]) }
+                  }}
+                >
                   {(Object.keys(TAB_LABELS) as TabKey[]).map((key) => (
                     <button
                       key={key}
@@ -309,6 +321,7 @@ export default function AIToolsPage() {
                       id={`tab-${key}`}
                       aria-selected={activeTab === key}
                       aria-controls={`tabpanel-${key}`}
+                      tabIndex={activeTab === key ? 0 : -1}
                       onClick={() => setActiveTab(key)}
                       style={activeTab === key ? { ...s.tab, ...s.tabActive } : s.tab}
                     >

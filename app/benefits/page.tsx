@@ -189,7 +189,7 @@ export default function BenefitsPage() {
           }}
         >
           수업 시간 외에도 훈련을 이어갈 수 있도록,<br />
-          KD4가 운영하는 학습 보강 · 커리어 지원 · 동료 커뮤니티 · 할인 혜택을 모두 모았습니다.
+          KD4가 운영하는 학습 보강 · 커리어 지원 · 멤버 커뮤니티 · 할인 혜택을 모두 모았습니다.
         </p>
       </section>
 
@@ -444,7 +444,7 @@ export default function BenefitsPage() {
         <SectionHeader
           eyebrow="COMMUNITY"
           title="멤버 커뮤니티"
-          desc="KD4 배우는 혼자 크지 않습니다. 같은 길을 가는 동료와 함께 성장합니다."
+          desc="KD4 멤버는 혼자 크지 않습니다. 같은 길을 가는 멤버들과 함께 성장합니다."
         />
         <div
           style={{

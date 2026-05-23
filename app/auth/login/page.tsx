@@ -117,7 +117,7 @@ function LoginContent() {
         <h1 style={styles.title}>로그인</h1>
 
         {/* 에러 메시지 */}
-        {error && <div style={styles.errorBox} role="alert">{error}</div>}
+        {error && <div id="login-error" style={styles.errorBox} role="alert">{error}</div>}
 
         {/* 이메일 로그인 폼 */}
         <form onSubmit={handleEmailLogin} style={styles.form}>
@@ -135,6 +135,8 @@ function LoginContent() {
               maxLength={254}
               disabled={loading}
               autoComplete="email"
+              aria-invalid={!!error || undefined}
+              aria-describedby={error ? 'login-error' : undefined}
               style={styles.input}
             />
           </div>
@@ -152,6 +154,8 @@ function LoginContent() {
               required
               minLength={8}
               maxLength={72}
+              aria-invalid={!!error || undefined}
+              aria-describedby={error ? 'login-error' : undefined}
               disabled={loading}
               autoComplete="current-password"
               style={styles.input}

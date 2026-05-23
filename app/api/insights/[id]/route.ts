@@ -64,6 +64,10 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   if (typeof body.memo === 'string') updates.memo = body.memo.slice(0, 2000)
   if (typeof body.category === 'string' && VALID_INSIGHT_CATEGORIES.has(body.category)) updates.category = body.category
 
+  if (Object.keys(updates).length === 0) {
+    return withCors(NextResponse.json({ error: '수정할 필드가 없습니다.' }, { status: 400 }), origin)
+  }
+
   const { data, error } = await supabaseAdmin
     .from('insights')
     .update(updates)
