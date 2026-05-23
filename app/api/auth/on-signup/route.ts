@@ -70,7 +70,7 @@ export async function POST() {
       const res = await matchActorOnSignup(user.id, name, phone)
       actorId = res.actorId
     } catch (e) {
-      console.error('[on-signup] matching error:', e)
+      console.error('[on-signup] matching error:', e instanceof Error ? e.message : String(e))
     }
   }
 
@@ -79,7 +79,7 @@ export async function POST() {
     try {
       await linkEnrollmentsOnSignup(user.id, name, actorId)
     } catch (e) {
-      console.error('[on-signup] enrollment link error:', e)
+      console.error('[on-signup] enrollment link error:', e instanceof Error ? e.message : String(e))
     }
   }
 

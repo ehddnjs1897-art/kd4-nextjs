@@ -25,7 +25,7 @@ export async function sendSMS(to: string, text: string): Promise<boolean> {
     await Promise.race([service.sendOne({ to, from: FROM_NUMBER, text: safeText }), timeout])
     return true
   } catch (err) {
-    console.error('[SMS] 발송 실패:', err)
+    console.error('[SMS] 발송 실패:', err instanceof Error ? err.message.replace(/01\d[\-\s]?\d{3,4}[\-\s]?\d{4}/g, '[PHONE]') : '(unknown)')
     return false
   }
 }

@@ -19,6 +19,11 @@ import { getObjectStream, isR2Configured } from '@/lib/r2'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
+// 프로필 다운로드 레이트 리밋: 1분 20회 (R2/Drive egress 남용 방어)
+const profileDownloadMap = new Map<string, number[]>()
+const PROFILE_DOWNLOAD_WINDOW_MS = 60_000
+const PROFILE_DOWNLOAD_MAX = 20
+
 function dispositionHeader(filename: string): string {
   // RFC 5987: 한글 파일명 안전 인코딩
   return `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`
@@ -64,6 +69,19 @@ export async function GET(
   // 다운로드 권한: 디렉터/관리자 또는 본인
   if (!canViewActorContact(role) && !isOwner) {
     return NextResponse.json({ error: '프로필 다운로드 권한이 없습니다.' }, { status: 403 })
+  }
+
+  // 레이트 리밋: 1분 20회 (R2/Drive egress 남용 방어)
+  const nowPD = Date.now()
+  const timesPD = (profileDownloadMap.get(user.id) ?? []).filter(t => nowPD - t < PROFILE_DOWNLOAD_WINDOW_MS)
+  if (timesPD.length >= PROFILE_DOWNLOAD_MAX) {
+    return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+  }
+  profileDownloadMap.set(user.id, [...timesPD, nowPD])
+  if (profileDownloadMap.size > 500) {
+    for (const [k, v] of profileDownloadMap) {
+      if (v.every(t => nowPD - t > PROFILE_DOWNLOAD_WINDOW_MS)) profileDownloadMap.delete(k)
+    }
   }
 
   const { data: actor } = await supabaseAdmin

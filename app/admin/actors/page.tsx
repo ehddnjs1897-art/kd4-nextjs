@@ -12,6 +12,7 @@ import ActorManagementTable, { ActorRow } from './ActorManagementTable'
 
 export const metadata: Metadata = {
   title: '배우 관리 (관리자)',
+  description: 'KD4 배우 관리 (관리자 전용)',
   robots: { index: false, follow: false },
 }
 

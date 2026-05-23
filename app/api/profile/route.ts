@@ -78,7 +78,7 @@ export async function PATCH(request: NextRequest) {
       .eq('id', user.id)
 
     if (error) {
-      console.error('[PATCH /api/profile] error:', error)
+      console.error('[PATCH /api/profile] error:', error instanceof Error ? error.message : String(error))
       return NextResponse.json({ error: '정보 수정 중 오류가 발생했습니다.' }, { status: 500 })
     }
 
@@ -95,7 +95,7 @@ export async function PATCH(request: NextRequest) {
           matched = result.matched
           actorId = result.actorId
         } catch (e) {
-          console.error('[PATCH /api/profile] 재매칭 오류:', e)
+          console.error('[PATCH /api/profile] 재매칭 오류:', e instanceof Error ? e.message : String(e))
         }
       }
     }

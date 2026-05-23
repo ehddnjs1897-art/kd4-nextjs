@@ -43,6 +43,8 @@ export const metadata: Metadata = {
   alternates: { canonical: PAGE_URL },
   openGraph: {
     type: 'profile',
+    firstName: '동원',
+    lastName: '권',
     url: PAGE_URL,
     title: '권동원 — 액팅 코치 (리더) · 현역 배우 | KD4 대표',
     description: 'KD4 액팅 스튜디오 대표. 마이즈너 테크닉 정통 코치(리더)이자 현역 배우.',

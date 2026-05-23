@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: '온보딩',
+  description: 'KD4 멤버 온보딩 — 프로필 초기 설정',
   robots: { index: false, follow: false },
 }
 

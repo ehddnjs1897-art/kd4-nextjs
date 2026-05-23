@@ -156,7 +156,7 @@ export default function Footer() {
               Location
             </p>
             <p style={{ color: 'var(--gray-light)', fontSize: '0.85rem', lineHeight: 1.7 }}>
-              서울시 서대문구 대현동 90-7<br />
+              서울시 서대문구 이화여대1안길 12<br />
               아리움3차 1층 101호
             </p>
           </div>

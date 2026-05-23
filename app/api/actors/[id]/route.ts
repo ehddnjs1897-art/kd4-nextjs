@@ -89,7 +89,7 @@ export async function GET(
     const typedActor = actor as unknown as ActorDetail
 
     // 연락처 포함 여부에 따라 응답 (Cache-Control: private — 유저별 다른 응답)
-    const cacheHeaders = { 'Cache-Control': 'private, max-age=60, stale-while-revalidate=120' }
+    const cacheHeaders = { 'Cache-Control': 'private, no-store' }
     if (!canSeeContact) {
       const { phone: _phone, email: _email, ...safe } = typedActor as Actor & ActorDetail
       return NextResponse.json({ actor: safe as ActorDetail }, { headers: cacheHeaders })

@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ users: data ?? [], total: count ?? 0, page, pageSize: PAGE_SIZE }, { headers: { 'Cache-Control': 'private, no-store' } })
   } catch (err) {
-    console.error('[GET /api/admin/users] 예상치 못한 오류:', err)
+    console.error('[GET /api/admin/users] 예상치 못한 오류:', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '서버 내부 오류가 발생했습니다.' }, { status: 500 })
   }
 }
@@ -141,7 +141,7 @@ export async function PATCH(request: NextRequest) {
     console.log('[audit] 역할 변경:', { adminId, targetId: id, newRole: role, email: maskedEmail, at: new Date().toISOString() })
     return NextResponse.json({ user: data })
   } catch (err) {
-    console.error('[PATCH /api/admin/users] 예상치 못한 오류:', err)
+    console.error('[PATCH /api/admin/users] 예상치 못한 오류:', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '서버 내부 오류가 발생했습니다.' }, { status: 500 })
   }
 }

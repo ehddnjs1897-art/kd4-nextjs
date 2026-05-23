@@ -7,6 +7,7 @@ import UsersManagementTable from './UsersManagementTable'
 
 export const metadata = {
   title: '회원 관리',
+  description: 'KD4 회원 관리 (관리자 전용)',
   robots: { index: false, follow: false },
 }
 

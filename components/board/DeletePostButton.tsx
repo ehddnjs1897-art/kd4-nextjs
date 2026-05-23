@@ -59,6 +59,7 @@ export default function DeletePostButton({ postId }: DeletePostButtonProps) {
         <button
           type="button"
           onClick={() => setConfirming(false)}
+          aria-label="삭제 취소"
           style={{ ...baseStyle, border: '1px solid var(--border)', color: 'var(--gray)', background: 'transparent' }}
         >
           취소
@@ -67,6 +68,7 @@ export default function DeletePostButton({ postId }: DeletePostButtonProps) {
           type="button"
           onClick={handleDelete}
           disabled={deleting}
+          aria-label="게시글 삭제 확인"
           style={{ ...baseStyle, border: 'none', background: '#ef4444', color: '#fff' }}
         >
           삭제 확인

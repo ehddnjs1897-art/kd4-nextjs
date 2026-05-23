@@ -516,7 +516,7 @@ export default function AboutPage() {
                 <span aria-hidden="true">✉</span> uikactors@gmail.com
               </a>
               <a
-                href="tel:01085640244"
+                href="tel:010-8564-0244"
                 style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: 'var(--secondary)', display: 'flex', gap: '8px', alignItems: 'center' }}
               >
                 <span aria-hidden="true">☎</span> 010-8564-0244

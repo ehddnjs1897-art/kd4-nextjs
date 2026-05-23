@@ -3,11 +3,17 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
+import { SITE_URL } from '@/lib/constants'
 
 export const metadata: Metadata = {
   title: '마이페이지',
   description: 'KD4 멤버 마이페이지 — 프로필 편집, 수강 내역, 배우 DB 관리.',
   robots: { index: false, follow: false },
+  openGraph: {
+    title: '마이페이지 | KD4 액팅 스튜디오',
+    description: 'KD4 멤버 마이페이지',
+    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630 }],
+  },
 }
 import LogoutButton from '@/components/layout/LogoutButton'
 import CrewRequestButton from '@/components/dashboard/CrewRequestButton'

@@ -17,6 +17,8 @@ import {
 import { CLASSES, DIRECTOR } from '@/lib/classes'
 import { KD4_STATS } from '@/lib/stats'
 import { FAQ_ITEMS } from '@/lib/faq-items'
+import PageJsonLd from '@/components/seo/PageJsonLd'
+import { buildBreadcrumb, buildFaqPage, buildOrganization } from '@/lib/seo-schemas'
 import StickyTopBar from '@/components/join/StickyTopBar'
 import JoinCTALink from '@/components/join/JoinCTALink'
 import { SITE_URL } from '@/lib/constants'
@@ -174,6 +176,15 @@ export default function JoinPage() {
         paddingBottom: '90px',
       }}
     >
+      <PageJsonLd schemas={[
+        buildOrganization(),
+        buildBreadcrumb([
+          { name: '홈', url: SITE_URL },
+          { name: '무료 상담 신청', url: `${SITE_URL}/join` },
+        ]),
+        buildFaqPage(FAQ_ITEMS.map(item => ({ q: item.q, a: item.a }))),
+      ]} />
+
       <StickyTopBar cohorts={OPEN_COHORTS} />
 
       {/* 분석: 랜딩 ViewContent + 스크롤 깊이 추적 (GA4 + Meta Pixel) */}

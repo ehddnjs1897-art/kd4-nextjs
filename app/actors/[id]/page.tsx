@@ -184,7 +184,7 @@ export async function generateMetadata({
     ? `${actor.name} — ${actor.casting_summary}`
     : actor.casting_tags && actor.casting_tags.length > 0
       ? `${actor.name} · ${subline} · ${actor.casting_tags.slice(0, 3).join(' · ')}`
-      : `${actor.name} · ${subline}`
+      : `${actor.name} · ${subline} · KD4 액팅 스튜디오 배우 프로필`
 
   const title = actor.age_group
     ? `${actor.name} · ${actor.age_group} 배우`

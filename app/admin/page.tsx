@@ -9,6 +9,7 @@ import AdminDashboard from './AdminDashboard'
 
 export const metadata: Metadata = {
   title: '관리자',
+  description: 'KD4 관리자 대시보드',
   robots: { index: false, follow: false },
 }
 

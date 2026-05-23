@@ -107,7 +107,14 @@ function getCourseSchemas() {
     locationCreated: {
       '@type': 'Place',
       name: 'KD4 액팅 스튜디오',
-      address: '서울시 서대문구 이화여대1안길 12',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: '이화여대1안길 12 아리움3차 1층 101호',
+        addressLocality: '서울특별시',
+        addressRegion: '서대문구',
+        postalCode: '03760',
+        addressCountry: 'KR',
+      },
     },
   }))
 }

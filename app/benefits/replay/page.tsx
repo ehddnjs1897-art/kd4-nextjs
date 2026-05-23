@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { SITE_URL } from '@/lib/constants'
+import PageJsonLd from '@/components/seo/PageJsonLd'
+import { buildBreadcrumb } from '@/lib/seo-schemas'
 
 export const metadata: Metadata = {
   title: '리플레이 프로필 투어 제휴',
@@ -76,6 +78,11 @@ function SectionHeader({ eyebrow, title, desc }: { eyebrow: string; title: strin
 export default function ReplayPartnershipPage() {
   return (
     <div style={{ background: 'var(--bg)', color: 'var(--white)', minHeight: '100vh', paddingTop: '64px' }}>
+      <PageJsonLd schemas={[buildBreadcrumb([
+        { name: '홈', url: SITE_URL },
+        { name: '멤버 혜택', url: `${SITE_URL}/benefits` },
+        { name: '리플레이 프로필 투어 제휴', url: `${SITE_URL}/benefits/replay` },
+      ])]} />
 
       {/* HERO */}
       <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(56px, 9vw, 104px) 24px clamp(40px, 6vw, 64px)', textAlign: 'center' }}>

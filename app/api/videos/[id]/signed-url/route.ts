@@ -134,7 +134,7 @@ export async function GET(
     const expiresAt = new Date(Date.now() + expirySec * 1000).toISOString()
     return NextResponse.json({ url: signedUrl, expiresAt }, { headers: { 'Cache-Control': 'private, no-store' } })
   } catch (err) {
-    console.error('[signed-url] 발급 실패:', err)
+    console.error('[signed-url] 발급 실패:', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: 'signed URL 발급 실패' }, { status: 500 })
   }
 }
