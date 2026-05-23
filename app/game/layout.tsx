@@ -1,10 +1,15 @@
 import type { Metadata } from 'next'
+import { SITE_URL } from '@/lib/constants'
 
 export const metadata: Metadata = {
   title: 'OFF THE PLASTIC',
   description: '가면을 벗어라. 무대 위로, 더 높이. KD4 액팅 스튜디오 3D 아케이드 게임.',
   robots: { index: false, follow: false },
   openGraph: {
+    locale: 'ko_KR',
+    siteName: 'KD4 액팅 스튜디오',
+    type: 'website',
+    url: `${SITE_URL}/game`,
     images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 — 스포트라이트 러시 게임' }],
   },
 }

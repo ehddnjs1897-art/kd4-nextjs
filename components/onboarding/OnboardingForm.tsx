@@ -292,7 +292,7 @@ export default function OnboardingForm({
         </div>
       )}
 
-      <button type="button" onClick={submit} disabled={loading} style={{
+      <button type="button" onClick={submit} disabled={loading} aria-busy={loading} style={{
         width: '100%', padding: '14px 0', background: 'var(--navy)', color: '#fff',
         fontWeight: 700, fontSize: '0.95rem', borderRadius: 8, border: 'none',
         cursor: loading ? 'not-allowed' : 'pointer',

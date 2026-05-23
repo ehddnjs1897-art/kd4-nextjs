@@ -7,6 +7,10 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
   alternates: { canonical: `${SITE_URL}/ai-tools` },
   openGraph: {
+    locale: 'ko_KR',
+    siteName: 'KD4 액팅 스튜디오',
+    type: 'website',
+    url: `${SITE_URL}/ai-tools`,
     images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 — AI 대본 분석 도구' }],
   },
 }

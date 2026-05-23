@@ -571,13 +571,19 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         </div>
         {/* 프로그레스 바 */}
         <div style={{ height: 4, borderRadius: 4, background: 'var(--bg3)', marginBottom: 14, overflow: 'hidden' }}>
-          <div style={{
-            height: '100%',
-            width: `${completionPct}%`,
-            borderRadius: 4,
-            background: completionPct === 100 ? '#4ade80' : 'var(--gold)',
-            transition: 'width 0.3s ease',
-          }} />
+          <div
+            role="progressbar"
+            aria-valuenow={completionPct}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="프로필 완성도"
+            style={{
+              height: '100%',
+              width: `${completionPct}%`,
+              borderRadius: 4,
+              background: completionPct === 100 ? '#4ade80' : 'var(--gold)',
+              transition: 'width 0.3s ease',
+            }} />
         </div>
         {/* 항목별 체크리스트 */}
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -669,7 +675,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         </div>
         <input ref={pptRef} type="file" accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation" onChange={uploadPpt} style={{ display: 'none' }} aria-hidden="true" />
         <button type="button" onClick={() => pptRef.current?.click()} disabled={pptUploading} style={{ ...s.btn, ...s.btnGhost, opacity: pptUploading ? 0.6 : 1 }}>
-          {pptUploading ? '업로드 중…' : hasPpt ? '📄 파일 교체' : '📄 파일 올리기'}
+          {pptUploading ? '업로드 중…' : <><span aria-hidden="true">📄</span>{hasPpt ? ' 파일 교체' : ' 파일 올리기'}</>}
         </button>
         {pptMsg && <p role={pptMsg.includes('완료') ? 'status' : 'alert'} aria-live={pptMsg.includes('완료') ? 'polite' : 'assertive'} style={{ ...s.msg, color: pptMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{pptMsg}</p>}
       </section>

@@ -762,10 +762,12 @@ export default function JoinForm() {
         </span>
       </label>
 
-      {/* 에러 — role="alert" 자체가 assertive live region이므로 aria-live 중복 제거 */}
-      <p role="alert" style={{ color: 'var(--accent-red)', fontSize: '0.85rem', margin: 0, minHeight: 0 }}>
-        {error ?? ''}
-      </p>
+      {/* 에러 — 조건부 렌더링으로 DOM 삽입 시 자동 AT 공지 (role="alert"은 항상 존재 시 첫 공지 누락) */}
+      {error && (
+        <p role="alert" style={{ color: 'var(--accent-red)', fontSize: '0.85rem', margin: 0 }}>
+          {error}
+        </p>
+      )}
 
       {/* 제출 버튼 */}
       <button

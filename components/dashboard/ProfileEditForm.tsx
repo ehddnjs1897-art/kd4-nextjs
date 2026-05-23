@@ -267,6 +267,7 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
             <button
               type="submit"
               disabled={saving}
+              aria-busy={saving}
               style={{
                 flex: 1, padding: '10px 0',
                 background: saving ? 'var(--border)' : 'var(--gold)',

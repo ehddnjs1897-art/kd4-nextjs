@@ -37,6 +37,14 @@ export default function CommentSection({
   const [error, setError] = useState<string | null>(null)
   const mountedRef = useRef(true)
 
+  // Escape 키로 삭제 확인 닫기 (alertdialog 접근성)
+  useEffect(() => {
+    if (!confirmingDeleteId) return
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setConfirmingDeleteId(null) }
+    document.addEventListener('keydown', handler)
+    return () => document.removeEventListener('keydown', handler)
+  }, [confirmingDeleteId])
+
   useEffect(() => {
     mountedRef.current = true
     return () => { mountedRef.current = false }
