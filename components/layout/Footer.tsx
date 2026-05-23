@@ -242,7 +242,7 @@ export default function Footer() {
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--gray-light)')}
                 >
-                  YouTube
+                  <span lang="en">YouTube</span>
                 </a>
               </li>
             </ul>

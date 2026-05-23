@@ -393,7 +393,7 @@ export default function JoinForm() {
                   {DIRECTOR.name} 대표
                 </p>
                 <p style={{ fontSize: '0.75rem', color: 'var(--gray)', lineHeight: 1.5, marginBottom: '8px' }}>
-                  Disney+ 무빙2 · Netflix 중증외상센터 · 마이즈너 워크샵 수료
+                  <span lang="en">Disney+</span> 무빙2 · <span lang="en">Netflix</span> 중증외상센터 · 마이즈너 워크샵 수료
                 </p>
                 <p
                   style={{

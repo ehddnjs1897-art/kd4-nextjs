@@ -203,7 +203,7 @@ export default function AIToolsPage() {
           <p style={s.eyebrow}><span lang="en">AI TOOLS</span></p>
           <h1 style={s.pageTitle}>AI 대본 분석</h1>
           <p style={s.pageDesc}>
-            대본을 붙여넣으면 Uta Hagen, Ivana Chubbuck, Meisner 등 5가지 연기 메소드로 분석합니다.
+            대본을 붙여넣으면 <span lang="en">Uta Hagen, Ivana Chubbuck, Meisner</span> 등 5가지 연기 메소드로 분석합니다.
           </p>
         </div>
 

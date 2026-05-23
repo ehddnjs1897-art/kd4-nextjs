@@ -581,7 +581,7 @@ export default function SeowooPartnershipPage() {
             letterSpacing: '0.02em',
           }}
         >
-          Instagram{' '}
+          <span lang="en">Instagram</span>{' '}
           <a
             href={INSTAGRAM_URL}
             target="_blank" rel="noopener noreferrer"

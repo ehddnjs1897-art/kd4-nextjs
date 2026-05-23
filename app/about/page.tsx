@@ -203,6 +203,7 @@ export default function AboutPage() {
             {
               label: 'REPETITION',
               title: 'Repetition 훈련',
+              titleNode: (<><span lang="en">Repetition</span>{' 훈련'}</>),
               desc: '두 배우가 상대를 관찰하며 말과 행동을 반복·반응하는 핵심 훈련. 감정을 혼자 만들지 않고, 상대에게서 촉발된 충동에 반응합니다.',
             },
             {
@@ -229,7 +230,7 @@ export default function AboutPage() {
                 <span lang="en">{item.label}</span>
               </p>
               <h3 style={{ fontFamily: 'var(--font-sans)', fontSize: '0.95rem', fontWeight: 700, color: 'var(--white)', marginBottom: '8px' }}>
-                {item.title}
+                {'titleNode' in item ? item.titleNode : item.title}
               </h3>
               <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', color: 'var(--secondary)', lineHeight: 1.75 }}>
                 {item.desc}

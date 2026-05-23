@@ -120,7 +120,7 @@ export async function PATCH(request: NextRequest) {
   usersRolePatchMap.set(check.userId, now)
   if (usersRolePatchMap.size > 2000) {
     for (const [k, ts] of usersRolePatchMap) {
-      if (now - ts > USERS_PATCH_COOLDOWN_MS * 2) usersRolePatchMap.delete(k)
+      if (now - ts > USERS_PATCH_COOLDOWN_MS) usersRolePatchMap.delete(k)
     }
   }
 
