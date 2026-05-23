@@ -1,3 +1,5 @@
+import 'server-only'
+
 /**
  * 회원가입 시 배우DB(actors 테이블)와 이름+전화번호 매칭
  *

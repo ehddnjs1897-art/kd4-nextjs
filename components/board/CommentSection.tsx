@@ -205,6 +205,7 @@ export default function CommentSection({
                         type="button"
                         onClick={() => handleDelete(comment.id)}
                         disabled={deletingId === comment.id}
+                        aria-label={`${comment.author_name} 댓글 삭제`}
                         style={{
                           fontSize: '0.78rem',
                           color: 'var(--gray)',

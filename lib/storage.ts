@@ -1,3 +1,5 @@
+import 'server-only'
+
 /**
  * Storage 추상화 레이어
  *

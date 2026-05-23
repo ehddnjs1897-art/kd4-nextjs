@@ -13,6 +13,10 @@ import { CLASSES } from '@/lib/classes'
 
 const VALID_TYPES = ['신규 등록', '수업 유지', '클래스 추가·변경', '퍼스널 브랜딩 서비스']
 
+// 인메모리 디바운스: 60초 내 재제출 차단 (DB count 쿼리 최소화)
+const enrollDebounceMap = new Map<string, number>()
+const ENROLL_DEBOUNCE_MS = 60_000
+
 function priceToInt(p?: string): number {
   if (!p) return 0
   return parseInt(p.replace(/[^0-9]/g, ''), 10) || 0
@@ -30,6 +34,25 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
     }
   
+    // 바디 크기 제한: 32KB
+    const contentLengthE = parseInt(request.headers.get('content-length') ?? '0', 10)
+    if (contentLengthE > 32_768) {
+      return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+    }
+
+    // 인메모리 디바운스: 60초 내 재제출 차단 (DB count 쿼리 최소화)
+    const nowED = Date.now()
+    const lastED = enrollDebounceMap.get(user.id) ?? 0
+    if (nowED - lastED < ENROLL_DEBOUNCE_MS) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
+    enrollDebounceMap.set(user.id, nowED)
+    if (enrollDebounceMap.size > 1000) {
+      for (const [k, v] of enrollDebounceMap) {
+        if (nowED - v > ENROLL_DEBOUNCE_MS) enrollDebounceMap.delete(k)
+      }
+    }
+
     let body: {
       enrollment_type?: string
       class_names?: string[]

@@ -185,7 +185,7 @@ export default function InsightsPage() {
         .filter-btn { padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--gray); cursor: pointer; font-size: 13px; transition: all .15s; }
         .filter-btn.active { background: var(--gold); color: #000; border-color: var(--gold); font-weight: 600; }
         .ins-input { width: 100%; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--white); font-size: 14px; font-family: var(--font-sans); }
-        .ins-input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 2px rgba(21,72,138,0.15); }
+        .ins-input:focus { outline: 2px solid var(--gold); outline-offset: -1px; border-color: var(--gold); box-shadow: 0 0 0 2px rgba(21,72,138,0.15); }
         .ins-btn { padding: 10px 22px; background: var(--gold); color: #000; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; white-space: nowrap; }
         .ins-btn:disabled { opacity: .5; cursor: not-allowed; }
         .ins-btn-ghost { padding: 10px 22px; background: transparent; color: var(--gray); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 14px; }
@@ -201,8 +201,8 @@ export default function InsightsPage() {
         <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 12, padding: 20, marginBottom: 28 }}>
           {/* 탭 */}
           <div style={{ display: 'flex', gap: 6, marginBottom: 14 }}>
-            <button className={`filter-btn${tab === 'url' ? ' active' : ''}`} onClick={() => setTab('url')}>🔗 링크</button>
-            <button className={`filter-btn${tab === 'image' ? ' active' : ''}`} onClick={() => setTab('image')}>🖼 이미지</button>
+            <button className={`filter-btn${tab === 'url' ? ' active' : ''}`} aria-pressed={tab === 'url'} onClick={() => setTab('url')}>🔗 링크</button>
+            <button className={`filter-btn${tab === 'image' ? ' active' : ''}`} aria-pressed={tab === 'image'} onClick={() => setTab('image')}>🖼 이미지</button>
           </div>
 
           {tab === 'url' ? (
@@ -354,7 +354,7 @@ export default function InsightsPage() {
           </div>
         )}
         {loading ? (
-          <p style={{ color: 'var(--gray)', textAlign: 'center', padding: '60px 0' }}>불러오는 중…</p>
+          <p role="status" aria-live="polite" style={{ color: 'var(--gray)', textAlign: 'center', padding: '60px 0' }}>불러오는 중…</p>
         ) : insights.length === 0 ? (
           <p style={{ color: 'var(--gray)', textAlign: 'center', padding: '60px 0' }}>저장된 인사이트가 없습니다.</p>
         ) : (
@@ -413,6 +413,7 @@ export default function InsightsPage() {
                     href={insight.url}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label={`${insight.title || insight.url} (새 탭에서 열림)`}
                     style={{ display: 'block', fontWeight: 600, fontSize: 14, color: 'var(--white)', textDecoration: 'none', marginBottom: 6, lineHeight: 1.4 }}
                   >
                     {insight.title || insight.url}

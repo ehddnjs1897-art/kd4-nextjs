@@ -69,6 +69,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
   }
   adminVideoUploadMap.set(adminAuth.userId, [...avTimes, nowAV])
+  if (adminVideoUploadMap.size > 200) {
+    for (const [k, v] of adminVideoUploadMap) {
+      if (v.every(t => nowAV - t > ADMIN_VIDEO_UPLOAD_WINDOW_MS)) adminVideoUploadMap.delete(k)
+    }
+  }
 
   try {
     const formData = await request.formData()

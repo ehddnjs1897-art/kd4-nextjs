@@ -242,7 +242,7 @@ export default function ReelPage() {
           <ul style={{ maxWidth: '600px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {INCLUDES.map((item, i) => (
               <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '8px' }}>
-                {item.yes ? <Check size={18} color="var(--navy)" strokeWidth={2.2} /> : <X size={18} color="var(--gray)" strokeWidth={2.2} />}
+                {item.yes ? <Check aria-hidden={true} size={18} color="var(--navy)" strokeWidth={2.2} /> : <X aria-hidden={true} size={18} color="var(--gray)" strokeWidth={2.2} />}
                 <span style={{ fontSize: '0.92rem', color: item.yes ? '#111' : 'var(--gray)', fontWeight: item.yes ? 600 : 400 }}>
                   {item.text}
                 </span>

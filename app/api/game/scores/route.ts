@@ -65,6 +65,9 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// POST 인메모리 슬라이딩 윈도우: DB count 쿼리 최소화
+const scoreSubmitMap = new Map<string, number[]>()
+
 // POST /api/game/scores
 export async function POST(request: NextRequest) {
   const supabase = await createClient()
@@ -72,6 +75,27 @@ export async function POST(request: NextRequest) {
 
   if (authError || !user) {
     return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
+  }
+
+  // 인메모리 조기 차단: 시간당 20회 초과 시 DB 쿼리 없이 즉시 차단
+  const nowSS = Date.now()
+  const MAX_SCORES_PER_HOUR = 20
+  const ssHourAgo = nowSS - 3_600_000
+  const ssTimes = (scoreSubmitMap.get(user.id) ?? []).filter(t => t > ssHourAgo)
+  if (ssTimes.length >= MAX_SCORES_PER_HOUR) {
+    return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+  }
+  scoreSubmitMap.set(user.id, [...ssTimes, nowSS])
+  if (scoreSubmitMap.size > 1000) {
+    for (const [k, v] of scoreSubmitMap) {
+      if (v.every(t => t <= ssHourAgo)) scoreSubmitMap.delete(k)
+    }
+  }
+
+  // 바디 크기 제한: 4KB
+  const contentLengthSS = parseInt(request.headers.get('content-length') ?? '0', 10)
+  if (contentLengthSS > 4_096) {
+    return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
   }
 
   let body: { score?: number; duration_ms?: number; stage?: number; items_collected?: number }
@@ -105,8 +129,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '유효하지 않은 아이템 수입니다.' }, { status: 400 })
   }
 
-  // 시간당 점수 제출 횟수 제한 (리더보드 오염 방지)
-  const MAX_SCORES_PER_HOUR = 20
+  // 시간당 점수 제출 횟수 제한 — DB 크로스 인스턴스 확인 (인메모리 조기 차단 후 2차 검증)
   const hourAgo = new Date(Date.now() - 3_600_000).toISOString()
   const { count: recentScoreCount } = await supabaseAdmin
     .from('game_scores')

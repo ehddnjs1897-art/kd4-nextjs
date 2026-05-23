@@ -132,7 +132,7 @@ export async function GET(
       : undefined
     const signedUrl = await getVideoSignedUrl(video.r2_key, expirySec, filename)
     const expiresAt = new Date(Date.now() + expirySec * 1000).toISOString()
-    return NextResponse.json({ url: signedUrl, expiresAt })
+    return NextResponse.json({ url: signedUrl, expiresAt }, { headers: { 'Cache-Control': 'private, no-store' } })
   } catch (err) {
     console.error('[signed-url] 발급 실패:', err)
     return NextResponse.json({ error: 'signed URL 발급 실패' }, { status: 500 })

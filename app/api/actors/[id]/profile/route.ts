@@ -36,7 +36,7 @@ function isSafeProfileUrl(raw: string): boolean {
   if (url.protocol !== 'https:') return false
   const host = url.hostname.toLowerCase()
   // IPv6 매핑 IPv4 및 내부 주소 차단
-  if (/^\[/.test(host) || /^(localhost|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host)) return false
+  if (/^\[/.test(host) || /^(localhost|127\.|10\.|169\.254\.|0\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host)) return false
   return ALLOWED_PROFILE_HOSTS.has(host)
 }
 

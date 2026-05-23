@@ -134,14 +134,16 @@ URL: ${url}
 }`
 
   try {
+    if (!GEMINI_KEY) throw new Error('no key')
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        // API 키를 헤더로 전달 — URL 파라미터 방식은 로그/타임아웃 시 키 노출 위험
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': GEMINI_KEY },
         body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
         signal: AbortSignal.timeout(15000),
-        cache: 'no-store', // API 키 포함 URL이 Next.js fetch 캐시에 기록되지 않도록
+        cache: 'no-store',
       }
     )
     const data = await res.json()
@@ -211,12 +213,36 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// POST /api/insights 레이트 리밋: 5분 내 10회 초과 차단 (Gemini 비용 폭탄 방어)
+const insightsPostMap = new Map<string, number[]>()
+const INSIGHTS_POST_WINDOW_MS = 5 * 60_000
+const INSIGHTS_POST_MAX = 10
+
 // POST /api/insights
 export async function POST(request: NextRequest) {
   const origin = request.headers.get('origin')
   try {
     const auth = await requireAdmin()
     if (auth instanceof NextResponse) return withCors(auth, origin)
+
+    // 바디 크기 제한: 8KB (URL 2048 + memo 2000 + 여유)
+    const contentLengthI = parseInt(request.headers.get('content-length') ?? '0', 10)
+    if (contentLengthI > 8_192) {
+      return withCors(NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 }), origin)
+    }
+
+    // 레이트 리밋: 5분 내 10회 초과 차단
+    const nowIP = Date.now()
+    const ipTimes = (insightsPostMap.get(auth.userId) ?? []).filter(t => nowIP - t < INSIGHTS_POST_WINDOW_MS)
+    if (ipTimes.length >= INSIGHTS_POST_MAX) {
+      return withCors(NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 }), origin)
+    }
+    insightsPostMap.set(auth.userId, [...ipTimes, nowIP])
+    if (insightsPostMap.size > 100) {
+      for (const [k, v] of insightsPostMap) {
+        if (v.every(t => nowIP - t > INSIGHTS_POST_WINDOW_MS)) insightsPostMap.delete(k)
+      }
+    }
 
     let body: { url?: string; memo?: string }
     try {
