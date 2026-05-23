@@ -403,6 +403,9 @@ export default function EnrollForm({
         )}
 
         {/* ── 신청 버튼 ── */}
+        <p role="status" aria-live="polite" className="sr-only">
+          {loading ? '클래스 신청을 처리 중입니다.' : ''}
+        </p>
         <button
           type="button"
           onClick={submit}

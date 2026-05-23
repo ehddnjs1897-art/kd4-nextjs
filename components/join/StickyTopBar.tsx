@@ -82,6 +82,7 @@ export default function StickyTopBar({
       {/* CTA */}
       <a
         href="#form"
+        aria-label="무료 상담 신청 폼으로 이동"
         style={{
           background: 'var(--navy)',
           color: '#ffffff',

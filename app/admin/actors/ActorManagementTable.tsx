@@ -107,7 +107,7 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
           />
         </div>
         {(['all', 'public', 'private'] as const).map(f => (
-          <button key={f} onClick={() => setStatusFilter(f)} aria-pressed={statusFilter === f} style={{
+          <button type="button" key={f} onClick={() => setStatusFilter(f)} aria-pressed={statusFilter === f} style={{
             padding: '7px 14px', borderRadius: 6, fontSize: '0.78rem', cursor: 'pointer',
             background: statusFilter === f ? 'var(--gold)' : 'var(--bg2)',
             color: statusFilter === f ? 'var(--bg)' : 'var(--gray)',
@@ -201,6 +201,7 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
                       보기
                     </Link>
                     <button
+                      type="button"
                       onClick={() => handleToggle(actor)}
                       disabled={loadingId === actor.id}
                       style={{

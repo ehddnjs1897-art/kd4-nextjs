@@ -81,7 +81,10 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
       if (setErr) throw new Error('대표 지정 실패')
       // 3. actors 테이블 profile_photo URL 업데이트
       const { data: photo } = await supabaseAdmin.from('actor_photos').select('url').eq('id', photoId).eq('actor_id', id).maybeSingle()
-      if (photo) await supabaseAdmin.from('actors').update({ profile_photo: photo.url }).eq('id', id)
+      if (photo) {
+        const { error: actorPhotoErr } = await supabaseAdmin.from('actors').update({ profile_photo: photo.url }).eq('id', id)
+        if (actorPhotoErr) throw new Error('actors 대표사진 업데이트 실패')
+      }
     }
 
     revalidateTag('actors')
@@ -132,10 +135,13 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
         .limit(1)
         .maybeSingle()
       if (next) {
-        await supabaseAdmin.from('actor_photos').update({ is_profile: true }).eq('id', next.id)
-        await supabaseAdmin.from('actors').update({ profile_photo: next.url }).eq('id', id)
+        const { error: promoteErr } = await supabaseAdmin.from('actor_photos').update({ is_profile: true }).eq('id', next.id)
+        if (promoteErr) console.error('[photos DELETE] 대표 승격 실패:', promoteErr.message)
+        const { error: thumbErr } = await supabaseAdmin.from('actors').update({ profile_photo: next.url }).eq('id', id)
+        if (thumbErr) console.error('[photos DELETE] profile_photo 업데이트 실패:', thumbErr.message)
       } else {
-        await supabaseAdmin.from('actors').update({ profile_photo: null }).eq('id', id)
+        const { error: clearErr } = await supabaseAdmin.from('actors').update({ profile_photo: null }).eq('id', id)
+        if (clearErr) console.error('[photos DELETE] profile_photo 초기화 실패:', clearErr.message)
       }
     }
 

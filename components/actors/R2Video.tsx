@@ -134,6 +134,8 @@ export default function R2Video({
           type="button"
           onClick={downloadVideo}
           disabled={downloading}
+          aria-label={downloading ? '영상 다운로드 중' : '영상 다운로드'}
+          aria-busy={downloading}
           style={{ ...s.dlBtn, opacity: downloading ? 0.6 : 1, cursor: downloading ? 'not-allowed' : 'pointer' }}
         >
           {downloading ? '⏳ 다운로드 중...' : '⤓ 영상 다운로드'}

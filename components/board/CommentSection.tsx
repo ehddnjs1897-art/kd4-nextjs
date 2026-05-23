@@ -124,7 +124,7 @@ export default function CommentSection({
         marginBottom: '24px',
         letterSpacing: '0.05em',
       }}>
-        댓글 {comments.length > 0 && <span style={{ color: 'var(--gold)', marginLeft: '6px' }}>{comments.length}</span>}
+        댓글 {comments.length > 0 && <span aria-live="polite" aria-atomic="true" style={{ color: 'var(--gold)', marginLeft: '6px' }}>{comments.length}</span>}
       </h2>
 
       {/* 댓글 목록 */}

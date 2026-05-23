@@ -45,7 +45,8 @@ export async function POST(
 
     await supabase.rpc('increment_views', { post_id: id })
     return NextResponse.json({ ok: true })
-  } catch {
+  } catch (err) {
+    console.error('[POST /api/posts/[id]/view]', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ ok: false }, { status: 500 })
   }
 }
