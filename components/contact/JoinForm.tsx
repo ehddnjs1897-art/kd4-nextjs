@@ -565,6 +565,7 @@ export default function JoinForm() {
         maxLength={50}
         style={inputStyle('name')}
         required
+        aria-required="true"
       />
 
       {/* 연락처 */}
@@ -582,6 +583,7 @@ export default function JoinForm() {
         maxLength={20}
         style={inputStyle('phone')}
         required
+        aria-required="true"
       />
 
       {/* 이메일 — 필수 (2026-05-20: 대표 지시로 필수 복귀) */}
@@ -599,6 +601,7 @@ export default function JoinForm() {
         maxLength={254}
         style={inputStyle('email')}
         required
+        aria-required="true"
       />
 
       {/* 희망 클래스 (필수) */}

@@ -5,7 +5,7 @@
 import type { Metadata } from 'next'
 import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
-import { buildBreadcrumb } from '@/lib/seo-schemas'
+import { buildBreadcrumb, buildCourseFromClass } from '@/lib/seo-schemas'
 import { CLASSES } from '@/lib/classes'
 
 const PAGE_URL = `${SITE_URL}/classes`
@@ -66,6 +66,7 @@ export default function ClassesLayout({ children }: { children: React.ReactNode 
           { name: '연기 클래스', url: PAGE_URL },
         ]),
         classItemListSchema,
+        ...CLASSES.map((cls) => buildCourseFromClass(cls, { url: PAGE_URL })),
       ]} />
       {children}
     </>

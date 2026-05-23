@@ -209,24 +209,38 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
           <h1 style={s.pageTitle}>관리자 대시보드</h1>
         </div>
 
-        {/* 에러/성공 토스트 */}
-        {toastMsg && (
-          <div role="alert" aria-live={toastMsg.type === 'error' ? 'assertive' : 'polite'} style={{
+        {/* 에러 토스트 — always mounted so AT registers the live region before first announcement */}
+        <div
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+          style={toastMsg?.type === 'error' ? {
             padding: '12px 18px',
-            background: toastMsg.type === 'error' ? 'rgba(239,68,68,0.1)' : 'rgba(74,222,128,0.1)',
-            border: `1px solid ${toastMsg.type === 'error' ? 'rgba(239,68,68,0.3)' : 'rgba(74,222,128,0.3)'}`,
+            background: 'rgba(239,68,68,0.1)',
+            border: '1px solid rgba(239,68,68,0.3)',
             borderRadius: 8,
-            color: toastMsg.type === 'error' ? '#ef4444' : '#4ade80',
+            color: '#ef4444',
             fontSize: '0.85rem',
             marginBottom: 20,
-          }}>
-            {toastMsg.text}
-          </div>
-        )}
+          } : { position: 'absolute', width: 1, height: 1, padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', borderWidth: 0 }}
+        >
+          {toastMsg?.type === 'error' ? toastMsg.text : ''}
+        </div>
 
-        {/* 승인 완료 알림 */}
-        {approvedMsg && (
-          <div role="status" aria-live="polite" style={{
+        {/* 성공 토스트 + 승인 완료 알림 — always mounted (polite live region) */}
+        <div
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          style={toastMsg?.type === 'ok' ? {
+            padding: '12px 18px',
+            background: 'rgba(74,222,128,0.1)',
+            border: '1px solid rgba(74,222,128,0.3)',
+            borderRadius: 8,
+            color: '#4ade80',
+            fontSize: '0.85rem',
+            marginBottom: 20,
+          } : approvedMsg ? {
             padding: '12px 18px',
             background: 'rgba(74,222,128,0.1)',
             border: '1px solid rgba(74,222,128,0.3)',
@@ -237,11 +251,15 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-          }}>
-            <span>{approvedMsg}</span>
-            <button type="button" onClick={() => setApprovedMsg(null)} aria-label="닫기" style={{ background: 'none', border: 'none', color: '#4ade80', cursor: 'pointer', fontSize: '1.1rem' }}>×</button>
-          </div>
-        )}
+          } : { position: 'absolute', width: 1, height: 1, padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', borderWidth: 0 }}
+        >
+          {toastMsg?.type === 'ok' ? toastMsg.text : approvedMsg ? (
+            <>
+              <span>{approvedMsg}</span>
+              <button type="button" onClick={() => setApprovedMsg(null)} aria-label="닫기" style={{ background: 'none', border: 'none', color: '#4ade80', cursor: 'pointer', fontSize: '1.1rem' }}>×</button>
+            </>
+          ) : ''}
+        </div>
 
         {/* 통계 카드 */}
         <div style={s.statsRow}>
@@ -283,7 +301,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
         </div>
 
         {/* ── 회원 관리 ── */}
-        <section style={s.section} role="tabpanel" id="admin-panel-users" aria-labelledby="admin-tab-users" hidden={activeTab !== 'users'}>
+        <section style={s.section} role="tabpanel" id="admin-panel-users" aria-labelledby="admin-tab-users" hidden={activeTab !== 'users'} tabIndex={0}>
             <h2 style={s.sectionTitle}>회원 목록 ({localProfiles.length}명)</h2>
             <div style={s.tableWrapper}>
               <table style={s.table}>
@@ -342,7 +360,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
         </section>
 
         {/* ── 배우 목록 ── */}
-        <section style={s.section} role="tabpanel" id="admin-panel-actors" aria-labelledby="admin-tab-actors" hidden={activeTab !== 'actors'}>
+        <section style={s.section} role="tabpanel" id="admin-panel-actors" aria-labelledby="admin-tab-actors" hidden={activeTab !== 'actors'} tabIndex={0}>
             <h2 style={s.sectionTitle}>배우 목록 ({localActors.length}명)</h2>
             <div style={s.tableWrapper}>
               <table style={s.table}>
@@ -388,7 +406,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
         </section>
 
         {/* ── 게시판 관리 ── */}
-        <section style={s.section} role="tabpanel" id="admin-panel-posts" aria-labelledby="admin-tab-posts" hidden={activeTab !== 'posts'}>
+        <section style={s.section} role="tabpanel" id="admin-panel-posts" aria-labelledby="admin-tab-posts" hidden={activeTab !== 'posts'} tabIndex={0}>
             <h2 style={s.sectionTitle}>최근 게시글 ({localPosts.length}개)</h2>
             <div style={s.tableWrapper}>
               <table style={s.table}>
@@ -442,7 +460,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
         </section>
 
         {/* ── 수강신청 목록 ── */}
-        <section style={s.section} role="tabpanel" id="admin-panel-applications" aria-labelledby="admin-tab-applications" hidden={activeTab !== 'applications'}>
+        <section style={s.section} role="tabpanel" id="admin-panel-applications" aria-labelledby="admin-tab-applications" hidden={activeTab !== 'applications'} tabIndex={0}>
             <h2 style={s.sectionTitle}>수강신청 목록 ({localApplications.length}건)</h2>
             <div style={s.tableWrapper}>
               <table style={s.table}>

@@ -60,8 +60,8 @@ export default function LeaderboardPage() {
           marginBottom: 32,
         }}
       >
-        <Link href="/game" style={{ color: "#999", fontSize: 14, textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44, padding: "0 8px" }}>
-          ← BACK
+        <Link href="/game" aria-label="게임 로비로 돌아가기" style={{ color: "#999", fontSize: 14, textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44, padding: "0 8px" }}>
+          ← <span lang="en">BACK</span>
         </Link>
         <h1 style={{ fontSize: 20, fontWeight: 700, letterSpacing: "0.1em" }}>LEADERBOARD</h1>
         <div style={{ width: 60 }} />
@@ -166,7 +166,7 @@ export default function LeaderboardPage() {
                   {entry.profiles?.name || "익명"}
                 </div>
                 <div style={{ fontSize: 12, color: "#aaa" }}>
-                  Stage {entry.stage} · {formatTime(entry.duration_ms)}
+                  <span lang="en">Stage</span> {entry.stage} · {formatTime(entry.duration_ms)}
                 </div>
               </div>
 

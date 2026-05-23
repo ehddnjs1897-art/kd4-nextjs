@@ -14,7 +14,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
-import type { Actor, ActorPublic } from '@/lib/types'
+import { canViewActorDb } from '@/lib/access'
+import type { Actor, ActorPublic, UserRole } from '@/lib/types'
 
 // GET 엔드포인트 IP 기반 레이트 리밋 (60 req/min — DoS 방어)
 const actorsGetRateMap = new Map<string, { count: number; resetAt: number }>()
@@ -73,6 +74,10 @@ export async function GET(request: NextRequest) {
         .from('profiles').select('role').eq('id', user.id).maybeSingle()
       canSeeContact = ['director', 'admin'].includes(profile?.role ?? '')
       isAdmin = profile?.role === 'admin'
+      // 배우 DB 열람 권한 확인 (actor/crew/editor/director/admin만 허용)
+      if (!canViewActorDb(profile?.role as UserRole | undefined)) {
+        return NextResponse.json({ error: '배우 프로필 열람 권한이 없습니다.' }, { status: 403 })
+      }
     }
 
     // admin은 ?include_non_public=true 로 비공개 배우도 조회 가능 (검토 대기 중 배우 관리용)

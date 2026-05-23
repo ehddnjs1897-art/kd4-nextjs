@@ -6,7 +6,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { revalidateTag } from '@/lib/revalidate'
-import type { Actor, ActorDetail } from '@/lib/types'
+import { canViewActorDb } from '@/lib/access'
+import type { Actor, ActorDetail, UserRole } from '@/lib/types'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
@@ -68,6 +69,10 @@ export async function GET(
       canSeeContact = isOwn || ['director', 'admin'].includes(role)
       // 본인 또는 관리/편집자는 is_public=false 프로필도 열람 가능 (관리자 검토 대기 중인 경우)
       canSeeNonPublic = isOwn || ['admin', 'editor'].includes(role)
+      // 배우 DB 열람 권한 확인 (본인이거나 actor/crew/editor/director/admin만 허용)
+      if (!isOwn && !canViewActorDb(role as UserRole | undefined)) {
+        return NextResponse.json({ error: '배우 프로필 열람 권한이 없습니다.' }, { status: 403 })
+      }
     }
 
     // 접촉 권한 없는 경우 PII+내부 컬럼을 DB에서 처음부터 제외 (defence-in-depth)

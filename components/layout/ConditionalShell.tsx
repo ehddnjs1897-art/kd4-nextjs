@@ -6,7 +6,7 @@ import Footer from '@/components/layout/Footer'
 import FloatingCTA from '@/components/layout/FloatingCTA'
 
 /** 광고 랜딩 등 클린 라우트에서 Navbar/Footer/FloatingCTA를 완전 제거 */
-const CLEAN_ROUTES = ['/join']
+const CLEAN_ROUTES = ['/join', '/game']
 
 export default function ConditionalShell({
   children,

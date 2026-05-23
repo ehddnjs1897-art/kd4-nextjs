@@ -86,7 +86,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
         )}
 
         {/* bullets */}
-        <ul style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '20px' }}>
+        <ul role="list" style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '20px' }}>
           {cls.bullets.map((b, i) => (
             <li key={i} style={{ fontSize: '0.82rem', color: 'var(--gray-light)', lineHeight: 1.5, paddingLeft: '14px', position: 'relative' }}>
               <span style={{ position: 'absolute', left: 0, top: '0.45em', width: '5px', height: '1px', background: 'var(--gold)', display: 'inline-block' }} />
@@ -118,7 +118,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
           <span style={{ fontSize: '0.65rem', color: 'var(--gray)', letterSpacing: '0.06em' }}>월 수강료</span>
           {cls.originalPrice && (
             <p style={{ margin: '4px 0 0', lineHeight: 1 }}>
-              <span style={{ fontSize: '0.78rem', color: 'var(--gray)', textDecoration: 'line-through' }}>₩{cls.originalPrice}</span>
+              <span className="sr-only">(이전 가격)</span><span style={{ fontSize: '0.78rem', color: 'var(--gray)', textDecoration: 'line-through' }}>₩{cls.originalPrice}</span>
               {(() => {
                 const diff = parseInt(cls.originalPrice.replace(/,/g, ''), 10) - parseInt(cls.price.replace(/,/g, ''), 10)
                 const label = diff >= 10000 ? `-${Math.round(diff / 10000)}만원` : `-${diff.toLocaleString()}원`

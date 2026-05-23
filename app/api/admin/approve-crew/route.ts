@@ -56,13 +56,13 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/?error=not_admin`)
   }
 
-  // 레이트 리밋: 60초 내 동일 관리자 중복 클릭 차단 (SMS·DB 중복 방지 2차 방어)
+  // 레이트 리밋: 60초 내 동일 대상(uid) 중복 승인 차단 (이메일 링크 중복 클릭·동시 요청 방어)
   const nowAC = Date.now()
-  const lastAC = approveCrewMap.get(user.id) ?? 0
+  const lastAC = approveCrewMap.get(uid) ?? 0
   if (nowAC - lastAC < APPROVE_COOLDOWN_MS) {
     return NextResponse.redirect(`${origin}/admin?error=rate_limited`)
   }
-  approveCrewMap.set(user.id, nowAC)
+  approveCrewMap.set(uid, nowAC)
   if (approveCrewMap.size > 200) {
     for (const [k, ts] of approveCrewMap) {
       if (nowAC - ts > APPROVE_COOLDOWN_MS) approveCrewMap.delete(k)
