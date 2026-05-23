@@ -308,7 +308,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
             </p>
           </div>
         ) : actors.length === 0 ? (
-          <div style={styles.emptyState}>
+          <div role="status" aria-live="polite" style={styles.emptyState}>
             <p style={styles.emptyText}>해당 조건의 배우가 없습니다.</p>
             <Link href="/actors" style={styles.resetLink}>필터 초기화</Link>
           </div>

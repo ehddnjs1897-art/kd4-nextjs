@@ -126,7 +126,7 @@ export default function GameStartPage() {
               <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.08em", color: selected === c.id ? "#4488ff" : "#aaa" }}>
                 {c.name}
               </div>
-              <div style={{ fontSize: 11, color: "#555", marginTop: 2 }}>{c.sub}</div>
+              <div style={{ fontSize: 11, color: "#999", marginTop: 2 }}>{c.sub}</div>
             </button>
           ))}
         </div>
@@ -181,6 +181,7 @@ export default function GameStartPage() {
       <button
         type="button"
         onClick={() => router.push(`/game/play?char=${selected}`)}
+        aria-label={`${CHARACTERS.find(c => c.id === selected)?.name ?? selected} 캐릭터로 게임 시작`}
         style={{
           background: "#0057FF",
           color: "#fff",

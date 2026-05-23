@@ -340,11 +340,15 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                         />
                       )
                     ) : (
-                      <div style={{
-                        position: 'absolute', inset: 0,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        color: 'var(--border-strong)', fontSize: '0.75rem',
-                      }}>
+                      <div
+                        role="img"
+                        aria-label={`${labelText} 사진 없음`}
+                        style={{
+                          position: 'absolute', inset: 0,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          color: 'var(--border-strong)', fontSize: '0.75rem',
+                        }}
+                      >
                         {labelText}
                       </div>
                     )}

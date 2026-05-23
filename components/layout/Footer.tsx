@@ -178,7 +178,7 @@ export default function Footer() {
               <li>
                 <a
                   href="tel:010-8564-0244"
-                  style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s' }}
+                  style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s', display: 'inline-flex', alignItems: 'center', padding: '6px 0', minHeight: 44 }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--gray-light)')}
                 >
@@ -188,7 +188,7 @@ export default function Footer() {
               <li>
                 <a
                   href="mailto:uikactors@gmail.com"
-                  style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s' }}
+                  style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s', display: 'inline-flex', alignItems: 'center', padding: '6px 0', minHeight: 44 }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--gray-light)')}
                 >
@@ -200,7 +200,7 @@ export default function Footer() {
                   href="https://www.instagram.com/kd4actingstudio"
                   target="_blank" rel="noopener noreferrer"
                   aria-label="인스타그램 (새 탭에서 열림)"
-                  style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s' }}
+                  style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s', display: 'inline-flex', alignItems: 'center', padding: '6px 0', minHeight: 44 }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--gray-light)')}
                 >
@@ -213,7 +213,7 @@ export default function Footer() {
                   target="_blank" rel="noopener noreferrer"
                   aria-label="카카오채널 (새 탭에서 열림)"
                   onClick={() => pixel.contact()}
-                  style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s' }}
+                  style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s', display: 'inline-flex', alignItems: 'center', padding: '6px 0', minHeight: 44 }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--gray-light)')}
                 >
@@ -225,7 +225,7 @@ export default function Footer() {
                   href="https://blog.naver.com/kd4actingstudio"
                   target="_blank" rel="noopener noreferrer"
                   aria-label="네이버 블로그 (새 탭에서 열림)"
-                  style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s' }}
+                  style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s', display: 'inline-flex', alignItems: 'center', padding: '6px 0', minHeight: 44 }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--gray-light)')}
                 >
@@ -237,7 +237,7 @@ export default function Footer() {
                   href="https://www.youtube.com/@kd4actingstudio"
                   target="_blank" rel="noopener noreferrer"
                   aria-label="YouTube (새 탭에서 열림)"
-                  style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s' }}
+                  style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s', display: 'inline-flex', alignItems: 'center', padding: '6px 0', minHeight: 44 }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--gray-light)')}
                 >
@@ -275,7 +275,7 @@ export default function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s' }}
+                    style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s', display: 'inline-flex', alignItems: 'center', padding: '6px 0', minHeight: 44 }}
                     onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
                     onMouseLeave={e => (e.currentTarget.style.color = 'var(--gray-light)')}
                   >

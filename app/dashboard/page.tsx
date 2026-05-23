@@ -290,7 +290,7 @@ export default async function DashboardPage() {
                 { href: '/admin', label: '관리자 홈' },
               ].map(({ href, label }) => (
                 <Link key={href} href={href} style={{
-                  display: 'block', padding: '10px 14px',
+                  display: 'flex', alignItems: 'center', padding: '10px 14px', minHeight: 44,
                   background: 'rgba(201,64,58,0.05)', border: '1px solid rgba(201,64,58,0.15)',
                   borderRadius: 6, fontSize: '0.84rem', color: 'var(--white)', textDecoration: 'none',
                 }}>
@@ -345,6 +345,7 @@ const tileBtn: React.CSSProperties = {
   alignItems: 'center',
   gap: 6,
   padding: '14px 10px',
+  minHeight: 44,
   background: 'var(--bg)',
   border: '1px solid var(--border)',
   borderRadius: 8,

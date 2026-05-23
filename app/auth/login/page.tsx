@@ -362,6 +362,10 @@ const styles: Record<string, React.CSSProperties> = {
     marginTop: -4,
   },
   forgotLink: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    minHeight: 44,
+    padding: '0 4px',
     fontSize: '0.8rem',
     color: 'var(--gray)',
     textDecoration: 'underline',

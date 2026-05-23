@@ -20,6 +20,28 @@ export default function ConditionalShell({
 
   return (
     <>
+      {/* Skip navigation link — keyboard/AT accessibility */}
+      <a
+        href="#main-content"
+        style={{
+          position: 'fixed',
+          top: '-100px',
+          left: '8px',
+          zIndex: 9999,
+          padding: '8px 16px',
+          background: 'var(--gold)',
+          color: 'var(--bg)',
+          fontWeight: 700,
+          borderRadius: '4px',
+          textDecoration: 'none',
+          fontSize: '0.875rem',
+          fontFamily: 'var(--font-sans)',
+        }}
+        onFocus={e => { e.currentTarget.style.top = '8px' }}
+        onBlur={e => { e.currentTarget.style.top = '-100px' }}
+      >
+        본문 바로가기
+      </a>
       <Navbar />
       <main id="main-content" style={{ paddingBottom: '88px' }}>{children}</main>
       <Footer />
