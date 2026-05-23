@@ -4,6 +4,7 @@
  * 로그인한 관리자(admin)만 실행 가능
  */
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { sendSMS } from '@/lib/sms'
@@ -76,6 +77,8 @@ export async function GET(request: NextRequest) {
     console.error('[approve-crew] 업데이트 오류:', updateErr.message)
     return NextResponse.redirect(`${origin}/admin?error=update_failed`)
   }
+  // 역할 변경 후 대시보드 캐시 무효화 (캐시된 권한 정보 갱신)
+  revalidatePath('/dashboard')
 
   // 사용자에게 승인 SMS 알림 (trally 패턴 — 양방향 알림)
   if (target.phone) {

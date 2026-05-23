@@ -857,7 +857,7 @@ export default function HomePage() {
           <div className="marquee-track">
             {[...CASTING_PHOTOS, ...CASTING_PHOTOS].map((photo, i) => (
               <div
-                key={i}
+                key={`${photo.url}-${i}`}
                 style={{
                   flexShrink: 0,
                   width: "200px",
@@ -881,7 +881,7 @@ export default function HomePage() {
                 </span>
                 <Image
                   src={photo.url}
-                  alt={i < CASTING_PHOTOS.length ? photo.name : ""}
+                  alt={photo.name}
                   fill
                   sizes="200px"
                   style={{ objectFit: "cover", zIndex: 1 }}
@@ -1165,7 +1165,7 @@ export default function HomePage() {
         <div className="review-marquee" style={{ marginBottom: "12px" }}>
           <div className="review-marquee-track">
             {[...REVIEW_ITEMS, ...REVIEW_ITEMS].map((r, i) => (
-              <div key={i} style={reviewCardStyle}>
+              <div key={`${r.author}-${i}`} style={reviewCardStyle}>
                 <span style={reviewEmojiStyle}>{r.emoji}</span>
                 <p style={reviewTextStyle}>&ldquo;{r.text}&rdquo; <span style={reviewAuthorStyle}>— {r.author}</span></p>
               </div>
@@ -1177,7 +1177,7 @@ export default function HomePage() {
         <div className="review-marquee reverse">
           <div className="review-marquee-track">
             {[...REVIEW_ITEMS_2, ...REVIEW_ITEMS_2].map((r, i) => (
-              <div key={i} style={reviewCardStyle}>
+              <div key={`${r.author}-${i}`} style={reviewCardStyle}>
                 <span style={reviewEmojiStyle}>{r.emoji}</span>
                 <p style={reviewTextStyle}>&ldquo;{r.text}&rdquo; <span style={reviewAuthorStyle}>— {r.author}</span></p>
               </div>
@@ -1194,7 +1194,7 @@ export default function HomePage() {
         <div className="partner-marquee">
           <div className="partner-marquee-track">
             {[...PARTNERS, ...PARTNERS].map((p, i) => (
-              <span key={i} className="partner-marquee-item">
+              <span key={`${p}-${i}`} className="partner-marquee-item">
                 {p}<span className="partner-marquee-dot" aria-hidden> · </span>
               </span>
             ))}

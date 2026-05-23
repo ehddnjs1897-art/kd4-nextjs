@@ -146,7 +146,10 @@ export async function POST(request: NextRequest) {
   if (ogPhotoPath) actorPatch.profile_photo = photoPublicUrl(ogPhotoPath)
   if (castingSummary) actorPatch.casting_summary = castingSummary
   const { error: patchErr } = await supabaseAdmin.from('actors').update(actorPatch).eq('id', actorId)
-  if (patchErr) console.error('[profile/intake] actor 패치 실패:', patchErr.message)
+  if (patchErr) {
+    console.error('[profile/intake] actor 패치 실패:', patchErr.message)
+    return NextResponse.json({ error: '프로필 제출 중 오류가 발생했습니다. 다시 시도해주세요.' }, { status: 500 })
+  }
 
   // 3. 사진 rows — 기존 sort_order 다음부터 append
   if (photos.length > 0) {

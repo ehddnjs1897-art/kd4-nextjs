@@ -138,8 +138,10 @@ export default async function GalleryEditPage() {
   ])
 
   // actorRes.data가 null이면 orphaned actor_id — 빈 초기값으로 폼 표시 (덮어쓰기 방지)
+  // actorRes.error이면 DB 오류 → error boundary로 전달 (빈 값 덮어쓰기 방지)
   if (actorRes.error) {
     console.error('[dashboard/edit] actor 조회 오류:', actorRes.error)
+    throw new Error(`배우 정보를 불러오지 못했습니다: ${actorRes.error.message}`)
   }
   const actor = (actorRes.data ?? {}) as ActorRow
   const photos = (photosRes.data ?? []) as PhotoRow[]

@@ -46,8 +46,9 @@ export async function GET(
     .maybeSingle()
 
   const role = profile?.role
-  // admin/crew/editor/director: 모든 영상 열람 가능
-  const elevated = role === 'admin' || role === 'crew' || role === 'editor' || role === 'director'
+  // admin/crew/editor/director/member: 모든 영상 열람 가능
+  // member = 미승인 디렉터 — 로그인된 멤버는 영상 시청 허용 (주석: "멤버 이상 인증 필요")
+  const elevated = role === 'admin' || role === 'crew' || role === 'editor' || role === 'director' || role === 'member'
   // actor 역할: 영상 fetch 후 본인 소유 여부 검증 (아래)
   const isActorRole = role === 'actor'
 

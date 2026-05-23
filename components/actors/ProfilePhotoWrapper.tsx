@@ -25,6 +25,7 @@ export default function ProfilePhotoWrapper({ src, alt, downloadHref, imageProte
         <img
           src={src}
           alt={alt}
+          loading="lazy"
           style={imgStyles}
           draggable={false}
         />
@@ -37,7 +38,7 @@ export default function ProfilePhotoWrapper({ src, alt, downloadHref, imageProte
   return (
     <div style={{ ...wrapStyles, position: 'relative' }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt={alt} style={imgStyles} />
+      <img src={src} alt={alt} loading="lazy" style={imgStyles} />
       {downloadHref && (
         <a
           href={downloadHref}

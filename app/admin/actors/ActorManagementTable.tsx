@@ -147,7 +147,7 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
                 onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
                 {/* 이름 */}
                 <td style={{ padding: '12px 12px' }}>
-                  <Link href={`/actors/${actor.id}`} target="_blank" style={{
+                  <Link href={`/actors/${actor.id}`} target="_blank" rel="noopener noreferrer" style={{
                     color: 'var(--white)', textDecoration: 'none', fontWeight: 600,
                     fontFamily: 'var(--font-display)',
                   }}>
