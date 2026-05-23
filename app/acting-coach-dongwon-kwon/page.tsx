@@ -38,7 +38,7 @@ const priceOf = (c: { price: string; originalPrice?: string }) => c.originalPric
 export const metadata: Metadata = {
   title: '권동원 — 액팅 코치 (리더) · 현역 배우',
   description:
-    'KD4 액팅 스튜디오 대표 권동원. 마이즈너 테크닉 액팅 코치(리더), 현역 배우. Disney+ 무빙2·Netflix 중증외상센터 등 출연.',
+    'KD4 액팅 스튜디오 대표 권동원. 마이즈너 테크닉 액팅 코치(리더), 현역 배우. Disney+ 무빙2·Netflix 중증외상센터 출연. LA Meisner Workshop 수료, 프로 배우 400명+ 코칭. 서울 신촌.',
   keywords: ['권동원', '권동원 배우', '권동원 KD4', '마이즈너 강사', '액팅 코치', '액팅 리더', '현역 배우 강사'],
   alternates: { canonical: PAGE_URL },
   openGraph: {

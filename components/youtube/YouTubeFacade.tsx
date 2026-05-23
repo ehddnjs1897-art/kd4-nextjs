@@ -49,6 +49,7 @@ const playButtonStyle: CSSProperties = {
 
 export default function YouTubeFacade({ videoId, title, allow, containerStyle }: Props) {
   const [loaded, setLoaded] = useState(false)
+  const [thumbError, setThumbError] = useState(false)
   const mergedWrapperStyle = { ...wrapperStyle, ...containerStyle }
 
   if (loaded) {
@@ -74,8 +75,14 @@ export default function YouTubeFacade({ videoId, title, allow, containerStyle }:
         loading="lazy"
         width={480}
         height={270}
-        style={{ ...fillStyle, objectFit: 'cover' }}
+        style={{ ...fillStyle, objectFit: 'cover', display: thumbError ? 'none' : undefined }}
+        onError={() => setThumbError(true)}
       />
+      {thumbError && (
+        <div style={{ ...fillStyle, background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <span style={{ color: '#555', fontSize: '0.8rem' }}>동영상</span>
+        </div>
+      )}
       <button
         type="button"
         onClick={() => setLoaded(true)}

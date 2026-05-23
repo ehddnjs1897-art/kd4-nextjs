@@ -8,7 +8,7 @@ import { buildBreadcrumb } from '@/lib/seo-schemas'
 export const metadata: Metadata = {
   title: '멤버 혜택',
   description:
-    'KD4 멤버가 누리는 혜택과 커뮤니티 — 보강제도, 출연영상·프로필 편집 서비스, 레피티션 스터디, 굿무비 굿액팅, 크리스쳔 액터스.',
+    'KD4 멤버가 누리는 혜택과 커뮤니티 — 보강제도, 출연영상·프로필 편집 서비스(편집 5만원·프로필 3만원), 레피티션 스터디, 굿무비 굿액팅, 크리스쳔 액터스 커뮤니티, 신규 멤버 최대 10만원 할인.',
   alternates: { canonical: `${SITE_URL}/benefits` },
   keywords: ['KD4 멤버 혜택', '연기학원 혜택', '배우 프로필 편집', '출연영상 제작', '레피티션 스터디', '신촌 연기 커뮤니티', 'KD4 커뮤니티'],
   openGraph: {

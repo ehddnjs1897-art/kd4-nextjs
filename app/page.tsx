@@ -301,7 +301,7 @@ export default function HomePage() {
   }, [])
 
   return (
-    <main id="main-content">
+    <>
       {/* ── 1. HERO (Dennis Snellenberg style) ───────────────────────────────── */}
       <section
         id="hero"
@@ -1248,6 +1248,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-    </main>
+    </>
   );
 }

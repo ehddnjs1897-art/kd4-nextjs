@@ -180,7 +180,7 @@ export default function ClassesPage() {
   const [extraOpen, setExtraOpen] = useState(false)
 
   return (
-    <main style={{ paddingTop: '80px', background: 'var(--bg)', minHeight: '100vh' }}>
+    <div style={{ paddingTop: '80px', background: 'var(--bg)', minHeight: '100vh' }}>
       {/* 헤더 */}
       <section style={{ padding: '80px 24px 60px', textAlign: 'center', borderBottom: '1px solid var(--border)' }}>
         <div className="container">
@@ -429,6 +429,6 @@ export default function ClassesPage() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   )
 }

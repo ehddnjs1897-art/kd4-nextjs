@@ -42,7 +42,7 @@ async function fetchActor(id: string): Promise<ActorOg | null> {
         apikey: SERVICE_KEY,
         Authorization: `Bearer ${SERVICE_KEY}`,
       },
-      next: { revalidate: 3600 },
+      next: { revalidate: 3600, tags: ['actors', `actor-${id}`] },
     }
   )
   if (!res.ok) return null
@@ -271,7 +271,7 @@ export async function GET(
       width: 1200,
       height: 630,
       headers: {
-        'Cache-Control': 'public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800',
+        'Cache-Control': 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400',
       },
     }
   )

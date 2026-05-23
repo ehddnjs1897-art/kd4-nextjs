@@ -10,7 +10,7 @@ import { SITE_URL } from '@/lib/constants'
 export const metadata: Metadata = {
   title: '서우스튜디오 프로필 촬영 제휴',
   description:
-    'KD4 액팅 스튜디오 × 서우스튜디오 공식 제휴 — 배우 프로필·포트레이트 촬영. KD4 멤버 전용 할인(헤어·메이크업 포함 15%, 미포함 10%) 및 이용 절차 안내.',
+    'KD4 액팅 스튜디오 × 서우스튜디오 공식 제휴 — 배우 프로필·포트레이트 촬영. KD4 멤버 전용 할인(헤어·메이크업 포함 15%, 미포함 10%) 및 이용 절차 안내. 서초구 신사역 인근 배우·가수 프로필 전문 스튜디오. 인스타그램 DM 예약.',
   alternates: { canonical: `${SITE_URL}/benefits/seowoo-studio` },
   keywords: ['서우스튜디오', 'KD4 멤버 혜택', '배우 프로필 촬영', '신촌 배우 촬영', '프로필 사진 할인', 'KD4 제휴'],
   openGraph: {

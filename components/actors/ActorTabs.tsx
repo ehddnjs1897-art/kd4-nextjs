@@ -469,6 +469,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
               <span style={s.sectionTitle}>{CATEGORY_LABEL[cat].toUpperCase()}</span>
               {canEdit && (
                 <button
+                  type="button"
                   onClick={() => { setAddingCat(isAdding ? null : cat); setEditingId(null) }}
                   disabled={saving}
                   style={s.addRowBtn}
@@ -524,15 +525,15 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                             style={s.inlineInput} placeholder="역할" aria-label="역할" />
                         </td>
                         <td style={{ ...s.td, whiteSpace: 'nowrap' }}>
-                          <button onClick={() => saveEdit(entry)} disabled={saving} aria-label="저장" style={{ ...s.saveBtn, color: saving ? 'var(--gray)' : 'var(--gold)' }}>{saving ? '…' : '✓'}</button>
-                          <button onClick={() => setEditingId(null)} disabled={saving} aria-label="취소" style={s.cancelBtn}>✕</button>
+                          <button type="button" onClick={() => saveEdit(entry)} disabled={saving} aria-label="저장" style={{ ...s.saveBtn, color: saving ? 'var(--gray)' : 'var(--gold)' }}>{saving ? '…' : '✓'}</button>
+                          <button type="button" onClick={() => setEditingId(null)} disabled={saving} aria-label="취소" style={s.cancelBtn}>✕</button>
                           {confirmingDeleteId === entry.id ? (
                             <>
-                              <button onClick={() => setConfirmingDeleteId(null)} aria-label="삭제 취소" style={{ ...s.cancelBtn }}>✕</button>
-                              <button onClick={() => deleteEntry(entry.id)} disabled={saving} aria-label="삭제 확인" style={{ ...s.deleteBtn, background: '#ef4444', color: '#fff', opacity: 1 }}>✓</button>
+                              <button type="button" onClick={() => setConfirmingDeleteId(null)} aria-label="삭제 취소" style={{ ...s.cancelBtn }}>✕</button>
+                              <button type="button" onClick={() => deleteEntry(entry.id)} disabled={saving} aria-label="삭제 확인" style={{ ...s.deleteBtn, background: '#ef4444', color: '#fff', opacity: 1 }}>✓</button>
                             </>
                           ) : (
-                            <button onClick={() => deleteEntry(entry.id)} disabled={saving} aria-label="삭제" style={s.deleteBtn}>🗑</button>
+                            <button type="button" onClick={() => deleteEntry(entry.id)} disabled={saving} aria-label="삭제" style={s.deleteBtn}>🗑</button>
                           )}
                         </td>
                       </tr>
@@ -571,14 +572,14 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                       <td style={s.td}>{entry.role ?? '—'}</td>
                       {canEdit && (
                         <td style={{ ...s.td, whiteSpace: 'nowrap' }}>
-                          <button onClick={() => startEdit(entry)} disabled={saving} style={s.editBtn} title="편집" aria-label="편집">✎</button>
+                          <button type="button" onClick={() => startEdit(entry)} disabled={saving} style={s.editBtn} title="편집" aria-label="편집">✎</button>
                           {confirmingDeleteId === entry.id ? (
                             <>
-                              <button onClick={() => setConfirmingDeleteId(null)} style={{ ...s.cancelBtn }} title="취소" aria-label="삭제 취소">✕</button>
-                              <button onClick={() => deleteEntry(entry.id)} disabled={saving} style={{ ...s.deleteBtn, background: '#ef4444', color: '#fff', opacity: 1 }} title="삭제 확인" aria-label="삭제 확인">✓</button>
+                              <button type="button" onClick={() => setConfirmingDeleteId(null)} style={{ ...s.cancelBtn }} title="취소" aria-label="삭제 취소">✕</button>
+                              <button type="button" onClick={() => deleteEntry(entry.id)} disabled={saving} style={{ ...s.deleteBtn, background: '#ef4444', color: '#fff', opacity: 1 }} title="삭제 확인" aria-label="삭제 확인">✓</button>
                             </>
                           ) : (
-                            <button onClick={() => deleteEntry(entry.id)} disabled={saving} style={s.deleteBtn} title="삭제" aria-label="삭제">🗑</button>
+                            <button type="button" onClick={() => deleteEntry(entry.id)} disabled={saving} style={s.deleteBtn} title="삭제" aria-label="삭제">🗑</button>
                           )}
                         </td>
                       )}
@@ -619,8 +620,8 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                         style={s.inlineInput} placeholder="역할" aria-label="역할" />
                     </td>
                     <td style={{ ...s.td, whiteSpace: 'nowrap' }}>
-                      <button onClick={() => addEntry(cat)} disabled={saving || !newEntry.title.trim()} style={{ ...s.saveBtn, color: saving ? 'var(--gray)' : 'var(--gold)' }} title="저장" aria-label="저장">{saving ? '…' : '✓'}</button>
-                      <button onClick={() => { setAddingCat(null); setNewEntry({ year: '', title: '', role: '', broadcaster: '', film_type: '' }) }} style={s.cancelBtn} title="취소" aria-label="입력 취소">✕</button>
+                      <button type="button" onClick={() => addEntry(cat)} disabled={saving || !newEntry.title.trim()} style={{ ...s.saveBtn, color: saving ? 'var(--gray)' : 'var(--gold)' }} title="저장" aria-label="저장">{saving ? '…' : '✓'}</button>
+                      <button type="button" onClick={() => { setAddingCat(null); setNewEntry({ year: '', title: '', role: '', broadcaster: '', film_type: '' }) }} style={s.cancelBtn} title="취소" aria-label="입력 취소">✕</button>
                     </td>
                   </tr>
                 )}
