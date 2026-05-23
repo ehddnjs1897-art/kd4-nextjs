@@ -137,8 +137,8 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: '사용자를 찾을 수 없습니다.' }, { status: 404 })
     }
 
-    const maskedEmail = data.email ? data.email.replace(/(?<=.{2}).(?=.*@)/g, '*') : null
-    console.warn('[audit] 역할 변경:', { adminId, targetId: id, newRole: role, email: maskedEmail, at: new Date().toISOString() })
+    // audit log: email 제외 (Vercel 로그 PII 최소화 — id로 충분)
+    console.warn('[audit] 역할 변경:', { adminId, targetId: id, newRole: role, at: new Date().toISOString() })
     return NextResponse.json({ user: data })
   } catch (err) {
     console.error('[PATCH /api/admin/users] 예상치 못한 오류:', err instanceof Error ? err.message : String(err))

@@ -123,7 +123,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* 내 계정 카드 */}
-        <section style={card}>
+        <section aria-label="내 계정" style={card}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid var(--border)' }}>
             <div
               aria-hidden="true"
@@ -163,7 +163,7 @@ export default async function DashboardPage() {
 
         {/* 배우 프로필 섹션 — member/actor/admin */}
         {isActorMember && (
-          <section style={{ ...card, borderColor: 'rgba(21,72,138,0.2)', background: 'rgba(21,72,138,0.03)' }}>
+          <section aria-label="내 배우 프로필" style={{ ...card, borderColor: 'rgba(21,72,138,0.2)', background: 'rgba(21,72,138,0.03)' }}>
             <h2 style={sectionTitle}>내 배우 프로필</h2>
             {actorId ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -202,16 +202,16 @@ export default async function DashboardPage() {
 
         {/* 내 수강 */}
         {enrErr ? (
-          <section style={{ padding: '16px', borderRadius: 'var(--radius)', border: '1px solid #e74c3c44', marginBottom: 24 }}>
+          <div role="alert" style={{ padding: '16px', borderRadius: 'var(--radius)', border: '1px solid #e74c3c44', marginBottom: 24 }}>
             <p style={{ color: '#e74c3c', fontSize: '0.85rem', margin: 0 }}>수강 내역을 불러오지 못했습니다. 페이지를 새로고침해 주세요.</p>
-          </section>
+          </div>
         ) : (
           <EnrollmentsPanel enrollments={enrollments} thisMonth={thisMonth} nextMonth={nextMonth} />
         )}
 
         {/* KD4 크루 전용 */}
         {canViewActorDb && (
-          <section style={card}>
+          <section aria-label="KD4 크루" style={card}>
             <h2 style={sectionTitle}>KD4 크루</h2>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
               <Link href="/actors" style={tileBtn}>
@@ -232,7 +232,7 @@ export default async function DashboardPage() {
 
         {/* 디렉터 승인 완료 */}
         {isDirector && (
-          <section style={{ ...card, borderColor: 'rgba(196,165,90,0.3)' }}>
+          <section aria-label="디렉터 승인 완료" style={{ ...card, borderColor: 'rgba(196,165,90,0.3)' }}>
             <h2 style={{ ...sectionTitle, color: 'var(--gold)' }}>디렉터 승인 완료</h2>
             <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.6 }}>
               배우 DB에서 <strong style={{ color: 'var(--gold)' }}>연락처 열람 + 사진·프로필 다운로드</strong>가 가능합니다.
@@ -242,7 +242,7 @@ export default async function DashboardPage() {
 
         {/* 디렉터 권한 신청 */}
         {canRequestDirector && (
-          <section style={{ ...card, borderColor: 'rgba(196,165,90,0.2)' }}>
+          <section aria-label="디렉터 권한 신청" style={{ ...card, borderColor: 'rgba(196,165,90,0.2)' }}>
             <h2 style={sectionTitle}>디렉터 권한 신청</h2>
             <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 8 }}>
               승인 시 배우 <strong style={{ color: 'var(--gold)' }}>연락처 열람 + 사진·프로필 다운로드</strong> 가능.
@@ -253,7 +253,7 @@ export default async function DashboardPage() {
 
         {/* 디렉터 승인 대기 */}
         {isDirectorPending && (
-          <section style={{ ...card, borderColor: 'rgba(240,173,78,0.3)' }}>
+          <section aria-label="디렉터 승인 대기 중" style={{ ...card, borderColor: 'rgba(240,173,78,0.3)' }}>
             <h2 style={{ ...sectionTitle, color: '#f0ad4e' }}>디렉터 승인 대기 중</h2>
             <div style={pendingBadge}>⏳ 관리자 승인 검토 중입니다</div>
           </section>
@@ -261,7 +261,7 @@ export default async function DashboardPage() {
 
         {/* KD4 크루 신청 */}
         {canRequestCrew && (
-          <section style={card}>
+          <section aria-label="KD4 크루 신청" style={card}>
             <h2 style={sectionTitle}>KD4 크루 신청</h2>
             <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 8 }}>
               배우 DB · 커뮤니티 · 대본 분석 등 크루 전용 기능 이용 시 필요.
@@ -272,7 +272,7 @@ export default async function DashboardPage() {
 
         {/* KD4 크루 대기 */}
         {isCrewPending && (
-          <section style={card}>
+          <section aria-label="KD4 크루 신청 대기 중" style={card}>
             <h2 style={{ ...sectionTitle, color: '#f0ad4e' }}>KD4 크루 신청 대기 중</h2>
             <div style={pendingBadge}>⏳ 관리자 승인 검토 중입니다</div>
           </section>
@@ -280,7 +280,7 @@ export default async function DashboardPage() {
 
         {/* 관리자 */}
         {isAdmin && (
-          <section style={{ ...card, borderColor: 'rgba(201,64,58,0.2)' }}>
+          <section aria-label="관리자" style={{ ...card, borderColor: 'rgba(201,64,58,0.2)' }}>
             <h2 style={{ ...sectionTitle, color: '#c9403a' }}>관리자</h2>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
               {[
@@ -302,7 +302,7 @@ export default async function DashboardPage() {
         )}
 
         {/* 커뮤니티 */}
-        <section style={card}>
+        <section aria-label="커뮤니티" style={card}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <h2 style={sectionTitle}>커뮤니티</h2>
             <Link href="/board?my=1" style={{ fontSize: '0.82rem', color: 'var(--navy)', textDecoration: 'none' }}>내 게시글 →</Link>

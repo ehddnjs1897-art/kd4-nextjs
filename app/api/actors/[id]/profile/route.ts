@@ -30,6 +30,7 @@ function dispositionHeader(filename: string): string {
 }
 
 // SSRF 방어: 허용된 호스트만 프록시 대상으로 (내부 주소·IPv6 매핑 IPv4 차단)
+// R2 URL은 profile_doc_path 경로(아래)에서 별도 처리 — SSRF 허용 목록에 포함 불요
 const ALLOWED_PROFILE_HOSTS = new Set([
   'drive.google.com',
   'lh3.googleusercontent.com',

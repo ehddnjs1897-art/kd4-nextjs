@@ -297,6 +297,7 @@ export default function HomePage() {
       {/* ── 1. HERO (Dennis Snellenberg style) ───────────────────────────────── */}
       <section
         id="hero"
+        aria-label="히어로"
         ref={heroRef}
         style={{
           position: "relative",
@@ -499,6 +500,7 @@ export default function HomePage() {
       {/* ── 4. DIRECTOR ──────────────────────────────────────────────────────── */}
       <section
         id="director"
+        aria-label="강사 소개"
         className="section"
         style={{ background: "var(--bg2)", borderTop: "1px solid var(--border)" }}
       >
@@ -639,7 +641,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 3. ABOUT ─────────────────────────────────────────────────────────── */}
-      <section id="about" className="section" style={{ background: "var(--bg)" }}>
+      <section id="about" aria-label="KD4 소개" className="section" style={{ background: "var(--bg)" }}>
         <div className="container">
           {/* 헤더 영역은 중앙 정렬 720px 유지 (가독성) */}
           <div style={{ maxWidth: "720px", margin: "0 auto", textAlign: "center" }}>
@@ -797,6 +799,7 @@ export default function HomePage() {
       {/* ── 8. CASTING ───────────────────────────────────────────────────────── */}
       <section
         id="casting"
+        aria-label="캐스팅 연계"
         className="section"
         style={{ background: "var(--bg2)", borderTop: "1px solid var(--border)", paddingBottom: "80px" }}
       >
@@ -907,7 +910,7 @@ export default function HomePage() {
       </div>
 
       {/* ── 7. HOW IT WORKS ──────────────────────────────────────────────────── */}
-      <section id="how" className="section" style={{ background: "var(--bg)" }}>
+      <section id="how" aria-label="수업 방식" className="section" style={{ background: "var(--bg)" }}>
         <div className="container">
           <div style={{ textAlign: "center", marginBottom: "60px" }}>
             <p
@@ -993,7 +996,7 @@ export default function HomePage() {
 
       {/* ── 5. CLASSES ───────────────────────────────────────────────────────── */}
       {/* ── 8. CLASSES — 압축 버전 (전체 보기는 /classes로) ─────────────────── */}
-      <section id="classes" className="section" style={{ background: "var(--bg)" }}>
+      <section id="classes" aria-label="클래스 소개" className="section" style={{ background: "var(--bg)" }}>
         <div className="container" style={{ maxWidth: 980 }}>
           <div style={{ textAlign: "center", marginBottom: "40px" }}>
             <p className="section-eyebrow">CURRICULUM</p>
@@ -1188,6 +1191,7 @@ export default function HomePage() {
       {/* ── 12. CTA ──────────────────────────────────────────────────────────── */}
       <section
         id="cta"
+        aria-label="수강 신청"
         style={{
           padding: "120px 24px",
           background:

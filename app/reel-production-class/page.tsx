@@ -114,7 +114,7 @@ export default function ReelPage() {
           <p style={{ fontSize: 'clamp(0.95rem, 2.6vw, 1.05rem)', color: 'rgba(255,255,255,0.86)', lineHeight: 1.7, marginBottom: '8px', maxWidth: '600px', margin: '0 auto 8px', wordBreak: 'keep-all', fontStyle: 'italic' }}>
             &ldquo;{FILM_CLASS.quote}&rdquo;
           </p>
-          <p style={{ fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)', color: 'rgba(255,255,255,0.55)', marginBottom: '32px', letterSpacing: '0.03em' }}>
+          <p style={{ fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)', color: 'rgba(255,255,255,0.7)', marginBottom: '32px', letterSpacing: '0.03em' }}>
             {FILM_CLASS.course} · 정원 {FILM_CLASS.capacity} · 전문 영화팀 촬영
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>

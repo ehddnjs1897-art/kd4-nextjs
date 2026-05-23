@@ -292,7 +292,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
 
       {/* ============ 현재사진 (앞/좌/우/뒤) ============ */}
       {currentPhotos.length > 0 && (
-        <section style={s.section}>
+        <section aria-label="현재사진" style={s.section}>
           <h2 style={s.sectionHeading}>
             <span style={s.sectionTitle}>현재사진</span>
           </h2>
@@ -433,7 +433,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
 
       {/* ============ 02 · CURRENT WORKS ============ */}
       {recentWorks.length > 0 && (
-        <section style={s.section}>
+        <section aria-label="최근 출연" style={s.section}>
           <h2 style={s.sectionHeading}>
             <span style={s.sectionNum}>02</span>
             <span style={s.sectionTitle}>CURRENT WORKS</span>
@@ -464,7 +464,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
         const isAdding = addingCat === cat
 
         return (
-          <section key={cat} style={s.section}>
+          <section key={cat} aria-label={CATEGORY_LABEL[cat]} style={s.section}>
             <h2 style={s.sectionHeading}>
               <span style={s.sectionNum}>{num}</span>
               <span style={s.sectionTitle}>{CATEGORY_LABEL[cat].toUpperCase()}</span>
@@ -638,7 +638,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
 
       {/* ============ 수상이력 ============ */}
       {awardEntries.length > 0 && (
-        <section style={s.section}>
+        <section aria-label="수상 이력" style={s.section}>
           <h2 style={{ ...s.sectionHeading, borderBottomColor: 'var(--accent-red)' }}>
             <span aria-hidden="true" style={{ ...s.sectionNum, color: 'var(--accent-red)' }}>🏆</span>
             <span style={{ ...s.sectionTitle, color: 'var(--accent-red)' }}>AWARD</span>

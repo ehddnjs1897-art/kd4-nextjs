@@ -96,7 +96,7 @@ export default function AIToolsPage() {
     <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ textAlign: 'center', maxWidth: 360, padding: '0 20px' }}>
         <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.68rem', letterSpacing: '0.35em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 12 }}>AI TOOLS</p>
-        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--white)', marginBottom: 12 }}>KD4 크루 전용</h2>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--white)', marginBottom: 12 }}>KD4 크루 전용</h1>
         <p style={{ color: 'var(--gray)', fontSize: '0.88rem', lineHeight: 1.7 }}>
           AI 대본 분석은 KD4 크루 이상 회원만 이용할 수 있습니다.
         </p>

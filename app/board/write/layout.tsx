@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 
 export const metadata: Metadata = {
   title: '글 쓰기',
+  description: 'KD4 커뮤니티 — 새 글 작성',
   robots: { index: false, follow: false },
 }
 

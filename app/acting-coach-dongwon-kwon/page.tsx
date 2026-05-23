@@ -246,7 +246,7 @@ export default function CoachPage() {
               )
             })}
           </div>
-          <p style={{ textAlign: 'center', fontSize: '0.82rem', color: 'rgba(255,255,255,0.5)', marginTop: '20px' }}>
+          <p style={{ textAlign: 'center', fontSize: '0.82rem', color: 'rgba(255,255,255,0.65)', marginTop: '20px' }}>
             * 표기 금액은 정가(월 수강료) 기준입니다.
           </p>
         </div>
