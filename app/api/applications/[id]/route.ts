@@ -71,7 +71,14 @@ export async function PATCH(
     if (!UUID_RE.test(id)) {
       return NextResponse.json({ error: '유효하지 않은 ID 형식입니다.' }, { status: 400 })
     }
-    const { status } = await request.json().catch(() => ({}))
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let reqBody: Record<string, any>
+    try {
+      reqBody = await request.json()
+    } catch {
+      return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })
+    }
+    const { status } = reqBody
 
     if (!status || !VALID_STATUSES.includes(status)) {
       return NextResponse.json({ error: '유효하지 않은 status' }, { status: 400 })

@@ -169,6 +169,7 @@ export default function EditPage() {
                   onClick={() => setCategory(cat as Category)}
                   style={{
                     padding: '7px 16px',
+                    minHeight: 44,
                     borderRadius: 'var(--radius)',
                     fontSize: '0.85rem',
                     fontWeight: category === cat ? 600 : 400,

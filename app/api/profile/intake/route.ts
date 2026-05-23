@@ -50,6 +50,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   }
 
+  // CL 체크 — 레이트리밋 슬롯 소모 전 먼저 확인
+  const clIntake = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
+  if (clIntake > 32_768) {
+    return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+  }
+
   // 동일 사용자 60초 내 중복 제출 차단 (actor row 중복 생성 race 방어)
   const now = Date.now()
   const lastIntake = intakeCooldowns.get(user.id) ?? 0
@@ -57,7 +63,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
   }
   intakeCooldowns.set(user.id, now)
-  // 만료 항목 정리 — Map 무한 증가 방지 (500건 초과 시만 순회 — O(n) 방지)
+  // 만료 항목 정리 — Map 무한 증가 방지
   if (intakeCooldowns.size > 2000) {
     for (const [k, ts] of intakeCooldowns) {
       if (now - ts > INTAKE_COOLDOWN_MS) intakeCooldowns.delete(k)
@@ -65,11 +71,13 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-  const clIntake = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
-  if (clIntake > 32_768) {
-    return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let body: Record<string, any>
+  try {
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })
   }
-  const body = await request.json().catch(() => null)
   // 최대 길이 상수
   const MAX_PATH_LEN = 500   // Storage/R2 경로
   const MAX_SUMMARY_LEN = 2000
@@ -106,9 +114,10 @@ export async function POST(request: NextRequest) {
           video_type: typeof (v as { video_type?: unknown }).video_type === 'string' && VALID_VIDEO_TYPES.has((v as { video_type: string }).video_type) ? (v as { video_type: string }).video_type : 'reel',
         }
       : null
-  const videos: NonNullable<ReturnType<typeof parseVideoItem>>[] = Array.isArray(body?.videos)
-    ? body.videos.slice(0, 10).map(parseVideoItem).filter(Boolean)
-    : body?.video ? [parseVideoItem(body.video)].filter(Boolean) : []
+  type ParsedVideo = NonNullable<ReturnType<typeof parseVideoItem>>
+  const videos: ParsedVideo[] = Array.isArray(body?.videos)
+    ? body.videos.slice(0, 10).map(parseVideoItem).filter((v): v is ParsedVideo => v !== null)
+    : body?.video ? [parseVideoItem(body.video)].filter((v): v is ParsedVideo => v !== null) : []
 
   const ogPhotoPath: string | null = typeof body?.ogPhotoPath === 'string' ? body.ogPhotoPath.slice(0, MAX_PATH_LEN) : null
   const castingSummary: string | null = typeof body?.castingSummary === 'string' && body.castingSummary.trim() ? body.castingSummary.trim().slice(0, MAX_SUMMARY_LEN) : null

@@ -63,10 +63,16 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const body = await request.json().catch(() => null)
-  const filename = typeof body?.filename === 'string' ? body.filename.slice(0, 500) : ''
-  const contentType = typeof body?.contentType === 'string' ? body.contentType : ''
-  const size = Number(body?.size ?? 0)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let body: Record<string, any>
+  try {
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })
+  }
+  const filename = typeof body.filename === 'string' ? body.filename.slice(0, 500) : ''
+  const contentType = typeof body.contentType === 'string' ? body.contentType : ''
+  const size = Number(body.size ?? 0)
 
   if (!filename || !contentType) {
     return NextResponse.json({ error: 'filename과 contentType이 필요합니다.' }, { status: 400 })

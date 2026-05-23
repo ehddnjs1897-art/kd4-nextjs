@@ -152,7 +152,7 @@ export async function PATCH(request: NextRequest) {
 
     if (!role || !VALID_ROLES.includes(role as ValidRole)) {
       return NextResponse.json(
-        { error: `역할은 ${VALID_ROLES.join(', ')} 중 하나여야 합니다.` },
+        { error: '유효하지 않은 역할입니다.' },
         { status: 400 }
       )
     }

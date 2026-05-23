@@ -106,7 +106,7 @@ export default function UpdatePasswordPage() {
       <div style={styles.card}>
         <div style={styles.logoArea}>
           <span style={styles.logoText}>KD4</span>
-          <span style={styles.logoSub}>ACTING STUDIO</span>
+          <span lang="en" style={styles.logoSub}>ACTING STUDIO</span>
         </div>
 
         {step === 'success' ? (

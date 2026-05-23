@@ -192,7 +192,7 @@ export default function CoachPage() {
             ].map(({ label, items }) => (
               <div key={label} style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '12px', padding: '24px' }}>
                 <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '0.78rem', letterSpacing: '0.15em', color: 'var(--navy)', fontWeight: 700, marginBottom: '12px' }}>
-                  {label}
+                  <span lang="en">{label}</span>
                 </h3>
                 <ul style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   {items.map((title) => (

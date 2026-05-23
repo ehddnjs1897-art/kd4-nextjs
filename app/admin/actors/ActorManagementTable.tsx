@@ -199,6 +199,7 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
                       padding: '5px 10px', borderRadius: 5, fontSize: '0.74rem',
                       background: 'transparent', border: '1px solid var(--border)',
                       color: 'var(--gray)', textDecoration: 'none',
+                      display: 'inline-flex', alignItems: 'center', minHeight: 44, minWidth: 44,
                     }}>
                       보기
                     </Link>
@@ -211,7 +212,8 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
                       disabled={loadingId === actor.id}
                       style={{
                         padding: '5px 10px', borderRadius: 5, fontSize: '0.74rem',
-                        cursor: 'pointer', border: 'none',
+                        cursor: 'pointer', border: 'none', minHeight: 44, minWidth: 44,
+                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                         background: actor.is_public ? 'rgba(239,68,68,0.12)' : 'rgba(74,222,128,0.12)',
                         color: actor.is_public ? '#ef4444' : '#4ade80',
                         opacity: loadingId === actor.id ? 0.5 : 1,

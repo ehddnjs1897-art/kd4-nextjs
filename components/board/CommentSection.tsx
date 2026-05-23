@@ -250,7 +250,9 @@ export default function CommentSection({
               {error}
             </p>
           )}
+          <label htmlFor="comment-input" className="sr-only">댓글 입력</label>
           <textarea
+            id="comment-input"
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="댓글을 입력하세요..."
