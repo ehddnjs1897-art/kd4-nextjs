@@ -16,7 +16,7 @@ export default async function AdminEnrollmentsPage() {
     return (
       <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '80px 0 120px' }}>
         <div className="container">
-          <p role="alert" style={{ color: 'var(--gray)', fontSize: '0.95rem', marginTop: '40px' }}>
+          <p role="status" style={{ color: 'var(--gray)', fontSize: '0.95rem', marginTop: '40px' }}>
             수강 데이터를 불러오지 못했습니다. 새로고침 해주세요.
           </p>
         </div>

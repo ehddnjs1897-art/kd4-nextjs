@@ -59,7 +59,7 @@ export default async function BoardPage({ searchParams }: { searchParams: Search
     return (
       <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '80px 0 120px' }}>
         <div className="container">
-          <p role="alert" style={{ color: 'var(--gray)', fontSize: '0.95rem', marginTop: '40px' }}>
+          <p role="status" style={{ color: 'var(--gray)', fontSize: '0.95rem', marginTop: '40px' }}>
             게시판을 불러오지 못했습니다. 새로고침 해주세요.
           </p>
         </div>

@@ -34,8 +34,8 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData()
     const file = formData.get('file') as File | null
-    const memo = (formData.get('memo') as string | null) ?? ''
-    const title = (formData.get('title') as string | null) ?? ''
+    const memo = ((formData.get('memo') as string | null) ?? '').slice(0, 2000)
+    const title = ((formData.get('title') as string | null) ?? '').slice(0, 500)
 
     if (!file) return NextResponse.json({ error: '파일이 없습니다.' }, { status: 400 })
 
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     const newItem = {
       id: randomUUID(),
       url: publicUrl,
-      title: title || file.name.replace(/\.[^.]+$/, ''),
+      title: (title || file.name.replace(/\.[^.]+$/, '')).replace(/[\x00-\x1f]/g, '').slice(0, 500),
       description: memo || null,
       image_url: publicUrl,
       memo: memo || null,

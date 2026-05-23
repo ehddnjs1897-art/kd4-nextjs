@@ -26,7 +26,13 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: '권한 없음' }, { status: 403 })
     }
 
-    const { category, year, title, role, broadcaster, film_type } = await request.json()
+    let parsedBody: { category?: string; year?: number; title?: string; role?: string; broadcaster?: string; film_type?: string }
+    try {
+      parsedBody = await request.json()
+    } catch {
+      return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })
+    }
+    const { category, year, title, role, broadcaster, film_type } = parsedBody
     if (!title) return NextResponse.json({ error: '작품명이 필요합니다.' }, { status: 400 })
     if (typeof title === 'string' && title.length > 200) {
       return NextResponse.json({ error: '작품명은 200자 이하로 입력해주세요.' }, { status: 400 })
@@ -66,7 +72,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     revalidateTag(`actor-${id}`)
     return NextResponse.json({ id: data.id })
   } catch (err) {
-    console.error(err)
+    console.error('[POST /api/actors/[id]/filmography]', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '서버 오류가 발생했습니다.' }, { status: 500 })
   }
 }

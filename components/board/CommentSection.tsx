@@ -225,7 +225,7 @@ export default function CommentSection({
       {currentUserId ? (
         <form onSubmit={handleSubmit}>
           {error && (
-            <p role="alert" style={{
+            <p role="alert" aria-live="assertive" style={{
               color: '#e74c3c',
               fontSize: '0.85rem',
               marginBottom: '10px',

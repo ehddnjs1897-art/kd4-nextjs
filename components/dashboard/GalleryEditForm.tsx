@@ -641,10 +641,10 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           />
           <span style={{ fontSize: '0.72rem', color: 'var(--gray)', textAlign: 'right' }}>{castingSummary.length}/120</span>
         </div>
-        <button onClick={saveInfo} disabled={infoSaving} style={{ ...s.btn, ...s.btnPrimary, opacity: infoSaving ? 0.6 : 1 }}>
+        <button type="button" onClick={saveInfo} disabled={infoSaving} style={{ ...s.btn, ...s.btnPrimary, opacity: infoSaving ? 0.6 : 1 }}>
           {infoSaving ? '저장 중…' : '저장'}
         </button>
-        {infoMsg && <p role="status" aria-live="polite" style={{ ...s.msg, color: infoMsg.includes('실패') || infoMsg.includes('오류') ? '#ef4444' : 'var(--gold)', marginTop: 10 }}>{infoMsg}</p>}
+        {infoMsg && <p role={infoMsg.includes('실패') || infoMsg.includes('오류') ? 'alert' : 'status'} aria-live={infoMsg.includes('실패') || infoMsg.includes('오류') ? 'assertive' : 'polite'} style={{ ...s.msg, color: infoMsg.includes('실패') || infoMsg.includes('오류') ? '#ef4444' : 'var(--gold)', marginTop: 10 }}>{infoMsg}</p>}
       </section>
 
       {/* ── 프로필 자료 (PPTX) ── */}
@@ -671,7 +671,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         <button type="button" onClick={() => pptRef.current?.click()} disabled={pptUploading} style={{ ...s.btn, ...s.btnGhost, opacity: pptUploading ? 0.6 : 1 }}>
           {pptUploading ? '업로드 중…' : hasPpt ? '📄 파일 교체' : '📄 파일 올리기'}
         </button>
-        {pptMsg && <p role="status" aria-live="polite" style={{ ...s.msg, color: pptMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{pptMsg}</p>}
+        {pptMsg && <p role={pptMsg.includes('완료') ? 'status' : 'alert'} aria-live={pptMsg.includes('완료') ? 'polite' : 'assertive'} style={{ ...s.msg, color: pptMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{pptMsg}</p>}
       </section>
 
       {/* ── 사진 ── */}
@@ -685,17 +685,17 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
               <div style={s.photoActions}>
                 {confirmingPhotoId === p.id ? (
                   <div style={{ display: 'flex', gap: 5 }}>
-                    <button onClick={() => setConfirmingPhotoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 36 }}>취소</button>
-                    <button onClick={() => deletePhoto(p.id, p.is_profile)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 36, border: 'none' }}>확인</button>
+                    <button type="button" onClick={() => setConfirmingPhotoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 36 }}>취소</button>
+                    <button type="button" onClick={() => deletePhoto(p.id, p.is_profile)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 36, border: 'none' }}>확인</button>
                   </div>
                 ) : (
                   <>
                     {!p.is_profile && (
-                      <button onClick={() => setProfile(p.id)} style={{ ...s.btn, ...s.btnGhost, padding: '4px 10px', fontSize: '0.72rem' }}>
+                      <button type="button" onClick={() => setProfile(p.id)} style={{ ...s.btn, ...s.btnGhost, padding: '4px 10px', fontSize: '0.72rem' }}>
                         대표 지정
                       </button>
                     )}
-                    <button onClick={() => deletePhoto(p.id, p.is_profile)} style={{ ...s.btn, ...s.btnDanger }}>
+                    <button type="button" onClick={() => deletePhoto(p.id, p.is_profile)} style={{ ...s.btn, ...s.btnDanger }}>
                       삭제
                     </button>
                   </>
@@ -712,7 +712,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           </button>
           <span style={{ fontSize: '0.78rem', color: 'var(--gray)' }}>JPG·PNG, 최대 5MB · 9:16 비율 권장</span>
         </div>
-        {photoMsg && <p role="status" aria-live="polite" style={{ ...s.msg, color: photoMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{photoMsg}</p>}
+        {photoMsg && <p role={photoMsg.includes('완료') ? 'status' : 'alert'} aria-live={photoMsg.includes('완료') ? 'polite' : 'assertive'} style={{ ...s.msg, color: photoMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{photoMsg}</p>}
       </section>
 
       {/* ── 영상 ── */}
@@ -735,11 +735,11 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                   </p>
                   {confirmingR2VideoId === v.id ? (
                     <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
-                      <button onClick={() => setConfirmingR2VideoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 36 }}>취소</button>
-                      <button onClick={() => deleteR2Video(v.id)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 36, border: 'none' }}>확인</button>
+                      <button type="button" onClick={() => setConfirmingR2VideoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 36 }}>취소</button>
+                      <button type="button" onClick={() => deleteR2Video(v.id)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 36, border: 'none' }}>확인</button>
                     </div>
                   ) : (
-                    <button onClick={() => deleteR2Video(v.id)} style={{ ...s.btn, ...s.btnDanger, flexShrink: 0 }}>삭제</button>
+                    <button type="button" onClick={() => deleteR2Video(v.id)} style={{ ...s.btn, ...s.btnDanger, flexShrink: 0 }}>삭제</button>
                   )}
                 </div>
               ))}
@@ -752,7 +752,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
             </button>
             <span style={{ fontSize: '0.74rem', color: 'var(--gray)', marginLeft: 12 }}>mp4 권장, 최대 300MB</span>
           </div>
-          {r2VideoMsg && <p role="status" aria-live="polite" style={{ ...s.msg, color: r2VideoMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{r2VideoMsg}</p>}
+          {r2VideoMsg && <p role={r2VideoMsg.includes('완료') ? 'status' : 'alert'} aria-live={r2VideoMsg.includes('완료') ? 'polite' : 'assertive'} style={{ ...s.msg, color: r2VideoMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{r2VideoMsg}</p>}
         </div>
 
         {/* 유튜브 연결 영상 */}
@@ -770,11 +770,11 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                   </p>
                   {confirmingVideoId === v.id ? (
                     <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
-                      <button onClick={() => setConfirmingVideoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 36 }}>취소</button>
-                      <button onClick={() => deleteVideo(v.id)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 36, border: 'none' }}>확인</button>
+                      <button type="button" onClick={() => setConfirmingVideoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 36 }}>취소</button>
+                      <button type="button" onClick={() => deleteVideo(v.id)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 36, border: 'none' }}>확인</button>
                     </div>
                   ) : (
-                    <button onClick={() => deleteVideo(v.id)} style={{ ...s.btn, ...s.btnDanger, flexShrink: 0 }}>삭제</button>
+                    <button type="button" onClick={() => deleteVideo(v.id)} style={{ ...s.btn, ...s.btnDanger, flexShrink: 0 }}>삭제</button>
                   )}
                 </div>
               ))}
@@ -791,7 +791,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
             </div>
             <button type="button" onClick={addVideo} disabled={videoAdding} style={{ ...s.btn, ...s.btnPrimary, marginBottom: 0, opacity: videoAdding ? 0.6 : 1 }}>{videoAdding ? '추가 중…' : '추가'}</button>
           </div>
-          {videoMsg && <p role="status" aria-live="polite" style={{ ...s.msg, color: videoMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{videoMsg}</p>}
+          {videoMsg && <p role={videoMsg.includes('완료') ? 'status' : 'alert'} aria-live={videoMsg.includes('완료') ? 'polite' : 'assertive'} style={{ ...s.msg, color: videoMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{videoMsg}</p>}
         </div>
       </section>
 
@@ -822,11 +822,11 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                 <input value={f.role} onChange={e => updateFilm(i, 'role', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} placeholder="배역" />
                 {confirmingFilmIdx === i ? (
                   <div style={{ display: 'flex', gap: 5 }}>
-                    <button onClick={() => setConfirmingFilmIdx(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 36 }}>취소</button>
-                    <button onClick={() => deleteFilm(i)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 36, border: 'none' }}>확인</button>
+                    <button type="button" onClick={() => setConfirmingFilmIdx(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 36 }}>취소</button>
+                    <button type="button" onClick={() => deleteFilm(i)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 36, border: 'none' }}>확인</button>
                   </div>
                 ) : (
-                  <button onClick={() => deleteFilm(i)} style={{ ...s.btn, ...s.btnDanger }}>삭제</button>
+                  <button type="button" onClick={() => deleteFilm(i)} style={{ ...s.btn, ...s.btnDanger }}>삭제</button>
                 )}
               </div>
             ))}
@@ -835,16 +835,16 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         )}
 
         <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-          <button onClick={() => setFilmography(prev => [newFilm(), ...prev])} style={{ ...s.btn, ...s.btnGhost }}>
+          <button type="button" onClick={() => setFilmography(prev => [newFilm(), ...prev])} style={{ ...s.btn, ...s.btnGhost }}>
             + 항목 추가
           </button>
           {filmography.length > 0 && (
-            <button onClick={saveAllFilms} disabled={filmSaving} style={{ ...s.btn, ...s.btnPrimary, opacity: filmSaving ? 0.6 : 1 }}>
+            <button type="button" onClick={saveAllFilms} disabled={filmSaving} style={{ ...s.btn, ...s.btnPrimary, opacity: filmSaving ? 0.6 : 1 }}>
               {filmSaving ? '저장 중…' : '저장'}
             </button>
           )}
         </div>
-        {filmMsg && <p role="status" aria-live="polite" style={{ ...s.msg, color: filmMsg.includes('저장') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{filmMsg}</p>}
+        {filmMsg && <p role={filmMsg.includes('저장') ? 'status' : 'alert'} aria-live={filmMsg.includes('저장') ? 'polite' : 'assertive'} style={{ ...s.msg, color: filmMsg.includes('저장') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{filmMsg}</p>}
       </section>
     </div>
   )

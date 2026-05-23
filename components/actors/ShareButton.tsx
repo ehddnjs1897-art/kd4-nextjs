@@ -43,12 +43,12 @@ export default function ShareButton({ webUrl }: Props) {
 
   return (
     <div style={{ position: 'relative' }}>
-      <button onClick={share} style={styles.btn} aria-label="카카오톡 공유">
+      <button type="button" onClick={share} style={styles.btn} aria-label="카카오톡 공유">
         <Image src="/icons/kakao.png" alt="" width={18} height={18} style={{ flexShrink: 0 }} />
         카카오톡 공유
       </button>
       {(copied || shared) && (
-        <div style={{
+        <div role="status" aria-live="polite" style={{
           position: 'absolute', bottom: 'calc(100% + 8px)', left: '50%', transform: 'translateX(-50%)',
           background: 'rgba(30,30,30,0.92)', color: '#fff', fontSize: '0.78rem',
           padding: '6px 12px', borderRadius: 6, whiteSpace: 'nowrap',

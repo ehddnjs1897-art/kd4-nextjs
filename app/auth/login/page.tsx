@@ -190,8 +190,10 @@ function LoginContent() {
         {/* 소셜 로그인 */}
         <div style={styles.socialGroup}>
           <button
+            type="button"
             onClick={handleGoogleLogin}
             disabled={loading}
+            aria-busy={loading}
             style={{
               ...styles.btnSocial,
               ...styles.btnGoogle,
@@ -203,8 +205,10 @@ function LoginContent() {
           </button>
 
           <button
+            type="button"
             onClick={handleKakaoLogin}
             disabled={loading}
+            aria-busy={loading}
             style={{
               ...styles.btnSocial,
               ...styles.btnKakao,

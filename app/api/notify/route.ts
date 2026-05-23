@@ -110,10 +110,10 @@ export async function POST(request: NextRequest) {
       name: name,
       phone: phone,
       email: emailRaw,
-      class_name: record?.class_name ?? null,
-      source: record?.source ?? null,
-      inquiry_type: record?.inquiry_type ?? null,
-      motivation: record?.motivation ?? null,
+      class_name: typeof record?.class_name === 'string' ? record.class_name.trim().slice(0, 100) : null,
+      source: typeof record?.source === 'string' ? record.source.trim().slice(0, 100) : null,
+      inquiry_type: typeof record?.inquiry_type === 'string' ? record.inquiry_type.trim().slice(0, 100) : null,
+      motivation: typeof record?.motivation === 'string' ? record.motivation.trim().slice(0, 2000) : null,
       status: (['대기', '확인', '완료'] as const).includes(record?.status as '대기' | '확인' | '완료') ? record.status : '대기',
       // raw_payload: 알려진 필드만 — 임의 extra 필드 저장 방지 (DoS / injection)
       raw_payload: {

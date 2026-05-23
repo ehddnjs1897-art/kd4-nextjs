@@ -66,7 +66,7 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
     revalidateTag(`actor-${id}`)
     return NextResponse.json({ ok: true })
   } catch (err) {
-    console.error(err)
+    console.error('[PATCH /api/actors/[id]/photos/[photoId]]', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '서버 오류가 발생했습니다.' }, { status: 500 })
   }
 }
@@ -120,7 +120,7 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
     revalidateTag(`actor-${id}`)
     return NextResponse.json({ ok: true })
   } catch (err) {
-    console.error(err)
+    console.error('[DELETE /api/actors/[id]/photos/[photoId]]', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '서버 오류가 발생했습니다.' }, { status: 500 })
   }
 }

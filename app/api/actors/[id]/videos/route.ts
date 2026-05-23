@@ -27,7 +27,13 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: '권한 없음' }, { status: 403 })
     }
 
-    const { youtube_id, r2_key, title, video_type } = await request.json()
+    let parsedBody: { youtube_id?: string; r2_key?: string; title?: string; video_type?: string }
+    try {
+      parsedBody = await request.json()
+    } catch {
+      return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })
+    }
+    const { youtube_id, r2_key, title, video_type } = parsedBody
     if (!youtube_id && !r2_key) {
       return NextResponse.json({ error: 'youtube_id 또는 r2_key가 필요합니다.' }, { status: 400 })
     }
@@ -81,7 +87,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     revalidateTag(`actor-${id}`)
     return NextResponse.json({ id: data.id })
   } catch (err) {
-    console.error(err)
+    console.error('[POST /api/actors/[id]/videos]', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '서버 오류가 발생했습니다.' }, { status: 500 })
   }
 }

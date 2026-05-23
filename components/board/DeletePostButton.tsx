@@ -48,7 +48,7 @@ export default function DeletePostButton({ postId }: DeletePostButtonProps) {
     return (
       <div style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}>
         <span style={{ fontSize: '0.78rem', color: '#ef4444' }}>{deleteError}</span>
-        <button onClick={() => setDeleteError('')} aria-label="오류 닫기" style={{ fontSize: '0.75rem', color: 'var(--gray)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>✕</button>
+        <button type="button" onClick={() => setDeleteError('')} aria-label="오류 닫기" style={{ fontSize: '0.75rem', color: 'var(--gray)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>✕</button>
       </div>
     )
   }
@@ -57,12 +57,14 @@ export default function DeletePostButton({ postId }: DeletePostButtonProps) {
     return (
       <div style={{ display: 'inline-flex', gap: 6 }}>
         <button
+          type="button"
           onClick={() => setConfirming(false)}
           style={{ ...baseStyle, border: '1px solid var(--border)', color: 'var(--gray)', background: 'transparent' }}
         >
           취소
         </button>
         <button
+          type="button"
           onClick={handleDelete}
           disabled={deleting}
           style={{ ...baseStyle, border: 'none', background: '#ef4444', color: '#fff' }}
@@ -75,6 +77,7 @@ export default function DeletePostButton({ postId }: DeletePostButtonProps) {
 
   return (
     <button
+      type="button"
       onClick={handleDelete}
       disabled={deleting}
       style={{ ...baseStyle, border: '1px solid #e74c3c55', color: deleting ? 'var(--gray)' : '#e74c3c', background: 'transparent' }}
