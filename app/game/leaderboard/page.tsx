@@ -125,9 +125,9 @@ export default function LeaderboardPage() {
           </Link>
         </div>
       ) : (
-        <div style={{ maxWidth: 500, margin: "0 auto" }}>
+        <ol style={{ maxWidth: 500, margin: "0 auto", padding: 0, listStyle: "none" }}>
           {data.map((entry, i) => (
-            <div
+            <li
               key={entry.id}
               style={{
                 display: "flex",
@@ -177,9 +177,9 @@ export default function LeaderboardPage() {
               >
                 {entry.score.toLocaleString()}
               </div>
-            </div>
+            </li>
           ))}
-        </div>
+        </ol>
       )}
 
       {/* Play button */}

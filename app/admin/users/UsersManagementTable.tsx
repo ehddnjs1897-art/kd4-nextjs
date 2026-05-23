@@ -127,7 +127,9 @@ export default function UsersManagementTable({ profiles: initialProfiles }: Prop
 
       {/* 검색 */}
       <input
+        type="search"
         aria-label="사용자 검색"
+        autoComplete="off"
         value={search}
         onChange={e => setSearch(e.target.value)}
         placeholder="이름, 이메일, 역할 검색..."

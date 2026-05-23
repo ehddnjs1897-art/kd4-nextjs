@@ -95,6 +95,7 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
           <span style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--gray)', fontSize: '0.85rem', pointerEvents: 'none' }}>🔍</span>
           <input
             type="search"
+            autoComplete="off"
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="이름으로 검색..."

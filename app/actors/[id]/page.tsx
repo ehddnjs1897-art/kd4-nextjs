@@ -217,7 +217,7 @@ export async function generateMetadata({
       card: 'summary_large_image',
       title,
       description,
-      images: [ogImage],
+      images: [{ url: ogImage, alt: `${actor.name} 배우 프로필` }],
     },
   }
 }
