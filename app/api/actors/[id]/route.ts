@@ -91,7 +91,14 @@ export async function GET(
     // 연락처 포함 여부에 따라 응답 (Cache-Control: private — 유저별 다른 응답)
     const cacheHeaders = { 'Cache-Control': 'private, no-store' }
     if (!canSeeContact) {
-      const { phone: _phone, email: _email, ...safe } = typedActor as Actor & ActorDetail
+      // 비특권 응답: 연락처 + 내부 경로/ID 필드 제거 (최소 권한 원칙)
+      const {
+        phone: _phone, email: _email,
+        drive_photo_id: _drivePhotoId, drive_folder_id: _driveFolderId,
+        drive_photo_position: _drivePos, source: _src,
+        storage_photo_path: _storagePath, profile_doc_path: _docPath,
+        ...safe
+      } = typedActor as Actor & ActorDetail
       return NextResponse.json({ actor: safe as ActorDetail }, { headers: cacheHeaders })
     }
 
