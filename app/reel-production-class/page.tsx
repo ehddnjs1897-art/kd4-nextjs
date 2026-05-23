@@ -114,7 +114,7 @@ export default function ReelPage() {
             &ldquo;{FILM_CLASS.quote}&rdquo;
           </p>
           <p style={{ fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)', color: 'rgba(255,255,255,0.55)', marginBottom: '32px', letterSpacing: '0.03em' }}>
-            3개월 코스 · 정원 6명 · 전문 영화팀 촬영
+            {FILM_CLASS.course} · 정원 {FILM_CLASS.capacity} · 전문 영화팀 촬영
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <JoinCTALink href="#form" location="reel-hero" label="무료 상담 신청" className="btn-primary" style={{ background: '#fff', color: 'var(--navy)' }}>

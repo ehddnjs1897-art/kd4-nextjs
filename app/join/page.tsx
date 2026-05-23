@@ -33,7 +33,7 @@ const YouTubeFacade = dynamic(() => import('@/components/youtube/YouTubeFacade')
 export const metadata: Metadata = {
   title: '무료 상담 신청 | KD4 액팅 스튜디오',
   description: '소수정예 마이즈너 테크닉 연기 클래스. 무료 상담 신청. 서울 신촌. KD4 액팅 스튜디오.',
-  robots: { index: false, follow: false },
+  robots: { index: false, follow: true },
   alternates: { canonical: `${SITE_URL}/join` },
   // 광고 랜딩페이지: 명시적 OG 이미지 — root layout 변경에도 영향 없도록
   openGraph: {
@@ -692,12 +692,14 @@ export default function JoinPage() {
       <section className="section uplift-fullscreen-offer" style={{ padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">04 — SPRING SPECIAL</p>
+            <p className="section-eyebrow">
+              {isDeadlineExpired ? '04 — SPECIAL OFFER' : '04 — SPRING SPECIAL'}
+            </p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
             >
-              🌸 봄맞이 스페셜
+              {isDeadlineExpired ? '수강 신청 혜택' : '🌸 봄맞이 스페셜'}
             </h2>
             <p style={{ fontSize: '0.95rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
               <strong style={{ color: 'var(--accent-red)' }}>첫 달 10만원 할인</strong>

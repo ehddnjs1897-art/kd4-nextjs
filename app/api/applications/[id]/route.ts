@@ -56,15 +56,18 @@ export async function PATCH(
     return NextResponse.json({ error: '유효하지 않은 status' }, { status: 400 })
   }
 
-  const { error } = await supabaseAdmin
+  const { data: updated, error } = await supabaseAdmin
     .from('consultations')
     .update({ status })
     .eq('id', id)
+    .select('id')
+    .maybeSingle()
 
   if (error) {
     console.error('[api/applications PATCH] consultations update 실패:', error.message)
     return NextResponse.json({ error: '상태 변경에 실패했습니다.' }, { status: 500 })
   }
+  if (!updated) return NextResponse.json({ error: '상담 신청을 찾을 수 없습니다.' }, { status: 404 })
 
   return NextResponse.json({ ok: true })
 }

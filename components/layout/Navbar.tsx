@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 
 const publicLinks = [
   { label: '스튜디오 소개', href: '/about' },
@@ -28,6 +28,7 @@ export default function Navbar() {
   const [userRole, setUserRole] = useState<UserRole>(null)
   const [authLoaded, setAuthLoaded] = useState(false)
   const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const pathname = usePathname()
 
   /* ── 스크롤 감지 ── */
   useEffect(() => {
@@ -192,15 +193,16 @@ export default function Navbar() {
               <li key={link.label}>
                 <Link
                   href={link.href}
+                  aria-current={pathname === link.href ? 'page' : undefined}
                   style={{
-                    color: '#111111',
+                    color: pathname === link.href ? 'var(--navy)' : '#111111',
                     fontFamily: 'var(--font-sans)',
                     fontSize: '0.875rem',
-                    fontWeight: 500,
+                    fontWeight: pathname === link.href ? 700 : 500,
                     transition: 'color 0.2s',
                   }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--navy)')}
-                  onMouseLeave={e => (e.currentTarget.style.color = '#111111')}
+                  onMouseLeave={e => (e.currentTarget.style.color = pathname === link.href ? 'var(--navy)' : '#111111')}
                 >
                   {link.label}
                 </Link>
@@ -303,14 +305,15 @@ export default function Navbar() {
                         key={item.label}
                         role="menuitem"
                         href={item.href}
+                        aria-current={pathname === item.href ? 'page' : undefined}
                         onClick={item.public ? undefined : (e => handleCrewLinkClick(e, item.href))}
                         style={{
                           display: 'block',
                           padding: '10px 16px',
-                          color: 'var(--gray-light)',
+                          color: pathname === item.href ? 'var(--navy)' : 'var(--gray-light)',
                           fontFamily: 'var(--font-sans)',
                           fontSize: '0.85rem',
-                          fontWeight: 500,
+                          fontWeight: pathname === item.href ? 700 : 500,
                           borderRadius: '5px',
                           transition: 'background 0.15s, color 0.15s',
                           textDecoration: 'none',
@@ -477,13 +480,14 @@ export default function Navbar() {
                   <Link
                     href={link.href}
                     onClick={closeMobile}
+                    aria-current={pathname === link.href ? 'page' : undefined}
                     style={{
                       display: 'block',
                       padding: '22px 0',
-                      color: '#111111',
+                      color: pathname === link.href ? 'var(--navy)' : '#111111',
                       fontFamily: 'var(--font-display), Oswald, sans-serif',
                       fontSize: '1.5rem',
-                      fontWeight: 400,
+                      fontWeight: pathname === link.href ? 700 : 400,
                       letterSpacing: '0.05em',
                     }}
                   >

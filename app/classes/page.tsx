@@ -116,9 +116,15 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
           {cls.originalPrice && (
             <p style={{ margin: '4px 0 0', lineHeight: 1 }}>
               <span style={{ fontSize: '0.78rem', color: 'var(--gray)', textDecoration: 'line-through' }}>₩{cls.originalPrice}</span>
-              <span style={{ marginLeft: '8px', fontSize: '0.68rem', fontWeight: 700, color: 'var(--accent-red)', padding: '2px 6px', background: 'rgba(199,62,62,0.12)', borderRadius: '3px' }}>
-                -10만원
-              </span>
+              {(() => {
+                const diff = parseInt(cls.originalPrice.replace(/,/g, ''), 10) - parseInt(cls.price.replace(/,/g, ''), 10)
+                const label = diff >= 10000 ? `-${Math.round(diff / 10000)}만원` : `-${diff.toLocaleString()}원`
+                return (
+                  <span style={{ marginLeft: '8px', fontSize: '0.68rem', fontWeight: 700, color: 'var(--accent-red)', padding: '2px 6px', background: 'rgba(199,62,62,0.12)', borderRadius: '3px' }}>
+                    {label}
+                  </span>
+                )
+              })()}
             </p>
           )}
           <p style={{ display: 'flex', alignItems: 'baseline', gap: '2px', marginTop: '2px' }}>

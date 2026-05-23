@@ -101,7 +101,7 @@ export default function MeisnerPage() {
             &ldquo;{MAIN_CLASS.quote}&rdquo;
           </p>
           <p style={{ fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)', color: 'rgba(255,255,255,0.55)', marginBottom: '32px', letterSpacing: '0.03em' }}>
-            정원 8명 · 4개월 코스 · 권동원 대표 직강
+            정원 {MAIN_CLASS.capacity} · {MAIN_CLASS.course} · {MAIN_CLASS.instructor ?? '권동원 대표'} 직강
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <JoinCTALink href="#form" location="meisner-hero" label="무료 상담 신청" className="btn-primary" style={{ background: '#fff', color: 'var(--navy)' }}>

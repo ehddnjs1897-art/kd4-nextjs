@@ -26,6 +26,7 @@ export async function GET(
     const { data: { user } } = await supabase.auth.getUser()
 
     let canSeeContact = false   // 연락처 열람 가능 여부 (director/admin or 본인)
+    let canSeeNonPublic = false // 비공개 프로필 열람 가능 여부 (본인 or admin/editor)
 
     if (user) {
       // supabaseAdmin: RLS 우회로 정확한 role/actor_id 조회 (다른 auth 체크와 일관성 유지)
@@ -34,15 +35,17 @@ export async function GET(
       const role = profile?.role ?? ''
       const isOwn = profile?.actor_id === id
       canSeeContact = isOwn || ['director', 'admin'].includes(role)
+      // 본인 또는 관리/편집자는 is_public=false 프로필도 열람 가능 (관리자 검토 대기 중인 경우)
+      canSeeNonPublic = isOwn || ['admin', 'editor'].includes(role)
     }
 
     // 항상 '*' 로 조회 후 JS 레벨에서 민감 컬럼 제거
-    const { data: actor, error } = await supabaseAdmin
+    let query = supabaseAdmin
       .from('actors')
       .select('*, actor_photos(*), actor_videos(*), actor_filmography(*)')
       .eq('id', id)
-      .eq('is_public', true)
-      .maybeSingle()
+    if (!canSeeNonPublic) query = query.eq('is_public', true)
+    const { data: actor, error } = await query.maybeSingle()
 
     if (error) {
       console.error('[GET /api/actors/[id]] Supabase 오류:', error.message)
@@ -133,12 +136,15 @@ export async function PATCH(
       if (k in body) patch[k] = body[k]
     }
 
-    const { error } = await supabaseAdmin
+    const { data: updated, error } = await supabaseAdmin
       .from('actors')
       .update({ ...patch, updated_at: new Date().toISOString() })
       .eq('id', id)
+      .select('id')
+      .maybeSingle()
 
     if (error) return NextResponse.json({ error: '배우 정보 수정에 실패했습니다.' }, { status: 500 })
+    if (!updated) return NextResponse.json({ error: '배우를 찾을 수 없습니다.' }, { status: 404 })
     revalidateTag('actors')
     revalidateTag(`actor-${id}`)
     return NextResponse.json({ ok: true })

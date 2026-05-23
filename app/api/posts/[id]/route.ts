@@ -32,7 +32,7 @@ export async function GET(
     // (API GET은 외부 호출도 가능 → 여기서 increment하면 이중 집계)
     return NextResponse.json(post)
   } catch (err) {
-    console.error('[GET /api/posts/[id]]', err)
+    console.error('[GET /api/posts/[id]]', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '게시글 조회 중 오류가 발생했습니다.' }, { status: 500 })
   }
 }
@@ -157,7 +157,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (err) {
-    console.error('[DELETE /api/posts/[id]]', err)
+    console.error('[DELETE /api/posts/[id]]', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '게시글 삭제 중 오류가 발생했습니다.' }, { status: 500 })
   }
 }

@@ -89,6 +89,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '제출할 파일이 없습니다.' }, { status: 400 })
   }
 
+  // R2 key 네임스페이스 검증 — presigned URL 발급 패턴과 일치해야 함 (IDOR 방어)
+  const allowedVideoPrefix = `actors/intake/${user.id}/`
+  if (videos.some(v => !v.key.startsWith(allowedVideoPrefix))) {
+    return NextResponse.json({ error: '허가되지 않은 영상 파일 경로입니다.' }, { status: 403 })
+  }
+
   // 프로필 조회
   const { data: profile } = await supabaseAdmin
     .from('profiles')
