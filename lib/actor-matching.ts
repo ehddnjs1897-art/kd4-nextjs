@@ -40,7 +40,7 @@ export async function matchActorOnSignup(
   const { data: actors, error: fetchError } = await supabaseAdmin
     .from('actors')
     .select('id, name, phone')
-    .limit(500)
+    .limit(5000) // 소규모 스튜디오 최대 5,000명 대비 (51명 현재 — 향후 성장 고려)
 
   if (fetchError) {
     console.error('[actor-matching] actors 조회 실패:', fetchError.message)

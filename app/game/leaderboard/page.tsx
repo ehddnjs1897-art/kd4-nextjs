@@ -10,7 +10,6 @@ interface LeaderboardEntry {
   stage: number
   items_collected: number
   duration_ms: number
-  created_at: string
   profiles: { name: string | null } | null
 }
 

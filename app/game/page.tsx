@@ -47,7 +47,7 @@ export default function GameStartPage() {
           position: "absolute",
           top: 20,
           left: 20,
-          color: "#666",
+          color: "#999",
           fontSize: 14,
           textDecoration: "none",
         }}
@@ -98,7 +98,7 @@ export default function GameStartPage() {
 
       {/* Character select */}
       <div style={{ marginBottom: 36, width: "100%", maxWidth: 420 }}>
-        <p style={{ fontSize: 11, color: "#555", letterSpacing: "0.12em", marginBottom: 14, fontFamily: "var(--font-oswald)" }}>
+        <p style={{ fontSize: 11, color: "#999", letterSpacing: "0.12em", marginBottom: 14, fontFamily: "var(--font-oswald)" }}>
           SELECT CHARACTER
         </p>
         <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
@@ -166,7 +166,7 @@ export default function GameStartPage() {
       <div
         style={{
           fontSize: 12,
-          color: "#555",
+          color: "#999",
           marginBottom: 28,
           lineHeight: 1.8,
         }}
@@ -206,7 +206,7 @@ export default function GameStartPage() {
         PLAY
       </button>
 
-      <p style={{ fontSize: 11, color: "#444", marginTop: 14 }}>
+      <p style={{ fontSize: 11, color: "#999", marginTop: 14 }}>
         무대 위로, 더 높이.
       </p>
     </div>

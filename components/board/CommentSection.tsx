@@ -123,7 +123,7 @@ export default function CommentSection({
   const isAdmin = currentUserRole === 'admin'
 
   return (
-    <section style={{ marginTop: '48px', borderTop: '1px solid var(--border)', paddingTop: '36px' }}>
+    <section aria-label="댓글" style={{ marginTop: '48px', borderTop: '1px solid var(--border)', paddingTop: '36px' }}>
       <h2 style={{
         fontFamily: 'var(--font-display)',
         fontSize: '1.1rem',

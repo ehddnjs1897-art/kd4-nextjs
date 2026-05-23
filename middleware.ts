@@ -106,6 +106,7 @@ export const config = {
     /*
      * 정적 파일 및 API 경로 제외.
      * /api/* 는 각 route.ts 내부에서 자체적으로 getUser() 호출 → 중복 세션 갱신 불필요.
+     * ⚠️ 신규 API route 추가 시 반드시 supabase.auth.getUser() 또는 requireAdmin() 포함 필수.
      */
     '/((?!_next/static|_next/image|favicon.ico|fonts/|images/|api/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|woff2|woff|ttf|otf|eot|css|js|map|json|webmanifest|ico)$).*)',
   ],

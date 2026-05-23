@@ -228,7 +228,7 @@ export default function CoachPage() {
                   <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.08rem', fontWeight: 700, marginTop: '12px', marginBottom: '6px', color: '#fff' }}>{c.nameKo}</p>
                   <p style={{ fontSize: '0.86rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, marginBottom: '14px', wordBreak: 'keep-all' }}>{c.quote}</p>
                   <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '8px' }}>
-                    <span style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.55)' }}>{c.course ?? c.schedule}</span>
+                    <span style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.75)' }}>{c.course ?? c.schedule}</span>
                     <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.05rem', fontWeight: 700, color: '#fff' }}>월 ₩{priceOf(c)}</span>
                   </div>
                   {href && (

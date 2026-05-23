@@ -147,6 +147,7 @@ export default async function PostDetailPage({ params }: { params: Params }) {
           <span aria-hidden="true">← </span>목록으로
         </Link>
 
+        <article>
         {/* 게시글 헤더 */}
         <div style={{
           borderBottom: '1px solid var(--border)',
@@ -227,6 +228,7 @@ export default async function PostDetailPage({ params }: { params: Params }) {
             </p>
           ))}
         </div>
+        </article>
 
         {/* 댓글 섹션 */}
         <CommentSection
