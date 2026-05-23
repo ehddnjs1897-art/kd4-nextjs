@@ -1,7 +1,12 @@
+import type { Metadata } from 'next'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import AdminEnrollments from '@/components/admin/AdminEnrollments'
 
-export const metadata = { title: '수강 현황 (관리자)', robots: { index: false, follow: false } }
+export const metadata: Metadata = {
+  title: '수강 현황 (관리자)',
+  description: 'KD4 수강 현황 (관리자 전용)',
+  robots: { index: false, follow: false },
+}
 
 export default async function AdminEnrollmentsPage() {
   // auth/role은 app/admin/layout.tsx에서 처리

@@ -11,6 +11,8 @@ const SpotlightRush = dynamic(() => import("@/components/game/SpotlightRush"), {
   ssr: false,
   loading: () => (
     <div
+      role="status"
+      aria-label="게임 로딩 중"
       style={{
         width: "100%",
         height: "100%",
@@ -117,7 +119,7 @@ function GamePlayInner() {
 
 export default function GamePlayPage() {
   return (
-    <Suspense fallback={<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",color:"#444",fontFamily:"var(--font-oswald),sans-serif",letterSpacing:"0.15em"}}>LOADING...</div>}>
+    <Suspense fallback={<div role="status" aria-label="게임 로딩 중" style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",color:"#444",fontFamily:"var(--font-oswald),sans-serif",letterSpacing:"0.15em"}}>LOADING...</div>}>
       <GamePlayInner />
     </Suspense>
   )

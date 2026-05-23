@@ -84,7 +84,7 @@ export default function CountdownTimer({ deadline, compact = false }: Props) {
   ]
 
   return (
-    <div style={{ display: 'flex', gap: '6px', justifyContent: 'center', alignItems: 'center' }}>
+    <div role="timer" aria-label="할인 마감까지 남은 시간" style={{ display: 'flex', gap: '6px', justifyContent: 'center', alignItems: 'center' }}>
       {blocks.map(({ label, value }, i) => (
         <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <div style={{

@@ -15,6 +15,7 @@ import { UserRole } from '@/lib/types'
 import { canViewActorContact } from '@/lib/access'
 import { isR2Configured } from '@/lib/r2'
 import { getActorPersonSchema, getActorVideoSchemas, serializeJsonLd } from '@/lib/seo'
+import { buildBreadcrumb } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
 
 /* ---- 타입 정의 ---- */
@@ -313,6 +314,11 @@ export default async function ActorDetailPage({
       {videoSchemas.map((v, i) => (
         <script key={`vid-${i}`} type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(v) }} />
       ))}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(buildBreadcrumb([
+        { name: '홈', url: SITE_URL },
+        { name: '배우 DB', url: `${SITE_URL}/actors` },
+        { name: actor.name, url: pageUrl },
+      ])) }} />
 
       {/* 반응형 헬퍼 */}
       <style>{`

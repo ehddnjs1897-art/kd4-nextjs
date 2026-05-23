@@ -102,7 +102,7 @@ export default function LeaderboardPage() {
 
       {/* Leaderboard table */}
       {loading ? (
-        <div style={{ textAlign: "center", color: "#444", padding: 40 }}>LOADING...</div>
+        <div role="status" aria-label="리더보드 로딩 중" style={{ textAlign: "center", color: "#444", padding: 40 }}>LOADING...</div>
       ) : fetchError ? (
         <div style={{ textAlign: "center", color: "#555", padding: 40 }}>
           <p style={{ marginBottom: 12 }}>불러오기 실패</p>

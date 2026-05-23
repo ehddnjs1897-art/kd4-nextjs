@@ -21,8 +21,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/admin?error=invalid_uid`)
   }
 
-  // 관리자 인증 확인
-  // (이메일 링크 클릭 시 Referer/Origin 헤더가 없어 isSameSite 체크는 항상 false → 제거됨)
+  // CSRF 방어: 외부 사이트에서 링크 클릭으로 실행되는 것을 차단
+  // 이메일 링크 클릭 시 Referer·Origin이 없으므로 "둘 다 있고 둘 다 외부" 일 때만 차단
+  const csrfOrigin = request.headers.get('origin') ?? ''
+  const csrfReferer = request.headers.get('referer') ?? ''
+  if (csrfOrigin && !csrfOrigin.startsWith(SITE_URL) && csrfReferer && !csrfReferer.startsWith(SITE_URL)) {
+    return NextResponse.redirect(`${origin}/admin?error=csrf`)
+  }
+
   // 실질적인 보안 게이트: getUser() + admin 역할 확인 (아래)
   const supabase = await createClient()
   const { data: { user }, error: authErr } = await supabase.auth.getUser()

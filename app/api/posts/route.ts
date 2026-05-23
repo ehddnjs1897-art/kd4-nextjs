@@ -172,7 +172,7 @@ export async function POST(request: NextRequest) {
         { onConflict: 'id' }
       )
       if (upsertErr) {
-        console.error('[POST /api/posts] profile upsert error:', upsertErr)
+        console.error('[POST /api/posts] profile upsert error:', upsertErr instanceof Error ? upsertErr.message : String(upsertErr))
         return NextResponse.json(
           { error: '프로필 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' },
           { status: 500 }
@@ -194,7 +194,7 @@ export async function POST(request: NextRequest) {
       .maybeSingle()
 
     if (error || !data) {
-      console.error('[POST /api/posts] insert error:', error)
+      console.error('[POST /api/posts] insert error:', error instanceof Error ? error.message : String(error))
       return NextResponse.json({ error: '게시글 작성 중 오류가 발생했습니다.' }, { status: 500 })
     }
 

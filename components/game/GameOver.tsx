@@ -63,6 +63,9 @@ export default function GameOver({
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="게임 오버"
       style={{
         position: "absolute",
         inset: 0,
@@ -134,6 +137,7 @@ export default function GameOver({
       {/* Actions */}
       <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
         <button
+          type="button"
           onClick={onRestart}
           style={{
             background: "#0057FF",
@@ -153,6 +157,7 @@ export default function GameOver({
 
         {!saved && (
           <button
+            type="button"
             onClick={saveScore}
             disabled={saving}
             style={{

@@ -167,15 +167,17 @@ export default function JoinPage() {
   const isDeadlineExpired = new Date() > new Date(DEADLINE)
 
   return (
-    <main
-      id="main-content"
-      className="uplift-page"
-      style={{
-        background: 'var(--bg)',
-        color: '#111111',
-        paddingBottom: '90px',
-      }}
-    >
+    <>
+      <a href="#main-content" className="skip-nav">본문으로 바로가기</a>
+      <main
+        id="main-content"
+        className="uplift-page"
+        style={{
+          background: 'var(--bg)',
+          color: '#111111',
+          paddingBottom: '90px',
+        }}
+      >
       <PageJsonLd schemas={[
         buildOrganization(),
         buildBreadcrumb([
@@ -1588,6 +1590,7 @@ export default function JoinPage() {
       </section>
 
       <StickyBottomCTA />
-    </main>
+      </main>
+    </>
   )
 }

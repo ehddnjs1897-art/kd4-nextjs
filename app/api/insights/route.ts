@@ -99,7 +99,20 @@ async function fetchOgMeta(url: string) {
     if (res.url && !isSafeExternalUrl(res.url)) {
       return { title: null, description: null, image_url: null }
     }
-    const html = await res.text()
+    // 응답 크기 상한 500KB — 대형 페이지 메모리 DoS 방어
+    const MAX_HTML_BYTES = 500_000
+    const reader = res.body?.getReader()
+    if (!reader) throw new Error('no body')
+    const chunks: Uint8Array[] = []
+    let total = 0
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done || !value) break
+      total += value.length
+      if (total > MAX_HTML_BYTES) { reader.cancel(); break }
+      chunks.push(value)
+    }
+    const html = new TextDecoder().decode(Buffer.concat(chunks))
     const getTag = (property: string) => {
       const m =
         html.match(new RegExp(`<meta[^>]+property=["']og:${property}["'][^>]+content=["']([^"']+)["']`, 'i')) ||

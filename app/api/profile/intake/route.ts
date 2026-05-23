@@ -110,26 +110,30 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '제출할 파일이 없습니다.' }, { status: 400 })
   }
 
-  // 파일 경로 네임스페이스 검증 — 다른 사용자 파일 탈취 방지 (IDOR 방어)
+  // 파일 경로 네임스페이스 검증 — 다른 사용자 파일 탈취 방지 (IDOR + 경로 탐색 방어)
+  // '..' 세그먼트로 다른 사용자 네임스페이스로 이동하는 것을 차단
+  const hasPathTraversal = (path: string) =>
+    path.split('/').some(seg => seg === '..' || seg === '.')
+
   // R2 video keys: presigned URL 발급 시 actors/intake/{user.id}/... 패턴으로만 발급됨
   const allowedVideoPrefix = `actors/intake/${user.id}/`
-  if (videos.some(v => !v.key.startsWith(allowedVideoPrefix))) {
+  if (videos.some(v => hasPathTraversal(v.key) || !v.key.startsWith(allowedVideoPrefix))) {
     return NextResponse.json({ error: '허가되지 않은 영상 파일 경로입니다.' }, { status: 403 })
   }
   // Supabase Storage photo/doc paths: intake/{user.id}/... 패턴으로만 발급됨
   const allowedStoragePrefix = `intake/${user.id}/`
-  if (photos.some(p => !p.path.startsWith(allowedStoragePrefix))) {
+  if (photos.some(p => hasPathTraversal(p.path) || !p.path.startsWith(allowedStoragePrefix))) {
     return NextResponse.json({ error: '허가되지 않은 사진 파일 경로입니다.' }, { status: 403 })
   }
-  if (ogPhotoPath && !ogPhotoPath.startsWith(allowedStoragePrefix)) {
+  if (ogPhotoPath && (hasPathTraversal(ogPhotoPath) || !ogPhotoPath.startsWith(allowedStoragePrefix))) {
     return NextResponse.json({ error: '허가되지 않은 OG 사진 경로입니다.' }, { status: 403 })
   }
   // docPath: actor-docs 버킷 — intake/{user.id}/... 패턴
-  if (docPath && !docPath.startsWith(allowedStoragePrefix)) {
+  if (docPath && (hasPathTraversal(docPath) || !docPath.startsWith(allowedStoragePrefix))) {
     return NextResponse.json({ error: '허가되지 않은 문서 파일 경로입니다.' }, { status: 403 })
   }
   // currentPhotos — IDOR 방어: 동일 네임스페이스 검증 (photos와 동일 룰)
-  if (currentPhotoItems.some(p => !p.path.startsWith(allowedStoragePrefix))) {
+  if (currentPhotoItems.some(p => hasPathTraversal(p.path) || !p.path.startsWith(allowedStoragePrefix))) {
     return NextResponse.json({ error: '허가되지 않은 현재사진 경로입니다.' }, { status: 403 })
   }
 

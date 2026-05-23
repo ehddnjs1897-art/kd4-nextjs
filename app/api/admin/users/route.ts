@@ -138,7 +138,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     const maskedEmail = data.email ? data.email.replace(/(?<=.{2}).(?=.*@)/g, '*') : null
-    console.log('[audit] 역할 변경:', { adminId, targetId: id, newRole: role, email: maskedEmail, at: new Date().toISOString() })
+    console.warn('[audit] 역할 변경:', { adminId, targetId: id, newRole: role, email: maskedEmail, at: new Date().toISOString() })
     return NextResponse.json({ user: data })
   } catch (err) {
     console.error('[PATCH /api/admin/users] 예상치 못한 오류:', err instanceof Error ? err.message : String(err))

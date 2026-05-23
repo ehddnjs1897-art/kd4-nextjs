@@ -1,11 +1,12 @@
 /**
  * /admin/users — 회원 관리 전용 페이지 (admin 전용)
  */
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import UsersManagementTable from './UsersManagementTable'
 
-export const metadata = {
+export const metadata: Metadata = {
   title: '회원 관리',
   description: 'KD4 회원 관리 (관리자 전용)',
   robots: { index: false, follow: false },
