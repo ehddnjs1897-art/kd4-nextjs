@@ -403,7 +403,7 @@ export default async function ActorDetailPage({
 
               {/* 서브라인 */}
               <p style={{ fontSize: '0.86rem', color: 'var(--gray-light)', letterSpacing: '0.04em', marginBottom: 28 }}>
-                {genderLabel}{actor.age_group ? ` · ${actor.age_group}` : ''}{actor.name_en ? ` · ${actor.name_en}` : ''}
+                {genderLabel}{actor.age_group ? ` · ${actor.age_group}` : ''}{actor.name_en ? <> · <span lang="en">{actor.name_en}</span></> : ''}
               </p>
 
               {/* 한줄소개 */}

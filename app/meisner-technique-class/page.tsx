@@ -93,7 +93,7 @@ export default function MeisnerPage() {
       {/* HERO */}
       <section aria-label="마이즈너 테크닉 정규 클래스 소개" style={{ padding: 'clamp(72px, 12vw, 110px) 24px clamp(48px, 9vw, 80px)', background: 'var(--navy)', color: '#fff', textAlign: 'center' }}>
         <div className="container">
-          <p className="section-eyebrow" style={{ color: 'rgba(255,255,255,0.75)', marginBottom: '16px' }}>
+          <p className="section-eyebrow" lang="en" style={{ color: 'rgba(255,255,255,0.75)', marginBottom: '16px' }}>
             STEP 01 · MEISNER TECHNIQUE
           </p>
           <h1 className="section-title-serif" style={{ color: '#fff', fontSize: 'clamp(1.7rem, 4.5vw, 2.8rem)', lineHeight: 1.35, marginBottom: '16px', maxWidth: '720px', margin: '0 auto 16px', wordBreak: 'keep-all' }}>
@@ -120,7 +120,7 @@ export default function MeisnerPage() {
       <section aria-label="마이즈너 테크닉이란" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
-            <p className="section-eyebrow">01 — METHOD</p>
+            <p className="section-eyebrow" lang="en">01 — METHOD</p>
             <h2 className="section-title-serif" style={{ marginBottom: '16px' }}>마이즈너 테크닉이란</h2>
             <p className="section-desc">
               샌포드 마이즈너가 정립한 연기 훈련 방법. 핵심은 &ldquo;연기하지 않는 연기&rdquo;. 상대에 정직하게 반응하는 훈련으로 가짜 감정과 정형화된 습관을 해체하고 배우의 본능을 회복시킵니다.
@@ -142,7 +142,7 @@ export default function MeisnerPage() {
       <section aria-label="4개월 정규 코스 커리큘럼" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
-            <p className="section-eyebrow">02 — CURRICULUM</p>
+            <p className="section-eyebrow" lang="en">02 — CURRICULUM</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>4개월 정규 코스</h2>
           </div>
           <div style={{ maxWidth: '640px', margin: '0 auto', background: 'var(--bg)', border: '1.5px solid var(--navy)', borderRadius: '12px', padding: '24px' }}>
@@ -178,7 +178,7 @@ export default function MeisnerPage() {
       <section aria-label="액팅 코치 소개" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
-            <p className="section-eyebrow">03 — INSTRUCTOR</p>
+            <p className="section-eyebrow" lang="en">03 — INSTRUCTOR</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>액팅 코치 — 권동원 (리더)</h2>
           </div>
           <div className="meisner-director-grid" style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '32px', alignItems: 'start', maxWidth: '780px', margin: '0 auto' }}>
@@ -209,7 +209,7 @@ export default function MeisnerPage() {
       <section aria-label="일반 학원 평균과 KD4 비교" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
-            <p className="section-eyebrow">04 — DIFFERENCE</p>
+            <p className="section-eyebrow" lang="en">04 — DIFFERENCE</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>일반 학원 평균과 비교</h2>
           </div>
           <div role="table" aria-label="일반 학원 평균 vs KD4 비교" style={{ maxWidth: '720px', margin: '0 auto', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden' }}>
@@ -237,7 +237,7 @@ export default function MeisnerPage() {
       <section aria-label="마이즈너 테크닉 소개 영상" style={{ padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
-            <p className="section-eyebrow">05 — VIDEO</p>
+            <p className="section-eyebrow" lang="en">05 — VIDEO</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>마이즈너 테크닉 소개</h2>
           </div>
           <div style={{ maxWidth: '780px', margin: '0 auto' }}>
@@ -250,7 +250,7 @@ export default function MeisnerPage() {
       <section aria-label="자주 묻는 질문" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
-            <p className="section-eyebrow">FAQ</p>
+            <p className="section-eyebrow" lang="en">FAQ</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>자주 묻는 질문</h2>
           </div>
           <FaqAccordion items={MEISNER_FAQ} />

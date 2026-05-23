@@ -106,7 +106,7 @@ export default function ReelPage() {
       <section aria-label="출연영상 클래스 소개" style={{ padding: 'clamp(72px, 12vw, 110px) 24px clamp(48px, 9vw, 80px)', background: 'linear-gradient(160deg, var(--navy-deep) 0%, var(--navy) 60%, #133f78 100%)', color: '#fff', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         <div aria-hidden style={{ position: 'absolute', bottom: '-100px', left: '-60px', width: '320px', height: '320px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(199,62,62,0.2), transparent 70%)' }} />
         <div className="container" style={{ position: 'relative' }}>
-          <p className="section-eyebrow" style={{ color: '#F0A8A8', marginBottom: '16px' }}>
+          <p className="section-eyebrow" lang="en" style={{ color: '#F0A8A8', marginBottom: '16px' }}>
             STEP 01 · REEL PRODUCTION
           </p>
           <h1 className="section-title-serif" style={{ color: '#fff', fontSize: 'clamp(1.7rem, 4.5vw, 2.8rem)', lineHeight: 1.35, marginBottom: '16px', maxWidth: '720px', margin: '0 auto 16px', wordBreak: 'keep-all' }}>
@@ -133,7 +133,7 @@ export default function ReelPage() {
       <section aria-label="출연영상이 필요한 이유" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
-            <p className="section-eyebrow">01 — WHY REEL</p>
+            <p className="section-eyebrow" lang="en">01 — WHY REEL</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>왜 출연영상이 필요한가</h2>
             <p className="section-desc">
               현직 배우 100명 이상이 거쳐간 KD4 시그니처 클래스. 한 편의 영상이 캐스팅으로 이어지는 자산이 됩니다.
@@ -155,7 +155,7 @@ export default function ReelPage() {
       <section aria-label="결과물 샘플 포트폴리오" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
-            <p className="section-eyebrow">02 — PORTFOLIO</p>
+            <p className="section-eyebrow" lang="en">02 — PORTFOLIO</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>결과물 샘플</h2>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px', maxWidth: '1040px', margin: '0 auto' }}>
@@ -177,7 +177,7 @@ export default function ReelPage() {
       <section aria-label="제작 4단계 프로세스" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
-            <p className="section-eyebrow">03 — PROCESS</p>
+            <p className="section-eyebrow" lang="en">03 — PROCESS</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>제작 4단계</h2>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px', maxWidth: '1040px', margin: '0 auto' }}>
@@ -198,7 +198,7 @@ export default function ReelPage() {
       <section aria-label="클래스 상세 정보" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
-            <p className="section-eyebrow">04 — DETAILS</p>
+            <p className="section-eyebrow" lang="en">04 — DETAILS</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>클래스 정보</h2>
           </div>
           <div style={{ maxWidth: '640px', margin: '0 auto', background: 'var(--bg)', border: '1.5px solid var(--navy)', borderRadius: '12px', padding: '24px' }}>
@@ -234,7 +234,7 @@ export default function ReelPage() {
       <section aria-label="포함 사항" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
-            <p className="section-eyebrow">05 — INCLUDES</p>
+            <p className="section-eyebrow" lang="en">05 — INCLUDES</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>포함 사항</h2>
             <p className="section-desc">
               영상 소유권은 KD4가 보유하되 멤버는 캐스팅 활동에 자유롭게 사용 가능합니다.
@@ -258,7 +258,7 @@ export default function ReelPage() {
       <section aria-label="자주 묻는 질문" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
-            <p className="section-eyebrow">FAQ</p>
+            <p className="section-eyebrow" lang="en">FAQ</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>자주 묻는 질문</h2>
           </div>
           <FaqAccordion items={REEL_FAQ} />

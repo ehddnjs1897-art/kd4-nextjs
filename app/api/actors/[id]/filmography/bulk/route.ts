@@ -151,6 +151,21 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     if (upsertErr) console.error('[filmography/bulk] UPSERT 오류:', upsertErr.message)
     const updateResults = toUpdate.map(item => ({ id: item.id, ok: !upsertErr }))
 
+    // 배우당 필모그래피 총량 상한 (신규 INSERT만 — UPDATE는 행 추가 없음)
+    if (toInsert.length > 0) {
+      const { count: existingCount } = await supabaseAdmin
+        .from('actor_filmography')
+        .select('id', { count: 'exact', head: true })
+        .eq('actor_id', actorId)
+      const MAX_FILMOGRAPHY = 500
+      if ((existingCount ?? 0) + toInsert.length > MAX_FILMOGRAPHY) {
+        return NextResponse.json(
+          { error: `필모그래피는 최대 ${MAX_FILMOGRAPHY}개까지 등록할 수 있습니다.` },
+          { status: 400 }
+        )
+      }
+    }
+
     // sort_order: 기존 최대 sort_order 이후로 이어서 삽입
     const { data: maxRow } = await supabaseAdmin
       .from('actor_filmography')

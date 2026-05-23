@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const PAGE_SIZE = 500
     const rawPage = parseInt(searchParams.get('page') ?? '0', 10)
-    const page = Math.max(0, Number.isFinite(rawPage) ? rawPage : 0)
+    const page = Math.min(10_000, Math.max(0, Number.isFinite(rawPage) ? rawPage : 0))
     const from = page * PAGE_SIZE
 
     const { data, error, count } = await supabaseAdmin

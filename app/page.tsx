@@ -365,14 +365,14 @@ export default function HomePage() {
         </div>
 
         {/* sr-only h1 — JS 렌더 전에도 스크린리더에 즉시 노출 */}
-        <h1 className="sr-only">KD4 액팅 스튜디오 — ACTOR ACCELERATING SYSTEM</h1>
+        <h1 className="sr-only">KD4 액팅 스튜디오 — <span lang="en">ACTOR ACCELERATING SYSTEM</span></h1>
 
         {/* 뒷벽에 박히는 타이틀 — DOM/CSS로 선명하게, 달리줌과 동기화
              측정 완료 전(titleReady=false)에는 비가시 — letter-spacing 적용 후 등장 */}
         <div className={`hero-title-wall-pos ${titleReady ? 'is-ready' : ''}`}>
           <div className="hero-title-wall" ref={heroTitleRef}>
             <h1 aria-hidden="true">KD4 액팅 스튜디오</h1>
-            <p className="hero-title-wall-sub">ACTOR ACCELERATING SYSTEM</p>
+            <p className="hero-title-wall-sub"><span lang="en">ACTOR ACCELERATING SYSTEM</span></p>
           </div>
         </div>
 
@@ -812,7 +812,7 @@ export default function HomePage() {
             <p
               className="section-eyebrow"
             >
-              CASTING RESULTS
+              <span lang="en">CASTING RESULTS</span>
             </p>
             <h2 style={{ fontSize: "clamp(1.6rem, 4vw, 2.4rem)", fontWeight: 700 }}>
               KD4 캐스팅현황
@@ -1061,7 +1061,7 @@ export default function HomePage() {
                     border: "1px solid rgba(21,72,138,0.25)",
                     borderRadius: 3,
                     padding: "3px 9px",
-                  }}>{tag}</span>
+                  }} lang="en">{tag}</span>
                   <span aria-hidden style={{
                     fontFamily: "var(--font-display), Oswald, sans-serif",
                     fontSize: "1.3rem",
@@ -1144,7 +1144,7 @@ export default function HomePage() {
         }}
       >
         <p className="section-eyebrow" style={{ textAlign: "center" }}>
-          REAL REVIEWS
+          <span lang="en">REAL REVIEWS</span>
         </p>
         <h2
           style={{

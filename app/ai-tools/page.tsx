@@ -48,6 +48,8 @@ const TAB_LABELS: Record<TabKey, string> = {
   lineByLine: '대사별 노트',
   onSetSummary: '현장 요약',
 }
+// 영어 탭은 lang="en" 마킹 필요 (WCAG 3.1.2)
+const ENGLISH_TAB_KEYS = new Set<TabKey>(['utaHagen', 'ivanaChubbuck', 'meisner'])
 
 // ─── 메인 컴포넌트 ───────────────────────────────────────────────────────────
 
@@ -95,7 +97,7 @@ export default function AIToolsPage() {
   if (!hasAccess) return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ textAlign: 'center', maxWidth: 360, padding: '0 20px' }}>
-        <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.68rem', letterSpacing: '0.35em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 12 }}>AI TOOLS</p>
+        <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.68rem', letterSpacing: '0.35em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 12 }}><span lang="en">AI TOOLS</span></p>
         <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--white)', marginBottom: 12 }}>KD4 크루 전용</h1>
         <p style={{ color: 'var(--gray)', fontSize: '0.88rem', lineHeight: 1.7 }}>
           AI 대본 분석은 KD4 크루 이상 회원만 이용할 수 있습니다.
@@ -198,7 +200,7 @@ export default function AIToolsPage() {
       <div className="container">
         {/* 헤더 */}
         <div style={s.header}>
-          <p style={s.eyebrow}>AI TOOLS</p>
+          <p style={s.eyebrow}><span lang="en">AI TOOLS</span></p>
           <h1 style={s.pageTitle}>AI 대본 분석</h1>
           <p style={s.pageDesc}>
             대본을 붙여넣으면 Uta Hagen, Ivana Chubbuck, Meisner 등 5가지 연기 메소드로 분석합니다.
@@ -329,7 +331,7 @@ export default function AIToolsPage() {
                       onClick={() => setActiveTab(key)}
                       style={activeTab === key ? { ...s.tab, ...s.tabActive } : s.tab}
                     >
-                      {TAB_LABELS[key]}
+                      {ENGLISH_TAB_KEYS.has(key) ? <span lang="en">{TAB_LABELS[key]}</span> : TAB_LABELS[key]}
                     </button>
                   ))}
                 </div>

@@ -118,7 +118,7 @@ export default async function DashboardPage() {
 
         {/* 페이지 헤더 */}
         <div style={{ marginBottom: 8 }}>
-          <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.68rem', letterSpacing: '0.35em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 8 }}>MY PAGE</p>
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.68rem', letterSpacing: '0.35em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 8 }}><span lang="en">MY PAGE</span></p>
           <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.6rem, 4vw, 2rem)', fontWeight: 700, color: 'var(--white)' }}>마이페이지</h1>
         </div>
 

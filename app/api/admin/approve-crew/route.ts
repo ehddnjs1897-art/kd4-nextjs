@@ -83,7 +83,7 @@ export async function GET(request: NextRequest) {
   // 이미 승인된 경우 — 재실행 방지 (DB 쓰기·SMS 중복 방지)
   if (target.role === 'crew' || target.role === 'director') {
     return NextResponse.redirect(
-      `${origin}/admin?already_approved=${encodeURIComponent(target.name ?? target.email ?? uid)}`
+      `${origin}/admin?already_approved=${encodeURIComponent(target.name ?? uid)}`
     )
   }
 
@@ -113,7 +113,7 @@ export async function GET(request: NextRequest) {
   if (!updated) {
     // 동시 요청에서 이미 승인됨 — 멱등적으로 처리
     return NextResponse.redirect(
-      `${origin}/admin?already_approved=${encodeURIComponent(target.name ?? target.email ?? uid)}`
+      `${origin}/admin?already_approved=${encodeURIComponent(target.name ?? uid)}`
     )
   }
   // 역할 변경 후 대시보드 캐시 무효화 (캐시된 권한 정보 갱신)
@@ -134,7 +134,7 @@ export async function GET(request: NextRequest) {
 
   // 관리자 패널로 리디렉트 (성공 메시지 포함)
   return NextResponse.redirect(
-    `${origin}/admin?approved=${encodeURIComponent(target.name ?? target.email ?? uid)}`,
+    `${origin}/admin?approved=${encodeURIComponent(target.name ?? uid)}`,
     { headers: { 'Cache-Control': 'no-store' } }
   )
 }
