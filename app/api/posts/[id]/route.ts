@@ -157,14 +157,18 @@ export async function PATCH(
       updates.category = body.category
     }
 
-    // supabaseAdmin 사용 — TOCTOU 방어: WHERE에 author_id 재포함 (admin 제외)
-    // 선-조회(pre-check)와 업데이트 사이 DB 변경 시에도 올바른 소유자만 갱신되도록
-    let updateQuery = supabaseAdmin.from('posts').update(updates).eq('id', id)
-    if (!isAdmin) updateQuery = updateQuery.eq('author_id', user.id)
-    const { error: updateError } = await updateQuery
+    // supabaseAdmin 사용 — TOCTOU 방어 + rows-affected 확인 (선-조회와 업데이트 사이 삭제 감지)
+    const { data: updatedPost, error: updateError } = await (
+      isAdmin
+        ? supabaseAdmin.from('posts').update(updates).eq('id', id)
+        : supabaseAdmin.from('posts').update(updates).eq('id', id).eq('author_id', user.id)
+    ).select('id').maybeSingle()
 
     if (updateError) {
       return NextResponse.json({ error: '게시글 수정 중 오류가 발생했습니다.' }, { status: 500 })
+    }
+    if (!updatedPost) {
+      return NextResponse.json({ error: '게시글을 찾을 수 없거나 이미 삭제되었습니다.' }, { status: 404 })
     }
 
     revalidatePath('/board')
