@@ -252,6 +252,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
       {/* ============ 프로필 사진 스트립 ============ */}
       {stripPhotos.length > 0 && (
         <section style={s.section} aria-label={`${actor.name} 프로필 사진`}>
+          <h2 className="sr-only">프로필 사진</h2>
           <div
             style={s.photoStrip}
             onContextMenu={imageProtected ? (e) => e.preventDefault() : undefined}

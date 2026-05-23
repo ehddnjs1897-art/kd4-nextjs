@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { SITE_URL } from '@/lib/constants'
 
 type Step = 'form' | 'sent'
 
@@ -19,7 +20,7 @@ export default function ResetPasswordPage() {
 
     const supabase = createClient()
     const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${typeof window !== 'undefined' ? window.location.origin : 'https://kd4.club'}/auth/update-password`,
+      redirectTo: `${typeof window !== 'undefined' ? window.location.origin : SITE_URL}/auth/update-password`,
     })
 
     if (resetError) {

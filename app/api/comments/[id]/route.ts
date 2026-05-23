@@ -6,6 +6,11 @@ type Params = Promise<{ id: string }>
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
+// DELETE 레이트 리밋: 1분 내 10회 초과 차단 (대량 삭제 방지)
+const commentsDeleteMap = new Map<string, number[]>()
+const DELETE_WINDOW_MS = 60_000
+const DELETE_MAX = 10
+
 // DELETE /api/comments/[id] — 본인 또는 admin만
 export async function DELETE(
   _request: NextRequest,
@@ -22,6 +27,20 @@ export async function DELETE(
 
     if (authError || !user) {
       return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
+    }
+
+    // DELETE 레이트 리밋: 1분 10회 초과 차단
+    const nowD = Date.now()
+    const deleteTimes = (commentsDeleteMap.get(user.id) ?? []).filter(t => nowD - t < DELETE_WINDOW_MS)
+    if (deleteTimes.length >= DELETE_MAX) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
+    commentsDeleteMap.set(user.id, [...deleteTimes, nowD])
+    if (commentsDeleteMap.size > 1000) {
+      const cutoffD = nowD - DELETE_WINDOW_MS
+      for (const [k, v] of commentsDeleteMap) {
+        if (v.every(t => t < cutoffD)) commentsDeleteMap.delete(k)
+      }
     }
 
     // supabaseAdmin으로 ownership 조회 — RLS가 comments 읽기를 제한해도 본인 글 조회 보장

@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
+// 인메모리 디바운스 — DB count 경쟁 조건 완화 (동일 유저 30초 내 재전송 차단)
+const commentsPostDebounceMap = new Map<string, number>()
+const COMMENTS_POST_DEBOUNCE_MS = 30_000
+
 // POST /api/comments — 로그인 필요
 export async function POST(request: NextRequest) {
   try {
@@ -30,6 +34,19 @@ export async function POST(request: NextRequest) {
     }
     if (content.trim().length > 2000) {
       return NextResponse.json({ error: '댓글은 2,000자 이하로 입력해주세요.' }, { status: 400 })
+    }
+
+    // 인메모리 디바운스 — DB count 비원자적 경쟁 조건 완화
+    const lastComment = commentsPostDebounceMap.get(user.id) ?? 0
+    if (Date.now() - lastComment < COMMENTS_POST_DEBOUNCE_MS) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
+    commentsPostDebounceMap.set(user.id, Date.now())
+    if (commentsPostDebounceMap.size > 1000) {
+      const cutoffC = Date.now() - COMMENTS_POST_DEBOUNCE_MS
+      for (const [k, v] of commentsPostDebounceMap) {
+        if (v < cutoffC) commentsPostDebounceMap.delete(k)
+      }
     }
 
     // 레이트 리밋: 1분에 최대 10개 (스팸 방지)

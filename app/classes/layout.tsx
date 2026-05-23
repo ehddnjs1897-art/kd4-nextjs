@@ -6,6 +6,7 @@ import type { Metadata } from 'next'
 import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { buildBreadcrumb } from '@/lib/seo-schemas'
+import { CLASSES } from '@/lib/classes'
 
 const PAGE_URL = `${SITE_URL}/classes`
 
@@ -41,13 +42,30 @@ export const metadata: Metadata = {
   },
 }
 
+const classItemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: '연기 클래스 전체 목록',
+  url: PAGE_URL,
+  numberOfItems: CLASSES.length,
+  itemListElement: CLASSES.map((cls, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: cls.nameKo,
+    url: PAGE_URL,
+  })),
+}
+
 export default function ClassesLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <PageJsonLd schemas={[buildBreadcrumb([
-        { name: '홈', url: SITE_URL },
-        { name: '연기 클래스', url: `${SITE_URL}/classes` },
-      ])]} />
+      <PageJsonLd schemas={[
+        buildBreadcrumb([
+          { name: '홈', url: SITE_URL },
+          { name: '연기 클래스', url: PAGE_URL },
+        ]),
+        classItemListSchema,
+      ]} />
       {children}
     </>
   )

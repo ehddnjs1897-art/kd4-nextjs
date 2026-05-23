@@ -276,10 +276,7 @@ export default async function ActorDetailPage({
     }
   }
 
-  const pageUrl =
-    process.env.NEXT_PUBLIC_SITE_URL
-      ? `${process.env.NEXT_PUBLIC_SITE_URL}/actors/${actor.id}`
-      : `https://kd4.club/actors/${actor.id}`
+  const pageUrl = `${SITE_URL}/actors/${actor.id}`
 
   /* ── SEO: Person + VideoObject JSON-LD ── */
   const personSchema = getActorPersonSchema({
@@ -293,7 +290,7 @@ export default async function ActorDetailPage({
     email: actor.email,
     phone: actor.phone,
     instagram: actor.instagram,
-    imageUrl: photoUrl.startsWith('http') ? photoUrl : `https://kd4.club${photoUrl}`,
+    imageUrl: photoUrl.startsWith('http') ? photoUrl : `${SITE_URL}${photoUrl}`,
     filmography: actor.actor_filmography ?? [],
     castingTags: actor.casting_tags,
     castingSummary: actor.casting_summary,

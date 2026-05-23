@@ -170,13 +170,13 @@ export default async function PostDetailPage({ params }: { params: Params }) {
               <span style={{ fontSize: '0.875rem', color: 'var(--white)', fontWeight: 500 }}>
                 {typedPost.author_name ?? '익명'}
               </span>
-              <span style={{ fontSize: '0.82rem', color: 'var(--gray)' }}>
+              <time dateTime={typedPost.created_at} style={{ fontSize: '0.82rem', color: 'var(--gray)' }}>
                 {formatDate(typedPost.created_at)}
-              </span>
+              </time>
               {typedPost.updated_at && typedPost.updated_at !== typedPost.created_at && (
-                <span style={{ fontSize: '0.78rem', color: 'var(--gray)' }}>
+                <time dateTime={typedPost.updated_at} style={{ fontSize: '0.78rem', color: 'var(--gray)' }}>
                   (수정됨)
-                </span>
+                </time>
               )}
               <span style={{ fontSize: '0.82rem', color: 'var(--gray)' }}>
                 조회 {typedPost.views ?? 0}

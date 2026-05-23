@@ -112,7 +112,7 @@ export async function GET(
       return NextResponse.json({ error: '잘못된 프로필 링크입니다.' }, { status: 502 })
     }
     try {
-      const upstream = await fetch(target, { redirect: 'follow' })
+      const upstream = await fetch(target, { redirect: 'follow', signal: AbortSignal.timeout(15_000) })
       if (!upstream.ok || !upstream.body) {
         return NextResponse.json({ error: '프로필 파일을 가져오지 못했습니다.' }, { status: 502 })
       }

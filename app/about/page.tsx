@@ -533,7 +533,7 @@ export default function AboutPage() {
             }}
           >
             <iframe
-              src="https://maps.google.com/maps?q=%EC%84%9C%EC%9A%B8%EC%8B%9C+%EC%84%9C%EB%8C%80%EB%AC%B8%EA%B5%AC+%EB%8C%80%ED%98%84%EB%8F%9999-7&output=embed"
+              src="https://maps.google.com/maps?q=%EC%84%9C%EC%9A%B8%EC%8B%9C+%EC%84%9C%EB%8C%80%EB%AC%B8%EA%B5%AC+%EC%9D%B4%ED%99%94%EC%97%AC%EB%8C%801%EC%95%88%EA%B8%B8+12&output=embed"
               width="100%"
               height="100%"
               style={{ border: 0, display: 'block', filter: 'invert(0.85) hue-rotate(180deg)' }}
