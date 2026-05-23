@@ -60,7 +60,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: '작품명은 200자 이하로 입력해주세요.' }, { status: 400 })
     }
 
-    const VALID_FILM_CATEGORIES = new Set(['drama', 'movie', 'musical', 'theater', 'commercial', 'etc'])
+    const VALID_FILM_CATEGORIES = new Set(['drama', 'film', 'cf', 'musical', 'theater', 'etc'])
     if (category && !VALID_FILM_CATEGORIES.has(category)) {
       return NextResponse.json({ error: '유효하지 않은 카테고리입니다.' }, { status: 400 })
     }

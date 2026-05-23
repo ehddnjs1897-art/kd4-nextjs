@@ -182,8 +182,12 @@ export async function PATCH(
     if (typeof body.profile_doc_path === 'string' && body.profile_doc_path.length > 500)
       return NextResponse.json({ error: '프로필 문서 경로가 너무 깁니다.' }, { status: 400 })
     if (typeof body.profile_doc_path === 'string' && body.profile_doc_path && profile.role !== 'admin') {
-      // id = 배우 UUID (라우트 파라미터) — user.id(로그인 유저 UUID)와 다름
-      if (!body.profile_doc_path.startsWith(`intake/${id}/`))
+      // 경로 탐색 공격 방지 — '..' 세그먼트 차단 (profile/intake/route.ts와 동일 패턴)
+      if (body.profile_doc_path.split('/').some(seg => seg === '..' || seg === '.'))
+        return NextResponse.json({ error: '허가되지 않은 문서 경로입니다.' }, { status: 403 })
+      // presigned URL 발급자(api/r2/upload-url)는 auth 유저 UUID로 키를 생성함
+      // → intake/${user.id}/... 형식 (배우 UUID인 id 와 다름)
+      if (!body.profile_doc_path.startsWith(`intake/${user.id}/`))
         return NextResponse.json({ error: '허가되지 않은 문서 경로입니다.' }, { status: 403 })
     }
     if (Array.isArray(body.casting_tags)) {

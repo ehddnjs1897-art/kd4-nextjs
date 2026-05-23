@@ -272,7 +272,7 @@ export default function Navbar() {
                   onMouseLeave={e => {
                     if (!crewDropOpen) e.currentTarget.style.color = '#111111'
                   }}
-                  aria-haspopup="menu"
+                  aria-haspopup="true"
                   aria-expanded={crewDropOpen}
                   onClick={() => setCrewDropOpen(v => !v)}
                 >
@@ -296,7 +296,8 @@ export default function Navbar() {
                 {/* 드롭다운 패널 */}
                 {crewDropOpen && (
                   <div
-                    role="menu"
+                    role="navigation"
+                    aria-label="KD4 크루 메뉴"
                     onMouseEnter={handleDropEnter}
                     onMouseLeave={handleDropLeave}
                     style={{
@@ -340,7 +341,6 @@ export default function Navbar() {
                     {crewLinks.map(item => (
                       <Link
                         key={item.label}
-                        role="menuitem"
                         href={item.href}
                         aria-current={pathname === item.href ? 'page' : undefined}
                         onClick={item.public ? undefined : (e => handleCrewLinkClick(e, item.href))}

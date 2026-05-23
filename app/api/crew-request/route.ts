@@ -88,9 +88,10 @@ export async function POST() {
     )
 
     if (ADMIN_PHONE) {
+      const safeName = displayName.replace(/[\r\n\t]/g, ' ')
       sendSMS(
         ADMIN_PHONE,
-        `[KD4] 크루 신청\n${displayName} / ${applicantEmail}\n관리자 페이지에서 승인 처리`,
+        `[KD4] 크루 신청\n${safeName} / ${applicantEmail}\n관리자 페이지에서 승인 처리`,
       ).catch(
         (err: unknown) => console.error('[crew-request] SMS 실패:', err instanceof Error ? err.message : '(unknown)')
       )

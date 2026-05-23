@@ -22,7 +22,8 @@ export async function GET(request: Request) {
   const type = searchParams.get('type') as 'signup' | 'recovery' | 'email' | 'invite' | null
   // 오픈 리다이렉트 방지: 동일 출처(/) 경로만 허용
   const rawNext = searchParams.get('next') ?? '/dashboard'
-  const next = rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/dashboard'
+  // 오픈 리다이렉트 방지: '//' 및 '/\' (브라우저 정규화로 //evil.com으로 변환 가능) 차단
+  const next = rawNext.startsWith('/') && !rawNext.startsWith('//') && !rawNext.startsWith('/\\') ? rawNext : '/dashboard'
 
   const cookieStore = await cookies()
   const supabase = createServerClient(

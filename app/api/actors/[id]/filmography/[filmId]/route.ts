@@ -66,7 +66,7 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: '영화 유형은 50자 이하입니다.' }, { status: 400 })
 
     // 카테고리 allowlist
-    const VALID_FILM_CATEGORIES = new Set(['drama', 'movie', 'musical', 'theater', 'commercial', 'etc'])
+    const VALID_FILM_CATEGORIES = new Set(['drama', 'film', 'cf', 'musical', 'theater', 'etc'])
     if (patch.category !== undefined && !VALID_FILM_CATEGORIES.has(patch.category as string)) {
       return NextResponse.json({ error: '유효하지 않은 카테고리입니다.' }, { status: 400 })
     }

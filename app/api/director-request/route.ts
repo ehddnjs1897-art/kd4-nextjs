@@ -90,9 +90,10 @@ export async function POST() {
     )
 
     if (ADMIN_PHONE) {
+      const safeName = displayName.replace(/[\r\n\t]/g, ' ')
       sendSMS(
         ADMIN_PHONE,
-        `[KD4] 디렉터 권한 신청\n${displayName} / ${applicantEmail}\n승인 시 배우 연락처 열람 가능. 관리자 페이지에서 승인 처리`,
+        `[KD4] 디렉터 권한 신청\n${safeName} / ${applicantEmail}\n승인 시 배우 연락처 열람 가능. 관리자 페이지에서 승인 처리`,
       ).catch(
         (err: unknown) => console.error('[director-request] SMS 실패:', err instanceof Error ? err.message : '(unknown)')
       )

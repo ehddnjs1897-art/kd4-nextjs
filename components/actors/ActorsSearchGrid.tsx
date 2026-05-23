@@ -37,7 +37,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
     <>
       {/* 검색 입력 */}
       <form role="search" aria-label="배우 검색" onSubmit={e => e.preventDefault()} style={{ position: 'relative', marginBottom: 16 }}>
-        <span style={{
+        <span aria-hidden="true" style={{
           position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)',
           color: 'var(--gray)', fontSize: '1rem', pointerEvents: 'none',
         }}>🔍</span>

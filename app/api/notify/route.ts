@@ -54,7 +54,10 @@ async function sendMetaCAPI(record: { name?: string | null; phone?: string | nul
       data: [{
         event_name: 'Lead',
         // 클라이언트 픽셀 Lead 와 동일 event_id → Meta 중복제거(dedup). 없으면 미전송(서버 단독 집계)
-        ...(typeof record.event_id === 'string' && record.event_id ? { event_id: record.event_id.slice(0, 128) } : {}),
+        // event_id: strip non-alphanumeric chars to prevent dedup key injection
+        ...(typeof record.event_id === 'string' && record.event_id
+          ? { event_id: record.event_id.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 128) }
+          : {}),
         event_time: Math.floor(Date.now() / 1000),
         event_source_url: `${SITE_URL}/join`,
         action_source: 'website',
@@ -275,7 +278,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    return NextResponse.json({ ok: true, id: savedId })
+    return NextResponse.json({ ok: true })
   } catch (err) {
     console.error('[notify] route 처리 실패:', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '요청 처리 실패' }, { status: 500 })

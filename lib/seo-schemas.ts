@@ -73,6 +73,16 @@ export function buildEducationalOrganization() {
     founder: { '@id': `${SITE_URL}#dongwon` },
     sameAs: [...SAMEAS],
     areaServed: ['서울특별시', '서대문구', '신촌', '이화여대', '아현', '충정로'],
+    telephone: '+82-10-8564-0244',
+    openingHoursSpecification: [
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        opens: '10:00',
+        closes: '22:00',
+      },
+    ],
+    priceRange: '₩150,000 ~ ₩450,000',
   }
 }
 

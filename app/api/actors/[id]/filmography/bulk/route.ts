@@ -95,7 +95,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     const toUpdate: (FilmItem & { id: string })[] = []
     const toInsert: FilmItem[] = []
 
-    const VALID_FILM_CATEGORIES = new Set(['drama', 'movie', 'musical', 'theater', 'commercial', 'etc'])
+    const VALID_FILM_CATEGORIES = new Set(['drama', 'film', 'cf', 'musical', 'theater', 'etc'])
 
     for (const item of items) {
       if (!String(item.title ?? '').trim()) continue

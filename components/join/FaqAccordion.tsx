@@ -42,7 +42,6 @@ export default function FaqAccordion({ items }: { items: FaqItem[] }) {
               id={`faq-panel-${i}`}
               role="region"
               aria-labelledby={`faq-btn-${i}`}
-              aria-hidden={!isOpen}
               className="faq-answer"
             >{item.a}</div>
           </div>

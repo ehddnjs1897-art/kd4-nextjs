@@ -79,6 +79,7 @@ export default function LeaderboardPage() {
       >
         {(["weekly", "alltime"] as const).map((p) => (
           <button
+            type="button"
             key={p}
             onClick={() => setPeriod(p)}
             aria-pressed={period === p}
@@ -107,6 +108,7 @@ export default function LeaderboardPage() {
         <div style={{ textAlign: "center", color: "#555", padding: 40 }}>
           <p style={{ marginBottom: 12 }}>불러오기 실패</p>
           <button
+            type="button"
             onClick={() => { setFetchError(false); setLoading(true) }}
             style={{ color: "#0057FF", background: "none", border: "none", cursor: "pointer", fontSize: 14 }}
           >

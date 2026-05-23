@@ -7,9 +7,10 @@ import type { InsightSourceType, InsightCategory } from '@/lib/types'
 // GEMINI_KEY는 서버 전용. NEXT_PUBLIC_* 접두사 사용 금지.
 const GEMINI_KEY = process.env.GEMINI_KEY
 
-// 런타임 허용 목록 (TypeScript 타입만으로는 런타임 검증 불가)
-const VALID_CATEGORIES = new Set<string>(['연기', '오디션', '산업', '마케팅', '기타', '전체'])
-const VALID_SOURCE_TYPES = new Set<string>(['video', 'article', 'tweet', 'podcast', '기타', '전체'])
+// 런타임 허용 목록 — InsightCategory/InsightSourceType 타입과 동기화 (lib/types.ts)
+// '전체'는 필터 전용 (DB에 저장되지 않으므로 POST/PATCH에는 사용 금지)
+const VALID_CATEGORIES = new Set<string>(['연기', '비즈니스', '크리에이티브', '디자인', '기술', '라이프', '기타', '전체'])
+const VALID_SOURCE_TYPES = new Set<string>(['video', 'blog', 'article', 'image', 'other', '전체'])
 
 // CORS는 자체 도메인 + 로컬 dev만 허용 (이전 '*'은 SSRF·CSRF 위험)
 import { SITE_URL } from '@/lib/constants'
