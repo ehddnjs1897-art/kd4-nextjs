@@ -21,10 +21,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/benefits/seowoo-studio`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.65 },
   ]
 
-  // 배우 프로필 페이지 (공개 · robots:index=true로 설정됨)
+  // 배우 프로필 페이지 (공개 배우만 — 비공개는 페이지 컴포넌트에서 404 반환)
   const { data: actors } = await supabaseAdmin
     .from('actors')
     .select('id')
+    .eq('is_public', true)
     .order('created_at', { ascending: false })
 
   const actorPages: MetadataRoute.Sitemap = (actors ?? []).map((a) => ({

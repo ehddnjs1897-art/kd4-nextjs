@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: '권동원 — KD4 대표 · 액팅 코치 (리더)',
     description: 'Disney+ 무빙2 · Netflix 중증외상센터 출연 중인 현역 배우.',
-    images: [{ url: `${SITE_URL}/director.jpg`, width: 630, height: 840, alt: '권동원 KD4 액팅 코치' }],
+    images: [{ url: `${SITE_URL}/director.jpg`, width: 1200, height: 630, alt: '권동원 KD4 액팅 코치' }],
   },
 }
 
