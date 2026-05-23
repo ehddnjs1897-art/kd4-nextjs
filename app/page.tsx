@@ -625,6 +625,7 @@ export default function HomePage() {
               width={300}
               height={420}
               priority
+              fetchPriority="high"
               sizes="(max-width: 768px) 200px, 300px"
               style={{
                 objectFit: 'cover',

@@ -292,6 +292,7 @@ export default function SignupPage() {
             <label htmlFor="password" style={styles.label}>
               비밀번호 <span style={styles.required}>*</span>
             </label>
+            <span id="password-hint" className="sr-only">8자 이상 입력해주세요</span>
             <input
               id="password"
               type="password"
@@ -303,7 +304,7 @@ export default function SignupPage() {
               autoComplete="new-password"
               maxLength={128}
               aria-invalid={!!error || undefined}
-              aria-describedby={error ? 'signup-error' : undefined}
+              aria-describedby={error ? 'password-hint signup-error' : 'password-hint'}
               style={styles.input}
             />
           </div>

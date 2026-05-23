@@ -133,6 +133,7 @@ export default function UpdatePasswordPage() {
                 <label htmlFor="password" style={styles.label}>
                   새 비밀번호
                 </label>
+                <span id="password-hint" className="sr-only">8자 이상 입력해주세요</span>
                 <input
                   id="password"
                   type="password"
@@ -142,6 +143,7 @@ export default function UpdatePasswordPage() {
                   required
                   disabled={loading}
                   autoComplete="new-password"
+                  aria-describedby="password-hint"
                   style={styles.input}
                 />
               </div>
