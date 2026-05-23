@@ -76,7 +76,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
       </div>
 
       {/* 결과 수 */}
-      <p style={{ fontSize: '0.8rem', color: 'var(--gray)', marginBottom: 20 }}>
+      <p role="status" aria-live="polite" style={{ fontSize: '0.8rem', color: 'var(--gray)', marginBottom: 20 }}>
         {query
           ? `"${query}" — ${filtered.length}명`
           : `총 ${totalBeforeSearch}명`}

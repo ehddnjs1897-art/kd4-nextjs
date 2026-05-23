@@ -128,7 +128,7 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
           <thead>
             <tr style={{ borderBottom: '1px solid var(--border)' }}>
               {['이름', '사진', '영상', 'PPTX', '필모', '상태', ''].map(h => (
-                <th key={h} style={{
+                <th key={h} scope="col" style={{
                   padding: '10px 12px', textAlign: 'left',
                   fontFamily: 'var(--font-display)', fontSize: '0.68rem',
                   letterSpacing: '0.12em', color: 'var(--gray)',

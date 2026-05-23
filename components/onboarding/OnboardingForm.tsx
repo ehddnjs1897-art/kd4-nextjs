@@ -288,7 +288,7 @@ export default function OnboardingForm({
       {loading && status && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', background: 'rgba(196,165,90,0.08)', border: '1px solid rgba(196,165,90,0.2)', borderRadius: 8, marginBottom: 16 }}>
           <span style={{ fontSize: '1rem' }}>⏳</span>
-          <p style={{ fontSize: '0.85rem', color: 'var(--gold)' }}>{status}</p>
+          <p role="status" aria-live="polite" style={{ fontSize: '0.85rem', color: 'var(--gold)' }}>{status}</p>
         </div>
       )}
 

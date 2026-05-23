@@ -144,7 +144,7 @@ export default function UsersManagementTable({ profiles: initialProfiles }: Prop
           <thead>
             <tr style={{ borderBottom: '1px solid var(--border)' }}>
               {['이름', '이메일', '역할', '배우 연결', '가입일'].map(h => (
-                <th key={h} style={{ padding: '10px 12px', textAlign: 'left', color: 'var(--gray)', fontWeight: 600, fontSize: '0.75rem', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                <th key={h} scope="col" style={{ padding: '10px 12px', textAlign: 'left', color: 'var(--gray)', fontWeight: 600, fontSize: '0.75rem', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                   {h}
                 </th>
               ))}

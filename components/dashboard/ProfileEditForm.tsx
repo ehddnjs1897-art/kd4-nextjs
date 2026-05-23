@@ -199,6 +199,7 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
                 value={name}
                 onChange={e => setName(e.target.value)}
                 required maxLength={50}
+                autoComplete="name"
                 style={inputStyle}
                 autoFocus
               />

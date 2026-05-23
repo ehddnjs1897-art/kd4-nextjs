@@ -395,7 +395,7 @@ export default function EnrollForm({
 
         {/* ── 에러 ── */}
         {error && (
-          <div style={{ padding: '12px 16px', background: 'var(--accent-red-soft)', border: '1px solid rgba(199,62,62,0.25)', borderRadius: 10, marginBottom: 16 }}>
+          <div role="alert" aria-live="assertive" style={{ padding: '12px 16px', background: 'var(--accent-red-soft)', border: '1px solid rgba(199,62,62,0.25)', borderRadius: 10, marginBottom: 16 }}>
             <p style={{ color: 'var(--accent-red)', fontSize: '0.84rem' }}>{error}</p>
           </div>
         )}
@@ -405,6 +405,7 @@ export default function EnrollForm({
           type="button"
           onClick={submit}
           disabled={loading}
+          aria-busy={loading}
           style={{
             width: '100%', padding: '15px 24px',
             background: loading ? 'rgba(21,72,138,0.45)' : 'var(--navy)',

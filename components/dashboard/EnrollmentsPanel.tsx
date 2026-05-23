@@ -116,7 +116,7 @@ export default function EnrollmentsPanel({
         </div>
       )}
 
-      {msg && <p role="alert" style={{ fontSize: '0.8rem', color: 'var(--gold)' }}>{msg}</p>}
+      {msg && <p role="status" aria-live="polite" style={{ fontSize: '0.8rem', color: 'var(--gold)' }}>{msg}</p>}
 
       {/* 수강 내역 */}
       {items.length === 0 ? (
