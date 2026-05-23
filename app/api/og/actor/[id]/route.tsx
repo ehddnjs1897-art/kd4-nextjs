@@ -16,7 +16,7 @@
 import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
-export const revalidate = 86400 // 24h
+export const revalidate = 3600 // 1h — 배우가 프로필 수정해도 최대 1시간 내 OG 이미지 갱신
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY

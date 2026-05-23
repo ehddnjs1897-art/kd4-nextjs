@@ -40,20 +40,25 @@ export async function GET(request: NextRequest) {
       data: { user },
     } = await supabase.auth.getUser()
     let canSeeContact = false
+    let isAdmin = false
     if (user) {
       const { data: profile } = await supabaseAdmin
         .from('profiles').select('role').eq('id', user.id).maybeSingle()
       canSeeContact = ['director', 'admin'].includes(profile?.role ?? '')
+      isAdmin = profile?.role === 'admin'
     }
+
+    // admin은 ?include_non_public=true 로 비공개 배우도 조회 가능 (검토 대기 중 배우 관리용)
+    const includeNonPublic = isAdmin && searchParams.get('include_non_public') === 'true'
 
     // 항상 '*'로 조회 후 JS 레벨에서 민감 컬럼 제거
     // (동적 columns 문자열은 Supabase SDK 타입 추론 오류 유발)
     let query = supabaseAdmin
       .from('actors')
       .select('*', { count: 'exact' })
-      .eq('is_public', true)
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1)
+    if (!includeNonPublic) query = query.eq('is_public', true)
 
     if (gender) {
       query = query.eq('gender', gender)

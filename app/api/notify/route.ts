@@ -89,7 +89,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
     // IP 기반 2차 레이트 리밋 — 번호 열거 공격 방어 (5분 내 10회)
-    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
+    // x-real-ip: Vercel 프록시가 직접 설정 (클라이언트 위조 불가)
+    // x-forwarded-for의 첫 번째 항목은 클라이언트가 조작할 수 있어 신뢰도가 낮음
+    const ip = request.headers.get('x-real-ip')
+      ?? request.headers.get('x-forwarded-for')?.split(',').at(-1)?.trim()
+      ?? 'unknown'
     const { count: ipCount } = await getSupabaseAdmin()
       .from('consultations')
       .select('id', { count: 'exact', head: true })

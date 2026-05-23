@@ -11,7 +11,9 @@ export async function GET(request: NextRequest) {
     if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
 
     const { searchParams } = new URL(request.url)
-    const period = searchParams.get('period') || 'weekly'
+    const VALID_PERIODS = new Set(['weekly', 'alltime'])
+    const rawPeriod = searchParams.get('period') ?? 'weekly'
+    const period = VALID_PERIODS.has(rawPeriod) ? rawPeriod : 'weekly'
     const rawLimit = parseInt(searchParams.get('limit') ?? '10', 10)
     const limit = Math.min(50, Math.max(1, Number.isFinite(rawLimit) ? rawLimit : 10))
 
