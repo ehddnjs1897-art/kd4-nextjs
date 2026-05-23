@@ -56,7 +56,7 @@ export default function GameStartPage() {
           padding: "0 8px",
         }}
       >
-        ← KD4.club
+        <span aria-hidden="true">← </span>KD4.club
       </Link>
 
       {/* Leaderboard link */}
@@ -75,7 +75,7 @@ export default function GameStartPage() {
           padding: "0 8px",
         }}
       >
-        <span lang="en">LEADERBOARD →</span>
+        <span lang="en">LEADERBOARD <span aria-hidden="true">→</span></span>
       </Link>
 
       {/* Title */}
@@ -132,7 +132,7 @@ export default function GameStartPage() {
             >
               <div style={{ fontSize: 28, marginBottom: 6 }}>{c.emoji}</div>
               <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.08em", color: selected === c.id ? "#4488ff" : "#aaa" }}>
-                {c.name}
+                <span lang="en">{c.name}</span>
               </div>
               <div style={{ fontSize: 12, color: "#999", marginTop: 2 }}>{c.sub}</div>
             </button>

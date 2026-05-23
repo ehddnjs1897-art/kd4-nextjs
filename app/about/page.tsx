@@ -173,7 +173,7 @@ export default function AboutPage() {
             marginTop: '8px',
           }}
         >
-          OFF THE PLASTIC
+          <span lang="en">OFF THE PLASTIC</span>
         </p>
       </section>
 
@@ -327,7 +327,7 @@ export default function AboutPage() {
               }}
             >
               <div style={{ textAlign: 'center' }}>
-                <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.6rem', letterSpacing: '0.2em', color: 'var(--gold)', textTransform: 'uppercase' }}>STEP</p>
+                <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.6rem', letterSpacing: '0.2em', color: 'var(--gold)', textTransform: 'uppercase' }}><span lang="en">STEP</span></p>
                 <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '2.4rem', fontWeight: 700, color: 'var(--gold)', lineHeight: 1 }}>{step.num}</p>
               </div>
               <div>
@@ -502,7 +502,7 @@ export default function AboutPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '40px', alignItems: 'center' }}>
           <div>
             <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px' }}>
-              LOCATION
+              <span lang="en">LOCATION</span>
             </p>
             <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.4rem, 3vw, 1.8rem)', fontWeight: 700, marginBottom: '16px' }}>
               유익액터스 홀

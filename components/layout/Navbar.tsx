@@ -470,6 +470,8 @@ export default function Navbar() {
                 flexDirection: 'column',
                 gap: '5px',
                 padding: '10px 11px',
+                minHeight: 44,
+                minWidth: 44,
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',

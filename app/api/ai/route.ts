@@ -21,6 +21,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'AI 기능은 KD4 크루 이상 회원만 이용할 수 있습니다.' }, { status: 403 })
   }
 
+  // CL 체크 — 레이트리밋 슬롯 소모 전 먼저 확인 (413 반환 시 쿨다운 낭비 방지)
+  const contentLengthAI = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
+  if (contentLengthAI > 32_768) {
+    return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+  }
+
   // Rate limit: 30초 쿨다운 (Gemini 비용 폭탄 방지)
   const now = Date.now()
   const lastCall = aiCooldowns.get(user.id) ?? 0
@@ -29,7 +35,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: `${wait}초 후 다시 시도해주세요.` }, { status: 429 })
   }
   aiCooldowns.set(user.id, now)
-  // 1분 이상 지난 항목 정리 (메모리 누수 방지 — 500건 초과 시만 순회)
+  // 1분 이상 지난 항목 정리 (메모리 누수 방지 — 2000건 초과 시만 순회)
   if (aiCooldowns.size > 2000) {
     for (const [uid, ts] of aiCooldowns) {
       if (now - ts > 60_000) aiCooldowns.delete(uid)
@@ -42,10 +48,6 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const contentLengthAI = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
-    if (contentLengthAI > 32_768) {
-      return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
-    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let aiBody: Record<string, any>
     try {

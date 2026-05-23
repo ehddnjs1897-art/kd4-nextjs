@@ -546,7 +546,7 @@ export default function HomePage() {
                     marginBottom: "16px",
                   }}
                 >
-                  PROFILE
+                  <span lang="en">PROFILE</span>
                 </p>
                 <ul aria-label="권동원 주요 경력" style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                   {DIRECTOR.profileFlat.map((item, i) => (
@@ -587,7 +587,7 @@ export default function HomePage() {
                     marginBottom: "16px",
                   }}
                 >
-                  FILMOGRAPHY
+                  <span lang="en">FILMOGRAPHY</span>
                 </p>
                 {[
                   { cat: "드라마", items: DIRECTOR.filmography.drama },

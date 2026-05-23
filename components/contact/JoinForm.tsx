@@ -304,6 +304,7 @@ export default function JoinForm() {
         <a
           href="https://pf.kakao.com/_ximxdqn"
           target="_blank" rel="noopener noreferrer"
+          aria-label="카카오 상담받기 (새 탭에서 열림)"
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -327,6 +328,7 @@ export default function JoinForm() {
           <a
             href="https://pf.kakao.com/_ximxdqn"
             target="_blank" rel="noopener noreferrer"
+            aria-label="카카오 채널 (새 탭에서 열림)"
             style={{
               color: 'var(--navy)',
               textDecoration: 'underline',

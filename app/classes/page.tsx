@@ -69,7 +69,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
         <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--white)', marginBottom: '4px' }}>
           {cls.nameKo}
         </h3>
-        <p style={{ fontSize: '0.75rem', color: 'var(--gray)', letterSpacing: '0.08em', marginBottom: '12px' }}>
+        <p lang="en" style={{ fontSize: '0.75rem', color: 'var(--gray)', letterSpacing: '0.08em', marginBottom: '12px' }}>
           {cls.nameEn}
         </p>
 

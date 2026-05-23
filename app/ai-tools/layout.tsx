@@ -14,6 +14,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
+    description: 'KD4 멤버 전용 AI 대본 분석 도구 — 대사·감정·캐릭터를 자동으로 분석합니다.',
     images: [`${SITE_URL}/og-image.jpg`],
   },
 }

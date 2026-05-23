@@ -14,6 +14,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
+    description: '가면을 벗어라. 무대 위로, 더 높이. KD4 액팅 스튜디오 3D 아케이드 게임.',
     images: [`${SITE_URL}/og-image.jpg`],
   },
 }
