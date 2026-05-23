@@ -823,7 +823,7 @@ export default function HomePage() {
               KD4 캐스팅현황
             </h2>
             <p style={{ color: "var(--gray)", fontSize: "0.9rem", marginTop: "12px" }}>
-              KD4 배우들의 실제 캐스팅 결과입니다
+              KD4 멤버들의 실제 캐스팅 결과입니다
             </p>
           </div>
         </div>
@@ -1006,7 +1006,7 @@ export default function HomePage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14, marginBottom: 40 }}>
             {[
               { tag: "BEGINNER", num: "01", title: "베이직 클래스", desc: "취미로 연기를 시작하고 싶은 분" },
-              { tag: "TRAINING", num: "02", title: "마이즈너 정규 클래스", desc: "제대로 배우 훈련을 받고 싶은 분" },
+              { tag: "TRAINING", num: "02", title: "마이즈너 테크닉 정규 클래스", desc: "제대로 배우 훈련을 받고 싶은 분" },
               { tag: "PORTFOLIO", num: "03", title: "출연영상 클래스", desc: "캐스팅되는 포트폴리오를 만들고 싶은 분" },
             ].map(({ tag, num, title, desc }) => (
               <Link
@@ -1134,7 +1134,7 @@ export default function HomePage() {
             marginBottom: "32px",
           }}
         >
-          KD4 배우 이야기
+          KD4 멤버 이야기
         </h2>
 
         {/* 1행: 왼쪽으로 */}

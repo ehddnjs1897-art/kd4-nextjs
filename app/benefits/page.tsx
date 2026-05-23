@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   description:
     'KD4 멤버가 누리는 혜택과 커뮤니티 — 보강제도, 출연영상·프로필 편집 서비스, 레피티션 스터디, 굿무비 굿액팅, 크리스쳔 액터스.',
   alternates: { canonical: `${SITE_URL}/benefits` },
+  keywords: ['KD4 멤버 혜택', '연기학원 혜택', '배우 프로필 편집', '출연영상 제작', '레피티션 스터디', '신촌 연기 커뮤니티', 'KD4 커뮤니티'],
   openGraph: {
     type: 'website',
     url: `${SITE_URL}/benefits`,

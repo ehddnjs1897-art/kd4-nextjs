@@ -81,12 +81,13 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
     if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
     if (!(await authorize(id, user.id))) return NextResponse.json({ error: '권한 없음' }, { status: 403 })
 
-    const { error } = await supabaseAdmin
-      .from('actor_filmography').delete().eq('id', filmId).eq('actor_id', id)
+    const { data: deleted, error } = await supabaseAdmin
+      .from('actor_filmography').delete().eq('id', filmId).eq('actor_id', id).select('id').maybeSingle()
     if (error) {
       console.error('[filmography DELETE] DB 오류:', error.message)
       return NextResponse.json({ error: '필모그래피 삭제에 실패했습니다.' }, { status: 500 })
     }
+    if (!deleted) return NextResponse.json({ error: '필모그래피 항목을 찾을 수 없습니다.' }, { status: 404 })
     revalidateTag('actors')
     revalidateTag(`actor-${id}`)
     return NextResponse.json({ ok: true })

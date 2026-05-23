@@ -178,7 +178,7 @@ export default async function DashboardPage() {
                   background: 'rgba(196,165,90,0.06)', border: '1px solid rgba(196,165,90,0.18)',
                   fontSize: '0.78rem', color: 'rgba(196,165,90,0.8)', lineHeight: 1.7,
                 }}>
-                  📌 기존 KD4 배우라면 — 가입 시 KD4에 등록된 전화번호와 동일하게 입력해야 프로필이 자동 연결됩니다.
+                  📌 기존 KD4 멤버라면 — 가입 시 KD4에 등록된 전화번호와 동일하게 입력해야 프로필이 자동 연결됩니다.
                   전화번호를 수정하려면 내 정보 &gt; 전화번호를 변경해 주세요.
                 </div>
                 <Link href="/dashboard/edit" style={primaryBtn}>프로필 자료 올리기</Link>

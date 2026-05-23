@@ -87,6 +87,16 @@ export async function POST(request: NextRequest) {
 
     // 1. R2 업로드
     const buffer = Buffer.from(await file.arrayBuffer())
+
+    // 매직 바이트 검증 — MIME/확장자 위조 방어 (MP4/MOV/M4V: ftyp box; WebM/MKV: EBML 헤더; AVI: RIFF)
+    const sig = buffer.slice(0, 12)
+    const isMp4Ftyp = sig[4] === 0x66 && sig[5] === 0x74 && sig[6] === 0x79 && sig[7] === 0x70 // 'ftyp'
+    const isWebm  = sig[0] === 0x1a && sig[1] === 0x45 && sig[2] === 0xdf && sig[3] === 0xa3   // EBML
+    const isAvi   = sig[0] === 0x52 && sig[1] === 0x49 && sig[2] === 0x46 && sig[3] === 0x46   // 'RIFF'
+    if (!isMp4Ftyp && !isWebm && !isAvi) {
+      return NextResponse.json({ error: '지원하지 않는 영상 파일 형식입니다.' }, { status: 400 })
+    }
+
     const r2Key = buildVideoKey(actorId, file.name)
     await uploadVideo(r2Key, buffer, file.type)
 

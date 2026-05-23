@@ -92,9 +92,10 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     return withCors(NextResponse.json({ error: '잘못된 ID입니다.' }, { status: 400 }), origin)
   }
 
-  const { error } = await supabaseAdmin.from('insights').delete().eq('id', id)
+  const { data: deleted, error } = await supabaseAdmin.from('insights').delete().eq('id', id).select('id').maybeSingle()
 
   if (error) return withCors(NextResponse.json({ error: error.message }, { status: 500 }), origin)
+  if (!deleted) return withCors(NextResponse.json({ error: '인사이트를 찾을 수 없습니다.' }, { status: 404 }), origin)
 
   return withCors(NextResponse.json({ ok: true }), origin)
 }

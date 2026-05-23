@@ -25,6 +25,7 @@ export const metadata: Metadata = {
     description: 'KD4 멤버 커뮤니티 — 연기·오디션·클래스 이야기',
     images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 커뮤니티' }],
   },
+  robots: { index: false, follow: false },
 }
 
 type SearchParams = Promise<{ my?: string }>

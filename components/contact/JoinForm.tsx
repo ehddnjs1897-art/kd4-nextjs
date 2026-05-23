@@ -427,7 +427,7 @@ export default function JoinForm() {
                   KD4 캐스팅 결과
                 </p>
                 <p style={{ fontSize: '0.75rem', color: 'var(--gray)', lineHeight: 1.5, marginBottom: '8px' }}>
-                  KD4 배우들의 실제 캐스팅 작품 모아보기
+                  KD4 멤버들의 실제 캐스팅 작품 모아보기
                 </p>
                 <p
                   style={{

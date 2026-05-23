@@ -21,7 +21,7 @@ export default function ActorDbLocked({ role }: { role: UserRole | null }) {
   } else if (!loggedOut) {
     title = '배우 DB 열람 권한이 없습니다'
     desc =
-      '배우 DB는 KD4 배우 회원·승인된 디렉터만 열람할 수 있습니다. 디렉터라면 마이페이지에서 권한을 신청해 주세요.'
+      '배우 DB는 KD4 멤버·승인된 디렉터만 열람할 수 있습니다. 디렉터라면 마이페이지에서 권한을 신청해 주세요.'
   }
 
   return (

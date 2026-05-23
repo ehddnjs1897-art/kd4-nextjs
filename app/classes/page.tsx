@@ -242,7 +242,7 @@ export default function ClassesPage() {
               {
                 num: '02',
                 tag: 'TRAINING',
-                title: '마이즈너 정규 클래스',
+                title: '마이즈너 테크닉 정규 클래스',
                 desc: '제대로 배우 훈련을 받고 싶은 분 · 연기 매너리즘 · 연기하지 않는 연기',
               },
               {

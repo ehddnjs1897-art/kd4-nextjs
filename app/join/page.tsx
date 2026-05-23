@@ -1162,7 +1162,7 @@ export default function JoinPage() {
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
             >
-              KD4 배우들의{' '}
+              KD4 멤버들의{' '}
               <span style={{ color: 'var(--gold)' }}>실제 출연영상</span>
             </h2>
             <p
