@@ -4,6 +4,8 @@
  */
 import type { Metadata } from 'next'
 import { SITE_URL } from '@/lib/constants'
+import PageJsonLd from '@/components/seo/PageJsonLd'
+import { buildBreadcrumb } from '@/lib/seo-schemas'
 
 const PAGE_URL = `${SITE_URL}/classes`
 
@@ -40,5 +42,13 @@ export const metadata: Metadata = {
 }
 
 export default function ClassesLayout({ children }: { children: React.ReactNode }) {
-  return children
+  return (
+    <>
+      <PageJsonLd schemas={[buildBreadcrumb([
+        { name: '홈', url: SITE_URL },
+        { name: '연기 클래스', url: `${SITE_URL}/classes` },
+      ])]} />
+      {children}
+    </>
+  )
 }

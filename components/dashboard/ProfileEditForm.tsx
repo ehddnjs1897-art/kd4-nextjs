@@ -42,6 +42,14 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
   async function handleSave(e: React.FormEvent) {
     e.preventDefault()
     if (!name.trim()) return
+    // 전화번호 형식 검증 (입력한 경우에만)
+    if (phone.trim()) {
+      const normalized = phone.replace(/[\s-]/g, '')
+      if (!/^01[0-9]\d{7,8}$/.test(normalized)) {
+        setError('올바른 전화번호 형식이 아닙니다. (예: 010-1234-5678)')
+        return
+      }
+    }
     setSaving(true)
     setError('')
     setSuccess(false)
@@ -210,6 +218,7 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
                 onChange={e => setPhone(e.target.value)}
                 placeholder="010-0000-0000"
                 maxLength={20}
+                autoComplete="tel"
                 style={inputStyle}
               />
             ) : (

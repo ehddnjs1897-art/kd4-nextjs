@@ -4,8 +4,6 @@
  * - 회원 관리 / 배우 목록 / 게시판 관리 / 수강신청 목록
  */
 import type { Metadata } from 'next'
-import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import AdminDashboard from './AdminDashboard'
 
@@ -113,26 +111,7 @@ async function fetchApplications(): Promise<AdminApplication[]> {
 // ─── 페이지 ──────────────────────────────────────────────────────────────────
 
 export default async function AdminPage() {
-  // 로그인 확인
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect('/auth/login')
-  }
-
-  // role 확인 (supabaseAdmin — RLS 우회, .maybeSingle()으로 PGRST116 로그 노이즈 방지)
-  const { data: profile } = await supabaseAdmin
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .maybeSingle()
-
-  if (!profile || profile.role !== 'admin') {
-    redirect('/')
-  }
+  // auth/role은 app/admin/layout.tsx에서 처리 — 여기서 중복 체크 불필요
 
   // 데이터 병렬 fetch
   const [profiles, actors, posts, applications] = await Promise.all([

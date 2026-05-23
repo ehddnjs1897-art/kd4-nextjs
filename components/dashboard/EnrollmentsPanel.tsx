@@ -110,7 +110,7 @@ export default function EnrollmentsPanel({
           <p style={{ fontSize: '0.78rem', color: 'var(--gray)', marginBottom: 10, lineHeight: 1.5 }}>
             {continuable.map((e) => e.class_name).join(', ')}
           </p>
-          <button onClick={continueNext} disabled={loading} style={{ ...S.btnPrimary, opacity: loading ? 0.6 : 1, cursor: loading ? 'not-allowed' : 'pointer', width: '100%' }}>
+          <button type="button" onClick={continueNext} disabled={loading} style={{ ...S.btnPrimary, opacity: loading ? 0.6 : 1, cursor: loading ? 'not-allowed' : 'pointer', width: '100%' }}>
             {loading ? '처리 중...' : '이어서 수강하기'}
           </button>
         </div>
@@ -145,11 +145,11 @@ export default function EnrollmentsPanel({
               {e.status === '확정' && (
                 confirmingRestId === e.id ? (
                   <div style={{ display: 'flex', gap: 5 }}>
-                    <button onClick={() => setConfirmingRestId(null)} style={{ ...S.btnGhost, fontSize: '0.75rem', padding: '4px 8px' }}>취소</button>
-                    <button onClick={() => setRest(e.id)} disabled={loading} style={{ ...S.btnGhost, background: 'rgba(239,68,68,0.1)', borderColor: 'rgba(239,68,68,0.3)', color: '#ef4444', fontSize: '0.75rem', padding: '4px 8px' }}>확인</button>
+                    <button type="button" onClick={() => setConfirmingRestId(null)} style={{ ...S.btnGhost, fontSize: '0.75rem', padding: '4px 8px' }}>취소</button>
+                    <button type="button" onClick={() => setRest(e.id)} disabled={loading} style={{ ...S.btnGhost, background: 'rgba(239,68,68,0.1)', borderColor: 'rgba(239,68,68,0.3)', color: '#ef4444', fontSize: '0.75rem', padding: '4px 8px' }}>확인</button>
                   </div>
                 ) : (
-                  <button onClick={() => setRest(e.id)} disabled={loading} style={S.btnGhost}>
+                  <button type="button" onClick={() => setRest(e.id)} disabled={loading} style={S.btnGhost}>
                     휴강
                   </button>
                 )

@@ -8,6 +8,16 @@ export const metadata: Metadata = {
   title: '클래스 신청 | KD4 액팅 스튜디오',
   description: 'KD4 멤버 클래스 수강 신청',
   robots: { index: false, follow: false },
+  alternates: { canonical: 'https://kd4.club/enroll' },
+  openGraph: {
+    type: 'website',
+    url: 'https://kd4.club/enroll',
+    title: '클래스 신청 | KD4 액팅 스튜디오',
+    description: 'KD4 멤버 클래스 수강 신청',
+    images: [{ url: 'https://kd4.club/og-image.jpg', width: 1200, height: 630, alt: 'KD4 액팅 스튜디오' }],
+    locale: 'ko_KR',
+    siteName: 'KD4 액팅 스튜디오',
+  },
 }
 
 export default async function EnrollPage({

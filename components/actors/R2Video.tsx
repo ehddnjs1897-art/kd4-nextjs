@@ -27,16 +27,21 @@ export default function R2Video({
   const [downloading, setDownloading] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
 
-  // 마운트 시 URL 미리 발급
+  // 마운트 시 URL 미리 발급 — AbortController로 언마운트 시 fetch 정리
   useEffect(() => {
-    fetch(`/api/videos/${videoId}/signed-url`)
+    const controller = new AbortController()
+    fetch(`/api/videos/${videoId}/signed-url`, { signal: controller.signal })
       .then((r) => r.json())
       .then((j) => {
         if (j.url) setUrl(j.url)
         else setError(j.error || '영상을 불러올 수 없습니다.')
       })
-      .catch(() => setError('영상을 불러올 수 없습니다.'))
+      .catch((e: unknown) => {
+        if (e instanceof Error && e.name === 'AbortError') return
+        setError('영상을 불러올 수 없습니다.')
+      })
       .finally(() => setPrefetching(false))
+    return () => controller.abort()
   }, [videoId])
 
   function handlePlay() {

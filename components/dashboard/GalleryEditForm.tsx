@@ -220,6 +220,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   const [videoUrl, setVideoUrl] = useState('')
   const [videoTitle, setVideoTitle] = useState('')
   const [videoMsg, setVideoMsg] = useState('')
+  const [videoAdding, setVideoAdding] = useState(false)
 
   // R2 업로드 영상
   const [r2Videos, setR2Videos] = useState<R2VideoItem[]>(initialData.r2Videos)
@@ -260,6 +261,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ height: height || null, weight: weight || null, skills: skills || null, instagram: instagram || null, casting_summary: castingSummary.trim() || null }),
       })
+      if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '저장 실패')
       setInfoMsg('저장되었습니다.')
     } catch (e) {
@@ -294,6 +296,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ profile_doc_path: path }),
       })
+      if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '저장 실패')
       setHasPpt(true)
       setPptMsg(`✓ ${file.name} 업로드 완료`)
@@ -318,6 +321,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ filename: file.name, contentType: file.type || 'video/mp4', size: file.size }),
       })
+      if (urlRes.status === 401) { window.location.href = '/auth/login'; return }
       if (!urlRes.ok) throw new Error('URL 발급 실패')
       const { uploadUrl, key } = await urlRes.json()
       setR2UploadStatus(`업로드 중... (${(file.size / 1024 / 1024).toFixed(0)}MB, 용량이 크면 시간이 걸려요)`)
@@ -329,6 +333,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ r2_key: key, title: file.name }),
       })
+      if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '기록 실패')
       const row = await res.json()
       setR2Videos(prev => [...prev, { id: row.id, r2_key: key, title: file.name, video_type: 'reel' }])
@@ -347,6 +352,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     setConfirmingR2VideoId(null)
     try {
       const res = await fetch(`/api/actors/${actorId}/videos/${id}`, { method: 'DELETE' })
+      if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '삭제 실패')
       setR2Videos(prev => prev.filter(v => v.id !== id))
     } catch (e) {
@@ -370,6 +376,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       fd.append('actorId', actorId)
       fd.append('bucket', 'actor-photos')
       const res = await fetch('/api/upload', { method: 'POST', body: fd })
+      if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '업로드 실패')
       const { url, id } = await res.json()
       setPhotos(prev => [...prev, { id, url, is_profile: prev.length === 0 }])
@@ -388,6 +395,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     setConfirmingPhotoId(null)
     try {
       const res = await fetch(`/api/actors/${actorId}/photos/${id}`, { method: 'DELETE' })
+      if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '삭제 실패')
       setPhotos(prev => {
         const next = prev.filter(p => p.id !== id)
@@ -406,6 +414,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_profile: true }),
       })
+      if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '변경 실패')
       setPhotos(prev => prev.map(p => ({ ...p, is_profile: p.id === id })))
     } catch (e) {
@@ -415,17 +424,20 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
 
   // ── 영상 추가 ───────────────────────────────────────────────────────────────
   async function addVideo() {
+    if (videoAdding) return
     const yid = extractYoutubeId(videoUrl.trim())
     if (!yid) {
       setVideoMsg('유효한 유튜브 URL 또는 영상 ID를 입력하세요.')
       return
     }
+    setVideoAdding(true)
     try {
       const res = await fetch(`/api/actors/${actorId}/videos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ youtube_id: yid, title: videoTitle.trim() || null }),
       })
+      if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '추가 실패')
       const row = await res.json()
       setVideos(prev => [{ id: row.id, youtube_id: yid, title: videoTitle.trim() }, ...prev])
@@ -435,6 +447,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     } catch (e) {
       setVideoMsg((e as Error).message)
     } finally {
+      setVideoAdding(false)
       flashMsg(setVideoMsg)
     }
   }
@@ -444,6 +457,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     setConfirmingVideoId(null)
     try {
       const res = await fetch(`/api/actors/${actorId}/videos/${id}`, { method: 'DELETE' })
+      if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '삭제 실패')
       setVideos(prev => prev.filter(v => v.id !== id))
     } catch (e) {
@@ -481,6 +495,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ items }),
       })
+      if (res.status === 401) { window.location.href = '/auth/login'; return }
       const data = await res.json()
       if (!res.ok) {
         setFilmMsg(data.error || '저장 중 오류가 발생했습니다.')
@@ -516,6 +531,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     if (f.id) {
       try {
         const res = await fetch(`/api/actors/${actorId}/filmography/${f.id}`, { method: 'DELETE' })
+        if (res.status === 401) { window.location.href = '/auth/login'; return }
         if (!res.ok) throw new Error((await res.json()).error || '삭제 실패')
       } catch (e) {
         setFilmMsg((e as Error).message)
@@ -652,7 +668,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           </div>
         </div>
         <input ref={pptRef} type="file" accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation" onChange={uploadPpt} style={{ display: 'none' }} />
-        <button onClick={() => pptRef.current?.click()} disabled={pptUploading} style={{ ...s.btn, ...s.btnGhost, opacity: pptUploading ? 0.6 : 1 }}>
+        <button type="button" onClick={() => pptRef.current?.click()} disabled={pptUploading} style={{ ...s.btn, ...s.btnGhost, opacity: pptUploading ? 0.6 : 1 }}>
           {pptUploading ? '업로드 중…' : hasPpt ? '📄 파일 교체' : '📄 파일 올리기'}
         </button>
         {pptMsg && <p role="alert" style={{ ...s.msg, color: pptMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{pptMsg}</p>}
@@ -691,7 +707,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
 
         <div style={{ marginTop: 20, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
           <input ref={fileRef} type="file" accept="image/*" onChange={uploadPhoto} style={{ display: 'none' }} />
-          <button onClick={() => fileRef.current?.click()} disabled={uploading} style={{ ...s.btn, ...s.btnPrimary, opacity: uploading ? 0.6 : 1 }}>
+          <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} style={{ ...s.btn, ...s.btnPrimary, opacity: uploading ? 0.6 : 1 }}>
             {uploading ? '업로드 중…' : '+ 사진 추가'}
           </button>
           <span style={{ fontSize: '0.78rem', color: 'var(--gray)' }}>JPG·PNG, 최대 5MB · 9:16 비율 권장</span>
@@ -731,7 +747,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           )}
           <div>
             <input ref={r2VideoRef} type="file" accept="video/*" onChange={uploadR2Video} style={{ display: 'none' }} />
-            <button onClick={() => r2VideoRef.current?.click()} disabled={r2Uploading} style={{ ...s.btn, ...s.btnGhost, opacity: r2Uploading ? 0.6 : 1 }}>
+            <button type="button" onClick={() => r2VideoRef.current?.click()} disabled={r2Uploading} style={{ ...s.btn, ...s.btnGhost, opacity: r2Uploading ? 0.6 : 1 }}>
               {r2Uploading ? r2UploadStatus || '업로드 중…' : '+ 영상 파일 업로드'}
             </button>
             <span style={{ fontSize: '0.74rem', color: 'var(--gray)', marginLeft: 12 }}>mp4 권장, 최대 300MB</span>
@@ -773,7 +789,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
               <label htmlFor="video-title" style={s.label}>제목 (선택)</label>
               <input id="video-title" value={videoTitle} onChange={e => setVideoTitle(e.target.value)} style={s.input} placeholder="단편영화 주연" />
             </div>
-            <button onClick={addVideo} style={{ ...s.btn, ...s.btnPrimary, marginBottom: 0 }}>추가</button>
+            <button type="button" onClick={addVideo} disabled={videoAdding} style={{ ...s.btn, ...s.btnPrimary, marginBottom: 0, opacity: videoAdding ? 0.6 : 1 }}>{videoAdding ? '추가 중…' : '추가'}</button>
           </div>
           {videoMsg && <p role="alert" style={{ ...s.msg, color: videoMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{videoMsg}</p>}
         </div>

@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { SITE_URL } from '@/lib/constants'
+import PageJsonLd from '@/components/seo/PageJsonLd'
+import { buildBreadcrumb } from '@/lib/seo-schemas'
 
 export const metadata: Metadata = {
   title: '멤버 혜택 | KD4 액팅 스튜디오',
@@ -146,6 +148,10 @@ export default function BenefitsPage() {
         paddingTop: '64px',
       }}
     >
+      <PageJsonLd schemas={[buildBreadcrumb([
+        { name: '홈', url: SITE_URL },
+        { name: '멤버 혜택', url: `${SITE_URL}/benefits` },
+      ])]} />
       {/* HERO */}
       <section
         style={{

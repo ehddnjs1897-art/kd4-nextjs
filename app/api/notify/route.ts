@@ -106,9 +106,10 @@ export async function POST(request: NextRequest) {
     // 1. Supabase에 무조건 먼저 기록 — webhook·SMS 실패와 무관하게 데이터 보존
     let savedId: string | null = null
     const baseRecord = {
-      name: record?.name ?? null,
-      phone: record?.phone ?? null,
-      email: record?.email ?? null,
+      // 이미 검증·슬라이스된 변수를 사용 (record?.* 원본은 길이 미제한)
+      name: name,
+      phone: phone,
+      email: emailRaw,
       class_name: record?.class_name ?? null,
       source: record?.source ?? null,
       inquiry_type: record?.inquiry_type ?? null,

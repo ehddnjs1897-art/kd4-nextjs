@@ -1,7 +1,7 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { useState, useCallback, useRef, Suspense } from "react"
+import { useState, useMemo, useRef, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import GameUI from "@/components/game/GameUI"
 import GameOver from "@/components/game/GameOver"
@@ -54,7 +54,8 @@ function GamePlayInner() {
   const comboTimeoutRef = useRef<ReturnType<typeof setTimeout>>(null)
   const specialTimeoutRef = useRef<ReturnType<typeof setTimeout>>(null)
 
-  const callbacks = useCallback(
+  // useMemo instead of useCallback factory — avoids new object on every render
+  const callbacks = useMemo(
     () => ({
       onScoreChange: (s: number) => setScore(s),
       onLivesChange: (l: number) => setLives(l),
@@ -75,6 +76,7 @@ function GamePlayInner() {
         specialTimeoutRef.current = setTimeout(() => setSpecialText(null), 2000)
       },
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 
@@ -91,7 +93,7 @@ function GamePlayInner() {
 
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
-      <SpotlightRush key={gameKey} callbacks={callbacks()} character={character} />
+      <SpotlightRush key={gameKey} callbacks={callbacks} character={character} />
       <GameUI
         score={score}
         lives={lives}

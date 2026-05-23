@@ -8,6 +8,10 @@ import { createClient } from '@/lib/supabase/server'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
+// 인스턴스별 조회수 중복 방지 — user+post 조합당 60초 쿨다운
+const viewCooldowns = new Map<string, number>()
+const VIEW_COOLDOWN_MS = 60_000
+
 export async function POST(
   _request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -23,6 +27,18 @@ export async function POST(
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
       return NextResponse.json({ ok: false }, { status: 401 })
+    }
+
+    // 60초 이내 같은 user+post 조합은 조용히 무시
+    const cooldownKey = `${user.id}:${id}`
+    const lastView = viewCooldowns.get(cooldownKey) ?? 0
+    if (Date.now() - lastView < VIEW_COOLDOWN_MS) {
+      return NextResponse.json({ ok: true })
+    }
+    viewCooldowns.set(cooldownKey, Date.now())
+    // 만료 항목 정리 — Map 무한 증가 방지
+    for (const [k, ts] of viewCooldowns) {
+      if (Date.now() - ts > VIEW_COOLDOWN_MS) viewCooldowns.delete(k)
     }
 
     await supabase.rpc('increment_views', { post_id: id })

@@ -20,11 +20,12 @@ export async function GET(request: NextRequest) {
 
   // CSRF 방어 — Referer 또는 Origin이 같은 사이트에서 온 요청인지 확인
   // (SameSite=Lax 쿠키는 cross-site img/link GET을 차단하지 않음)
+  // 참고: 실질적인 보안 게이트는 하단 requireAdmin() — 이 체크는 추가 방어층
   const referer = request.headers.get('referer') ?? ''
   const reqOrigin = request.headers.get('origin') ?? ''
-  const isSameSite = referer.startsWith(origin) || reqOrigin === origin || referer === ''
-  // referer === '' 허용 — 이메일 클라이언트는 Referer를 보내지 않음
-  if (!isSameSite) {
+  // referer==='' 는 허용하지 않음 — Referrer-Policy:no-referrer로 우회 가능
+  const isSameSite = referer.startsWith(origin) || reqOrigin === origin
+  if (!isSameSite && referer !== '') {
     return NextResponse.redirect(`${origin}/admin?error=invalid_request`)
   }
 

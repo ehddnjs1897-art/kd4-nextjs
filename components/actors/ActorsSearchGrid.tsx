@@ -86,7 +86,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
       {filtered.length === 0 ? (
         <div role="status" aria-live="polite" style={{ textAlign: 'center', padding: '80px 0' }}>
           <p style={{ fontSize: '0.95rem', color: 'var(--gray)', marginBottom: 16 }}>
-            &ldquo;{query}&rdquo; 에 해당하는 배우가 없습니다.
+            {query ? `"${query}" 에 해당하는 배우가 없습니다.` : '등록된 배우가 없습니다.'}
           </p>
           <button
             onClick={() => setQuery('')}

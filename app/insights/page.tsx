@@ -71,15 +71,23 @@ export default function InsightsPage() {
   useEffect(() => { fetchInsights() }, [fetchInsights])
 
   const handleSave = async () => {
-    if (!url.trim()) return
+    const trimmed = url.trim()
+    if (!trimmed) return
+    // URL 형식 검증
+    try { new URL(trimmed) } catch {
+      setSaveError('올바른 URL 형식이 아닙니다. (https://... 형태로 입력해주세요)')
+      setTimeout(() => setSaveError(''), 4000)
+      return
+    }
     setSaving(true)
     setSaveError('')
     try {
       const res = await fetch('/api/insights', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: url.trim(), memo: memo.trim() || undefined }),
+        body: JSON.stringify({ url: trimmed, memo: memo.trim() || undefined }),
       })
+      if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error()
       setUrl('')
       setMemo('')
@@ -173,7 +181,7 @@ export default function InsightsPage() {
       <style>{`
         .ins-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color .2s; }
         .ins-card:hover { border-color: var(--gold); }
-        .ins-tag { background: var(--bg3); border-radius: 4px; padding: 2px 8px; font-size: 11px; color: var(--gray); }
+        .ins-tag { background: var(--bg3); border-radius: 4px; padding: 2px 8px; font-size: 11px; color: #5A5550; }
         .filter-btn { padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--gray); cursor: pointer; font-size: 13px; transition: all .15s; }
         .filter-btn.active { background: var(--gold); color: #000; border-color: var(--gold); font-weight: 600; }
         .ins-input { width: 100%; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--white); font-size: 14px; font-family: var(--font-sans); outline: none; }

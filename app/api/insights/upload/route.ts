@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
     const { data, error: dbError } = await supabaseAdmin
       .from('insights')
       .insert(newItem)
-      .select()
+      .select('id, url, title, description, image_url, memo, category, tags, source_type, is_favorite, created_at')
       .maybeSingle()
 
     if (dbError) {

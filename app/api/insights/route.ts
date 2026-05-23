@@ -245,7 +245,7 @@ export async function POST(request: NextRequest) {
       created_at: new Date().toISOString(),
     }
 
-    const { data, error } = await supabaseAdmin.from('insights').insert(newItem).select().maybeSingle()
+    const { data, error } = await supabaseAdmin.from('insights').insert(newItem).select('id, url, title, description, image_url, memo, category, tags, source_type, is_favorite, created_at').maybeSingle()
 
     if (error) {
       console.error('[POST /api/insights]', error.message)

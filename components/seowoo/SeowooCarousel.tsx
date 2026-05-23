@@ -147,6 +147,7 @@ export default function SeowooCarousel() {
             key={i}
             onClick={() => scrollTo(i)}
             aria-label={`${i + 1}번 슬라이드`}
+            aria-current={i === active ? 'true' : undefined}
             style={{
               width: i === active ? 20 : 6,
               height: 6,

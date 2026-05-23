@@ -20,7 +20,7 @@ export async function GET(
 
     const { data: post, error } = await supabase
       .from('posts')
-      .select('*')
+      .select('id, title, content, category, author_id, author_name, views, created_at, updated_at')
       .eq('id', id)
       .maybeSingle()
 

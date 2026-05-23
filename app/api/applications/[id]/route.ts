@@ -43,31 +43,36 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const check = await requireAdmin()
-  if (check instanceof NextResponse) return check
+  try {
+    const check = await requireAdmin()
+    if (check instanceof NextResponse) return check
 
-  const { id } = await params
-  if (!UUID_RE.test(id)) {
-    return NextResponse.json({ error: '유효하지 않은 ID 형식입니다.' }, { status: 400 })
+    const { id } = await params
+    if (!UUID_RE.test(id)) {
+      return NextResponse.json({ error: '유효하지 않은 ID 형식입니다.' }, { status: 400 })
+    }
+    const { status } = await request.json().catch(() => ({}))
+
+    if (!status || !VALID_STATUSES.includes(status)) {
+      return NextResponse.json({ error: '유효하지 않은 status' }, { status: 400 })
+    }
+
+    const { data: updated, error } = await supabaseAdmin
+      .from('consultations')
+      .update({ status })
+      .eq('id', id)
+      .select('id')
+      .maybeSingle()
+
+    if (error) {
+      console.error('[api/applications PATCH] consultations update 실패:', error.message)
+      return NextResponse.json({ error: '상태 변경에 실패했습니다.' }, { status: 500 })
+    }
+    if (!updated) return NextResponse.json({ error: '상담 신청을 찾을 수 없습니다.' }, { status: 404 })
+
+    return NextResponse.json({ ok: true })
+  } catch (err) {
+    console.error('[PATCH /api/applications/[id]] 예상치 못한 오류:', err instanceof Error ? err.message : String(err))
+    return NextResponse.json({ error: '처리 중 오류가 발생했습니다.' }, { status: 500 })
   }
-  const { status } = await request.json().catch(() => ({}))
-
-  if (!status || !VALID_STATUSES.includes(status)) {
-    return NextResponse.json({ error: '유효하지 않은 status' }, { status: 400 })
-  }
-
-  const { data: updated, error } = await supabaseAdmin
-    .from('consultations')
-    .update({ status })
-    .eq('id', id)
-    .select('id')
-    .maybeSingle()
-
-  if (error) {
-    console.error('[api/applications PATCH] consultations update 실패:', error.message)
-    return NextResponse.json({ error: '상태 변경에 실패했습니다.' }, { status: 500 })
-  }
-  if (!updated) return NextResponse.json({ error: '상담 신청을 찾을 수 없습니다.' }, { status: 404 })
-
-  return NextResponse.json({ ok: true })
 }

@@ -8,6 +8,7 @@ Disallow: /api/
 Disallow: /board
 Disallow: /enroll
 Disallow: /onboarding
+Disallow: /benefits/replay
 
 # 네이버 검색봇 허용
 User-agent: Yeti

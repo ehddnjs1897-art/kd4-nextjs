@@ -239,7 +239,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
             alignItems: 'center',
           }}>
             <span>{approvedMsg}</span>
-            <button onClick={() => setApprovedMsg(null)} style={{ background: 'none', border: 'none', color: '#4ade80', cursor: 'pointer', fontSize: '1.1rem' }}>×</button>
+            <button onClick={() => setApprovedMsg(null)} aria-label="닫기" style={{ background: 'none', border: 'none', color: '#4ade80', cursor: 'pointer', fontSize: '1.1rem' }}>×</button>
           </div>
         )}
 

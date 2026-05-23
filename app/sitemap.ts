@@ -18,6 +18,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/sinchon-acting-academy`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/acting-coach-dongwon-kwon`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.75 },
     { url: `${BASE}/benefits`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${BASE}/benefits/seowoo-studio`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.65 },
   ]
 
   // 배우 프로필 페이지 (공개 · robots:index=true로 설정됨)

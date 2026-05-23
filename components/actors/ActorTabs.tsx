@@ -134,6 +134,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
           film_type: editFields.film_type || null,
         }),
       })
+      if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) { const j = await res.json(); throw new Error(j.error || '저장 실패') }
       setFilmo(prev => prev.map(f => f.id === entry.id ? {
         ...f,
@@ -154,6 +155,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
     setSaving(true)
     try {
       const res = await fetch(`/api/actors/${actor.id}/filmography/${filmId}`, { method: 'DELETE' })
+      if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) { const j = await res.json(); throw new Error(j.error || '삭제 실패') }
       setFilmo(prev => prev.filter(f => f.id !== filmId))
       if (editingId === filmId) setEditingId(null)
@@ -177,6 +179,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
           film_type: newEntry.film_type || null,
         }),
       })
+      if (res.status === 401) { window.location.href = '/auth/login'; return }
       const j = await res.json()
       if (!res.ok) throw new Error(j.error || '추가 실패')
       setFilmo(prev => [...prev, {
