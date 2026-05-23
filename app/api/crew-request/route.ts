@@ -54,36 +54,40 @@ export async function POST() {
       )
     }
 
-    // 프로필 없으면 먼저 생성 후 crew_pending으로 upsert
-    const { error: updateErr } = await supabaseAdmin
+    // role='user'인 행만 원자적으로 업데이트 — 관리자 승인 경쟁 조건 방지
+    const applicantName = profile?.name ?? user.user_metadata?.name ?? user.email?.split('@')[0] ?? null
+    const { data: updated, error: updateErr } = await supabaseAdmin
       .from('profiles')
-      .upsert(
-        {
-          id: user.id,
-          name: profile?.name ?? user.user_metadata?.name ?? user.email?.split('@')[0] ?? null,
-          email: user.email ?? null,
-          role: 'crew_pending',
-        },
-        { onConflict: 'id' }
-      )
+      .update({
+        role: 'crew_pending',
+        name: applicantName,
+        email: user.email ?? null,
+      })
+      .eq('id', user.id)
+      .eq('role', 'user')
+      .select('id')
 
     if (updateErr) {
       console.error('[POST /api/crew-request] 업데이트 오류:', updateErr.message)
       return NextResponse.json({ error: '신청 처리 중 오류가 발생했습니다.' }, { status: 500 })
     }
+    if (!updated || updated.length === 0) {
+      // 동시에 역할이 변경됨 (관리자 승인 등)
+      return NextResponse.json({ error: '이미 신청되었거나 권한이 변경되었습니다.', role: currentRole }, { status: 409 })
+    }
 
     // 관리자에게 이메일 + SMS 알림 (실패해도 신청은 완료)
-    const applicantName = profile?.name ?? user.user_metadata?.name ?? user.email?.split('@')[0] ?? '(이름 없음)'
+    const displayName = applicantName ?? '(이름 없음)'
     const applicantEmail = user.email ?? '(이메일 없음)'
 
-    notifyCrewRequest(applicantName, applicantEmail, user.id).catch(
+    notifyCrewRequest(displayName, applicantEmail, user.id).catch(
       (err: unknown) => console.error('[crew-request] 이메일 알림 실패:', err instanceof Error ? err.message : '(unknown)')
     )
 
     if (ADMIN_PHONE) {
       sendSMS(
         ADMIN_PHONE,
-        `[KD4] 크루 신청\n${applicantName} / ${applicantEmail}\n관리자 페이지에서 승인 처리`,
+        `[KD4] 크루 신청\n${displayName} / ${applicantEmail}\n관리자 페이지에서 승인 처리`,
       ).catch(
         (err: unknown) => console.error('[crew-request] SMS 실패:', err instanceof Error ? err.message : '(unknown)')
       )

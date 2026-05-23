@@ -38,7 +38,7 @@ async function sendMetaCAPI(record: { name?: string | null; phone?: string | nul
       data: [{
         event_name: 'Lead',
         // 클라이언트 픽셀 Lead 와 동일 event_id → Meta 중복제거(dedup). 없으면 미전송(서버 단독 집계)
-        ...(record.event_id ? { event_id: record.event_id } : {}),
+        ...(typeof record.event_id === 'string' && record.event_id ? { event_id: record.event_id.slice(0, 128) } : {}),
         event_time: Math.floor(Date.now() / 1000),
         event_source_url: `${SITE_URL}/join`,
         action_source: 'website',

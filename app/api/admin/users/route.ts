@@ -8,7 +8,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
-const VALID_ROLES = ['user', 'member', 'actor', 'crew_pending', 'crew', 'editor', 'director_pending', 'director', 'admin'] as const
+// 'user' 제외 — DB CHECK 제약에 없으며 관리자가 직접 할당하는 역할이 아님
+const VALID_ROLES = ['member', 'actor', 'crew_pending', 'crew', 'editor', 'director_pending', 'director', 'admin'] as const
 type ValidRole = (typeof VALID_ROLES)[number]
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 

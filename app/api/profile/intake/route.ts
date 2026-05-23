@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
           typeof (p as { path?: unknown }).path === 'string' &&
           typeof (p as { label?: unknown }).label === 'string' &&
           (p as { label: string }).label.length <= 100
-      )
+      ).map((p: { path: string; label: string }) => ({ ...p, path: p.path.slice(0, MAX_PATH_LEN) }))
     : []
   ).slice(0, MAX_PHOTOS)
   // videos 배열 (신규) + 하위호환: 기존 video 단일 필드도 처리
@@ -123,6 +123,10 @@ export async function POST(request: NextRequest) {
   // docPath: actor-docs 버킷 — intake/{user.id}/... 패턴
   if (docPath && !docPath.startsWith(allowedStoragePrefix)) {
     return NextResponse.json({ error: '허가되지 않은 문서 파일 경로입니다.' }, { status: 403 })
+  }
+  // currentPhotos — IDOR 방어: 동일 네임스페이스 검증 (photos와 동일 룰)
+  if (currentPhotoItems.some(p => !p.path.startsWith(allowedStoragePrefix))) {
+    return NextResponse.json({ error: '허가되지 않은 현재사진 경로입니다.' }, { status: 403 })
   }
 
   // 프로필 조회

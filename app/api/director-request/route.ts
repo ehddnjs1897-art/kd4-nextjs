@@ -57,36 +57,39 @@ export async function POST() {
       )
     }
 
-    // role → director_pending (service_role 로만 가능 — RLS가 본인 role 변경 차단)
-    const { error: updateErr } = await supabaseAdmin
+    // role='user'인 행만 원자적으로 업데이트 — 관리자 승인 경쟁 조건 방지
+    const applicantName = profile?.name ?? user.user_metadata?.name ?? user.email?.split('@')[0] ?? null
+    const { data: updated, error: updateErr } = await supabaseAdmin
       .from('profiles')
-      .upsert(
-        {
-          id: user.id,
-          name: profile?.name ?? user.user_metadata?.name ?? user.email?.split('@')[0] ?? null,
-          email: user.email ?? null,
-          role: 'director_pending',
-        },
-        { onConflict: 'id' }
-      )
+      .update({
+        role: 'director_pending',
+        name: applicantName,
+        email: user.email ?? null,
+      })
+      .eq('id', user.id)
+      .eq('role', 'user')
+      .select('id')
 
     if (updateErr) {
       console.error('[POST /api/director-request] 업데이트 오류:', updateErr.message)
       return NextResponse.json({ error: '신청 처리 중 오류가 발생했습니다.' }, { status: 500 })
     }
+    if (!updated || updated.length === 0) {
+      return NextResponse.json({ error: '이미 신청되었거나 권한이 변경되었습니다.', role: currentRole }, { status: 409 })
+    }
 
     // 관리자 알림 (실패해도 신청은 완료)
-    const applicantName = profile?.name ?? user.user_metadata?.name ?? user.email?.split('@')[0] ?? '(이름 없음)'
+    const displayName = applicantName ?? '(이름 없음)'
     const applicantEmail = user.email ?? '(이메일 없음)'
 
-    notifyDirectorRequest(applicantName, applicantEmail, user.id).catch(
+    notifyDirectorRequest(displayName, applicantEmail, user.id).catch(
       (err: unknown) => console.error('[director-request] 이메일 알림 실패:', err instanceof Error ? err.message : '(unknown)')
     )
 
     if (ADMIN_PHONE) {
       sendSMS(
         ADMIN_PHONE,
-        `[KD4] 디렉터 권한 신청\n${applicantName} / ${applicantEmail}\n승인 시 배우 연락처 열람 가능. 관리자 페이지에서 승인 처리`,
+        `[KD4] 디렉터 권한 신청\n${displayName} / ${applicantEmail}\n승인 시 배우 연락처 열람 가능. 관리자 페이지에서 승인 처리`,
       ).catch(
         (err: unknown) => console.error('[director-request] SMS 실패:', err instanceof Error ? err.message : '(unknown)')
       )
