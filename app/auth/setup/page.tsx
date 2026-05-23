@@ -123,6 +123,7 @@ export default function SetupPage() {
           <button
             type="submit"
             disabled={loading}
+            aria-busy={loading}
             style={{ ...styles.btnPrimary, opacity: loading ? 0.6 : 1 }}
           >
             {loading ? '저장 중...' : '완료 →'}
@@ -245,5 +246,6 @@ const styles: Record<string, React.CSSProperties> = {
     letterSpacing: '0.05em',
     cursor: 'pointer',
     width: '100%',
+    minHeight: 44,
   },
 }

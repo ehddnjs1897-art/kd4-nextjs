@@ -104,7 +104,7 @@ export default function EditPage() {
   if (loading) {
     return (
       <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <p style={{ color: 'var(--gray)' }}>불러오는 중...</p>
+        <div role="status" aria-live="polite"><p style={{ color: 'var(--gray)' }}>불러오는 중...</p></div>
       </div>
     )
   }
@@ -199,7 +199,7 @@ export default function EditPage() {
               maxLength={200}
               style={inputStyle}
             />
-            <div style={{ textAlign: 'right', fontSize: '0.72rem', marginTop: '4px', color: title.length > 180 ? '#e74c3c' : 'var(--gray)' }}>
+            <div aria-live="polite" style={{ textAlign: 'right', fontSize: '0.72rem', marginTop: '4px', color: title.length > 180 ? '#e74c3c' : 'var(--gray)' }}>
               {title.length}/200
             </div>
           </div>
@@ -221,7 +221,7 @@ export default function EditPage() {
                 lineHeight: 1.7,
               }}
             />
-            <div style={{ textAlign: 'right', fontSize: '0.72rem', marginTop: '4px', color: content.length > 9000 ? '#e74c3c' : 'var(--gray)' }}>
+            <div aria-live="polite" style={{ textAlign: 'right', fontSize: '0.72rem', marginTop: '4px', color: content.length > 9000 ? '#e74c3c' : 'var(--gray)' }}>
               {content.length}/10000
             </div>
           </div>
@@ -238,6 +238,7 @@ export default function EditPage() {
                 background: 'transparent',
                 color: 'var(--gray)',
                 fontSize: '0.9rem',
+                minHeight: 44,
                 cursor: 'pointer',
                 fontFamily: 'var(--font-sans)',
               }}
@@ -247,6 +248,7 @@ export default function EditPage() {
             <button
               type="submit"
               disabled={submitting || !title.trim() || !content.trim()}
+              aria-busy={submitting}
               style={{
                 padding: '10px 26px',
                 background: submitting || !title.trim() || !content.trim() ? 'var(--border)' : 'var(--gold)',
@@ -255,6 +257,7 @@ export default function EditPage() {
                 borderRadius: 'var(--radius)',
                 fontSize: '0.9rem',
                 fontWeight: 700,
+                minHeight: 44,
                 cursor: submitting || !title.trim() || !content.trim() ? 'not-allowed' : 'pointer',
                 fontFamily: 'var(--font-display)',
                 letterSpacing: '0.05em',

@@ -111,9 +111,9 @@ export default function UpdatePasswordPage() {
 
         {step === 'success' ? (
           <div style={{ textAlign: 'center' }}>
-            <div style={styles.successIcon}>✓</div>
+            <div style={styles.successIcon} aria-hidden="true">✓</div>
             <h1 style={styles.title}>변경 완료</h1>
-            <p style={styles.sentMsg}>
+            <p role="status" aria-live="polite" style={styles.sentMsg}>
               새 비밀번호로 변경되었습니다.
               <br />
               잠시 후 대시보드로 이동합니다.

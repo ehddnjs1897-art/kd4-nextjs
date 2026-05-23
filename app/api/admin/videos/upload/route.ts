@@ -68,12 +68,8 @@ export async function POST(request: NextRequest) {
   if (avTimes.length >= ADMIN_VIDEO_UPLOAD_MAX) {
     return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
   }
-  adminVideoUploadMap.set(adminAuth.userId, [...avTimes, nowAV])
-  if (adminVideoUploadMap.size > 200) {
-    for (const [k, v] of adminVideoUploadMap) {
-      if (v.every(t => nowAV - t > ADMIN_VIDEO_UPLOAD_WINDOW_MS)) adminVideoUploadMap.delete(k)
-    }
-  }
+  // 레이트 리밋 슬롯 소모는 유효성 검사 통과 후에만 — 잘못된 요청으로 쿼터 소진 방지
+  // (실제 카운트 증가는 아래 파일 검증 통과 후로 이동)
 
   const clAdminVideo = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
   if (clAdminVideo > 520 * 1024 * 1024) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
@@ -126,6 +122,14 @@ export async function POST(request: NextRequest) {
     const isAvi   = sig[0] === 0x52 && sig[1] === 0x49 && sig[2] === 0x46 && sig[3] === 0x46   // 'RIFF'
     if (!isMp4Ftyp && !isWebm && !isAvi) {
       return NextResponse.json({ error: '지원하지 않는 영상 파일 형식입니다.' }, { status: 400 })
+    }
+
+    // 모든 유효성 검사 통과 후에만 레이트 리밋 슬롯 소모
+    adminVideoUploadMap.set(adminAuth.userId, [...avTimes, nowAV])
+    if (adminVideoUploadMap.size > 200) {
+      for (const [k, v] of adminVideoUploadMap) {
+        if (v.every(t => nowAV - t > ADMIN_VIDEO_UPLOAD_WINDOW_MS)) adminVideoUploadMap.delete(k)
+      }
     }
 
     const r2Key = buildVideoKey(actorId, file.name)
