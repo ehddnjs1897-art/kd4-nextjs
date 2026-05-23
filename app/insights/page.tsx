@@ -378,6 +378,8 @@ export default function InsightsPage() {
                     <img
                       src={insight.image_url}
                       alt={insight.title ?? '인사이트 이미지'}
+                      width={640}
+                      height={160}
                       loading="lazy"
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}

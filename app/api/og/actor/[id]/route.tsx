@@ -108,18 +108,17 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   // IP 레이트 리밋: 30 req/min (CDN miss 시 Supabase 과부하 방어)
-  const ip = request.headers.get('x-real-ip') ?? null
-  if (ip) {
-    const nowOG = Date.now()
-    const bucketOG = ogRateMap.get(ip)
-    if (bucketOG && nowOG < bucketOG.resetAt) {
-      if (bucketOG.count >= OG_RATE_LIMIT) {
-        return new Response('Too Many Requests', { status: 429 })
-      }
-      bucketOG.count++
-    } else {
-      ogRateMap.set(ip, { count: 1, resetAt: nowOG + OG_RATE_WINDOW_MS })
+  // x-real-ip 없는 환경(로컬·프리뷰)은 '__unknown__' 키로 묶어 동일하게 제한
+  const ip = request.headers.get('x-real-ip') ?? '__unknown__'
+  const nowOG = Date.now()
+  const bucketOG = ogRateMap.get(ip)
+  if (bucketOG && nowOG < bucketOG.resetAt) {
+    if (bucketOG.count >= OG_RATE_LIMIT) {
+      return new Response('Too Many Requests', { status: 429 })
     }
+    bucketOG.count++
+  } else {
+    ogRateMap.set(ip, { count: 1, resetAt: nowOG + OG_RATE_WINDOW_MS })
   }
 
   const { id } = await params

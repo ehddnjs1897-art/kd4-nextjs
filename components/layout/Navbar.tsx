@@ -209,6 +209,7 @@ export default function Navbar() {
               alt="KD4 Acting Studio"
               width={400}
               height={400}
+              sizes="44px"
               priority
               style={{
                 height: '44px',

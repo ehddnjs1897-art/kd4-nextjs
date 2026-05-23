@@ -384,6 +384,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                       style={s.iframe}
                     />
                   </div>
+                  <p className="sr-only">자막이 있는 경우 영상 플레이어의 CC 버튼을 이용하세요.</p>
                   {video.title && <p style={s.videoTitle}>{video.title}</p>}
                 </div>
               ) : video.r2_key ? (
@@ -420,6 +421,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                       style={s.iframe}
                     />
                   </div>
+                  <p className="sr-only">자막이 있는 경우 영상 플레이어의 CC 버튼을 이용하세요.</p>
                 </div>
               ) : video.r2_key ? (
                 <R2Video
