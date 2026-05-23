@@ -7,7 +7,7 @@ import { SITE_URL } from '@/lib/constants'
 
 export const metadata: Metadata = {
   title: '클래스 신청',
-  description: 'KD4 멤버 클래스 수강 신청',
+  description: 'KD4 멤버 전용 클래스 수강 신청 페이지 — 기수·클래스를 선택하고 신청해 주세요.',
   robots: { index: false, follow: false },
   alternates: { canonical: `${SITE_URL}/enroll` },
   openGraph: {

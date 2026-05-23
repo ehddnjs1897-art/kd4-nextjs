@@ -33,6 +33,7 @@ export default function GlobalError({
               페이지를 불러오는 중 치명적인 오류가 발생했습니다.
             </p>
             <button
+              type="button"
               onClick={reset}
               style={{
                 padding: '10px 24px',

@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
 
       console.error('[auth/callback] exchangeCodeForSession 오류:', error.message)
     } catch (err) {
-      console.error('[auth/callback] 예상치 못한 오류:', err)
+      console.error('[auth/callback] 예상치 못한 오류:', err instanceof Error ? err.message : String(err))
     }
   }
 

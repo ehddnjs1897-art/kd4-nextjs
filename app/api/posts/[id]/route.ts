@@ -16,6 +16,10 @@ const postDeleteMap = new Map<string, number[]>()
 const POST_DELETE_MAX = 10
 const POST_DELETE_WINDOW_MS = 60_000
 
+// PATCH 레이트 리밋: 10초 쿨다운 (스팸 DB 쓰기 방지)
+const postPatchMap = new Map<string, number>()
+const POST_PATCH_COOLDOWN_MS = 10_000
+
 // GET /api/posts/[id] — 조회수 +1 포함
 export async function GET(
   request: NextRequest,
@@ -83,6 +87,18 @@ export async function PATCH(
 
     if (authError || !user) {
       return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
+    }
+
+    // PATCH 레이트 리밋: 10초 쿨다운 (스팸 DB 쓰기 방지)
+    const nowPatch = Date.now()
+    const lastPatch = postPatchMap.get(user.id) ?? 0
+    if (nowPatch - lastPatch < POST_PATCH_COOLDOWN_MS) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
+    postPatchMap.set(user.id, nowPatch)
+    if (postPatchMap.size > 1000) {
+      const cutoff = nowPatch - POST_PATCH_COOLDOWN_MS
+      for (const [k, v] of postPatchMap) { if (v < cutoff) postPatchMap.delete(k) }
     }
 
     // post + profile 병렬 조회 (둘 다 supabaseAdmin — RLS 우회, .maybeSingle()으로 PGRST116 로그 노이즈 방지)

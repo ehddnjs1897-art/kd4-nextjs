@@ -201,8 +201,8 @@ export default function InsightsPage() {
         <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 12, padding: 20, marginBottom: 28 }}>
           {/* 탭 */}
           <div style={{ display: 'flex', gap: 6, marginBottom: 14 }}>
-            <button className={`filter-btn${tab === 'url' ? ' active' : ''}`} aria-pressed={tab === 'url'} onClick={() => setTab('url')}>🔗 링크</button>
-            <button className={`filter-btn${tab === 'image' ? ' active' : ''}`} aria-pressed={tab === 'image'} onClick={() => setTab('image')}>🖼 이미지</button>
+            <button type="button" className={`filter-btn${tab === 'url' ? ' active' : ''}`} aria-pressed={tab === 'url'} onClick={() => setTab('url')}>🔗 링크</button>
+            <button type="button" className={`filter-btn${tab === 'image' ? ' active' : ''}`} aria-pressed={tab === 'image'} onClick={() => setTab('image')}>🖼 이미지</button>
           </div>
 
           {tab === 'url' ? (
@@ -217,10 +217,10 @@ export default function InsightsPage() {
                   onKeyDown={e => e.key === 'Enter' && !saving && handleSave()}
                   maxLength={2000}
                 />
-                <button className="ins-btn" onClick={handleSave} disabled={saving || !url.trim()}>
+                <button type="button" className="ins-btn" aria-label="인사이트 저장" onClick={handleSave} disabled={saving || !url.trim()}>
                   {saving ? '저장 중…' : '저장'}
                 </button>
-                <button className="ins-btn-ghost" onClick={() => setShowMemo(v => !v)} style={{ fontSize: 13 }}>
+                <button type="button" className="ins-btn-ghost" aria-expanded={showMemo} aria-label={showMemo ? '메모 접기' : '메모 펼치기'} onClick={() => setShowMemo(v => !v)} style={{ fontSize: 13 }}>
                   메모 {showMemo ? '▲' : '▼'}
                 </button>
               </div>
@@ -301,6 +301,7 @@ export default function InsightsPage() {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {CATEGORIES.map(c => (
               <button
+                type="button"
                 key={c}
                 className={`filter-btn${filterCategory === c ? ' active' : ''}`}
                 aria-pressed={filterCategory === c}
@@ -314,6 +315,7 @@ export default function InsightsPage() {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {SOURCE_TYPES.map(s => (
               <button
+                type="button"
                 key={s.key}
                 className={`filter-btn${filterSource === s.key ? ' active' : ''}`}
                 aria-pressed={filterSource === s.key}
@@ -321,8 +323,10 @@ export default function InsightsPage() {
               >{s.label}</button>
             ))}
             <button
+              type="button"
               className={`filter-btn${filterFavorite ? ' active' : ''}`}
               aria-pressed={filterFavorite}
+              aria-label="즐겨찾기 필터"
               onClick={() => setFilterFavorite(v => !v)}
             >★ 즐겨찾기</button>
           </div>
@@ -340,7 +344,7 @@ export default function InsightsPage() {
             style={{ maxWidth: 320 }}
           />
           {search && (
-            <button className="ins-btn-ghost" style={{ fontSize: 13 }} onClick={() => { setSearch(''); setSearchInput('') }}>
+            <button type="button" className="ins-btn-ghost" style={{ fontSize: 13 }} onClick={() => { setSearch(''); setSearchInput('') }}>
               초기화
             </button>
           )}
@@ -350,7 +354,7 @@ export default function InsightsPage() {
         {fetchError && (
           <div style={{ textAlign: 'center', padding: '16px 0' }}>
             <p role="alert" style={{ fontSize: 13, color: '#ef4444', marginBottom: 8 }}>{fetchError}</p>
-            <button className="ins-btn-ghost" style={{ fontSize: 13 }} onClick={fetchInsights}>다시 시도</button>
+            <button type="button" className="ins-btn-ghost" style={{ fontSize: 13 }} onClick={fetchInsights}>다시 시도</button>
           </div>
         )}
         {loading ? (
@@ -392,6 +396,7 @@ export default function InsightsPage() {
                       }}>
                         {CATEGORIES.filter(c => c !== '전체').map(c => (
                           <button
+                            type="button"
                             key={c}
                             onClick={() => changeCategory(insight, c)}
                             style={{
@@ -429,6 +434,7 @@ export default function InsightsPage() {
                     </span>
                     <div style={{ display: 'flex', gap: 8 }}>
                       <button
+                        type="button"
                         onClick={() => toggleFavorite(insight)}
                         style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 16, color: insight.is_favorite ? 'var(--gold)' : 'var(--gray)' }}
                         aria-label={insight.is_favorite ? '즐겨찾기 해제' : '즐겨찾기'}
@@ -436,16 +442,21 @@ export default function InsightsPage() {
                       {confirmingDeleteId === insight.id ? (
                         <>
                           <button
+                            type="button"
+                            aria-label="삭제 취소"
                             onClick={() => setConfirmingDeleteId(null)}
                             style={{ background: 'none', border: '1px solid var(--border)', borderRadius: 4, cursor: 'pointer', fontSize: 11, color: 'var(--gray)', padding: '2px 6px' }}
                           >취소</button>
                           <button
+                            type="button"
+                            aria-label="인사이트 삭제 확인"
                             onClick={() => deleteInsight(insight.id)}
                             style={{ background: '#ef4444', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 11, color: '#fff', padding: '2px 6px' }}
                           >삭제</button>
                         </>
                       ) : (
                         <button
+                          type="button"
                           onClick={() => deleteInsight(insight.id)}
                           style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--gray)' }}
                           aria-label="삭제"
