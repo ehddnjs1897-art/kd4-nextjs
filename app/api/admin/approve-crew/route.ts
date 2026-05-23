@@ -24,7 +24,9 @@ export async function GET(request: NextRequest) {
   const referer = request.headers.get('referer') ?? ''
   const reqOrigin = request.headers.get('origin') ?? ''
   // referer==='' 는 허용하지 않음 — Referrer-Policy:no-referrer로 우회 가능
-  const isSameSite = referer.startsWith(origin) || reqOrigin === origin
+  // startsWith 대신 URL.origin 비교 — 서브도메인 bypass 방지
+  const refererOriginMatch = (() => { try { return new URL(referer).origin === origin } catch { return false } })()
+  const isSameSite = refererOriginMatch || reqOrigin === origin
   if (!isSameSite) {
     return NextResponse.redirect(`${origin}/admin?error=invalid_request`)
   }
@@ -80,14 +82,24 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/admin?error=invalid_role`)
   }
 
-  const { error: updateErr } = await supabaseAdmin
+  // 원자적 업데이트: role이 여전히 pending 상태일 때만 실행 (TOCTOU 방지, SMS 중복 방지)
+  const { data: updated, error: updateErr } = await supabaseAdmin
     .from('profiles')
     .update({ role: mapped.role })
     .eq('id', uid)
+    .in('role', ['crew_pending', 'director_pending'])
+    .select('id')
+    .maybeSingle()
 
   if (updateErr) {
     console.error('[approve-crew] 업데이트 오류:', updateErr.message)
     return NextResponse.redirect(`${origin}/admin?error=update_failed`)
+  }
+  if (!updated) {
+    // 동시 요청에서 이미 승인됨 — 멱등적으로 처리
+    return NextResponse.redirect(
+      `${origin}/admin?already_approved=${encodeURIComponent(target.name ?? target.email ?? uid)}`
+    )
   }
   // 역할 변경 후 대시보드 캐시 무효화 (캐시된 권한 정보 갱신)
   revalidatePath('/dashboard')

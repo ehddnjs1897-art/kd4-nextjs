@@ -49,6 +49,7 @@ export default function CommentSection({
       .select('id, post_id, author_id, author_name, content, created_at')
       .eq('post_id', postId)
       .order('created_at', { ascending: true })
+      .limit(500)
 
     if (!mountedRef.current) return
     if (!fetchError && data) {
