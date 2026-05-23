@@ -43,22 +43,25 @@ export default function InsightsError({
         <p style={{ color: 'var(--gray)', fontSize: '0.88rem', marginBottom: 24 }}>
           잠시 후 다시 시도해주세요.
         </p>
-        <button
-          type="button"
-          onClick={reset}
-          style={{
-            background: 'var(--gold)',
-            color: '#fff',
-            border: 'none',
-            borderRadius: 6,
-            padding: '11px 24px',
-            fontSize: '0.88rem',
-            fontWeight: 700,
-            cursor: 'pointer',
-          }}
-        >
-          다시 시도
-        </button>
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <button
+            type="button"
+            onClick={reset}
+            style={{
+              background: 'var(--gold)',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 6,
+              padding: '11px 24px',
+              fontSize: '0.88rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            다시 시도
+          </button>
+          <a href="/insights" style={{ color: 'var(--gray)', fontSize: '0.85rem', textDecoration: 'none', display: 'flex', alignItems: 'center' }}>인사이트로</a>
+        </div>
       </div>
     </div>
   )

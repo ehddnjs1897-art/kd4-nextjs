@@ -246,7 +246,7 @@ export default function MeisnerPage() {
       </section>
 
       {/* FAQ */}
-      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
+      <section aria-label="자주 묻는 질문" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
             <p className="section-eyebrow">FAQ</p>
@@ -257,7 +257,7 @@ export default function MeisnerPage() {
       </section>
 
       {/* FORM */}
-      <section id="form" style={{ padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg)' }}>
+      <section id="form" aria-label="무료 상담 신청" style={{ padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '520px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>

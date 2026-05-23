@@ -535,7 +535,7 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 6,
     padding: '10px 14px',
     fontSize: '0.875rem',
-    color: '#f87171',
+    color: '#b91c1c',
     marginBottom: 20,
     lineHeight: 1.5,
   },
@@ -574,7 +574,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   fieldError: {
     fontSize: '0.75rem',
-    color: '#f87171',
+    color: '#b91c1c',
   },
   hint: {
     fontSize: '0.75rem',

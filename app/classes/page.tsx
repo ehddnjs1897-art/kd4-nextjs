@@ -185,7 +185,7 @@ export default function ClassesPage() {
   return (
     <div style={{ paddingTop: '80px', background: 'var(--bg)', minHeight: '100vh' }}>
       {/* 헤더 */}
-      <section style={{ padding: '80px 24px 60px', textAlign: 'center', borderBottom: '1px solid var(--border)' }}>
+      <section aria-label="클래스 전체 목록 헤더" style={{ padding: '80px 24px 60px', textAlign: 'center', borderBottom: '1px solid var(--border)' }}>
         <div className="container">
           <p className="section-eyebrow">CURRICULUM</p>
           <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 700, color: 'var(--white)', marginBottom: '16px', lineHeight: 1.15 }}>
@@ -343,7 +343,7 @@ export default function ClassesPage() {
         </div>
       </section>
 
-      <section className="section" style={{ background: 'var(--bg)' }}>
+      <section className="section" aria-label="클래스 상세 목록" style={{ background: 'var(--bg)' }}>
         <div className="container">
 
           {/* STEP 1 */}

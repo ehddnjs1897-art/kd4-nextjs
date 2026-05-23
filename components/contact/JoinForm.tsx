@@ -761,7 +761,7 @@ export default function JoinForm() {
 
       {/* 에러 — 조건부 렌더링으로 DOM 삽입 시 자동 AT 공지 (role="alert"은 항상 존재 시 첫 공지 누락) */}
       {error && (
-        <p role="alert" style={{ color: 'var(--accent-red)', fontSize: '0.85rem', margin: 0 }}>
+        <p role="alert" style={{ color: '#b91c1c', fontSize: '0.85rem', margin: 0 }}>
           {error}
         </p>
       )}

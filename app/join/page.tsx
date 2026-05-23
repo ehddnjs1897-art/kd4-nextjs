@@ -198,6 +198,7 @@ export default function JoinPage() {
       {/* ① HERO — 강사 사진 + 세리프 헤드라인                      */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section
+        aria-label="히어로 — 권동원 대표 소개"
         style={{
           position: 'relative',
           minHeight: '560px',
@@ -363,6 +364,7 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section
         id="form-hero"
+        aria-label="즉시 무료 상담 신청"
         className="section"
         style={{
           background: 'radial-gradient(ellipse at 50% 0%, rgba(21,72,138,0.08) 0%, var(--bg) 70%)',
@@ -394,6 +396,7 @@ export default function JoinPage() {
       {/* ② KD4 고유 자산 — 3년이 만든 캐스팅 연계 시스템           */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section
+        aria-label="KD4 고유 자산 — 캐스팅 연계 시스템"
         style={{
           padding: 'clamp(64px, 12vw, 100px) 0',
           background: 'var(--bg2)',
@@ -494,7 +497,7 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ③ SOLUTION — 마이즈너 테크닉 (광고 압축: 영상 + 1줄 + 링크) */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
+      <section aria-label="마이즈너 테크닉 소개" className="section" style={{ background: 'var(--bg)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto', textAlign: 'center' }}>
             <p className="section-eyebrow">02 — THE METHOD</p>
@@ -530,7 +533,7 @@ export default function JoinPage() {
       {/* ④ STATS                                                    */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ── STATS — 메인 페이지(/)와 동일한 4카드 (lib/stats.ts 단일 소스) ─── */}
-      <section className="stats-banner">
+      <section aria-label="KD4 주요 통계" className="stats-banner">
         <div className="container">
           <div className="stats-grid">
             {KD4_STATS.map((stat, i) => {
@@ -574,7 +577,7 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑦ CURRICULUM — 6단계 훈련 과정 (감정 해방 → 캐스팅 연계) */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
+      <section aria-label="6단계 훈련 커리큘럼" className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 48px', textAlign: 'center' }}>
             <p className="section-eyebrow">03 — CURRICULUM</p>
@@ -710,7 +713,7 @@ export default function JoinPage() {
       {/* ⑨ OFFER — 가격 + 카운트다운 + Anchor Price 배지           */}
       {/* C. 풀스크린 섹션 (Preview) — 100vw + 강조 그라데이션 배경 */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section uplift-fullscreen-offer" style={{ padding: 'clamp(64px, 12vw, 100px) 0' }}>
+      <section aria-label="수강료 특별 혜택" className="section uplift-fullscreen-offer" style={{ padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow">
@@ -1049,7 +1052,7 @@ export default function JoinPage() {
       </section>
 
       {/* ⑥ DIRECTOR — 강사 크레딧 (광고 압축: highlights 3개 + 링크) */}
-      <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
+      <section aria-label="강사 권동원 소개" className="section" style={{ background: 'var(--bg)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
             <p className="section-eyebrow">06 — THE LEADER</p>
@@ -1175,7 +1178,7 @@ export default function JoinPage() {
       </section>
 
       {/* ⑦ PORTFOLIO — 출연영상 결과물 */}
-      <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
+      <section aria-label="출연영상 포트폴리오" className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 48px', textAlign: 'center' }}>
             <p className="section-eyebrow">07 — PORTFOLIO</p>
@@ -1304,7 +1307,7 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑥ PROOF — 후기 (광고 압축: 마퀴 1행 + 더보기 링크)         */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
+      <section aria-label="멤버 후기" className="section" style={{ background: 'var(--bg2)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 28px', textAlign: 'center' }}>
             <p className="section-eyebrow">08 — REAL REVIEWS</p>
@@ -1363,7 +1366,7 @@ export default function JoinPage() {
         </div>
       </section>
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
+      <section aria-label="자주 묻는 질문" className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow">09 — FAQ</p>
@@ -1381,7 +1384,7 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑪ RISK REVERSAL — 신규 (Form 직전 리스크 제거)            */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
+      <section aria-label="KD4 약속" className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow">10 — OUR PROMISE</p>
@@ -1467,6 +1470,7 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section
         id="form"
+        aria-label="무료 상담 신청"
         className="section"
         style={{
           background: 'radial-gradient(ellipse at 50% 0%, rgba(21,72,138,0.08) 0%, var(--bg) 70%)',
@@ -1495,7 +1499,7 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑬ FOOTER 안심 문구                                         */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="section" style={{ background: 'var(--bg)', padding: '60px 0 40px' }}>
+      <section aria-label="문의 안내" className="section" style={{ background: 'var(--bg)', padding: '60px 0 40px' }}>
         <div className="container" style={{ textAlign: 'center' }}>
           <div>
             <JoinCTALink

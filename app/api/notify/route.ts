@@ -86,7 +86,13 @@ export async function POST(request: NextRequest) {
     if (contentLength > 65_536) {
       return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
     }
-    const data = await request.json()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let data: Record<string, any> = {}
+    try {
+      data = await request.json()
+    } catch {
+      return NextResponse.json({ error: '요청 형식이 올바르지 않습니다.' }, { status: 400 })
+    }
     const record = data?.record ?? data
 
     // 필수 필드 검증 — 상담 폼은 항상 name + phone 포함

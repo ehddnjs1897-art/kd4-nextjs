@@ -398,7 +398,7 @@ export default function EnrollForm({
         {/* ── 에러 ── */}
         {error && (
           <div role="alert" aria-live="assertive" style={{ padding: '12px 16px', background: 'var(--accent-red-soft)', border: '1px solid rgba(199,62,62,0.25)', borderRadius: 10, marginBottom: 16 }}>
-            <p style={{ color: 'var(--accent-red)', fontSize: '0.84rem' }}>{error}</p>
+            <p style={{ color: '#b91c1c', fontSize: '0.84rem' }}>{error}</p>
           </div>
         )}
 

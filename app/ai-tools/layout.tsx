@@ -11,7 +11,11 @@ export const metadata: Metadata = {
     siteName: 'KD4 액팅 스튜디오',
     type: 'website',
     url: `${SITE_URL}/ai-tools`,
-    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 — AI 대본 분석 도구' }],
+    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 — AI 대본 분석 도구' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: [`${SITE_URL}/og-image.jpg`],
   },
 }
 

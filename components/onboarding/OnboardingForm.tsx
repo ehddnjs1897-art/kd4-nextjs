@@ -369,12 +369,12 @@ const picked: React.CSSProperties = {
 }
 
 const errStyle: React.CSSProperties = {
-  color: '#f87171',
+  color: '#b91c1c',
   fontSize: '0.85rem',
   marginBottom: 14,
   padding: '10px 14px',
-  background: 'rgba(248,113,113,0.08)',
-  border: '1px solid rgba(248,113,113,0.2)',
+  background: 'rgba(185,28,28,0.08)',
+  border: '1px solid rgba(185,28,28,0.2)',
   borderRadius: 8,
 }
 

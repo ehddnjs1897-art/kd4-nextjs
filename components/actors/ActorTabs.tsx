@@ -878,6 +878,8 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '0.9rem',
     padding: '2px 4px',
     opacity: 0.7,
+    minHeight: 44,
+    minWidth: 44,
   },
   saveBtn: {
     background: 'transparent',
@@ -887,6 +889,8 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '0.9rem',
     padding: '2px 4px',
     fontWeight: 700,
+    minHeight: 44,
+    minWidth: 44,
   },
   cancelBtn: {
     background: 'transparent',
@@ -895,6 +899,8 @@ const s: Record<string, React.CSSProperties> = {
     cursor: 'pointer',
     fontSize: '0.9rem',
     padding: '2px 4px',
+    minHeight: 44,
+    minWidth: 44,
   },
   deleteBtn: {
     background: 'transparent',
@@ -903,5 +909,7 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '0.82rem',
     padding: '2px 4px',
     opacity: 0.5,
+    minHeight: 44,
+    minWidth: 44,
   },
 }

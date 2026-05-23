@@ -103,7 +103,7 @@ export default function CountdownTimer({ deadline, compact = false }: Props) {
             }}>
               {pad(value)}
             </div>
-            <div style={{ fontSize: '0.62rem', opacity: 0.75, marginTop: '4px' }}>{label}</div>
+            <div style={{ fontSize: '0.75rem', opacity: 0.75, marginTop: '4px' }}>{label}</div>
           </div>
           {i < 3 && (
             <span style={{ color: 'var(--navy)', fontWeight: 700, fontSize: '1.4rem', marginBottom: '14px' }}>:</span>

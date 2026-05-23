@@ -103,6 +103,7 @@ export default function AboutPage() {
 
       {/* ── HERO ── */}
       <section
+        aria-label="KD4 액팅 스튜디오 소개"
         style={{
           maxWidth: '900px',
           margin: '0 auto',
@@ -177,7 +178,7 @@ export default function AboutPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* ── 철학 ── */}
-      <section id="meisner" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
+      <section id="meisner" aria-label="마이즈너 테크닉 소개" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
         <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px' }}>
           PHILOSOPHY
         </p>
@@ -260,7 +261,7 @@ export default function AboutPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* ── 이런 배우에게 ── */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
+      <section aria-label="KD4가 필요한 배우" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
         <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px', textAlign: 'center' }}>
           WHO NEEDS KD4
         </p>
@@ -301,7 +302,7 @@ export default function AboutPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* ── ALL IN ONE SYSTEM ── */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
+      <section aria-label="KD4 성장 시스템" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
         <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px', textAlign: 'center' }}>
           ALL IN ONE SYSTEM
         </p>
@@ -340,7 +341,7 @@ export default function AboutPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* ── 대표 소개 ── */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
+      <section aria-label="권동원 대표 소개" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '48px', alignItems: 'center' }}>
           {/* 좌측: 텍스트 */}
           <div>
@@ -413,7 +414,7 @@ export default function AboutPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* ── 멤버 이야기 ── */}
-      <section id="reviews" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
+      <section id="reviews" aria-label="멤버 이야기" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
         <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px', textAlign: 'center' }}>
           ACTORS SAY
         </p>
@@ -443,7 +444,7 @@ export default function AboutPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* ── 협력 파트너 ── */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
+      <section aria-label="협력 파트너" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
         <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px', textAlign: 'center' }}>
           PARTNERSHIP
         </p>
@@ -494,7 +495,7 @@ export default function AboutPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* ── 위치 ── */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
+      <section aria-label="찾아오시는 길" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '40px', alignItems: 'center' }}>
           <div>
             <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px' }}>
@@ -546,6 +547,7 @@ export default function AboutPage() {
 
       {/* ── 헤세 인용구 — 맨 하단 ── */}
       <section
+        aria-label="인용구"
         style={{
           borderTop: '1px solid var(--border)',
           padding: 'clamp(32px, 6vw, 56px) 24px',
@@ -569,6 +571,7 @@ export default function AboutPage() {
 
       {/* ── CTA ── */}
       <section
+        aria-label="상담 신청"
         style={{
           background: 'var(--bg2)',
           borderTop: '1px solid var(--border)',
