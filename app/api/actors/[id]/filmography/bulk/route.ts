@@ -119,10 +119,25 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       }
     }
 
+    // ── UPDATE 전 소유권 검증: 제출된 id가 실제 actorId 소유인지 확인 (IDOR 방어) ──
+    if (toUpdate.length > 0) {
+      const submittedIds = toUpdate.map(item => item.id)
+      const { data: owned } = await supabaseAdmin
+        .from('actor_filmography')
+        .select('id')
+        .eq('actor_id', actorId)
+        .in('id', submittedIds)
+      const ownedSet = new Set((owned ?? []).map((r: { id: string }) => r.id))
+      // 소유 확인된 항목만 upsert; 타인 소유 id는 조용히 제거
+      for (let i = toUpdate.length - 1; i >= 0; i--) {
+        if (!ownedSet.has(toUpdate[i].id)) toUpdate.splice(i, 1)
+      }
+    }
+
     // ── UPDATE: 단일 upsert로 N개 병렬 쿼리 대신 DB 커넥션 압박 해소 ───────────
     const upsertRows = toUpdate.map(item => ({
       id: item.id,
-      actor_id: actorId, // 변경 불가 — IDOR 방어 (existingIds는 actor_id로 이미 검증됨)
+      actor_id: actorId, // 소유권 사전 검증 완료
       category: item.category,
       year: item.year ?? null,
       title: item.title,

@@ -99,6 +99,7 @@ export default function HomePage() {
   const [titleReady, setTitleReady] = useState(false)
   const [marqueePaused, setMarqueePaused] = useState(false)
   const [reviewPaused, setReviewPaused] = useState(false)
+  const [partnerPaused, setPartnerPaused] = useState(false)
   useEffect(() => {
     let cancelled = false
     const container = heroTitleRef.current
@@ -398,7 +399,7 @@ export default function HomePage() {
       </section>
 
       {/* ── HERO INTRO (카피 + CTA, Stats 직전) ───────────────────────────────── */}
-      <section className="hero-intro-section" aria-label="KD4 소개">
+      <section className="hero-intro-section" aria-label="브랜드 소개">
         <p
           className="shimmer-tag"
           style={{
@@ -1207,14 +1208,33 @@ export default function HomePage() {
 
       {/* ── Partners ─────────────────────────────────────────────────────────── */}
       <section id="partners" aria-label="함께한 기업" style={{ padding: '48px 0', borderTop: '1px solid var(--border)' }}>
-        <p style={{ fontFamily: 'var(--font-display), "Noto Sans KR", sans-serif', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.2em', color: 'var(--secondary)', textAlign: 'center', marginBottom: '28px', opacity: 0.6 }}>
+        <p style={{ fontFamily: 'var(--font-display), "Noto Sans KR", sans-serif', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.2em', color: 'var(--secondary)', textAlign: 'center', marginBottom: '16px', opacity: 0.6 }}>
           함께한 기업
         </p>
-        <div className="partner-marquee">
-          <div className="partner-marquee-track">
+        {/* WCAG 2.2.2: 자동 이동 콘텐츠 일시정지 버튼 */}
+        <div style={{ textAlign: 'center', marginBottom: '12px' }}>
+          <button
+            type="button"
+            aria-pressed={partnerPaused}
+            aria-label={partnerPaused ? '파트너 마퀴 재생' : '파트너 마퀴 일시정지'}
+            onClick={() => setPartnerPaused(v => !v)}
+            style={{
+              background: 'none', border: '1px solid var(--border)',
+              color: 'var(--gray)', borderRadius: 6, padding: '4px 12px',
+              minHeight: 44, fontSize: '0.72rem', cursor: 'pointer', letterSpacing: '0.05em',
+            }}
+          >
+            {partnerPaused ? '▶ 재생' : '⏸ 일시정지'}
+          </button>
+        </div>
+        <ul className="sr-only">
+          {PARTNERS.map((p) => <li key={p.name}>{p.name}</li>)}
+        </ul>
+        <div className="partner-marquee" aria-hidden="true">
+          <div className="partner-marquee-track" style={{ animationPlayState: partnerPaused ? 'paused' : 'running' }}>
             {[...PARTNERS, ...PARTNERS].map((p, i) => (
-              <div key={`${p.name}-${i}`} className="partner-marquee-item" aria-hidden={i >= PARTNERS.length || undefined}>
-                <Image src={p.logo} alt={p.name} width={80} height={40} style={{ objectFit: 'contain' }} />
+              <div key={`${p.name}-${i}`} className="partner-marquee-item">
+                <Image src={p.logo} alt="" width={80} height={40} style={{ objectFit: 'contain' }} />
                 <span>{p.name}</span>
               </div>
             ))}

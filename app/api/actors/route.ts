@@ -27,6 +27,9 @@ export async function GET(request: NextRequest) {
     // IP 레이트 리밋: 1분 60회 초과 차단
     // x-real-ip: Vercel이 직접 설정 — 클라이언트 위조 불가. x-forwarded-for는 위조 가능하므로 사용 안 함
     const ipActor = request.headers.get('x-real-ip') ?? null
+    if (!ipActor && process.env.VERCEL === '1') {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
     if (ipActor) {
       const nowA = Date.now()
       const bucketA = actorsGetRateMap.get(ipActor)

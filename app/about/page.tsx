@@ -85,7 +85,7 @@ const TESTIMONIALS = [
 
 export default function AboutPage() {
   return (
-    <main id="main-content" style={{ background: 'var(--bg)', color: 'var(--white)', minHeight: '100vh', paddingTop: '64px' }}>
+    <div style={{ background: 'var(--bg)', color: 'var(--white)', minHeight: '100vh', paddingTop: '64px' }}>
       <PageJsonLd schemas={[
         buildOrganization(),
         buildPersonDongwon(),
@@ -628,6 +628,6 @@ export default function AboutPage() {
           </Link>
         </div>
       </section>
-    </main>
+    </div>
   )
 }

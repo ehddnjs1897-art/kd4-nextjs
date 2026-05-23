@@ -113,7 +113,7 @@ export default async function DashboardPage() {
   const roleColor = ROLE_COLOR[role] || 'var(--gray)'
 
   return (
-    <main id="main-content" style={{ minHeight: '100vh', background: 'var(--bg)', paddingTop: 80, paddingBottom: 80 }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingTop: 80, paddingBottom: 80 }}>
       <div style={{ maxWidth: 680, margin: '0 auto', padding: '0 20px', display: 'flex', flexDirection: 'column', gap: 16 }}>
 
         {/* 페이지 헤더 */}
@@ -315,7 +315,7 @@ export default async function DashboardPage() {
         </div>
 
       </div>
-    </main>
+    </div>
   )
 }
 

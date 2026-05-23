@@ -8,7 +8,7 @@ const socialLinks = [
     label: '인스타그램',
     href: 'https://www.instagram.com/kd4actingstudio',
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
         <circle cx="12" cy="12" r="4" />
         <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none" />
@@ -19,7 +19,7 @@ const socialLinks = [
     label: '네이버 블로그',
     href: 'https://blog.naver.com/kd4actingstudio',
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
         <path d="M16.273 12.845 7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727z" />
       </svg>
     ),
@@ -28,7 +28,7 @@ const socialLinks = [
     label: '카카오 채널',
     href: 'https://pf.kakao.com/_ximxdqn',
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
         <path d="M12 3C6.477 3 2 6.477 2 10.5c0 2.632 1.608 4.951 4.035 6.318L5.25 20.25l3.98-2.377A12.14 12.14 0 0 0 12 18c5.523 0 10-3.477 10-7.5S17.523 3 12 3z" />
       </svg>
     ),

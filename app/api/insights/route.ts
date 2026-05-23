@@ -289,7 +289,7 @@ export async function POST(request: NextRequest) {
       url,
       title: og.title ?? url,
       description: ai.description ?? (memo ? `- ${memo}` : null),
-      image_url: (og.image_url && isSafeExternalUrl(og.image_url)) ? og.image_url : null,
+      image_url: (og.image_url && isSafeExternalUrl(og.image_url)) ? og.image_url.slice(0, 2048) : null,
       memo: memo ?? null,
       // Gemini 출력 런타임 검증 — 비정상 출력값 차단 (TypeScript 캐스트만으로는 런타임 보호 불가)
       category: (typeof ai.category === 'string' && VALID_CATEGORIES.has(ai.category) && ai.category !== '전체'

@@ -139,6 +139,10 @@ export async function GET(
       if (!upstream.ok || !upstream.body) {
         return NextResponse.json({ error: '프로필 파일을 가져오지 못했습니다.' }, { status: 502 })
       }
+      // 리다이렉트 후 최종 URL 재검증 — DNS rebinding / open-redirect 방어
+      if (upstream.url && !isSafeProfileUrl(upstream.url)) {
+        return NextResponse.json({ error: '허용되지 않는 프로필 링크입니다.' }, { status: 400 })
+      }
       const ext = (target.pathname.split('.').pop() || 'pdf').slice(0, 8)
       const headers: Record<string, string> = {
         'Content-Type': upstream.headers.get('content-type') || 'application/octet-stream',

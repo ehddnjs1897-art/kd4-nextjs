@@ -311,7 +311,7 @@ export default async function ActorDetailPage({
     actor.gender === '남' ? '남자 배우' : actor.gender === '여' ? '여자 배우' : '배우'
 
   return (
-    <main id="main-content" style={{ minHeight: '100vh', background: 'var(--bg)', paddingBottom: 100 }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingBottom: 100 }}>
       {/* JSON-LD */}
       {personSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(personSchema) }} />}
       {videoSchemas.map((v, i) => (
@@ -496,6 +496,6 @@ export default async function ActorDetailPage({
       <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 clamp(20px,4vw,32px)', paddingTop: 44 }}>
         <ActorTabs actor={actorForClient} canViewContact={canContact} imageProtected={!canContact} canEdit={isOwner} />
       </div>
-    </main>
+    </div>
   )
 }

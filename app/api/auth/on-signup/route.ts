@@ -38,8 +38,11 @@ export async function POST(request: NextRequest) {
   // 사용자 메타데이터는 신뢰할 수 없는 입력 — 길이 제한 적용
   const name: string = (user.user_metadata?.name ?? '').toString().slice(0, 100)
   const rawPhone: string = (user.user_metadata?.phone ?? '').toString().slice(0, 20)
-  // 전화번호 형식 검증 — 잘못된 데이터가 actor-matching에 쓰이는 것을 방지
-  const phone: string = /^[+]?[\d\s\-().]{7,20}$/.test(rawPhone) ? rawPhone : ''
+  // 전화번호 형식 검증 + 숫자 정규화 — notify/route.ts와 동일 기준, SMS 라우팅 안전성 확보
+  const phoneNormalized: string = rawPhone.replace(/[^\d]/g, '')
+  const phone: string = /^[+]?[\d\s\-().]{7,20}$/.test(rawPhone) && phoneNormalized.length >= 7
+    ? phoneNormalized
+    : ''
   // 사용자 메타데이터는 신뢰할 수 없는 값 — 허용 목록 외 값은 기본값으로 강제
   const ALLOWED_MEMBER_TYPES = new Set(['actor', 'director'])
   const rawMemberType: string = user.user_metadata?.member_type ?? 'actor'
