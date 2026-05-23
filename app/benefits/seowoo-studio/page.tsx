@@ -62,7 +62,7 @@ const STEPS: ReactNode[] = [
   '촬영 진행 — KD4 멤버 할인이 적용됩니다.',
 ]
 
-function SeowooLogo({ size = 'lg' }: { size?: 'lg' | 'sm' }) {
+function SeowooLogo({ size = 'lg', priority = false }: { size?: 'lg' | 'sm'; priority?: boolean }) {
   const px = size === 'lg' ? 176 : 120
   return (
     <Image
@@ -70,6 +70,7 @@ function SeowooLogo({ size = 'lg' }: { size?: 'lg' | 'sm' }) {
       alt="seowoo studio"
       width={px}
       height={px}
+      priority={priority}
       style={{ borderRadius: 8, display: 'block' }}
     />
   )
@@ -169,6 +170,7 @@ export default function SeowooPartnershipPage() {
               alt="KD4 액팅 스튜디오"
               width={140}
               height={140}
+              priority
               style={{ display: 'block', objectFit: 'contain' }}
             />
             <span
@@ -187,7 +189,7 @@ export default function SeowooPartnershipPage() {
           <span aria-hidden style={{ fontSize: '1.4rem', color: 'var(--gray)', fontWeight: 300 }}>
             ×
           </span>
-          <SeowooLogo size="lg" />
+          <SeowooLogo size="lg" priority />
         </div>
 
         <h1

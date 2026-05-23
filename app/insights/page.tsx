@@ -409,7 +409,7 @@ export default function InsightsPage() {
                       <button
                         onClick={() => toggleFavorite(insight)}
                         style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 16, color: insight.is_favorite ? 'var(--gold)' : 'var(--gray)' }}
-                        title={insight.is_favorite ? '즐겨찾기 해제' : '즐겨찾기'}
+                        aria-label={insight.is_favorite ? '즐겨찾기 해제' : '즐겨찾기'}
                       >★</button>
                       {confirmingDeleteId === insight.id ? (
                         <>
@@ -426,7 +426,7 @@ export default function InsightsPage() {
                         <button
                           onClick={() => deleteInsight(insight.id)}
                           style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--gray)' }}
-                          title="삭제"
+                          aria-label="삭제"
                         >✕</button>
                       )}
                     </div>

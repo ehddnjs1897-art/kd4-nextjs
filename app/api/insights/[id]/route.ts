@@ -75,7 +75,10 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     .select()
     .maybeSingle()
 
-  if (error) return withCors(NextResponse.json({ error: error.message }, { status: 500 }), origin)
+  if (error) {
+    console.error('[insights/[id]]', error.message)
+    return withCors(NextResponse.json({ error: '처리 중 오류가 발생했습니다.' }, { status: 500 }), origin)
+  }
   if (!data) return withCors(NextResponse.json({ error: '인사이트를 찾을 수 없습니다.' }, { status: 404 }), origin)
 
   return withCors(NextResponse.json(data), origin)
@@ -94,7 +97,10 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 
   const { data: deleted, error } = await supabaseAdmin.from('insights').delete().eq('id', id).select('id').maybeSingle()
 
-  if (error) return withCors(NextResponse.json({ error: error.message }, { status: 500 }), origin)
+  if (error) {
+    console.error('[insights/[id]]', error.message)
+    return withCors(NextResponse.json({ error: '처리 중 오류가 발생했습니다.' }, { status: 500 }), origin)
+  }
   if (!deleted) return withCors(NextResponse.json({ error: '인사이트를 찾을 수 없습니다.' }, { status: 404 }), origin)
 
   return withCors(NextResponse.json({ ok: true }), origin)

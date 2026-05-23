@@ -87,66 +87,71 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '올바른 카테고리를 선택해주세요.' }, { status: 400 })
   }
 
-  // 레이트 리밋: 1분에 최대 5개 (스팸 방지)
-  const oneMinAgo = new Date(Date.now() - 60_000).toISOString()
-  const { count: recentPostCount } = await supabaseAdmin
-    .from('posts')
-    .select('id', { count: 'exact', head: true })
-    .eq('author_id', user.id)
-    .gte('created_at', oneMinAgo)
-  if ((recentPostCount ?? 0) >= 5) {
-    return NextResponse.json({ error: '잠시 후 다시 시도해주세요. (1분 최대 5개)' }, { status: 429 })
-  }
-
-  // 작성자 이름 + 역할 조회 (admin 클라이언트 → RLS 우회)
-  const { data: profile } = await supabaseAdmin
-    .from('profiles')
-    .select('name, role')
-    .eq('id', user.id)
-    .maybeSingle()
-
-  // '공지' 카테고리는 관리자만 사용 가능 (UI에서도 숨기지만 API 레벨에서도 강제)
-  if (category === '공지' && profile?.role !== 'admin') {
-    return NextResponse.json({ error: '공지 카테고리는 관리자만 사용할 수 있습니다.' }, { status: 403 })
-  }
-
-  const authorName = profile?.name ?? user.email?.split('@')[0] ?? '익명'
-
-  // 프로필이 없으면 먼저 생성 (author_id FK 오류 방지)
-  if (!profile) {
-    const { error: upsertErr } = await supabaseAdmin.from('profiles').upsert(
-      {
-        id: user.id,
-        name: authorName,
-      },
-      { onConflict: 'id' }
-    )
-    if (upsertErr) {
-      console.error('[POST /api/posts] profile upsert error:', upsertErr)
-      return NextResponse.json(
-        { error: '프로필 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' },
-        { status: 500 }
-      )
+  try {
+    // 레이트 리밋: 1분에 최대 5개 (스팸 방지)
+    const oneMinAgo = new Date(Date.now() - 60_000).toISOString()
+    const { count: recentPostCount } = await supabaseAdmin
+      .from('posts')
+      .select('id', { count: 'exact', head: true })
+      .eq('author_id', user.id)
+      .gte('created_at', oneMinAgo)
+    if ((recentPostCount ?? 0) >= 5) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요. (1분 최대 5개)' }, { status: 429 })
     }
-  }
 
-  // 게시글 insert (admin → RLS 정책 무관하게 저장)
-  const { data, error } = await supabaseAdmin
-    .from('posts')
-    .insert({
-      title: title.trim(),
-      content: content.trim(),
-      category,
-      author_id: user.id,
-      author_name: authorName,
-    })
-    .select('id')
-    .maybeSingle()
+    // 작성자 이름 + 역할 조회 (admin 클라이언트 → RLS 우회)
+    const { data: profile } = await supabaseAdmin
+      .from('profiles')
+      .select('name, role')
+      .eq('id', user.id)
+      .maybeSingle()
 
-  if (error || !data) {
-    console.error('[POST /api/posts] insert error:', error)
+    // '공지' 카테고리는 관리자만 사용 가능 (UI에서도 숨기지만 API 레벨에서도 강제)
+    if (category === '공지' && profile?.role !== 'admin') {
+      return NextResponse.json({ error: '공지 카테고리는 관리자만 사용할 수 있습니다.' }, { status: 403 })
+    }
+
+    const authorName = profile?.name ?? user.email?.split('@')[0] ?? '익명'
+
+    // 프로필이 없으면 먼저 생성 (author_id FK 오류 방지)
+    if (!profile) {
+      const { error: upsertErr } = await supabaseAdmin.from('profiles').upsert(
+        {
+          id: user.id,
+          name: authorName,
+        },
+        { onConflict: 'id' }
+      )
+      if (upsertErr) {
+        console.error('[POST /api/posts] profile upsert error:', upsertErr)
+        return NextResponse.json(
+          { error: '프로필 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' },
+          { status: 500 }
+        )
+      }
+    }
+
+    // 게시글 insert (admin → RLS 정책 무관하게 저장)
+    const { data, error } = await supabaseAdmin
+      .from('posts')
+      .insert({
+        title: title.trim(),
+        content: content.trim(),
+        category,
+        author_id: user.id,
+        author_name: authorName,
+      })
+      .select('id')
+      .maybeSingle()
+
+    if (error || !data) {
+      console.error('[POST /api/posts] insert error:', error)
+      return NextResponse.json({ error: '게시글 작성 중 오류가 발생했습니다.' }, { status: 500 })
+    }
+
+    return NextResponse.json({ id: data.id }, { status: 201 })
+  } catch (err) {
+    console.error('[POST /api/posts] 예상치 못한 오류:', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '게시글 작성 중 오류가 발생했습니다.' }, { status: 500 })
   }
-
-  return NextResponse.json({ id: data.id }, { status: 201 })
 }

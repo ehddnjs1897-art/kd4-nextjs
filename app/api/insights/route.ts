@@ -196,7 +196,10 @@ export async function GET(request: NextRequest) {
 
   const { data, error, count } = await query.range(offset, offset + limit - 1)
 
-  if (error) return withCors(NextResponse.json({ error: error.message }, { status: 500 }), origin)
+  if (error) {
+    console.error('[GET /api/insights]', error.message)
+    return withCors(NextResponse.json({ error: '데이터 조회 중 오류가 발생했습니다.' }, { status: 500 }), origin)
+  }
 
   return withCors(NextResponse.json({ data: data ?? [], total: count ?? 0 }), origin)
 }
@@ -244,7 +247,10 @@ export async function POST(request: NextRequest) {
 
     const { data, error } = await supabaseAdmin.from('insights').insert(newItem).select().maybeSingle()
 
-    if (error) return withCors(NextResponse.json({ error: error.message }, { status: 500 }), origin)
+    if (error) {
+      console.error('[POST /api/insights]', error.message)
+      return withCors(NextResponse.json({ error: '인사이트 저장에 실패했습니다.' }, { status: 500 }), origin)
+    }
     if (!data) return withCors(NextResponse.json({ error: '저장에 실패했습니다.' }, { status: 500 }), origin)
 
     return withCors(NextResponse.json(data, { status: 201 }), origin)

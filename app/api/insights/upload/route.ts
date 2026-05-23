@@ -60,7 +60,10 @@ export async function POST(request: NextRequest) {
       .from(BUCKET)
       .upload(filename, buffer, { contentType: file.type, upsert: false })
 
-    if (uploadError) return NextResponse.json({ error: `업로드 실패: ${uploadError.message}` }, { status: 500 })
+    if (uploadError) {
+      console.error('[insights/upload] Storage 업로드 실패:', uploadError.message)
+      return NextResponse.json({ error: '이미지 업로드에 실패했습니다.' }, { status: 500 })
+    }
 
     const { data: { publicUrl } } = supabaseAdmin.storage.from(BUCKET).getPublicUrl(filename)
 
@@ -85,13 +88,14 @@ export async function POST(request: NextRequest) {
       .maybeSingle()
 
     if (dbError) {
+      console.error('[insights/upload] DB 저장 실패:', dbError.message)
       await supabaseAdmin.storage.from(BUCKET).remove([filename])
-      return NextResponse.json({ error: `DB 저장 실패: ${dbError.message}` }, { status: 500 })
+      return NextResponse.json({ error: 'DB 저장에 실패했습니다.' }, { status: 500 })
     }
 
     return NextResponse.json(data, { status: 201 })
   } catch (e) {
-    const msg = e instanceof Error ? e.message : '알 수 없는 오류'
-    return NextResponse.json({ error: `업로드 실패: ${msg}` }, { status: 500 })
+    console.error('[insights/upload] 예상치 못한 오류:', e instanceof Error ? e.message : String(e))
+    return NextResponse.json({ error: '업로드 처리 중 오류가 발생했습니다.' }, { status: 500 })
   }
 }

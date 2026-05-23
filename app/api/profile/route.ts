@@ -44,34 +44,39 @@ export async function PATCH(request: NextRequest) {
   const updates: Record<string, string | null> = { name: name.trim() }
   if (phone !== undefined) updates.phone = phone.trim() || null
 
-  // supabaseAdmin으로 RLS 우회
-  const { error } = await supabaseAdmin
-    .from('profiles')
-    .update(updates)
-    .eq('id', user.id)
+  try {
+    // supabaseAdmin으로 RLS 우회
+    const { error } = await supabaseAdmin
+      .from('profiles')
+      .update(updates)
+      .eq('id', user.id)
 
-  if (error) {
-    console.error('[PATCH /api/profile] error:', error)
-    return NextResponse.json({ error: '정보 수정 중 오류가 발생했습니다.' }, { status: 500 })
-  }
+    if (error) {
+      console.error('[PATCH /api/profile] error:', error)
+      return NextResponse.json({ error: '정보 수정 중 오류가 발생했습니다.' }, { status: 500 })
+    }
 
-  // ── 자동 재매칭: actor_id 없는 사용자가 이름/전화번호 변경 시 ──────────────
-  let matched = false
-  let actorId: string | undefined
-  if (phone && name) {
-    const { data: profile } = await supabaseAdmin
-      .from('profiles').select('actor_id, role').eq('id', user.id).maybeSingle()
-    const needsMatch = !profile?.actor_id && (profile?.role === 'actor' || profile?.role === 'member')
-    if (needsMatch) {
-      try {
-        const result = await matchActorOnSignup(user.id, name.trim(), phone.trim())
-        matched = result.matched
-        actorId = result.actorId
-      } catch (e) {
-        console.error('[PATCH /api/profile] 재매칭 오류:', e)
+    // ── 자동 재매칭: actor_id 없는 사용자가 이름/전화번호 변경 시 ──────────────
+    let matched = false
+    let actorId: string | undefined
+    if (phone && name) {
+      const { data: profile } = await supabaseAdmin
+        .from('profiles').select('actor_id, role').eq('id', user.id).maybeSingle()
+      const needsMatch = !profile?.actor_id && (profile?.role === 'actor' || profile?.role === 'member')
+      if (needsMatch) {
+        try {
+          const result = await matchActorOnSignup(user.id, name.trim(), phone.trim())
+          matched = result.matched
+          actorId = result.actorId
+        } catch (e) {
+          console.error('[PATCH /api/profile] 재매칭 오류:', e)
+        }
       }
     }
-  }
 
-  return NextResponse.json({ success: true, matched, actorId })
+    return NextResponse.json({ success: true, matched, actorId })
+  } catch (err) {
+    console.error('[PATCH /api/profile] 예상치 못한 오류:', err instanceof Error ? err.message : String(err))
+    return NextResponse.json({ error: '정보 수정 중 오류가 발생했습니다.' }, { status: 500 })
+  }
 }

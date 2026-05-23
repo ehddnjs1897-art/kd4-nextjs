@@ -114,7 +114,10 @@ export async function POST(request: NextRequest, { params }: Ctx) {
         })
         .eq('id', item.id)
         .eq('actor_id', actorId)
-        .then(({ error }) => ({ id: item.id, ok: !error, error: error?.message }))
+        .then(({ error }) => {
+          if (error) console.error('[filmography/bulk] UPDATE 오류:', error.message)
+          return { id: item.id, ok: !error }
+        })
     )
 
     // sort_order: 기존 최대 sort_order 이후로 이어서 삽입
