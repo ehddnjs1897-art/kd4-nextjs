@@ -115,8 +115,14 @@ export async function PATCH(
     }
     if (typeof body.casting_summary === 'string' && body.casting_summary.length > 2000)
       return NextResponse.json({ error: '캐스팅 소개는 2000자 이하로 입력해주세요.' }, { status: 400 })
-    if (typeof body.instagram === 'string' && body.instagram.length > 200)
-      return NextResponse.json({ error: '인스타그램은 200자 이하로 입력해주세요.' }, { status: 400 })
+    if (typeof body.instagram === 'string') {
+      if (body.instagram.length > 200)
+        return NextResponse.json({ error: '인스타그램은 200자 이하로 입력해주세요.' }, { status: 400 })
+      // 핸들(예: @username) 또는 https://instagram.com/... 형식만 허용
+      const ig = body.instagram.trim()
+      if (ig && !/^@?[\w.]{1,50}$/.test(ig) && !/^https?:\/\/(www\.)?instagram\.com\/[\w./?=#&%-]*$/.test(ig))
+        return NextResponse.json({ error: '인스타그램은 핸들(@username) 또는 인스타그램 URL 형식이어야 합니다.' }, { status: 400 })
+    }
     if (typeof body.name_en === 'string' && body.name_en.length > 100)
       return NextResponse.json({ error: '영문 이름은 100자 이하로 입력해주세요.' }, { status: 400 })
     if (typeof body.profile_doc_path === 'string' && body.profile_doc_path.length > 500)

@@ -10,14 +10,30 @@ import { matchActorOnSignup, linkEnrollmentsOnSignup } from '@/lib/actor-matchin
 
 const ELEVATED_ROLES = ['crew_pending', 'crew', 'editor', 'director_pending', 'director', 'admin']
 
+// 인메모리 레이트 리밋: 같은 userId로 60초 내 재요청 차단 (반복 DB 스캔 방어)
+const signupMap = new Map<string, number>()
+const COOLDOWN_MS = 60_000
+
 export async function POST() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
 
+  // 레이트 리밋: 60초 내 재호출 차단 (반복 actor-matching DB 스캔 방어)
+  const now = Date.now()
+  const last = signupMap.get(user.id)
+  if (last && now - last < COOLDOWN_MS) {
+    return NextResponse.json({ ok: true, skipped: true })
+  }
+  signupMap.set(user.id, now)
+  // 만료 항목 정리 — Map 무한 증가 방지
+  for (const [k, ts] of signupMap) { if (now - ts > COOLDOWN_MS) signupMap.delete(k) }
+
   // 사용자 메타데이터는 신뢰할 수 없는 입력 — 길이 제한 적용
   const name: string = (user.user_metadata?.name ?? '').toString().slice(0, 100)
-  const phone: string = (user.user_metadata?.phone ?? '').toString().slice(0, 20)
+  const rawPhone: string = (user.user_metadata?.phone ?? '').toString().slice(0, 20)
+  // 전화번호 형식 검증 — 잘못된 데이터가 actor-matching에 쓰이는 것을 방지
+  const phone: string = /^[+]?[\d\s\-().]{7,20}$/.test(rawPhone) ? rawPhone : ''
   // 사용자 메타데이터는 신뢰할 수 없는 값 — 허용 목록 외 값은 기본값으로 강제
   const ALLOWED_MEMBER_TYPES = new Set(['actor', 'director'])
   const rawMemberType: string = user.user_metadata?.member_type ?? 'actor'

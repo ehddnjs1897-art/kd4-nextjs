@@ -89,6 +89,7 @@ export default function SeowooCarousel() {
       {/* desktop arrows */}
       {active > 0 && (
         <button
+          type="button"
           onClick={prev}
           aria-label="이전"
           style={{
@@ -115,6 +116,7 @@ export default function SeowooCarousel() {
       )}
       {active < SLIDES.length - 1 && (
         <button
+          type="button"
           onClick={next}
           aria-label="다음"
           style={{
@@ -145,6 +147,7 @@ export default function SeowooCarousel() {
         {SLIDES.map((_, i) => (
           <button
             key={i}
+            type="button"
             onClick={() => scrollTo(i)}
             aria-label={`${i + 1}번 슬라이드`}
             aria-current={i === active ? 'true' : undefined}

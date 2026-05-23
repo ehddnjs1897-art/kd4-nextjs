@@ -50,7 +50,7 @@ export default function DirectorRequestButton() {
   return (
     <>
       {error && (
-        <p role="alert" style={{
+        <p role="alert" aria-live="assertive" style={{
           fontSize: '0.8rem',
           color: '#ff6b6b',
           padding: '8px 12px',

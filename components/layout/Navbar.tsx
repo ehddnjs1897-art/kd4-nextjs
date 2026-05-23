@@ -218,6 +218,7 @@ export default function Navbar() {
                 onMouseLeave={handleDropLeave}
               >
                 <button
+                  type="button"
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -407,6 +408,7 @@ export default function Navbar() {
 
             {/* 햄버거 */}
             <button
+              type="button"
               onClick={() => setMobileOpen(v => !v)}
               aria-label={mobileOpen ? '메뉴 닫기' : '메뉴 열기'}
               aria-expanded={mobileOpen}
@@ -501,6 +503,7 @@ export default function Navbar() {
               {isCrewApproved && (
                 <li style={{ borderBottom: '1px solid var(--border)' }}>
                   <button
+                    type="button"
                     onClick={() => setMobileCrewOpen(v => !v)}
                     aria-expanded={mobileCrewOpen}
                     aria-haspopup="menu"
