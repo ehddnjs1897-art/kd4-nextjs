@@ -222,6 +222,9 @@ export async function POST(request: NextRequest) {
     if (!url || !isSafeExternalUrl(url)) {
       return withCors(NextResponse.json({ error: '유효한 외부 URL을 입력해주세요.' }, { status: 400 }), origin)
     }
+    if (url.length > 2048) {
+      return withCors(NextResponse.json({ error: 'URL이 너무 깁니다.' }, { status: 400 }), origin)
+    }
     if (memo && memo.length > 2000) {
       return withCors(NextResponse.json({ error: 'memo는 2,000자 이하로 입력해주세요.' }, { status: 400 }), origin)
     }
@@ -236,7 +239,7 @@ export async function POST(request: NextRequest) {
       url,
       title: og.title ?? url,
       description: ai.description ?? (memo ? `- ${memo}` : null),
-      image_url: og.image_url ?? null,
+      image_url: (og.image_url && isSafeExternalUrl(og.image_url)) ? og.image_url : null,
       memo: memo ?? null,
       category: (ai.category ?? '기타') as InsightCategory,
       tags: (ai.tags ?? []) as string[],

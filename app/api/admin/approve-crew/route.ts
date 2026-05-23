@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
   const reqOrigin = request.headers.get('origin') ?? ''
   // referer==='' 는 허용하지 않음 — Referrer-Policy:no-referrer로 우회 가능
   const isSameSite = referer.startsWith(origin) || reqOrigin === origin
-  if (!isSameSite && referer !== '') {
+  if (!isSameSite) {
     return NextResponse.redirect(`${origin}/admin?error=invalid_request`)
   }
 

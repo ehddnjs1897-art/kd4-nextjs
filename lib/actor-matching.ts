@@ -38,6 +38,7 @@ export async function matchActorOnSignup(
   const { data: actors, error: fetchError } = await supabaseAdmin
     .from('actors')
     .select('id, name, phone')
+    .limit(500)
 
   if (fetchError) {
     console.error('[actor-matching] actors 조회 실패:', fetchError.message)

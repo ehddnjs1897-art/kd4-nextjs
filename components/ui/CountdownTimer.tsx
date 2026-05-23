@@ -13,6 +13,7 @@ function calcTimeLeft(deadline?: string) {
   const target = deadline
     ? new Date(deadline)
     : (() => { const d = new Date(); d.setHours(24, 0, 0, 0); return d })()
+  if (isNaN(target.getTime())) return { days: 0, h: 0, m: 0, s: 0, expired: true }
   const rawDiff = target.getTime() - Date.now()
   const diff = Math.max(0, rawDiff)
   return {

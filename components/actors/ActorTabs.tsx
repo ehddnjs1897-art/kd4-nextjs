@@ -472,7 +472,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                   onClick={() => { setAddingCat(isAdding ? null : cat); setEditingId(null) }}
                   disabled={saving}
                   style={s.addRowBtn}
-                  title="행 추가"
+                  aria-label="행 추가"
                 >＋ 추가</button>
               )}
             </h2>
@@ -480,12 +480,12 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
             <table style={s.table}>
               <thead>
                 <tr>
-                  <th style={{ ...s.th, width: 52 }}>연도</th>
-                  {isDrama && <th style={{ ...s.th, width: 76 }}>방송사</th>}
-                  {isFilm && <th style={{ ...s.th, width: 68 }}>구분</th>}
-                  <th style={s.th}>작품명</th>
-                  <th style={s.th}>역할</th>
-                  {canEdit && <th style={{ ...s.th, width: 64 }}></th>}
+                  <th scope="col" style={{ ...s.th, width: 52 }}>연도</th>
+                  {isDrama && <th scope="col" style={{ ...s.th, width: 76 }}>방송사</th>}
+                  {isFilm && <th scope="col" style={{ ...s.th, width: 68 }}>구분</th>}
+                  <th scope="col" style={s.th}>작품명</th>
+                  <th scope="col" style={s.th}>역할</th>
+                  {canEdit && <th scope="col" style={{ ...s.th, width: 64 }}></th>}
                 </tr>
               </thead>
               <tbody>

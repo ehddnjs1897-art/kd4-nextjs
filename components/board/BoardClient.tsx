@@ -247,7 +247,7 @@ export default function BoardClient({
             <p role="alert" style={{ color: '#e74c3c', fontSize: '0.875rem' }}>{fetchError}</p>
           </div>
         ) : posts.length === 0 ? (
-          <div style={{ padding: '60px 20px', textAlign: 'center', color: 'var(--gray)' }}>
+          <div role="status" style={{ padding: '60px 20px', textAlign: 'center', color: 'var(--gray)' }}>
             {searchQuery.trim()
               ? `"${searchQuery.trim()}"에 해당하는 게시글이 없습니다.`
               : `${activeCategory !== '전체' ? `${activeCategory} 카테고리에 ` : ''}게시글이 없습니다.`
