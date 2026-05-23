@@ -288,7 +288,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
 
         {/* 배우 그리드 + 검색 (클라이언트 컴포넌트) */}
         {dbError ? (
-          <div style={styles.emptyState}>
+          <div role="alert" style={styles.emptyState}>
             <p style={styles.emptyText}>데이터베이스 연결 오류가 발생했습니다.</p>
             <p style={{ fontSize: '0.8rem', color: 'var(--gray)', marginTop: '8px' }}>
               잠시 후 다시 시도해 주세요.

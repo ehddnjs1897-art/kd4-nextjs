@@ -18,6 +18,11 @@ import { revalidateTag } from '@/lib/revalidate'
 
 // 파일 크기 제한: 500MB (R2는 5TB까지 가능, 안전 한도)
 const MAX_SIZE_BYTES = 500 * 1024 * 1024
+
+// 업로드 레이트 리밋: 30분 내 5회 초과 차단 (R2 스토리지 남용 방어)
+const adminVideoUploadMap = new Map<string, number[]>()
+const ADMIN_VIDEO_UPLOAD_WINDOW_MS = 30 * 60_000
+const ADMIN_VIDEO_UPLOAD_MAX = 5
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-m4v', 'video/avi', 'video/x-matroska']
 const ALLOWED_VIDEO_EXT = ['mp4', 'webm', 'mov', 'avi', 'mkv', 'm4v']
@@ -25,7 +30,7 @@ const ALLOWED_VIDEO_EXT = ['mp4', 'webm', 'mov', 'avi', 'mkv', 'm4v']
 export const runtime = 'nodejs'
 export const maxDuration = 300 // 5분 (큰 영상 업로드 대응)
 
-async function requireAdmin() {
+async function requireAdmin(): Promise<{ userId: string } | NextResponse> {
   const supabase = await createClient()
   const {
     data: { user },
@@ -43,7 +48,7 @@ async function requireAdmin() {
   if (!profile || profile.role !== 'admin') {
     return NextResponse.json({ error: '관리자 권한이 필요합니다.' }, { status: 403 })
   }
-  return null
+  return { userId: user.id }
 }
 
 export async function POST(request: NextRequest) {
@@ -54,8 +59,16 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const authErr = await requireAdmin()
-  if (authErr) return authErr
+  const adminAuth = await requireAdmin()
+  if (adminAuth instanceof NextResponse) return adminAuth
+
+  // 레이트 리밋: 30분 내 5회 초과 차단
+  const nowAV = Date.now()
+  const avTimes = (adminVideoUploadMap.get(adminAuth.userId) ?? []).filter(t => nowAV - t < ADMIN_VIDEO_UPLOAD_WINDOW_MS)
+  if (avTimes.length >= ADMIN_VIDEO_UPLOAD_MAX) {
+    return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+  }
+  adminVideoUploadMap.set(adminAuth.userId, [...avTimes, nowAV])
 
   try {
     const formData = await request.formData()

@@ -53,6 +53,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
   }
   presignedReqMap.set(user.id, [...times, now])
+  if (presignedReqMap.size > 1000) {
+    const now2 = Date.now()
+    for (const [k, v] of presignedReqMap) {
+      if (v.every(t => now2 - t > PRESIGN_WINDOW_MS)) presignedReqMap.delete(k)
+    }
+  }
 
   const body = await request.json().catch(() => null)
   const filename = typeof body?.filename === 'string' ? body.filename.slice(0, 500) : ''

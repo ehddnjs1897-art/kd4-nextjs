@@ -267,6 +267,7 @@ export default function BenefitsPage() {
             href={KAKAO_CHANNEL_URL}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="카카오채널로 보강 신청하기 (새 탭에서 열림)"
             style={{
               display: 'inline-flex',
               alignItems: 'center',

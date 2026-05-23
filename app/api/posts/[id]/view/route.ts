@@ -36,9 +36,11 @@ export async function POST(
       return NextResponse.json({ ok: true })
     }
     viewCooldowns.set(cooldownKey, Date.now())
-    // 만료 항목 정리 — Map 무한 증가 방지
-    for (const [k, ts] of viewCooldowns) {
-      if (Date.now() - ts > VIEW_COOLDOWN_MS) viewCooldowns.delete(k)
+    // 만료 항목 정리 — 2000건 초과 시만 정리 (매 write마다 전체 순회 방지)
+    if (viewCooldowns.size > 2000) {
+      for (const [k, ts] of viewCooldowns) {
+        if (Date.now() - ts > VIEW_COOLDOWN_MS) viewCooldowns.delete(k)
+      }
     }
 
     await supabase.rpc('increment_views', { post_id: id })

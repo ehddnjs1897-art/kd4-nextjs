@@ -134,17 +134,17 @@ export default function SinchonPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div style={{ background: 'var(--navy)', color: '#fff', borderRadius: '14px', padding: '22px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-                  <MapPin size={18} strokeWidth={2} />
+                  <MapPin aria-hidden={true} size={18} strokeWidth={2} />
                   <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.78rem', letterSpacing: '0.12em', color: '#F0A8A8' }}>ADDRESS</span>
                 </div>
                 <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.02rem', fontWeight: 700, lineHeight: 1.5, wordBreak: 'keep-all' }}>{ADDRESS_FULL}</p>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                <a href={NAVER_MAP} target="_blank" rel="noopener noreferrer" style={mapBtn}>
-                  <Navigation size={15} strokeWidth={2} /> 네이버 지도
+                <a href={NAVER_MAP} target="_blank" rel="noopener noreferrer" aria-label="네이버 지도로 길찾기 (새 탭에서 열림)" style={mapBtn}>
+                  <Navigation aria-hidden={true} size={15} strokeWidth={2} /> 네이버 지도
                 </a>
-                <a href={KAKAO_MAP} target="_blank" rel="noopener noreferrer" style={mapBtn}>
-                  <MapIcon size={15} strokeWidth={2} /> 카카오맵
+                <a href={KAKAO_MAP} target="_blank" rel="noopener noreferrer" aria-label="카카오맵으로 길찾기 (새 탭에서 열림)" style={mapBtn}>
+                  <MapIcon aria-hidden={true} size={15} strokeWidth={2} /> 카카오맵
                 </a>
               </div>
             </div>
@@ -152,7 +152,7 @@ export default function SinchonPage() {
               {ACCESS_ITEMS.map(({ Icon, title, desc }) => (
                 <div key={title} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '10px', padding: '12px 14px' }}>
                   <div style={{ width: '32px', height: '32px', flexShrink: 0, borderRadius: '8px', background: 'var(--navy-tint-2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Icon size={16} color="var(--navy)" strokeWidth={1.9} />
+                    <Icon aria-hidden={true} size={16} color="var(--navy)" strokeWidth={1.9} />
                   </div>
                   <div>
                     <p style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '2px' }}>{title}</p>

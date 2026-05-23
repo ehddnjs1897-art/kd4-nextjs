@@ -98,7 +98,7 @@ export default function Footer() {
                 href={s.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={s.label}
+                aria-label={`${s.label} (새 탭에서 열림)`}
                 title={s.label}
                 onClick={s.label === '카카오 채널' ? () => pixel.contact() : undefined}
                 style={{

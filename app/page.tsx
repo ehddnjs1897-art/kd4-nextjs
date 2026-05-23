@@ -397,7 +397,7 @@ export default function HomePage() {
           }}
         >
           <span style={{ fontSize: "0.6rem", letterSpacing: "0.2em", color: "rgba(17,17,17,0.5)" }}>SCROLL</span>
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="rgba(17,17,17,0.5)" strokeWidth="1.5">
+          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="rgba(17,17,17,0.5)" strokeWidth="1.5">
             <path d="M8 3v10M3 9l5 5 5-5" />
           </svg>
         </div>
@@ -1139,7 +1139,7 @@ export default function HomePage() {
         <div className="review-marquee" style={{ marginBottom: "12px" }}>
           <div className="review-marquee-track">
             {[...REVIEW_ITEMS, ...REVIEW_ITEMS].map((r, i) => (
-              <div key={`${r.author}-${i}`} style={reviewCardStyle}>
+              <div key={`${r.author}-${i}`} aria-hidden={i >= REVIEW_ITEMS.length ? true : undefined} style={reviewCardStyle}>
                 <span aria-hidden="true" style={reviewEmojiStyle}>{r.emoji}</span>
                 <p style={reviewTextStyle}>&ldquo;{r.text}&rdquo; <span style={reviewAuthorStyle}>— {r.author}</span></p>
               </div>
@@ -1151,7 +1151,7 @@ export default function HomePage() {
         <div className="review-marquee reverse">
           <div className="review-marquee-track">
             {[...REVIEW_ITEMS_2, ...REVIEW_ITEMS_2].map((r, i) => (
-              <div key={`${r.author}-${i}`} style={reviewCardStyle}>
+              <div key={`${r.author}-${i}`} aria-hidden={i >= REVIEW_ITEMS_2.length ? true : undefined} style={reviewCardStyle}>
                 <span aria-hidden="true" style={reviewEmojiStyle}>{r.emoji}</span>
                 <p style={reviewTextStyle}>&ldquo;{r.text}&rdquo; <span style={reviewAuthorStyle}>— {r.author}</span></p>
               </div>

@@ -421,6 +421,7 @@ export default function ClassesPage() {
                 href="https://pf.kakao.com/_ximxdqn"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="카카오 채널 상담 (새 탭에서 열림)"
                 onClick={() => pixel.contact()}
                 style={{
                   display: 'inline-block', padding: '14px 32px',

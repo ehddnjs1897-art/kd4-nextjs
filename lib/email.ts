@@ -5,8 +5,9 @@ import 'server-only'
  * RESEND_API_KEY 없으면 콘솔 경고만 출력 (에러 안 냄)
  */
 
+import { SITE_URL } from '@/lib/constants'
+
 const ADMIN_EMAIL = 'uikactors@gmail.com'
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://kd4.club'
 // Resend 무료 플랜 기본 발신자 (도메인 인증 전까지)
 const FROM = 'KD4 알림 <onboarding@resend.dev>'
 

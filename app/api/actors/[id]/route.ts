@@ -10,6 +10,11 @@ import type { Actor, ActorDetail } from '@/lib/types'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
+// GET IP 레이트 리밋: 60 req/min
+const actorDetailGetMap = new Map<string, { count: number; resetAt: number }>()
+const ACTOR_DETAIL_GET_LIMIT = 60
+const ACTOR_DETAIL_GET_WINDOW_MS = 60_000
+
 // PATCH 레이트 리밋: 30초 냉각
 const actorPatchMap = new Map<string, number>()
 const PATCH_COOLDOWN_MS = 30_000
@@ -23,6 +28,28 @@ export async function GET(
 
     if (!id || !UUID_RE.test(id)) {
       return NextResponse.json({ error: '배우 ID가 필요합니다.' }, { status: 400 })
+    }
+
+    // IP 레이트 리밋: 1분 60회 초과 차단
+    const ipAD = request.headers.get('x-real-ip')
+      ?? request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+      ?? null
+    if (ipAD) {
+      const nowAD = Date.now()
+      const bucketAD = actorDetailGetMap.get(ipAD)
+      if (bucketAD && nowAD < bucketAD.resetAt) {
+        if (bucketAD.count >= ACTOR_DETAIL_GET_LIMIT) {
+          return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+        }
+        bucketAD.count++
+      } else {
+        actorDetailGetMap.set(ipAD, { count: 1, resetAt: nowAD + ACTOR_DETAIL_GET_WINDOW_MS })
+        if (actorDetailGetMap.size > 2000) {
+          for (const [k, v] of actorDetailGetMap) {
+            if (nowAD > v.resetAt) actorDetailGetMap.delete(k)
+          }
+        }
+      }
     }
 
     // 로그인 여부 + 역할 확인

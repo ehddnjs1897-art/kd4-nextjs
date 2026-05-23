@@ -6,6 +6,11 @@ import type { InsightSourceType, InsightCategory } from '@/lib/types'
 
 const BUCKET = 'insights'
 
+// 업로드 레이트 리밋: 5분 내 20회 초과 차단 (스토리지 쿼터 보호)
+const insightsUploadMap = new Map<string, number[]>()
+const INSIGHTS_UPLOAD_WINDOW_MS = 5 * 60_000
+const INSIGHTS_UPLOAD_MAX = 20
+
 const ALLOWED_TYPES: Record<string, string> = {
   'image/jpeg': 'jpg',
   'image/png': 'png',
@@ -30,6 +35,19 @@ async function requireAdmin(): Promise<{ userId: string } | NextResponse> {
 export async function POST(request: NextRequest) {
   const auth = await requireAdmin()
   if (auth instanceof NextResponse) return auth
+
+  // 레이트 리밋: 5분 내 20회 초과 차단
+  const nowU = Date.now()
+  const uploadTimes = (insightsUploadMap.get(auth.userId) ?? []).filter(t => nowU - t < INSIGHTS_UPLOAD_WINDOW_MS)
+  if (uploadTimes.length >= INSIGHTS_UPLOAD_MAX) {
+    return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+  }
+  insightsUploadMap.set(auth.userId, [...uploadTimes, nowU])
+  if (insightsUploadMap.size > 100) {
+    for (const [k, v] of insightsUploadMap) {
+      if (v.every(t => nowU - t > INSIGHTS_UPLOAD_WINDOW_MS)) insightsUploadMap.delete(k)
+    }
+  }
 
   try {
     const formData = await request.formData()

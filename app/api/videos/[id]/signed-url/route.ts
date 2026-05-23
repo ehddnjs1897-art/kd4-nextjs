@@ -17,6 +17,11 @@ import { getVideoSignedUrl, isR2Configured } from '@/lib/r2'
 const MAX_EXPIRY_SEC = 7 * 24 * 60 * 60 // 7일
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
+// GET 레이트 리밋: 60 req/min per user (R2 egress 남용 방어)
+const signedUrlMap = new Map<string, { count: number; resetAt: number }>()
+const SIGNED_URL_LIMIT = 60
+const SIGNED_URL_WINDOW_MS = 60_000
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -36,6 +41,23 @@ export async function GET(
       { error: '영상 시청은 멤버 인증이 필요합니다.' },
       { status: 401 }
     )
+  }
+
+  // 레이트 리밋: 1분 60회 초과 차단 (R2 egress 남용 방어)
+  const nowSU = Date.now()
+  const bucketSU = signedUrlMap.get(user.id)
+  if (bucketSU && nowSU < bucketSU.resetAt) {
+    if (bucketSU.count >= SIGNED_URL_LIMIT) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
+    bucketSU.count++
+  } else {
+    signedUrlMap.set(user.id, { count: 1, resetAt: nowSU + SIGNED_URL_WINDOW_MS })
+    if (signedUrlMap.size > 1000) {
+      for (const [k, v] of signedUrlMap) {
+        if (nowSU > v.resetAt) signedUrlMap.delete(k)
+      }
+    }
   }
 
   // role 확인 — admin/crew/editor/director는 모든 영상 접근 가능, actor는 본인 영상만

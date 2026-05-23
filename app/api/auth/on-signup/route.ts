@@ -26,8 +26,10 @@ export async function POST() {
     return NextResponse.json({ ok: true, skipped: true })
   }
   signupMap.set(user.id, now)
-  // 만료 항목 정리 — Map 무한 증가 방지
-  for (const [k, ts] of signupMap) { if (now - ts > COOLDOWN_MS) signupMap.delete(k) }
+  // 만료 항목 정리 — 500건 초과 시만 정리 (매 write마다 전체 순회 방지)
+  if (signupMap.size > 500) {
+    for (const [k, ts] of signupMap) { if (now - ts > COOLDOWN_MS) signupMap.delete(k) }
+  }
 
   // 사용자 메타데이터는 신뢰할 수 없는 입력 — 길이 제한 적용
   const name: string = (user.user_metadata?.name ?? '').toString().slice(0, 100)

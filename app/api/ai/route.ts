@@ -40,6 +40,10 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const contentLengthAI = parseInt(request.headers.get('content-length') ?? '0', 10)
+    if (contentLengthAI > 32_768) {
+      return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+    }
     const { scriptText, characterName } = await request.json()
 
     if (!scriptText?.trim() || !characterName?.trim()) {
