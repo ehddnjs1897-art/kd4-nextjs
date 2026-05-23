@@ -95,6 +95,7 @@ function GamePlayInner() {
 
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
+      <h1 className="sr-only">OFF THE PLASTIC — 게임 플레이</h1>
       <SpotlightRush key={gameKey} callbacks={callbacks} character={character} />
       <GameUI
         score={score}

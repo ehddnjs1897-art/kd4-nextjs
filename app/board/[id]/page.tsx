@@ -147,7 +147,7 @@ export default async function PostDetailPage({ params }: { params: Params }) {
           <span aria-hidden="true">← </span>목록으로
         </Link>
 
-        <article>
+        <article aria-labelledby="post-title">
         {/* 게시글 헤더 */}
         <div style={{
           borderBottom: '1px solid var(--border)',
@@ -157,7 +157,7 @@ export default async function PostDetailPage({ params }: { params: Params }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
             <CategoryBadge category={typedPost.category} />
           </div>
-          <h1 style={{
+          <h1 id="post-title" style={{
             fontFamily: 'var(--font-sans)',
             fontSize: 'clamp(1.3rem, 2.5vw, 1.8rem)',
             fontWeight: 700,

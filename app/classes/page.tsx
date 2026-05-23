@@ -372,6 +372,7 @@ export default function ClassesPage() {
             <div key={filter} style={{ marginBottom: '16px' }}>
               <button
                 type="button"
+                id={`btn-${filter}`}
                 aria-expanded={open}
                 aria-controls={`step-${filter}-panel`}
                 onClick={() => setOpen((o: boolean) => !o)}
@@ -389,7 +390,7 @@ export default function ClassesPage() {
                 <span style={{ fontSize: '0.85rem', color: 'var(--gray)', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s', display: 'inline-block', marginTop: '4px' }}>▼</span>
               </button>
               {open && (
-                <div id={`step-${filter}-panel`} className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: '12px', opacity: 0.85 }}>
+                <div id={`step-${filter}-panel`} role="region" aria-labelledby={`btn-${filter}`} className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: '12px', opacity: 0.85 }}>
                   {CLASSES.filter(c => c.category === filter).map((cls, i) => <ClassCard key={i} cls={cls} />)}
                 </div>
               )}

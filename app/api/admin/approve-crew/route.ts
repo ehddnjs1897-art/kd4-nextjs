@@ -126,7 +126,7 @@ export async function GET(request: NextRequest) {
       mapped.role === 'director'
         ? `[KD4] 디렉터 승인 완료\n${safeName}님, 디렉터 권한이 승인되었습니다.\n배우 연락처 열람·프로필 다운로드가 가능합니다.`
         : `[KD4] 크루 승인 완료\n${safeName}님, KD4 크루 권한이 승인되었습니다.\n커뮤니티·배우 DB·대본 분석 이용 가능합니다.`
-    sendSMS(target.phone, msg).catch((err: unknown) =>
+    sendSMS(target.phone.replace(/[\r\n\t]/g, ''), msg).catch((err: unknown) =>
       console.error('[approve-crew] SMS 실패:', err instanceof Error ? err.message : '알 수 없는 오류')
     )
   }
