@@ -19,6 +19,8 @@ export const metadata: Metadata = {
     images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 마이페이지' }],
   },
 }
+
+export const dynamic = 'force-dynamic'
 import LogoutButton from '@/components/layout/LogoutButton'
 import CrewRequestButton from '@/components/dashboard/CrewRequestButton'
 import DirectorRequestButton from '@/components/dashboard/DirectorRequestButton'

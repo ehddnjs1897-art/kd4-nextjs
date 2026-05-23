@@ -3,6 +3,10 @@ import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
 import { SITE_URL } from '@/lib/constants'
+
+// 인사이트 PATCH/DELETE 레이트 리밋 (admin 전용이지만 세션 탈취 방어)
+const insightMutateMap = new Map<string, number>()
+const INSIGHT_COOLDOWN_MS = 5_000
 const ALLOWED_ORIGINS = new Set([
   SITE_URL,
   ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:3000'] : []),
@@ -49,6 +53,17 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   try {
     const auth = await requireAdmin()
     if (auth instanceof NextResponse) return withCors(auth, origin)
+    const { userId: insightUserId } = auth as { userId: string }
+    const nowIM = Date.now()
+    const lastIM = insightMutateMap.get(insightUserId) ?? 0
+    if (nowIM - lastIM < INSIGHT_COOLDOWN_MS) {
+      return withCors(NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 }), origin)
+    }
+    insightMutateMap.set(insightUserId, nowIM)
+    if (insightMutateMap.size > 200) {
+      const cutoffIM = nowIM - INSIGHT_COOLDOWN_MS
+      for (const [k, v] of insightMutateMap) { if (v < cutoffIM) insightMutateMap.delete(k) }
+    }
 
     const { id } = await params
     if (!UUID_RE.test(id)) {
@@ -103,6 +118,12 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
   try {
     const auth = await requireAdmin()
     if (auth instanceof NextResponse) return withCors(auth, origin)
+    const { userId: insightDelUserId } = auth as { userId: string }
+    const nowDel = Date.now()
+    if (nowDel - (insightMutateMap.get(insightDelUserId) ?? 0) < INSIGHT_COOLDOWN_MS) {
+      return withCors(NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 }), origin)
+    }
+    insightMutateMap.set(insightDelUserId, nowDel)
 
     const { id } = await params
     if (!UUID_RE.test(id)) {

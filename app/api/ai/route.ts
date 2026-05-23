@@ -29,9 +29,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: `${wait}초 후 다시 시도해주세요.` }, { status: 429 })
   }
   aiCooldowns.set(user.id, now)
-  // 1분 이상 지난 항목 정리 (메모리 누수 방지)
-  for (const [uid, ts] of aiCooldowns) {
-    if (now - ts > 60_000) aiCooldowns.delete(uid)
+  // 1분 이상 지난 항목 정리 (메모리 누수 방지 — 500건 초과 시만 순회)
+  if (aiCooldowns.size > 500) {
+    for (const [uid, ts] of aiCooldowns) {
+      if (now - ts > 60_000) aiCooldowns.delete(uid)
+    }
   }
 
   const apiKey = process.env.GEMINI_KEY // NEXT_PUBLIC_ 접두사 제거 — 서버 전용
