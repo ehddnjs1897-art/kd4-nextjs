@@ -100,10 +100,13 @@ export async function PATCH(
     }
 
     // Defence-in-depth: also filter by the owner's user_id to prevent TOCTOU race
-    const { error } = await supabaseAdmin.from('enrollments').update(update).eq('id', id).eq('user_id', enr.user_id)
+    const { data: updated, error } = await supabaseAdmin.from('enrollments').update(update).eq('id', id).eq('user_id', enr.user_id).select('id').maybeSingle()
     if (error) {
       console.error('[PATCH /api/enrollments/[id]]', error.message)
       return NextResponse.json({ error: '변경 중 오류가 발생했습니다.' }, { status: 500 })
+    }
+    if (!updated) {
+      return NextResponse.json({ error: '수정할 항목을 찾을 수 없습니다.' }, { status: 404 })
     }
 
     return NextResponse.json({ ok: true })

@@ -15,13 +15,13 @@ const signupMap = new Map<string, number>()
 const COOLDOWN_MS = 60_000
 
 export async function POST(request: NextRequest) {
-  // 본문 크기 검증 (이 엔드포인트는 body를 파싱하지 않지만 대용량 요청 차단)
-  const clSignup = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
-  if (clSignup > 256) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
-
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
+
+  // 본문 크기 검증 (이 엔드포인트는 body를 파싱하지 않지만 대용량 요청 차단)
+  const clSignup = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
+  if (clSignup > 256) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
 
   // 레이트 리밋: 60초 내 재호출 차단 (반복 actor-matching DB 스캔 방어)
   const now = Date.now()

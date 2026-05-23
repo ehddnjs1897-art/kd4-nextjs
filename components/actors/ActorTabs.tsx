@@ -377,7 +377,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                   <div style={s.videoWrapper}>
                     <iframe
                       src={`https://www.youtube.com/embed/${video.youtube_id}`}
-                      title={video.title || actor.name}
+                      title={video.title || `${actor.name} 출연영상`}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                       loading="lazy"

@@ -100,7 +100,7 @@ export default function CoachPage() {
               권동원 — 액팅 코치 <span style={{ color: '#F0A8A8' }}>(리더)</span>
             </h1>
             <p style={{ fontSize: 'clamp(0.95rem, 2.4vw, 1.08rem)', color: 'rgba(255,255,255,0.82)', lineHeight: 1.75, maxWidth: '600px', margin: '0 auto', wordBreak: 'keep-all' }}>
-              {DIRECTOR.title}. Disney+ 무빙2, Netflix 중증외상센터 출연 중. LA Meisner Workshop 수료.
+              {DIRECTOR.title}. <span lang="en">Disney+</span> 무빙2, <span lang="en">Netflix</span> 중증외상센터 출연 중. <span lang="en">LA Meisner Workshop</span> 수료.
             </p>
           </div>
 

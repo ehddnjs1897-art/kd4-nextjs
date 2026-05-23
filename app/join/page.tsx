@@ -169,8 +169,7 @@ export default function JoinPage() {
 
   return (
     <>
-      <main
-        id="main-content"
+      <div
         className="uplift-page"
         style={{
           background: 'var(--bg)',
@@ -1596,7 +1595,7 @@ export default function JoinPage() {
       </section>
 
       <StickyBottomCTA />
-      </main>
+      </div>
     </>
   )
 }

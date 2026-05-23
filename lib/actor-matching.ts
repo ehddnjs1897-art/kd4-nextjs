@@ -115,7 +115,11 @@ export async function linkEnrollmentsOnSignup(
     .is('user_id', null)
     .eq('name', trimmed)
     .limit(10)
-  if (actorId) selectQ = selectQ.eq('actor_id', actorId)
+  if (actorId) {
+    selectQ = selectQ.eq('actor_id', actorId)
+  } else {
+    selectQ = selectQ.is('actor_id', null)
+  }
   const { data: matches, error: selectErr } = await selectQ
 
   if (selectErr) {

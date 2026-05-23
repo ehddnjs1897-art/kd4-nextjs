@@ -92,7 +92,7 @@ export default function SinchonPage() {
       <section aria-label="찾아오시는 길" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
-            <p className="section-eyebrow">01 — LOCATION</p>
+            <p className="section-eyebrow"><span lang="en">01 — LOCATION</span></p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>찾아오시는 길</h2>
             <p className="section-desc">이대역 5번 출구 → 예스APM·가인볼링장 코너에서 이화여대1길로, 도보 약 3분.</p>
           </div>

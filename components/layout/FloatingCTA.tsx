@@ -91,7 +91,7 @@ export default function FloatingCTA() {
             e.currentTarget.style.transform = 'translateY(0)'
           }}
         >
-          상담 신청 →
+          상담 신청 <span aria-hidden="true">→</span>
         </Link>
       </div>
     </>
