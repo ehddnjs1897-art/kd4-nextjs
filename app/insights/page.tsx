@@ -192,7 +192,7 @@ export default function InsightsPage() {
       `}</style>
 
       <div style={{ maxWidth: 960, margin: '0 auto', padding: '40px 20px' }}>
-        <h1 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 700, marginBottom: 4 }}>인사이트 📎</h1>
+        <h1 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 700, marginBottom: 4 }}>인사이트 <span aria-hidden="true">📎</span></h1>
         <p style={{ color: 'var(--gray)', fontSize: 13, marginBottom: 32 }}>
           보다가 좋았던 영상·블로그 링크를 모아두는 공간 · 총 {total}개
         </p>
