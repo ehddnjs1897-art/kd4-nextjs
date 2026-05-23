@@ -1920,6 +1920,7 @@ main {
 .partner-marquee {
   overflow: hidden;
   width: 100%;
+  padding: 8px 0;
   mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
 }
@@ -1928,22 +1929,21 @@ main {
   display: flex;
   width: max-content;
   align-items: center;
-  animation: partnerScroll 45s linear infinite;
+  animation: partnerScroll 30s linear infinite;
 }
 
 .partner-marquee-item {
   flex: 0 0 auto;
   font-family: var(--font-sans);
-  font-size: 0.82rem;
-  color: var(--secondary);
-  letter-spacing: 0.03em;
+  font-size: 0.9rem;
+  color: rgba(17, 17, 17, 0.7);
+  letter-spacing: 0.05em;
   white-space: nowrap;
-  opacity: 0.55;
-}
-
-.partner-marquee-dot {
-  color: var(--border);
-  margin: 0 4px;
+  padding: 10px 20px;
+  margin-right: 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
 }
 
 @keyframes partnerScroll {

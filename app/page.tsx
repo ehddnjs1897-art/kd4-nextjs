@@ -42,7 +42,8 @@ const REVIEW_ITEMS_2 = [
 ]
 
 const PARTNERS = [
-  '서우스튜디오', '리플레이', 'CGV 신촌아트레온 아트하우스',
+  '서울대학교', '고려대학교', 'Needs.N', '컴플렉시온',
+  '서우스튜디오', '리플레이', 'CGV 아트하우스',
 ]
 
 const reviewCardStyle: React.CSSProperties = {
@@ -1163,15 +1164,15 @@ export default function HomePage() {
       </section>
 
       {/* ── Partners ─────────────────────────────────────────────────────────── */}
-      <section style={{ padding: 'clamp(32px, 5vw, 56px) 0', borderTop: '1px solid var(--border)' }}>
-        <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.65rem', letterSpacing: '0.3em', color: 'var(--secondary)', textTransform: 'uppercase', textAlign: 'center', marginBottom: '20px', opacity: 0.45 }}>
-          PARTNERS &amp; COLLABORATORS
+      <section style={{ padding: '48px 0', borderTop: '1px solid var(--border)' }}>
+        <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.3em', color: 'var(--secondary)', textTransform: 'uppercase', textAlign: 'center', marginBottom: '28px', opacity: 0.6 }}>
+          CLIENTS &amp; COLLABORATORS
         </p>
         <div className="partner-marquee">
           <div className="partner-marquee-track">
             {[...PARTNERS, ...PARTNERS].map((p, i) => (
               <span key={`${p}-${i}`} className="partner-marquee-item">
-                {p}<span className="partner-marquee-dot" aria-hidden> · </span>
+                {p}
               </span>
             ))}
           </div>
