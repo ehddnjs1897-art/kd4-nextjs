@@ -93,14 +93,16 @@ export async function POST(request: NextRequest) {
     // x-forwarded-for의 첫 번째 항목은 클라이언트가 조작할 수 있어 신뢰도가 낮음
     const ip = request.headers.get('x-real-ip')
       ?? request.headers.get('x-forwarded-for')?.split(',').at(-1)?.trim()
-      ?? 'unknown'
-    const { count: ipCount } = await getSupabaseAdmin()
-      .from('consultations')
-      .select('id', { count: 'exact', head: true })
-      .eq('raw_payload->>ip', ip)
-      .gte('created_at', fiveMinAgo)
-    if ((ipCount ?? 0) >= 10) {
-      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+      ?? null  // null: IP 불명 시 'unknown' 공유 버킷 DoS 방지 — IP 레이트 리밋 건너뜀
+    if (ip) {
+      const { count: ipCount } = await getSupabaseAdmin()
+        .from('consultations')
+        .select('id', { count: 'exact', head: true })
+        .eq('raw_payload->>ip', ip)
+        .gte('created_at', fiveMinAgo)
+      if ((ipCount ?? 0) >= 10) {
+        return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+      }
     }
 
     // 1. Supabase에 무조건 먼저 기록 — webhook·SMS 실패와 무관하게 데이터 보존

@@ -53,7 +53,8 @@ export async function GET(request: NextRequest) {
     // 페이지네이션 — 한 번에 최대 500행. page 쿼리로 추가 페이지 조회 가능
     const { searchParams } = new URL(request.url)
     const PAGE_SIZE = 500
-    const page = Math.max(0, parseInt(searchParams.get('page') ?? '0', 10))
+    const rawPage = parseInt(searchParams.get('page') ?? '0', 10)
+    const page = Math.max(0, Number.isFinite(rawPage) ? rawPage : 0)
     const from = page * PAGE_SIZE
 
     const { data, error, count } = await supabaseAdmin
@@ -83,9 +84,15 @@ export async function PATCH(request: NextRequest) {
   const check = await requireAdmin()
   if (check instanceof NextResponse) return check
 
+  let body: { id?: string; role?: string }
   try {
-    const body = await request.json()
-    const { id, role } = body as { id?: string; role?: string }
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })
+  }
+
+  try {
+    const { id, role } = body
 
     if (!id || !UUID_RE.test(id)) {
       return NextResponse.json(

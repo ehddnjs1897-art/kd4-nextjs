@@ -55,41 +55,41 @@ export async function GET(request: NextRequest) {
 
 // POST /api/posts
 export async function POST(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user }, error: authError } = await supabase.auth.getUser()
-
-  if (authError || !user) {
-    return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
-  }
-
-  let body: { title?: string; content?: string; category?: string }
   try {
-    body = await request.json()
-  } catch {
-    return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })
-  }
+    const supabase = await createClient()
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
 
-  const { title, content, category = '질문' } = body
+    if (authError || !user) {
+      return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
+    }
 
-  if (!title || title.trim().length === 0) {
-    return NextResponse.json({ error: '제목을 입력해주세요.' }, { status: 400 })
-  }
-  if (title.trim().length > 200) {
-    return NextResponse.json({ error: '제목은 200자 이하로 입력해주세요.' }, { status: 400 })
-  }
-  if (!content || content.trim().length === 0) {
-    return NextResponse.json({ error: '내용을 입력해주세요.' }, { status: 400 })
-  }
-  if (content.trim().length > 10000) {
-    return NextResponse.json({ error: '내용은 10,000자 이하로 입력해주세요.' }, { status: 400 })
-  }
+    let body: { title?: string; content?: string; category?: string }
+    try {
+      body = await request.json()
+    } catch {
+      return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })
+    }
 
-  const validCategories = ['일반', '공지', '질문', '자유', '수업']
-  if (!validCategories.includes(category)) {
-    return NextResponse.json({ error: '올바른 카테고리를 선택해주세요.' }, { status: 400 })
-  }
-
-  try {
+    const { title, content, category = '질문' } = body
+  
+    if (!title || title.trim().length === 0) {
+      return NextResponse.json({ error: '제목을 입력해주세요.' }, { status: 400 })
+    }
+    if (title.trim().length > 200) {
+      return NextResponse.json({ error: '제목은 200자 이하로 입력해주세요.' }, { status: 400 })
+    }
+    if (!content || content.trim().length === 0) {
+      return NextResponse.json({ error: '내용을 입력해주세요.' }, { status: 400 })
+    }
+    if (content.trim().length > 10000) {
+      return NextResponse.json({ error: '내용은 10,000자 이하로 입력해주세요.' }, { status: 400 })
+    }
+  
+    const validCategories = ['일반', '공지', '질문', '자유', '수업']
+    if (!validCategories.includes(category)) {
+      return NextResponse.json({ error: '올바른 카테고리를 선택해주세요.' }, { status: 400 })
+    }
+  
     // 레이트 리밋: 1분에 최대 5개 (스팸 방지)
     const oneMinAgo = new Date(Date.now() - 60_000).toISOString()
     const { count: recentPostCount } = await supabaseAdmin

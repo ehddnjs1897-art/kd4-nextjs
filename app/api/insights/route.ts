@@ -168,41 +168,46 @@ function sanitizeSearchTerm(s: string): string {
 // GET /api/insights?category=연기&source_type=video&favorite=true&q=검색어
 export async function GET(request: NextRequest) {
   const origin = request.headers.get('origin')
-  const auth = await requireAdmin()
-  if (auth instanceof NextResponse) return withCors(auth, origin)
+  try {
+    const auth = await requireAdmin()
+    if (auth instanceof NextResponse) return withCors(auth, origin)
 
-  const { searchParams } = new URL(request.url)
-  const category = searchParams.get('category')
-  const sourceType = searchParams.get('source_type')
-  const favorite = searchParams.get('favorite')
-  const q = searchParams.get('q')
-  // parseInt → NaN 방어: ?limit=abc 같은 잘못된 쿼리 파라미터 시 .range(NaN, NaN) → DB 500 방지
-  const rawLimit = parseInt(searchParams.get('limit') ?? '50', 10)
-  const rawOffset = parseInt(searchParams.get('offset') ?? '0', 10)
-  const limit = Number.isFinite(rawLimit) ? Math.min(100, Math.max(1, rawLimit)) : 50
-  const offset = Number.isFinite(rawOffset) ? Math.max(0, rawOffset) : 0
+    const { searchParams } = new URL(request.url)
+    const category = searchParams.get('category')
+    const sourceType = searchParams.get('source_type')
+    const favorite = searchParams.get('favorite')
+    const q = searchParams.get('q')
+    // parseInt → NaN 방어: ?limit=abc 같은 잘못된 쿼리 파라미터 시 .range(NaN, NaN) → DB 500 방지
+    const rawLimit = parseInt(searchParams.get('limit') ?? '50', 10)
+    const rawOffset = parseInt(searchParams.get('offset') ?? '0', 10)
+    const limit = Number.isFinite(rawLimit) ? Math.min(100, Math.max(1, rawLimit)) : 50
+    const offset = Number.isFinite(rawOffset) ? Math.max(0, rawOffset) : 0
 
-  let query = supabaseAdmin
-    .from('insights')
-    .select('id, url, title, description, image_url, memo, category, tags, source_type, is_favorite, created_at', { count: 'exact' })
-    .order('created_at', { ascending: false })
+    let query = supabaseAdmin
+      .from('insights')
+      .select('id, url, title, description, image_url, memo, category, tags, source_type, is_favorite, created_at', { count: 'exact' })
+      .order('created_at', { ascending: false })
 
-  if (category && VALID_CATEGORIES.has(category) && category !== '전체') query = query.eq('category', category)
-  if (sourceType && VALID_SOURCE_TYPES.has(sourceType) && sourceType !== '전체') query = query.eq('source_type', sourceType)
-  if (favorite === 'true') query = query.eq('is_favorite', true)
-  if (q) {
-    const safe = sanitizeSearchTerm(q)
-    if (safe) query = query.or(`title.ilike.%${safe}%,description.ilike.%${safe}%,memo.ilike.%${safe}%`)
+    if (category && VALID_CATEGORIES.has(category) && category !== '전체') query = query.eq('category', category)
+    if (sourceType && VALID_SOURCE_TYPES.has(sourceType) && sourceType !== '전체') query = query.eq('source_type', sourceType)
+    if (favorite === 'true') query = query.eq('is_favorite', true)
+    if (q) {
+      const safe = sanitizeSearchTerm(q)
+      if (safe) query = query.or(`title.ilike.%${safe}%,description.ilike.%${safe}%,memo.ilike.%${safe}%`)
+    }
+
+    const { data, error, count } = await query.range(offset, offset + limit - 1)
+
+    if (error) {
+      console.error('[GET /api/insights]', error.message)
+      return withCors(NextResponse.json({ error: '데이터 조회 중 오류가 발생했습니다.' }, { status: 500 }), origin)
+    }
+
+    return withCors(NextResponse.json({ data: data ?? [], total: count ?? 0 }), origin)
+  } catch (err) {
+    console.error('[GET /api/insights] 예상치 못한 오류:', err instanceof Error ? err.message : String(err))
+    return withCors(NextResponse.json({ error: '서버 오류가 발생했습니다.' }, { status: 500 }), origin)
   }
-
-  const { data, error, count } = await query.range(offset, offset + limit - 1)
-
-  if (error) {
-    console.error('[GET /api/insights]', error.message)
-    return withCors(NextResponse.json({ error: '데이터 조회 중 오류가 발생했습니다.' }, { status: 500 }), origin)
-  }
-
-  return withCors(NextResponse.json({ data: data ?? [], total: count ?? 0 }), origin)
 }
 
 // POST /api/insights

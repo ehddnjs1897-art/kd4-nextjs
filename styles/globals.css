@@ -2094,6 +2094,12 @@ main {
   to { transform: rotate(360deg); }
 }
 
+/* 스켈레톤 로딩 애니메이션 — loading.tsx pulse 인라인 스타일 연동 */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
+}
+
 /* === SKIP NAV === */
 .skip-nav {
   position: absolute;

@@ -232,6 +232,7 @@ export default function EnrollForm({
                 <button
                   key={t}
                   type="button"
+                  aria-pressed={active}
                   onClick={() => handleTypeChange(t)}
                   style={{
                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -292,6 +293,7 @@ export default function EnrollForm({
                   <button
                     key={c.nameKo}
                     type="button"
+                    aria-pressed={on}
                     onClick={() => toggle(c.nameKo)}
                     style={{
                       display: 'flex', alignItems: 'flex-start', gap: 14,

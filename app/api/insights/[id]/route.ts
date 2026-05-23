@@ -43,65 +43,75 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 // PATCH /api/insights/[id]
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const origin = request.headers.get('origin')
-  const auth = await requireAdmin()
-  if (auth instanceof NextResponse) return withCors(auth, origin)
-
-  const { id } = await params
-  if (!UUID_RE.test(id)) {
-    return withCors(NextResponse.json({ error: '잘못된 ID입니다.' }, { status: 400 }), origin)
-  }
-  let body: Record<string, unknown>
   try {
-    body = await request.json()
-  } catch {
-    return withCors(NextResponse.json({ error: '잘못된 요청' }, { status: 400 }), origin)
+    const auth = await requireAdmin()
+    if (auth instanceof NextResponse) return withCors(auth, origin)
+
+    const { id } = await params
+    if (!UUID_RE.test(id)) {
+      return withCors(NextResponse.json({ error: '잘못된 ID입니다.' }, { status: 400 }), origin)
+    }
+    let body: Record<string, unknown>
+    try {
+      body = await request.json()
+    } catch {
+      return withCors(NextResponse.json({ error: '잘못된 요청' }, { status: 400 }), origin)
+    }
+
+    const VALID_INSIGHT_CATEGORIES = new Set(['연기', '비즈니스', '크리에이티브', '디자인', '기술', '라이프', '기타'])
+
+    const updates: Record<string, unknown> = {}
+    if (typeof body.is_favorite === 'boolean') updates.is_favorite = body.is_favorite
+    if (typeof body.memo === 'string') updates.memo = body.memo.slice(0, 2000)
+    if (typeof body.category === 'string' && VALID_INSIGHT_CATEGORIES.has(body.category)) updates.category = body.category
+
+    if (Object.keys(updates).length === 0) {
+      return withCors(NextResponse.json({ error: '수정할 필드가 없습니다.' }, { status: 400 }), origin)
+    }
+
+    const { data, error } = await supabaseAdmin
+      .from('insights')
+      .update(updates)
+      .eq('id', id)
+      .select('id, url, title, description, image_url, memo, category, tags, source_type, is_favorite, created_at')
+      .maybeSingle()
+
+    if (error) {
+      console.error('[insights/[id] PATCH]', error.message)
+      return withCors(NextResponse.json({ error: '처리 중 오류가 발생했습니다.' }, { status: 500 }), origin)
+    }
+    if (!data) return withCors(NextResponse.json({ error: '인사이트를 찾을 수 없습니다.' }, { status: 404 }), origin)
+
+    return withCors(NextResponse.json(data), origin)
+  } catch (err) {
+    console.error('[PATCH /api/insights/[id]] 예상치 못한 오류:', err instanceof Error ? err.message : String(err))
+    return withCors(NextResponse.json({ error: '서버 오류가 발생했습니다.' }, { status: 500 }), origin)
   }
-
-  const VALID_INSIGHT_CATEGORIES = new Set(['연기', '비즈니스', '크리에이티브', '디자인', '기술', '라이프', '기타'])
-
-  const updates: Record<string, unknown> = {}
-  if (typeof body.is_favorite === 'boolean') updates.is_favorite = body.is_favorite
-  if (typeof body.memo === 'string') updates.memo = body.memo.slice(0, 2000)
-  if (typeof body.category === 'string' && VALID_INSIGHT_CATEGORIES.has(body.category)) updates.category = body.category
-
-  if (Object.keys(updates).length === 0) {
-    return withCors(NextResponse.json({ error: '수정할 필드가 없습니다.' }, { status: 400 }), origin)
-  }
-
-  const { data, error } = await supabaseAdmin
-    .from('insights')
-    .update(updates)
-    .eq('id', id)
-    .select('id, url, title, description, image_url, memo, category, tags, source_type, is_favorite, created_at')
-    .maybeSingle()
-
-  if (error) {
-    console.error('[insights/[id]]', error.message)
-    return withCors(NextResponse.json({ error: '처리 중 오류가 발생했습니다.' }, { status: 500 }), origin)
-  }
-  if (!data) return withCors(NextResponse.json({ error: '인사이트를 찾을 수 없습니다.' }, { status: 404 }), origin)
-
-  return withCors(NextResponse.json(data), origin)
 }
 
 // DELETE /api/insights/[id]
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const origin = request.headers.get('origin')
-  const auth = await requireAdmin()
-  if (auth instanceof NextResponse) return withCors(auth, origin)
+  try {
+    const auth = await requireAdmin()
+    if (auth instanceof NextResponse) return withCors(auth, origin)
 
-  const { id } = await params
-  if (!UUID_RE.test(id)) {
-    return withCors(NextResponse.json({ error: '잘못된 ID입니다.' }, { status: 400 }), origin)
+    const { id } = await params
+    if (!UUID_RE.test(id)) {
+      return withCors(NextResponse.json({ error: '잘못된 ID입니다.' }, { status: 400 }), origin)
+    }
+
+    const { data: deleted, error } = await supabaseAdmin.from('insights').delete().eq('id', id).select('id').maybeSingle()
+
+    if (error) {
+      console.error('[insights/[id] DELETE]', error.message)
+      return withCors(NextResponse.json({ error: '처리 중 오류가 발생했습니다.' }, { status: 500 }), origin)
+    }
+    if (!deleted) return withCors(NextResponse.json({ error: '인사이트를 찾을 수 없습니다.' }, { status: 404 }), origin)
+
+    return withCors(NextResponse.json({ ok: true }), origin)
+  } catch (err) {
+    console.error('[DELETE /api/insights/[id]] 예상치 못한 오류:', err instanceof Error ? err.message : String(err))
+    return withCors(NextResponse.json({ error: '서버 오류가 발생했습니다.' }, { status: 500 }), origin)
   }
-
-  const { data: deleted, error } = await supabaseAdmin.from('insights').delete().eq('id', id).select('id').maybeSingle()
-
-  if (error) {
-    console.error('[insights/[id]]', error.message)
-    return withCors(NextResponse.json({ error: '처리 중 오류가 발생했습니다.' }, { status: 500 }), origin)
-  }
-  if (!deleted) return withCors(NextResponse.json({ error: '인사이트를 찾을 수 없습니다.' }, { status: 404 }), origin)
-
-  return withCors(NextResponse.json({ ok: true }), origin)
 }

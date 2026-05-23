@@ -36,7 +36,7 @@ interface ActorOg {
 async function fetchActor(id: string): Promise<ActorOg | null> {
   if (!SUPABASE_URL || !SERVICE_KEY) return null
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/actors?id=eq.${encodeURIComponent(id)}&select=name,gender,age_group,height,drive_photo_id,storage_photo_path,profile_photo,casting_tags,casting_summary&limit=1`,
+    `${SUPABASE_URL}/rest/v1/actors?id=eq.${encodeURIComponent(id)}&is_public=eq.true&select=name,gender,age_group,height,drive_photo_id,storage_photo_path,profile_photo,casting_tags,casting_summary&limit=1`,
     {
       headers: {
         apikey: SERVICE_KEY,

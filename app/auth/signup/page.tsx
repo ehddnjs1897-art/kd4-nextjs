@@ -241,7 +241,7 @@ export default function SignupPage() {
 
         <h1 style={styles.title}>회원가입</h1>
 
-        {error && <div style={styles.errorBox} role="alert" aria-live="assertive">{error}</div>}
+        {error && <div id="signup-error" style={styles.errorBox} role="alert" aria-live="assertive">{error}</div>}
 
         <form onSubmit={handleSignup} style={styles.form}>
           {/* 이름 */}
@@ -259,6 +259,8 @@ export default function SignupPage() {
               disabled={loading}
               autoComplete="name"
               maxLength={50}
+              aria-invalid={!!error || undefined}
+              aria-describedby={error ? 'signup-error' : undefined}
               style={styles.input}
             />
           </div>
@@ -278,6 +280,8 @@ export default function SignupPage() {
               disabled={loading}
               autoComplete="email"
               maxLength={254}
+              aria-invalid={!!error || undefined}
+              aria-describedby={error ? 'signup-error' : undefined}
               style={styles.input}
             />
           </div>
@@ -297,6 +301,8 @@ export default function SignupPage() {
               disabled={loading}
               autoComplete="new-password"
               maxLength={128}
+              aria-invalid={!!error || undefined}
+              aria-describedby={error ? 'signup-error' : undefined}
               style={styles.input}
             />
           </div>
@@ -316,6 +322,8 @@ export default function SignupPage() {
               disabled={loading}
               autoComplete="new-password"
               maxLength={128}
+              aria-invalid={!!error || undefined}
+              aria-describedby={error ? 'signup-error' : undefined}
               style={{
                 ...styles.input,
                 borderColor:
@@ -346,6 +354,8 @@ export default function SignupPage() {
                 maxLength={13}
                 required
                 autoComplete="tel"
+                aria-invalid={!!error || undefined}
+                aria-describedby={error ? 'signup-error' : undefined}
                 style={styles.input}
               />
               <p style={styles.hint}>
@@ -368,6 +378,8 @@ export default function SignupPage() {
                 placeholder="제작사, 캐스팅사, 방송국 등"
                 disabled={loading}
                 autoComplete="organization"
+                aria-invalid={!!error || undefined}
+                aria-describedby={error ? 'signup-error' : undefined}
                 style={styles.input}
               />
             </div>

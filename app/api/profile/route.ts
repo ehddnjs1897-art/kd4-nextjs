@@ -11,43 +11,43 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 import { matchActorOnSignup } from '@/lib/actor-matching'
 
 export async function PATCH(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user }, error: authErr } = await supabase.auth.getUser()
-
-  if (authErr || !user) {
-    return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
-  }
-
-  let body: { name?: string; phone?: string }
   try {
-    body = await request.json()
-  } catch {
-    return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })
-  }
+    const supabase = await createClient()
+    const { data: { user }, error: authErr } = await supabase.auth.getUser()
 
-  const { name, phone } = body
-
-  if (!name || name.trim().length === 0) {
-    return NextResponse.json({ error: '이름을 입력해주세요.' }, { status: 400 })
-  }
-  if (name.trim().length > 100) {
-    return NextResponse.json({ error: '이름은 100자 이하로 입력해주세요.' }, { status: 400 })
-  }
-  if (/[\x00-\x1f\x7f]/.test(name.trim())) {
-    return NextResponse.json({ error: '이름에 허용되지 않는 문자가 포함되어 있습니다.' }, { status: 400 })
-  }
-  if (phone !== undefined && phone.trim() !== '') {
-    const phoneClean = phone.trim()
-    // 최소 7자리 이상 숫자가 포함된 전화번호 형식 요구 (공백/하이픈/+ 허용)
-    if (phoneClean.length > 20 || !/^[+]?[\d\s\-().]{7,20}$/.test(phoneClean) || (phoneClean.match(/\d/g)?.length ?? 0) < 5) {
-      return NextResponse.json({ error: '전화번호 형식이 올바르지 않습니다.' }, { status: 400 })
+    if (authErr || !user) {
+      return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
     }
-  }
 
-  const updates: Record<string, string | null> = { name: name.trim() }
-  if (phone !== undefined) updates.phone = phone.trim() || null
+    let body: { name?: string; phone?: string }
+    try {
+      body = await request.json()
+    } catch {
+      return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })
+    }
 
-  try {
+    const { name, phone } = body
+
+    if (!name || name.trim().length === 0) {
+      return NextResponse.json({ error: '이름을 입력해주세요.' }, { status: 400 })
+    }
+    if (name.trim().length > 100) {
+      return NextResponse.json({ error: '이름은 100자 이하로 입력해주세요.' }, { status: 400 })
+    }
+    if (/[\x00-\x1f\x7f]/.test(name.trim())) {
+      return NextResponse.json({ error: '이름에 허용되지 않는 문자가 포함되어 있습니다.' }, { status: 400 })
+    }
+    if (phone !== undefined && phone.trim() !== '') {
+      const phoneClean = phone.trim()
+      // 최소 7자리 이상 숫자가 포함된 전화번호 형식 요구 (공백/하이픈/+ 허용)
+      if (phoneClean.length > 20 || !/^[+]?[\d\s\-().]{7,20}$/.test(phoneClean) || (phoneClean.match(/\d/g)?.length ?? 0) < 5) {
+        return NextResponse.json({ error: '전화번호 형식이 올바르지 않습니다.' }, { status: 400 })
+      }
+    }
+
+    const updates: Record<string, string | null> = { name: name.trim() }
+    if (phone !== undefined) updates.phone = phone.trim() || null
+
     // supabaseAdmin으로 RLS 우회
     const { error } = await supabaseAdmin
       .from('profiles')

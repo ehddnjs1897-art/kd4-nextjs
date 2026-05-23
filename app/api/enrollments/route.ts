@@ -19,66 +19,66 @@ function priceToInt(p?: string): number {
 }
 
 export async function POST(request: Request) {
-  const supabase = await createClient()
-  const {
-    data: { user },
-    error: authErr,
-  } = await supabase.auth.getUser()
-
-  if (authErr || !user) {
-    return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
-  }
-
-  let body: {
-    enrollment_type?: string
-    class_names?: string[]
-    year_month?: string
-    phone?: string
-  }
   try {
-    body = await request.json()
-  } catch {
-    return NextResponse.json({ error: '잘못된 요청입니다.' }, { status: 400 })
-  }
-
-  const { enrollment_type, class_names, year_month, phone } = body
-
-  if (!enrollment_type || !VALID_TYPES.includes(enrollment_type)) {
-    return NextResponse.json({ error: '신청 유형을 선택해 주세요.' }, { status: 400 })
-  }
-  if (!Array.isArray(class_names) || class_names.length === 0) {
-    return NextResponse.json({ error: '수강할 클래스를 선택해 주세요.' }, { status: 400 })
-  }
-  if (class_names.length > 20) {
-    return NextResponse.json({ error: '한 번에 최대 20개 클래스까지 신청할 수 있습니다.' }, { status: 400 })
-  }
-  if (!class_names.every((cn) => typeof cn === 'string')) {
-    return NextResponse.json({ error: '잘못된 클래스 데이터입니다.' }, { status: 400 })
-  }
-  if (!year_month || !/^\d{4}-\d{2}$/.test(year_month)) {
-    return NextResponse.json({ error: '수강 월이 올바르지 않습니다.' }, { status: 400 })
-  }
-  // 월·연도 범위 검증 — 형식은 맞지만 의미 없는 값 차단 (예: 2020-13, 9999-99)
-  const ym = year_month.split('-')
-  const ymYear = parseInt(ym[0], 10)
-  const ymMonth = parseInt(ym[1], 10)
-  if (ymMonth < 1 || ymMonth > 12) {
-    return NextResponse.json({ error: '수강 월이 올바르지 않습니다. (1~12월)' }, { status: 400 })
-  }
-  if (ymYear < 2020 || ymYear > new Date().getFullYear() + 2) {
-    return NextResponse.json({ error: '수강 연도가 유효하지 않습니다.' }, { status: 400 })
-  }
-  if (phone) {
-    // 길이 선가드 — 대용량 문자열에 .replace() 실행 방지
-    if (typeof phone !== 'string' || phone.length > 30) {
-      return NextResponse.json({ error: '연락처 형식이 올바르지 않습니다. (예: 010-1234-5678)' }, { status: 400 })
+    const supabase = await createClient()
+    const {
+      data: { user },
+      error: authErr,
+    } = await supabase.auth.getUser()
+  
+    if (authErr || !user) {
+      return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
     }
-    if (!/^01[0-9][\-\s]?\d{3,4}[\-\s]?\d{4}$/.test(phone.replace(/\s/g, ''))) {
-      return NextResponse.json({ error: '연락처 형식이 올바르지 않습니다. (예: 010-1234-5678)' }, { status: 400 })
+  
+    let body: {
+      enrollment_type?: string
+      class_names?: string[]
+      year_month?: string
+      phone?: string
     }
-  }
-
-  try {
+    try {
+      body = await request.json()
+    } catch {
+      return NextResponse.json({ error: '잘못된 요청입니다.' }, { status: 400 })
+    }
+  
+    const { enrollment_type, class_names, year_month, phone } = body
+  
+    if (!enrollment_type || !VALID_TYPES.includes(enrollment_type)) {
+      return NextResponse.json({ error: '신청 유형을 선택해 주세요.' }, { status: 400 })
+    }
+    if (!Array.isArray(class_names) || class_names.length === 0) {
+      return NextResponse.json({ error: '수강할 클래스를 선택해 주세요.' }, { status: 400 })
+    }
+    if (class_names.length > 20) {
+      return NextResponse.json({ error: '한 번에 최대 20개 클래스까지 신청할 수 있습니다.' }, { status: 400 })
+    }
+    if (!class_names.every((cn) => typeof cn === 'string')) {
+      return NextResponse.json({ error: '잘못된 클래스 데이터입니다.' }, { status: 400 })
+    }
+    if (!year_month || !/^\d{4}-\d{2}$/.test(year_month)) {
+      return NextResponse.json({ error: '수강 월이 올바르지 않습니다.' }, { status: 400 })
+    }
+    // 월·연도 범위 검증 — 형식은 맞지만 의미 없는 값 차단 (예: 2020-13, 9999-99)
+    const ym = year_month.split('-')
+    const ymYear = parseInt(ym[0], 10)
+    const ymMonth = parseInt(ym[1], 10)
+    if (ymMonth < 1 || ymMonth > 12) {
+      return NextResponse.json({ error: '수강 월이 올바르지 않습니다. (1~12월)' }, { status: 400 })
+    }
+    if (ymYear < 2020 || ymYear > new Date().getFullYear() + 2) {
+      return NextResponse.json({ error: '수강 연도가 유효하지 않습니다.' }, { status: 400 })
+    }
+    if (phone) {
+      // 길이 선가드 — 대용량 문자열에 .replace() 실행 방지
+      if (typeof phone !== 'string' || phone.length > 30) {
+        return NextResponse.json({ error: '연락처 형식이 올바르지 않습니다. (예: 010-1234-5678)' }, { status: 400 })
+      }
+      if (!/^01[0-9][\-\s]?\d{3,4}[\-\s]?\d{4}$/.test(phone.replace(/\s/g, ''))) {
+        return NextResponse.json({ error: '연락처 형식이 올바르지 않습니다. (예: 010-1234-5678)' }, { status: 400 })
+      }
+    }
+  
     // 레이트 리밋: 5분 내 30행 초과 시 차단 (정상 신청 최대 20행/회)
     const fiveMinAgo = new Date(Date.now() - 5 * 60_000).toISOString()
     const { count: recentCount } = await supabaseAdmin

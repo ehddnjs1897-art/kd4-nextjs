@@ -184,8 +184,8 @@ export default function InsightsPage() {
         .ins-tag { background: var(--bg3); border-radius: 4px; padding: 2px 8px; font-size: 11px; color: #5A5550; }
         .filter-btn { padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--gray); cursor: pointer; font-size: 13px; transition: all .15s; }
         .filter-btn.active { background: var(--gold); color: #000; border-color: var(--gold); font-weight: 600; }
-        .ins-input { width: 100%; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--white); font-size: 14px; font-family: var(--font-sans); outline: none; }
-        .ins-input:focus { border-color: var(--gold); }
+        .ins-input { width: 100%; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--white); font-size: 14px; font-family: var(--font-sans); }
+        .ins-input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 2px rgba(21,72,138,0.15); }
         .ins-btn { padding: 10px 22px; background: var(--gold); color: #000; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; white-space: nowrap; }
         .ins-btn:disabled { opacity: .5; cursor: not-allowed; }
         .ins-btn-ghost { padding: 10px 22px; background: transparent; color: var(--gray); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 14px; }
