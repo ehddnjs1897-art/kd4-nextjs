@@ -44,7 +44,7 @@ export default function ResetPasswordPage() {
         <h1 style={styles.title}>비밀번호 재설정</h1>
 
         {step === 'sent' ? (
-          <div style={{ textAlign: 'center' }}>
+          <div role="status" style={{ textAlign: 'center' }}>
             <p style={styles.sentMsg}>
               <strong style={{ color: 'var(--gold)' }}>{email}</strong>으로
               재설정 링크를 발송했습니다.

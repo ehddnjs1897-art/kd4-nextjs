@@ -47,13 +47,18 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // 환경변수 미설정 시 (preview 등) 미들웨어 스킵
+  // 환경변수 미설정 시 — production: fail-closed (로그인 리다이렉트), 그 외: skip
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     if (process.env.NODE_ENV === 'production') {
-      console.error('[middleware] ⚠️ Supabase env vars missing in production — auth checks disabled!')
-    } else {
-      console.warn('[middleware] Supabase env vars missing — auth checks disabled (preview/local)')
+      console.error('[middleware] ⚠️ Supabase env vars missing in production — fail-closed')
+      // /auth/* 는 통과 — 로그인 페이지 자체 차단 시 무한 리다이렉트 방지
+      if (pathname.startsWith('/auth/')) return NextResponse.next()
+      const url = request.nextUrl.clone()
+      url.pathname = '/auth/login'
+      url.searchParams.set('next', pathname)
+      return NextResponse.redirect(url, 307)
     }
+    console.warn('[middleware] Supabase env vars missing — auth checks disabled (preview/local)')
     return NextResponse.next()
   }
 

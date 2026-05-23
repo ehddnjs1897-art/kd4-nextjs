@@ -180,8 +180,8 @@ export default function GameStartPage() {
           lineHeight: 1.8,
         }}
       >
-        <p>📱 모바일: 폰을 기울여 좌우 이동</p>
-        <p>⌨️ PC: 방향키 / WASD 이동</p>
+        <p><span aria-hidden="true">📱</span> 모바일: 폰을 기울여 좌우 이동</p>
+        <p><span aria-hidden="true">⌨️</span> PC: 방향키 / WASD 이동</p>
         <p>탭 / 스페이스: 스포트라이트 부스트</p>
       </div>
 

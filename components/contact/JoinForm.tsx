@@ -82,6 +82,7 @@ export default function JoinForm() {
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
+  const [invalidFields, setInvalidFields] = useState(new Set<string>())
   const [ticketNo, setTicketNo] = useState('')
   const [focused, setFocused] = useState<string | null>(null)
   const [formStarted, setFormStarted] = useState(false)
@@ -127,21 +128,33 @@ export default function JoinForm() {
     e.preventDefault()
     if (loading) return  // 더블 클릭 방지
     // 2026-05-20: 전 항목 필수로 — 대표 지시
-    if (!name || !phone || !email || !className || !meisnerExp || !source) {
+    // per-field 유효성: aria-invalid가 실제 오류 필드에만 표시되도록 추적
+    const emptyFields = new Set<string>()
+    if (!name) emptyFields.add('name')
+    if (!phone) emptyFields.add('phone')
+    if (!email) emptyFields.add('email')
+    if (!className) emptyFields.add('className')
+    if (!meisnerExp) emptyFields.add('meisnerExp')
+    if (!source) emptyFields.add('source')
+    if (emptyFields.size > 0) {
+      setInvalidFields(emptyFields)
       setError('모든 항목을 입력해 주세요.')
       return
     }
     if (!consent) {
+      setInvalidFields(new Set(['consent']))
       setError('개인정보 수집·이용에 동의해 주세요.')
       return
     }
     // 전화번호 형식 검증 (010-xxxx-xxxx 또는 숫자만)
     if (!/^01[0-9][-\s]?\d{3,4}[-\s]?\d{4}$/.test(phone.replace(/\s/g, ''))) {
+      setInvalidFields(new Set(['phone']))
       setError('올바른 연락처를 입력해 주세요. (예: 010-1234-5678)')
       return
     }
     setLoading(true)
     setError('')
+    setInvalidFields(new Set())
 
     const motivationParts = [
       source ? `유입경로: ${source}` : '유입경로: /join 랜딩',
@@ -555,8 +568,8 @@ export default function JoinForm() {
       {/* 이름 */}
       <input
         aria-label="이름"
-        aria-invalid={!!error}
-        aria-describedby={error ? "join-form-error" : undefined}
+        aria-invalid={invalidFields.has('name')}
+        aria-describedby={invalidFields.has('name') ? "join-form-error" : undefined}
         type="text"
         placeholder="이름 *"
         value={name}
@@ -573,8 +586,8 @@ export default function JoinForm() {
       {/* 연락처 */}
       <input
         aria-label="연락처"
-        aria-invalid={!!error}
-        aria-describedby={error ? "join-form-error" : undefined}
+        aria-invalid={invalidFields.has('phone')}
+        aria-describedby={invalidFields.has('phone') ? "join-form-error" : undefined}
         type="tel"
         placeholder="연락처 * 010-0000-0000"
         value={phone}
@@ -591,8 +604,8 @@ export default function JoinForm() {
       {/* 이메일 — 필수 (2026-05-20: 대표 지시로 필수 복귀) */}
       <input
         aria-label="이메일"
-        aria-invalid={!!error}
-        aria-describedby={error ? "join-form-error" : undefined}
+        aria-invalid={invalidFields.has('email')}
+        aria-describedby={invalidFields.has('email') ? "join-form-error" : undefined}
         type="email"
         placeholder="이메일 *"
         value={email}
@@ -631,8 +644,8 @@ export default function JoinForm() {
         <div style={{ position: 'relative' }}>
           <select
             aria-label="희망 클래스"
-            aria-invalid={!!error}
-            aria-describedby={error ? "join-form-error" : undefined}
+            aria-invalid={invalidFields.has('className')}
+            aria-describedby={invalidFields.has('className') ? "join-form-error" : undefined}
             value={className}
             onChange={(e) => setClassName(e.target.value)}
             onFocus={() => handleFieldFocus('class')}
@@ -668,8 +681,8 @@ export default function JoinForm() {
       <div style={{ position: 'relative' }}>
         <select
           aria-label="마이즈너 경험"
-          aria-invalid={!!error}
-          aria-describedby={error ? "join-form-error" : undefined}
+          aria-invalid={invalidFields.has('meisnerExp')}
+          aria-describedby={invalidFields.has('meisnerExp') ? "join-form-error" : undefined}
           value={meisnerExp}
           onChange={(e) => setMeisnerExp(e.target.value)}
           onFocus={() => handleFieldFocus('meisner')}
@@ -703,8 +716,8 @@ export default function JoinForm() {
       <div style={{ position: 'relative' }}>
         <select
           aria-label="KD4를 어떻게 알게 되셨나요"
-          aria-invalid={!!error}
-          aria-describedby={error ? "join-form-error" : undefined}
+          aria-invalid={invalidFields.has('source')}
+          aria-describedby={invalidFields.has('source') ? "join-form-error" : undefined}
           value={source}
           onChange={(e) => setSource(e.target.value)}
           onFocus={() => handleFieldFocus('source')}

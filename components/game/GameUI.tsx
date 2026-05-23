@@ -61,8 +61,10 @@ export default function GameUI({ score, lives, height, stage, combo, specialText
         color: "#fff",
       }}
     >
-      {/* Top bar: score + lives */}
+      {/* Top bar: score + lives — aria-live="polite" for AT score/lives updates */}
       <div
+        aria-live="polite"
+        aria-atomic="false"
         style={{
           position: "absolute",
           top: 16,
@@ -76,16 +78,23 @@ export default function GameUI({ score, lives, height, stage, combo, specialText
         {/* Score */}
         <div>
           <div style={{ fontSize: 12, color: "#aaa", letterSpacing: "0.1em" }}>SCORE</div>
-          <div style={{ fontSize: 32, fontWeight: 700, letterSpacing: "0.05em" }}>
+          <div
+            aria-label={`점수 ${score.toLocaleString()}`}
+            style={{ fontSize: 32, fontWeight: 700, letterSpacing: "0.05em" }}
+          >
             {score.toLocaleString()}
           </div>
         </div>
 
         {/* Lives */}
-        <div style={{ display: "flex", gap: 6 }}>
+        <div
+          aria-label={`남은 생명 ${lives}`}
+          style={{ display: "flex", gap: 6 }}
+        >
           {Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
+              aria-hidden="true"
               style={{
                 width: 12,
                 height: 12,

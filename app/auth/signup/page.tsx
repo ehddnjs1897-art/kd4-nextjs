@@ -197,7 +197,7 @@ export default function SignupPage() {
   if (step === 'success') {
     return (
       <div style={styles.page}>
-        <div style={styles.card}>
+        <div role="status" style={styles.card}>
           <div style={styles.successIcon} aria-hidden="true">✓</div>
           <h1 style={styles.title}>이메일을 확인해 주세요</h1>
           <p style={styles.successDesc}>

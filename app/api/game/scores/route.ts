@@ -116,8 +116,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '유효하지 않은 게임 시간입니다.' }, { status: 400 })
   }
 
-  // Basic anti-cheat: max ~50 points per second
-  const maxPossibleScore = (duration_ms / 1000) * 50
+  // Basic anti-cheat: max ~50 points per second (Math.floor — float 경계 우회 방어)
+  const maxPossibleScore = Math.floor((duration_ms / 1000) * 50)
   if (score > maxPossibleScore) {
     return NextResponse.json({ error: '점수가 비정상적으로 높습니다.' }, { status: 400 })
   }

@@ -188,6 +188,7 @@ export default function GameOver({
             type="button"
             onClick={saveScore}
             disabled={saving}
+            aria-busy={saving}
             style={{
               background: "rgba(255,255,255,0.08)",
               color: "#aaa",

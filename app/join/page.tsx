@@ -1434,7 +1434,7 @@ export default function JoinPage() {
                     flexShrink: 0,
                   }}
                 >
-                  <Icon size={18} color="var(--navy)" strokeWidth={1.8} />
+                  <Icon size={18} color="var(--navy)" strokeWidth={1.8} aria-hidden={true} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                 <p

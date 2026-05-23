@@ -60,7 +60,7 @@ async function requireAdmin(): Promise<{ userId: string } | NextResponse> {
 function isSafeExternalUrl(rawUrl: string): boolean {
   let u: URL
   try { u = new URL(rawUrl) } catch { return false }
-  if (u.protocol !== 'https:' && u.protocol !== 'http:') return false
+  if (u.protocol !== 'https:') return false  // http:// 차단 — 전송 중 스니핑 + DNS rebinding 위험
 
   const host = u.hostname.toLowerCase()
 
@@ -100,7 +100,7 @@ async function fetchOgMeta(url: string) {
   }
   try {
     const res = await fetch(url, {
-      signal: AbortSignal.timeout(10000),
+      signal: AbortSignal.timeout(5000),  // 5s — DNS rebinding 창 최소화
       redirect: 'follow',
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; InsightsBot/1.0)' },
     })
