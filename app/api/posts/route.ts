@@ -143,23 +143,23 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 레이트 리밋: 1분에 최대 5개 (스팸 방지)
+    // 레이트 리밋 + 작성자 프로필 병렬 조회 (순차 2 round-trip → 1)
     const oneMinAgo = new Date(Date.now() - 60_000).toISOString()
-    const { count: recentPostCount } = await supabaseAdmin
-      .from('posts')
-      .select('id', { count: 'exact', head: true })
-      .eq('author_id', user.id)
-      .gte('created_at', oneMinAgo)
+    const [{ count: recentPostCount }, { data: profile }] = await Promise.all([
+      supabaseAdmin
+        .from('posts')
+        .select('id', { count: 'exact', head: true })
+        .eq('author_id', user.id)
+        .gte('created_at', oneMinAgo),
+      supabaseAdmin
+        .from('profiles')
+        .select('name, role')
+        .eq('id', user.id)
+        .maybeSingle(),
+    ])
     if ((recentPostCount ?? 0) >= 5) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요. (1분 최대 5개)' }, { status: 429 })
     }
-
-    // 작성자 이름 + 역할 조회 (admin 클라이언트 → RLS 우회)
-    const { data: profile } = await supabaseAdmin
-      .from('profiles')
-      .select('name, role')
-      .eq('id', user.id)
-      .maybeSingle()
 
     // '공지' 카테고리는 관리자만 사용 가능 (UI에서도 숨기지만 API 레벨에서도 강제)
     if (category === '공지' && profile?.role !== 'admin') {

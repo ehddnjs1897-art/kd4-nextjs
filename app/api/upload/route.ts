@@ -72,8 +72,8 @@ async function requireUploadAccess(
 // ─── POST ────────────────────────────────────────────────────────────────────
 
 export async function POST(request: NextRequest) {
+  // Content-Length 사전 확인 (헤더만 읽음 — 본문 파싱 전 large-request 조기 차단)
   const clActorUpload = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
-  if (clActorUpload > 6 * 1024 * 1024) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
 
   // actorId를 먼저 읽어서 권한 체크에 사용
   const formData = await request.formData()
@@ -87,6 +87,9 @@ export async function POST(request: NextRequest) {
   const check = await requireUploadAccess(targetActorId)
   if (check instanceof NextResponse) return check
 
+  // CL guard after auth — 미인증 클라이언트에 413 대신 401 노출 (정책 정보 유출 방지)
+  if (clActorUpload > 6 * 1024 * 1024) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+
   try {
     const file = formData.get('file')
     const actorId = targetActorId  // 이미 UUID 검증됨 (line 79)
@@ -96,7 +99,7 @@ export async function POST(request: NextRequest) {
     // 레이트 리밋 + 사진 총량 제한 — 두 COUNT를 병렬 조회 (순차 2 round-trip → 1)
     const MAX_PHOTOS_PER_ACTOR = 200
     const fiveMinAgo = new Date(Date.now() - 5 * 60_000).toISOString()
-    const [{ count: recentUploads }, { count: photoCount }] = await Promise.all([
+    const [{ count: recentUploads }, { count: photoCount }, { data: maxSortRow }] = await Promise.all([
       supabaseAdmin
         .from('actor_photos')
         .select('id', { count: 'exact', head: true })
@@ -106,6 +109,14 @@ export async function POST(request: NextRequest) {
         .from('actor_photos')
         .select('id', { count: 'exact', head: true })
         .eq('actor_id', actorId),
+      // sort_order MAX도 병렬 조회 (Storage 업로드 전에 미리 확보 — round-trip 절감)
+      supabaseAdmin
+        .from('actor_photos')
+        .select('sort_order')
+        .eq('actor_id', actorId)
+        .order('sort_order', { ascending: false })
+        .limit(1)
+        .maybeSingle(),
     ])
     if ((recentUploads ?? 0) >= 20) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요. (5분 최대 20장)' }, { status: 429 })
@@ -167,15 +178,8 @@ export async function POST(request: NextRequest) {
     // ── Storage 업로드 ──
     const result = await uploadFile(file, bucket, actorId, file.name.slice(0, 200))
 
-    // ── sort_order 계산 (기존 최대값 + 1 — 항상 0으로 삽입하면 순서 충돌 가능) ──
-    const { data: maxRow } = await supabaseAdmin
-      .from('actor_photos')
-      .select('sort_order')
-      .eq('actor_id', actorId)
-      .order('sort_order', { ascending: false })
-      .limit(1)
-      .maybeSingle()
-    const nextSortOrder = (maxRow?.sort_order ?? -1) + 1
+    // sort_order는 위 Promise.all에서 미리 조회한 maxSortRow 재사용 (추가 round-trip 없음)
+    const nextSortOrder = (maxSortRow?.sort_order ?? -1) + 1
 
     // ── actor_photos 테이블 삽입 ──
     const { data: photoRow, error: dbErr } = await supabaseAdmin

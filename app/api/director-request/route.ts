@@ -22,9 +22,8 @@ const requestMap = new Map<string, number>()
 const COOLDOWN_MS = 60_000
 
 export async function POST(request: NextRequest) {
-  // 본문 크기 검증 (이 엔드포인트는 body를 파싱하지 않지만 대용량 요청 차단)
+  // CL 헤더 사전 읽기 (가드는 인증 후 적용 — 미인증 클라이언트에 413 대신 401 노출)
   const clDirector = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
-  if (clDirector > 256) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
 
   try {
     const supabase = await createClient()
@@ -33,6 +32,9 @@ export async function POST(request: NextRequest) {
     if (authErr || !user) {
       return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
     }
+
+    // 인증 후 CL 가드
+    if (clDirector > 256) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
 
     // 레이트 리밋 체크
     const now = Date.now()

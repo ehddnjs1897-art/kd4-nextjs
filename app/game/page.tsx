@@ -164,7 +164,7 @@ export default function GameStartPage() {
             }}
           >
             <div style={{ color: "#0057FF", fontWeight: 600, fontFamily: "var(--font-oswald)" }}>
-              ACT {s.act}
+              <span lang="en">ACT</span> {s.act}
             </div>
             <div style={{ color: "#aaa" }}>{s.title}</div>
           </div>
@@ -181,7 +181,7 @@ export default function GameStartPage() {
         }}
       >
         <p><span aria-hidden="true">📱</span> 모바일: 폰을 기울여 좌우 이동</p>
-        <p><span aria-hidden="true">⌨️</span> PC: 방향키 / WASD 이동</p>
+        <p><span aria-hidden="true">⌨️</span> PC: 방향키 / <span lang="en">WASD</span> 이동</p>
         <p>탭 / 스페이스: 스포트라이트 부스트</p>
       </div>
 

@@ -73,13 +73,24 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       }
     }
 
-    const { data: maxRow } = await supabaseAdmin
-      .from('actor_filmography')
-      .select('sort_order')
-      .eq('actor_id', id)
-      .order('sort_order', { ascending: false })
-      .limit(1)
-      .maybeSingle()
+    // COUNT + MAX 병렬 조회 — COUNT로 500건 캡 강제, MAX로 sort_order 결정
+    const MAX_FILMOGRAPHY = 500
+    const [{ count: existingCount }, { data: maxRow }] = await Promise.all([
+      supabaseAdmin
+        .from('actor_filmography')
+        .select('id', { count: 'exact', head: true })
+        .eq('actor_id', id),
+      supabaseAdmin
+        .from('actor_filmography')
+        .select('sort_order')
+        .eq('actor_id', id)
+        .order('sort_order', { ascending: false })
+        .limit(1)
+        .maybeSingle(),
+    ])
+    if ((existingCount ?? 0) >= MAX_FILMOGRAPHY) {
+      return NextResponse.json({ error: `필모그래피는 최대 ${MAX_FILMOGRAPHY}개까지 등록할 수 있습니다.` }, { status: 400 })
+    }
     const nextSortOrder = (maxRow?.sort_order ?? -1) + 1
 
     const { data, error } = await supabaseAdmin
