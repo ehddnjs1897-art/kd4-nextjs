@@ -44,7 +44,7 @@ export default function WritePage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (submitting) return
-    if (!title.trim() || !content.trim()) return
+    if (!title.trim() || !content.trim()) { setError('제목과 내용을 입력해 주세요.'); return }
     setSubmitting(true)
     setError(null)
 

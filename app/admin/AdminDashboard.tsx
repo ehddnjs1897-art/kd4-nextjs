@@ -334,7 +334,12 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                           type="button"
                           onClick={() => handleRoleChange(p.id, p.role)}
                           disabled={loadingId === p.id}
-                          aria-label={loadingId === p.id ? '처리 중' : `${p.name || p.email || '회원'} 역할 변경`}
+                          aria-label={
+                            loadingId === p.id ? '처리 중'
+                            : p.role === 'crew_pending' ? `${p.name || p.email || '회원'} 크루 승인`
+                            : p.role === 'director_pending' ? `${p.name || p.email || '회원'} 디렉터 승인`
+                            : `${p.name || p.email || '회원'} 역할 변경: ${ROLE_LABEL[ROLE_CYCLE[p.role] ?? 'user']}`
+                          }
                           style={
                             p.role === 'crew_pending'
                               ? { ...s.actionBtn, borderColor: 'rgba(74,158,255,0.5)', color: '#7ab8ff' }
@@ -435,21 +440,23 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                         <td style={s.td}>{p.category || '—'}</td>
                         <td style={s.td}>{formatDate(p.created_at)}</td>
                         <td style={s.td}>
-                          {confirmingDeletePostId === p.id ? (
-                            <div style={{ display: 'flex', gap: 4 }}>
-                              <button type="button" onClick={() => setConfirmingDeletePostId(null)} style={{ ...s.actionBtn, fontSize: '0.72rem', padding: '4px 8px' }}>취소</button>
-                              <button type="button" onClick={() => handleDeletePost(p.id)} disabled={loadingId === p.id} style={{ ...s.actionBtnDanger, background: '#ef4444', color: '#fff' }}>확인</button>
-                            </div>
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={() => handleDeletePost(p.id)}
-                              disabled={loadingId === p.id}
-                              style={s.actionBtnDanger}
-                            >
-                              {loadingId === p.id ? '...' : '삭제'}
-                            </button>
-                          )}
+                          <div aria-live="polite">
+                            {confirmingDeletePostId === p.id ? (
+                              <div style={{ display: 'flex', gap: 4 }}>
+                                <button type="button" onClick={() => setConfirmingDeletePostId(null)} aria-label={`${p.title} 삭제 취소`} style={{ ...s.actionBtn, fontSize: '0.72rem', padding: '4px 8px' }}>취소</button>
+                                <button type="button" onClick={() => handleDeletePost(p.id)} disabled={loadingId === p.id} aria-label={`${p.title} 삭제 확인`} style={{ ...s.actionBtnDanger, background: '#ef4444', color: '#fff' }}>확인</button>
+                              </div>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => handleDeletePost(p.id)}
+                                disabled={loadingId === p.id}
+                                style={s.actionBtnDanger}
+                              >
+                                {loadingId === p.id ? '...' : '삭제'}
+                              </button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))

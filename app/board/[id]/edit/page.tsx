@@ -78,7 +78,7 @@ export default function EditPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!title.trim() || !content.trim()) return
+    if (!title.trim() || !content.trim()) { setError('제목과 내용을 입력해 주세요.'); return }
     setSubmitting(true)
     setError(null)
 
@@ -142,7 +142,7 @@ export default function EditPage() {
           </h1>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} aria-label="게시글 수정">
           {error && (
             <div role="alert" style={{
               padding: '12px 16px',

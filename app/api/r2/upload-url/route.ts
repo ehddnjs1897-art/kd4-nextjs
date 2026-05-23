@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
   if (!ALLOWED_VIDEO_TYPES.has(contentType)) {
     return NextResponse.json({ error: '지원하지 않는 영상 형식입니다. (mp4, mov, avi, webm만 가능)' }, { status: 400 })
   }
-  if (size <= 0) {
+  if (!Number.isFinite(size) || size <= 0) {
     return NextResponse.json({ error: '파일 크기가 올바르지 않습니다.' }, { status: 400 })
   }
   if (size > MAX_SIZE_BYTES) {

@@ -63,19 +63,18 @@ export async function GET(
     let canSeeContact = false   // 연락처 열람 가능 여부 (director/admin or 본인)
     let canSeeNonPublic = false // 비공개 프로필 열람 가능 여부 (본인 or admin/editor)
 
-    if (user) {
-      // supabaseAdmin: RLS 우회로 정확한 role/actor_id 조회 (다른 auth 체크와 일관성 유지)
-      const { data: profile } = await supabaseAdmin
-        .from('profiles').select('role, actor_id').eq('id', user.id).maybeSingle()
-      const role = profile?.role ?? ''
-      const isOwn = profile?.actor_id === id
-      canSeeContact = isOwn || ['director', 'admin'].includes(role)
-      // 본인 또는 관리/편집자는 is_public=false 프로필도 열람 가능 (관리자 검토 대기 중인 경우)
-      canSeeNonPublic = isOwn || ['admin', 'editor'].includes(role)
-      // 배우 DB 열람 권한 확인 (본인이거나 actor/crew/editor/director/admin만 허용)
-      if (!isOwn && !canViewActorDb(role as UserRole | undefined)) {
-        return NextResponse.json({ error: '배우 프로필 열람 권한이 없습니다.' }, { status: 403 })
-      }
+    // user 보장됨 (위 401 가드 통과)
+    // supabaseAdmin: RLS 우회로 정확한 role/actor_id 조회 (다른 auth 체크와 일관성 유지)
+    const { data: profile } = await supabaseAdmin
+      .from('profiles').select('role, actor_id').eq('id', user.id).maybeSingle()
+    const role = profile?.role ?? ''
+    const isOwn = profile?.actor_id === id
+    canSeeContact = isOwn || ['director', 'admin'].includes(role)
+    // 본인 또는 관리/편집자는 is_public=false 프로필도 열람 가능 (관리자 검토 대기 중인 경우)
+    canSeeNonPublic = isOwn || ['admin', 'editor'].includes(role)
+    // 배우 DB 열람 권한 확인 (본인이거나 actor/crew/editor/director/admin만 허용)
+    if (!isOwn && !canViewActorDb(role as UserRole | undefined)) {
+      return NextResponse.json({ error: '배우 프로필 열람 권한이 없습니다.' }, { status: 403 })
     }
 
     // 접촉 권한 없는 경우 PII+내부 컬럼을 DB에서 처음부터 제외 (defence-in-depth)

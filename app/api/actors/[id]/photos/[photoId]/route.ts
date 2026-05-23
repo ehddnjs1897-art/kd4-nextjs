@@ -65,25 +65,24 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: 'is_profile: true 만 허용됩니다.' }, { status: 400 })
     }
 
-    if (body.is_profile === true) {
-      // photoId가 이 actor의 사진인지 먼저 검증 (IDOR 방어)
-      const { data: owned } = await supabaseAdmin
-        .from('actor_photos').select('id').eq('id', photoId).eq('actor_id', id).maybeSingle()
-      if (!owned) return NextResponse.json({ error: '사진을 찾을 수 없습니다.' }, { status: 404 })
-      // 1. 기존 대표 해제
-      const { error: clearErr } = await supabaseAdmin
-        .from('actor_photos').update({ is_profile: false }).eq('actor_id', id)
-      if (clearErr) throw new Error('대표 해제 실패')
-      // 2. 새 대표 지정 (actor_id 조건 추가)
-      const { error: setErr } = await supabaseAdmin
-        .from('actor_photos').update({ is_profile: true }).eq('id', photoId).eq('actor_id', id)
-      if (setErr) throw new Error('대표 지정 실패')
-      // 3. actors 테이블 profile_photo URL 업데이트
-      const { data: photo } = await supabaseAdmin.from('actor_photos').select('url').eq('id', photoId).eq('actor_id', id).maybeSingle()
-      if (photo) {
-        const { error: actorPhotoErr } = await supabaseAdmin.from('actors').update({ profile_photo: photo.url }).eq('id', id)
-        if (actorPhotoErr) throw new Error('actors 대표사진 업데이트 실패')
-      }
+    // body.is_profile === true 이 보장됨 (L64 guard 통과 후 항상 true)
+    // photoId가 이 actor의 사진인지 먼저 검증 (IDOR 방어)
+    const { data: owned } = await supabaseAdmin
+      .from('actor_photos').select('id').eq('id', photoId).eq('actor_id', id).maybeSingle()
+    if (!owned) return NextResponse.json({ error: '사진을 찾을 수 없습니다.' }, { status: 404 })
+    // 1. 기존 대표 해제
+    const { error: clearErr } = await supabaseAdmin
+      .from('actor_photos').update({ is_profile: false }).eq('actor_id', id)
+    if (clearErr) throw new Error('대표 해제 실패')
+    // 2. 새 대표 지정 (actor_id 조건 추가)
+    const { error: setErr } = await supabaseAdmin
+      .from('actor_photos').update({ is_profile: true }).eq('id', photoId).eq('actor_id', id)
+    if (setErr) throw new Error('대표 지정 실패')
+    // 3. actors 테이블 profile_photo URL 업데이트
+    const { data: photo } = await supabaseAdmin.from('actor_photos').select('url').eq('id', photoId).eq('actor_id', id).maybeSingle()
+    if (photo) {
+      const { error: actorPhotoErr } = await supabaseAdmin.from('actors').update({ profile_photo: photo.url }).eq('id', id)
+      if (actorPhotoErr) throw new Error('actors 대표사진 업데이트 실패')
     }
 
     revalidateTag('actors')
@@ -126,6 +125,7 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
     if (error) return NextResponse.json({ error: '사진 삭제에 실패했습니다.' }, { status: 500 })
 
     // 삭제된 사진이 대표였으면 다음 사진을 대표로
+    const deleteWarnings: string[] = []
     if (photo.is_profile) {
       const { data: next } = await supabaseAdmin
         .from('actor_photos')
@@ -135,18 +135,18 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
         .maybeSingle()
       if (next) {
         const { error: promoteErr } = await supabaseAdmin.from('actor_photos').update({ is_profile: true }).eq('id', next.id)
-        if (promoteErr) console.error('[photos DELETE] 대표 승격 실패:', promoteErr.message)
+        if (promoteErr) { console.error('[photos DELETE] 대표 승격 실패:', promoteErr.message); deleteWarnings.push('대표사진 승격 실패') }
         const { error: thumbErr } = await supabaseAdmin.from('actors').update({ profile_photo: next.url }).eq('id', id)
-        if (thumbErr) console.error('[photos DELETE] profile_photo 업데이트 실패:', thumbErr.message)
+        if (thumbErr) { console.error('[photos DELETE] profile_photo 업데이트 실패:', thumbErr.message); deleteWarnings.push('프로필 사진 업데이트 실패') }
       } else {
         const { error: clearErr } = await supabaseAdmin.from('actors').update({ profile_photo: null }).eq('id', id)
-        if (clearErr) console.error('[photos DELETE] profile_photo 초기화 실패:', clearErr.message)
+        if (clearErr) { console.error('[photos DELETE] profile_photo 초기화 실패:', clearErr.message); deleteWarnings.push('프로필 사진 초기화 실패') }
       }
     }
 
     revalidateTag('actors')
     revalidateTag(`actor-${id}`)
-    return NextResponse.json({ ok: true })
+    return NextResponse.json({ ok: true, ...(deleteWarnings.length > 0 && { warnings: deleteWarnings }) })
   } catch (err) {
     console.error('[DELETE /api/actors/[id]/photos/[photoId]]', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '서버 오류가 발생했습니다.' }, { status: 500 })

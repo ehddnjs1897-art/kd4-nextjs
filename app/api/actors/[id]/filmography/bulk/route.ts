@@ -150,6 +150,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       ? await supabaseAdmin.from('actor_filmography').upsert(upsertRows, { onConflict: 'id' })
       : { error: null }
     if (upsertErr) console.error('[filmography/bulk] UPSERT 오류:', upsertErr.message)
+    // upsertErr 발생 시 insertResult도 진행하지만 최종 응답에 207/500으로 반영됨
     const updateResults = toUpdate.map(item => ({ id: item.id, ok: !upsertErr }))
 
     // 배우당 필모그래피 총량 상한 (신규 INSERT만 — UPDATE는 행 추가 없음)
@@ -204,7 +205,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
 
     revalidateTag('actors')
     revalidateTag(`actor-${actorId}`)
-    return NextResponse.json({ results, errors })
+    return NextResponse.json({ results, errors }, { status: errors > 0 ? 207 : 200 })
   } catch (err) {
     console.error('[POST /api/actors/[id]/filmography/bulk]', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '서버 오류가 발생했습니다.' }, { status: 500 })

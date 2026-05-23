@@ -72,15 +72,14 @@ export async function GET(request: NextRequest) {
     if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
     let canSeeContact = false
     let isAdmin = false
-    if (user) {
-      const { data: profile } = await supabaseAdmin
-        .from('profiles').select('role').eq('id', user.id).maybeSingle()
-      canSeeContact = ['director', 'admin'].includes(profile?.role ?? '')
-      isAdmin = profile?.role === 'admin'
-      // 배우 DB 열람 권한 확인 (actor/crew/editor/director/admin만 허용)
-      if (!canViewActorDb(profile?.role as UserRole | undefined)) {
-        return NextResponse.json({ error: '배우 프로필 열람 권한이 없습니다.' }, { status: 403 })
-      }
+    // user 보장됨 (위 401 가드 통과)
+    const { data: profile } = await supabaseAdmin
+      .from('profiles').select('role').eq('id', user.id).maybeSingle()
+    canSeeContact = ['director', 'admin'].includes(profile?.role ?? '')
+    isAdmin = profile?.role === 'admin'
+    // 배우 DB 열람 권한 확인 (actor/crew/editor/director/admin만 허용)
+    if (!canViewActorDb(profile?.role as UserRole | undefined)) {
+      return NextResponse.json({ error: '배우 프로필 열람 권한이 없습니다.' }, { status: 403 })
     }
 
     // admin은 ?include_non_public=true 로 비공개 배우도 조회 가능 (검토 대기 중 배우 관리용)

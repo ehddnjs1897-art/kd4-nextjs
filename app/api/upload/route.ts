@@ -112,12 +112,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (!actorId || typeof actorId !== 'string') {
-      return NextResponse.json(
-        { error: 'actorId 필드가 누락되었습니다.' },
-        { status: 400 }
-      )
-    }
+    // actorId는 L79(requireUploadAccess)에서 이미 UUID 검증 완료 — 중복 체크 불필요
 
     // MIME 타입 확인 (클라이언트 선언)
     if (!ALLOWED_TYPES.includes(file.type)) {
