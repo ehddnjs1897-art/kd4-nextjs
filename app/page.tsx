@@ -1170,6 +1170,13 @@ export default function HomePage() {
             ))}
           </div>
         </div>
+
+        {/* 스크린리더 전용 후기 목록 */}
+        <ul className="sr-only">
+          {[...REVIEW_ITEMS, ...REVIEW_ITEMS_2].map((r, i) => (
+            <li key={i}>&ldquo;{r.text}&rdquo; — {r.author}</li>
+          ))}
+        </ul>
       </section>
 
       {/* ── Partners ─────────────────────────────────────────────────────────── */}

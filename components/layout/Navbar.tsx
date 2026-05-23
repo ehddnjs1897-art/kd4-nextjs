@@ -282,7 +282,7 @@ export default function Navbar() {
                   onMouseLeave={e => {
                     if (!crewDropOpen) e.currentTarget.style.color = '#111111'
                   }}
-                  aria-haspopup="menu"
+                  aria-haspopup="true"
                   aria-expanded={crewDropOpen}
                   onClick={() => setCrewDropOpen(v => !v)}
                 >
