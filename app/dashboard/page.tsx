@@ -169,7 +169,7 @@ export default async function DashboardPage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {actorExists ? (
                   <Link href={`/actors/${actorId}`} style={primaryBtn}>
-                    내 배우 페이지 보기 →
+                    내 배우 페이지 보기 <span aria-hidden="true">→</span>
                   </Link>
                 ) : (
                   <p style={{ fontSize: '0.8rem', color: 'var(--gray)', padding: '4px 0' }}>
@@ -305,7 +305,7 @@ export default async function DashboardPage() {
         <section aria-label="커뮤니티" style={card}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <h2 style={sectionTitle}>커뮤니티</h2>
-            <Link href="/board?my=1" style={{ fontSize: '0.82rem', color: 'var(--navy)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: 44, padding: '0 4px' }}>내 게시글 →</Link>
+            <Link href="/board?my=1" style={{ fontSize: '0.82rem', color: 'var(--navy)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: 44, padding: '0 4px' }}>내 게시글 <span aria-hidden="true">→</span></Link>
           </div>
         </section>
 

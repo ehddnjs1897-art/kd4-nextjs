@@ -121,6 +121,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     }
 
     // ── UPDATE 전 소유권 검증: 제출된 id가 실제 actorId 소유인지 확인 (IDOR 방어) ──
+    const rejectedIds: string[] = [] // 비소유 ID — ok:false로 caller에게 명시적 반환
     if (toUpdate.length > 0) {
       const submittedIds = toUpdate.map(item => item.id)
       const { data: owned } = await supabaseAdmin
@@ -129,9 +130,12 @@ export async function POST(request: NextRequest, { params }: Ctx) {
         .eq('actor_id', actorId)
         .in('id', submittedIds)
       const ownedSet = new Set((owned ?? []).map((r: { id: string }) => r.id))
-      // 소유 확인된 항목만 upsert; 타인 소유 id는 조용히 제거
+      // 소유 확인된 항목만 upsert; 비소유 id는 rejectedIds에 추적해 ok:false 반환 (silent-drop 제거)
       for (let i = toUpdate.length - 1; i >= 0; i--) {
-        if (!ownedSet.has(toUpdate[i].id)) toUpdate.splice(i, 1)
+        if (!ownedSet.has(toUpdate[i].id)) {
+          rejectedIds.push(toUpdate[i].id)
+          toUpdate.splice(i, 1)
+        }
       }
     }
 
@@ -153,12 +157,22 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     // upsertErr 발생 시 insertResult도 진행하지만 최종 응답에 207/500으로 반영됨
     const updateResults = toUpdate.map(item => ({ id: item.id, ok: !upsertErr }))
 
-    // 배우당 필모그래피 총량 상한 (신규 INSERT만 — UPDATE는 행 추가 없음)
+    // INSERT 필요한 경우 COUNT + MAX(sort_order)를 병렬 조회 (순차 2 round-trip → 1)
+    let baseSortOrder = 0
     if (toInsert.length > 0) {
-      const { count: existingCount } = await supabaseAdmin
-        .from('actor_filmography')
-        .select('id', { count: 'exact', head: true })
-        .eq('actor_id', actorId)
+      const [{ count: existingCount }, { data: maxRow }] = await Promise.all([
+        supabaseAdmin
+          .from('actor_filmography')
+          .select('id', { count: 'exact', head: true })
+          .eq('actor_id', actorId),
+        supabaseAdmin
+          .from('actor_filmography')
+          .select('sort_order')
+          .eq('actor_id', actorId)
+          .order('sort_order', { ascending: false })
+          .limit(1)
+          .maybeSingle(),
+      ])
       const MAX_FILMOGRAPHY = 500
       if ((existingCount ?? 0) + toInsert.length > MAX_FILMOGRAPHY) {
         return NextResponse.json(
@@ -166,17 +180,8 @@ export async function POST(request: NextRequest, { params }: Ctx) {
           { status: 400 }
         )
       }
+      baseSortOrder = (maxRow?.sort_order ?? -1) + 1
     }
-
-    // sort_order: 기존 최대 sort_order 이후로 이어서 삽입
-    const { data: maxRow } = await supabaseAdmin
-      .from('actor_filmography')
-      .select('sort_order')
-      .eq('actor_id', actorId)
-      .order('sort_order', { ascending: false })
-      .limit(1)
-      .maybeSingle()
-    const baseSortOrder = (maxRow?.sort_order ?? -1) + 1
 
     // 배치 INSERT — N개 개별 쿼리 대신 단일 쿼리로 처리
     const insertRows = toInsert.map((item, idx) => ({
@@ -197,6 +202,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     const insertedIds = (insertResult.data ?? []).map((r: { id: string }) => r.id)
     const results = [
       ...updateResults.map(r => ({ id: r.id, ok: r.ok })),
+      ...rejectedIds.map(id => ({ id, ok: false, reason: 'not_owned' })),
       ...insertedIds.map((id: string) => ({ id, ok: true })),
     ]
 

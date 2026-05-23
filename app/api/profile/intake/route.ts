@@ -218,21 +218,23 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '프로필 제출 중 오류가 발생했습니다. 다시 시도해주세요.' }, { status: 500 })
   }
 
-  // 3. 사진 rows — 기존 sort_order 다음부터 append
-  if (photos.length > 0) {
-    const { data: existing } = await supabaseAdmin
-      .from('actor_photos')
-      .select('sort_order')
-      .eq('actor_id', actorId)
-      .order('sort_order', { ascending: false })
-      .limit(1)
-    const base = (existing?.[0]?.sort_order ?? -1) + 1
+  // 3. sort_order 기준값을 단일 쿼리로 선-조회 — photos/currentPhotos 두 배치 모두 사용
+  // READ COMMITTED race 방어: 두 배치가 동일 기준점에서 단조증가하여 overlap 없음
+  const { data: existingPhotosMax } = await supabaseAdmin
+    .from('actor_photos')
+    .select('sort_order')
+    .eq('actor_id', actorId)
+    .order('sort_order', { ascending: false })
+    .limit(1)
+  const photoBase = (existingPhotosMax?.[0]?.sort_order ?? -1) + 1
 
+  // 3. 사진 rows
+  if (photos.length > 0) {
     const rows = photos.map((p, i) => ({
       actor_id: actorId,
       url: photoPublicUrl(p.path),
       storage_path: p.path,
-      sort_order: base + i,
+      sort_order: photoBase + i,
     }))
     const { error: photoErr } = await supabaseAdmin.from('actor_photos').insert(rows)
     if (photoErr) {
@@ -241,15 +243,9 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // 3b. 현재사진 rows
+  // 3b. 현재사진 rows (photos 이후 sort_order — photoBase + photos.length로 연속 할당)
   if (currentPhotoItems.length > 0) {
-    const { data: existingCurrent } = await supabaseAdmin
-      .from('actor_photos')
-      .select('sort_order')
-      .eq('actor_id', actorId)
-      .order('sort_order', { ascending: false })
-      .limit(1)
-    const baseC = (existingCurrent?.[0]?.sort_order ?? -1) + 1
+    const baseC = photoBase + photos.length
 
     const currentRows = currentPhotoItems.map((p, i) => ({
       actor_id: actorId,

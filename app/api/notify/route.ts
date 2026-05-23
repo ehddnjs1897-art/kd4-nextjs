@@ -143,32 +143,34 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Rate limit: 동일 연락처로 5분 내 3회 초과 차단 (SMS 비용 폭탄 방지)
-    const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString()
-    const { count } = await getSupabaseAdmin()
-      .from('consultations')
-      .select('id', { count: 'exact', head: true })
-      .eq('phone', phone)
-      .gte('created_at', fiveMinAgo)
-    if ((count ?? 0) >= 3) {
-      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
-    }
-    // IP 기반 2차 레이트 리밋 — 번호 열거 공격 방어 (5분 내 5회)
+    // IP 먼저 확인 — Vercel fail-closed (DB 조회 전 차단)
     // x-real-ip만 사용 — x-forwarded-for는 클라이언트 위조 가능 → 레이트 리밋 우회 방지
     const ip = request.headers.get('x-real-ip') ?? null
-    // Vercel 프로덕션에서 x-real-ip 누락은 프록시 오류 → fail-closed (번호 열거 공격 방어)
     if (!ip && process.env.VERCEL === '1') {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
-    if (ip) {
-      const { count: ipCount } = await getSupabaseAdmin()
+    // Rate limit: 연락처 + IP를 병렬 조회 (순차 2 round-trip → 1)
+    // 연락처: 5분 내 3회 초과 차단 (SMS 비용 폭탄 방지) / IP: 5분 내 5회 초과 차단 (번호 열거 공격 방어)
+    const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString()
+    const [{ count }, { count: ipCount }] = await Promise.all([
+      getSupabaseAdmin()
         .from('consultations')
         .select('id', { count: 'exact', head: true })
-        .eq('raw_payload->>ip', ip)
-        .gte('created_at', fiveMinAgo)
-      if ((ipCount ?? 0) >= 5) {
-        return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
-      }
+        .eq('phone', phone)
+        .gte('created_at', fiveMinAgo),
+      ip
+        ? getSupabaseAdmin()
+            .from('consultations')
+            .select('id', { count: 'exact', head: true })
+            .eq('raw_payload->>ip', ip)
+            .gte('created_at', fiveMinAgo)
+        : Promise.resolve({ count: 0, data: null, error: null }),
+    ])
+    if ((count ?? 0) >= 3) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
+    if (ip && (ipCount ?? 0) >= 5) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
 
     // 1. Supabase에 무조건 먼저 기록 — webhook·SMS 실패와 무관하게 데이터 보존

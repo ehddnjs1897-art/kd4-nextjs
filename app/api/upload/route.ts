@@ -93,13 +93,20 @@ export async function POST(request: NextRequest) {
     const rawBucket = (formData.get('bucket') as string | null) ?? DEFAULT_BUCKET
     const bucket = ALLOWED_BUCKETS.has(rawBucket) ? rawBucket : DEFAULT_BUCKET
 
-    // 레이트 리밋: 5분 내 동일 배우 20장 초과 시 차단
+    // 레이트 리밋 + 사진 총량 제한 — 두 COUNT를 병렬 조회 (순차 2 round-trip → 1)
+    const MAX_PHOTOS_PER_ACTOR = 200
     const fiveMinAgo = new Date(Date.now() - 5 * 60_000).toISOString()
-    const { count: recentUploads } = await supabaseAdmin
-      .from('actor_photos')
-      .select('id', { count: 'exact', head: true })
-      .eq('actor_id', actorId)
-      .gte('created_at', fiveMinAgo)
+    const [{ count: recentUploads }, { count: photoCount }] = await Promise.all([
+      supabaseAdmin
+        .from('actor_photos')
+        .select('id', { count: 'exact', head: true })
+        .eq('actor_id', actorId)
+        .gte('created_at', fiveMinAgo),
+      supabaseAdmin
+        .from('actor_photos')
+        .select('id', { count: 'exact', head: true })
+        .eq('actor_id', actorId),
+    ])
     if ((recentUploads ?? 0) >= 20) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요. (5분 최대 20장)' }, { status: 429 })
     }
@@ -149,12 +156,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 배우별 최대 사진 수 제한 (Storage + DB 폭주 방지)
-    const MAX_PHOTOS_PER_ACTOR = 200
-    const { count: photoCount } = await supabaseAdmin
-      .from('actor_photos')
-      .select('id', { count: 'exact', head: true })
-      .eq('actor_id', actorId)
+    // 배우별 최대 사진 수 제한 확인 (위에서 미리 조회한 photoCount 사용)
     if ((photoCount ?? 0) >= MAX_PHOTOS_PER_ACTOR) {
       return NextResponse.json(
         { error: `사진은 최대 ${MAX_PHOTOS_PER_ACTOR}장까지 등록할 수 있습니다.` },

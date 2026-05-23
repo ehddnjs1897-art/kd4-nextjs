@@ -61,7 +61,7 @@ export default function StickyTopBar({
                 </span>
               )}
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
-                <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--accent-red)', flexShrink: 0, display: 'inline-block' }} />
+                <span aria-hidden="true" style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--accent-red)', flexShrink: 0, display: 'inline-block' }} />
                 <span style={{ fontSize: '0.73rem', color: 'var(--white)', fontWeight: 600 }}>
                   {c.seats}석
                 </span>

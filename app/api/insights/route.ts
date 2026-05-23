@@ -283,10 +283,9 @@ export async function POST(request: NextRequest) {
       return withCors(NextResponse.json({ error: 'memo는 2,000자 이하로 입력해주세요.' }, { status: 400 }), origin)
     }
 
-    const [og, ai] = await Promise.all([
-      fetchOgMeta(url),
-      classifyWithGemini(url, null, memo ?? null),
-    ])
+    // OG meta 선 조회 후 Gemini에 title 전달 — null보다 OG title 기반 분류가 더 정확
+    const og = await fetchOgMeta(url)
+    const ai = await classifyWithGemini(url, og.title ?? null, memo ?? null)
 
     const newItem = {
       id: randomUUID(),
