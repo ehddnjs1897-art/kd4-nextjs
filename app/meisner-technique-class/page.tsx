@@ -92,7 +92,7 @@ export default function MeisnerPage() {
       {/* HERO */}
       <section aria-label="마이즈너 테크닉 정규 클래스 소개" style={{ padding: 'clamp(72px, 12vw, 110px) 24px clamp(48px, 9vw, 80px)', background: 'var(--navy)', color: '#fff', textAlign: 'center' }}>
         <div className="container">
-          <p className="section-eyebrow" style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '16px' }}>
+          <p className="section-eyebrow" style={{ color: 'rgba(255,255,255,0.75)', marginBottom: '16px' }}>
             STEP 01 · MEISNER TECHNIQUE
           </p>
           <h1 className="section-title-serif" style={{ color: '#fff', fontSize: 'clamp(1.7rem, 4.5vw, 2.8rem)', lineHeight: 1.35, marginBottom: '16px', maxWidth: '720px', margin: '0 auto 16px', wordBreak: 'keep-all' }}>
@@ -101,7 +101,7 @@ export default function MeisnerPage() {
           <p style={{ fontSize: 'clamp(0.95rem, 2.6vw, 1.05rem)', color: 'rgba(255,255,255,0.86)', lineHeight: 1.7, marginBottom: '8px', maxWidth: '560px', margin: '0 auto 8px', wordBreak: 'keep-all', fontStyle: 'italic' }}>
             &ldquo;{MAIN_CLASS.quote}&rdquo;
           </p>
-          <p style={{ fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)', color: 'rgba(255,255,255,0.55)', marginBottom: '32px', letterSpacing: '0.03em' }}>
+          <p style={{ fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)', color: 'rgba(255,255,255,0.75)', marginBottom: '32px', letterSpacing: '0.03em' }}>
             정원 {MAIN_CLASS.capacity} · {MAIN_CLASS.course} · {MAIN_CLASS.instructor ?? '권동원 대표'} 직강
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>

@@ -164,7 +164,7 @@ export default function AboutPage() {
             fontSize: 'clamp(2.4rem, 7vw, 5rem)',
             fontWeight: 700,
             letterSpacing: '0.08em',
-            color: '#1a3fad',
+            color: 'var(--navy)',
             textTransform: 'uppercase',
             lineHeight: 1,
             marginTop: '8px',

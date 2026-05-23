@@ -1516,6 +1516,11 @@ ul, ol { list-style: none; }
     transition: none !important;
   }
 }
+@media (scripting: none) {
+  .reveal-section,
+  .hero-subtitle,
+  .hero-scroll-indicator { opacity: 1 !important; transform: none !important; }
+}
 
 /* === STEP PROGRESSION GRID === */
 .steps-journey {

@@ -67,7 +67,7 @@ export default function SinchonPage() {
       <section aria-label="신촌 연기학원 히어로" style={{ padding: 'clamp(64px, 11vw, 104px) 24px clamp(48px, 9vw, 80px)', background: 'linear-gradient(160deg, var(--navy-deep) 0%, var(--navy) 60%, #133f78 100%)', color: '#fff', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         <div aria-hidden style={{ position: 'absolute', top: '-110px', right: '-70px', width: '340px', height: '340px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(199,62,62,0.2), transparent 70%)' }} />
         <div className="container" style={{ position: 'relative' }}>
-          <p className="section-eyebrow" style={{ color: '#F0A8A8', marginBottom: '16px' }}>
+          <p className="section-eyebrow" style={{ color: 'rgba(255,255,255,0.82)', marginBottom: '16px' }}>
             NEIGHBORHOOD · 신촌 / 서대문 / 이대
           </p>
           <h1 className="section-title-serif" style={{ color: '#fff', fontSize: 'clamp(1.7rem, 4.5vw, 2.8rem)', lineHeight: 1.35, marginBottom: '16px', maxWidth: '720px', margin: '0 auto 16px', wordBreak: 'keep-all' }}>
@@ -135,7 +135,7 @@ export default function SinchonPage() {
               <div style={{ background: 'var(--navy)', color: '#fff', borderRadius: '14px', padding: '22px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
                   <MapPin aria-hidden={true} size={18} strokeWidth={2} />
-                  <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.78rem', letterSpacing: '0.12em', color: '#F0A8A8' }}>ADDRESS</span>
+                  <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.78rem', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.82)' }}>ADDRESS</span>
                 </div>
                 <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.02rem', fontWeight: 700, lineHeight: 1.5, wordBreak: 'keep-all' }}>{ADDRESS_FULL}</p>
               </div>

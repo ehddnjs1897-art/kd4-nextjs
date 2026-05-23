@@ -135,7 +135,7 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
             onClick={() => { setEditing(true); setSuccess(false) }}
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 5,
-              padding: '6px 14px',
+              padding: '10px 14px',
               background: 'transparent',
               border: '1px solid var(--border)',
               borderRadius: 6,
@@ -269,7 +269,7 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
               disabled={saving}
               aria-busy={saving}
               style={{
-                flex: 1, padding: '10px 0',
+                flex: 1, padding: '12px 0',
                 background: saving ? 'var(--border)' : 'var(--gold)',
                 color: saving ? 'var(--gray)' : '#fff',
                 border: 'none', borderRadius: 6,
@@ -286,7 +286,7 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
               type="button"
               onClick={handleCancel}
               style={{
-                padding: '10px 18px',
+                padding: '12px 18px',
                 background: 'transparent',
                 border: '1px solid var(--border)',
                 borderRadius: 6, color: 'var(--gray)',

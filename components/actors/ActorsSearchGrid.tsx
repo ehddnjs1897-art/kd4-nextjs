@@ -70,7 +70,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
             style={{
               position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
               background: 'none', border: 'none', color: 'var(--gray)',
-              cursor: 'pointer', fontSize: '1rem', padding: 4,
+              cursor: 'pointer', fontSize: '1rem', padding: 8,
             }}
           >✕</button>
         )}

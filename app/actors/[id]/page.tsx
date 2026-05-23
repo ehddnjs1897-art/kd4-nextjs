@@ -395,7 +395,7 @@ export default async function ActorDetailPage({
               }}>{actor.name}</h1>
 
               {/* 서브라인 */}
-              <p style={{ fontSize: '0.86rem', color: 'var(--gray)', letterSpacing: '0.04em', marginBottom: 28 }}>
+              <p style={{ fontSize: '0.86rem', color: 'var(--gray-light)', letterSpacing: '0.04em', marginBottom: 28 }}>
                 {genderLabel}{actor.age_group ? ` · ${actor.age_group}` : ''}{actor.name_en ? ` · ${actor.name_en}` : ''}
               </p>
 

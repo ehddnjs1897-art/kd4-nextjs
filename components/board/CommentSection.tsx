@@ -194,7 +194,7 @@ export default function CommentSection({
                           type="button"
                           aria-label={`${comment.author_name} 댓글 삭제 취소`}
                           onClick={() => setConfirmingDeleteId(null)}
-                          style={{ fontSize: '0.75rem', color: 'var(--gray)', background: 'none', border: '1px solid var(--border)', borderRadius: 4, cursor: 'pointer', padding: '2px 8px' }}
+                          style={{ fontSize: '0.75rem', color: 'var(--gray)', background: 'none', border: '1px solid var(--border)', borderRadius: 4, cursor: 'pointer', padding: '2px 8px', minHeight: '44px', minWidth: '44px' }}
                         >
                           취소
                         </button>
@@ -203,7 +203,7 @@ export default function CommentSection({
                           aria-label={`${comment.author_name} 댓글 삭제 확인`}
                           onClick={() => handleDelete(comment.id)}
                           disabled={deletingId === comment.id}
-                          style={{ fontSize: '0.75rem', color: '#fff', background: '#ef4444', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '2px 8px' }}
+                          style={{ fontSize: '0.75rem', color: '#fff', background: '#ef4444', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '2px 8px', minHeight: '44px', minWidth: '44px' }}
                         >
                           삭제
                         </button>
@@ -223,6 +223,8 @@ export default function CommentSection({
                           padding: '2px 6px',
                           flexShrink: 0,
                           opacity: deletingId === comment.id ? 0.5 : 1,
+                          minHeight: '44px',
+                          minWidth: '44px',
                         }}
                       >
                         삭제
@@ -284,7 +286,7 @@ export default function CommentSection({
               type="submit"
               disabled={submitting || !content.trim()}
               style={{
-                padding: '9px 22px',
+                padding: '12px 22px',
                 background: submitting || !content.trim() ? 'var(--border)' : 'var(--gold)',
                 color: submitting || !content.trim() ? 'var(--gray)' : 'var(--bg)',
                 border: 'none',
