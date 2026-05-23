@@ -7,6 +7,8 @@ import DeletePostButton from '@/components/board/DeletePostButton'
 import PostViewTracker from '@/components/board/PostViewTracker'
 import { SITE_URL } from '@/lib/constants'
 
+export const dynamic = 'force-dynamic'
+
 type Params = Promise<{ id: string }>
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i

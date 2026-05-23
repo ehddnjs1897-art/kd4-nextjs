@@ -15,14 +15,13 @@ export interface ActorPhotoSource {
 }
 
 const STORAGE_BUCKET = 'actor-photos'
+// 모듈 스코프에 호이스팅 — 배우 51+명 렌더 시 env read 중복 방지
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
 
 export function getActorPhotoUrl(actor: ActorPhotoSource): string {
   // 1순위: Storage
-  if (actor.storage_photo_path) {
-    const base = process.env.NEXT_PUBLIC_SUPABASE_URL
-    if (base) {
-      return `${base}/storage/v1/object/public/${STORAGE_BUCKET}/${actor.storage_photo_path}`
-    }
+  if (actor.storage_photo_path && SUPABASE_URL) {
+    return `${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKET}/${actor.storage_photo_path}`
   }
 
   // 2순위: Drive 썸네일

@@ -706,7 +706,7 @@ export default function JoinPage() {
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
             >
-              {isDeadlineExpired ? '수강 신청 혜택' : '🌸 봄맞이 스페셜'}
+              {isDeadlineExpired ? '수강 신청 혜택' : <><span aria-hidden="true">🌸</span> 봄맞이 스페셜</>}
             </h2>
             <p style={{ fontSize: '0.95rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
               <strong style={{ color: 'var(--accent-red)' }}>첫 달 10만원 할인</strong>

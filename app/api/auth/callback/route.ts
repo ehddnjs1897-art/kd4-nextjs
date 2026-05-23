@@ -7,9 +7,11 @@
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { SITE_URL } from '@/lib/constants'
 
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = new URL(request.url)
+  const { searchParams } = new URL(request.url)
+  const origin = SITE_URL  // Host-header 스푸핑 방지: SITE_URL 고정
   const code = searchParams.get('code')
   // 로그인 성공 후 이동할 경로 — 오픈 리다이렉트 방지: '/'로 시작하고 '//evil.com' 형식 아닌 것만 허용
   const rawNext = searchParams.get('next') ?? '/'

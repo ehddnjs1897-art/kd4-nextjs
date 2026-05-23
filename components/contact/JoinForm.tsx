@@ -759,10 +759,10 @@ export default function JoinForm() {
         </span>
       </label>
 
-      {/* 에러 */}
-      {error && (
-        <p role="alert" aria-live="assertive" style={{ color: 'var(--accent-red)', fontSize: '0.85rem', margin: 0 }}>{error}</p>
-      )}
+      {/* 에러 — 항상 DOM에 존재해야 VoiceOver가 내용 변경을 감지함 (aria-live 스펙) */}
+      <p role="alert" aria-live="assertive" style={{ color: 'var(--accent-red)', fontSize: '0.85rem', margin: 0, minHeight: 0 }}>
+        {error ?? ''}
+      </p>
 
       {/* 제출 버튼 */}
       <button

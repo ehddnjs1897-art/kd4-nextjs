@@ -5,9 +5,15 @@
  * - 공개/비공개 토글
  * - 50명 배우 가입 후 관리자가 검토하는 메인 페이지
  */
+import type { Metadata } from 'next'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import Link from 'next/link'
 import ActorManagementTable, { ActorRow } from './ActorManagementTable'
+
+export const metadata: Metadata = {
+  title: '배우 관리 (관리자)',
+  robots: { index: false, follow: false },
+}
 
 export default async function AdminActorsPage() {
   // auth/role은 app/admin/layout.tsx에서 처리

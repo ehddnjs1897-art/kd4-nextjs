@@ -340,7 +340,7 @@ export default async function ActorDetailPage({
                 {photoUrl !== '/placeholder-actor.svg' ? (
                   <Image
                     src={photoUrl}
-                    alt={actor.name}
+                    alt={`${actor.name} 배우 프로필 사진`}
                     fill
                     sizes="(max-width: 660px) 200px, 290px"
                     style={{ objectFit: 'cover', objectPosition: 'top center' }}
@@ -463,6 +463,7 @@ export default async function ActorDetailPage({
                 )}
                 {actor.instagram && (
                   <a href={`https://instagram.com/${actor.instagram.replace('@','')}`} target="_blank" rel="noopener noreferrer"
+                    aria-label={`인스타그램 @${actor.instagram.replace('@', '')}`}
                     style={{ fontSize: '0.85rem', color: 'var(--gray)', textDecoration: 'none' }}>
                     @ {actor.instagram.startsWith('@') ? actor.instagram.slice(1) : actor.instagram}
                   </a>

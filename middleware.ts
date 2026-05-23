@@ -37,6 +37,11 @@ export async function middleware(request: NextRequest) {
 
   // 환경변수 미설정 시 (preview 등) 미들웨어 스킵
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    if (process.env.NODE_ENV === 'production') {
+      console.error('[middleware] ⚠️ Supabase env vars missing in production — auth checks disabled!')
+    } else {
+      console.warn('[middleware] Supabase env vars missing — auth checks disabled (preview/local)')
+    }
     return NextResponse.next()
   }
 

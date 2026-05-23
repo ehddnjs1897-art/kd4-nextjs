@@ -6,6 +6,8 @@ import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { buildBreadcrumb } from '@/lib/seo-schemas'
 
+export const dynamic = 'force-dynamic'
+
 const BOARD_URL = `${SITE_URL}/board`
 
 export const metadata: Metadata = {

@@ -8,9 +8,12 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { sendSMS } from '@/lib/sms'
+import { SITE_URL } from '@/lib/constants'
 
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = new URL(request.url)
+  const { searchParams } = new URL(request.url)
+  // Host-header 스푸핑 방지: 리다이렉트 base는 항상 SITE_URL 고정 (open redirect 방어)
+  const origin = SITE_URL
   const uid = searchParams.get('uid')
 
   const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i

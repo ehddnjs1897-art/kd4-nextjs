@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { CLASSES, PROMO_DEADLINE } from '@/lib/classes'
 
-const isPromoExpired = Date.now() > new Date(PROMO_DEADLINE).getTime()
 import { pixel } from '@/lib/analytics'
 import { ArrowRight } from 'lucide-react'
 
@@ -15,6 +14,8 @@ const CLASS_DETAIL_HREF: Record<string, string> = {
 }
 
 function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
+  // 모듈 스코프가 아닌 렌더 시 계산 — 장시간 탭 오픈 시 프로모 만료 즉시 반영
+  const isPromoExpired = Date.now() > new Date(PROMO_DEADLINE).getTime()
   const detailHref = CLASS_DETAIL_HREF[cls.nameKo]
   return (
     <div
@@ -367,6 +368,9 @@ export default function ClassesPage() {
           ].map(({ label, title, desc, open, setOpen, filter }) => (
             <div key={filter} style={{ marginBottom: '16px' }}>
               <button
+                type="button"
+                aria-expanded={open}
+                aria-controls={`step-${filter}-panel`}
                 onClick={() => setOpen((o: boolean) => !o)}
                 style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%',
@@ -382,7 +386,7 @@ export default function ClassesPage() {
                 <span style={{ fontSize: '0.85rem', color: 'var(--gray)', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s', display: 'inline-block', marginTop: '4px' }}>▼</span>
               </button>
               {open && (
-                <div className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: '12px', opacity: 0.85 }}>
+                <div id={`step-${filter}-panel`} className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: '12px', opacity: 0.85 }}>
                   {CLASSES.filter(c => c.category === filter).map((cls, i) => <ClassCard key={i} cls={cls} />)}
                 </div>
               )}
