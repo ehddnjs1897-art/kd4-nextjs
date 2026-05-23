@@ -860,6 +860,7 @@ const s: Record<string, React.CSSProperties> = {
   addRowBtn: {
     marginLeft: 'auto',
     padding: '3px 10px',
+    minHeight: 44,
     background: 'transparent',
     border: '1px solid var(--border)',
     borderRadius: 4,

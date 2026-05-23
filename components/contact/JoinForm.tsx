@@ -745,8 +745,8 @@ export default function JoinForm() {
           onChange={(e) => setConsent(e.target.checked)}
           required
           style={{
-            width: '18px',
-            height: '18px',
+            width: '24px',
+            height: '24px',
             marginTop: '2px',
             accentColor: 'var(--navy)',
             cursor: 'pointer',

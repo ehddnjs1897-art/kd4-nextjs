@@ -84,6 +84,15 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: '유효하지 않은 video_type입니다.' }, { status: 400 })
     }
 
+    // 배우당 영상 최대 50개 제한 — 장기 축적 방어
+    const { count: existingVideoCount } = await supabaseAdmin
+      .from('actor_videos')
+      .select('id', { count: 'exact', head: true })
+      .eq('actor_id', id)
+    if ((existingVideoCount ?? 0) >= 50) {
+      return NextResponse.json({ error: '배우당 최대 50개 영상까지 추가할 수 있습니다.' }, { status: 429 })
+    }
+
     // MAX(sort_order) + 1 — 항상 0 고정 버그 수정 (R86): 새 영상은 목록 맨 뒤에 추가
     const { data: maxSortRow } = await supabaseAdmin
       .from('actor_videos')

@@ -461,7 +461,7 @@ export default async function ActorDetailPage({
                   <p style={{ fontSize: '0.82rem', color: 'var(--gray)' }}>
                     {user
                       ? <>연락처 열람은 디렉터 회원 전용입니다.{' '}
-                          <Link href="/dashboard" style={{ color: 'var(--gold)' }}>마이페이지에서 신청 →</Link>
+                          <Link href="/dashboard" aria-label="디렉터 권한 신청하기 (마이페이지로 이동)" style={{ color: 'var(--gold)' }}>마이페이지에서 신청 →</Link>
                         </>
                       : <>연락처 및 자료 다운로드는 KD4 멤버 전용입니다.{' '}
                           <Link href={`/auth/login?next=/actors/${actor.id}`} style={{ color: 'var(--gold)' }}>로그인</Link>

@@ -106,7 +106,7 @@ export default function LeaderboardPage() {
       {loading ? (
         <div role="status" aria-label="리더보드 로딩 중" style={{ textAlign: "center", color: "#444", padding: 40 }}><span lang="en">LOADING...</span></div>
       ) : fetchError ? (
-        <div style={{ textAlign: "center", color: "#555", padding: 40 }}>
+        <div role="alert" style={{ textAlign: "center", color: "#555", padding: 40 }}>
           <p style={{ marginBottom: 12 }}>불러오기 실패</p>
           <button
             type="button"
@@ -171,6 +171,7 @@ export default function LeaderboardPage() {
 
               {/* Score */}
               <div
+                aria-label={`점수: ${entry.score.toLocaleString()}`}
                 style={{
                   fontSize: i < 3 ? 22 : 18,
                   fontWeight: 700,

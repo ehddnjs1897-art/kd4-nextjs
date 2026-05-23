@@ -160,6 +160,7 @@ export default function BoardClient({
               aria-pressed={activeCategory === cat}
               style={{
                 padding: '8px 18px',
+                minHeight: 44,
                 borderRadius: 'var(--radius)',
                 fontSize: '0.875rem',
                 fontWeight: activeCategory === cat ? 600 : 400,

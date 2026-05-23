@@ -226,7 +226,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
 
         {/* 승인 완료 알림 */}
         {approvedMsg && (
-          <div style={{
+          <div role="status" aria-live="polite" style={{
             padding: '12px 18px',
             background: 'rgba(74,222,128,0.1)',
             border: '1px solid rgba(74,222,128,0.3)',
@@ -694,7 +694,7 @@ const s: Record<string, React.CSSProperties> = {
     border: '1px solid var(--border)',
     borderRadius: 4,
     padding: '8px 14px',
-    minHeight: 36,
+    minHeight: 44,
     fontSize: '0.76rem',
     color: 'var(--white)',
     cursor: 'pointer',
@@ -706,7 +706,7 @@ const s: Record<string, React.CSSProperties> = {
     border: '1px solid rgba(220,53,69,0.4)',
     borderRadius: 4,
     padding: '8px 14px',
-    minHeight: 36,
+    minHeight: 44,
     fontSize: '0.76rem',
     color: '#ff6b6b',
     cursor: 'pointer',

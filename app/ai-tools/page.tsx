@@ -541,6 +541,7 @@ const s: Record<string, React.CSSProperties> = {
     border: 'none',
     borderRadius: 6,
     padding: '13px 28px',
+    minHeight: 44,
     fontSize: '0.9rem',
     fontWeight: 700,
     fontFamily: 'var(--font-oswald, var(--font-display))',
