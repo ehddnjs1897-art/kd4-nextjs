@@ -23,6 +23,11 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com',
       },
+      // Cloudflare R2 (영상/파일 직접 URL 방어 — 현재는 프록시 경유, 미래 대비)
+      {
+        protocol: 'https',
+        hostname: '*.r2.cloudflarestorage.com',
+      },
     ],
     formats: ['image/avif', 'image/webp'],
   },

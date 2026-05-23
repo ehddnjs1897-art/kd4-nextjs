@@ -10,6 +10,10 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 import { sendSMS } from '@/lib/sms'
 import { SITE_URL } from '@/lib/constants'
 
+// 관리자별 승인 레이트 리밋: 60초 내 중복 클릭 차단 (이메일 링크 중복 클릭 방어)
+const approveCrewMap = new Map<string, number>()
+const APPROVE_COOLDOWN_MS = 60_000
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   // Host-header 스푸핑 방지: 리다이렉트 base는 항상 SITE_URL 고정 (open redirect 방어)
@@ -50,6 +54,19 @@ export async function GET(request: NextRequest) {
 
   if (!profile || profile.role !== 'admin') {
     return NextResponse.redirect(`${origin}/?error=not_admin`)
+  }
+
+  // 레이트 리밋: 60초 내 동일 관리자 중복 클릭 차단 (SMS·DB 중복 방지 2차 방어)
+  const nowAC = Date.now()
+  const lastAC = approveCrewMap.get(user.id) ?? 0
+  if (nowAC - lastAC < APPROVE_COOLDOWN_MS) {
+    return NextResponse.redirect(`${origin}/admin?error=rate_limited`)
+  }
+  approveCrewMap.set(user.id, nowAC)
+  if (approveCrewMap.size > 200) {
+    for (const [k, ts] of approveCrewMap) {
+      if (nowAC - ts > APPROVE_COOLDOWN_MS) approveCrewMap.delete(k)
+    }
   }
 
   // 대상 유저 정보 조회 (phone 포함)

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: '새 비밀번호 설정',
+  description: 'KD4 액팅 스튜디오 새 비밀번호 설정',
   robots: { index: false, follow: false },
 }
 
