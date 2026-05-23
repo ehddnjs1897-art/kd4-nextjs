@@ -15,9 +15,8 @@ const POSTS_GET_RATE_WINDOW_MS = 60_000
 export async function GET(request: NextRequest) {
   try {
     // IP 레이트 리밋: 1분 60회 초과 차단 (DoS 방어)
-    const ip = request.headers.get('x-real-ip')
-      ?? request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-      ?? null
+    // x-real-ip는 Vercel이 제어하는 신뢰할 수 있는 헤더 — x-forwarded-for는 클라이언트 위조 가능하므로 사용하지 않음
+    const ip = request.headers.get('x-real-ip') ?? null
     if (ip) {
       const now = Date.now()
       const bucket = postsGetRateMap.get(ip)

@@ -69,6 +69,8 @@ export default function LeaderboardPage() {
 
       {/* Period toggle */}
       <div
+        role="group"
+        aria-label="기간 선택"
         style={{
           display: "flex",
           gap: 8,
@@ -84,7 +86,7 @@ export default function LeaderboardPage() {
             aria-pressed={period === p}
             style={{
               background: period === p ? "#0057FF" : "rgba(255,255,255,0.05)",
-              color: period === p ? "#fff" : "#666",
+              color: period === p ? "#fff" : "#999",
               border: period === p ? "none" : "1px solid rgba(255,255,255,0.1)",
               borderRadius: 8,
               padding: "8px 20px",
@@ -125,7 +127,7 @@ export default function LeaderboardPage() {
           </Link>
         </div>
       ) : (
-        <ol style={{ maxWidth: 500, margin: "0 auto", padding: 0, listStyle: "none" }}>
+        <ol aria-label={`${period === 'weekly' ? '주간' : '전체'} 순위`} style={{ maxWidth: 500, margin: "0 auto", padding: 0, listStyle: "none" }}>
           {data.map((entry, i) => (
             <li
               key={entry.id}
@@ -151,7 +153,7 @@ export default function LeaderboardPage() {
                   width: 32,
                   fontSize: i < 3 ? 22 : 16,
                   fontWeight: 700,
-                  color: i === 0 ? "#0057FF" : i < 3 ? "#5599FF" : "#555",
+                  color: i === 0 ? "#0057FF" : i < 3 ? "#5599FF" : "#888",
                 }}
               >
                 {i + 1}
@@ -162,7 +164,7 @@ export default function LeaderboardPage() {
                 <div style={{ fontSize: 15, fontWeight: 500 }}>
                   {entry.profiles?.name || "익명"}
                 </div>
-                <div style={{ fontSize: 11, color: "#555" }}>
+                <div style={{ fontSize: 11, color: "#888" }}>
                   Stage {entry.stage} · {formatTime(entry.duration_ms)}
                 </div>
               </div>

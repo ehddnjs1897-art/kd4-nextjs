@@ -387,7 +387,7 @@ export default function ClassesPage() {
                 <p style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.25em', color: 'var(--navy)', fontFamily: 'var(--font-display)', margin: 0 }}>{label}</p>
                 <span style={{ fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', fontWeight: 800, color: 'var(--gray-light)', fontFamily: 'var(--font-serif)', margin: 0 }}>{title}</span>
                 <p style={{ fontSize: '0.8rem', color: 'var(--gray)', margin: 0 }}>{desc}</p>
-                <span style={{ fontSize: '0.85rem', color: 'var(--gray)', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s', display: 'inline-block', marginTop: '4px' }}>▼</span>
+                <span aria-hidden="true" style={{ fontSize: '0.85rem', color: 'var(--gray)', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s', display: 'inline-block', marginTop: '4px' }}>▼</span>
               </button>
               {open && (
                 <div id={`step-${filter}-panel`} role="region" aria-labelledby={`btn-${filter}`} className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: '12px', opacity: 0.85 }}>

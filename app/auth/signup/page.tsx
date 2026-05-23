@@ -501,7 +501,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   typeDesc: {
     fontSize: '0.72rem',
-    color: 'var(--gray)',
+    color: 'var(--gray-light)',
     lineHeight: 1.6,
   },
   typeBadgeRow: {
@@ -530,6 +530,8 @@ const styles: Record<string, React.CSSProperties> = {
     textDecoration: 'underline',
     fontFamily: 'inherit',
     padding: 0,
+    minHeight: 44,
+    paddingInline: '8px',
   },
   errorBox: {
     background: 'rgba(220, 38, 38, 0.12)',
@@ -537,7 +539,7 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 6,
     padding: '10px 14px',
     fontSize: '0.875rem',
-    color: '#b91c1c',
+    color: '#991111',
     marginBottom: 20,
     lineHeight: 1.5,
   },
@@ -589,6 +591,7 @@ const styles: Record<string, React.CSSProperties> = {
     border: 'none',
     borderRadius: 6,
     padding: '12px 0',
+    minHeight: 44,
     fontSize: '0.95rem',
     fontWeight: 700,
     fontFamily: 'var(--font-display)',

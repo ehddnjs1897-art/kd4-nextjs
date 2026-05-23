@@ -487,6 +487,9 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                             type="button"
                             onClick={() => handleStatusChange(app.id, app.status)}
                             disabled={loadingId === app.id}
+                            aria-label={loadingId === app.id
+                              ? '처리 중'
+                              : `${app.name} 상태 변경: ${STATUS_LABEL[STATUS_CYCLE[app.status] ?? 'pending']}으로`}
                             style={s.actionBtn}
                           >
                             {loadingId === app.id
