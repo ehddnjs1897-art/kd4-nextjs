@@ -139,8 +139,12 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
                         key={s}
                         onClick={() => setStatus(e.id, s)}
                         disabled={busy === e.id}
+                        aria-busy={busy === e.id}
+                        aria-label={`${e.name || '(이름없음)'} ${e.class_name} 상태를 ${s}로 변경`}
                         style={{
                           padding: '3px 8px', borderRadius: 4, border: 'none',
+                          minHeight: 44, minWidth: 44,
+                          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                           fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer',
                           fontFamily: 'inherit',
                           background: s === '확정' ? '#2d8a56' : s === '취소' ? '#c0392b' : '#9a938b',
@@ -169,11 +173,14 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
                   type="button"
                   onClick={() => togglePay(e.id, e.payment_status)}
                   disabled={busy === e.id}
+                  aria-busy={busy === e.id}
+                  aria-label={`${e.name || '(이름없음)'} ${e.class_name} 결제 상태: ${e.payment_status === '결제완료' ? '결제완료 — 클릭해서 결제대기로 변경' : '결제대기 — 클릭해서 결제완료로 변경'}`}
                   style={{
                     flexShrink: 0,
                     padding: '6px 12px',
                     borderRadius: 6,
                     border: 'none',
+                    minHeight: 44,
                     fontSize: '0.76rem',
                     fontWeight: 700,
                     cursor: busy === e.id ? 'wait' : 'pointer',

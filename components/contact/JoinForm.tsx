@@ -208,6 +208,8 @@ export default function JoinForm() {
   if (done) {
     return (
       <div
+        role="status"
+        aria-live="polite"
         style={{
           background: 'var(--navy-tint-1)',
           border: '1px solid var(--navy-tint-3)',

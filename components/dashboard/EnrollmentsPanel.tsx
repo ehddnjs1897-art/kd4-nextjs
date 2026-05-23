@@ -140,7 +140,7 @@ export default function EnrollmentsPanel({
                 </div>
               </div>
               {/* 상태 배지 */}
-              <span style={{ fontSize: '0.72rem', fontWeight: 700, color: STATUS_COLOR[e.status] ?? '#9a938b' }}>
+              <span style={{ fontSize: '0.72rem', fontWeight: 700, color: STATUS_COLOR[e.status] ?? '#5A5450' }}>
                 {e.status}
               </span>
               {/* 결제 배지 */}

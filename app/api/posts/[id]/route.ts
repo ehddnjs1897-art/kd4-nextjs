@@ -152,11 +152,11 @@ export async function PATCH(
       updates.category = body.category
     }
 
-    // supabaseAdmin 사용 — 위에서 소유권 확인 완료, RLS가 업데이트를 막지 않도록
-    const { error: updateError } = await supabaseAdmin
-      .from('posts')
-      .update(updates)
-      .eq('id', id)
+    // supabaseAdmin 사용 — TOCTOU 방어: WHERE에 author_id 재포함 (admin 제외)
+    // 선-조회(pre-check)와 업데이트 사이 DB 변경 시에도 올바른 소유자만 갱신되도록
+    let updateQuery = supabaseAdmin.from('posts').update(updates).eq('id', id)
+    if (!isAdmin) updateQuery = updateQuery.eq('author_id', user.id)
+    const { error: updateError } = await updateQuery
 
     if (updateError) {
       return NextResponse.json({ error: '게시글 수정 중 오류가 발생했습니다.' }, { status: 500 })

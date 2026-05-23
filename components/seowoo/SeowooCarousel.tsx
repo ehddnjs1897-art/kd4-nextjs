@@ -106,8 +106,8 @@ export default function SeowooCarousel() {
             top: '50%',
             left: -20,
             transform: 'translateY(-50%)',
-            width: 40,
-            height: 40,
+            width: 44,
+            height: 44,
             borderRadius: '50%',
             background: '#ffffff',
             border: '1px solid var(--border)',
@@ -133,8 +133,8 @@ export default function SeowooCarousel() {
             top: '50%',
             right: -20,
             transform: 'translateY(-50%)',
-            width: 40,
-            height: 40,
+            width: 44,
+            height: 44,
             borderRadius: '50%',
             background: '#ffffff',
             border: '1px solid var(--border)',
@@ -161,8 +161,8 @@ export default function SeowooCarousel() {
             aria-label={`${i + 1}번 슬라이드`}
             aria-current={i === active ? 'true' : undefined}
             style={{
-              minWidth: 24,
-              minHeight: 24,
+              minWidth: 44,
+              minHeight: 44,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',

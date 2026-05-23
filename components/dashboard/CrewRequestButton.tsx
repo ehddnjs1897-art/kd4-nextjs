@@ -65,6 +65,7 @@ export default function CrewRequestButton() {
         type="button"
         onClick={handleRequest}
         disabled={loading}
+        aria-busy={loading}
         style={{
           display: 'block',
           width: '100%',

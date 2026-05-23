@@ -59,9 +59,9 @@ function CategoryBadge({ category }: { category: string }) {
       borderRadius: '2px',
       fontSize: '0.78rem',
       fontWeight: 600,
-      color: color === '#888888' ? 'var(--gray)' : '#fff',
-      background: color + '22',
-      border: `1px solid ${color}55`,
+      color: '#fff',
+      background: color === '#888888' ? '#5a5652' : color,
+      border: `1px solid ${color === '#888888' ? '#5a5652' : color}`,
     }}>
       {category}
     </span>

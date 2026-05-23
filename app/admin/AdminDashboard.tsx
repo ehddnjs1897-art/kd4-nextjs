@@ -505,6 +505,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                             type="button"
                             onClick={() => handleStatusChange(app.id, app.status)}
                             disabled={loadingId === app.id}
+                            aria-busy={loadingId === app.id}
                             aria-label={loadingId === app.id
                               ? '처리 중'
                               : `${app.name} 상태 변경: ${STATUS_LABEL[STATUS_CYCLE[app.status] ?? 'pending']}으로`}
@@ -628,6 +629,7 @@ const s: Record<string, React.CSSProperties> = {
     border: 'none',
     borderBottom: '2px solid transparent',
     padding: '10px 20px',
+    minHeight: 44,
     fontSize: '0.84rem',
     fontWeight: 600,
     color: 'var(--gray)',

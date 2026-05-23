@@ -48,7 +48,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
 
     let parsedBody: { category?: string; year?: number; title?: string; role?: string; broadcaster?: string; film_type?: string }
     try {
-      const clFilm = parseInt(request.headers.get('content-length') ?? '0', 10)
+      const clFilm = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
       if (clFilm > 32_768) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
       parsedBody = await request.json()
     } catch {

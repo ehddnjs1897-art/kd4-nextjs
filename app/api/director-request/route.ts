@@ -5,7 +5,7 @@
  *
  * 승인은 관리자가 /api/admin/approve-crew?uid=... 링크로 처리 (director_pending → director)
  */
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
@@ -21,7 +21,11 @@ const ALREADY = ['crew_pending', 'director_pending', 'director', 'admin', 'crew'
 const requestMap = new Map<string, number>()
 const COOLDOWN_MS = 60_000
 
-export async function POST() {
+export async function POST(request: NextRequest) {
+  // 본문 크기 검증 (이 엔드포인트는 body를 파싱하지 않지만 대용량 요청 차단)
+  const clDirector = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
+  if (clDirector > 256) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+
   try {
     const supabase = await createClient()
     const { data: { user }, error: authErr } = await supabase.auth.getUser()

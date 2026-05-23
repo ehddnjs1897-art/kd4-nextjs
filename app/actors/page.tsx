@@ -179,7 +179,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
   const VALID_AGE_GROUPS = new Set(['all', '20대', '30대', '40대', '50대 이상'])
   const gender = VALID_GENDERS.has(params.gender ?? '') ? (params.gender ?? 'all') : 'all'
   const ageGroup = VALID_AGE_GROUPS.has(params.ageGroup ?? '') ? (params.ageGroup ?? 'all') : 'all'
-  const tag = (params.tag ?? 'all').slice(0, 50)  // 50자 이하로 제한 — 임의 긴 문자열 차단
+  const tag = (params.tag ?? 'all').replace(/[{},\\"]/g, '').slice(0, 50)  // PostgREST 메타문자({},\") 제거 + 50자 상한
 
   const { actors, dbError, allTags } = await getActorsCached(gender, ageGroup, tag)
 

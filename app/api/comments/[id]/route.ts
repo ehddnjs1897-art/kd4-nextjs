@@ -65,11 +65,11 @@ export async function DELETE(
       return NextResponse.json({ error: '삭제 권한이 없습니다.' }, { status: 403 })
     }
 
-    // supabaseAdmin 사용 — 위에서 소유권 확인 완료, RLS가 삭제를 막지 않도록
-    const { error: deleteError } = await supabaseAdmin
-      .from('comments')
-      .delete()
-      .eq('id', id)
+    // supabaseAdmin 사용 — TOCTOU 방어: WHERE에 author_id 재포함 (admin 제외)
+    // 선-조회와 삭제 사이 author_id가 DB에서 바뀌더라도 원래 작성자만 삭제 가능
+    let deleteQuery = supabaseAdmin.from('comments').delete().eq('id', id)
+    if (!isAdmin) deleteQuery = deleteQuery.eq('author_id', user.id)
+    const { error: deleteError } = await deleteQuery
 
     if (deleteError) {
       return NextResponse.json({ error: '댓글 삭제 중 오류가 발생했습니다.' }, { status: 500 })

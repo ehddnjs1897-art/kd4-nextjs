@@ -352,6 +352,11 @@ export default function InsightsPage() {
           )}
         </form>
 
+        {/* 검색/필터 결과 수 — AT 사용자 알림 */}
+        <p role="status" aria-live="polite" aria-atomic="true" style={{ position: 'absolute', width: 1, height: 1, padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', borderWidth: 0 }}>
+          {loading ? '로딩 중' : `${insights.length}건의 인사이트`}
+        </p>
+
         {/* 카드 목록 */}
         {fetchError && (
           <div style={{ textAlign: 'center', padding: '16px 0' }}>

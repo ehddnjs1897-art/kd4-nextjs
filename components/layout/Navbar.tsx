@@ -284,6 +284,7 @@ export default function Navbar() {
                   }}
                   aria-haspopup="menu"
                   aria-expanded={crewDropOpen}
+                  aria-controls="crew-nav-panel"
                   onClick={() => setCrewDropOpen(v => !v)}
                 >
                   KD4 크루
@@ -306,6 +307,7 @@ export default function Navbar() {
                 {/* 드롭다운 패널 */}
                 {crewDropOpen && (
                   <div
+                    id="crew-nav-panel"
                     role="navigation"
                     aria-label="KD4 크루 메뉴"
                     onMouseEnter={handleDropEnter}

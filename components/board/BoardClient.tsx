@@ -37,8 +37,8 @@ function CategoryBadge({ category }: { category: string }) {
       fontSize: '0.72rem',
       fontWeight: 600,
       color: '#fff',
-      background: color + '22',
-      border: `1px solid ${color}55`,
+      background: color,
+      border: `1px solid ${color}`,
       letterSpacing: '0.03em',
     }}>
       {category}

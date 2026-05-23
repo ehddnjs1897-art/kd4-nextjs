@@ -76,7 +76,7 @@ export async function PATCH(
       )
     }
 
-    const cl = parseInt(request.headers.get('content-length') ?? '0', 10)
+    const cl = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
     if (cl > 256) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
     const body = await request.json()
     const { is_public } = body as { is_public?: unknown }

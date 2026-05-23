@@ -3,7 +3,7 @@
  * 로그인한 회원이 KD4 크루 접근 신청 → role을 'crew_pending'으로 변경
  *   + 관리자 이메일 발송 + Solapi SMS 알림 (trally 패턴 차용)
  */
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
@@ -16,7 +16,11 @@ const ADMIN_PHONE = process.env.ADMIN_PHONE_NUMBER ?? ''
 const requestMap = new Map<string, number>()
 const COOLDOWN_MS = 60_000
 
-export async function POST() {
+export async function POST(request: NextRequest) {
+  // 본문 크기 검증 (이 엔드포인트는 body를 파싱하지 않지만 대용량 요청 차단)
+  const clCrew = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
+  if (clCrew > 256) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+
   try {
     const supabase = await createClient()
     const { data: { user }, error: authErr } = await supabase.auth.getUser()

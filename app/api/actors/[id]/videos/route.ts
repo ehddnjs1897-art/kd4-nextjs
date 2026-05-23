@@ -49,7 +49,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
 
     let parsedBody: { youtube_id?: string; r2_key?: string; title?: string; video_type?: string }
     try {
-      const clVideo = parseInt(request.headers.get('content-length') ?? '0', 10)
+      const clVideo = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
       if (clVideo > 16_384) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
       parsedBody = await request.json()
     } catch {

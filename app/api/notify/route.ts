@@ -79,11 +79,11 @@ async function sendMetaCAPI(record: { name?: string | null; phone?: string | nul
 const notifyPhoneMap = new Map<string, number>()
 const NOTIFY_DEBOUNCE_MS = 4000 // 4초 내 동일 번호 동시 요청 차단
 
-// 허용 출처 — kd4.club 및 로컬 개발 환경만 허용 (cross-origin 스팸 제출 방어)
+// 허용 출처 — SITE_URL 기반으로 동적 구성 (하드코딩 도메인과 상수 불일치 방지)
 const NOTIFY_ALLOWED_ORIGINS = new Set([
-  'https://kd4.club',
-  'https://www.kd4.club',
-  'http://localhost:3000',
+  SITE_URL,
+  SITE_URL.replace(/^https:\/\//, 'https://www.'),
+  ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:3000'] : []),
 ])
 
 export async function POST(request: NextRequest) {

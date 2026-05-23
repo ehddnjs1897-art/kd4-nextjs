@@ -24,6 +24,7 @@ const styles: Record<string, React.CSSProperties> = {
   btn: {
     width: '100%',
     padding: '10px 0',
+    minHeight: 44,
     background: 'transparent',
     border: '1px solid var(--border)',
     borderRadius: 6,

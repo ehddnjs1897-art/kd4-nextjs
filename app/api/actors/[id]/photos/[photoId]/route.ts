@@ -53,7 +53,7 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
     if (!(await authorize(id, user.id))) return NextResponse.json({ error: '권한 없음' }, { status: 403 })
     if (!checkPhotosRateLimit(user.id)) return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
 
-    const clPhoto = parseInt(request.headers.get('content-length') ?? '0', 10)
+    const clPhoto = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
     if (clPhoto > 256) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
     let body: Record<string, unknown>
     try {

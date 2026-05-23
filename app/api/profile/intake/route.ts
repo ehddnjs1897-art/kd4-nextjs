@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-  const clIntake = parseInt(request.headers.get('content-length') ?? '0', 10)
+  const clIntake = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
   if (clIntake > 32_768) {
     return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
   }
