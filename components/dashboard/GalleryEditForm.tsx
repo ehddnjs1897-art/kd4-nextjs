@@ -615,7 +615,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
 
       {/* ── 기본 정보 ── */}
       <section style={s.section}>
-        <p style={s.sectionTitle}>Basic Info</p>
+        <h2 style={s.sectionTitle}>Basic Info</h2>
         <div style={{ ...s.row, marginBottom: 20 }}>
           <div style={{ ...s.field, flex: '1 1 120px' }}>
             <label htmlFor="actor-height" style={s.label}>신장 (cm)</label>
@@ -655,7 +655,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
 
       {/* ── 프로필 자료 (PPTX) ── */}
       <section style={s.section}>
-        <p style={s.sectionTitle}>Profile Document</p>
+        <h2 style={s.sectionTitle}>Profile Document</h2>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
           <div style={{
             width: 40, height: 40, borderRadius: 6, background: 'rgba(196,165,90,0.12)',
@@ -682,7 +682,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
 
       {/* ── 사진 ── */}
       <section style={s.section}>
-        <p style={s.sectionTitle}>Photos</p>
+        <h2 style={s.sectionTitle}>Photos</h2>
         <div style={s.photoGrid}>
           {photos.map((p, idx) => (
             <div key={p.id} style={s.photoCard}>
@@ -723,7 +723,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
 
       {/* ── 영상 ── */}
       <section style={s.section}>
-        <p style={s.sectionTitle}>Videos</p>
+        <h2 style={s.sectionTitle}>Videos</h2>
 
         {/* R2 업로드 영상 */}
         <div style={{ marginBottom: 28 }}>
@@ -803,7 +803,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
 
       {/* ── 필모그래피 ── */}
       <section style={s.section}>
-        <p style={s.sectionTitle}>Filmography</p>
+        <h2 style={s.sectionTitle}>Filmography</h2>
 
         {filmography.length > 0 && (
           <div style={{ marginBottom: 20, overflowX: 'auto' }}>

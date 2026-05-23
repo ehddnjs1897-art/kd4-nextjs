@@ -81,7 +81,7 @@ export default function GameStartPage() {
           fontFamily: "var(--font-oswald), sans-serif",
         }}
       >
-        OFF THE PLASTIC
+        OFF THE PLASTIC<span className="sr-only"> — 게임 로비</span>
       </h1>
 
       <p

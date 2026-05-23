@@ -235,6 +235,7 @@ export default function SignupPage() {
             type="button"
             style={styles.typeChangeBtn}
             onClick={() => setStep('type-select')}
+            aria-label="회원 유형 변경"
           >
             변경
           </button>
