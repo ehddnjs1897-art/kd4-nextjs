@@ -215,7 +215,7 @@ export default function InsightsPage() {
                   메모 {showMemo ? '▲' : '▼'}
                 </button>
               </div>
-              {saveError && <p style={{ fontSize: 12, color: '#ef4444', marginTop: 6 }}>{saveError}</p>}
+              {saveError && <p role="alert" style={{ fontSize: 12, color: '#ef4444', marginTop: 6 }}>{saveError}</p>}
               {showMemo && (
                 <textarea
                   className="ins-input"
@@ -329,7 +329,7 @@ export default function InsightsPage() {
         {/* 카드 목록 */}
         {fetchError && (
           <div style={{ textAlign: 'center', padding: '16px 0' }}>
-            <p style={{ fontSize: 13, color: '#ef4444', marginBottom: 8 }}>{fetchError}</p>
+            <p role="alert" style={{ fontSize: 13, color: '#ef4444', marginBottom: 8 }}>{fetchError}</p>
             <button className="ins-btn-ghost" style={{ fontSize: 13 }} onClick={fetchInsights}>다시 시도</button>
           </div>
         )}

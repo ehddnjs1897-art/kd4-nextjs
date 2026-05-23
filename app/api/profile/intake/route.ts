@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
         intake_submitted_at: nowIso,
       })
       .select('id')
-      .single()
+      .maybeSingle()
 
     if (createErr || !created) {
       console.error('[profile/intake] 배우 생성 실패:', createErr?.message)

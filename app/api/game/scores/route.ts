@@ -102,9 +102,9 @@ export async function POST(request: NextRequest) {
       items_collected,
     })
     .select('id')
-    .single()
+    .maybeSingle()
 
-  if (error) {
+  if (error || !data) {
     console.error('[POST /api/game/scores] insert error:', error)
     return NextResponse.json({ error: '점수 저장 중 오류가 발생했습니다.' }, { status: 500 })
   }

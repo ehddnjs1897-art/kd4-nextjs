@@ -53,7 +53,6 @@ export const revalidate = 3600
 const DEADLINE = '2026-05-31T23:59:59'  // 5월 모집 마감 (날짜 확정 시 업데이트)
 
 /* ── lib/classes.ts 데이터 재사용 ─────────────────────────────────── */
-const OPEN_CLASSES = CLASSES.filter((c) => c.isNewMemberOpen && c.highlight)
 const MAIN_CLASS = CLASSES.find((c) => c.nameKo === '마이즈너 테크닉 정규 클래스')!
 const FILM_CLASS = CLASSES.find((c) => c.nameKo === '출연영상 클래스')!
 
@@ -80,7 +79,7 @@ const DISCOUNTS = [
   {
     tag: '포트폴리오 할인',
     title: '출연영상 1달 완성 클래스 신청 시 30% 할인',
-    desc: '출연영상 2회 이상 수료 배우',
+    desc: '출연영상 2회 이상 수료한 KD4 멤버',
     isNew: false,
   },
   {
@@ -128,27 +127,11 @@ const CURRICULUM = [
   },
 ]
 
-/* ── 비교표 ────────────────────────────────────────────────── */
-const COMPARISON_ROWS: { label: string; normal: string; kd4: string }[] = [
-  { label: '1인 피드백 시간', normal: '회당 5~10분', kd4: '회당 30분+' },
-  { label: '정원', normal: '15~25명', kd4: '6~8명' },
-  { label: '수업 길이', normal: '1.5~2시간', kd4: '4시간' },
-  { label: '리더', normal: '전임 강사 중심', kd4: '전문 액팅 코치' },
-  { label: '포트폴리오 제작', normal: '별도 과정 · 유료', kd4: '정규 과정 포함' },
-  { label: '캐스팅 수수료', normal: '10~30%', kd4: '수수료 없음 · 직접 연결' },
-  { label: '월 수강료', normal: '월 45~55만원', kd4: '월 32~37만원 · 최대 약 30%↓' },
-]
-
 /* ── 후기 마퀴 (2행 교차) ── */
 const REVIEW_MARQUEE_ROW1 = [
   { text: '내 의지로 만들어진 연기가 아니라 의식 깊은 곳에서 건드려진 감정이 자연스럽게 뱉어지는 경험을 했습니다.', author: '강*경' },
   { text: '카메라 앞에서든 무대 위에서든 진짜로 숨쉴 수 있는 방법의 물꼬를 터준 수업.', author: '김*일' },
   { text: '안 보이던 업계의 길이 보였습니다. 현역 배우가 현실적으로 설명해주는 곳.', author: '한*윤' },
-]
-const REVIEW_MARQUEE_ROW2 = [
-  { text: '여러 연기 워크샵을 다녀봤지만 가장 의미있는 시간이었다.', author: '허*' },
-  { text: '다시 대사를 뱉어보니 색다른 감정들이 저를 휘몰아치게 하더라고요.', author: '조*건' },
-  { text: '5시간 동안 여섯 명을 한 명 한 명 집중해주셨어요. 학원에서 배울 수 없는 것들을 얻어간 귀중한 시간.', author: '김*지' },
 ]
 
 /* ── Risk Reversal 3가지 보장 ─────────────────────────────── */
@@ -184,7 +167,7 @@ export default function JoinPage() {
         paddingBottom: '90px',
       }}
     >
-      <StickyTopBar deadline={DEADLINE} cohorts={OPEN_COHORTS} />
+      <StickyTopBar cohorts={OPEN_COHORTS} />
 
       {/* 분석: 랜딩 ViewContent + 스크롤 깊이 추적 (GA4 + Meta Pixel) */}
       <JoinPageView />

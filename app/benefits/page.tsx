@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: '멤버 혜택 | KD4 액팅 스튜디오',
     description: 'KD4 멤버가 누리는 혜택과 커뮤니티 — 보강제도, 출연영상·프로필 편집 서비스, 레피티션 스터디.',
-    images: [`${SITE_URL}/og-image.jpg`],
+    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 멤버 혜택' }],
   },
 }
 
@@ -80,7 +80,7 @@ const COMMUNITIES: CommunityItem[] = [
 const DISCOUNTS = [
   { tag: '웰컴 할인', title: '첫 달 10만원 할인', desc: '또는 무료 오픈클래스 중 택1 · 신규 등록 시 적용' },
   { tag: '컴백 할인', title: '첫 달 5만원 할인', desc: '6개월 이상 휴면 후 복귀 시 적용' },
-  { tag: '포트폴리오 할인', title: '출연영상 1달 완성 클래스 신청 시 30% 할인', desc: '출연영상 2회 이상 수료 배우' },
+  { tag: '포트폴리오 할인', title: '출연영상 1달 완성 클래스 신청 시 30% 할인', desc: '출연영상 2회 이상 수료한 KD4 멤버' },
   { tag: '앰배서더 할인', title: '지인 소개로 등록 시 두 분 모두 각 3만원 할인', desc: '지인 소개로 등록 시, 소개한 분과 등록한 분 모두 각 3만원씩 할인' },
   { tag: '재수강 할인', title: '2번째 수강부터 월 3만원 할인', desc: '같은 클래스를 재수강하는 경우, 두 번째 수강하는 달부터 매월 3만원 할인' },
   { tag: 'KD4 매니아 할인', title: '같은 달 2개 이상 수강 시 추가 클래스 15% 할인', desc: '같은 달에 두 개 이상의 클래스를 함께 수강하면, 추가하는 클래스 수강료를 15% 할인해 드립니다.' },

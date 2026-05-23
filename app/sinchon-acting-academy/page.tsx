@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     url: PAGE_URL,
     title: '신촌 연기학원 — KD4 액팅 스튜디오',
     description: '이대역 도보 3분, 마이즈너 테크닉 정규 클래스 운영.',
-    images: ['/og-image.jpg'],
+    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 — 신촌 연기학원' }],
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
   },
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: '신촌 연기학원 — KD4 액팅 스튜디오',
     description: '이대역 도보 3분, 마이즈너 테크닉 정규 클래스 운영.',
-    images: ['/og-image.jpg'],
+    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 — 신촌 연기학원' }],
   },
 }
 

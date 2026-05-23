@@ -4,46 +4,51 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 
 // GET /api/posts?category=일반&page=1&limit=20
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url)
-  const category = searchParams.get('category')
-  // parseInt → NaN 방어: Math.max/min(NaN) = NaN → .range(NaN,NaN) → DB 500 방지
-  const rawPage = parseInt(searchParams.get('page') ?? '1', 10)
-  const rawLimit = parseInt(searchParams.get('limit') ?? '20', 10)
-  const page = Math.max(1, Number.isFinite(rawPage) ? rawPage : 1)
-  const limit = Math.min(100, Math.max(1, Number.isFinite(rawLimit) ? rawLimit : 20))
-  const offset = (page - 1) * limit
+  try {
+    const { searchParams } = new URL(request.url)
+    const category = searchParams.get('category')
+    // parseInt → NaN 방어: Math.max/min(NaN) = NaN → .range(NaN,NaN) → DB 500 방지
+    const rawPage = parseInt(searchParams.get('page') ?? '1', 10)
+    const rawLimit = parseInt(searchParams.get('limit') ?? '20', 10)
+    const page = Math.max(1, Number.isFinite(rawPage) ? rawPage : 1)
+    const limit = Math.min(100, Math.max(1, Number.isFinite(rawLimit) ? rawLimit : 20))
+    const offset = (page - 1) * limit
 
-  const supabase = await createClient()
+    const supabase = await createClient()
 
-  let query = supabase
-    .from('posts')
-    .select('id, title, category, author_name, views, created_at', { count: 'exact' })
-    .order('created_at', { ascending: false })
-    .range(offset, offset + limit - 1)
+    let query = supabase
+      .from('posts')
+      .select('id, title, category, author_name, views, created_at', { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1)
 
-  const VALID_CATEGORIES_GET = new Set(['일반', '공지', '질문', '자유', '수업', '전체'])
-  if (category && category !== '전체' && VALID_CATEGORIES_GET.has(category)) {
-    query = query.eq('category', category)
-  }
+    const VALID_CATEGORIES_GET = new Set(['일반', '공지', '질문', '자유', '수업', '전체'])
+    if (category && category !== '전체' && VALID_CATEGORIES_GET.has(category)) {
+      query = query.eq('category', category)
+    }
 
-  // 내 게시글 필터 (UUID 검증 필수)
-  const authorId = searchParams.get('author_id')
-  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-  if (authorId && UUID_RE.test(authorId)) {
-    query = query.eq('author_id', authorId)
-  }
+    // 내 게시글 필터 (UUID 검증 필수)
+    const authorId = searchParams.get('author_id')
+    const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+    if (authorId && UUID_RE.test(authorId)) {
+      query = query.eq('author_id', authorId)
+    }
 
-  // 제목 검색 (ilike — 대소문자 무시, 최대 100자)
-  const q = searchParams.get('q')?.trim().slice(0, 100)
-  if (q) query = query.ilike('title', `%${q}%`)
+    // 제목 검색 (ilike — 대소문자 무시, 최대 100자)
+    const q = searchParams.get('q')?.trim().slice(0, 100)
+    if (q) query = query.ilike('title', `%${q}%`)
 
-  const { data, error, count } = await query
+    const { data, error, count } = await query
 
-  if (error) {
+    if (error) {
+      return NextResponse.json({ error: '게시글 조회 중 오류가 발생했습니다.' }, { status: 500 })
+    }
+
+    return NextResponse.json({ data, total: count, page, limit })
+  } catch (err) {
+    console.error('[GET /api/posts]', err)
     return NextResponse.json({ error: '게시글 조회 중 오류가 발생했습니다.' }, { status: 500 })
   }
-
-  return NextResponse.json({ data, total: count, page, limit })
 }
 
 // POST /api/posts
@@ -136,9 +141,9 @@ export async function POST(request: NextRequest) {
       author_name: authorName,
     })
     .select('id')
-    .single()
+    .maybeSingle()
 
-  if (error) {
+  if (error || !data) {
     console.error('[POST /api/posts] insert error:', error)
     return NextResponse.json({ error: '게시글 작성 중 오류가 발생했습니다.' }, { status: 500 })
   }

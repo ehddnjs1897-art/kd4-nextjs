@@ -11,25 +11,30 @@ export async function GET(
   _request: NextRequest,
   { params }: { params: Params }
 ) {
-  const { id } = await params
-  if (!UUID_RE.test(id)) {
-    return NextResponse.json({ error: '잘못된 게시글 ID입니다.' }, { status: 400 })
+  try {
+    const { id } = await params
+    if (!UUID_RE.test(id)) {
+      return NextResponse.json({ error: '잘못된 게시글 ID입니다.' }, { status: 400 })
+    }
+    const supabase = await createClient()
+
+    const { data: post, error } = await supabase
+      .from('posts')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle()
+
+    if (error || !post) {
+      return NextResponse.json({ error: '게시글을 찾을 수 없습니다.' }, { status: 404 })
+    }
+
+    // 조회수 증가는 board/[id]/page.tsx 서버 컴포넌트에서만 수행
+    // (API GET은 외부 호출도 가능 → 여기서 increment하면 이중 집계)
+    return NextResponse.json(post)
+  } catch (err) {
+    console.error('[GET /api/posts/[id]]', err)
+    return NextResponse.json({ error: '게시글 조회 중 오류가 발생했습니다.' }, { status: 500 })
   }
-  const supabase = await createClient()
-
-  const { data: post, error } = await supabase
-    .from('posts')
-    .select('*')
-    .eq('id', id)
-    .maybeSingle()
-
-  if (error || !post) {
-    return NextResponse.json({ error: '게시글을 찾을 수 없습니다.' }, { status: 404 })
-  }
-
-  // 조회수 증가는 board/[id]/page.tsx 서버 컴포넌트에서만 수행
-  // (API GET은 외부 호출도 가능 → 여기서 increment하면 이중 집계)
-  return NextResponse.json(post)
 }
 
 // PATCH /api/posts/[id] — 본인 또는 admin만
@@ -113,41 +118,46 @@ export async function DELETE(
   _request: NextRequest,
   { params }: { params: Params }
 ) {
-  const { id } = await params
-  if (!UUID_RE.test(id)) {
-    return NextResponse.json({ error: '잘못된 게시글 ID입니다.' }, { status: 400 })
-  }
-  const supabase = await createClient()
-  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  try {
+    const { id } = await params
+    if (!UUID_RE.test(id)) {
+      return NextResponse.json({ error: '잘못된 게시글 ID입니다.' }, { status: 400 })
+    }
+    const supabase = await createClient()
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
 
-  if (authError || !user) {
-    return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
-  }
+    if (authError || !user) {
+      return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
+    }
 
-  // post + profile 병렬 조회 (둘 다 supabaseAdmin — RLS 우회, .maybeSingle()으로 PGRST116 로그 노이즈 방지)
-  const [{ data: post, error: fetchError }, { data: profile }] = await Promise.all([
-    supabaseAdmin.from('posts').select('author_id').eq('id', id).maybeSingle(),
-    supabaseAdmin.from('profiles').select('role').eq('id', user.id).maybeSingle(),
-  ])
+    // post + profile 병렬 조회 (둘 다 supabaseAdmin — RLS 우회, .maybeSingle()으로 PGRST116 로그 노이즈 방지)
+    const [{ data: post, error: fetchError }, { data: profile }] = await Promise.all([
+      supabaseAdmin.from('posts').select('author_id').eq('id', id).maybeSingle(),
+      supabaseAdmin.from('profiles').select('role').eq('id', user.id).maybeSingle(),
+    ])
 
-  if (fetchError || !post) {
-    return NextResponse.json({ error: '게시글을 찾을 수 없습니다.' }, { status: 404 })
-  }
+    if (fetchError || !post) {
+      return NextResponse.json({ error: '게시글을 찾을 수 없습니다.' }, { status: 404 })
+    }
 
-  const isAdmin = profile?.role === 'admin'
-  if (post.author_id !== user.id && !isAdmin) {
-    return NextResponse.json({ error: '삭제 권한이 없습니다.' }, { status: 403 })
-  }
+    const isAdmin = profile?.role === 'admin'
+    if (post.author_id !== user.id && !isAdmin) {
+      return NextResponse.json({ error: '삭제 권한이 없습니다.' }, { status: 403 })
+    }
 
-  // supabaseAdmin 사용 — 위에서 소유권 확인 완료, RLS가 삭제를 막지 않도록
-  const { error: deleteError } = await supabaseAdmin
-    .from('posts')
-    .delete()
-    .eq('id', id)
+    // supabaseAdmin 사용 — 위에서 소유권 확인 완료, RLS가 삭제를 막지 않도록
+    const { error: deleteError } = await supabaseAdmin
+      .from('posts')
+      .delete()
+      .eq('id', id)
 
-  if (deleteError) {
+    if (deleteError) {
+      return NextResponse.json({ error: '게시글 삭제 중 오류가 발생했습니다.' }, { status: 500 })
+    }
+
+    return NextResponse.json({ success: true })
+  } catch (err) {
+    console.error('[DELETE /api/posts/[id]]', err)
     return NextResponse.json({ error: '게시글 삭제 중 오류가 발생했습니다.' }, { status: 500 })
   }
-
-  return NextResponse.json({ success: true })
 }

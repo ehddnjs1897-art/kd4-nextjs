@@ -329,7 +329,7 @@ export default function HomePage() {
           }}
         >
           <div className="hero-arrow" style={{ marginBottom: "16px", textAlign: "right" }}>
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(17,17,17,0.45)" strokeWidth="1">
+            <svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(17,17,17,0.45)" strokeWidth="1">
               <path d="M7 7l10 10M17 7v10H7" />
             </svg>
           </div>
@@ -810,7 +810,7 @@ export default function HomePage() {
                   {/* 화살표 (마지막 제외) */}
                   {i < 2 && (
                     <div key={`arrow-${i}`} className="step-journey-arrow">
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none">
                         <path
                           d="M4 10h12M11 5l5 5-5 5"
                           stroke="currentColor"

@@ -113,6 +113,7 @@ export async function POST(request: NextRequest) {
       // raw_payload: 알려진 필드만 — 임의 extra 필드 저장 방지 (DoS / injection)
       raw_payload: {
         name, phone, email: emailRaw,
+        ip,  // IP 레이트 리밋 쿼리와 일치 (raw_payload->>ip)
         class_name: typeof record?.class_name === 'string' ? record.class_name.trim().slice(0, 100) : null,
         source: typeof record?.source === 'string' ? record.source.trim().slice(0, 100) : null,
         inquiry_type: typeof record?.inquiry_type === 'string' ? record.inquiry_type.trim().slice(0, 100) : null,
@@ -140,7 +141,7 @@ export async function POST(request: NextRequest) {
         .from('consultations')
         .insert({ ...baseRecord, ...utmFields })
         .select('id')
-        .single()
+        .maybeSingle()
 
       if (error) {
         // UTM 컬럼 미존재 시 fallback — 신청 데이터 손실 방지
@@ -150,7 +151,7 @@ export async function POST(request: NextRequest) {
             .from('consultations')
             .insert(baseRecord)
             .select('id')
-            .single()
+            .maybeSingle()
           if (fallbackErr) throw fallbackErr
           savedId = fallback?.id ?? null
         } else {

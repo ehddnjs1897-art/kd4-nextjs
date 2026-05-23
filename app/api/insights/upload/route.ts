@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
       .from('insights')
       .insert(newItem)
       .select()
-      .single()
+      .maybeSingle()
 
     if (dbError) {
       await supabaseAdmin.storage.from(BUCKET).remove([filename])

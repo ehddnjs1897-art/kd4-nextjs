@@ -18,6 +18,7 @@ export default function FaqAccordion({ items }: { items: FaqItem[] }) {
         return (
           <div key={i} className={`faq-item ${isOpen ? 'open' : ''}`}>
             <button
+              id={`faq-btn-${i}`}
               type="button"
               className="faq-question"
               onClick={() => setOpenIndex(isOpen ? null : i)}
@@ -36,7 +37,12 @@ export default function FaqAccordion({ items }: { items: FaqItem[] }) {
                 }}
               />
             </button>
-            <div id={`faq-panel-${i}`} className="faq-answer">{item.a}</div>
+            <div
+              id={`faq-panel-${i}`}
+              role="region"
+              aria-labelledby={`faq-btn-${i}`}
+              className="faq-answer"
+            >{item.a}</div>
           </div>
         )
       })}

@@ -65,9 +65,9 @@ export async function POST(request: NextRequest) {
         author_name: authorName,
       })
       .select('id, post_id, author_id, author_name, content, created_at')
-      .single()
+      .maybeSingle()
 
-    if (error) {
+    if (error || !data) {
       return NextResponse.json({ error: '댓글 작성 중 오류가 발생했습니다.' }, { status: 500 })
     }
 

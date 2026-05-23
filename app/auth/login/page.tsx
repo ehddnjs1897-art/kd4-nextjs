@@ -132,6 +132,7 @@ function LoginContent() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="example@email.com"
               required
+              maxLength={254}
               disabled={loading}
               autoComplete="email"
               style={styles.input}
@@ -150,6 +151,7 @@ function LoginContent() {
               placeholder="비밀번호를 입력하세요"
               required
               minLength={8}
+              maxLength={72}
               disabled={loading}
               autoComplete="current-password"
               style={styles.input}

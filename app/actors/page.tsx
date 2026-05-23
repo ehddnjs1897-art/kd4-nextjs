@@ -15,6 +15,21 @@ export const metadata: Metadata = {
   description: 'KD4 액팅 스튜디오 배우 데이터베이스. 멤버 전용.',
   robots: { index: false, follow: false },
   alternates: { canonical: `${SITE_URL}/actors` },
+  openGraph: {
+    type: 'website',
+    url: `${SITE_URL}/actors`,
+    title: '배우 DB | KD4 액팅 스튜디오',
+    description: 'KD4 액팅 스튜디오 배우 데이터베이스. 멤버 전용.',
+    locale: 'ko_KR',
+    siteName: 'KD4 액팅 스튜디오',
+    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 배우 DB' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '배우 DB | KD4 액팅 스튜디오',
+    description: 'KD4 액팅 스튜디오 배우 데이터베이스. 멤버 전용.',
+    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 배우 DB' }],
+  },
 }
 
 interface Actor {

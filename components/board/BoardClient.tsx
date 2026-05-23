@@ -277,6 +277,8 @@ export default function BoardClient({
       {!loading && !fetchError && hasMore && (
         <div style={{ textAlign: 'center', marginTop: '20px' }}>
           <button
+            type="button"
+            aria-label="게시글 더 보기"
             onClick={handleLoadMore}
             disabled={loadingMore}
             style={{

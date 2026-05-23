@@ -17,7 +17,6 @@ export default function StickyTopBar({
   seats,
   cohorts,
 }: {
-  deadline?: string
   seats?: number
   cohorts?: Cohort[]
 }) {
