@@ -98,6 +98,7 @@ export default function HomePage() {
        - 데스크톱에서 KoPub이 뒤늦게 적용돼서 h1 폭만 커지는 이슈 방지 */
   const [titleReady, setTitleReady] = useState(false)
   const [marqueePaused, setMarqueePaused] = useState(false)
+  const [reviewPaused, setReviewPaused] = useState(false)
   useEffect(() => {
     let cancelled = false
     const container = heroTitleRef.current
@@ -1148,9 +1149,25 @@ export default function HomePage() {
           KD4 멤버 이야기
         </h2>
 
+        {/* WCAG 2.2.2: 자동 이동 콘텐츠 일시정지 버튼 */}
+        <div style={{ textAlign: 'center', marginBottom: 8 }}>
+          <button
+            type="button"
+            aria-pressed={reviewPaused}
+            onClick={() => setReviewPaused(v => !v)}
+            style={{
+              background: 'none', border: '1px solid var(--border)',
+              color: 'var(--gray)', borderRadius: 6, padding: '4px 12px',
+              minHeight: 44, fontSize: '0.72rem', cursor: 'pointer', letterSpacing: '0.05em',
+            }}
+          >
+            {reviewPaused ? '▶ 재생' : '⏸ 일시정지'}
+          </button>
+        </div>
+
         {/* 1행: 왼쪽으로 */}
         <div className="review-marquee" style={{ marginBottom: "12px" }}>
-          <div className="review-marquee-track">
+          <div className="review-marquee-track" style={{ animationPlayState: reviewPaused ? 'paused' : 'running' }}>
             {[...REVIEW_ITEMS, ...REVIEW_ITEMS].map((r, i) => (
               <div key={`${r.author}-${i}`} aria-hidden={i >= REVIEW_ITEMS.length ? true : undefined} style={reviewCardStyle}>
                 <span aria-hidden="true" style={reviewEmojiStyle}>{r.emoji}</span>
@@ -1162,7 +1179,7 @@ export default function HomePage() {
 
         {/* 2행: 오른쪽으로 */}
         <div className="review-marquee reverse">
-          <div className="review-marquee-track">
+          <div className="review-marquee-track" style={{ animationPlayState: reviewPaused ? 'paused' : 'running' }}>
             {[...REVIEW_ITEMS_2, ...REVIEW_ITEMS_2].map((r, i) => (
               <div key={`${r.author}-${i}`} aria-hidden={i >= REVIEW_ITEMS_2.length ? true : undefined} style={reviewCardStyle}>
                 <span aria-hidden="true" style={reviewEmojiStyle}>{r.emoji}</span>

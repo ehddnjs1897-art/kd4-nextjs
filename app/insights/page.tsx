@@ -360,7 +360,7 @@ export default function InsightsPage() {
         {loading ? (
           <p role="status" aria-live="polite" style={{ color: 'var(--gray)', textAlign: 'center', padding: '60px 0' }}>불러오는 중…</p>
         ) : insights.length === 0 ? (
-          <p style={{ color: 'var(--gray)', textAlign: 'center', padding: '60px 0' }}>저장된 인사이트가 없습니다.</p>
+          <p role="status" aria-live="polite" style={{ color: 'var(--gray)', textAlign: 'center', padding: '60px 0' }}>저장된 인사이트가 없습니다.</p>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16, marginBottom: 40 }}>
             {insights.map(insight => (

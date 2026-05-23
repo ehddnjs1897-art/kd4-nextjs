@@ -260,6 +260,12 @@ export default async function ActorDetailPage({
   const photoUrl = profilePhotoUrl(actor)
   const canContact = canViewActorContact(role)
 
+  // PII 방어: 비연락처 권한 유저에게 직렬화(Client Component prop)로 phone/email 노출 방지
+  // phone/email 필드를 삭제해 Client Component 번들에 PII가 포함되지 않도록 함
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { phone: _actorPhone, email: _actorEmail, ...actorWithoutPII } = actor
+  const actorForClient = (canContact ? actor : actorWithoutPII) as unknown as typeof actor
+
   // 다운로드용 URL/ID (디렉터/관리자만)
   // 프로필 문서는 same-origin 프록시(/api/actors/[id]/profile)로 받는다.
   // R2 presigned 직링크는 브라우저가 inline 렌더해 강제 다운로드가 안 되기 때문.
@@ -485,7 +491,7 @@ export default async function ActorDetailPage({
 
       {/* ActorTabs — 전체 폭 */}
       <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 clamp(20px,4vw,32px)', paddingTop: 44 }}>
-        <ActorTabs actor={actor} canViewContact={canContact} imageProtected={!canContact} canEdit={isOwner} />
+        <ActorTabs actor={actorForClient} canViewContact={canContact} imageProtected={!canContact} canEdit={isOwner} />
       </div>
     </div>
   )

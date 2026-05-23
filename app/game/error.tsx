@@ -31,7 +31,7 @@ export default function GameError({
         padding: 24,
       }}
     >
-      <p style={{ fontSize: 13, letterSpacing: '0.15em', color: '#555' }}>ERROR</p>
+      <p style={{ fontSize: 13, letterSpacing: '0.15em', color: '#aaa' }}>ERROR</p>
       <p style={{ fontSize: 16, fontWeight: 600 }}>게임을 불러오지 못했습니다</p>
       <div style={{ display: 'flex', gap: 12 }}>
         <button
@@ -59,7 +59,7 @@ export default function GameError({
             borderRadius: 8,
             padding: '10px 24px',
             fontSize: 13,
-            color: '#666',
+            color: '#aaa',
             textDecoration: 'none',
             letterSpacing: '0.08em',
           }}

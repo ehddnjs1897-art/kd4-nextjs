@@ -77,11 +77,12 @@ export async function GET(request: NextRequest) {
     // admin은 ?include_non_public=true 로 비공개 배우도 조회 가능 (검토 대기 중 배우 관리용)
     const includeNonPublic = isAdmin && searchParams.get('include_non_public') === 'true'
 
-    // 항상 '*'로 조회 후 JS 레벨에서 민감 컬럼 제거
-    // (동적 columns 문자열은 Supabase SDK 타입 추론 오류 유발)
+    // 접촉 권한 없는 경우 DB에서 PII(phone/email)를 애초에 조회하지 않음 (defence-in-depth)
+    // 타입 단언은 아래 as unknown as Actor 캐스트로 처리
+    const SAFE_COLS = 'id,name,name_en,gender,age_group,height,weight,skills,is_public,drive_photo_id,storage_photo_path,profile_photo,instagram,profile_doc_path,casting_tags,casting_summary,created_at,updated_at,source,drive_folder_id,drive_photo_position'
     let query = supabaseAdmin
       .from('actors')
-      .select('*', { count: 'exact' })
+      .select(canSeeContact ? '*' : SAFE_COLS, { count: 'exact' })
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1)
     if (!includeNonPublic) query = query.eq('is_public', true)

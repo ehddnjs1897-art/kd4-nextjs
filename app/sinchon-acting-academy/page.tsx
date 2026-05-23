@@ -213,6 +213,7 @@ const mapBtn: React.CSSProperties = {
   border: '1px solid var(--border-strong)',
   borderRadius: '10px',
   padding: '11px 12px',
+  minHeight: 44,
   fontSize: '0.84rem',
   fontWeight: 600,
   color: 'var(--navy)',

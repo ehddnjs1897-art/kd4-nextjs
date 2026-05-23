@@ -80,7 +80,7 @@ export default function YouTubeFacade({ videoId, title, allow, containerStyle }:
       />
       {thumbError && (
         <div style={{ ...fillStyle, background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ color: '#555', fontSize: '0.8rem' }}>동영상</span>
+          <span style={{ color: '#999', fontSize: '0.8rem' }}>동영상</span>
         </div>
       )}
       <button

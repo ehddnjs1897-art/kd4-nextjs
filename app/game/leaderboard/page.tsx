@@ -60,7 +60,7 @@ export default function LeaderboardPage() {
           marginBottom: 32,
         }}
       >
-        <Link href="/game" style={{ color: "#666", fontSize: 14, textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44, padding: "0 8px" }}>
+        <Link href="/game" style={{ color: "#999", fontSize: 14, textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44, padding: "0 8px" }}>
           ← BACK
         </Link>
         <h1 style={{ fontSize: 20, fontWeight: 700, letterSpacing: "0.1em" }}>LEADERBOARD</h1>
