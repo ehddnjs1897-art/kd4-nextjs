@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { useEffect, useId, useRef, useState } from 'react'
-import { MessageCircle, FileText, CheckCircle, ArrowRight } from 'lucide-react'
+import { MessageCircle, CheckCircle, ArrowRight } from 'lucide-react'
 import { CLASSES, DIRECTOR } from '@/lib/classes'
 import { analytics } from '@/lib/analytics'
 import { SOURCE_VALUES, MEISNER_OPTIONS } from '@/lib/form-options'
@@ -120,7 +120,7 @@ export default function JoinForm() {
     outline: 'none',
     transition: 'border-color 0.2s',
     boxSizing: 'border-box',
-    appearance: 'none' as any,
+    appearance: 'none',
   })
 
   async function handleSubmit(e: React.FormEvent) {

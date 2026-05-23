@@ -183,8 +183,6 @@ export default function HomePage() {
 
   /* ── GSAP 애니메이션 ── */
   useGSAP(() => {
-    const ease = "cubic-bezier(.7, 0, .3, 1)" as any
-
     /* === HERO 요소 입장 (달리줌 중반에 맞춰 등장) === */
     gsap.from('.hero-subtitle', {
       y: 30, opacity: 0, duration: 0.8, ease: "power2.out", delay: 3.5,
