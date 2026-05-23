@@ -53,6 +53,12 @@ export async function middleware(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
+      // server.ts와 동일한 쿠키 보안 옵션 — httpOnly + Secure 누락 방지
+      cookieOptions: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax' as const,
+      },
       cookies: {
         getAll() {
           return request.cookies.getAll()
