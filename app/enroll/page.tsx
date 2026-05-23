@@ -47,7 +47,7 @@ export default async function EnrollPage({
       <div style={{ background: 'var(--bg)', minHeight: '100vh', paddingTop: 64 }}>
         <div style={{ maxWidth: 480, margin: '0 auto', padding: 'clamp(64px,12vw,120px) 24px', textAlign: 'center' }}>
           <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.72rem', letterSpacing: '0.25em', color: 'var(--navy)', textTransform: 'uppercase', marginBottom: 16 }}>
-            CLASS ENROLLMENT
+            <span lang="en">CLASS ENROLLMENT</span>
           </p>
           <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.5rem,4vw,2rem)', fontWeight: 700, color: '#111', marginBottom: 14 }}>
             클래스 신청

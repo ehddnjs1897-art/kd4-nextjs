@@ -205,7 +205,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
       <div className="container">
         {/* 헤더 */}
         <div style={s.header}>
-          <p style={s.eyebrow}>ADMIN</p>
+          <p style={s.eyebrow}><span lang="en">ADMIN</span></p>
           <h1 style={s.pageTitle}>관리자 대시보드</h1>
         </div>
 

@@ -160,7 +160,7 @@ export async function PATCH(request: NextRequest) {
       .from('profiles')
       .update({ role: role as ValidRole })
       .eq('id', id)
-      .select('id, name, email, role')
+      .select('id, name, role')
       .maybeSingle()
 
     if (error) {

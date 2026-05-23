@@ -92,7 +92,7 @@ function SectionHeader({ eyebrow, title, desc }: { eyebrow: string; title: strin
           marginBottom: '14px',
         }}
       >
-        {eyebrow}
+        <span lang="en">{eyebrow}</span>
       </p>
       <h2
         style={{
@@ -159,7 +159,7 @@ export default function SeowooPartnershipPage() {
             marginBottom: '28px',
           }}
         >
-          KD4 OFFICIAL PARTNERSHIP
+          <span lang="en">KD4 OFFICIAL PARTNERSHIP</span>
         </p>
 
         {/* KD4 × seowoo 로고 락업 */}

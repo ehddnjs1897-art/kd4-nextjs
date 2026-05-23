@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
   }
   signupMap.set(user.id, now)
   // 만료 항목 정리 — 500건 초과 시만 정리 (매 write마다 전체 순회 방지)
-  if (signupMap.size > 500) {
+  if (signupMap.size > 2000) {
     for (const [k, ts] of signupMap) { if (now - ts > COOLDOWN_MS) signupMap.delete(k) }
   }
 

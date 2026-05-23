@@ -38,9 +38,13 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     if (times.length >= VIDEO_MAX) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요. (5분 최대 10개)' }, { status: 429 })
     }
+    // content-length 선검사 — rate-limit 슬롯 소진 전 (과도한 요청으로 쿼터 낭비 방지)
+    const clVideo = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
+    if (clVideo > 16_384) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+
     videoAddMap.set(user.id, [...times, now])
     // 오래된 항목 정리 (메모리 누수 방지)
-    if (videoAddMap.size > 1000) {
+    if (videoAddMap.size > 2000) {
       const cutoffV = now - VIDEO_WINDOW_MS
       for (const [k, v] of videoAddMap) {
         if (v.every(t => t < cutoffV)) videoAddMap.delete(k)
@@ -49,8 +53,6 @@ export async function POST(request: NextRequest, { params }: Ctx) {
 
     let parsedBody: { youtube_id?: string; r2_key?: string; title?: string; video_type?: string }
     try {
-      const clVideo = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
-      if (clVideo > 16_384) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
       parsedBody = await request.json()
     } catch {
       return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })

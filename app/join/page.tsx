@@ -1144,7 +1144,7 @@ export default function JoinPage() {
                   fontWeight: 700,
                 }}
               >
-                FILMOGRAPHY
+                <span lang="en">FILMOGRAPHY</span>
               </p>
               {[
                 { cat: '드라마', items: DIRECTOR.filmography.drama },

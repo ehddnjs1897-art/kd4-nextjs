@@ -69,7 +69,7 @@ export default function SinchonPage() {
         <div aria-hidden style={{ position: 'absolute', top: '-110px', right: '-70px', width: '340px', height: '340px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(199,62,62,0.2), transparent 70%)' }} />
         <div className="container" style={{ position: 'relative' }}>
           <p className="section-eyebrow" style={{ color: 'rgba(255,255,255,0.82)', marginBottom: '16px' }}>
-            NEIGHBORHOOD · 신촌 / 서대문 / 이대
+            <span lang="en">NEIGHBORHOOD</span> · 신촌 / 서대문 / 이대
           </p>
           <h1 className="section-title-serif" style={{ color: '#fff', fontSize: 'clamp(1.7rem, 4.5vw, 2.8rem)', lineHeight: 1.35, marginBottom: '16px', maxWidth: '720px', margin: '0 auto 16px', wordBreak: 'keep-all' }}>
             이대역 도보 3분,<br />신촌 마이즈너 테크닉 연기학원
@@ -136,7 +136,7 @@ export default function SinchonPage() {
               <div style={{ background: 'var(--navy)', color: '#fff', borderRadius: '14px', padding: '22px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
                   <MapPin aria-hidden={true} size={18} strokeWidth={2} />
-                  <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.78rem', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.82)' }}>ADDRESS</span>
+                  <span lang="en" style={{ fontFamily: 'var(--font-display)', fontSize: '0.78rem', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.82)' }}>ADDRESS</span>
                 </div>
                 <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.02rem', fontWeight: 700, lineHeight: 1.5, wordBreak: 'keep-all' }}>{ADDRESS_FULL}</p>
               </div>
@@ -170,7 +170,7 @@ export default function SinchonPage() {
       <section aria-label="위치·교통 자주 묻는 질문" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
-            <p className="section-eyebrow">FAQ</p>
+            <p className="section-eyebrow"><span lang="en">FAQ</span></p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>위치·교통 자주 묻는 질문</h2>
           </div>
           <FaqAccordion items={SINCHON_FAQ} />

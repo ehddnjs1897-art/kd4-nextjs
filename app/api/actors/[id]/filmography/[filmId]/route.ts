@@ -40,7 +40,7 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
     filmPatchMap.set(user.id, [...times, now])
-    if (filmPatchMap.size > 1000) {
+    if (filmPatchMap.size > 2000) {
       for (const [k, v] of filmPatchMap) { if (v.every(t => now - t > FILM_PATCH_WINDOW_MS)) filmPatchMap.delete(k) }
     }
 
@@ -111,7 +111,7 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
     filmPatchMap.set(user.id, [...timesD, nowD])
-    if (filmPatchMap.size > 1000) {
+    if (filmPatchMap.size > 2000) {
       const cutoffD = nowD - FILM_PATCH_WINDOW_MS
       for (const [k, v] of filmPatchMap) { if (v.every(t => t < cutoffD)) filmPatchMap.delete(k) }
     }

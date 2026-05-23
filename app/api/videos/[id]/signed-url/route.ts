@@ -80,7 +80,7 @@ export async function GET(
   }
   const url = new URL(request.url)
   const requestedExpiry = parseInt(url.searchParams.get('expiry') ?? '86400', 10)
-  const expirySec = Math.min(Math.max(requestedExpiry, 60), MAX_EXPIRY_SEC)
+  const expirySec = Math.min(Math.max(Math.floor(requestedExpiry || 86400), 60), MAX_EXPIRY_SEC)
 
   // 영상 row 조회
   const { data: video, error } = await supabaseAdmin

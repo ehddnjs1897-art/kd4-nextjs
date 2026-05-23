@@ -568,7 +568,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         marginBottom: 24,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-          <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase' }}>Profile Completion</p>
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase' }}><span lang="en">Profile Completion</span></p>
           <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.85rem', fontWeight: 700, color: completionPct === 100 ? '#4ade80' : 'var(--white)' }}>{completionPct}%</span>
         </div>
         {/* 프로그레스 바 */}

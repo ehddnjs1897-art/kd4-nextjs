@@ -42,18 +42,20 @@ export async function POST(request: NextRequest) {
   if (uploadTimes.length >= INSIGHTS_UPLOAD_MAX) {
     return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
   }
+  // content-length 선검사 — rate-limit 슬롯 소진 전 (과도한 요청으로 쿼터 낭비 방지)
+  const clUpload = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
+  if (clUpload > 11 * 1024 * 1024) {
+    return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+  }
+
   insightsUploadMap.set(auth.userId, [...uploadTimes, nowU])
-  if (insightsUploadMap.size > 100) {
+  if (insightsUploadMap.size > 2000) {
     for (const [k, v] of insightsUploadMap) {
       if (v.every(t => nowU - t > INSIGHTS_UPLOAD_WINDOW_MS)) insightsUploadMap.delete(k)
     }
   }
 
   try {
-    const clUpload = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
-    if (clUpload > 11 * 1024 * 1024) {
-      return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
-    }
 
     const formData = await request.formData()
     const file = formData.get('file') as File | null

@@ -60,7 +60,7 @@ function SectionHeader({ eyebrow, title, desc }: { eyebrow: string; title: strin
   return (
     <div style={{ marginBottom: '36px', textAlign: 'center' }}>
       <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '14px' }}>
-        {eyebrow}
+        <span lang="en">{eyebrow}</span>
       </p>
       <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 700, color: 'var(--white)', marginBottom: desc ? '12px' : 0, lineHeight: 1.35 }}>
         {title}
@@ -86,7 +86,7 @@ export default function ReplayPartnershipPage() {
       {/* HERO */}
       <section aria-label="KD4 × 리플레이 배우 프로필 투어 소개" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(56px, 9vw, 104px) 24px clamp(40px, 6vw, 64px)', textAlign: 'center' }}>
         <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.75rem', letterSpacing: '0.3em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '28px' }}>
-          KD4 OFFICIAL PARTNERSHIP
+          <span lang="en">KD4 OFFICIAL PARTNERSHIP</span>
         </p>
 
         {/* 로고 × 로고 */}

@@ -22,7 +22,7 @@ function checkPhotosRateLimit(userId: string): boolean {
   const times = (photosEditMap.get(userId) ?? []).filter(t => now - t < PHOTOS_EDIT_WINDOW_MS)
   if (times.length >= PHOTOS_EDIT_MAX) return false
   photosEditMap.set(userId, [...times, now])
-  if (photosEditMap.size > 1000) {
+  if (photosEditMap.size > 2000) {
     const cutoff = now - PHOTOS_EDIT_WINDOW_MS
     for (const [k, v] of photosEditMap) {
       if (v.every(t => t < cutoff)) photosEditMap.delete(k)

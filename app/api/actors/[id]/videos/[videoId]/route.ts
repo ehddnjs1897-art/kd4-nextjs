@@ -33,7 +33,7 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
     videoDeleteMap.set(user.id, [...timesVD, nowVD])
-    if (videoDeleteMap.size > 1000) {
+    if (videoDeleteMap.size > 2000) {
       const cutoffVD = nowVD - VIDEO_DELETE_WINDOW_MS
       for (const [k, v] of videoDeleteMap) { if (v.every(t => t < cutoffVD)) videoDeleteMap.delete(k) }
     }

@@ -86,7 +86,7 @@ export default async function BoardPage({ searchParams }: { searchParams: Search
             textTransform: 'uppercase',
             marginBottom: '12px',
           }}>
-            Community
+            <span lang="en">Community</span>
           </p>
           <h1 style={{
             fontFamily: 'var(--font-display)',

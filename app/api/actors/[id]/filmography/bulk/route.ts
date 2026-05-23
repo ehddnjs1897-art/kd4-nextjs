@@ -67,7 +67,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요. (5분 최대 10회)' }, { status: 429 })
     }
     bulkPostMap.set(user.id, [...times, now])
-    if (bulkPostMap.size > 500) {
+    if (bulkPostMap.size > 2000) {
       const cutoff = now - BULK_WINDOW_MS
       for (const [k, v] of bulkPostMap) { if (v.every(t => t < cutoff)) bulkPostMap.delete(k) }
     }

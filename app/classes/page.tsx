@@ -187,7 +187,7 @@ export default function ClassesPage() {
       {/* 헤더 */}
       <section aria-label="클래스 전체 목록 헤더" style={{ padding: '80px 24px 60px', textAlign: 'center', borderBottom: '1px solid var(--border)' }}>
         <div className="container">
-          <p className="section-eyebrow">CURRICULUM</p>
+          <p className="section-eyebrow"><span lang="en">CURRICULUM</span></p>
           <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 700, color: 'var(--white)', marginBottom: '16px', lineHeight: 1.15 }}>
             KD4 클래스 전체 보기
           </h1>
@@ -215,7 +215,7 @@ export default function ClassesPage() {
       >
         <div className="container" style={{ maxWidth: 1080, margin: '0 auto' }}>
           <p className="section-eyebrow" style={{ textAlign: 'center', marginBottom: 14 }}>
-            FIND YOUR CLASS
+            <span lang="en">FIND YOUR CLASS</span>
           </p>
           <h2
             style={{
@@ -301,7 +301,7 @@ export default function ClassesPage() {
                     border: '1px solid rgba(21,72,138,0.25)',
                     borderRadius: 3,
                     padding: '3px 9px',
-                  }}>{tag}</span>
+                  }}><span lang="en">{tag}</span></span>
                   <span aria-hidden style={{
                     fontFamily: 'var(--font-display), Oswald, sans-serif',
                     fontSize: '1.3rem',
@@ -354,7 +354,7 @@ export default function ClassesPage() {
               border: '1px solid rgba(21,72,138,0.35)', borderRadius: '12px',
               background: 'rgba(21,72,138,0.04)',
             }}>
-              <p style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.25em', color: 'var(--navy)', fontFamily: 'var(--font-display)', margin: 0 }}>STEP 1</p>
+              <p style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.25em', color: 'var(--navy)', fontFamily: 'var(--font-display)', margin: 0 }}><span lang="en">STEP 1</span></p>
               <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', fontWeight: 800, color: '#111111', fontFamily: 'var(--font-serif)', margin: 0 }}>A 코스</h2>
               <p style={{ fontSize: 'clamp(0.9rem, 2vw, 1rem)', color: 'var(--navy)', fontWeight: 600, margin: 0 }}>신규 멤버 신청 가능</p>
             </div>
@@ -384,7 +384,7 @@ export default function ClassesPage() {
                   textAlign: 'center', gap: '8px', transition: 'border-color 0.2s, background 0.2s',
                 }}
               >
-                <p style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.25em', color: 'var(--navy)', fontFamily: 'var(--font-display)', margin: 0 }}>{label}</p>
+                <p style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.25em', color: 'var(--navy)', fontFamily: 'var(--font-display)', margin: 0 }}><span lang="en">{label}</span></p>
                 <span style={{ fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', fontWeight: 800, color: 'var(--gray-light)', fontFamily: 'var(--font-serif)', margin: 0 }}>{title}</span>
                 <p style={{ fontSize: '0.8rem', color: 'var(--gray)', margin: 0 }}>{desc}</p>
                 <span aria-hidden="true" style={{ fontSize: '0.85rem', color: 'var(--gray)', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s', display: 'inline-block', marginTop: '4px' }}>▼</span>
@@ -402,7 +402,7 @@ export default function ClassesPage() {
             background: 'linear-gradient(135deg, rgba(21,72,138,0.06) 0%, rgba(0,0,0,0) 100%)',
             border: '1px solid var(--border)', borderRadius: '12px', textAlign: 'center',
           }}>
-            <p className="section-eyebrow">START NOW</p>
+            <p className="section-eyebrow"><span lang="en">START NOW</span></p>
             <h2 style={{ fontSize: 'clamp(1.4rem, 3vw, 2rem)', fontWeight: 700, color: 'var(--white)', marginBottom: '12px' }}>
               어떤 클래스가 맞는지 모르겠다면?
             </h2>

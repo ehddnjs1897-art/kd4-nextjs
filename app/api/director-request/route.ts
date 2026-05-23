@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     }
     requestMap.set(user.id, now)
     // 만료 항목 정리 — Map 무한 증가 방지 (500건 초과 시만 순회)
-    if (requestMap.size > 500) {
+    if (requestMap.size > 2000) {
       for (const [k, ts] of requestMap) {
         if (now - ts > COOLDOWN_MS) requestMap.delete(k)
       }

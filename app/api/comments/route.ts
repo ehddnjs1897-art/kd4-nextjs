@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '게시글을 찾을 수 없습니다.' }, { status: 404 })
     }
 
-    const authorName = profile?.name ?? user.email?.split('@')[0] ?? '익명'
+    const authorName = profile?.name ?? '익명'
 
     // supabaseAdmin: 서비스 롤로 INSERT — RLS 정책 변경에 무관하게 안전하게 작성
     const { data, error } = await supabaseAdmin

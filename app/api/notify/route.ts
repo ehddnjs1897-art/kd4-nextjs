@@ -136,7 +136,7 @@ export async function POST(request: NextRequest) {
     }
     notifyPhoneMap.set(phoneHash, Date.now())
     // 오래된 항목 정리 (메모리 누수 방지 — 디바운스 창 경과 항목 삭제)
-    if (notifyPhoneMap.size > 500) {
+    if (notifyPhoneMap.size > 2000) {
       const cutoff = Date.now() - NOTIFY_DEBOUNCE_MS
       for (const [k, v] of notifyPhoneMap) {
         if (v < cutoff) notifyPhoneMap.delete(k)

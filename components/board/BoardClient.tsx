@@ -309,6 +309,7 @@ export default function BoardClient({
             disabled={loadingMore}
             style={{
               padding: '10px 28px',
+              minHeight: 44,
               background: 'transparent',
               border: '1px solid var(--border)',
               borderRadius: 'var(--radius)',

@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
   }
   intakeCooldowns.set(user.id, now)
   // 만료 항목 정리 — Map 무한 증가 방지 (500건 초과 시만 순회 — O(n) 방지)
-  if (intakeCooldowns.size > 500) {
+  if (intakeCooldowns.size > 2000) {
     for (const [k, ts] of intakeCooldowns) {
       if (now - ts > INTAKE_COOLDOWN_MS) intakeCooldowns.delete(k)
     }

@@ -166,7 +166,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '공지 카테고리는 관리자만 사용할 수 있습니다.' }, { status: 403 })
     }
 
-    const authorName = profile?.name ?? user.email?.split('@')[0] ?? '익명'
+    const authorName = profile?.name ?? '익명'
 
     // 프로필이 없으면 먼저 생성 (author_id FK 오류 방지)
     if (!profile) {
