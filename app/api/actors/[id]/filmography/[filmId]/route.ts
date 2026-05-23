@@ -54,12 +54,13 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
       }
     }
 
-    const { error } = await supabaseAdmin
-      .from('actor_filmography').update(patch).eq('id', filmId).eq('actor_id', id)
+    const { data: updated, error } = await supabaseAdmin
+      .from('actor_filmography').update(patch).eq('id', filmId).eq('actor_id', id).select('id').maybeSingle()
     if (error) {
       console.error('[filmography PATCH] DB 오류:', error.message)
       return NextResponse.json({ error: '필모그래피 수정에 실패했습니다.' }, { status: 500 })
     }
+    if (!updated) return NextResponse.json({ error: '필모그래피 항목을 찾을 수 없습니다.' }, { status: 404 })
     revalidateTag('actors')
     revalidateTag(`actor-${id}`)
     return NextResponse.json({ ok: true })

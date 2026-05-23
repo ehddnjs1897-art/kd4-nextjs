@@ -42,6 +42,14 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     if (r2_key && typeof r2_key === 'string' && r2_key.length > 500) {
       return NextResponse.json({ error: 'r2_key가 너무 깁니다.' }, { status: 400 })
     }
+    // R2 key 네임스페이스 검증 — 다른 사용자 파일 탈취 방지 (IDOR)
+    // presigned URL 발급 시 `actors/intake/{user.id}/...` 패턴으로만 발급됨
+    if (r2_key && typeof r2_key === 'string') {
+      const allowedPrefix = `actors/intake/${user.id}/`
+      if (!r2_key.startsWith(allowedPrefix)) {
+        return NextResponse.json({ error: '허가되지 않은 파일 경로입니다.' }, { status: 403 })
+      }
+    }
     if (video_type && !VALID_VIDEO_TYPES.has(video_type)) {
       return NextResponse.json({ error: '유효하지 않은 video_type입니다.' }, { status: 400 })
     }

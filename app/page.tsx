@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
 import { KD4_STATS } from "@/lib/stats";
+import { DIRECTOR } from "@/lib/classes";
 
 import { pixel } from "@/lib/analytics";
 import { CASTING_PHOTOS } from "@/lib/casting-photos"
@@ -555,17 +556,7 @@ export default function HomePage() {
                   PROFILE
                 </p>
                 <ul style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  {[
-                    "프로 배우 400명+ 액팅 코칭",
-                    "유익액터스 대표",
-"경계선 제작·주연",
-                    "K-웹드라마 어워드 연기상 수상",
-                    "LG 크리에이터 특별상",
-                    "Youtube 2000만뷰+",
-                    "건명원 / The Chora 졸업",
-                    "LA Meisner Workshop 수료",
-                    "한국 마이즈너테크닉 아카데미 수료",
-                  ].map((item, i) => (
+                  {DIRECTOR.profileFlat.map((item, i) => (
                     <li
                       key={i}
                       style={{
@@ -606,24 +597,9 @@ export default function HomePage() {
                   FILMOGRAPHY
                 </p>
                 {[
-                  {
-                    cat: "드라마",
-                    items: [
-                      "무빙2 (2026)",
-                      "나의 유죄 인간 (2026)",
-                      "금쪽같은 내 스타 (2025)",
-                      "중증외상센터 (2025)",
-                      "세작 (2024)",
-                    ],
-                  },
-                  {
-                    cat: "영화",
-                    items: ["경계선 (2025, 제작·주연)", "강철비2 (2021)"],
-                  },
-                  {
-                    cat: "CF",
-                    items: ["MSD 제약 키트루다 (2025)", "현대 인증중고차 (2024)"],
-                  },
+                  { cat: "드라마", items: DIRECTOR.filmography.drama },
+                  { cat: "영화",   items: DIRECTOR.filmography.film },
+                  { cat: "CF",     items: DIRECTOR.filmography.cf },
                 ].map((group) => (
                   <div key={group.cat} style={{ marginBottom: "20px" }}>
                     <p

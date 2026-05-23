@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { revalidateTag } from '@/lib/revalidate'
+import { deleteVideo, isR2Configured } from '@/lib/r2'
 
 type Ctx = { params: Promise<{ id: string; videoId: string }> }
 
@@ -26,11 +27,24 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: '권한 없음' }, { status: 403 })
     }
 
+    // R2 key 먼저 조회 — 삭제 후 key를 알 수 없으므로 선조회 필수
+    const { data: videoRow } = await supabaseAdmin
+      .from('actor_videos').select('r2_key').eq('id', videoId).eq('actor_id', id).maybeSingle()
+    if (!videoRow) return NextResponse.json({ error: '영상을 찾을 수 없습니다.' }, { status: 404 })
+
     const { error } = await supabaseAdmin.from('actor_videos').delete().eq('id', videoId).eq('actor_id', id)
     if (error) {
       console.error('[videos DELETE] DB 오류:', error.message)
       return NextResponse.json({ error: '영상 삭제에 실패했습니다.' }, { status: 500 })
     }
+
+    // R2 파일 삭제 (DB 삭제 성공 후 — 실패해도 클라이언트에 영향 없음)
+    if (videoRow.r2_key && isR2Configured()) {
+      try { await deleteVideo(videoRow.r2_key) } catch (e) {
+        console.error('[videos DELETE] R2 삭제 실패 (무시):', videoRow.r2_key, e)
+      }
+    }
+
     revalidateTag('actors')
     revalidateTag(`actor-${id}`)
     return NextResponse.json({ ok: true })

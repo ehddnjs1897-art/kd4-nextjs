@@ -32,13 +32,13 @@ const YouTubeFacade = dynamic(() => import('@/components/youtube/YouTubeFacade')
 
 export const metadata: Metadata = {
   title: '무료 상담 신청 | KD4 액팅 스튜디오',
-  description: '소수정예 마이즈너 테크닉 연기 클래스. 봄맞이 첫 달 10만원 할인. 서울 신촌. KD4 액팅 스튜디오.',
+  description: '소수정예 마이즈너 테크닉 연기 클래스. 무료 상담 신청. 서울 신촌. KD4 액팅 스튜디오.',
   robots: { index: false, follow: false },
   alternates: { canonical: `${SITE_URL}/join` },
   // 광고 랜딩페이지: 명시적 OG 이미지 — root layout 변경에도 영향 없도록
   openGraph: {
     title: '무료 상담 신청 | KD4 액팅 스튜디오',
-    description: '소수정예 마이즈너 테크닉 연기 클래스. 봄맞이 첫 달 10만원 할인. 서울 신촌. KD4 액팅 스튜디오.',
+    description: '소수정예 마이즈너 테크닉 연기 클래스. 무료 상담 신청. 서울 신촌. KD4 액팅 스튜디오.',
     url: `${SITE_URL}/join`,
     images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오' }],
   },
@@ -242,7 +242,7 @@ export default function JoinPage() {
               wordBreak: 'keep-all',
             }}
           >
-            현직 배우 100명이 수료한 인증된 시그니처 클래스
+            현직 배우 100여명이 참여한 인증된 시그니처 클래스
           </p>
 
           {/* 숫자 임팩트 — 첫 화면 후킹 */}
@@ -309,12 +309,12 @@ export default function JoinPage() {
             <JoinCTALink
               href="#form-hero"
               location="hero"
-              label="잔여 2석 — 봄맞이 할인 받고 무료 상담"
+              label={`잔여 ${MAIN_CLASS.remainingSeats ?? 2}석 — 지금 무료 상담 신청`}
               fireLead
               className="btn-primary uplift-cta-pulse"
               style={{ background: 'var(--navy)', color: '#ffffff' }}
             >
-              잔여 2석 — 봄맞이 할인 받고 무료 상담
+              잔여 {MAIN_CLASS.remainingSeats ?? 2}석 — 지금 무료 상담 신청
               <ArrowRight size={16} strokeWidth={2.2} />
             </JoinCTALink>
             <JoinCTALink
