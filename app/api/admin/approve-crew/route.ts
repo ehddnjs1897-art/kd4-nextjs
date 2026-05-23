@@ -18,13 +18,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/admin?error=invalid_uid`)
   }
 
-  // CSRF 방어 — Referer 또는 Origin이 같은 사이트에서 온 요청인지 확인
-  // (SameSite=Lax 쿠키는 cross-site img/link GET을 차단하지 않음)
-  // 참고: 실질적인 보안 게이트는 하단 requireAdmin() — 이 체크는 추가 방어층
+  // CSRF 방어 보조 — Referer 또는 Origin이 같은 사이트에서 온 요청인지 확인
+  // 주의: Referrer-Policy:no-referrer 환경에서 referer/origin 모두 빈 값이 될 수 있어 우회 가능.
+  // 실질적인 보안 게이트는 하단 admin 역할 확인 — 이 체크는 추가 방어층에 불과함.
+  // SameSite=Lax 쿠키는 cross-site link/img GET 요청에서 쿠키를 전송하므로 단독으로 불충분.
   const referer = request.headers.get('referer') ?? ''
   const reqOrigin = request.headers.get('origin') ?? ''
-  // referer==='' 는 허용하지 않음 — Referrer-Policy:no-referrer로 우회 가능
-  // startsWith 대신 URL.origin 비교 — 서브도메인 bypass 방지
   const refererOriginMatch = (() => { try { return new URL(referer).origin === origin } catch { return false } })()
   const isSameSite = refererOriginMatch || reqOrigin === origin
   if (!isSameSite) {

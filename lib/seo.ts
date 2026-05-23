@@ -4,8 +4,7 @@
  * 메인 LocalBusiness/FAQPage/Course 스키마는 components/seo/JsonLd.tsx 에 이미 있음.
  * 이 파일은 페이지별로 추가하는 동적 스키마 (Person, VideoObject 등) 헬퍼.
  */
-
-const SITE_URL = 'https://kd4.club'
+import { SITE_URL } from './constants'
 
 interface ActorPersonInput {
   id: string
@@ -148,7 +147,12 @@ export function getActorVideoSchemas(
 
 /**
  * <script type="application/ld+json"> 직렬화 헬퍼
+ * </script> 시퀀스를 Unicode 이스케이프로 치환 — JSON-LD XSS 방지
+ * (JSON.stringify 단독 사용 시 </script> 포함 데이터가 스크립트 블록을 탈출 가능)
  */
 export function serializeJsonLd(data: unknown): string {
   return JSON.stringify(data)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/\//g, '\\u002f')
 }

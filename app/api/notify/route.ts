@@ -1,3 +1,11 @@
+/**
+ * POST /api/notify — 공개 상담 접수 엔드포인트 (인증 불요)
+ *
+ * ⚠️ 의도적으로 인증 없이 공개 — 광고 랜딩 폼에서 비로그인 방문자가 직접 호출.
+ * getSupabaseAdmin()은 rate-limit 카운트 조회(read-only)에만 사용.
+ * write 작업(consultations INSERT)도 포함되나 검증된 입력값에 대해서만 수행.
+ * 보안은 전화번호 기반 + IP 기반 이중 레이트 리밋으로 대체.
+ */
 import { NextRequest, NextResponse } from 'next/server'
 import { createHash } from 'crypto'
 import { sendSMS } from '@/lib/sms'

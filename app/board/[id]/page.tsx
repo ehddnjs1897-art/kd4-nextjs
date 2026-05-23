@@ -67,7 +67,7 @@ function CategoryBadge({ category }: { category: string }) {
 export async function generateMetadata({ params }: { params: Params }) {
   const { id } = await params
   const { data } = await getPost(id)
-  const title = data?.title ? `${data.title} — KD4 커뮤니티` : 'KD4 커뮤니티'
+  const title = data?.title ?? 'KD4 커뮤니티'
   const description = data?.content ? data.content.slice(0, 120).replace(/\n/g, ' ') + '…' : 'KD4 커뮤니티 게시글'
   return {
     title,

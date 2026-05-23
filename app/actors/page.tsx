@@ -242,6 +242,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
                 <Link
                   key={opt.value}
                   href={filterHref('gender', opt.value)}
+                  aria-current={gender === opt.value ? 'true' : undefined}
                   style={{
                     ...styles.filterBtn,
                     ...(gender === opt.value ? styles.filterBtnActive : {}),
@@ -260,6 +261,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
                 <Link
                   key={opt.value}
                   href={filterHref('ageGroup', opt.value)}
+                  aria-current={ageGroup === opt.value ? 'true' : undefined}
                   style={{
                     ...styles.filterBtn,
                     ...(ageGroup === opt.value ? styles.filterBtnActive : {}),
@@ -278,6 +280,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
               <div style={styles.filterBtnGroup}>
                 <Link
                   href={filterHref('tag', 'all')}
+                  aria-current={tag === 'all' ? 'true' : undefined}
                   style={{
                     ...styles.filterBtn,
                     ...(tag === 'all' ? styles.filterBtnActive : {}),
@@ -289,6 +292,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
                   <Link
                     key={t}
                     href={filterHref('tag', t)}
+                    aria-current={tag === t ? 'true' : undefined}
                     style={{
                       ...styles.filterBtn,
                       ...(tag === t ? styles.filterBtnActive : {}),

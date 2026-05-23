@@ -6,7 +6,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 import UsersManagementTable from './UsersManagementTable'
 
 export const metadata = {
-  title: '회원 관리 — KD4 Admin',
+  title: '회원 관리',
   robots: { index: false, follow: false },
 }
 

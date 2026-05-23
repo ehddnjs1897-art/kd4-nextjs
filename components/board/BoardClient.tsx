@@ -223,21 +223,28 @@ export default function BoardClient({
       </div>
 
       {/* 게시글 테이블 */}
-      <div style={{
-        border: '1px solid var(--border)',
-        borderRadius: 'var(--radius)',
-        overflow: 'hidden',
-      }}>
+      <div
+        role="table"
+        aria-label="게시글 목록"
+        style={{
+          border: '1px solid var(--border)',
+          borderRadius: 'var(--radius)',
+          overflow: 'hidden',
+        }}
+      >
         {/* 테이블 헤더 */}
-        <div className="board-header">
-          <span>분류</span>
-          <span>제목</span>
-          <span className="board-col-hide-sm" style={{ textAlign: 'center' }}>작성자</span>
-          <span className="board-col-hide-xs" style={{ textAlign: 'center' }}>날짜</span>
-          <span className="board-col-hide-xs" style={{ textAlign: 'right' }}>조회</span>
+        <div role="rowgroup">
+        <div role="row" className="board-header">
+          <span role="columnheader">분류</span>
+          <span role="columnheader">제목</span>
+          <span role="columnheader" className="board-col-hide-sm" style={{ textAlign: 'center' }}>작성자</span>
+          <span role="columnheader" className="board-col-hide-xs" style={{ textAlign: 'center' }}>날짜</span>
+          <span role="columnheader" className="board-col-hide-xs" style={{ textAlign: 'right' }}>조회</span>
+        </div>
         </div>
 
         {/* 게시글 목록 */}
+        <div role="rowgroup">
         {loading ? (
           <div style={{ padding: '60px 20px', textAlign: 'center', color: 'var(--gray)' }}>
             <p role="status" aria-live="polite">게시글을 불러오는 중...</p>
@@ -257,11 +264,12 @@ export default function BoardClient({
           posts.map((post, idx) => (
             <div
               key={post.id}
+              role="row"
               className="board-row"
               style={{ borderBottom: idx < posts.length - 1 ? '1px solid var(--border)' : 'none' }}
             >
-              <span><CategoryBadge category={post.category} /></span>
-              <span>
+              <span role="cell"><CategoryBadge category={post.category} /></span>
+              <span role="cell">
                 <Link
                   href={`/board/${post.id}`}
                   style={{ color: 'var(--white)', fontSize: '0.9rem', textDecoration: 'none', fontWeight: 400 }}
@@ -269,18 +277,19 @@ export default function BoardClient({
                   {post.title}
                 </Link>
               </span>
-              <span className="board-col-hide-sm" style={{ textAlign: 'center', fontSize: '0.82rem', color: 'var(--gray)' }}>
+              <span role="cell" className="board-col-hide-sm" style={{ textAlign: 'center', fontSize: '0.82rem', color: 'var(--gray)' }}>
                 {post.author_name ?? '익명'}
               </span>
-              <span className="board-col-hide-xs" style={{ textAlign: 'center', fontSize: '0.82rem', color: 'var(--gray)' }}>
+              <span role="cell" className="board-col-hide-xs" style={{ textAlign: 'center', fontSize: '0.82rem', color: 'var(--gray)' }}>
                 {formatDate(post.created_at)}
               </span>
-              <span className="board-col-hide-xs" style={{ textAlign: 'right', fontSize: '0.82rem', color: 'var(--gray)' }}>
+              <span role="cell" className="board-col-hide-xs" style={{ textAlign: 'right', fontSize: '0.82rem', color: 'var(--gray)' }}>
                 {post.views ?? 0}
               </span>
             </div>
           ))
         )}
+        </div>
       </div>
 
       {/* 더 보기 버튼 */}
