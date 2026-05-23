@@ -57,6 +57,7 @@ export default function ErrorPage({
             onClick={reset}
             style={{
               padding: '10px 22px',
+              minHeight: 44,
               background: 'var(--gold)',
               color: 'var(--bg)',
               border: 'none',
@@ -74,6 +75,7 @@ export default function ErrorPage({
             href="/"
             style={{
               padding: '10px 22px',
+              minHeight: 44,
               background: 'transparent',
               color: 'var(--gray)',
               border: '1px solid var(--border)',
@@ -82,6 +84,8 @@ export default function ErrorPage({
               cursor: 'pointer',
               textDecoration: 'none',
               fontFamily: 'var(--font-sans)',
+              display: 'inline-flex',
+              alignItems: 'center',
             }}
           >
             홈으로

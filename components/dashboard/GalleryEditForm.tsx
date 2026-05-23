@@ -648,7 +648,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           />
           <span style={{ fontSize: '0.72rem', color: 'var(--gray)', textAlign: 'right' }}>{castingSummary.length}/120</span>
         </div>
-        <button type="button" onClick={saveInfo} disabled={infoSaving} style={{ ...s.btn, ...s.btnPrimary, opacity: infoSaving ? 0.6 : 1 }}>
+        <button type="button" onClick={saveInfo} disabled={infoSaving} aria-busy={infoSaving} style={{ ...s.btn, ...s.btnPrimary, opacity: infoSaving ? 0.6 : 1 }}>
           {infoSaving ? '저장 중…' : '저장'}
         </button>
         {infoMsg && <p role={infoMsg.includes('실패') || infoMsg.includes('오류') ? 'alert' : 'status'} aria-live={infoMsg.includes('실패') || infoMsg.includes('오류') ? 'assertive' : 'polite'} style={{ ...s.msg, color: infoMsg.includes('실패') || infoMsg.includes('오류') ? '#ef4444' : 'var(--gold)', marginTop: 10 }}>{infoMsg}</p>}
@@ -675,7 +675,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           </div>
         </div>
         <input ref={pptRef} type="file" accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation" onChange={uploadPpt} style={{ display: 'none' }} aria-hidden="true" />
-        <button type="button" onClick={() => pptRef.current?.click()} disabled={pptUploading} style={{ ...s.btn, ...s.btnGhost, opacity: pptUploading ? 0.6 : 1 }}>
+        <button type="button" onClick={() => pptRef.current?.click()} disabled={pptUploading} aria-busy={pptUploading} style={{ ...s.btn, ...s.btnGhost, opacity: pptUploading ? 0.6 : 1 }}>
           {pptUploading ? '업로드 중…' : <><span aria-hidden="true">📄</span>{hasPpt ? ' 파일 교체' : ' 파일 올리기'}</>}
         </button>
         {pptMsg && <p role={pptMsg.includes('완료') ? 'status' : 'alert'} aria-live={pptMsg.includes('완료') ? 'polite' : 'assertive'} style={{ ...s.msg, color: pptMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{pptMsg}</p>}
@@ -714,7 +714,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
 
         <div style={{ marginTop: 20, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
           <input ref={fileRef} type="file" accept="image/*" onChange={uploadPhoto} style={{ display: 'none' }} aria-hidden="true" />
-          <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} style={{ ...s.btn, ...s.btnPrimary, opacity: uploading ? 0.6 : 1 }}>
+          <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} aria-busy={uploading} style={{ ...s.btn, ...s.btnPrimary, opacity: uploading ? 0.6 : 1 }}>
             {uploading ? '업로드 중…' : '+ 사진 추가'}
           </button>
           <span style={{ fontSize: '0.78rem', color: 'var(--gray)' }}>JPG·PNG, 최대 5MB · 9:16 비율 권장</span>
@@ -754,7 +754,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           )}
           <div>
             <input ref={r2VideoRef} type="file" accept="video/*" onChange={uploadR2Video} style={{ display: 'none' }} aria-hidden="true" />
-            <button type="button" onClick={() => r2VideoRef.current?.click()} disabled={r2Uploading} style={{ ...s.btn, ...s.btnGhost, opacity: r2Uploading ? 0.6 : 1 }}>
+            <button type="button" onClick={() => r2VideoRef.current?.click()} disabled={r2Uploading} aria-busy={r2Uploading} style={{ ...s.btn, ...s.btnGhost, opacity: r2Uploading ? 0.6 : 1 }}>
               {r2Uploading ? r2UploadStatus || '업로드 중…' : '+ 영상 파일 업로드'}
             </button>
             <span style={{ fontSize: '0.74rem', color: 'var(--gray)', marginLeft: 12 }}>mp4 권장, 최대 300MB</span>
@@ -796,7 +796,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
               <label htmlFor="video-title" style={s.label}>제목 (선택)</label>
               <input id="video-title" value={videoTitle} onChange={e => setVideoTitle(e.target.value)} style={s.input} placeholder="단편영화 주연" />
             </div>
-            <button type="button" onClick={addVideo} disabled={videoAdding} style={{ ...s.btn, ...s.btnPrimary, marginBottom: 0, opacity: videoAdding ? 0.6 : 1 }}>{videoAdding ? '추가 중…' : '추가'}</button>
+            <button type="button" onClick={addVideo} disabled={videoAdding} aria-busy={videoAdding} style={{ ...s.btn, ...s.btnPrimary, marginBottom: 0, opacity: videoAdding ? 0.6 : 1 }}>{videoAdding ? '추가 중…' : '추가'}</button>
           </div>
           {videoMsg && <p role={videoMsg.includes('완료') ? 'status' : 'alert'} aria-live={videoMsg.includes('완료') ? 'polite' : 'assertive'} style={{ ...s.msg, color: videoMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{videoMsg}</p>}
         </div>
@@ -846,7 +846,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
             + 항목 추가
           </button>
           {filmography.length > 0 && (
-            <button type="button" onClick={saveAllFilms} disabled={filmSaving} style={{ ...s.btn, ...s.btnPrimary, opacity: filmSaving ? 0.6 : 1 }}>
+            <button type="button" onClick={saveAllFilms} disabled={filmSaving} aria-busy={filmSaving} style={{ ...s.btn, ...s.btnPrimary, opacity: filmSaving ? 0.6 : 1 }}>
               {filmSaving ? '저장 중…' : '저장'}
             </button>
           )}

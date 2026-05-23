@@ -58,12 +58,15 @@ export default function NotFound() {
             href="/"
             style={{
               padding: '12px 28px',
+              minHeight: 44,
               background: 'var(--gold)',
               color: '#ffffff',
               fontWeight: 700,
               fontSize: '0.88rem',
               borderRadius: 'var(--radius)',
               textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
             }}
           >
             홈으로
@@ -72,11 +75,14 @@ export default function NotFound() {
             href="/about"
             style={{
               padding: '12px 28px',
+              minHeight: 44,
               border: '1px solid var(--border)',
               color: 'var(--gray)',
               fontSize: '0.88rem',
               borderRadius: 'var(--radius)',
               textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
             }}
           >
             스튜디오 소개

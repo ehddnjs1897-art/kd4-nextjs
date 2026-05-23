@@ -77,7 +77,7 @@ export default function WritePage() {
 
   if (checkingAuth) {
     return (
-      <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div role="status" aria-live="polite" style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <p style={{ color: 'var(--gray)' }}>확인 중...</p>
       </div>
     )
@@ -134,7 +134,8 @@ export default function WritePage() {
                   aria-pressed={category === cat}
                   onClick={() => setCategory(cat as Category)}
                   style={{
-                    padding: '7px 16px',
+                    padding: '12px 16px',
+                    minHeight: 44,
                     borderRadius: 'var(--radius)',
                     fontSize: '0.85rem',
                     fontWeight: category === cat ? 600 : 400,
@@ -214,6 +215,7 @@ export default function WritePage() {
             <button
               type="submit"
               disabled={submitting || !title.trim() || !content.trim()}
+              aria-busy={submitting}
               style={{
                 padding: '10px 26px',
                 minHeight: 44,

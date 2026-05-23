@@ -69,10 +69,16 @@ export async function GET(
       canSeeNonPublic = isOwn || ['admin', 'editor'].includes(role)
     }
 
-    // 항상 '*' 로 조회 후 JS 레벨에서 민감 컬럼 제거
+    // 접촉 권한 없는 경우 PII+내부 컬럼을 DB에서 처음부터 제외 (defence-in-depth)
+    // JS 레벨 destructure는 하위 호환 안전망으로 유지
+    const SAFE_ACTOR_DETAIL = 'id,name,name_en,gender,age_group,height,weight,skills,is_public,profile_photo,casting_tags,casting_summary,instagram,profile_pdf_url,created_at,updated_at'
     let query = supabaseAdmin
       .from('actors')
-      .select('*, actor_photos(*), actor_videos(*), actor_filmography(*)')
+      .select(
+        canSeeContact
+          ? '*, actor_photos(*), actor_videos(*), actor_filmography(*)'
+          : `${SAFE_ACTOR_DETAIL}, actor_photos(*), actor_videos(*), actor_filmography(*)`
+      )
       .eq('id', id)
     if (!canSeeNonPublic) query = query.eq('is_public', true)
     const { data: actor, error } = await query.maybeSingle()

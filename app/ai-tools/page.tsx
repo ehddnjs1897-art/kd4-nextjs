@@ -87,7 +87,7 @@ export default function AIToolsPage() {
   }, [router])
 
   if (!authChecked) return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div role="status" aria-live="polite" style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <p style={{ color: 'var(--gray)', fontSize: '0.88rem' }}>확인 중...</p>
     </div>
   )

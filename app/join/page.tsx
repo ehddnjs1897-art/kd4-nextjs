@@ -1552,7 +1552,10 @@ export default function JoinPage() {
                       color: 'var(--navy)',
                       textDecoration: 'none',
                       fontWeight: 600,
-                      padding: '2px 4px',
+                      padding: '12px 4px',
+                      minHeight: 44,
+                      display: 'inline-flex',
+                      alignItems: 'center',
                     }}
                   >
                     {c.label}

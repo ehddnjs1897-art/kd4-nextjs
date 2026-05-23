@@ -217,10 +217,14 @@ export default function GameOver({
       <Link
         href="/game/leaderboard"
         style={{
-          color: "#555",
+          color: "#aaa",
           fontSize: 13,
           marginTop: 24,
           textDecoration: "none",
+          display: "inline-flex",
+          alignItems: "center",
+          minHeight: 44,
+          padding: "0 8px",
         }}
       >
         LEADERBOARD →

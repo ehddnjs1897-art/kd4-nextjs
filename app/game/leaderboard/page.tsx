@@ -104,14 +104,14 @@ export default function LeaderboardPage() {
 
       {/* Leaderboard table */}
       {loading ? (
-        <div role="status" aria-label="리더보드 로딩 중" style={{ textAlign: "center", color: "#444", padding: 40 }}><span lang="en">LOADING...</span></div>
+        <div role="status" aria-label="리더보드 로딩 중" style={{ textAlign: "center", color: "#aaa", padding: 40 }}><span lang="en">LOADING...</span></div>
       ) : fetchError ? (
-        <div role="alert" style={{ textAlign: "center", color: "#555", padding: 40 }}>
+        <div role="alert" style={{ textAlign: "center", color: "#aaa", padding: 40 }}>
           <p style={{ marginBottom: 12 }}>불러오기 실패</p>
           <button
             type="button"
             onClick={() => { setFetchError(false); setLoading(true) }}
-            style={{ color: "#0057FF", background: "none", border: "none", cursor: "pointer", fontSize: 14 }}
+            style={{ color: "#0057FF", background: "none", border: "none", cursor: "pointer", fontSize: 14, padding: "10px 16px", minHeight: 44 }}
           >
             다시 시도
           </button>
@@ -121,7 +121,7 @@ export default function LeaderboardPage() {
           <p>아직 기록이 없어요</p>
           <Link
             href="/game/play"
-            style={{ color: "#0057FF", textDecoration: "none", fontSize: 14, marginTop: 12, display: "inline-block" }}
+            style={{ color: "#0057FF", textDecoration: "none", fontSize: 14, marginTop: 12, display: "inline-flex", alignItems: "center", minHeight: 44, padding: "0 8px" }}
           >
             PLAY NOW →
           </Link>
