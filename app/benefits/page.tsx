@@ -430,10 +430,7 @@ export default function BenefitsPage() {
             style={{ display: 'flex', alignItems: 'center', gap: 'clamp(16px, 4vw, 24px)', background: '#ffffff', border: '1.5px solid rgba(21,72,138,0.18)', borderRadius: 12, padding: 'clamp(18px, 3vw, 24px)', position: 'relative', overflow: 'hidden', flexWrap: 'wrap' }}
           >
             <span aria-hidden style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 3, background: 'rgba(21,72,138,0.3)' }} />
-            <span style={{ flexShrink: 0, width: 72, height: 72, borderRadius: 6, background: '#e8232a', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 2 }}>
-              <span style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '1.1rem', fontWeight: 700, color: '#ffffff', letterSpacing: '0.04em' }}>CGV</span>
-              <span style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.45rem', fontWeight: 700, color: 'rgba(255,255,255,0.85)', letterSpacing: '0.1em' }}>ARTHOUSE</span>
-            </span>
+            <Image src="/partners/cgv-logo.jpeg" alt="CGV 아트하우스" width={72} height={72} style={{ objectFit: 'contain', borderRadius: 6, flexShrink: 0 }} />
             <span style={{ display: 'flex', flexDirection: 'column', gap: 5, minWidth: 160, flex: 1 }}>
               <span style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', fontWeight: 700, color: 'var(--white)' }}>신촌 아트레온 CGV 아트하우스</span>
               <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 600, color: 'var(--gold)' }}>신촌 아트레온 아트하우스 광고 체결</span>

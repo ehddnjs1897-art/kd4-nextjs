@@ -42,8 +42,12 @@ const REVIEW_ITEMS_2 = [
 ]
 
 const PARTNERS = [
-  '서울대학교', '고려대학교', 'Needs.N', '컴플렉시온',
-  '서우스튜디오', '리플레이', 'CGV 아트하우스',
+  { name: '서울대학교', logo: '/partners/snu-logo.png' },
+  { name: '고려대학교', logo: '/partners/ku-logo.png' },
+  { name: 'Needs.N', logo: '/partners/neezn-logo.jpeg' },
+  { name: '컴플렉시온', logo: '/partners/complexion-logo.jpeg' },
+  { name: '서우스튜디오', logo: '/partners/seowoo-logo.webp' },
+  { name: '리플레이', logo: '/partners/replay-logo.webp' },
 ]
 
 const reviewCardStyle: React.CSSProperties = {
@@ -1152,15 +1156,16 @@ export default function HomePage() {
 
       {/* ── Partners ─────────────────────────────────────────────────────────── */}
       <section style={{ padding: '48px 0', borderTop: '1px solid var(--border)' }}>
-        <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.3em', color: 'var(--secondary)', textTransform: 'uppercase', textAlign: 'center', marginBottom: '28px', opacity: 0.6 }}>
-          CLIENTS &amp; COLLABORATORS
+        <p style={{ fontFamily: 'var(--font-display), "Noto Sans KR", sans-serif', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.2em', color: 'var(--secondary)', textAlign: 'center', marginBottom: '28px', opacity: 0.6 }}>
+          함께한 기업
         </p>
         <div className="partner-marquee">
           <div className="partner-marquee-track">
             {[...PARTNERS, ...PARTNERS].map((p, i) => (
-              <span key={`${p}-${i}`} className="partner-marquee-item">
-                {p}
-              </span>
+              <div key={`${p.name}-${i}`} className="partner-marquee-item">
+                <Image src={p.logo} alt={p.name} width={80} height={40} style={{ objectFit: 'contain' }} />
+                <span>{p.name}</span>
+              </div>
             ))}
           </div>
         </div>
