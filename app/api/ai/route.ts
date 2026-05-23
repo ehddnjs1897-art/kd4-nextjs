@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
   // 1분 이상 지난 항목 정리 (메모리 누수 방지 — 2000건 초과 시만 순회)
   if (aiCooldowns.size > 2000) {
     for (const [uid, ts] of aiCooldowns) {
-      if (now - ts > 60_000) aiCooldowns.delete(uid)
+      if (now - ts > 30_000) aiCooldowns.delete(uid)
     }
   }
 

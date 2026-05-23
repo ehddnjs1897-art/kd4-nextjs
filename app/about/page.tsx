@@ -39,6 +39,13 @@ const PARTNERS = [
   'neez.n 프로덕션',
 ]
 
+/** 파트너 이름 내 괄호 영문 부분(e.g. "(Actor Guild)")에 lang="en" 적용 — WCAG 3.1.2 */
+function renderPartnerName(name: string) {
+  const m = name.match(/^(.*?)(\([A-Za-z][^)]*\))(.*)$/)
+  if (!m) return name
+  return <>{m[1]}<span lang="en">{m[2]}</span>{m[3]}</>
+}
+
 const STEPS = [
   {
     num: '01',
@@ -470,7 +477,7 @@ export default function AboutPage() {
                 padding: '8px 18px',
               }}
             >
-              {p}
+              {renderPartnerName(p)}
             </span>
           ))}
         </div>

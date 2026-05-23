@@ -422,7 +422,7 @@ export default function HomePage() {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", marginBottom: "40px" }}>
           <span style={{ display: "block", width: "36px", height: "1px", background: "var(--gold)" }} />
           <p style={{ fontFamily: "var(--font-display)", fontSize: "clamp(0.75rem, 1.6vw, 0.85rem)", fontWeight: 400, letterSpacing: "0.32em", color: "var(--gold)", textTransform: "uppercase" }}>
-            OFF THE PLASTIC
+            <span lang="en">OFF THE PLASTIC</span>
           </p>
           <span style={{ display: "block", width: "36px", height: "1px", background: "var(--gold)" }} />
         </div>

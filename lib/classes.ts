@@ -268,7 +268,7 @@ export const DIRECTOR: DirectorProfile = {
     "경계선 제작·주연",
     "K-웹드라마 어워드 연기상 수상",
     "LG 크리에이터 특별상",
-    "Youtube 2000만뷰+",
+    "YouTube 2000만뷰+",
     "건명원 / The Chora 졸업",
     "LA Meisner Workshop 수료",
     "한국 마이즈너 테크닉 아카데미 수료",

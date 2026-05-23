@@ -43,22 +43,15 @@ export async function DELETE(
       }
     }
 
-    // supabaseAdmin으로 ownership 조회 — RLS가 comments 읽기를 제한해도 본인 글 조회 보장
-    const { data: comment, error: fetchError } = await supabaseAdmin
-      .from('comments')
-      .select('author_id')
-      .eq('id', id)
-      .maybeSingle()
+    // supabaseAdmin으로 ownership + 역할 병렬 조회 (Promise.all로 round-trip 1개 절감)
+    const [{ data: comment, error: fetchError }, { data: profile }] = await Promise.all([
+      supabaseAdmin.from('comments').select('author_id').eq('id', id).maybeSingle(),
+      supabaseAdmin.from('profiles').select('role').eq('id', user.id).maybeSingle(),
+    ])
 
     if (fetchError || !comment) {
       return NextResponse.json({ error: '댓글을 찾을 수 없습니다.' }, { status: 404 })
     }
-
-    const { data: profile } = await supabaseAdmin
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .maybeSingle()
 
     const isAdmin = profile?.role === 'admin'
     if (comment.author_id !== user.id && !isAdmin) {

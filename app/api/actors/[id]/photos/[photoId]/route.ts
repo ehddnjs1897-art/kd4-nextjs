@@ -74,12 +74,11 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
     const { error: clearErr } = await supabaseAdmin
       .from('actor_photos').update({ is_profile: false }).eq('actor_id', id)
     if (clearErr) throw new Error('대표 해제 실패')
-    // 2. 새 대표 지정 (actor_id 조건 추가)
-    const { error: setErr } = await supabaseAdmin
-      .from('actor_photos').update({ is_profile: true }).eq('id', photoId).eq('actor_id', id)
+    // 2. 새 대표 지정 + URL 즉시 반환 (select 체인으로 추가 round-trip 제거)
+    const { data: photo, error: setErr } = await supabaseAdmin
+      .from('actor_photos').update({ is_profile: true }).eq('id', photoId).eq('actor_id', id).select('url').maybeSingle()
     if (setErr) throw new Error('대표 지정 실패')
     // 3. actors 테이블 profile_photo URL 업데이트
-    const { data: photo } = await supabaseAdmin.from('actor_photos').select('url').eq('id', photoId).eq('actor_id', id).maybeSingle()
     if (photo) {
       const { error: actorPhotoErr } = await supabaseAdmin.from('actors').update({ profile_photo: photo.url }).eq('id', id)
       if (actorPhotoErr) throw new Error('actors 대표사진 업데이트 실패')
