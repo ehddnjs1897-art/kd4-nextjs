@@ -95,7 +95,7 @@ export default function StickyBottomCTA() {
         }}
       >
         무료 상담 신청
-        <ArrowRight size={15} strokeWidth={2.5} />
+        <ArrowRight aria-hidden={true} size={15} strokeWidth={2.5} />
       </a>
     </div>
   )

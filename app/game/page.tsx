@@ -118,7 +118,6 @@ export default function GameStartPage() {
                 color: "#fff",
                 fontFamily: "var(--font-oswald), sans-serif",
                 transition: "all 0.15s",
-                outline: "none",
               }}
             >
               <div style={{ fontSize: 28, marginBottom: 6 }}>{c.emoji}</div>

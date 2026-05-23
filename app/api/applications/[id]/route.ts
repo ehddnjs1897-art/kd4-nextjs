@@ -59,6 +59,10 @@ export async function PATCH(
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
     appPatchMap.set(appAdminId, nowAPM)
+    if (appPatchMap.size > 200) {
+      const cutoffAPM = nowAPM - APP_PATCH_COOLDOWN_MS
+      for (const [k, v] of appPatchMap) { if (v < cutoffAPM) appPatchMap.delete(k) }
+    }
 
     const { id } = await params
     if (!UUID_RE.test(id)) {

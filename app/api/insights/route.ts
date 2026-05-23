@@ -206,7 +206,7 @@ export async function GET(request: NextRequest) {
       return withCors(NextResponse.json({ error: '데이터 조회 중 오류가 발생했습니다.' }, { status: 500 }), origin)
     }
 
-    return withCors(NextResponse.json({ data: data ?? [], total: count ?? 0 }), origin)
+    return withCors(NextResponse.json({ data: data ?? [], total: count ?? 0 }, { headers: { 'Cache-Control': 'private, no-store' } }), origin)
   } catch (err) {
     console.error('[GET /api/insights] 예상치 못한 오류:', err instanceof Error ? err.message : String(err))
     return withCors(NextResponse.json({ error: '서버 오류가 발생했습니다.' }, { status: 500 }), origin)

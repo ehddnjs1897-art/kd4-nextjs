@@ -12,7 +12,7 @@ export default function DashboardEditLoading() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingTop: 80, paddingBottom: 80 }}>
+    <div role="status" aria-label="로딩 중" style={{ minHeight: '100vh', background: 'var(--bg)', paddingTop: 80, paddingBottom: 80 }}>
       <style>{`
         @keyframes pulse {
           0%, 100% { opacity: 1; }

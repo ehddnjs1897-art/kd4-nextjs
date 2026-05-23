@@ -1,6 +1,8 @@
 export default function PlayLoading() {
   return (
     <div
+      role="status"
+      aria-label="로딩 중"
       style={{
         width: '100%',
         height: '100%',

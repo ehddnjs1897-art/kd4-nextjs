@@ -27,6 +27,7 @@ export default function FaqAccordion({ items }: { items: FaqItem[] }) {
             >
               <span>{item.q}</span>
               <ChevronDown
+                aria-hidden={true}
                 size={18}
                 strokeWidth={2}
                 style={{

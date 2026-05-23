@@ -41,6 +41,10 @@ export async function PATCH(
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
     enrollmentPatchMap.set(user.id, nowEP)
+    if (enrollmentPatchMap.size > 1000) {
+      const cutoffEP = nowEP - ENROLLMENT_PATCH_COOLDOWN_MS
+      for (const [k, v] of enrollmentPatchMap) { if (v < cutoffEP) enrollmentPatchMap.delete(k) }
+    }
 
     let body: { status?: string; payment_status?: string }
     try {

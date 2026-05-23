@@ -6,7 +6,7 @@ export default function JoinLoading() {
   }
 
   return (
-    <div style={{ background: '#ffffff', minHeight: '100vh' }}>
+    <div role="status" aria-label="로딩 중" style={{ background: '#ffffff', minHeight: '100vh' }}>
       <style>{`
         @keyframes pulse {
           0%, 100% { opacity: 1; }

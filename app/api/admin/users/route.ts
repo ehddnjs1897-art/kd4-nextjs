@@ -86,6 +86,8 @@ export async function PATCH(request: NextRequest) {
 
   let body: { id?: string; role?: string }
   try {
+    const clUsers = parseInt(request.headers.get('content-length') ?? '0', 10)
+    if (clUsers > 512) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
     body = await request.json()
   } catch {
     return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })
@@ -135,7 +137,8 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: '사용자를 찾을 수 없습니다.' }, { status: 404 })
     }
 
-    console.log('[audit] 역할 변경:', { adminId, targetId: id, newRole: role, name: data.name, email: data.email, at: new Date().toISOString() })
+    const maskedEmail = data.email ? data.email.replace(/(?<=.{2}).(?=.*@)/g, '*') : null
+    console.log('[audit] 역할 변경:', { adminId, targetId: id, newRole: role, name: data.name, email: maskedEmail, at: new Date().toISOString() })
     return NextResponse.json({ user: data })
   } catch (err) {
     console.error('[PATCH /api/admin/users] 예상치 못한 오류:', err)

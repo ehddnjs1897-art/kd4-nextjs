@@ -228,7 +228,7 @@ export default function JoinForm() {
             marginBottom: '18px',
           }}
         >
-          <CheckCircle size={28} color="var(--navy)" strokeWidth={1.8} />
+          <CheckCircle aria-hidden={true} size={28} color="var(--navy)" strokeWidth={1.8} />
         </div>
         <p
           style={{
@@ -304,7 +304,7 @@ export default function JoinForm() {
             marginBottom: '10px',
           }}
         >
-          <MessageCircle size={15} strokeWidth={2} />
+          <MessageCircle aria-hidden={true} size={15} strokeWidth={2} />
           카카오 상담받기
         </a>
 
@@ -322,7 +322,7 @@ export default function JoinForm() {
               gap: '3px',
             }}
           >
-            <MessageCircle size={12} strokeWidth={2.2} />
+            <MessageCircle aria-hidden={true} size={12} strokeWidth={2.2} />
             카카오 채널
           </a>
           로 먼저 문의하셔도 됩니다.
@@ -390,7 +390,7 @@ export default function JoinForm() {
                     gap: '3px',
                   }}
                 >
-                  자세히 보기 <ArrowRight size={11} strokeWidth={2.2} />
+                  자세히 보기 <ArrowRight aria-hidden={true} size={11} strokeWidth={2.2} />
                 </p>
               </div>
             </a>
@@ -439,7 +439,7 @@ export default function JoinForm() {
                     gap: '3px',
                   }}
                 >
-                  자세히 보기 <ArrowRight size={11} strokeWidth={2.2} />
+                  자세히 보기 <ArrowRight aria-hidden={true} size={11} strokeWidth={2.2} />
                 </p>
               </div>
             </a>
@@ -488,7 +488,7 @@ export default function JoinForm() {
                     gap: '3px',
                   }}
                 >
-                  자세히 보기 <ArrowRight size={11} strokeWidth={2.2} />
+                  자세히 보기 <ArrowRight aria-hidden={true} size={11} strokeWidth={2.2} />
                 </p>
               </div>
             </a>
@@ -537,7 +537,7 @@ export default function JoinForm() {
                     gap: '3px',
                   }}
                 >
-                  자세히 보기 <ArrowRight size={11} strokeWidth={2.2} />
+                  자세히 보기 <ArrowRight aria-hidden={true} size={11} strokeWidth={2.2} />
                 </p>
               </div>
             </a>

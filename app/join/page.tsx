@@ -337,7 +337,7 @@ export default function JoinPage() {
                 color: 'rgba(255,255,255,0.9)',
               }}
             >
-              <MessageCircle size={14} strokeWidth={2.2} />
+              <MessageCircle aria-hidden={true} size={14} strokeWidth={2.2} />
               카카오로 문의하기
             </JoinCTALink>
           </div>
@@ -1222,7 +1222,7 @@ export default function JoinPage() {
                       padding: '4px 10px',
                     }}
                   >
-                    <Film size={11} strokeWidth={2} />
+                    <Film aria-hidden={true} size={11} strokeWidth={2} />
                     {genre}
                   </span>
                 </div>
@@ -1495,7 +1495,7 @@ export default function JoinPage() {
               className="btn-outline"
               style={{ borderColor: 'var(--navy)', color: 'var(--navy)' }}
             >
-              <MessageCircle size={14} strokeWidth={2.2} />
+              <MessageCircle aria-hidden={true} size={14} strokeWidth={2.2} />
               카카오로 문의하기
             </JoinCTALink>
           </div>

@@ -6,7 +6,7 @@ export default function ActorDetailLoading() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingTop: 64 }}>
+    <div role="status" aria-label="로딩 중" style={{ minHeight: '100vh', background: 'var(--bg)', paddingTop: 64 }}>
       <style>{`
         @keyframes pulse {
           0%, 100% { opacity: 1; }

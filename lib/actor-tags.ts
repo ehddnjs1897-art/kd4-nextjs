@@ -81,10 +81,10 @@ export async function classifyActor(input: ActorClassifyInput): Promise<ActorCla
 
   try {
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': GEMINI_KEY! },
         signal: AbortSignal.timeout(15_000),
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],

@@ -1,6 +1,6 @@
 export default function EditPostLoading() {
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '80px 0 120px' }}>
+    <div role="status" aria-label="로딩 중" style={{ minHeight: '100vh', background: 'var(--bg)', padding: '80px 0 120px' }}>
       <div className="container" style={{ maxWidth: '760px' }}>
         {/* 헤더 스켈레톤 */}
         <div style={{ marginBottom: '40px' }}>

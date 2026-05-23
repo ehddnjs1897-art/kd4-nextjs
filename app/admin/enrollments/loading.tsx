@@ -6,7 +6,7 @@ export default function AdminEnrollmentsLoading() {
   }
 
   return (
-    <div style={{ minHeight: '60vh', padding: '32px 24px' }}>
+    <div role="status" aria-label="로딩 중" style={{ minHeight: '60vh', padding: '32px 24px' }}>
       <style>{`
         @keyframes pulse {
           0%, 100% { opacity: 1; }

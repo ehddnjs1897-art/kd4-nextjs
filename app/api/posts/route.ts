@@ -78,7 +78,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: '게시글 조회 중 오류가 발생했습니다.' }, { status: 500 })
     }
 
-    return NextResponse.json({ data, total: count, page, limit })
+    return NextResponse.json({ data, total: count, page, limit }, { headers: { 'Cache-Control': 'private, no-store' } })
   } catch (err) {
     console.error('[GET /api/posts]', err)
     return NextResponse.json({ error: '게시글 조회 중 오류가 발생했습니다.' }, { status: 500 })

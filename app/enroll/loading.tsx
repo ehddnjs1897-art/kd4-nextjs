@@ -6,7 +6,7 @@ export default function EnrollLoading() {
   }
 
   return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh', paddingTop: 64 }}>
+    <div role="status" aria-label="로딩 중" style={{ background: 'var(--bg)', minHeight: '100vh', paddingTop: 64 }}>
       <style>{`
         @keyframes pulse {
           0%, 100% { opacity: 1; }

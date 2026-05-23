@@ -169,7 +169,7 @@ export default function EnrollForm({
       <div style={{ background: 'var(--bg)', minHeight: '100vh', paddingTop: 64 }}>
         <div style={{ maxWidth: 480, margin: '0 auto', padding: 'clamp(64px,12vw,120px) 24px', textAlign: 'center' }}>
           <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(21,72,138,0.1)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
-            <CheckCircle size={30} color="var(--navy)" strokeWidth={1.8} />
+            <CheckCircle aria-hidden={true} size={30} color="var(--navy)" strokeWidth={1.8} />
           </div>
           <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--navy)', textTransform: 'uppercase', marginBottom: 12 }}>
             ENROLLMENT COMPLETE
@@ -183,7 +183,7 @@ export default function EnrollForm({
             결제 안내는 등록하신 연락처로 개별 안내드립니다.
           </p>
           <Link href="/dashboard" className="btn-primary" style={{ background: 'var(--navy)', color: '#fff' }}>
-            마이페이지로 이동 <ArrowRight size={15} strokeWidth={2.2} />
+            마이페이지로 이동 <ArrowRight aria-hidden={true} size={15} strokeWidth={2.2} />
           </Link>
         </div>
       </div>
@@ -313,7 +313,7 @@ export default function EnrollForm({
                       background: on ? 'var(--navy)' : '#fff',
                       display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                     }}>
-                      {on && <CheckCircle size={13} color="#fff" strokeWidth={2.5} />}
+                      {on && <CheckCircle aria-hidden={true} size={13} color="#fff" strokeWidth={2.5} />}
                     </span>
                     <span style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
                       <span style={{ display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap' }}>
@@ -419,7 +419,7 @@ export default function EnrollForm({
           {loading ? '신청 중...' : (
             <>
               {ymLabel(nextMonth)} 클래스 신청하기
-              <ArrowRight size={16} strokeWidth={2.5} />
+              <ArrowRight aria-hidden={true} size={16} strokeWidth={2.5} />
             </>
           )}
         </button>

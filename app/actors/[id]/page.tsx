@@ -167,11 +167,11 @@ export async function generateMetadata({
   params: Promise<{ id: string }>
 }): Promise<Metadata> {
   const { id } = await params
-  if (!UUID_RE_ACTOR.test(id)) return { title: '배우 프로필 | kd4.club', robots: { index: false, follow: false } }
+  if (!UUID_RE_ACTOR.test(id)) return { title: '배우 프로필', robots: { index: false, follow: false } }
   const actor = await getActorCached(id)
-  if (!actor) return { title: '배우 프로필 | kd4.club', robots: { index: false, follow: false } }
+  if (!actor) return { title: '배우 프로필', robots: { index: false, follow: false } }
   // 비공개 배우 — 크롤러가 메타데이터를 읽어도 인덱싱 차단 (페이지 컴포넌트는 notFound() 반환)
-  if (!actor.is_public) return { title: '배우 프로필 | kd4.club', robots: { index: false, follow: false } }
+  if (!actor.is_public) return { title: '배우 프로필', robots: { index: false, follow: false } }
 
   const ogImage = `${SITE_URL}/api/og/actor/${actor.id}`
   const pageUrl = `${SITE_URL}/actors/${actor.id}`

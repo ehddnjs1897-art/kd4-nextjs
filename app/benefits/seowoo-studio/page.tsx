@@ -70,7 +70,7 @@ function SeowooLogo({ size = 'lg', priority = false }: { size?: 'lg' | 'sm'; pri
   return (
     <Image
       src="/partners/seowoo-logo.webp"
-      alt="seowoo studio"
+      alt="서우스튜디오 로고"
       width={px}
       height={px}
       priority={priority}

@@ -101,7 +101,7 @@ export default function StickyTopBar({
         }}
       >
         무료상담
-        <ArrowRight size={11} strokeWidth={2.2} />
+        <ArrowRight aria-hidden={true} size={11} strokeWidth={2.2} />
       </a>
     </div>
   )

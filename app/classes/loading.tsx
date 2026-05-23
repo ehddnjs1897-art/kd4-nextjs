@@ -1,6 +1,6 @@
 export default function ClassesLoading() {
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingTop: 80, paddingBottom: 80 }}>
+    <div role="status" aria-label="로딩 중" style={{ minHeight: '100vh', background: 'var(--bg)', paddingTop: 80, paddingBottom: 80 }}>
       <div className="container">
         {/* 헤더 스켈레톤 */}
         <div style={{ textAlign: 'center', marginBottom: 48 }}>
