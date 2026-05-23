@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
     }
 
     // actor/member 역할(기본 가입 역할)인 행만 원자적으로 업데이트 — 관리자 승인 경쟁 조건 방지
-    const applicantName = profile?.name ?? user.user_metadata?.name ?? user.email?.split('@')[0] ?? null
+    const applicantName = profile?.name ?? user.user_metadata?.name ?? null
     const { data: updated, error: updateErr } = await supabaseAdmin
       .from('profiles')
       .update({

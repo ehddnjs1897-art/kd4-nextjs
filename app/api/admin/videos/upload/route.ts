@@ -126,7 +126,7 @@ export async function POST(request: NextRequest) {
 
     // 모든 유효성 검사 통과 후에만 레이트 리밋 슬롯 소모
     adminVideoUploadMap.set(adminAuth.userId, [...avTimes, nowAV])
-    if (adminVideoUploadMap.size > 200) {
+    if (adminVideoUploadMap.size > 2000) {
       for (const [k, v] of adminVideoUploadMap) {
         if (v.every(t => nowAV - t > ADMIN_VIDEO_UPLOAD_WINDOW_MS)) adminVideoUploadMap.delete(k)
       }

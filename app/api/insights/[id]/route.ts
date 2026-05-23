@@ -54,13 +54,17 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const auth = await requireAdmin()
     if (auth instanceof NextResponse) return withCors(auth, origin)
     const { userId: insightUserId } = auth as { userId: string }
+    const clInsightPatch = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
+    if (clInsightPatch > 4_096) {
+      return withCors(NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 }), origin)
+    }
     const nowIM = Date.now()
     const lastIM = insightMutateMap.get(insightUserId) ?? 0
     if (nowIM - lastIM < INSIGHT_COOLDOWN_MS) {
       return withCors(NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 }), origin)
     }
     insightMutateMap.set(insightUserId, nowIM)
-    if (insightMutateMap.size > 200) {
+    if (insightMutateMap.size > 2000) {
       const cutoffIM = nowIM - INSIGHT_COOLDOWN_MS
       for (const [k, v] of insightMutateMap) { if (v < cutoffIM) insightMutateMap.delete(k) }
     }
@@ -68,10 +72,6 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const { id } = await params
     if (!UUID_RE.test(id)) {
       return withCors(NextResponse.json({ error: '잘못된 ID입니다.' }, { status: 400 }), origin)
-    }
-    const clInsightPatch = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
-    if (clInsightPatch > 4_096) {
-      return withCors(NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 }), origin)
     }
     let body: Record<string, unknown>
     try {

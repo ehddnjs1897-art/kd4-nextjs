@@ -100,7 +100,7 @@ export default async function GalleryEditPage() {
       <div style={styles.page}>
         <div className="container">
           <header style={styles.header}>
-            <p style={styles.eyebrow}>PROFILE SETUP</p>
+            <p style={styles.eyebrow}><span lang="en">PROFILE SETUP</span></p>
             <h1 style={styles.pageTitle}>프로필 등록</h1>
             <p style={styles.subtitle}>
               자료를 올려 주세요. 검토 후 배우 DB에 공개됩니다.
@@ -191,7 +191,7 @@ export default async function GalleryEditPage() {
     <div style={styles.page}>
       <div className="container">
         <header style={styles.header}>
-          <p style={styles.eyebrow}>GALLERY EDIT</p>
+          <p style={styles.eyebrow}><span lang="en">GALLERY EDIT</span></p>
           <h1 style={styles.pageTitle}>갤러리 편집</h1>
           <p style={styles.subtitle}>내 배우 프로필을 직접 관리하세요.</p>
         </header>

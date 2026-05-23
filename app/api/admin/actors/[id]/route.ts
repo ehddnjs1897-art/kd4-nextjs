@@ -61,7 +61,7 @@ export async function PATCH(
     return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
   }
   adminActorPatchMap.set(adminActorId, nowAAP)
-  if (adminActorPatchMap.size > 200) {
+  if (adminActorPatchMap.size > 2000) {
     const cutoffAAP = nowAAP - ADMIN_ACTOR_PATCH_COOLDOWN_MS
     for (const [k, v] of adminActorPatchMap) { if (v < cutoffAAP) adminActorPatchMap.delete(k) }
   }

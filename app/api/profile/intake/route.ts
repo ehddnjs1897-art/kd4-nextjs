@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
         }
       : null
   const videos: NonNullable<ReturnType<typeof parseVideoItem>>[] = Array.isArray(body?.videos)
-    ? body.videos.map(parseVideoItem).filter(Boolean)
+    ? body.videos.slice(0, 10).map(parseVideoItem).filter(Boolean)
     : body?.video ? [parseVideoItem(body.video)].filter(Boolean) : []
 
   const ogPhotoPath: string | null = typeof body?.ogPhotoPath === 'string' ? body.ogPhotoPath.slice(0, MAX_PATH_LEN) : null
@@ -175,7 +175,6 @@ export async function POST(request: NextRequest) {
       .insert({
         name: profile.name ?? '(이름 미입력)',
         phone: profile.phone ?? null,
-        email: user.email ?? null,
         is_public: false, // 관리자 검토 후 공개
         self_managed: true,
         source: 'manual',

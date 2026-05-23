@@ -256,7 +256,7 @@ export async function POST(request: NextRequest) {
       return withCors(NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 }), origin)
     }
     insightsPostMap.set(auth.userId, [...ipTimes, nowIP])
-    if (insightsPostMap.size > 100) {
+    if (insightsPostMap.size > 2000) {
       for (const [k, v] of insightsPostMap) {
         if (v.every(t => nowIP - t > INSIGHTS_POST_WINDOW_MS)) insightsPostMap.delete(k)
       }

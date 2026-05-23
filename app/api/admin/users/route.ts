@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
   }
   usersGetMap.set(check.userId, [...getTimes, nowGet])
-  if (usersGetMap.size > 100) {
+  if (usersGetMap.size > 2000) {
     for (const [k, v] of usersGetMap) {
       if (v.every(t => nowGet - t > USERS_GET_WINDOW_MS)) usersGetMap.delete(k)
     }
@@ -115,7 +115,7 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
   }
   usersRolePatchMap.set(check.userId, now)
-  if (usersRolePatchMap.size > 100) {
+  if (usersRolePatchMap.size > 2000) {
     for (const [k, ts] of usersRolePatchMap) {
       if (now - ts > USERS_PATCH_COOLDOWN_MS * 2) usersRolePatchMap.delete(k)
     }

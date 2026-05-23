@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/admin?error=rate_limited`)
   }
   approveCrewMap.set(uid, nowAC)
-  if (approveCrewMap.size > 200) {
+  if (approveCrewMap.size > 2000) {
     for (const [k, ts] of approveCrewMap) {
       if (nowAC - ts > APPROVE_COOLDOWN_MS) approveCrewMap.delete(k)
     }
