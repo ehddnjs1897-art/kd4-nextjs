@@ -369,11 +369,14 @@ export default function HomePage() {
           </p>
         </div>
 
+        {/* sr-only h1 — JS 렌더 전에도 스크린리더에 즉시 노출 */}
+        <h1 className="sr-only">KD4 액팅 스튜디오 — ACTOR ACCELERATING SYSTEM</h1>
+
         {/* 뒷벽에 박히는 타이틀 — DOM/CSS로 선명하게, 달리줌과 동기화
              측정 완료 전(titleReady=false)에는 비가시 — letter-spacing 적용 후 등장 */}
         <div className={`hero-title-wall-pos ${titleReady ? 'is-ready' : ''}`}>
           <div className="hero-title-wall" ref={heroTitleRef}>
-            <h1>KD4 액팅 스튜디오</h1>
+            <h1 aria-hidden="true">KD4 액팅 스튜디오</h1>
             <p className="hero-title-wall-sub">ACTOR ACCELERATING SYSTEM</p>
           </div>
         </div>

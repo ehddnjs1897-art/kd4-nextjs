@@ -12,6 +12,25 @@ type Ctx = { params: Promise<{ id: string; photoId: string }> }
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
+// PATCH/DELETE 레이트 리밋: 5분 내 10회 초과 차단 (대량 사진 조작 방어)
+const photosEditMap = new Map<string, number[]>()
+const PHOTOS_EDIT_WINDOW_MS = 5 * 60_000
+const PHOTOS_EDIT_MAX = 10
+
+function checkPhotosRateLimit(userId: string): boolean {
+  const now = Date.now()
+  const times = (photosEditMap.get(userId) ?? []).filter(t => now - t < PHOTOS_EDIT_WINDOW_MS)
+  if (times.length >= PHOTOS_EDIT_MAX) return false
+  photosEditMap.set(userId, [...times, now])
+  if (photosEditMap.size > 1000) {
+    const cutoff = now - PHOTOS_EDIT_WINDOW_MS
+    for (const [k, v] of photosEditMap) {
+      if (v.every(t => t < cutoff)) photosEditMap.delete(k)
+    }
+  }
+  return true
+}
+
 async function authorize(actorId: string, userId: string) {
   // maybeSingle(): 0건도 허용 → PGRST116 오류 로그 노이즈 방지
   const { data: profile } = await supabaseAdmin
@@ -32,6 +51,7 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
     if (!(await authorize(id, user.id))) return NextResponse.json({ error: '권한 없음' }, { status: 403 })
+    if (!checkPhotosRateLimit(user.id)) return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
 
     let body: Record<string, unknown>
     try {
@@ -81,6 +101,7 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
     if (!(await authorize(id, user.id))) return NextResponse.json({ error: '권한 없음' }, { status: 403 })
+    if (!checkPhotosRateLimit(user.id)) return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
 
     // actor_id 조건 포함 — 타 배우 사진 삭제 IDOR 방어
     const { data: photo } = await supabaseAdmin

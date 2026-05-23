@@ -5,12 +5,18 @@
  * - actor_id 없으면 안내 메시지
  * - 실제 편집 UI는 GalleryEditForm(클라이언트) 위임
  */
+import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import GalleryEditForm from '@/components/dashboard/GalleryEditForm'
 import OnboardingForm from '@/components/onboarding/OnboardingForm'
 import { UserRole } from '@/lib/types'
+
+export const metadata: Metadata = {
+  title: '프로필 편집',
+  robots: { index: false, follow: false },
+}
 
 interface Profile {
   role: UserRole

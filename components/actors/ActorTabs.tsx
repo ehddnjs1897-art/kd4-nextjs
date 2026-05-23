@@ -361,7 +361,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
 
       {/* ============ 01 · REEL ============ */}
       {reelVideos.length > 0 && (
-        <section style={s.section}>
+        <section style={s.section} aria-label={`${actor.name} REEL 영상`}>
           <h2 style={s.sectionHeading}>
             <span style={s.sectionNum}>01</span>
             <span style={s.sectionTitle}>REEL</span>
@@ -398,7 +398,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
 
       {/* ============ 전략적 독백 ============ */}
       {monologueVideos.length > 0 && (
-        <section style={s.section}>
+        <section style={s.section} aria-label={`${actor.name} 전략적 독백 영상`}>
           <h2 style={s.sectionHeading}>
             <span style={s.sectionTitle}>전략적 독백</span>
           </h2>

@@ -10,6 +10,10 @@ import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { matchActorOnSignup } from '@/lib/actor-matching'
 
+// PATCH 레이트 리밋: 30초 냉각 (자동 재매칭 DB 스캔 방어)
+const profilePatchMap = new Map<string, number>()
+const PROFILE_PATCH_COOLDOWN_MS = 30_000
+
 export async function PATCH(request: NextRequest) {
   try {
     const supabase = await createClient()
@@ -17,6 +21,20 @@ export async function PATCH(request: NextRequest) {
 
     if (authErr || !user) {
       return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
+    }
+
+    // 레이트 리밋: 30초 냉각
+    const nowPP = Date.now()
+    const lastPP = profilePatchMap.get(user.id) ?? 0
+    if (nowPP - lastPP < PROFILE_PATCH_COOLDOWN_MS) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
+    profilePatchMap.set(user.id, nowPP)
+    if (profilePatchMap.size > 1000) {
+      const cutoffPP = nowPP - PROFILE_PATCH_COOLDOWN_MS
+      for (const [k, v] of profilePatchMap) {
+        if (v < cutoffPP) profilePatchMap.delete(k)
+      }
     }
 
     let body: { name?: string; phone?: string }

@@ -6,15 +6,41 @@ type Params = Promise<{ id: string }>
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
+// GET IP 레이트 리밋: 60 req/min
+const postDetailGetMap = new Map<string, { count: number; resetAt: number }>()
+const POST_DETAIL_GET_LIMIT = 60
+const POST_DETAIL_GET_WINDOW_MS = 60_000
+
 // GET /api/posts/[id] — 조회수 +1 포함
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Params }
 ) {
   try {
     const { id } = await params
     if (!UUID_RE.test(id)) {
       return NextResponse.json({ error: '잘못된 게시글 ID입니다.' }, { status: 400 })
+    }
+    // IP 레이트 리밋: 1분 60회 초과 차단
+    const ipPD = request.headers.get('x-real-ip')
+      ?? request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+      ?? null
+    if (ipPD) {
+      const nowPD = Date.now()
+      const bucketPD = postDetailGetMap.get(ipPD)
+      if (bucketPD && nowPD < bucketPD.resetAt) {
+        if (bucketPD.count >= POST_DETAIL_GET_LIMIT) {
+          return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+        }
+        bucketPD.count++
+      } else {
+        postDetailGetMap.set(ipPD, { count: 1, resetAt: nowPD + POST_DETAIL_GET_WINDOW_MS })
+        if (postDetailGetMap.size > 2000) {
+          for (const [k, v] of postDetailGetMap) {
+            if (nowPD > v.resetAt) postDetailGetMap.delete(k)
+          }
+        }
+      }
     }
     const supabase = await createClient()
 

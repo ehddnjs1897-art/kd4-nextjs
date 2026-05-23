@@ -587,6 +587,7 @@ export default function AboutPage() {
             href="https://forms.gle/68E7yFFFoDiPCRwD9"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="클래스 신청 (새 탭에서 열림)"
             style={{
               display: 'inline-block',
               padding: '14px 32px',

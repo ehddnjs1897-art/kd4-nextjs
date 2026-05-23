@@ -239,7 +239,7 @@ export default function BoardClient({
           <span role="columnheader">분류</span>
           <span role="columnheader">제목</span>
           <span role="columnheader" className="board-col-hide-sm" style={{ textAlign: 'center' }}>작성자</span>
-          <span role="columnheader" className="board-col-hide-xs" style={{ textAlign: 'center' }}>날짜</span>
+          <span role="columnheader" aria-sort="descending" className="board-col-hide-xs" style={{ textAlign: 'center' }}>날짜</span>
           <span role="columnheader" className="board-col-hide-xs" style={{ textAlign: 'right' }}>조회</span>
         </div>
         </div>

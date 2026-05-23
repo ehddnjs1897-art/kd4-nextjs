@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
+// GET 레이트 리밋: 로그인 사용자 30 req/min
+const scoresGetMap = new Map<string, { count: number; resetAt: number }>()
+const SCORES_GET_LIMIT = 30
+const SCORES_GET_WINDOW_MS = 60_000
+
 // GET /api/game/scores?period=weekly&limit=10
 export async function GET(request: NextRequest) {
   try {
@@ -9,6 +14,23 @@ export async function GET(request: NextRequest) {
     const supabaseClient = await createClient()
     const { data: { user } } = await supabaseClient.auth.getUser()
     if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
+
+    // 레이트 리밋: 1분 30회 초과 차단
+    const nowSG = Date.now()
+    const bucketSG = scoresGetMap.get(user.id)
+    if (bucketSG && nowSG < bucketSG.resetAt) {
+      if (bucketSG.count >= SCORES_GET_LIMIT) {
+        return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+      }
+      bucketSG.count++
+    } else {
+      scoresGetMap.set(user.id, { count: 1, resetAt: nowSG + SCORES_GET_WINDOW_MS })
+      if (scoresGetMap.size > 1000) {
+        for (const [k, v] of scoresGetMap) {
+          if (nowSG > v.resetAt) scoresGetMap.delete(k)
+        }
+      }
+    }
 
     const { searchParams } = new URL(request.url)
     const VALID_PERIODS = new Set(['weekly', 'alltime'])

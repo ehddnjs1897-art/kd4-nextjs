@@ -77,6 +77,11 @@ const NOTIFY_DEBOUNCE_MS = 4000 // 4초 내 동일 번호 동시 요청 차단
 
 export async function POST(request: NextRequest) {
   try {
+    // 본문 크기 검증 (DoS 방어 — 폼 제출은 최대 수 KB)
+    const contentLength = parseInt(request.headers.get('content-length') ?? '0', 10)
+    if (contentLength > 65_536) {
+      return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+    }
     const data = await request.json()
     const record = data?.record ?? data
 
