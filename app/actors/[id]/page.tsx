@@ -470,7 +470,7 @@ export default async function ActorDetailPage({
                   </p>
                 )}
                 {actor.instagram && (
-                  <a href={`https://instagram.com/${actor.instagram.replace('@','')}`} target="_blank" rel="noopener noreferrer"
+                  <a href={actor.instagram.startsWith('http') ? actor.instagram : `https://instagram.com/${actor.instagram.replace('@','')}`} target="_blank" rel="noopener noreferrer"
                     aria-label={`인스타그램 @${actor.instagram.replace('@', '')} (새 탭에서 열림)`}
                     style={{ fontSize: '0.85rem', color: 'var(--gray)', textDecoration: 'none' }}>
                     @ {actor.instagram.startsWith('@') ? actor.instagram.slice(1) : actor.instagram}

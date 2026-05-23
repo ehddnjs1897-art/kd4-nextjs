@@ -170,7 +170,6 @@ export default function JoinPage() {
 
   return (
     <>
-      <a href="#main-content" className="skip-nav">본문으로 바로가기</a>
       <main
         id="main-content"
         className="uplift-page"

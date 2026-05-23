@@ -54,6 +54,16 @@ export default function Navbar() {
     return () => { document.body.style.overflow = '' }
   }, [mobileOpen])
 
+  /* ── 데스크탑 크루 드롭다운 Escape 닫기 ── */
+  useEffect(() => {
+    if (!crewDropOpen) return
+    const onCrewKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setCrewDropOpen(false)
+    }
+    document.addEventListener('keydown', onCrewKey)
+    return () => document.removeEventListener('keydown', onCrewKey)
+  }, [crewDropOpen])
+
   /* ── Escape 키로 모바일 메뉴 닫기 + Tab 포커스 트랩 ── */
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -272,7 +282,7 @@ export default function Navbar() {
                   onMouseLeave={e => {
                     if (!crewDropOpen) e.currentTarget.style.color = '#111111'
                   }}
-                  aria-haspopup="true"
+                  aria-haspopup="menu"
                   aria-expanded={crewDropOpen}
                   onClick={() => setCrewDropOpen(v => !v)}
                 >

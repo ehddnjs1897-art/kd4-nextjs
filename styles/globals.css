@@ -2108,7 +2108,7 @@ main {
   border-radius: 0 0 6px 6px;
   transition: left 0s;
 }
-.skip-nav:focus {
+.skip-nav:focus-visible {
   left: 16px;
 }
 
