@@ -71,6 +71,15 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       }
     }
 
+    const { data: maxRow } = await supabaseAdmin
+      .from('actor_filmography')
+      .select('sort_order')
+      .eq('actor_id', id)
+      .order('sort_order', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+    const nextSortOrder = (maxRow?.sort_order ?? -1) + 1
+
     const { data, error } = await supabaseAdmin
       .from('actor_filmography')
       .insert({
@@ -81,7 +90,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
         role: role ? String(role).slice(0, 100) : null,
         broadcaster: broadcaster ? String(broadcaster).slice(0, 100) : null,
         film_type: film_type ? String(film_type).slice(0, 50) : null,
-        sort_order: 0,
+        sort_order: nextSortOrder,
       })
       .select('id')
       .maybeSingle()

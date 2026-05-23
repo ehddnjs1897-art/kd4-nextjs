@@ -8,6 +8,9 @@ import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { buildBreadcrumb } from '@/lib/seo-schemas'
 
+// revalidateTag('actors') 호출 시 즉시 갱신, 실패 시 최대 1시간 후 자동 재렌더
+export const revalidate = 3600
+
 export const metadata: Metadata = {
   title: '배우 DB',
   description: 'KD4 액팅 스튜디오 배우 데이터베이스. 마이즈너 테크닉으로 훈련한 배우들의 프로필·필모그래피·출연영상을 확인하세요. 캐스팅 디렉터 전용 연락처 열람 가능.',

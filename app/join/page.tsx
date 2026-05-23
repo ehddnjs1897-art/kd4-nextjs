@@ -42,6 +42,7 @@ export const metadata: Metadata = {
     title: '무료 상담 신청 | KD4 액팅 스튜디오',
     description: '소수정예 마이즈너 테크닉 연기 클래스. 무료 상담 신청. 서울 신촌. KD4 액팅 스튜디오.',
     url: `${SITE_URL}/join`,
+    siteName: 'KD4 액팅 스튜디오',
     images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오' }],
   },
   twitter: {

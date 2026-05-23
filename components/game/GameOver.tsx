@@ -138,6 +138,8 @@ export default function GameOver({
       <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
         <button
           type="button"
+          // eslint-disable-next-line jsx-a11y/no-autofocus
+          autoFocus
           onClick={onRestart}
           style={{
             background: "#0057FF",

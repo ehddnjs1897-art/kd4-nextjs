@@ -181,7 +181,7 @@ export default function CommentSection({
                   </div>
                   {canDelete && (
                     confirmingDeleteId === comment.id ? (
-                      <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
+                      <div role="alertdialog" aria-modal="true" aria-label="댓글 삭제 확인" style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
                         <button
                           type="button"
                           aria-label={`${comment.author_name} 댓글 삭제 취소`}

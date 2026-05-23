@@ -140,8 +140,7 @@ export async function GET(
         'Content-Disposition': dispositionHeader(`${safeName} 프로필.${ext}`),
         'Cache-Control': 'private, no-store',
       }
-      const len = upstream.headers.get('content-length')
-      if (len) headers['Content-Length'] = len
+      // Content-Length 미전달 — 파일 존재 여부 추론 방지 (사이즈 오라클 방어)
       return new Response(upstream.body, { headers })
     } catch (e) {
       console.error('[actor profile] 외부 URL 프록시 실패:', e)

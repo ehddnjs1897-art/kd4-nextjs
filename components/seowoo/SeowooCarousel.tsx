@@ -107,7 +107,7 @@ export default function SeowooCarousel() {
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: '1rem',
-            color: 'var(--white)',
+            color: '#333',
             boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
           }}
         >
@@ -134,7 +134,7 @@ export default function SeowooCarousel() {
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: '1rem',
-            color: 'var(--white)',
+            color: '#333',
             boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
           }}
         >

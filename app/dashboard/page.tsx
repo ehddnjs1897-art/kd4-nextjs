@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: '마이페이지 | KD4 액팅 스튜디오',
     description: 'KD4 멤버 마이페이지',
-    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630 }],
+    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 마이페이지' }],
   },
 }
 import LogoutButton from '@/components/layout/LogoutButton'

@@ -117,7 +117,7 @@ export default function R2Video({
               {prefetching ? (
                 <span style={s.spinner} />
               ) : error ? (
-                <span style={{ fontSize: '0.75rem', color: '#fff', padding: '0 12px', textAlign: 'center' }}>{error}</span>
+                <span role="alert" style={{ fontSize: '0.75rem', color: '#fff', padding: '0 12px', textAlign: 'center' }}>{error}</span>
               ) : (
                 /* 재생 삼각형 */
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="white">

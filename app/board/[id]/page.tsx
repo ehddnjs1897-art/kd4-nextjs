@@ -89,7 +89,7 @@ export async function generateMetadata({ params }: { params: Params }) {
       card: 'summary_large_image',
       title,
       description,
-      images: [`${SITE_URL}/og-image.jpg`],
+      images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오' }],
     },
   }
 }

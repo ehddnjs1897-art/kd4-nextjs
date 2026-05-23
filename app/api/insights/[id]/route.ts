@@ -65,7 +65,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       return withCors(NextResponse.json({ error: '잘못된 요청' }, { status: 400 }), origin)
     }
 
-    const VALID_INSIGHT_CATEGORIES = new Set(['연기', '비즈니스', '크리에이티브', '디자인', '기술', '라이프', '기타'])
+    // POST/Gemini와 동일한 카테고리 집합 유지 (전체는 필터 전용이므로 제외)
+    const VALID_INSIGHT_CATEGORIES = new Set(['연기', '오디션', '산업', '마케팅', '기타'])
 
     const updates: Record<string, unknown> = {}
     if (typeof body.is_favorite === 'boolean') updates.is_favorite = body.is_favorite
