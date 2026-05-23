@@ -66,7 +66,7 @@ export default function GameStartPage() {
           position: "absolute",
           top: 20,
           right: 20,
-          color: "#0057FF",
+          color: "#3399FF",
           fontSize: 14,
           textDecoration: "none",
           display: "inline-flex",
@@ -95,7 +95,7 @@ export default function GameStartPage() {
       <p
         style={{
           fontSize: 13,
-          color: "#0057FF",
+          color: "#3399FF",
           letterSpacing: "0.15em",
           marginBottom: 32,
           fontFamily: "var(--font-oswald), sans-serif",

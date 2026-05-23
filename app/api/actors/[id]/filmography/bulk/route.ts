@@ -119,25 +119,22 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       }
     }
 
-    // ── 병렬 처리 ─────────────────────────────────────────
-    const updatePromises = toUpdate.map(item =>
-      supabaseAdmin
-        .from('actor_filmography')
-        .update({
-          category: item.category,
-          year: item.year ?? null,
-          title: item.title,
-          role: item.role ?? null,
-          broadcaster: item.broadcaster ?? null,
-          film_type: item.film_type ?? null,
-        })
-        .eq('id', item.id)
-        .eq('actor_id', actorId)
-        .then(({ error }) => {
-          if (error) console.error('[filmography/bulk] UPDATE 오류:', error.message)
-          return { id: item.id, ok: !error }
-        })
-    )
+    // ── UPDATE: 단일 upsert로 N개 병렬 쿼리 대신 DB 커넥션 압박 해소 ───────────
+    const upsertRows = toUpdate.map(item => ({
+      id: item.id,
+      actor_id: actorId, // 변경 불가 — IDOR 방어 (existingIds는 actor_id로 이미 검증됨)
+      category: item.category,
+      year: item.year ?? null,
+      title: item.title,
+      role: item.role ?? null,
+      broadcaster: item.broadcaster ?? null,
+      film_type: item.film_type ?? null,
+    }))
+    const { error: upsertErr } = toUpdate.length > 0
+      ? await supabaseAdmin.from('actor_filmography').upsert(upsertRows, { onConflict: 'id' })
+      : { error: null }
+    if (upsertErr) console.error('[filmography/bulk] UPSERT 오류:', upsertErr.message)
+    const updateResults = toUpdate.map(item => ({ id: item.id, ok: !upsertErr }))
 
     // sort_order: 기존 최대 sort_order 이후로 이어서 삽입
     const { data: maxRow } = await supabaseAdmin
@@ -161,12 +158,9 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       sort_order: baseSortOrder + idx,
     }))
 
-    const [updateResults, insertResult] = await Promise.all([
-      Promise.all(updatePromises),
-      insertRows.length > 0
-        ? supabaseAdmin.from('actor_filmography').insert(insertRows).select('id')
-        : Promise.resolve({ data: [], error: null }),
-    ])
+    const insertResult = insertRows.length > 0
+      ? await supabaseAdmin.from('actor_filmography').insert(insertRows).select('id')
+      : { data: [], error: null }
 
     const insertedIds = (insertResult.data ?? []).map((r: { id: string }) => r.id)
     const results = [

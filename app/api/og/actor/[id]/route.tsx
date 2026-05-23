@@ -14,9 +14,15 @@
  */
 
 import { ImageResponse } from 'next/og'
+import { type NextRequest } from 'next/server'
 
 export const runtime = 'edge'
 export const revalidate = 3600 // 1h — 배우가 프로필 수정해도 최대 1시간 내 OG 이미지 갱신
+
+// IP 레이트 리밋: 30 req/min (CDN이 1차 방어, in-memory는 2차 — per-edge-instance)
+const ogRateMap = new Map<string, { count: number; resetAt: number }>()
+const OG_RATE_LIMIT = 30
+const OG_RATE_WINDOW_MS = 60_000
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -98,9 +104,24 @@ const fallbackImage = (
 )
 
 export async function GET(
-  _request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // IP 레이트 리밋: 30 req/min (CDN miss 시 Supabase 과부하 방어)
+  const ip = request.headers.get('x-real-ip') ?? null
+  if (ip) {
+    const nowOG = Date.now()
+    const bucketOG = ogRateMap.get(ip)
+    if (bucketOG && nowOG < bucketOG.resetAt) {
+      if (bucketOG.count >= OG_RATE_LIMIT) {
+        return new Response('Too Many Requests', { status: 429 })
+      }
+      bucketOG.count++
+    } else {
+      ogRateMap.set(ip, { count: 1, resetAt: nowOG + OG_RATE_WINDOW_MS })
+    }
+  }
+
   const { id } = await params
   // UUID 검증 — 비 UUID id가 24h CDN 캐시를 오염시키는 DoS 방지
   if (!UUID_RE_OG.test(id)) {

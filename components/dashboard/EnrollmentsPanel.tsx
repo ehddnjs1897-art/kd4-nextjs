@@ -20,7 +20,7 @@ function ymLabel(s: string): string {
 
 const STATUS_COLOR: Record<string, string> = {
   확정: '#2d8a56',
-  휴강: '#9a938b',
+  휴강: '#5A5450',
   취소: '#c0392b',
 }
 
@@ -144,15 +144,15 @@ export default function EnrollmentsPanel({
                 {e.status}
               </span>
               {/* 결제 배지 */}
-              <span style={{ fontSize: '0.7rem', fontWeight: 600, color: e.payment_status === '결제완료' ? '#2d8a56' : '#d4851f' }}>
+              <span style={{ fontSize: '0.7rem', fontWeight: 600, color: e.payment_status === '결제완료' ? '#2d8a56' : '#7A4700' }}>
                 {e.payment_status}
               </span>
               {/* 휴강 버튼 (확정 상태만) */}
               {e.status === '확정' && (
                 confirmingRestId === e.id ? (
                   <div style={{ display: 'flex', gap: 5 }}>
-                    <button type="button" aria-label={`${e.class_name} 휴강 취소`} onClick={() => setConfirmingRestId(null)} style={{ ...S.btnGhost, fontSize: '0.75rem', padding: '4px 8px' }}>취소</button>
-                    <button type="button" aria-label={`${e.class_name} 휴강 확인`} onClick={() => setRest(e.id)} disabled={loading} style={{ ...S.btnGhost, background: 'rgba(239,68,68,0.1)', borderColor: 'rgba(239,68,68,0.3)', color: '#ef4444', fontSize: '0.75rem', padding: '4px 8px' }}>확인</button>
+                    <button type="button" aria-label={`${e.class_name} 휴강 취소`} onClick={() => setConfirmingRestId(null)} style={{ ...S.btnGhost, fontSize: '0.75rem', padding: '4px 8px', minHeight: 44, minWidth: 44 }}>취소</button>
+                    <button type="button" aria-label={`${e.class_name} 휴강 확인`} onClick={() => setRest(e.id)} disabled={loading} style={{ ...S.btnGhost, background: 'rgba(239,68,68,0.1)', borderColor: 'rgba(239,68,68,0.3)', color: '#ef4444', fontSize: '0.75rem', padding: '4px 8px', minHeight: 44, minWidth: 44 }}>확인</button>
                   </div>
                 ) : (
                   <button type="button" aria-label={`${e.class_name} 휴강 신청`} onClick={() => setRest(e.id)} disabled={loading} style={S.btnGhost}>

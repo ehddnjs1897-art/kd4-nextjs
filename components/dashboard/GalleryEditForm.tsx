@@ -698,7 +698,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                 ) : (
                   <>
                     {!p.is_profile && (
-                      <button type="button" onClick={() => setProfile(p.id)} style={{ ...s.btn, ...s.btnGhost, padding: '4px 10px', fontSize: '0.72rem', minHeight: 44 }}>
+                      <button type="button" onClick={() => setProfile(p.id)} aria-label={`사진 ${idx + 1} 대표로 지정`} style={{ ...s.btn, ...s.btnGhost, padding: '4px 10px', fontSize: '0.72rem', minHeight: 44 }}>
                         대표 지정
                       </button>
                     )}
