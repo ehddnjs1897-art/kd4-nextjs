@@ -75,10 +75,20 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: '유효하지 않은 video_type입니다.' }, { status: 400 })
     }
 
+    // MAX(sort_order) + 1 — 항상 0 고정 버그 수정 (R86): 새 영상은 목록 맨 뒤에 추가
+    const { data: maxSortRow } = await supabaseAdmin
+      .from('actor_videos')
+      .select('sort_order')
+      .eq('actor_id', id)
+      .order('sort_order', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+    const nextSortOrder = (maxSortRow?.sort_order ?? -1) + 1
+
     const insertData: Record<string, unknown> = {
       actor_id: id,
       title: title || null,
-      sort_order: 0,
+      sort_order: nextSortOrder,
     }
     if (youtube_id) insertData.youtube_id = youtube_id
     if (r2_key) {

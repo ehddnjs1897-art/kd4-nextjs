@@ -28,6 +28,8 @@ export default function Navbar() {
   const [userRole, setUserRole] = useState<UserRole>(null)
   const [authLoaded, setAuthLoaded] = useState(false)
   const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const hamburgerRef = useRef<HTMLButtonElement>(null)
+  const mobileOverlayRef = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
 
   /* ── 스크롤 감지 ── */
@@ -52,13 +54,43 @@ export default function Navbar() {
     return () => { document.body.style.overflow = '' }
   }, [mobileOpen])
 
-  /* ── Escape 키로 모바일 메뉴 닫기 ── */
+  /* ── Escape 키로 모바일 메뉴 닫기 + Tab 포커스 트랩 ── */
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && mobileOpen) setMobileOpen(false)
+      if (!mobileOpen) return
+      if (e.key === 'Escape') { setMobileOpen(false); return }
+      if (e.key === 'Tab') {
+        const overlay = mobileOverlayRef.current
+        if (!overlay) return
+        const focusables = Array.from(overlay.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        ))
+        if (focusables.length === 0) return
+        const first = focusables[0]
+        const last = focusables[focusables.length - 1]
+        if (e.shiftKey) {
+          if (document.activeElement === first) { e.preventDefault(); last.focus() }
+        } else {
+          if (document.activeElement === last) { e.preventDefault(); first.focus() }
+        }
+      }
     }
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
+  }, [mobileOpen])
+
+  /* ── 모바일 오버레이 열릴 때 포커스 이동, 닫힐 때 햄버거로 복귀 ── */
+  useEffect(() => {
+    if (mobileOpen) {
+      const overlay = mobileOverlayRef.current
+      if (!overlay) return
+      const focusables = overlay.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+      focusables[0]?.focus()
+    } else {
+      hamburgerRef.current?.focus()
+    }
   }, [mobileOpen])
 
   /* ── 인증 상태 & 역할 fetch — Supabase 클라이언트 동적 로드 (메인 페이지 초기 번들에서 제외) ── */
@@ -93,8 +125,9 @@ export default function Navbar() {
 
       fetchRole()
 
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
-        fetchRole()
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+        // INITIAL_SESSION은 마운트 시 fetchRole()이 이미 호출되므로 중복 제외
+        if (event !== 'INITIAL_SESSION') fetchRole()
       })
       unsub = () => subscription.unsubscribe()
     })()
@@ -131,6 +164,7 @@ export default function Navbar() {
   return (
     <>
       <nav
+        aria-label="주 내비게이션"
         style={{
           position: 'fixed',
           top: 0,
@@ -409,6 +443,7 @@ export default function Navbar() {
 
             {/* 햄버거 */}
             <button
+              ref={hamburgerRef}
               type="button"
               onClick={() => setMobileOpen(v => !v)}
               aria-label={mobileOpen ? '메뉴 닫기' : '메뉴 열기'}
@@ -460,6 +495,7 @@ export default function Navbar() {
       {/* ── 모바일 오버레이 ── */}
       {mobileOpen && (
         <div
+          ref={mobileOverlayRef}
           id="mobile-nav-overlay"
           role="dialog"
           aria-modal="true"
@@ -476,7 +512,7 @@ export default function Navbar() {
             paddingBottom: '32px',
           }}
         >
-          <nav style={{ width: '100%', padding: '0 32px', flex: 1 }}>
+          <nav aria-label="사이트 내비게이션" style={{ width: '100%', padding: '0 32px', flex: 1 }}>
             <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
               {/* 공개 링크 */}
               {publicLinks.map(link => (

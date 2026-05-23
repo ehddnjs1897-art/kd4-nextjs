@@ -469,7 +469,7 @@ export default function HomePage() {
         <div className="container stats-grid">
           {KD4_STATS.map((stat, i) => {
             return (
-              <div key={stat.label} className="stats-card">
+              <div key={stat.label} className="stats-card" role="group" aria-label={`${stat.label}: ${stat.value}`}>
                 <div className="stats-icon-wrap">{STAT_ICONS[i]}</div>
                 <p
                   style={{

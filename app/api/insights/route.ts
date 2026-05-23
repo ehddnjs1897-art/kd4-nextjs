@@ -78,6 +78,7 @@ function isSafeExternalUrl(rawUrl: string): boolean {
 
   // IPv6 단축형 차단 (정밀 파싱은 생략, 명백한 케이스만)
   if (host === '::1' || host === '[::1]') return false
+  if (host.includes('::ffff:')) return false                          // IPv6-mapped IPv4 (::ffff:127.0.0.1 등)
   if (host.startsWith('fc') || host.startsWith('fd')) return false  // ULA
   if (host.startsWith('fe80:')) return false                          // 링크로컬
 
