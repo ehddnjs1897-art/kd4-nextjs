@@ -125,7 +125,7 @@ export default function WritePage() {
 
           {/* 카테고리 */}
           <div style={{ marginBottom: '18px' }}>
-            <span id="write-category-label" style={labelStyle}>카테고리</span>
+            <p id="write-category-label" style={labelStyle}>카테고리</p>
             <div role="group" aria-labelledby="write-category-label" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '8px' }}>
               {CATEGORIES.map((cat) => (
                 <button

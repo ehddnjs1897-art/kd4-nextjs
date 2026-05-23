@@ -364,14 +364,24 @@ export default function HeroScene() {
         renderer.render(scene, camera);
         if (isVisible) animFrameId = requestAnimationFrame(animate);
       };
-      animFrameId = requestAnimationFrame(animate);
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReduced) {
+        // 정지 프레임 렌더 — 달리 줌 애니메이션 건너뜀
+        camera.position.set(0, 1.6, 3.8);
+        camera.fov = 55;
+        camera.updateProjectionMatrix();
+        camera.lookAt(0, 1.6, -6);
+        renderer.render(scene, camera);
+      } else {
+        animFrameId = requestAnimationFrame(animate);
+      }
 
       const observer = new IntersectionObserver(
         (entries) => {
           const nowVisible = entries[0].isIntersecting;
           if (nowVisible && !isVisible) {
             isVisible = true;
-            animFrameId = requestAnimationFrame(animate);
+            if (!prefersReduced) animFrameId = requestAnimationFrame(animate);
           } else if (!nowVisible && isVisible) {
             isVisible = false;
             cancelAnimationFrame(animFrameId);

@@ -22,6 +22,9 @@ export interface ClassItem {
   category?: "step2" | "step3" | "extra"; // 이후 클래스 분류
 }
 
+/** 봄맞이 프로모션 마감일 — 이후 promoLabel 숨김 */
+export const PROMO_DEADLINE = '2026-05-31T23:59:59'
+
 export const CLASSES: ClassItem[] = [
   {
     step: "STEP 1",

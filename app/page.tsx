@@ -849,7 +849,7 @@ export default function HomePage() {
                 </span>
                 <Image
                   src={photo.url}
-                  alt={photo.name}
+                  alt={i < CASTING_PHOTOS.length ? photo.name : ""}
                   fill
                   sizes="200px"
                   style={{ objectFit: "cover", zIndex: 1 }}

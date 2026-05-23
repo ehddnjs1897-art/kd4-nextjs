@@ -2,7 +2,9 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { CLASSES } from '@/lib/classes'
+import { CLASSES, PROMO_DEADLINE } from '@/lib/classes'
+
+const isPromoExpired = Date.now() > new Date(PROMO_DEADLINE).getTime()
 import { pixel } from '@/lib/analytics'
 import { ArrowRight } from 'lucide-react'
 
@@ -135,7 +137,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             }}>₩{cls.price}</span>
             <span style={{ fontSize: '0.7rem', color: 'var(--gray)', marginLeft: '2px' }}>/월</span>
           </p>
-          {cls.promoLabel && (
+          {cls.promoLabel && !isPromoExpired && (
             <p style={{ fontSize: '0.7rem', color: 'var(--gold)', fontWeight: 600, marginTop: '4px' }}>{cls.promoLabel}</p>
           )}
         </div>

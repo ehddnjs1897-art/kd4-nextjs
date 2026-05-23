@@ -22,11 +22,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   // 배우 프로필 페이지 (공개 배우만 — 비공개는 페이지 컴포넌트에서 404 반환)
-  const { data: actors } = await supabaseAdmin
+  const { data: actors, error: actorsError } = await supabaseAdmin
     .from('actors')
     .select('id')
     .eq('is_public', true)
     .order('created_at', { ascending: false })
+  if (actorsError) console.error('[sitemap] actors 조회 실패:', actorsError.message)
 
   const actorPages: MetadataRoute.Sitemap = (actors ?? []).map((a) => ({
     url: `${BASE}/actors/${a.id}`,

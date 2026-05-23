@@ -1530,6 +1530,13 @@ ul, ol { list-style: none; }
   transform: translateY(0);
   will-change: auto;
 }
+@media (prefers-reduced-motion: reduce) {
+  .reveal-section {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
 
 /* === STEP PROGRESSION GRID === */
 .steps-journey {
@@ -1953,6 +1960,12 @@ main {
 @keyframes partnerScroll {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .review-marquee-track, .partner-marquee-track {
+    animation: none !important;
+  }
 }
 
 /* === 모바일 성능 최적화 === */
