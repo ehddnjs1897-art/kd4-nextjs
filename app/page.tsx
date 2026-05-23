@@ -10,15 +10,6 @@ import { DIRECTOR } from "@/lib/classes";
 
 import { pixel } from "@/lib/analytics";
 import { CASTING_PHOTOS } from "@/lib/casting-photos"
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
-
-// SSR 가드: module eval 시점에 window가 없으면 GSAP 플러그인 등록 생략
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger)
-}
-
 const HeroScene = dynamic(() => import("@/components/hero/HeroScene"), {
   ssr: false,
 });
@@ -164,123 +155,123 @@ export default function HomePage() {
     return () => { cancelled = true }
   }, [])
 
-  /* ── Lenis 부드러운 스크롤 (데스크톱 전용) ── */
+  /* ── Lenis + GSAP 애니메이션 (동적 import — 초기 번들 ~200KB 분리) ── */
   useEffect(() => {
-    // 터치 기기(모바일)에서는 iOS 네이티브 관성 스크롤이 훨씬 부드럽고
-    // Lenis가 JS로 가로채면 버퍼링·밀림이 생겨서 비활성화
-    const isTouchDevice = window.matchMedia('(pointer: coarse)').matches
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let g: any = null                              // gsap 인스턴스 (동적 로드 후 설정)
+    let gsapCtx: { revert: () => void } | null = null
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let lenis: any = null
+    let lenisTicker: ((time: number) => void) | null = null
+    let offScroll: (() => void) | null = null
 
-    if (isTouchDevice || prefersReduced) {
-      // 모바일: 네이티브 스크롤 + ScrollTrigger passive 연결
-      const onScroll = () => ScrollTrigger.update()
-      window.addEventListener('scroll', onScroll, { passive: true })
-      return () => window.removeEventListener('scroll', onScroll)
+    const init = async () => {
+      const { gsap } = await import('gsap')
+      const { ScrollTrigger } = await import('gsap/ScrollTrigger')
+      g = gsap
+      gsap.registerPlugin(ScrollTrigger)
+
+      const isTouchDevice = window.matchMedia('(pointer: coarse)').matches
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+      if (isTouchDevice || prefersReduced) {
+        // 모바일: 네이티브 스크롤 + ScrollTrigger passive 연결
+        const onScroll = () => ScrollTrigger.update()
+        window.addEventListener('scroll', onScroll, { passive: true })
+        offScroll = () => window.removeEventListener('scroll', onScroll)
+      } else {
+        // 데스크톱: Lenis를 GSAP ticker에 통합 (raf 이중 실행 방지)
+        import('lenis').then((mod) => {
+          if (!g) return
+          const Lenis = mod.default
+          lenis = new Lenis({
+            duration: 1.2,
+            easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            smoothWheel: true,
+            syncTouch: false,
+          })
+          lenis.on('scroll', ScrollTrigger.update)
+          lenisTicker = (time: number) => lenis.raf(time * 1000)
+          g.ticker.add(lenisTicker)
+          g.ticker.lagSmoothing(0)
+        }).catch(() => { /* Lenis 청크 로드 실패 시 기본 스크롤 유지 */ })
+      }
+
+      if (prefersReduced) return
+
+      /* === GSAP 애니메이션 — gsap.context로 언마운트 시 자동 정리 === */
+      gsapCtx = gsap.context(() => {
+        /* === HERO 요소 입장 (달리줌 중반에 맞춰 등장) === */
+        gsap.from('.hero-subtitle', {
+          y: 30, opacity: 0, duration: 0.8, ease: "power2.out", delay: 3.5,
+        })
+        gsap.from('.hero-scroll-indicator', {
+          opacity: 0, duration: 0.4, delay: 4.0,
+        })
+
+        /* === MARQUEE: CSS animation 단독 처리 (GSAP 충돌 방지) === */
+
+        /* === 스크롤 인디케이터 반복 === */
+        gsap.to('.hero-scroll-indicator', {
+          y: 8, repeat: -1, yoyo: true, duration: 1, ease: "power1.inOut",
+        })
+
+        /* === HERO INTRO 섹션 등장 === */
+        gsap.from('.hero-intro-section', {
+          y: 60, opacity: 0, duration: 0.8, ease: "power2.out",
+          scrollTrigger: {
+            trigger: '.hero-intro-section', start: 'top 85%',
+            toggleActions: 'play none none reverse',
+          },
+        })
+
+        /* === 전체 섹션 ScrollTrigger 등장 (#classes 제외 — 즉시 표시) === */
+        gsap.utils.toArray<HTMLElement>('section[id]:not(#hero):not(#classes)').forEach((section) => {
+          gsap.from(section, {
+            y: 50, opacity: 0, duration: 0.8, ease: "power2.out",
+            scrollTrigger: {
+              trigger: section, start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          })
+        })
+
+        /* === 클래스 카드: ScrollTrigger.batch 제거 ===
+           이전엔 onEnter에서 gsap.from(opacity:0) 적용 → 앵커 점프나 레이아웃 변경으로
+           카드가 이미 viewport 안에 있으면 onEnter 미발화 → opacity:0인 채 잔존하는 버그.
+           카드는 처음부터 보이는 게 안전. (레이아웃 변경마다 깨지는 구조적 결함 제거) */
+
+        /* === 후기 마퀴: 스크롤 연동 가속 === */
+        document.querySelectorAll('.review-marquee-track').forEach((track, i) => {
+          gsap.to(track, {
+            x: i % 2 === 0 ? -150 : 150, ease: "none",
+            scrollTrigger: {
+              trigger: track.parentElement, start: "top bottom", end: "bottom top", scrub: 0.5,
+            },
+          })
+        })
+
+        /* === 캐스팅 마퀴: 스크롤 연동 가속 === */
+        document.querySelectorAll('.marquee-track').forEach((track) => {
+          gsap.to(track, {
+            x: -200, ease: "none",
+            scrollTrigger: {
+              trigger: track.parentElement, start: "top bottom", end: "bottom top", scrub: 0.5,
+            },
+          })
+        })
+      })
     }
 
-    // 데스크톱: Lenis를 GSAP ticker에 통합 (raf 이중 실행 방지)
-    let lenis: any
-    let lenisTicker: ((time: number) => void) | null = null
-    import('lenis').then((mod) => {
-      const Lenis = mod.default
-      lenis = new Lenis({
-        duration: 1.2,
-        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        smoothWheel: true,
-        syncTouch: false,
-      })
-      lenis.on('scroll', ScrollTrigger.update)
-      lenisTicker = (time: number) => lenis.raf(time * 1000)
-      gsap.ticker.add(lenisTicker)
-      gsap.ticker.lagSmoothing(0)
-    }).catch(() => { /* Lenis 청크 로드 실패 시 기본 스크롤 유지 */ })
+    init().catch((err) => console.error('[page] 애니메이션 초기화 오류:', err instanceof Error ? err.message : String(err)))
+
     return () => {
-      if (lenisTicker) gsap.ticker.remove(lenisTicker)
+      gsapCtx?.revert()
+      if (g && lenisTicker) g.ticker.remove(lenisTicker)
       if (lenis) lenis.destroy()
+      offScroll?.()
     }
   }, [])
-
-  /* ── GSAP 애니메이션 ── */
-  useGSAP(() => {
-    /* prefers-reduced-motion: 모션 민감한 사용자 — 모든 GSAP 애니메이션 비활성화 */
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-
-    /* === HERO 요소 입장 (달리줌 중반에 맞춰 등장) === */
-    gsap.from('.hero-subtitle', {
-      y: 30, opacity: 0, duration: 0.8, ease: "power2.out", delay: 3.5,
-    })
-    gsap.from('.hero-scroll-indicator', {
-      opacity: 0, duration: 0.4, delay: 4.0,
-    })
-
-    /* === MARQUEE: CSS animation 단독 처리 (GSAP 충돌 방지) === */
-
-    /* === 스크롤 인디케이터 반복 === */
-    gsap.to('.hero-scroll-indicator', {
-      y: 8, repeat: -1, yoyo: true, duration: 1, ease: "power1.inOut",
-    })
-
-    /* === HERO INTRO 섹션 등장 === */
-    gsap.from('.hero-intro-section', {
-      y: 60,
-      opacity: 0,
-      duration: 0.8,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: '.hero-intro-section',
-        start: 'top 85%',
-        toggleActions: 'play none none reverse',
-      },
-    })
-
-    /* === 전체 섹션 ScrollTrigger 등장 (#classes 제외 — 즉시 표시) === */
-    gsap.utils.toArray<HTMLElement>('section[id]:not(#hero):not(#classes)').forEach((section) => {
-      gsap.from(section, {
-        y: 50,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: section,
-          start: 'top 85%',
-          toggleActions: 'play none none reverse',
-        },
-      })
-    })
-
-    /* === 클래스 카드: ScrollTrigger.batch 제거 ===
-       이전엔 onEnter에서 gsap.from(opacity:0) 적용 → 앵커 점프나 레이아웃 변경으로
-       카드가 이미 viewport 안에 있으면 onEnter 미발화 → opacity:0인 채 잔존하는 버그.
-       카드는 처음부터 보이는 게 안전. (레이아웃 변경마다 깨지는 구조적 결함 제거) */
-
-    /* === 후기 마퀴: 스크롤 연동 가속 === */
-    document.querySelectorAll('.review-marquee-track').forEach((track, i) => {
-      gsap.to(track, {
-        x: i % 2 === 0 ? -150 : 150,
-        ease: "none",
-        scrollTrigger: {
-          trigger: track.parentElement,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 0.5,
-        },
-      })
-    })
-
-    /* === 캐스팅 마퀴: 스크롤 연동 가속 === */
-    document.querySelectorAll('.marquee-track').forEach((track) => {
-      gsap.to(track, {
-        x: -200,
-        ease: "none",
-        scrollTrigger: {
-          trigger: track.parentElement,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 0.5,
-        },
-      })
-    })
-  })
 
   /* ── 기존 섹션 리빌 (IntersectionObserver) ── */
   useEffect(() => {
