@@ -609,7 +609,7 @@ export default function BenefitsPage() {
         >
           ※ 자세한 클래스별 가격과 할인 적용은{' '}
           <Link href="/join" style={{ color: 'var(--gold)', textDecoration: 'underline' }}>
-            수강신청 페이지
+            상담 신청 페이지
           </Link>
           에서 확인하실 수 있습니다.
         </p>

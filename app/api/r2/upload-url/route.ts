@@ -81,7 +81,9 @@ export async function POST(request: NextRequest) {
   const ext = ALLOWED_EXTS.has(rawExt) ? rawExt : 'mp4'
 
   // 사용자 네임스페이스 키 (배우 row 생성 전 단계 — intake)
-  const key = `actors/intake/${user.id}/${Date.now()}.${ext}`
+  // Date.now() 단독 사용 시 동일 ms 내 충돌 가능 → 랜덤 suffix 추가
+  const rand = Math.random().toString(36).slice(2, 8)
+  const key = `actors/intake/${user.id}/${Date.now()}-${rand}.${ext}`
 
   try {
     const uploadUrl = await getUploadUrl(key, contentType)

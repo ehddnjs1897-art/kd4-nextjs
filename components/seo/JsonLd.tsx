@@ -15,8 +15,8 @@ import {
   buildEducationalOrganization,
   buildPersonDongwon,
 } from '@/lib/seo-schemas'
-
-const SITE_URL = 'https://kd4.club'
+import { SITE_URL } from '@/lib/constants'
+import { serializeJsonLd } from '@/lib/seo'
 
 /** LocalBusiness + PerformingArtsTheater — 실제 매장 위치 */
 function getLocalBusinessSchema() {
@@ -127,31 +127,31 @@ export default function JsonLd({ faqItems }: JsonLdProps) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organization) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(organization) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(school) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(school) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(dongwon) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(dongwon) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusiness) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(localBusiness) }}
       />
       {faqItems && faqItems.length > 0 && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(getFaqSchema(faqItems)) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(getFaqSchema(faqItems)) }}
         />
       )}
       {courses.map((course, i) => (
         <script
           key={i}
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(course) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(course) }}
         />
       ))}
     </>

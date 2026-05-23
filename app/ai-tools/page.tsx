@@ -250,8 +250,10 @@ export default function AIToolsPage() {
               )}
 
               <button
+                type="button"
                 onClick={handleAnalyze}
                 disabled={loading}
+                aria-busy={loading}
                 style={loading ? { ...s.btnPrimary, ...s.btnDisabled } : s.btnPrimary}
               >
                 {loading ? '분석 중...' : '분석하기'}

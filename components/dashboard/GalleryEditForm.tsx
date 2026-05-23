@@ -678,9 +678,9 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       <section style={s.section}>
         <p style={s.sectionTitle}>Photos</p>
         <div style={s.photoGrid}>
-          {photos.map(p => (
+          {photos.map((p, idx) => (
             <div key={p.id} style={s.photoCard}>
-              <Image src={p.url} alt="배우 사진" fill style={{ objectFit: 'cover' }} sizes="160px" />
+              <Image src={p.url} alt={p.is_profile ? '대표 프로필 사진' : `배우 사진 ${idx + 1}`} fill style={{ objectFit: 'cover' }} sizes="160px" />
               {p.is_profile && <span style={s.profileBadge}>대표</span>}
               <div style={s.photoActions}>
                 {confirmingPhotoId === p.id ? (
@@ -809,7 +809,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
             </div>
             {filmography.map((f, i) => (
               <div key={f.id || i} style={s.filmRow}>
-                <select value={f.category} onChange={e => updateFilm(i, 'category', e.target.value)} style={{ ...s.input, padding: '8px 10px' }}>
+                <select aria-label={`필모그래피 ${i + 1}번 구분`} value={f.category} onChange={e => updateFilm(i, 'category', e.target.value)} style={{ ...s.input, padding: '8px 10px' }}>
                   <option value="drama">드라마</option>
                   <option value="film">영화</option>
                   <option value="cf">CF</option>
@@ -817,9 +817,9 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                   <option value="musical">뮤지컬</option>
                   <option value="etc">기타</option>
                 </select>
-                <input type="number" value={f.year} onChange={e => updateFilm(i, 'year', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} />
-                <input value={f.title} onChange={e => updateFilm(i, 'title', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} placeholder="작품명" />
-                <input value={f.role} onChange={e => updateFilm(i, 'role', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} placeholder="배역" />
+                <input aria-label={`필모그래피 ${i + 1}번 연도`} type="number" value={f.year} onChange={e => updateFilm(i, 'year', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} />
+                <input aria-label={`필모그래피 ${i + 1}번 작품명`} value={f.title} onChange={e => updateFilm(i, 'title', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} placeholder="작품명" />
+                <input aria-label={`필모그래피 ${i + 1}번 배역`} value={f.role} onChange={e => updateFilm(i, 'role', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} placeholder="배역" />
                 {confirmingFilmIdx === i ? (
                   <div style={{ display: 'flex', gap: 5 }}>
                     <button type="button" onClick={() => setConfirmingFilmIdx(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 36 }}>취소</button>
