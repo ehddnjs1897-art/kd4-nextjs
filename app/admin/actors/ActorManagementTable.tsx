@@ -125,6 +125,7 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
       {/* 테이블 */}
       <div style={{ overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
+          <caption className="sr-only">배우 목록</caption>
           <thead>
             <tr style={{ borderBottom: '1px solid var(--border)' }}>
               {['이름', '사진', '영상', 'PPTX', '필모', '상태', ''].map(h => (

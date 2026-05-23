@@ -287,6 +287,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
             <h2 style={s.sectionTitle}>회원 목록 ({localProfiles.length}명)</h2>
             <div style={s.tableWrapper}>
               <table style={s.table}>
+                <caption className="sr-only">회원 목록</caption>
                 <thead>
                   <tr>
                     {['이름', '이메일', '역할', '가입일', '배우 연결', '역할 변경'].map((h) => (
@@ -345,6 +346,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
             <h2 style={s.sectionTitle}>배우 목록 ({localActors.length}명)</h2>
             <div style={s.tableWrapper}>
               <table style={s.table}>
+                <caption className="sr-only">배우 목록</caption>
                 <thead>
                   <tr>
                     {['이름', '성별', '연령대', '공개 여부', '공개 토글'].map((h) => (
@@ -390,6 +392,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
             <h2 style={s.sectionTitle}>최근 게시글 ({localPosts.length}개)</h2>
             <div style={s.tableWrapper}>
               <table style={s.table}>
+                <caption className="sr-only">최근 게시글</caption>
                 <thead>
                   <tr>
                     {['제목', '작성자', '카테고리', '작성일', '삭제'].map((h) => (
@@ -443,6 +446,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
             <h2 style={s.sectionTitle}>수강신청 목록 ({localApplications.length}건)</h2>
             <div style={s.tableWrapper}>
               <table style={s.table}>
+                <caption className="sr-only">수강신청 목록</caption>
                 <thead>
                   <tr>
                     {['이름', '이메일', '연락처', '클래스', '상태', '신청일', '상태 변경'].map((h) => (

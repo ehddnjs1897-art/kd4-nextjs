@@ -142,6 +142,7 @@ export default function UsersManagementTable({ profiles: initialProfiles }: Prop
       {/* 테이블 */}
       <div style={{ overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.83rem' }}>
+          <caption className="sr-only">회원 목록</caption>
           <thead>
             <tr style={{ borderBottom: '1px solid var(--border)' }}>
               {['이름', '이메일', '역할', '배우 연결', '가입일'].map(h => (
