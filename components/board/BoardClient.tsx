@@ -198,7 +198,7 @@ export default function BoardClient({
 
       {/* 검색 인풋 */}
       <div style={{ marginBottom: '16px', position: 'relative' }}>
-        <span style={{
+        <span aria-hidden="true" style={{
           position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)',
           color: 'var(--gray)', fontSize: '0.9rem', pointerEvents: 'none',
         }}>🔍</span>

@@ -79,6 +79,7 @@ const styles: Record<string, React.CSSProperties> = {
     border: 'none',
     borderRadius: 8,
     padding: '12px 16px',
+    minHeight: 44,
     fontSize: '0.9rem',
     fontWeight: 800,
     fontFamily: 'var(--font-display)',

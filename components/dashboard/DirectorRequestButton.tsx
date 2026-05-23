@@ -39,9 +39,9 @@ export default function DirectorRequestButton() {
         border: '1px solid rgba(240,173,78,0.2)',
         borderRadius: 6,
         fontSize: '0.82rem',
-        color: '#f0ad4e',
+        color: 'var(--navy)',
       }}>
-        <span>⏳</span>
+        <span aria-hidden="true">⏳</span>
         <span>신청이 접수되었습니다. 관리자 승인 후 배우 연락처를 열람할 수 있습니다.</span>
       </div>
     )
@@ -74,6 +74,7 @@ export default function DirectorRequestButton() {
           border: 'none',
           borderRadius: 6,
           padding: '11px 0',
+          minHeight: 44,
           fontSize: '0.88rem',
           fontWeight: 700,
           fontFamily: 'var(--font-display)',

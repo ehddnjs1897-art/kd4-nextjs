@@ -417,6 +417,7 @@ export default function JoinForm() {
                   justifyContent: 'center',
                   fontSize: '2.4rem',
                 }}
+                aria-hidden="true"
               >
                 🎬
               </div>
@@ -466,6 +467,7 @@ export default function JoinForm() {
                   justifyContent: 'center',
                   fontSize: '2.4rem',
                 }}
+                aria-hidden="true"
               >
                 🎭
               </div>
@@ -515,6 +517,7 @@ export default function JoinForm() {
                   justifyContent: 'center',
                   fontSize: '2.4rem',
                 }}
+                aria-hidden="true"
               >
                 💬
               </div>
@@ -550,6 +553,8 @@ export default function JoinForm() {
       {/* 이름 */}
       <input
         aria-label="이름"
+        aria-invalid={!!error}
+        aria-describedby="join-form-error"
         type="text"
         placeholder="이름 *"
         value={name}
@@ -565,6 +570,8 @@ export default function JoinForm() {
       {/* 연락처 */}
       <input
         aria-label="연락처"
+        aria-invalid={!!error}
+        aria-describedby="join-form-error"
         type="tel"
         placeholder="연락처 * 010-0000-0000"
         value={phone}
@@ -580,6 +587,8 @@ export default function JoinForm() {
       {/* 이메일 — 필수 (2026-05-20: 대표 지시로 필수 복귀) */}
       <input
         aria-label="이메일"
+        aria-invalid={!!error}
+        aria-describedby="join-form-error"
         type="email"
         placeholder="이메일 *"
         value={email}
@@ -761,7 +770,7 @@ export default function JoinForm() {
 
       {/* 에러 — 조건부 렌더링으로 DOM 삽입 시 자동 AT 공지 (role="alert"은 항상 존재 시 첫 공지 누락) */}
       {error && (
-        <p role="alert" style={{ color: '#b91c1c', fontSize: '0.85rem', margin: 0 }}>
+        <p id="join-form-error" role="alert" style={{ color: '#b91c1c', fontSize: '0.85rem', margin: 0 }}>
           {error}
         </p>
       )}

@@ -177,7 +177,7 @@ export default async function DashboardPage() {
                   </p>
                 )}
                 <Link href="/dashboard/edit" style={tileBtn}>
-                  <span style={tileIcon}>✏️</span>
+                  <span style={tileIcon} aria-hidden="true">✏️</span>
                   <span>프로필 관리</span>
                 </Link>
               </div>
@@ -189,7 +189,7 @@ export default async function DashboardPage() {
                 <div style={{
                   padding: '10px 14px', borderRadius: 6,
                   background: 'rgba(196,165,90,0.06)', border: '1px solid rgba(196,165,90,0.18)',
-                  fontSize: '0.78rem', color: 'rgba(196,165,90,0.8)', lineHeight: 1.7,
+                  fontSize: '0.78rem', color: 'var(--navy)', lineHeight: 1.7,
                 }}>
                   <span aria-hidden="true">📌</span> 기존 KD4 멤버라면 — 가입 시 KD4에 등록된 전화번호와 동일하게 입력해야 프로필이 자동 연결됩니다.
                   전화번호를 수정하려면 내 정보 &gt; 전화번호를 변경해 주세요.
@@ -215,15 +215,15 @@ export default async function DashboardPage() {
             <h2 style={sectionTitle}>KD4 크루</h2>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
               <Link href="/actors" style={tileBtn}>
-                <span style={tileIcon}>🎬</span>
+                <span style={tileIcon} aria-hidden="true">🎬</span>
                 <span>배우 DB</span>
               </Link>
               <Link href="/board" style={tileBtn}>
-                <span style={tileIcon}>💬</span>
+                <span style={tileIcon} aria-hidden="true">💬</span>
                 <span>커뮤니티</span>
               </Link>
               <Link href="/ai-tools" style={tileBtn}>
-                <span style={tileIcon}>🤖</span>
+                <span style={tileIcon} aria-hidden="true">🤖</span>
                 <span>대본 분석</span>
               </Link>
             </div>
@@ -255,7 +255,7 @@ export default async function DashboardPage() {
         {isDirectorPending && (
           <section aria-label="디렉터 승인 대기 중" style={{ ...card, borderColor: 'rgba(240,173,78,0.3)' }}>
             <h2 style={{ ...sectionTitle, color: '#f0ad4e' }}>디렉터 승인 대기 중</h2>
-            <div style={pendingBadge}>⏳ 관리자 승인 검토 중입니다</div>
+            <div style={pendingBadge}><span aria-hidden="true">⏳</span> 관리자 승인 검토 중입니다</div>
           </section>
         )}
 
@@ -274,7 +274,7 @@ export default async function DashboardPage() {
         {isCrewPending && (
           <section aria-label="KD4 크루 신청 대기 중" style={card}>
             <h2 style={{ ...sectionTitle, color: '#f0ad4e' }}>KD4 크루 신청 대기 중</h2>
-            <div style={pendingBadge}>⏳ 관리자 승인 검토 중입니다</div>
+            <div style={pendingBadge}><span aria-hidden="true">⏳</span> 관리자 승인 검토 중입니다</div>
           </section>
         )}
 

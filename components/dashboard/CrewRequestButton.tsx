@@ -39,7 +39,7 @@ export default function CrewRequestButton() {
         border: '1px solid rgba(74,158,255,0.2)',
         borderRadius: 6,
         fontSize: '0.82rem',
-        color: '#7ab8ff',
+        color: 'var(--navy)',
       }}>
         <span>✓</span>
         <span>신청이 접수되었습니다. 관리자 승인 후 이용 가능합니다.</span>
@@ -74,6 +74,7 @@ export default function CrewRequestButton() {
           border: 'none',
           borderRadius: 6,
           padding: '11px 0',
+          minHeight: 44,
           fontSize: '0.88rem',
           fontWeight: 700,
           fontFamily: 'var(--font-display)',
