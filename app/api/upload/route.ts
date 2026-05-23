@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const file = formData.get('file')
-    const actorId = formData.get('actorId')
+    const actorId = targetActorId  // 이미 UUID 검증됨 (line 79)
     const rawBucket = (formData.get('bucket') as string | null) ?? DEFAULT_BUCKET
     const bucket = ALLOWED_BUCKETS.has(rawBucket) ? rawBucket : DEFAULT_BUCKET
 
@@ -153,7 +153,7 @@ export async function POST(request: NextRequest) {
     }
 
     // ── Storage 업로드 ──
-    const result = await uploadFile(file, bucket, actorId, file.name)
+    const result = await uploadFile(file, bucket, actorId, file.name.slice(0, 200))
 
     // ── sort_order 계산 (기존 최대값 + 1 — 항상 0으로 삽입하면 순서 충돌 가능) ──
     const { data: maxRow } = await supabaseAdmin

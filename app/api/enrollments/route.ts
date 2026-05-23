@@ -68,8 +68,14 @@ export async function POST(request: Request) {
   if (ymYear < 2020 || ymYear > new Date().getFullYear() + 2) {
     return NextResponse.json({ error: '수강 연도가 유효하지 않습니다.' }, { status: 400 })
   }
-  if (phone && !/^01[0-9][\-\s]?\d{3,4}[\-\s]?\d{4}$/.test(phone.replace(/\s/g, ''))) {
-    return NextResponse.json({ error: '연락처 형식이 올바르지 않습니다. (예: 010-1234-5678)' }, { status: 400 })
+  if (phone) {
+    // 길이 선가드 — 대용량 문자열에 .replace() 실행 방지
+    if (typeof phone !== 'string' || phone.length > 30) {
+      return NextResponse.json({ error: '연락처 형식이 올바르지 않습니다. (예: 010-1234-5678)' }, { status: 400 })
+    }
+    if (!/^01[0-9][\-\s]?\d{3,4}[\-\s]?\d{4}$/.test(phone.replace(/\s/g, ''))) {
+      return NextResponse.json({ error: '연락처 형식이 올바르지 않습니다. (예: 010-1234-5678)' }, { status: 400 })
+    }
   }
 
   try {
