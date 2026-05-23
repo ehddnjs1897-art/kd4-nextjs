@@ -359,7 +359,7 @@ export default function HomePage() {
               letterSpacing: "0.05em",
             }}
           >
-            <span style={{ display: "block", color: "#111111", fontSize: "0.85em", opacity: 0.75 }}>Actor Accelerating System</span>
+            <span style={{ display: "block", color: "#111111", fontSize: "0.85em", opacity: 0.75 }} lang="en">Actor Accelerating System</span>
             연기하지 않는 연기
           </p>
         </div>
@@ -746,7 +746,7 @@ export default function HomePage() {
                         marginBottom: "16px",
                       }}
                     >
-                      {s.step}
+                      <span lang="en">{s.step}</span>
                     </p>
 
                     {/* 이모지 아이콘 */}

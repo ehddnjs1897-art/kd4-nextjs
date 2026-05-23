@@ -648,7 +648,7 @@ export default function JoinPage() {
                         textTransform: 'uppercase',
                       }}
                     >
-                      {s.step}
+                      <span lang="en">{s.step}</span>
                     </p>
 
                     {/* 아이콘 */}
@@ -812,7 +812,7 @@ export default function JoinPage() {
                 <div className="class-card-header">
                   <p className="class-step">{cls.step}</p>
                   <p className="class-name-ko">{cls.nameKo}</p>
-                  <p className="class-name-en">{cls.nameEn}</p>
+                  <p className="class-name-en" lang="en">{cls.nameEn}</p>
                 </div>
                 <div className="class-card-body">
                   {cls.quote && <p className="class-quote">{cls.quote}</p>}
@@ -978,6 +978,7 @@ export default function JoinPage() {
                   </p>
                   {isNew && (
                     <span
+                      lang="en"
                       style={{
                         fontFamily: 'var(--font-display)',
                         fontSize: '0.75rem',
@@ -1579,7 +1580,7 @@ export default function JoinPage() {
                 marginBottom: '4px',
               }}
             >
-              KD4 ACTING STUDIO
+              <span lang="en">KD4 ACTING STUDIO</span>
             </p>
             <p
               style={{
