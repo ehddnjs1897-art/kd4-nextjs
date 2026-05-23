@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   description:
     'KD4 액팅 스튜디오 × 리플레이 공식 제휴 — 배우 프로필 투어 서비스. KD4 멤버 전용 혜택: 40장 3만원 (일반가 4만원, 25% 할인).',
   robots: { index: false, follow: false },
+  alternates: { canonical: `${SITE_URL}/benefits/replay` },
   openGraph: {
     type: 'website',
     url: `${SITE_URL}/benefits/replay`,

@@ -245,11 +245,12 @@ export default function SignupPage() {
 
         {error && <div id="signup-error" style={styles.errorBox} role="alert" aria-live="assertive">{error}</div>}
 
+        <p className="sr-only">별표(*)는 필수 항목입니다</p>
         <form onSubmit={handleSignup} style={styles.form}>
           {/* 이름 */}
           <div style={styles.fieldGroup}>
             <label htmlFor="name" style={styles.label}>
-              이름 <span style={styles.required}>*</span>
+              이름 <span aria-hidden="true" style={styles.required}>*</span>
             </label>
             <input
               id="name"
@@ -270,7 +271,7 @@ export default function SignupPage() {
           {/* 이메일 */}
           <div style={styles.fieldGroup}>
             <label htmlFor="email" style={styles.label}>
-              이메일 <span style={styles.required}>*</span>
+              이메일 <span aria-hidden="true" style={styles.required}>*</span>
             </label>
             <input
               id="email"
@@ -291,7 +292,7 @@ export default function SignupPage() {
           {/* 비밀번호 */}
           <div style={styles.fieldGroup}>
             <label htmlFor="password" style={styles.label}>
-              비밀번호 <span style={styles.required}>*</span>
+              비밀번호 <span aria-hidden="true" style={styles.required}>*</span>
             </label>
             <span id="password-hint" className="sr-only">8자 이상 입력해주세요</span>
             <input
@@ -313,7 +314,7 @@ export default function SignupPage() {
           {/* 비밀번호 확인 */}
           <div style={styles.fieldGroup}>
             <label htmlFor="passwordConfirm" style={styles.label}>
-              비밀번호 확인 <span style={styles.required}>*</span>
+              비밀번호 확인 <span aria-hidden="true" style={styles.required}>*</span>
             </label>
             <input
               id="passwordConfirm"
@@ -347,7 +348,7 @@ export default function SignupPage() {
           {memberType === 'actor' && (
             <div style={styles.fieldGroup}>
               <label htmlFor="phone" style={styles.label}>
-                전화번호 <span style={styles.required}>*</span>
+                전화번호 <span aria-hidden="true" style={styles.required}>*</span>
               </label>
               <input
                 id="phone"

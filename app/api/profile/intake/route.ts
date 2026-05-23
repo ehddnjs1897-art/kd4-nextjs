@@ -127,9 +127,12 @@ export async function POST(request: NextRequest) {
   }
 
   // 파일 경로 네임스페이스 검증 — 다른 사용자 파일 탈취 방지 (IDOR + 경로 탐색 방어)
-  // '..' 세그먼트로 다른 사용자 네임스페이스로 이동하는 것을 차단
-  const hasPathTraversal = (path: string) =>
-    path.split('/').some(seg => seg === '..' || seg === '.')
+  // '%2e%2e' 등 퍼센트 인코딩 우회 방지를 위해 decodeURIComponent 후 검사
+  const hasPathTraversal = (path: string) => {
+    let decoded = path
+    try { decoded = decodeURIComponent(path) } catch { /* 디코딩 실패 시 원본 사용 */ }
+    return decoded.split('/').some(seg => seg === '..' || seg === '.')
+  }
 
   // R2 video keys: presigned URL 발급 시 actors/intake/{user.id}/... 패턴으로만 발급됨
   const allowedVideoPrefix = `actors/intake/${user.id}/`

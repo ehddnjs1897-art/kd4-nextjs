@@ -16,7 +16,8 @@ export default function ConditionalShell({
   const pathname = usePathname()
   const isClean = CLEAN_ROUTES.some((r) => pathname.startsWith(r))
 
-  if (isClean) return <>{children}</>
+  // /join, /game 등 클린 라우트도 <main> 랜드마크 필요 (WCAG 2.4.1)
+  if (isClean) return <main id="main-content">{children}</main>
 
   return (
     <>
