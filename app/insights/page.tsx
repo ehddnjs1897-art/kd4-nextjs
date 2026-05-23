@@ -363,14 +363,15 @@ export default function InsightsPage() {
                 )}
                 <div style={{ padding: 14 }}>
                   <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8, position: 'relative' }}>
-                    <span
+                    <button
+                      type="button"
                       className="ins-tag"
                       onClick={() => setEditingCategoryId(editingCategoryId === insight.id ? null : insight.id)}
-                      style={{ cursor: 'pointer', borderBottom: '1px dashed var(--gray)' }}
-                      title="클릭해서 카테고리 변경"
+                      aria-label={`카테고리 변경: ${insight.category ?? '기타'}`}
+                      style={{ cursor: 'pointer', borderBottom: '1px dashed var(--gray)', background: 'none', border: 'none', padding: 0, font: 'inherit' }}
                     >
                       {insight.category ?? '기타'} ▾
-                    </span>
+                    </button>
                     {editingCategoryId === insight.id && (
                       <div style={{
                         position: 'absolute', top: '100%', left: 0, zIndex: 10,

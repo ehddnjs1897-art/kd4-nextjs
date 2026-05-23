@@ -72,6 +72,8 @@ export default function YouTubeFacade({ videoId, title, allow, containerStyle }:
         src={`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`}
         alt={title}
         loading="lazy"
+        width={480}
+        height={270}
         style={{ ...fillStyle, objectFit: 'cover' }}
       />
       <button
