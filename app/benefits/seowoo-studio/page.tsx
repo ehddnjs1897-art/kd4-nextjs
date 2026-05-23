@@ -3,6 +3,9 @@ import type { ReactNode } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import SeowooCarousel from '@/components/seowoo/SeowooCarousel'
+import PageJsonLd from '@/components/seo/PageJsonLd'
+import { buildBreadcrumb } from '@/lib/seo-schemas'
+import { SITE_URL } from '@/lib/constants'
 
 export const metadata: Metadata = {
   title: '서우스튜디오 프로필 촬영 제휴 | KD4 액팅 스튜디오',
@@ -131,6 +134,11 @@ export default function SeowooPartnershipPage() {
         paddingTop: '64px',
       }}
     >
+      <PageJsonLd schemas={[buildBreadcrumb([
+        { name: '홈', url: SITE_URL },
+        { name: '멤버 혜택', url: `${SITE_URL}/benefits` },
+        { name: '서우스튜디오', url: `${SITE_URL}/benefits/seowoo-studio` },
+      ])]} />
       {/* HERO */}
       <section
         style={{

@@ -144,7 +144,7 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
                         }}
                       >{s}</button>
                     ))}
-                    <button onClick={() => setEditingStatusId(null)} style={{ padding: '3px 6px', borderRadius: 4, border: '1px solid #e4ddd3', background: '#fff', fontSize: '0.72rem', cursor: 'pointer', fontFamily: 'inherit' }}>✕</button>
+                    <button onClick={() => setEditingStatusId(null)} aria-label="닫기" style={{ padding: '3px 6px', borderRadius: 4, border: '1px solid #e4ddd3', background: '#fff', fontSize: '0.72rem', cursor: 'pointer', fontFamily: 'inherit' }}>✕</button>
                   </div>
                 ) : (
                   <button

@@ -3,6 +3,8 @@ import { createClient } from '@/lib/supabase/server'
 import BoardClient from '@/components/board/BoardClient'
 import PublicLanding from '@/components/board/PublicLanding'
 import { SITE_URL } from '@/lib/constants'
+import PageJsonLd from '@/components/seo/PageJsonLd'
+import { buildBreadcrumb } from '@/lib/seo-schemas'
 
 const BOARD_URL = `${SITE_URL}/board`
 
@@ -67,6 +69,10 @@ export default async function BoardPage({ searchParams }: { searchParams: Search
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '80px 0 120px' }}>
+      <PageJsonLd schemas={[buildBreadcrumb([
+        { name: '홈', url: SITE_URL },
+        { name: '커뮤니티', url: `${SITE_URL}/board` },
+      ])]} />
       <div className="container">
         {/* 헤더 */}
         <div style={{ marginBottom: '48px' }}>

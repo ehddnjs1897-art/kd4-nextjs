@@ -9,6 +9,8 @@ import ActorsSearchGrid from '@/components/actors/ActorsSearchGrid'
 import { canViewActorDb } from '@/lib/access'
 import type { UserRole } from '@/lib/types'
 import { SITE_URL } from '@/lib/constants'
+import PageJsonLd from '@/components/seo/PageJsonLd'
+import { buildBreadcrumb } from '@/lib/seo-schemas'
 
 export const metadata: Metadata = {
   title: '배우 DB | KD4 액팅 스튜디오',
@@ -203,6 +205,10 @@ export default async function ActorsPage({ searchParams }: PageProps) {
 
   return (
     <div style={styles.page}>
+      <PageJsonLd schemas={[buildBreadcrumb([
+        { name: '홈', url: SITE_URL },
+        { name: '배우 DB', url: `${SITE_URL}/actors` },
+      ])]} />
       <style>{`
         @media (max-width: 640px) {
           .actors-grid { grid-template-columns: 1fr !important; }

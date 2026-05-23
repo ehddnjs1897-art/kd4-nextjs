@@ -218,7 +218,7 @@ export default function OnboardingForm({
           <strong>.pptx 형식</strong>만 가능, 10MB 이하. PDF는 PowerPoint에서 .pptx로 변환 후 올려주세요.
         </p>
         <input ref={pptRef} type="file" accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation" disabled={loading} onChange={e => pickPpt(e.target.files?.[0] ?? null)} style={{ display: 'none' }} />
-        <button onClick={() => pptRef.current?.click()} disabled={loading} style={fileBtn}>
+        <button type="button" onClick={() => pptRef.current?.click()} disabled={loading} style={fileBtn}>
           {ppt ? `📄 ${ppt.name} (${(ppt.size / MB).toFixed(1)}MB) — 변경` : '📄 파일 선택'}
         </button>
         {ppt && <p style={picked}>✓ {ppt.name} 선택됨</p>}
@@ -232,7 +232,7 @@ export default function OnboardingForm({
           카카오톡 공유용 <strong>가로(16:9·4:3)</strong> 사진을 1장 이상 포함해 주세요.
         </p>
         <input ref={photosRef} type="file" accept="image/*" multiple disabled={loading} onChange={e => pickPhotos(e.target.files)} style={{ display: 'none' }} />
-        <button onClick={() => photosRef.current?.click()} disabled={loading} style={fileBtn}>
+        <button type="button" onClick={() => photosRef.current?.click()} disabled={loading} style={fileBtn}>
           {photos.length > 0 ? `🖼 ${photos.length}장 선택됨 — 변경` : '🖼 사진 선택'}
         </button>
         {photos.length > 0 && (
@@ -251,7 +251,7 @@ export default function OnboardingForm({
             {CURRENT_PHOTO_LABELS.map((label, idx) => (
               <div key={label}>
                 <input ref={currentPhotoRefs[idx]} type="file" accept="image/*" disabled={loading} onChange={e => pickCurrentPhoto(idx, e.target.files?.[0] ?? null)} style={{ display: 'none' }} />
-                <button onClick={() => currentPhotoRefs[idx].current?.click()} disabled={loading} style={{ ...fileBtn, fontSize: '0.78rem', padding: '8px 14px' }}>
+                <button type="button" onClick={() => currentPhotoRefs[idx].current?.click()} disabled={loading} style={{ ...fileBtn, fontSize: '0.78rem', padding: '8px 14px' }}>
                   {currentPhotos[idx] ? `✓ ${label}` : `${label} 선택`}
                 </button>
                 {currentPhotos[idx] && (
@@ -273,7 +273,7 @@ export default function OnboardingForm({
           {[0, 1, 2].map(idx => (
             <div key={idx}>
               <input ref={videoRefs[idx]} type="file" accept="video/*" disabled={loading} onChange={e => pickVideo(idx, e.target.files?.[0] ?? null)} style={{ display: 'none' }} />
-              <button onClick={() => videoRefs[idx].current?.click()} disabled={loading} style={{ ...fileBtn, width: '100%', justifyContent: 'flex-start' }}>
+              <button type="button" onClick={() => videoRefs[idx].current?.click()} disabled={loading} style={{ ...fileBtn, width: '100%', justifyContent: 'flex-start' }}>
                 {videos[idx]
                   ? `🎬 ${idx === 2 ? '전략적 독백' : `출연영상 ${idx + 1}`}: ${videos[idx]!.name} (${(videos[idx]!.size / MB).toFixed(0)}MB) — 변경`
                   : `🎬 ${idx === 2 ? '전략적 독백 (선택)' : `출연영상 ${idx + 1}${idx > 0 ? ' (선택)' : ''}`} 선택`}

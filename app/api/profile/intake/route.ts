@@ -31,6 +31,11 @@ function photoPublicUrl(path: string): string {
 
 export const runtime = 'nodejs'
 
+// 인메모리 중복 제출 방지 — actor_id 없는 사용자가 동시에 여러 POST를 보내면
+// 두 개의 actor row가 생길 수 있다. 60초 쿨다운으로 동일 인스턴스 내 race 방어.
+const intakeCooldowns = new Map<string, number>()
+const INTAKE_COOLDOWN_MS = 60_000
+
 export async function POST(request: NextRequest) {
   // SUPABASE_URL 없으면 사진 URL이 빈 경로로 DB에 저장되어 이미지가 전부 깨짐
   if (!SUPABASE_URL) {
@@ -44,6 +49,13 @@ export async function POST(request: NextRequest) {
   if (!user) {
     return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   }
+
+  // 동일 사용자 60초 내 중복 제출 차단 (actor row 중복 생성 race 방어)
+  const lastIntake = intakeCooldowns.get(user.id) ?? 0
+  if (Date.now() - lastIntake < INTAKE_COOLDOWN_MS) {
+    return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+  }
+  intakeCooldowns.set(user.id, Date.now())
 
   const body = await request.json().catch(() => null)
   // 최대 길이 상수

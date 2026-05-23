@@ -3,7 +3,7 @@
  * 로그인한 사용자의 이름·전화번호 수정
  *
  * 이름/전화번호 변경 후 actor_id 없는 사용자 → 자동 재매칭 시도
- * (KD4 배우가 가입 시 잘못된 전화번호를 입력했다가 수정한 경우를 커버)
+ * (KD4 멤버가 가입 시 잘못된 전화번호를 입력했다가 수정한 경우를 커버)
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
