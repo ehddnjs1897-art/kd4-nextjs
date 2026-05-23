@@ -175,6 +175,7 @@ export default function SignupPage() {
 
           <button
             type="button"
+            aria-label="다음 단계로"
             style={styles.btnPrimary}
             onClick={() => setStep('form')}
           >

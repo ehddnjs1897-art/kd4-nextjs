@@ -402,6 +402,16 @@ export default function HeroScene() {
         cancelAnimationFrame(animFrameId);
         window.removeEventListener("resize", onResize);
         observer.disconnect();
+        // 지오메트리·머테리얼·텍스처 GPU 메모리 해제
+        scene.traverse((obj) => {
+          const mesh = obj as THREE.Mesh
+          if (mesh.geometry) mesh.geometry.dispose()
+          if (mesh.material) {
+            const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material]
+            mats.forEach((m: THREE.Material) => m.dispose())
+          }
+        })
+        woodTex.dispose()
         renderer.dispose();
       };
     } catch (err) {

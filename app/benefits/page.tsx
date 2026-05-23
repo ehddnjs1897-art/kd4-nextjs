@@ -154,6 +154,7 @@ export default function BenefitsPage() {
       ])]} />
       {/* HERO */}
       <section
+        aria-label="멤버 혜택 소개"
         style={{
           maxWidth: '900px',
           margin: '0 auto',
@@ -203,7 +204,7 @@ export default function BenefitsPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* 학습 보강 */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
+      <section aria-label="학습 보강 제도" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
         <SectionHeader
           eyebrow="LEARNING SUPPORT"
           title="KD4의 보강제도"
@@ -291,7 +292,7 @@ export default function BenefitsPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* 커리어 지원 */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
+      <section aria-label="커리어 지원 서비스" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
         <SectionHeader
           eyebrow="CAREER SERVICES"
           title="커리어 지원 서비스"
@@ -385,7 +386,7 @@ export default function BenefitsPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* 공식 제휴 */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
+      <section aria-label="공식 제휴 파트너" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
         <SectionHeader
           eyebrow="OFFICIAL PARTNERSHIP"
           title="공식 제휴"
@@ -400,7 +401,7 @@ export default function BenefitsPage() {
             style={{ display: 'flex', alignItems: 'center', gap: 'clamp(16px, 4vw, 24px)', background: '#ffffff', border: '1.5px solid rgba(21,72,138,0.18)', borderRadius: 12, padding: 'clamp(18px, 3vw, 24px)', textDecoration: 'none', position: 'relative', overflow: 'hidden', flexWrap: 'wrap' }}
           >
             <span aria-hidden style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 3, background: 'var(--gold)' }} />
-            <Image src="/partners/seowoo-logo.webp" alt="seowoo studio" width={72} height={72} style={{ borderRadius: 6, flexShrink: 0 }} />
+            <Image src="/partners/seowoo-logo.webp" alt="서우스튜디오 로고" width={72} height={72} style={{ borderRadius: 6, flexShrink: 0 }} />
             <span style={{ display: 'flex', flexDirection: 'column', gap: 5, minWidth: 160, flex: 1 }}>
               <span style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', fontWeight: 700, color: 'var(--white)' }}>배우 프로필 촬영 제휴</span>
               <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 600, color: 'var(--gold)' }}>KD4 멤버 최대 15% 할인</span>
@@ -444,7 +445,7 @@ export default function BenefitsPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* 멤버 커뮤니티 */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
+      <section aria-label="멤버 커뮤니티" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
         <SectionHeader
           eyebrow="COMMUNITY"
           title="멤버 커뮤니티"
@@ -522,7 +523,7 @@ export default function BenefitsPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* 할인 혜택 */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
+      <section aria-label="할인 혜택" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
         <SectionHeader
           eyebrow="DISCOUNTS"
           title="할인 혜택"
@@ -619,6 +620,7 @@ export default function BenefitsPage() {
 
       {/* CTA */}
       <section
+        aria-label="수강 신청 안내"
         style={{
           maxWidth: '720px',
           margin: '0 auto',

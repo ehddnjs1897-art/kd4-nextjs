@@ -76,6 +76,15 @@ interface FilmoEntry {
 
 const UUID_RE_ACTOR = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
+/* ---- 정적 파라미터 — 공개 배우 페이지 빌드 타임 사전 렌더 ---- */
+export async function generateStaticParams() {
+  const { data } = await supabaseAdmin
+    .from('actors')
+    .select('id')
+    .eq('is_public', true)
+  return (data ?? []).map((row: { id: string }) => ({ id: row.id }))
+}
+
 /* ---- 데이터 fetch (admin 클라이언트 — is_public 포함, 페이지에서 접근 제어) ---- */
 function isUndefinedColumnError(err: { code?: string; message?: string } | null): boolean {
   if (!err) return false

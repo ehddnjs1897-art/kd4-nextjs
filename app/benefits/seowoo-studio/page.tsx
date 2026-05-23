@@ -141,6 +141,7 @@ export default function SeowooPartnershipPage() {
       ])]} />
       {/* HERO */}
       <section
+        aria-label="서우스튜디오 제휴 소개"
         style={{
           maxWidth: '900px',
           margin: '0 auto',
@@ -231,7 +232,7 @@ export default function SeowooPartnershipPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* 멤버 전용 할인 */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
+      <section aria-label="KD4 멤버 전용 할인" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
         <SectionHeader
           eyebrow="MEMBER DISCOUNT"
           title="KD4 멤버 전용 할인"
@@ -303,7 +304,7 @@ export default function SeowooPartnershipPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* 이용 안내 */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
+      <section aria-label="이용 안내" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
         <SectionHeader eyebrow="ABOUT" title="이용 안내" />
         <div
           style={{
@@ -362,7 +363,7 @@ export default function SeowooPartnershipPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* 이용 절차 */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
+      <section aria-label="이용 절차" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
         <SectionHeader
           eyebrow="HOW IT WORKS"
           title="이용 절차"
@@ -421,7 +422,7 @@ export default function SeowooPartnershipPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* 포트폴리오 */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
+      <section aria-label="포트폴리오" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
         <SectionHeader
           eyebrow="PORTFOLIO"
           title="포트폴리오"
@@ -448,7 +449,7 @@ export default function SeowooPartnershipPage() {
           >
             <Image
               src="/partners/seowoo-logo.webp"
-              alt="seowoo studio"
+              alt="서우스튜디오 로고"
               width={64}
               height={64}
               style={{ borderRadius: 8, display: 'block' }}
@@ -502,7 +503,7 @@ export default function SeowooPartnershipPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* 촬영 안내 캐러셀 */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
+      <section aria-label="서우스튜디오 촬영 안내" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
         <SectionHeader
           eyebrow="SHOOTING GUIDE"
           title="서우스튜디오 촬영 안내"
@@ -515,6 +516,7 @@ export default function SeowooPartnershipPage() {
 
       {/* 문의하기 */}
       <section
+        aria-label="문의하기"
         style={{
           maxWidth: '720px',
           margin: '0 auto',

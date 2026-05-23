@@ -62,6 +62,11 @@ async function sendMetaCAPI(record: { name?: string | null; phone?: string | nul
   }
 }
 
+// 인메모리 디바운스 — DB count는 비원자적이라 동시 요청 경쟁 조건 발생 가능
+// Vercel Serverless: 인스턴스 재시작 시 초기화되나 단일 인스턴스 내 동시성은 차단
+const notifyPhoneMap = new Map<string, number>()
+const NOTIFY_DEBOUNCE_MS = 4000 // 4초 내 동일 번호 동시 요청 차단
+
 export async function POST(request: NextRequest) {
   try {
     const data = await request.json()
@@ -85,6 +90,13 @@ export async function POST(request: NextRequest) {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailRaw)) {
       return NextResponse.json({ error: '이메일 형식이 올바르지 않습니다.' }, { status: 400 })
     }
+
+    // 인메모리 디바운스 — 동일 번호 동시 요청 중복 차단 (DB count 비원자적 보완)
+    const lastSubmit = notifyPhoneMap.get(phone) ?? 0
+    if (Date.now() - lastSubmit < NOTIFY_DEBOUNCE_MS) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
+    notifyPhoneMap.set(phone, Date.now())
 
     // Rate limit: 동일 연락처로 5분 내 3회 초과 차단 (SMS 비용 폭탄 방지)
     const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString()

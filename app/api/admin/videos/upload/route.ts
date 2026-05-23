@@ -72,6 +72,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '유효하지 않은 actor_id 형식입니다.' }, { status: 400 })
     }
 
+    // 배우 존재 여부 확인 — 고아 R2 파일 방지
+    const { data: actorExists } = await supabaseAdmin
+      .from('actors')
+      .select('id')
+      .eq('id', actorId)
+      .maybeSingle()
+    if (!actorExists) {
+      return NextResponse.json({ error: '존재하지 않는 배우입니다.' }, { status: 404 })
+    }
+
     if (file.size > MAX_SIZE_BYTES) {
       return NextResponse.json(
         { error: `파일이 너무 큽니다. 최대 ${MAX_SIZE_BYTES / 1024 / 1024}MB.` },

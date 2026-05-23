@@ -667,7 +667,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
             </p>
           </div>
         </div>
-        <input ref={pptRef} type="file" accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation" onChange={uploadPpt} style={{ display: 'none' }} />
+        <input ref={pptRef} type="file" accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation" onChange={uploadPpt} style={{ display: 'none' }} aria-hidden="true" />
         <button type="button" onClick={() => pptRef.current?.click()} disabled={pptUploading} style={{ ...s.btn, ...s.btnGhost, opacity: pptUploading ? 0.6 : 1 }}>
           {pptUploading ? '업로드 중…' : hasPpt ? '📄 파일 교체' : '📄 파일 올리기'}
         </button>
@@ -706,7 +706,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         </div>
 
         <div style={{ marginTop: 20, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
-          <input ref={fileRef} type="file" accept="image/*" onChange={uploadPhoto} style={{ display: 'none' }} />
+          <input ref={fileRef} type="file" accept="image/*" onChange={uploadPhoto} style={{ display: 'none' }} aria-hidden="true" />
           <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} style={{ ...s.btn, ...s.btnPrimary, opacity: uploading ? 0.6 : 1 }}>
             {uploading ? '업로드 중…' : '+ 사진 추가'}
           </button>
@@ -746,7 +746,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
             </div>
           )}
           <div>
-            <input ref={r2VideoRef} type="file" accept="video/*" onChange={uploadR2Video} style={{ display: 'none' }} />
+            <input ref={r2VideoRef} type="file" accept="video/*" onChange={uploadR2Video} style={{ display: 'none' }} aria-hidden="true" />
             <button type="button" onClick={() => r2VideoRef.current?.click()} disabled={r2Uploading} style={{ ...s.btn, ...s.btnGhost, opacity: r2Uploading ? 0.6 : 1 }}>
               {r2Uploading ? r2UploadStatus || '업로드 중…' : '+ 영상 파일 업로드'}
             </button>

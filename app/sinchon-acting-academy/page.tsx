@@ -64,7 +64,7 @@ export default function SinchonPage() {
       />
 
       {/* ===== HERO ===== */}
-      <section style={{ padding: 'clamp(64px, 11vw, 104px) 24px clamp(48px, 9vw, 80px)', background: 'linear-gradient(160deg, var(--navy-deep) 0%, var(--navy) 60%, #133f78 100%)', color: '#fff', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      <section aria-label="신촌 연기학원 히어로" style={{ padding: 'clamp(64px, 11vw, 104px) 24px clamp(48px, 9vw, 80px)', background: 'linear-gradient(160deg, var(--navy-deep) 0%, var(--navy) 60%, #133f78 100%)', color: '#fff', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         <div aria-hidden style={{ position: 'absolute', top: '-110px', right: '-70px', width: '340px', height: '340px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(199,62,62,0.2), transparent 70%)' }} />
         <div className="container" style={{ position: 'relative' }}>
           <p className="section-eyebrow" style={{ color: '#F0A8A8', marginBottom: '16px' }}>
@@ -88,7 +88,7 @@ export default function SinchonPage() {
       </section>
 
       {/* ===== LOCATION — 약도 메인 ===== */}
-      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
+      <section aria-label="찾아오시는 길" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
             <p className="section-eyebrow">01 — LOCATION</p>
@@ -109,7 +109,7 @@ export default function SinchonPage() {
                 style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '10px' }}
               />
             </div>
-            <ol style={{ display: 'flex', flexDirection: 'column', gap: '14px', listStyle: 'none', padding: 0, margin: 0 }}>
+            <ol role="list" style={{ display: 'flex', flexDirection: 'column', gap: '14px', listStyle: 'none', padding: 0, margin: 0 }}>
               {[
                 { t: '이대역(2호선) 5번 출구', d: '출구로 나와 성산로 방향으로' },
                 { t: '예스APM·가인볼링장 코너', d: '포레스트 공원 옆에서 이화여대1길로 진입' },
@@ -166,7 +166,7 @@ export default function SinchonPage() {
       </section>
 
       {/* ===== FAQ ===== */}
-      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
+      <section aria-label="위치·교통 자주 묻는 질문" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
             <p className="section-eyebrow">FAQ</p>
@@ -177,7 +177,7 @@ export default function SinchonPage() {
       </section>
 
       {/* ===== FORM ===== */}
-      <section id="form" style={{ padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg)' }}>
+      <section id="form" aria-label="무료 상담 신청" style={{ padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '520px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>

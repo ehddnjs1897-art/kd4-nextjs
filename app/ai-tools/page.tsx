@@ -283,10 +283,10 @@ export default function AIToolsPage() {
                 </h2>
               </div>
               <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
-                <button onClick={handleCopy} style={{ ...s.btnReset, color: copied ? 'var(--gold)' : 'var(--gray)', borderColor: copied ? 'var(--gold)' : undefined }}>
+                <button type="button" onClick={handleCopy} style={{ ...s.btnReset, color: copied ? 'var(--gold)' : 'var(--gray)', borderColor: copied ? 'var(--gold)' : undefined }}>
                   {copied ? '✓ 복사됨' : '텍스트 복사'}
                 </button>
-                <button onClick={handleReset} style={s.btnReset}>
+                <button type="button" onClick={handleReset} style={s.btnReset}>
                   분석 초기화
                 </button>
               </div>
@@ -337,6 +337,7 @@ export default function AIToolsPage() {
                   role="tabpanel"
                   id={`tabpanel-${activeTab}`}
                   aria-labelledby={`tab-${activeTab}`}
+                  tabIndex={0}
                 >
                   {/* Uta Hagen */}
                   {activeTab === 'utaHagen' && (

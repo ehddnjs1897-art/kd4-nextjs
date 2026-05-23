@@ -18,6 +18,11 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'img.youtube.com',
       },
+      // Google 사용자 콘텐츠 (Drive 뷰어 리다이렉트 대상)
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+      },
     ],
     formats: ['image/avif', 'image/webp'],
   },
