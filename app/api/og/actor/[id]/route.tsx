@@ -50,8 +50,26 @@ async function fetchActor(id: string): Promise<ActorOg | null> {
   return rows[0] ?? null
 }
 
+/** 외부 URL 허용 도메인 (SSRF 방어 — OG 이미지는 Edge에서 직접 fetch함) */
+function isSafeOgUrl(url: string): boolean {
+  try {
+    const { protocol, hostname } = new URL(url)
+    if (protocol !== 'https:') return false
+    const ALLOWED = [
+      'drive.google.com',
+      'lh3.googleusercontent.com',
+      'i.ytimg.com',
+    ]
+    const supabaseHost = SUPABASE_URL ? new URL(SUPABASE_URL).hostname : null
+    if (supabaseHost && hostname === supabaseHost) return true
+    return ALLOWED.includes(hostname)
+  } catch {
+    return false
+  }
+}
+
 function getPhotoUrl(actor: ActorOg): string | null {
-  if (actor.profile_photo) return actor.profile_photo
+  if (actor.profile_photo && isSafeOgUrl(actor.profile_photo)) return actor.profile_photo
   if (actor.storage_photo_path && SUPABASE_URL) {
     return `${SUPABASE_URL}/storage/v1/object/public/actor-photos/${actor.storage_photo_path}`
   }

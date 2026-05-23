@@ -96,11 +96,16 @@ export async function PATCH(
       return NextResponse.json({ error: '수정 권한이 없습니다.' }, { status: 403 })
     }
 
-    const body = await request.json()
+    let body: Record<string, unknown>
+    try {
+      body = await request.json()
+    } catch {
+      return NextResponse.json({ error: '요청 형식이 올바르지 않습니다.' }, { status: 400 })
+    }
 
     // 입력값 검증
     const ALLOWED_AGE_GROUPS = new Set(['10대', '20대', '30대', '40대', '50대 이상', null, ''])
-    if ('age_group' in body && !ALLOWED_AGE_GROUPS.has(body.age_group)) {
+    if ('age_group' in body && !ALLOWED_AGE_GROUPS.has(body.age_group as string | null)) {
       return NextResponse.json({ error: '잘못된 나이대입니다.' }, { status: 400 })
     }
     if ('height' in body && body.height !== null) {

@@ -13,8 +13,8 @@ import { sendSMS } from '@/lib/sms'
 
 const ADMIN_PHONE = process.env.ADMIN_PHONE_NUMBER ?? ''
 
-// 이미 신청/승인된 것으로 간주하는 역할 (재신청 방지)
-const ALREADY = ['director_pending', 'director', 'admin', 'crew', 'editor']
+// 이미 신청/승인된 것으로 간주하는 역할 (재신청 방지) — actor/member/crew_pending 포함: 역할 강등 방지
+const ALREADY = ['actor', 'member', 'crew_pending', 'director_pending', 'director', 'admin', 'crew', 'editor']
 
 // 인메모리 레이트 리밋: 같은 userId로 60초 내 재요청 차단 (Race condition + SMS 남용 방어)
 const requestMap = new Map<string, number>()
