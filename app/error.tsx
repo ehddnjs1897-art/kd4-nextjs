@@ -21,7 +21,7 @@ export default function ErrorPage({
   }, [error])
 
   return (
-    <div style={{
+    <div role="main" style={{
       minHeight: '100vh',
       background: 'var(--bg)',
       display: 'flex',

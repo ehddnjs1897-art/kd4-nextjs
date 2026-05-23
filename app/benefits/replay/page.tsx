@@ -85,7 +85,7 @@ export default function ReplayPartnershipPage() {
       ])]} />
 
       {/* HERO */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(56px, 9vw, 104px) 24px clamp(40px, 6vw, 64px)', textAlign: 'center' }}>
+      <section aria-label="KD4 × 리플레이 배우 프로필 투어 소개" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(56px, 9vw, 104px) 24px clamp(40px, 6vw, 64px)', textAlign: 'center' }}>
         <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.75rem', letterSpacing: '0.3em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '28px' }}>
           KD4 OFFICIAL PARTNERSHIP
         </p>
@@ -119,7 +119,7 @@ export default function ReplayPartnershipPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* 멤버 전용 혜택 */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
+      <section aria-label="KD4 멤버 전용 혜택" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
         <SectionHeader eyebrow="MEMBER BENEFIT" title="KD4 멤버 전용 혜택" desc="KD4 멤버는 25% 할인된 가격으로 이용하실 수 있습니다." />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, maxWidth: 520, margin: '0 auto' }}>
           {/* 일반가 */}
@@ -161,7 +161,7 @@ export default function ReplayPartnershipPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* 서비스 안내 */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
+      <section aria-label="서비스 안내" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
         <SectionHeader eyebrow="ABOUT" title="서비스 안내" />
         <div style={{ maxWidth: 640, margin: '0 auto', background: '#ffffff', border: '1px solid var(--border)', borderRadius: 12, overflow: 'hidden' }}>
           {GUIDE.map((g, i) => (
@@ -176,7 +176,7 @@ export default function ReplayPartnershipPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* 이용 절차 */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
+      <section aria-label="이용 절차" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
         <SectionHeader eyebrow="HOW IT WORKS" title="이용 절차" />
         <ol style={{ listStyle: 'none', padding: 0, margin: '0 auto', maxWidth: 560, display: 'flex', flexDirection: 'column', gap: 14 }}>
           {STEPS.map((step, i) => (
@@ -193,7 +193,7 @@ export default function ReplayPartnershipPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* 파일 제출 규격 */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
+      <section aria-label="파일 제출 규격" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 80px) 24px' }}>
         <SectionHeader eyebrow="FILE GUIDE" title="파일 제출 규격" desc="고화질 잡지 출력을 위해 규격을 꼭 지켜주세요." />
         <ul style={{ listStyle: 'none', padding: 0, margin: '0 auto', maxWidth: 560, display: 'flex', flexDirection: 'column', gap: 10 }}>
           {FILE_GUIDE.map((item, i) => (
@@ -208,7 +208,7 @@ export default function ReplayPartnershipPage() {
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
       {/* 하단 CTA */}
-      <section style={{ maxWidth: '720px', margin: '0 auto', padding: 'clamp(56px, 9vw, 96px) 24px clamp(48px, 7vw, 80px)', textAlign: 'center' }}>
+      <section aria-label="프로필 투어 신청하기" style={{ maxWidth: '720px', margin: '0 auto', padding: 'clamp(56px, 9vw, 96px) 24px clamp(48px, 7vw, 80px)', textAlign: 'center' }}>
         <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.4rem, 3.6vw, 1.9rem)', fontWeight: 700, lineHeight: 1.4, margin: '0 0 12px' }}>
           지금 바로 신청하세요
         </h2>

@@ -102,7 +102,7 @@ export default function ReelPage() {
       />
 
       {/* HERO */}
-      <section style={{ padding: 'clamp(72px, 12vw, 110px) 24px clamp(48px, 9vw, 80px)', background: 'linear-gradient(160deg, var(--navy-deep) 0%, var(--navy) 60%, #133f78 100%)', color: '#fff', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      <section aria-label="출연영상 클래스 소개" style={{ padding: 'clamp(72px, 12vw, 110px) 24px clamp(48px, 9vw, 80px)', background: 'linear-gradient(160deg, var(--navy-deep) 0%, var(--navy) 60%, #133f78 100%)', color: '#fff', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         <div aria-hidden style={{ position: 'absolute', bottom: '-100px', left: '-60px', width: '320px', height: '320px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(199,62,62,0.2), transparent 70%)' }} />
         <div className="container" style={{ position: 'relative' }}>
           <p className="section-eyebrow" style={{ color: '#F0A8A8', marginBottom: '16px' }}>
@@ -129,7 +129,7 @@ export default function ReelPage() {
       </section>
 
       {/* WHY REEL */}
-      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
+      <section aria-label="출연영상이 필요한 이유" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
             <p className="section-eyebrow">01 — WHY REEL</p>
@@ -151,7 +151,7 @@ export default function ReelPage() {
       </section>
 
       {/* PORTFOLIO */}
-      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
+      <section aria-label="결과물 샘플 포트폴리오" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
             <p className="section-eyebrow">02 — PORTFOLIO</p>
@@ -173,7 +173,7 @@ export default function ReelPage() {
       </section>
 
       {/* PROCESS */}
-      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
+      <section aria-label="제작 4단계 프로세스" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
             <p className="section-eyebrow">03 — PROCESS</p>
@@ -194,7 +194,7 @@ export default function ReelPage() {
       </section>
 
       {/* CLASS DETAILS */}
-      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
+      <section aria-label="클래스 상세 정보" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
             <p className="section-eyebrow">04 — DETAILS</p>
@@ -230,7 +230,7 @@ export default function ReelPage() {
       </section>
 
       {/* INCLUDES */}
-      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
+      <section aria-label="포함 사항" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
             <p className="section-eyebrow">05 — INCLUDES</p>
@@ -253,7 +253,7 @@ export default function ReelPage() {
       </section>
 
       {/* FAQ */}
-      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
+      <section aria-label="자주 묻는 질문" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
             <p className="section-eyebrow">FAQ</p>
@@ -264,7 +264,7 @@ export default function ReelPage() {
       </section>
 
       {/* FORM */}
-      <section id="form" style={{ padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg)' }}>
+      <section id="form" aria-label="무료 상담 신청" style={{ padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '520px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
@@ -282,7 +282,7 @@ export default function ReelPage() {
       </section>
 
       {/* CROSS-LINK */}
-      <section style={{ padding: '24px', background: 'var(--bg)', textAlign: 'center', borderTop: '1px solid var(--border)' }}>
+      <section aria-label="관련 클래스 바로가기" style={{ padding: '24px', background: 'var(--bg)', textAlign: 'center', borderTop: '1px solid var(--border)' }}>
         <Link href="/meisner-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
           ← 마이즈너 정규 클래스
         </Link>

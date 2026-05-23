@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useRef, useState, useCallback } from 'react'
+import { useRef, useState, useCallback, useEffect } from 'react'
 
 const SLIDES = [
   { src: '/partners/seowoo-guide/01.webp', alt: '첫 프로필, 어떻게 찍어야 할까? — 프로필준비 A to Z' },
@@ -19,15 +19,24 @@ const SLIDES = [
 export default function SeowooCarousel() {
   const trackRef = useRef<HTMLDivElement>(null)
   const [active, setActive] = useState(0)
+  const [smoothScroll, setSmoothScroll] = useState(true)
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    setSmoothScroll(!mq.matches)
+    const handler = (e: MediaQueryListEvent) => setSmoothScroll(!e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
 
   const scrollTo = useCallback((index: number) => {
     const track = trackRef.current
     if (!track) return
     const item = track.children[index] as HTMLElement
     if (!item) return
-    track.scrollTo({ left: item.offsetLeft, behavior: 'smooth' })
+    track.scrollTo({ left: item.offsetLeft, behavior: smoothScroll ? 'smooth' : 'auto' })
     setActive(index)
-  }, [])
+  }, [smoothScroll])
 
   const prev = () => scrollTo(Math.max(0, active - 1))
   const next = () => scrollTo(Math.min(SLIDES.length - 1, active + 1))
@@ -52,7 +61,7 @@ export default function SeowooCarousel() {
           display: 'flex',
           overflowX: 'auto',
           scrollSnapType: 'x mandatory',
-          scrollBehavior: 'smooth',
+          scrollBehavior: smoothScroll ? 'smooth' : 'auto',
           gap: 12,
           borderRadius: 12,
           msOverflowStyle: 'none',
@@ -152,16 +161,29 @@ export default function SeowooCarousel() {
             aria-label={`${i + 1}번 슬라이드`}
             aria-current={i === active ? 'true' : undefined}
             style={{
-              width: i === active ? 20 : 6,
-              height: 6,
-              borderRadius: 3,
-              background: i === active ? 'var(--gold)' : 'var(--border)',
+              minWidth: 24,
+              minHeight: 24,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'none',
               border: 'none',
               cursor: 'pointer',
               padding: 0,
-              transition: 'width 0.2s, background 0.2s',
             }}
-          />
+          >
+            <span
+              style={{
+                display: 'block',
+                width: i === active ? 20 : 6,
+                height: 6,
+                borderRadius: 3,
+                background: i === active ? 'var(--gold)' : 'var(--border)',
+                transition: 'width 0.2s, background 0.2s',
+                flexShrink: 0,
+              }}
+            />
+          </button>
         ))}
       </div>
 

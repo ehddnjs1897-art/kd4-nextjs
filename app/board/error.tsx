@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import Link from 'next/link'
 
 export default function BoardError({
   error,
@@ -59,6 +60,18 @@ export default function BoardError({
         >
           다시 시도
         </button>
+        <div style={{ marginTop: 10 }}>
+          <Link
+            href="/board"
+            style={{
+              color: 'var(--gray)',
+              fontSize: '0.85rem',
+              textDecoration: 'none',
+            }}
+          >
+            게시판으로
+          </Link>
+        </div>
       </div>
     </div>
   )
