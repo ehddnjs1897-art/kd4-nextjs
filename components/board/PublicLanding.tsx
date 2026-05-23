@@ -104,7 +104,7 @@ export default function PublicLanding() {
                   gap: 8,
                 }}
               >
-                <div style={{ fontSize: '1.6rem', lineHeight: 1 }}>{f.icon}</div>
+                <div aria-hidden="true" style={{ fontSize: '1.6rem', lineHeight: 1 }}>{f.icon}</div>
                 <h3
                   style={{
                     fontFamily: 'var(--font-sans)',

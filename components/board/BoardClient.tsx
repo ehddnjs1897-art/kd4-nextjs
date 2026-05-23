@@ -226,6 +226,7 @@ export default function BoardClient({
       <div
         role="table"
         aria-label="게시글 목록"
+        aria-rowcount={total}
         style={{
           border: '1px solid var(--border)',
           borderRadius: 'var(--radius)',
@@ -298,6 +299,7 @@ export default function BoardClient({
           <button
             type="button"
             aria-label="게시글 더 보기"
+            aria-busy={loadingMore}
             onClick={handleLoadMore}
             disabled={loadingMore}
             style={{

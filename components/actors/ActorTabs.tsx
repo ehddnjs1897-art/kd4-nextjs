@@ -251,7 +251,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
     <div style={s.root}>
       {/* ============ 프로필 사진 스트립 ============ */}
       {stripPhotos.length > 0 && (
-        <section style={s.section}>
+        <section style={s.section} aria-label={`${actor.name} 프로필 사진`}>
           <div
             style={s.photoStrip}
             onContextMenu={imageProtected ? (e) => e.preventDefault() : undefined}
@@ -638,7 +638,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
       {awardEntries.length > 0 && (
         <section style={s.section}>
           <h2 style={{ ...s.sectionHeading, borderBottomColor: 'var(--accent-red)' }}>
-            <span style={{ ...s.sectionNum, color: 'var(--accent-red)' }}>🏆</span>
+            <span aria-hidden="true" style={{ ...s.sectionNum, color: 'var(--accent-red)' }}>🏆</span>
             <span style={{ ...s.sectionTitle, color: 'var(--accent-red)' }}>AWARD</span>
           </h2>
           <div style={{ overflowX: 'auto' }}>

@@ -61,13 +61,14 @@ export async function GET(
 
     const typedActor = actor as unknown as ActorDetail
 
-    // 연락처 포함 여부에 따라 응답
+    // 연락처 포함 여부에 따라 응답 (Cache-Control: private — 유저별 다른 응답)
+    const cacheHeaders = { 'Cache-Control': 'private, max-age=60, stale-while-revalidate=120' }
     if (!canSeeContact) {
       const { phone: _phone, email: _email, ...safe } = typedActor as Actor & ActorDetail
-      return NextResponse.json({ actor: safe as ActorDetail })
+      return NextResponse.json({ actor: safe as ActorDetail }, { headers: cacheHeaders })
     }
 
-    return NextResponse.json({ actor: typedActor })
+    return NextResponse.json({ actor: typedActor }, { headers: cacheHeaders })
   } catch (err) {
     console.error('[GET /api/actors/[id]] 예상치 못한 오류:', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '서버 내부 오류가 발생했습니다.' }, { status: 500 })

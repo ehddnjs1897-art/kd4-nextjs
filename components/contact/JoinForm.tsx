@@ -635,6 +635,7 @@ export default function JoinForm() {
             ))}
           </select>
           <span
+            aria-hidden="true"
             style={{
               position: 'absolute',
               right: '16px',
@@ -668,6 +669,7 @@ export default function JoinForm() {
           ))}
         </select>
         <span
+          aria-hidden="true"
           style={{
             position: 'absolute',
             right: '16px',
@@ -700,6 +702,7 @@ export default function JoinForm() {
           ))}
         </select>
         <span
+          aria-hidden="true"
           style={{
             position: 'absolute',
             right: '16px',
@@ -759,8 +762,8 @@ export default function JoinForm() {
         </span>
       </label>
 
-      {/* 에러 — 항상 DOM에 존재해야 VoiceOver가 내용 변경을 감지함 (aria-live 스펙) */}
-      <p role="alert" aria-live="assertive" style={{ color: 'var(--accent-red)', fontSize: '0.85rem', margin: 0, minHeight: 0 }}>
+      {/* 에러 — role="alert" 자체가 assertive live region이므로 aria-live 중복 제거 */}
+      <p role="alert" style={{ color: 'var(--accent-red)', fontSize: '0.85rem', margin: 0, minHeight: 0 }}>
         {error ?? ''}
       </p>
 

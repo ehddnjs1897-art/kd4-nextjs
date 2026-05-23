@@ -283,8 +283,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
         </div>
 
         {/* ── 회원 관리 ── */}
-        {activeTab === 'users' && (
-          <section style={s.section} role="tabpanel" id="admin-panel-users" aria-labelledby="admin-tab-users">
+        <section style={s.section} role="tabpanel" id="admin-panel-users" aria-labelledby="admin-tab-users" hidden={activeTab !== 'users'}>
             <h2 style={s.sectionTitle}>회원 목록 ({localProfiles.length}명)</h2>
             <div style={s.tableWrapper}>
               <table style={s.table}>
@@ -316,6 +315,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                           type="button"
                           onClick={() => handleRoleChange(p.id, p.role)}
                           disabled={loadingId === p.id}
+                          aria-label={loadingId === p.id ? '처리 중' : `${p.name || p.email || '회원'} 역할 변경`}
                           style={
                             p.role === 'crew_pending'
                               ? { ...s.actionBtn, borderColor: 'rgba(74,158,255,0.5)', color: '#7ab8ff' }
@@ -338,12 +338,10 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                 </tbody>
               </table>
             </div>
-          </section>
-        )}
+        </section>
 
         {/* ── 배우 목록 ── */}
-        {activeTab === 'actors' && (
-          <section style={s.section} role="tabpanel" id="admin-panel-actors" aria-labelledby="admin-tab-actors">
+        <section style={s.section} role="tabpanel" id="admin-panel-actors" aria-labelledby="admin-tab-actors" hidden={activeTab !== 'actors'}>
             <h2 style={s.sectionTitle}>배우 목록 ({localActors.length}명)</h2>
             <div style={s.tableWrapper}>
               <table style={s.table}>
@@ -370,6 +368,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                           type="button"
                           onClick={() => handleActorToggle(a.id, a.is_public)}
                           disabled={loadingId === a.id}
+                          aria-label={loadingId === a.id ? '처리 중' : `${a.name} ${a.is_public ? '비공개로 전환' : '공개로 전환'}`}
                           style={a.is_public ? s.actionBtnDanger : s.actionBtn}
                         >
                           {loadingId === a.id
@@ -384,12 +383,10 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                 </tbody>
               </table>
             </div>
-          </section>
-        )}
+        </section>
 
         {/* ── 게시판 관리 ── */}
-        {activeTab === 'posts' && (
-          <section style={s.section} role="tabpanel" id="admin-panel-posts" aria-labelledby="admin-tab-posts">
+        <section style={s.section} role="tabpanel" id="admin-panel-posts" aria-labelledby="admin-tab-posts" hidden={activeTab !== 'posts'}>
             <h2 style={s.sectionTitle}>최근 게시글 ({localPosts.length}개)</h2>
             <div style={s.tableWrapper}>
               <table style={s.table}>
@@ -439,12 +436,10 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                 </tbody>
               </table>
             </div>
-          </section>
-        )}
+        </section>
 
         {/* ── 수강신청 목록 ── */}
-        {activeTab === 'applications' && (
-          <section style={s.section} role="tabpanel" id="admin-panel-applications" aria-labelledby="admin-tab-applications">
+        <section style={s.section} role="tabpanel" id="admin-panel-applications" aria-labelledby="admin-tab-applications" hidden={activeTab !== 'applications'}>
             <h2 style={s.sectionTitle}>수강신청 목록 ({localApplications.length}건)</h2>
             <div style={s.tableWrapper}>
               <table style={s.table}>
@@ -501,8 +496,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                 </tbody>
               </table>
             </div>
-          </section>
-        )}
+        </section>
       </div>
     </div>
   )
@@ -512,7 +506,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
 
 function StatCard({ label, value }: { label: string; value: number }) {
   return (
-    <div style={s.statCard}>
+    <div style={s.statCard} role="group" aria-label={`${label}: ${value}`}>
       <p style={s.statValue}>{value}</p>
       <p style={s.statLabel}>{label}</p>
     </div>

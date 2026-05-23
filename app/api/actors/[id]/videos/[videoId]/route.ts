@@ -41,7 +41,9 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
     // R2 파일 삭제 (DB 삭제 성공 후 — 실패해도 클라이언트에 영향 없음)
     if (videoRow.r2_key && isR2Configured()) {
       try { await deleteVideo(videoRow.r2_key) } catch (e) {
-        console.error('[videos DELETE] R2 삭제 실패 (무시):', videoRow.r2_key, e)
+        // R2 키 전체 노출 방지: 앞 40자만 로깅
+        const truncatedKey = videoRow.r2_key ? videoRow.r2_key.slice(0, 40) + (videoRow.r2_key.length > 40 ? '…' : '') : '(없음)'
+        console.error('[videos DELETE] R2 삭제 실패 (무시):', truncatedKey, e instanceof Error ? e.message : String(e))
       }
     }
 

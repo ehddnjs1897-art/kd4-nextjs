@@ -47,7 +47,7 @@ const nextConfig: NextConfig = {
           // HSTS: 2년 + subDomains + preload (HTTPS 전용 사이트)
           { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
           // CSP: Next.js 인라인 스크립트(unsafe-inline/unsafe-eval) + Meta/GA4/Kakao
-          { key: 'Content-Security-Policy', value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://t1.kakaocdn.net https://www.googletagmanager.com https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://graph.facebook.com https://*.r2.cloudflarestorage.com; media-src 'self' https://*.r2.cloudflarestorage.com; frame-ancestors 'self'" },
+          { key: 'Content-Security-Policy', value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://t1.kakaocdn.net https://www.googletagmanager.com https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co https://drive.google.com https://lh3.googleusercontent.com https://img.youtube.com https://*.r2.cloudflarestorage.com; connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://graph.facebook.com https://*.r2.cloudflarestorage.com; media-src 'self' https://*.r2.cloudflarestorage.com; frame-ancestors 'self'" },
         ],
       },
       // ── 정적 자산 캐시 ────────────────────────────────────────

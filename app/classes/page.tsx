@@ -146,6 +146,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
         {/* CTA */}
         <a
           href="/join"
+          aria-label={`${cls.nameKo} 무료 상담 신청`}
           onClick={() => { pixel.viewContent(cls.nameKo); pixel.contact() }}
           style={{
             display: 'block', textAlign: 'center', padding: '12px 0',
@@ -155,7 +156,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             transition: 'opacity 0.2s', boxShadow: '0 4px 16px rgba(21,72,138,0.25)',
           }}
         >
-          무료 상담 신청 →
+          무료 상담 신청 <span aria-hidden="true">→</span>
         </a>
 
         {detailHref && (
@@ -205,6 +206,7 @@ export default function ClassesPage() {
 
       {/* ── 자가진단 — 직관적 비주얼 (큰 아이콘 + 레벨 시각화 + 골드 클래스명) ─── */}
       <section
+        aria-label="나에게 맞는 클래스 찾기"
         style={{
           padding: 'clamp(56px, 8vw, 80px) 24px',
           borderBottom: '1px solid var(--border)',

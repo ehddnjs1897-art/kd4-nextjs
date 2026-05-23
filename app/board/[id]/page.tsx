@@ -137,7 +137,7 @@ export default async function PostDetailPage({ params }: { params: Params }) {
             marginBottom: '32px',
           }}
         >
-          ← 목록으로
+          <span aria-hidden="true">← </span>목록으로
         </Link>
 
         {/* 게시글 헤더 */}
@@ -215,10 +215,9 @@ export default async function PostDetailPage({ params }: { params: Params }) {
           marginBottom: '16px',
         }}>
           {typedPost.content.split('\n').map((line, i) => (
-            <span key={i}>
-              {line}
-              <br />
-            </span>
+            <p key={i} style={{ margin: 0 }}>
+              {line || <>&nbsp;</>}
+            </p>
           ))}
         </div>
 

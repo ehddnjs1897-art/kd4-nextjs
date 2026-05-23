@@ -75,6 +75,7 @@ export default function CoachPage() {
 
       {/* ===== HERO — 가로 사진 크게 + 네이비 그라데이션 ===== */}
       <section
+        aria-label="권동원 액팅 코치 소개"
         style={{
           background: 'linear-gradient(160deg, var(--navy-deep) 0%, var(--navy) 55%, #133f78 100%)',
           padding: 'clamp(48px, 8vw, 80px) 24px clamp(56px, 9vw, 88px)',
@@ -135,7 +136,7 @@ export default function CoachPage() {
       </section>
 
       {/* ===== PHILOSOPHY ===== */}
-      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
+      <section aria-label="가르치는 철학" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container" style={{ maxWidth: '720px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '32px' }}>
             <p className="section-eyebrow">01 — PHILOSOPHY</p>
@@ -152,7 +153,7 @@ export default function CoachPage() {
       </section>
 
       {/* ===== PROFILE LIST ===== */}
-      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
+      <section aria-label="주요 경력" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
             <p className="section-eyebrow">02 — PROFILE</p>
@@ -172,7 +173,7 @@ export default function CoachPage() {
       </section>
 
       {/* ===== FILMOGRAPHY + CREDENTIALS ===== */}
-      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
+      <section aria-label="필모그래피와 자격" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
             <p className="section-eyebrow">03 — FILMOGRAPHY & CREDENTIALS</p>
@@ -205,7 +206,7 @@ export default function CoachPage() {
       </section>
 
       {/* ===== DIRECT CLASSES — 권동원 직강 클래스 전체 ===== */}
-      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--navy)', color: '#fff' }}>
+      <section aria-label="권동원 리더 직강 클래스" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--navy)', color: '#fff' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 36px', textAlign: 'center' }}>
             <p className="section-eyebrow" style={{ color: '#F0A8A8' }}>04 — CLASSES</p>
@@ -229,7 +230,7 @@ export default function CoachPage() {
                     <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.05rem', fontWeight: 700, color: '#fff' }}>월 ₩{priceOf(c)}</span>
                   </div>
                   {href && (
-                    <span style={{ fontSize: '0.82rem', color: '#F0A8A8', fontWeight: 600, marginTop: '12px' }}>상세 보기 →</span>
+                    <span style={{ fontSize: '0.82rem', color: '#F0A8A8', fontWeight: 600, marginTop: '12px' }}>상세 보기 <span aria-hidden="true">→</span></span>
                   )}
                 </>
               )
@@ -250,7 +251,7 @@ export default function CoachPage() {
       </section>
 
       {/* ===== FAQ ===== */}
-      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
+      <section aria-label="자주 묻는 질문" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
             <p className="section-eyebrow">FAQ</p>
@@ -261,7 +262,7 @@ export default function CoachPage() {
       </section>
 
       {/* ===== FORM ===== */}
-      <section id="form" style={{ padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg2)' }}>
+      <section id="form" aria-label="무료 상담 신청" style={{ padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '520px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>

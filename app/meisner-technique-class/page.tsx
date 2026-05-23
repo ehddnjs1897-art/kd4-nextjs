@@ -90,7 +90,7 @@ export default function MeisnerPage() {
       />
 
       {/* HERO */}
-      <section style={{ padding: 'clamp(72px, 12vw, 110px) 24px clamp(48px, 9vw, 80px)', background: 'var(--navy)', color: '#fff', textAlign: 'center' }}>
+      <section aria-label="마이즈너 테크닉 정규 클래스 소개" style={{ padding: 'clamp(72px, 12vw, 110px) 24px clamp(48px, 9vw, 80px)', background: 'var(--navy)', color: '#fff', textAlign: 'center' }}>
         <div className="container">
           <p className="section-eyebrow" style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '16px' }}>
             STEP 01 · MEISNER TECHNIQUE
@@ -116,7 +116,7 @@ export default function MeisnerPage() {
       </section>
 
       {/* METHOD */}
-      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
+      <section aria-label="마이즈너 테크닉이란" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
             <p className="section-eyebrow">01 — METHOD</p>
@@ -129,7 +129,7 @@ export default function MeisnerPage() {
             {PILLARS.map(({ Icon, title, desc }) => (
               <div key={title} style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '12px', padding: '24px' }}>
                 <Icon size={22} color="var(--navy)" strokeWidth={1.8} style={{ marginBottom: '12px' }} />
-                <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.05rem', fontWeight: 700, marginBottom: '8px' }}>{title}</p>
+                <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.05rem', fontWeight: 700, marginBottom: '8px' }}>{title}</h3>
                 <p style={{ fontSize: '0.88rem', color: 'var(--gray-light)', lineHeight: 1.7, wordBreak: 'keep-all' }}>{desc}</p>
               </div>
             ))}
@@ -138,7 +138,7 @@ export default function MeisnerPage() {
       </section>
 
       {/* CURRICULUM */}
-      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
+      <section aria-label="4개월 정규 코스 커리큘럼" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
             <p className="section-eyebrow">02 — CURRICULUM</p>
@@ -174,7 +174,7 @@ export default function MeisnerPage() {
       </section>
 
       {/* INSTRUCTOR */}
-      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
+      <section aria-label="액팅 코치 소개" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
             <p className="section-eyebrow">03 — INSTRUCTOR</p>
@@ -205,31 +205,35 @@ export default function MeisnerPage() {
       </section>
 
       {/* COMPARISON */}
-      <section style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
+      <section aria-label="일반 학원 평균과 KD4 비교" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
             <p className="section-eyebrow">04 — DIFFERENCE</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>일반 학원 평균과 비교</h2>
           </div>
-          <div style={{ maxWidth: '720px', margin: '0 auto', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr', background: 'var(--navy-tint-1)', fontFamily: 'var(--font-display)', fontSize: '0.78rem', letterSpacing: '0.1em', fontWeight: 700, color: 'var(--navy)' }}>
-              <div style={{ padding: '14px 16px' }}>항목</div>
-              <div style={{ padding: '14px 16px', textAlign: 'center' }}>일반 학원 평균</div>
-              <div style={{ padding: '14px 16px', textAlign: 'center', background: 'var(--navy)', color: '#fff' }}>KD4</div>
-            </div>
-            {COMPARISON_ROWS.map((row, i) => (
-              <div key={row.label} style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr', borderTop: i === 0 ? 'none' : '1px solid var(--border)', fontSize: '0.88rem' }}>
-                <div style={{ padding: '14px 16px', fontWeight: 600 }}>{row.label}</div>
-                <div style={{ padding: '14px 16px', textAlign: 'center', color: 'var(--gray)' }}>{row.normal}</div>
-                <div style={{ padding: '14px 16px', textAlign: 'center', color: 'var(--navy)', fontWeight: 700, background: 'var(--navy-tint-1)' }}>{row.kd4}</div>
+          <div role="table" aria-label="일반 학원 평균 vs KD4 비교" style={{ maxWidth: '720px', margin: '0 auto', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden' }}>
+            <div role="rowgroup">
+              <div role="row" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr', background: 'var(--navy-tint-1)', fontFamily: 'var(--font-display)', fontSize: '0.78rem', letterSpacing: '0.1em', fontWeight: 700, color: 'var(--navy)' }}>
+                <div role="columnheader" style={{ padding: '14px 16px' }}>항목</div>
+                <div role="columnheader" style={{ padding: '14px 16px', textAlign: 'center' }}>일반 학원 평균</div>
+                <div role="columnheader" style={{ padding: '14px 16px', textAlign: 'center', background: 'var(--navy)', color: '#fff' }}>KD4</div>
               </div>
-            ))}
+            </div>
+            <div role="rowgroup">
+              {COMPARISON_ROWS.map((row, i) => (
+                <div role="row" key={row.label} style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr', borderTop: i === 0 ? 'none' : '1px solid var(--border)', fontSize: '0.88rem' }}>
+                  <div role="rowheader" style={{ padding: '14px 16px', fontWeight: 600 }}>{row.label}</div>
+                  <div role="cell" style={{ padding: '14px 16px', textAlign: 'center', color: 'var(--gray)' }}>{row.normal}</div>
+                  <div role="cell" style={{ padding: '14px 16px', textAlign: 'center', color: 'var(--navy)', fontWeight: 700, background: 'var(--navy-tint-1)' }}>{row.kd4}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
       {/* YOUTUBE */}
-      <section style={{ padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg)' }}>
+      <section aria-label="마이즈너 테크닉 소개 영상" style={{ padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
             <p className="section-eyebrow">05 — VIDEO</p>

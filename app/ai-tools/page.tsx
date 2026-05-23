@@ -236,8 +236,9 @@ export default function AIToolsPage() {
                   style={s.textarea}
                   disabled={loading}
                   maxLength={8000}
+                  aria-describedby="script-char-count"
                 />
-                <p style={{ fontSize: '0.72rem', color: scriptText.length > 7000 ? 'var(--gold)' : 'var(--gray)', textAlign: 'right', marginTop: 4 }}>
+                <p id="script-char-count" style={{ fontSize: '0.72rem', color: scriptText.length > 7000 ? 'var(--gold)' : 'var(--gray)', textAlign: 'right', marginTop: 4 }}>
                   {scriptText.length.toLocaleString()} / 8,000자
                 </p>
               </div>

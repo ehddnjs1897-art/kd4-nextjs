@@ -184,6 +184,7 @@ export default function CommentSection({
                       <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
                         <button
                           type="button"
+                          aria-label={`${comment.author_name} 댓글 삭제 취소`}
                           onClick={() => setConfirmingDeleteId(null)}
                           style={{ fontSize: '0.75rem', color: 'var(--gray)', background: 'none', border: '1px solid var(--border)', borderRadius: 4, cursor: 'pointer', padding: '2px 8px' }}
                         >
@@ -191,6 +192,7 @@ export default function CommentSection({
                         </button>
                         <button
                           type="button"
+                          aria-label={`${comment.author_name} 댓글 삭제 확인`}
                           onClick={() => handleDelete(comment.id)}
                           disabled={deletingId === comment.id}
                           style={{ fontSize: '0.75rem', color: '#fff', background: '#ef4444', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '2px 8px' }}

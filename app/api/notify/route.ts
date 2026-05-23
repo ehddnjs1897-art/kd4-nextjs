@@ -243,7 +243,8 @@ export async function POST(request: NextRequest) {
         : null
       const msg = `[KD4 신규상담] ${safeName} / ${safePhone}${safeClass ? ` / ${safeClass}` : ''}`
       await sendSMS(adminPhone, msg).catch((err) =>
-        console.error('[notify] 관리자 SMS 실패:', err instanceof Error ? err.message : String(err))
+        // PII 제거: String(err)은 에러 메시지에 전화번호 포함 가능 → err.message만 사용
+        console.error('[notify] 관리자 SMS 실패:', err instanceof Error ? err.message : '알 수 없는 오류')
       )
     }
 

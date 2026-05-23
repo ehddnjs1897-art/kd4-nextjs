@@ -2,9 +2,37 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
+// GET 엔드포인트 IP 기반 레이트 리밋 (60 req/min — DoS 방어)
+const postsGetRateMap = new Map<string, { count: number; resetAt: number }>()
+const POSTS_GET_RATE_LIMIT = 60
+const POSTS_GET_RATE_WINDOW_MS = 60_000
+
 // GET /api/posts?category=일반&page=1&limit=20
 export async function GET(request: NextRequest) {
   try {
+    // IP 레이트 리밋: 1분 60회 초과 차단 (DoS 방어)
+    const ip = request.headers.get('x-real-ip')
+      ?? request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+      ?? null
+    if (ip) {
+      const now = Date.now()
+      const bucket = postsGetRateMap.get(ip)
+      if (bucket && now < bucket.resetAt) {
+        if (bucket.count >= POSTS_GET_RATE_LIMIT) {
+          return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+        }
+        bucket.count++
+      } else {
+        postsGetRateMap.set(ip, { count: 1, resetAt: now + POSTS_GET_RATE_WINDOW_MS })
+        // 오래된 항목 정리 (메모리 누수 방지)
+        if (postsGetRateMap.size > 2000) {
+          for (const [k, v] of postsGetRateMap) {
+            if (now > v.resetAt) postsGetRateMap.delete(k)
+          }
+        }
+      }
+    }
+
     const { searchParams } = new URL(request.url)
     const category = searchParams.get('category')
     // parseInt → NaN 방어: Math.max/min(NaN) = NaN → .range(NaN,NaN) → DB 500 방지

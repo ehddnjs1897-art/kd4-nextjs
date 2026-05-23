@@ -24,6 +24,22 @@ function dispositionHeader(filename: string): string {
   return `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`
 }
 
+// SSRF 방어: 허용된 호스트만 프록시 대상으로 (내부 주소·IPv6 매핑 IPv4 차단)
+const ALLOWED_PROFILE_HOSTS = new Set([
+  'drive.google.com',
+  'lh3.googleusercontent.com',
+  'docs.google.com',
+])
+function isSafeProfileUrl(raw: string): boolean {
+  let url: URL
+  try { url = new URL(raw) } catch { return false }
+  if (url.protocol !== 'https:') return false
+  const host = url.hostname.toLowerCase()
+  // IPv6 매핑 IPv4 및 내부 주소 차단
+  if (/^\[/.test(host) || /^(localhost|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host)) return false
+  return ALLOWED_PROFILE_HOSTS.has(host)
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -85,14 +101,15 @@ export async function GET(
 
   // path 2: 외부 URL (profile_pdf_url) — 관리자가 직접 등록한 신뢰된 값
   if (actor.profile_pdf_url) {
+    // SSRF 방어: 허용된 호스트만 프록시 (2026-05-23 R90)
+    if (!isSafeProfileUrl(actor.profile_pdf_url)) {
+      return NextResponse.json({ error: '허용되지 않는 프로필 링크입니다.' }, { status: 400 })
+    }
     let target: URL
     try {
       target = new URL(actor.profile_pdf_url)
     } catch {
       return NextResponse.json({ error: '잘못된 프로필 링크입니다.' }, { status: 502 })
-    }
-    if (target.protocol !== 'https:' && target.protocol !== 'http:') {
-      return NextResponse.json({ error: '지원하지 않는 프로필 링크입니다.' }, { status: 502 })
     }
     try {
       const upstream = await fetch(target, { redirect: 'follow' })

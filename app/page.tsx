@@ -401,7 +401,7 @@ export default function HomePage() {
       </section>
 
       {/* ── HERO INTRO (카피 + CTA, Stats 직전) ───────────────────────────────── */}
-      <section className="hero-intro-section">
+      <section className="hero-intro-section" aria-label="KD4 소개">
         <p
           className="shimmer-tag"
           style={{
@@ -459,6 +459,7 @@ export default function HomePage() {
       {/* 숫자 데이터: lib/stats.ts (단일 소스) / 아이콘 4개는 인덱스로 매칭 */}
       <section
         id="stats"
+        aria-label="KD4 주요 통계"
         style={{
           background: "var(--bg2)",
           borderTop: "1px solid var(--border)",
@@ -547,7 +548,7 @@ export default function HomePage() {
                 >
                   PROFILE
                 </p>
-                <ul style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                <ul aria-label="권동원 주요 경력" style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                   {DIRECTOR.profileFlat.map((item, i) => (
                     <li
                       key={i}
@@ -604,7 +605,7 @@ export default function HomePage() {
                     >
                       {group.cat}
                     </p>
-                    <ul style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                    <ul aria-label={`권동원 ${group.cat} 필모그래피`} style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                       {group.items.map((item, i) => (
                         <li
                           key={i}
@@ -748,7 +749,7 @@ export default function HomePage() {
                     </p>
 
                     {/* 이모지 아이콘 */}
-                    <div className="step-icon-glow" style={{ margin: "0 auto 20px" }}>
+                    <div className="step-icon-glow" aria-hidden="true" style={{ margin: "0 auto 20px" }}>
                       <span style={{ position: "relative", zIndex: 1 }}>{s.icon}</span>
                     </div>
 
@@ -1136,7 +1137,7 @@ export default function HomePage() {
           <div className="review-marquee-track">
             {[...REVIEW_ITEMS, ...REVIEW_ITEMS].map((r, i) => (
               <div key={`${r.author}-${i}`} style={reviewCardStyle}>
-                <span style={reviewEmojiStyle}>{r.emoji}</span>
+                <span aria-hidden="true" style={reviewEmojiStyle}>{r.emoji}</span>
                 <p style={reviewTextStyle}>&ldquo;{r.text}&rdquo; <span style={reviewAuthorStyle}>— {r.author}</span></p>
               </div>
             ))}
@@ -1148,7 +1149,7 @@ export default function HomePage() {
           <div className="review-marquee-track">
             {[...REVIEW_ITEMS_2, ...REVIEW_ITEMS_2].map((r, i) => (
               <div key={`${r.author}-${i}`} style={reviewCardStyle}>
-                <span style={reviewEmojiStyle}>{r.emoji}</span>
+                <span aria-hidden="true" style={reviewEmojiStyle}>{r.emoji}</span>
                 <p style={reviewTextStyle}>&ldquo;{r.text}&rdquo; <span style={reviewAuthorStyle}>— {r.author}</span></p>
               </div>
             ))}
@@ -1231,6 +1232,7 @@ export default function HomePage() {
               href="https://pf.kakao.com/_ximxdqn"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="카카오로 문의하기 (새 탭에서 열림)"
               onClick={() => pixel.contact()}
               style={{
                 display: "inline-block",
