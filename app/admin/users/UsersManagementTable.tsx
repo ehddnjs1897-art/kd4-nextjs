@@ -71,6 +71,13 @@ export default function UsersManagementTable({ profiles: initialProfiles }: Prop
   async function handleRoleChange(profileId: string, currentRole: string) {
     if (loadingId) return
     const newRole = ROLE_CYCLE[currentRole] ?? 'user'
+    // 관리자 권한 박탈 또는 기본 역할로 강등 시 확인
+    if (currentRole === 'admin' || newRole === 'member') {
+      const msg = currentRole === 'admin'
+        ? '관리자 권한을 제거하시겠습니까? 이 작업은 즉시 적용됩니다.'
+        : `역할을 '${ROLE_LABEL[newRole] ?? newRole}'으로 변경하시겠습니까?`
+      if (!window.confirm(msg)) return
+    }
     setLoadingId(profileId)
     try {
       const res = await fetch('/api/admin/users', {
@@ -182,6 +189,8 @@ export default function UsersManagementTable({ profiles: initialProfiles }: Prop
                       background: 'transparent', cursor: loadingId === p.id ? 'not-allowed' : 'pointer',
                       fontSize: '0.75rem', fontFamily: 'var(--font-sans)',
                       opacity: loadingId === p.id ? 0.5 : 1,
+                      minHeight: 44, minWidth: 44,
+                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                     }}
                   >
                     {loadingId === p.id ? '…' : (ROLE_LABEL[p.role] ?? p.role)}

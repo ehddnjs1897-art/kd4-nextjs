@@ -17,6 +17,10 @@ export async function GET(request: NextRequest) {
     // IP 레이트 리밋: 1분 60회 초과 차단 (DoS 방어)
     // x-real-ip는 Vercel이 제어하는 신뢰할 수 있는 헤더 — x-forwarded-for는 클라이언트 위조 가능하므로 사용하지 않음
     const ip = request.headers.get('x-real-ip') ?? null
+    // Vercel 프로덕션에서 x-real-ip 없으면 프록시 미설정 → fail-closed로 429
+    if (!ip && process.env.VERCEL === '1') {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
     if (ip) {
       const now = Date.now()
       const bucket = postsGetRateMap.get(ip)

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
+import { revalidatePath } from 'next/cache'
 
 type Params = Promise<{ id: string }>
 
@@ -33,6 +34,9 @@ export async function GET(
     // IP 레이트 리밋: 1분 60회 초과 차단
     // x-real-ip만 사용 — x-forwarded-for는 클라이언트 위조 가능
     const ipPD = request.headers.get('x-real-ip') ?? null
+    if (!ipPD && process.env.VERCEL === '1') {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
     if (ipPD) {
       const nowPD = Date.now()
       const bucketPD = postDetailGetMap.get(ipPD)
@@ -162,6 +166,8 @@ export async function PATCH(
       return NextResponse.json({ error: '게시글 수정 중 오류가 발생했습니다.' }, { status: 500 })
     }
 
+    revalidatePath('/board')
+    revalidatePath(`/board/${id}`)
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error('[PATCH /api/posts/[id]]', err instanceof Error ? err.message : String(err))
@@ -213,16 +219,16 @@ export async function DELETE(
       return NextResponse.json({ error: '삭제 권한이 없습니다.' }, { status: 403 })
     }
 
-    // supabaseAdmin 사용 — 위에서 소유권 확인 완료, RLS가 삭제를 막지 않도록
-    const { error: deleteError } = await supabaseAdmin
-      .from('posts')
-      .delete()
-      .eq('id', id)
+    // supabaseAdmin 사용 — TOCTOU 방어: WHERE에 author_id 재포함 (admin 제외)
+    let delQuery = supabaseAdmin.from('posts').delete().eq('id', id)
+    if (!isAdmin) delQuery = delQuery.eq('author_id', user.id)
+    const { error: deleteError } = await delQuery
 
     if (deleteError) {
       return NextResponse.json({ error: '게시글 삭제 중 오류가 발생했습니다.' }, { status: 500 })
     }
 
+    revalidatePath('/board')
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error('[DELETE /api/posts/[id]]', err instanceof Error ? err.message : String(err))

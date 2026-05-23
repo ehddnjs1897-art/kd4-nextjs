@@ -166,7 +166,7 @@ export default function EnrollForm({
   /* ─── 완료 화면 ─── */
   if (done) {
     return (
-      <div style={{ background: 'var(--bg)', minHeight: '100vh', paddingTop: 64 }}>
+      <div role="status" aria-live="polite" style={{ background: 'var(--bg)', minHeight: '100vh', paddingTop: 64 }}>
         <div style={{ maxWidth: 480, margin: '0 auto', padding: 'clamp(64px,12vw,120px) 24px', textAlign: 'center' }}>
           <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(21,72,138,0.1)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
             <CheckCircle aria-hidden={true} size={30} color="var(--navy)" strokeWidth={1.8} />

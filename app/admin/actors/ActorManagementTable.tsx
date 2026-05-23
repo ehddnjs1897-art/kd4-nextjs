@@ -119,7 +119,7 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
           </button>
         ))}
         {(query || statusFilter !== 'all') && (
-          <span style={{ fontSize: '0.78rem', color: 'var(--gray)' }}>{filtered.length}명</span>
+          <span role="status" aria-live="polite" style={{ fontSize: '0.78rem', color: 'var(--gray)' }}>{filtered.length}명</span>
         )}
       </div>
 

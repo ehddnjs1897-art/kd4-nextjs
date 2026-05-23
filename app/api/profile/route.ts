@@ -9,6 +9,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { matchActorOnSignup } from '@/lib/actor-matching'
+import { revalidateTag } from '@/lib/revalidate'
 
 // PATCH 레이트 리밋: 30초 냉각 (자동 재매칭 DB 스캔 방어)
 const profilePatchMap = new Map<string, number>()
@@ -100,6 +101,11 @@ export async function PATCH(request: NextRequest) {
       }
     }
 
+    // actor 매칭 성공 시 캐시 무효화 (actor 이름/연락처 변경이 배우 DB에 반영되도록)
+    if (matched && actorId) {
+      revalidateTag('actors')
+      revalidateTag(`actor-${actorId}`)
+    }
     return NextResponse.json({ success: true, matched })
   } catch (err) {
     console.error('[PATCH /api/profile] 예상치 못한 오류:', err instanceof Error ? err.message : String(err))

@@ -3,7 +3,7 @@
  * 이메일 인증 OFF(즉시 세션 반환) 경우에도 배우 매칭 + role 설정이 되도록 보장.
  * 회원가입 페이지에서 세션이 바로 생성될 때 호출.
  */
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { matchActorOnSignup, linkEnrollmentsOnSignup } from '@/lib/actor-matching'
@@ -14,7 +14,11 @@ const ELEVATED_ROLES = ['crew_pending', 'crew', 'editor', 'director_pending', 'd
 const signupMap = new Map<string, number>()
 const COOLDOWN_MS = 60_000
 
-export async function POST() {
+export async function POST(request: NextRequest) {
+  // 본문 크기 검증 (이 엔드포인트는 body를 파싱하지 않지만 대용량 요청 차단)
+  const clSignup = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
+  if (clSignup > 256) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })

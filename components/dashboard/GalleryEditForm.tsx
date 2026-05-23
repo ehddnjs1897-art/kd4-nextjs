@@ -122,6 +122,7 @@ const s: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     gap: 8,
     padding: '10px 20px',
+    minHeight: 44,
     borderRadius: 6,
     border: 'none',
     cursor: 'pointer',
