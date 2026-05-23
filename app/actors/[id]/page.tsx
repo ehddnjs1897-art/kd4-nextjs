@@ -82,48 +82,47 @@ function isUndefinedColumnError(err: { code?: string; message?: string } | null)
   return err.code === '42703' || /column .* does not exist/i.test(err.message ?? '')
 }
 
+// 운영 DB에 일부 컬럼이 누락돼 있어도(마이그레이션 미적용) 상세 페이지가 죽지 않도록
+// 단계적으로 select 컬럼을 줄여가며 재조회한다. (42703 → 다음 단계)
+function actorSelect(opts: { casting: boolean; videoType: boolean; filmExtra: boolean }): string {
+  return `
+      id, name, name_en, gender, age_group, height, weight, skills, is_public,
+      drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram, profile_doc_path${
+        opts.casting ? ',\n      casting_tags, casting_summary, profile_pdf_url' : ''
+      },
+      actor_photos ( id, drive_photo_id, url, storage_path, caption, sort_order, photo_type, label ),
+      actor_videos ( id, youtube_id, r2_key, title${opts.videoType ? ', video_type' : ''} ),
+      actor_filmography ( id, category, title, role, year, production${
+        opts.filmExtra ? ', broadcaster, film_type, award' : ''
+      } )
+    `
+}
+
 async function getActor(id: string): Promise<Actor | null> {
-  // 1차: 새 스키마 (casting_tags/summary/profile_pdf_url)
-  const newSchema = await supabaseAdmin
-    .from('actors')
-    .select(
-      `
-      id, name, name_en, gender, age_group, height, weight, skills, is_public,
-      drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram, profile_doc_path,
-      casting_tags, casting_summary, profile_pdf_url,
-      actor_photos ( id, drive_photo_id, url, storage_path, caption, sort_order, photo_type, label ),
-      actor_videos ( id, youtube_id, r2_key, title, video_type ),
-      actor_filmography ( id, category, title, role, year, production, broadcaster, film_type, award )
-    `
-    )
-    .eq('id', id)
-    .maybeSingle()
+  const fetchWith = (cols: string) =>
+    supabaseAdmin.from('actors').select(cols).eq('id', id).maybeSingle()
 
-  if (newSchema.data) return newSchema.data as Actor
+  // 1차: 전체 스키마
+  const full = await fetchWith(actorSelect({ casting: true, videoType: true, filmExtra: true }))
+  if (full.data) return full.data as unknown as Actor
   // maybeSingle: data=null + error=null → not found
-  if (!newSchema.error) return null
-  // real error (not a missing-column error) → propagate as not found
-  if (!isUndefinedColumnError(newSchema.error)) return null
+  if (!full.error) return null
+  // 컬럼 누락(42703)이 아닌 실제 오류 → not found 처리
+  if (!isUndefinedColumnError(full.error)) return null
 
-  // 2차: fallback (마이그레이션 미실행 시 — 새 컬럼 없이)
-  console.warn('[ActorDetail] casting_tags 컬럼 미존재 — fallback 스키마로 조회')
-  const oldSchema = await supabaseAdmin
-    .from('actors')
-    .select(
-      `
-      id, name, name_en, gender, age_group, height, weight, skills, is_public,
-      drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram, profile_doc_path,
-      actor_photos ( id, drive_photo_id, url, storage_path, caption, sort_order, photo_type, label ),
-      actor_videos ( id, youtube_id, r2_key, title, video_type ),
-      actor_filmography ( id, category, title, role, year, production )
-    `
-    )
-    .eq('id', id)
-    .maybeSingle()
+  // 2차: video_type 컬럼 미존재 대응 (운영 DB 마이그레이션 미적용) — 나머지 컬럼은 유지
+  console.warn('[ActorDetail] 확장 컬럼 미존재 — video_type 제외하고 재조회')
+  const noVideoType = await fetchWith(actorSelect({ casting: true, videoType: false, filmExtra: true }))
+  if (noVideoType.data) return noVideoType.data as unknown as Actor
+  if (!noVideoType.error) return null
+  if (!isUndefinedColumnError(noVideoType.error)) return null
 
-  if (!oldSchema.data) return null
+  // 3차: 캐스팅/필모 확장 컬럼까지 누락된 레거시 DB 대응 (기본 스키마)
+  console.warn('[ActorDetail] casting/filmography 확장 컬럼 미존재 — 기본 스키마로 fallback')
+  const base = await fetchWith(actorSelect({ casting: false, videoType: false, filmExtra: false }))
+  if (!base.data) return null
   return {
-    ...(oldSchema.data as Omit<Actor, 'casting_tags' | 'casting_summary' | 'profile_pdf_url'>),
+    ...(base.data as unknown as Omit<Actor, 'casting_tags' | 'casting_summary' | 'profile_pdf_url'>),
     casting_tags: null,
     casting_summary: null,
     profile_pdf_url: null,
