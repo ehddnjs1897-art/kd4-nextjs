@@ -90,9 +90,11 @@ export async function GET(request: NextRequest) {
     // Internal operational fields (drive IDs, storage paths, source provenance) omitted — not needed by public consumers
     // Aligned with SAFE_ACTOR_DETAIL in /api/actors/[id]/route.ts
     const SAFE_COLS = 'id,name,name_en,gender,age_group,height,weight,skills,is_public,profile_photo,instagram,casting_tags,casting_summary,created_at,updated_at'
+    // Internal path fields (drive IDs, R2 keys, storage paths, source) excluded — consistent with SAFE_ACTOR_DETAIL in /api/actors/[id]
+    const PRIV_LIST_COLS = 'id,name,name_en,gender,age_group,height,weight,skills,is_public,profile_photo,instagram,casting_tags,casting_summary,phone,email,created_at,updated_at'
     let query = supabaseAdmin
       .from('actors')
-      .select(canSeeContact ? '*' : SAFE_COLS, { count: 'exact' })
+      .select(canSeeContact ? PRIV_LIST_COLS : SAFE_COLS, { count: 'exact' })
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1)
     if (!includeNonPublic) query = query.eq('is_public', true)

@@ -414,6 +414,8 @@ export default function InsightsPage() {
                           <button
                             type="button"
                             key={c}
+                            role="option"
+                            aria-selected={insight.category === c}
                             onClick={() => changeCategory(insight, c)}
                             style={{
                               padding: '3px 10px', minHeight: 44, borderRadius: 12, border: 'none', cursor: 'pointer', fontSize: 12,

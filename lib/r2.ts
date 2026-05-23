@@ -141,6 +141,16 @@ export async function deleteVideo(key: string): Promise<void> {
   await c.send(new DeleteObjectCommand({ Bucket: BUCKET_NAME, Key: key }))
 }
 
+/** 객체 메타데이터 조회 — 스트림 열기 없이 크기·타입 확인 (size guard 선행 체크용) */
+export async function getObjectMeta(key: string): Promise<{
+  contentLength?: number
+  contentType?: string
+}> {
+  const c = getClient()
+  const res = await c.send(new HeadObjectCommand({ Bucket: BUCKET_NAME, Key: key }))
+  return { contentLength: res.ContentLength, contentType: res.ContentType }
+}
+
 /** 영상 존재 확인 */
 export async function videoExists(key: string): Promise<boolean> {
   const c = getClient()

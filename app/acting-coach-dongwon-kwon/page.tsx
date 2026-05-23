@@ -35,6 +35,18 @@ const CLASS_LINK: Record<string, string> = {
 // SEO 랜딩은 정가(첫달 할인 전) 표시
 const priceOf = (c: { price: string; originalPrice?: string }) => c.originalPrice ?? c.price
 
+// profileFlat 항목 내 영어 고유명사에 lang="en" 추가 (WCAG 3.1.2)
+const EN_PROFILE_TOKENS = ['LA Meisner Workshop', 'YouTube', 'The Chora'] as const
+function wrapEnglishToken(text: string): React.ReactNode {
+  for (const token of EN_PROFILE_TOKENS) {
+    const idx = text.indexOf(token)
+    if (idx !== -1) {
+      return <>{text.slice(0, idx)}<span lang="en">{token}</span>{text.slice(idx + token.length)}</>
+    }
+  }
+  return text
+}
+
 export const metadata: Metadata = {
   title: '권동원 — 액팅 코치 (리더) · 현역 배우',
   description:
@@ -168,7 +180,7 @@ export default function CoachPage() {
                 <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', fontFamily: 'var(--font-display)', fontSize: '0.78rem', color: 'var(--navy)', fontWeight: 700 }}>
                   {String(i + 1).padStart(2, '0')}
                 </span>
-                {line}
+                {wrapEnglishToken(line)}
               </li>
             ))}
           </ul>

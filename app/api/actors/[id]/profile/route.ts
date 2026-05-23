@@ -15,7 +15,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { canViewActorContact } from '@/lib/access'
-import { getObjectStream, isR2Configured } from '@/lib/r2'
+import { getObjectStream, getObjectMeta, isR2Configured } from '@/lib/r2'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
@@ -108,11 +108,12 @@ export async function GET(
     }
     try {
       const ext = (actor.profile_doc_path.split('?')[0].split('.').pop() || 'pdf').slice(0, 8)
-      const obj = await getObjectStream(actor.profile_doc_path)
-      // 대용량 파일 스트리밍으로 함수 메모리 초과 방지 (50MB 상한)
-      if (obj.contentLength && obj.contentLength > 50 * 1024 * 1024) {
+      // 50MB 상한 — 스트림 열기 전에 HeadObject로 확인 (null contentLength bypass 방지)
+      const meta = await getObjectMeta(actor.profile_doc_path)
+      if (meta.contentLength && meta.contentLength > 50 * 1024 * 1024) {
         return NextResponse.json({ error: '프로필 파일이 너무 큽니다.' }, { status: 413 })
       }
+      const obj = await getObjectStream(actor.profile_doc_path)
       const headers: Record<string, string> = {
         'Content-Type': obj.contentType || 'application/octet-stream',
         'Content-Disposition': dispositionHeader(`${safeName} 프로필.${ext}`),
