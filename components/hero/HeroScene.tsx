@@ -408,6 +408,7 @@ export default function HeroScene() {
   return (
     <canvas
       ref={canvasRef}
+      aria-hidden="true"
       style={{
         position: "absolute",
         inset: 0,

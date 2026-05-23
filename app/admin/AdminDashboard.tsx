@@ -255,10 +255,25 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
         </div>
 
         {/* 탭 네비게이션 */}
-        <div style={s.tabBar}>
+        <div
+          style={s.tabBar}
+          role="tablist"
+          aria-label="관리자 메뉴"
+          onKeyDown={e => {
+            const keys = Object.keys(TAB_LABELS) as Tab[]
+            const idx = keys.indexOf(activeTab)
+            if (e.key === 'ArrowRight') { e.preventDefault(); setActiveTab(keys[(idx + 1) % keys.length]) }
+            if (e.key === 'ArrowLeft')  { e.preventDefault(); setActiveTab(keys[(idx - 1 + keys.length) % keys.length]) }
+          }}
+        >
           {(Object.keys(TAB_LABELS) as Tab[]).map((key) => (
             <button
               key={key}
+              role="tab"
+              id={`admin-tab-${key}`}
+              aria-selected={activeTab === key}
+              aria-controls={`admin-panel-${key}`}
+              tabIndex={activeTab === key ? 0 : -1}
               onClick={() => setActiveTab(key)}
               style={activeTab === key ? { ...s.tab, ...s.tabActive } : s.tab}
             >
@@ -269,7 +284,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
 
         {/* ── 회원 관리 ── */}
         {activeTab === 'users' && (
-          <section style={s.section}>
+          <section style={s.section} role="tabpanel" id="admin-panel-users" aria-labelledby="admin-tab-users">
             <h2 style={s.sectionTitle}>회원 목록 ({localProfiles.length}명)</h2>
             <div style={s.tableWrapper}>
               <table style={s.table}>
@@ -327,7 +342,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
 
         {/* ── 배우 목록 ── */}
         {activeTab === 'actors' && (
-          <section style={s.section}>
+          <section style={s.section} role="tabpanel" id="admin-panel-actors" aria-labelledby="admin-tab-actors">
             <h2 style={s.sectionTitle}>배우 목록 ({localActors.length}명)</h2>
             <div style={s.tableWrapper}>
               <table style={s.table}>
@@ -372,7 +387,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
 
         {/* ── 게시판 관리 ── */}
         {activeTab === 'posts' && (
-          <section style={s.section}>
+          <section style={s.section} role="tabpanel" id="admin-panel-posts" aria-labelledby="admin-tab-posts">
             <h2 style={s.sectionTitle}>최근 게시글 ({localPosts.length}개)</h2>
             <div style={s.tableWrapper}>
               <table style={s.table}>
@@ -426,7 +441,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
 
         {/* ── 수강신청 목록 ── */}
         {activeTab === 'applications' && (
-          <section style={s.section}>
+          <section style={s.section} role="tabpanel" id="admin-panel-applications" aria-labelledby="admin-tab-applications">
             <h2 style={s.sectionTitle}>수강신청 목록 ({localApplications.length}건)</h2>
             <div style={s.tableWrapper}>
               <table style={s.table}>

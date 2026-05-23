@@ -347,7 +347,7 @@ export default async function ActorDetailPage({
                     unoptimized
                   />
                 ) : (
-                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray)', fontSize: '3rem' }}>👤</div>
+                  <div aria-hidden="true" style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray)', fontSize: '3rem' }}>👤</div>
                 )}
               </div>
               {/* 공유/다운로드 — 사진 아래 */}
@@ -445,8 +445,8 @@ export default async function ActorDetailPage({
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'center' }}>
                 {canContact ? (
                   <>
-                    {actor.phone && <a href={`tel:${actor.phone}`} style={{ fontSize: '0.9rem', color: 'var(--gold)', textDecoration: 'none', fontWeight: 600 }}>☎ {actor.phone}</a>}
-                    {actor.email && <a href={`mailto:${actor.email}`} style={{ fontSize: '0.9rem', color: 'var(--gold)', textDecoration: 'none', fontWeight: 600 }}>✉ {actor.email}</a>}
+                    {actor.phone && <a href={`tel:${actor.phone}`} style={{ fontSize: '0.9rem', color: 'var(--gold)', textDecoration: 'none', fontWeight: 600 }}><span aria-hidden="true">☎ </span>{actor.phone}</a>}
+                    {actor.email && <a href={`mailto:${actor.email}`} style={{ fontSize: '0.9rem', color: 'var(--gold)', textDecoration: 'none', fontWeight: 600 }}><span aria-hidden="true">✉ </span>{actor.email}</a>}
                   </>
                 ) : (
                   <p style={{ fontSize: '0.82rem', color: 'var(--gray)' }}>

@@ -112,13 +112,16 @@ export default async function DashboardPage() {
         {/* 내 계정 카드 */}
         <section style={card}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid var(--border)' }}>
-            <div style={{
-              width: 48, height: 48, borderRadius: '50%',
-              background: 'var(--navy)', color: '#fff',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontFamily: 'var(--font-display)', fontSize: '1.1rem', fontWeight: 700,
-              flexShrink: 0,
-            }}>
+            <div
+              aria-hidden="true"
+              style={{
+                width: 48, height: 48, borderRadius: '50%',
+                background: 'var(--navy)', color: '#fff',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontFamily: 'var(--font-display)', fontSize: '1.1rem', fontWeight: 700,
+                flexShrink: 0,
+              }}
+            >
               {name[0]}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>

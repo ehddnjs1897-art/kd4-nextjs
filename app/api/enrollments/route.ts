@@ -93,7 +93,7 @@ export async function POST(request: Request) {
   const baseRow = {
     user_id: user.id,
     actor_id: profile?.actor_id ?? null,
-    name: profile?.name ?? (user.user_metadata?.name as string) ?? null,
+    name: ((profile?.name ?? (user.user_metadata?.name as string) ?? null) as string | null)?.slice(0, 100) ?? null,
     phone: phone || profile?.phone || null,
     email: user.email ?? profile?.email ?? null,
     enrollment_type,

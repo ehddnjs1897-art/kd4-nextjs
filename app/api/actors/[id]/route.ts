@@ -121,6 +121,10 @@ export async function PATCH(
       return NextResponse.json({ error: '영문 이름은 100자 이하로 입력해주세요.' }, { status: 400 })
     if (typeof body.profile_doc_path === 'string' && body.profile_doc_path.length > 500)
       return NextResponse.json({ error: '프로필 문서 경로가 너무 깁니다.' }, { status: 400 })
+    if (typeof body.profile_doc_path === 'string' && body.profile_doc_path && profile.role !== 'admin' && profile.role !== 'editor') {
+      if (!body.profile_doc_path.startsWith(`intake/${user.id}/`))
+        return NextResponse.json({ error: '허가되지 않은 문서 경로입니다.' }, { status: 403 })
+    }
     if (Array.isArray(body.casting_tags)) {
       if (body.casting_tags.length > 30 || body.casting_tags.some((t: unknown) => typeof t !== 'string' || t.length > 50))
         return NextResponse.json({ error: '태그 형식이 잘못되었습니다.' }, { status: 400 })
