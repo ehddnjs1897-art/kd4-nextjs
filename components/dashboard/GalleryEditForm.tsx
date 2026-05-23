@@ -691,8 +691,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
               <div style={s.photoActions}>
                 {confirmingPhotoId === p.id ? (
                   <div style={{ display: 'flex', gap: 5 }}>
-                    <button type="button" onClick={() => setConfirmingPhotoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 36 }}>취소</button>
-                    <button type="button" onClick={() => deletePhoto(p.id, p.is_profile)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 36, border: 'none' }}>확인</button>
+                    <button type="button" onClick={() => setConfirmingPhotoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 44 }}>취소</button>
+                    <button type="button" onClick={() => deletePhoto(p.id, p.is_profile)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 44, border: 'none' }}>확인</button>
                   </div>
                 ) : (
                   <>
@@ -741,8 +741,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                   </p>
                   {confirmingR2VideoId === v.id ? (
                     <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
-                      <button type="button" onClick={() => setConfirmingR2VideoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 36 }}>취소</button>
-                      <button type="button" onClick={() => deleteR2Video(v.id)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 36, border: 'none' }}>확인</button>
+                      <button type="button" onClick={() => setConfirmingR2VideoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 44 }}>취소</button>
+                      <button type="button" onClick={() => deleteR2Video(v.id)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 44, border: 'none' }}>확인</button>
                     </div>
                   ) : (
                     <button type="button" onClick={() => deleteR2Video(v.id)} style={{ ...s.btn, ...s.btnDanger, flexShrink: 0 }}>삭제</button>
@@ -776,8 +776,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                   </p>
                   {confirmingVideoId === v.id ? (
                     <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
-                      <button type="button" onClick={() => setConfirmingVideoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 36 }}>취소</button>
-                      <button type="button" onClick={() => deleteVideo(v.id)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 36, border: 'none' }}>확인</button>
+                      <button type="button" onClick={() => setConfirmingVideoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 44 }}>취소</button>
+                      <button type="button" onClick={() => deleteVideo(v.id)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 44, border: 'none' }}>확인</button>
                     </div>
                   ) : (
                     <button type="button" onClick={() => deleteVideo(v.id)} style={{ ...s.btn, ...s.btnDanger, flexShrink: 0 }}>삭제</button>
@@ -828,8 +828,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                 <input aria-label={`필모그래피 ${i + 1}번 배역`} value={f.role} onChange={e => updateFilm(i, 'role', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} placeholder="배역" />
                 {confirmingFilmIdx === i ? (
                   <div style={{ display: 'flex', gap: 5 }}>
-                    <button type="button" onClick={() => setConfirmingFilmIdx(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 36 }}>취소</button>
-                    <button type="button" onClick={() => deleteFilm(i)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 36, border: 'none' }}>확인</button>
+                    <button type="button" onClick={() => setConfirmingFilmIdx(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 44 }}>취소</button>
+                    <button type="button" onClick={() => deleteFilm(i)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 44, border: 'none' }}>확인</button>
                   </div>
                 ) : (
                   <button type="button" onClick={() => deleteFilm(i)} style={{ ...s.btn, ...s.btnDanger }}>삭제</button>

@@ -444,13 +444,13 @@ export default function InsightsPage() {
                             type="button"
                             aria-label="삭제 취소"
                             onClick={() => setConfirmingDeleteId(null)}
-                            style={{ background: 'none', border: '1px solid var(--border)', borderRadius: 4, cursor: 'pointer', fontSize: 11, color: 'var(--gray)', padding: '2px 6px' }}
+                            style={{ background: 'none', border: '1px solid var(--border)', borderRadius: 4, cursor: 'pointer', fontSize: 11, color: 'var(--gray)', padding: '2px 6px', minHeight: 44, minWidth: 44 }}
                           >취소</button>
                           <button
                             type="button"
                             aria-label="인사이트 삭제 확인"
                             onClick={() => deleteInsight(insight.id)}
-                            style={{ background: '#ef4444', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 11, color: '#fff', padding: '2px 6px' }}
+                            style={{ background: '#ef4444', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 11, color: '#fff', padding: '2px 6px', minHeight: 44, minWidth: 44 }}
                           >삭제</button>
                         </>
                       ) : (

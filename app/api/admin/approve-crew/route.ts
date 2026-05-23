@@ -25,11 +25,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/admin?error=invalid_uid`)
   }
 
-  // CSRF 방어: 외부 사이트에서 링크 클릭으로 실행되는 것을 차단
-  // 이메일 링크 클릭 시 Referer·Origin이 없으므로 "둘 다 있고 둘 다 외부" 일 때만 차단
+  // CSRF 방어: Origin 헤더가 존재하고 자사 도메인이 아니면 차단
+  // 이메일 링크 클릭 시 Origin 헤더가 없으므로 허용 (이메일 정상 플로우)
   const csrfOrigin = request.headers.get('origin') ?? ''
-  const csrfReferer = request.headers.get('referer') ?? ''
-  if (csrfOrigin && !csrfOrigin.startsWith(SITE_URL) && csrfReferer && !csrfReferer.startsWith(SITE_URL)) {
+  if (csrfOrigin && !csrfOrigin.startsWith(SITE_URL)) {
     return NextResponse.redirect(`${origin}/admin?error=csrf`)
   }
 

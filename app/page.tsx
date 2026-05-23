@@ -418,7 +418,7 @@ export default function HomePage() {
         </p>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", marginBottom: "40px" }}>
           <span style={{ display: "block", width: "36px", height: "1px", background: "var(--gold)" }} />
-          <p style={{ fontFamily: "var(--font-display)", fontSize: "clamp(0.65rem, 1.6vw, 0.85rem)", fontWeight: 400, letterSpacing: "0.32em", color: "var(--gold)", textTransform: "uppercase" }}>
+          <p style={{ fontFamily: "var(--font-display)", fontSize: "clamp(0.75rem, 1.6vw, 0.85rem)", fontWeight: 400, letterSpacing: "0.32em", color: "var(--gold)", textTransform: "uppercase" }}>
             OFF THE PLASTIC
           </p>
           <span style={{ display: "block", width: "36px", height: "1px", background: "var(--gold)" }} />
@@ -481,7 +481,7 @@ export default function HomePage() {
                 </p>
                 <p
                   style={{
-                    fontSize: "clamp(0.65rem, 2vw, 0.8rem)",
+                    fontSize: "clamp(0.75rem, 2vw, 0.8rem)",
                     color: "var(--gray)",
                     letterSpacing: "0.04em",
                     textAlign: "center",
