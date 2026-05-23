@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     }
   
     // 바디 크기 제한: 32KB
-    const contentLengthE = parseInt(request.headers.get('content-length') ?? '0', 10)
+    const contentLengthE = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
     if (contentLengthE > 32_768) {
       return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
     }

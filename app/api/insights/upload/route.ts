@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const clUpload = parseInt(request.headers.get('content-length') ?? '0', 10)
+    const clUpload = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
     if (clUpload > 11 * 1024 * 1024) {
       return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
     }

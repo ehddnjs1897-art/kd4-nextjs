@@ -374,7 +374,7 @@ export default function ClassesPage() {
                 type="button"
                 id={`btn-${filter}`}
                 aria-expanded={open}
-                aria-controls={`step-${filter}-panel`}
+                aria-controls={open ? `step-${filter}-panel` : undefined}
                 onClick={() => setOpen((o: boolean) => !o)}
                 style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%',

@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const clPresign = parseInt(request.headers.get('content-length') ?? '0', 10)
+  const clPresign = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
   if (clPresign > 4_096) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
 
   const body = await request.json().catch(() => null)

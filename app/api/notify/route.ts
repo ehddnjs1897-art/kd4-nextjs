@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 본문 크기 검증 (DoS 방어 — 폼 제출은 최대 수 KB)
-    const contentLength = parseInt(request.headers.get('content-length') ?? '0', 10)
+    const contentLength = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
     if (contentLength > 65_536) {
       return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
     }
@@ -128,11 +128,13 @@ export async function POST(request: NextRequest) {
     }
 
     // 인메모리 디바운스 — 동일 번호 동시 요청 중복 차단 (DB count 비원자적 보완)
-    const lastSubmit = notifyPhoneMap.get(phone) ?? 0
+    // 전화번호 raw 대신 sha256 해시로 키잉 (heap dump PII 노출 방지)
+    const phoneHash = sha256(phone)
+    const lastSubmit = notifyPhoneMap.get(phoneHash) ?? 0
     if (Date.now() - lastSubmit < NOTIFY_DEBOUNCE_MS) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
-    notifyPhoneMap.set(phone, Date.now())
+    notifyPhoneMap.set(phoneHash, Date.now())
     // 오래된 항목 정리 (메모리 누수 방지 — 디바운스 창 경과 항목 삭제)
     if (notifyPhoneMap.size > 500) {
       const cutoff = Date.now() - NOTIFY_DEBOUNCE_MS

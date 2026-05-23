@@ -104,7 +104,7 @@ export async function PATCH(request: NextRequest) {
 
   let body: { id?: string; role?: string }
   try {
-    const clUsers = parseInt(request.headers.get('content-length') ?? '0', 10)
+    const clUsers = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
     if (clUsers > 512) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
     body = await request.json()
   } catch {

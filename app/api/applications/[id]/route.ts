@@ -68,7 +68,7 @@ export async function PATCH(
     if (!UUID_RE.test(id)) {
       return NextResponse.json({ error: '유효하지 않은 ID 형식입니다.' }, { status: 400 })
     }
-    const clApps = parseInt(request.headers.get('content-length') ?? '0', 10)
+    const clApps = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
     if (clApps > 4_096) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
     const { status } = await request.json().catch(() => ({}))
 

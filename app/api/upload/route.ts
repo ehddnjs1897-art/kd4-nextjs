@@ -72,7 +72,7 @@ async function requireUploadAccess(
 // ─── POST ────────────────────────────────────────────────────────────────────
 
 export async function POST(request: NextRequest) {
-  const clActorUpload = parseInt(request.headers.get('content-length') ?? '0', 10)
+  const clActorUpload = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
   if (clActorUpload > 6 * 1024 * 1024) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
 
   // actorId를 먼저 읽어서 권한 체크에 사용

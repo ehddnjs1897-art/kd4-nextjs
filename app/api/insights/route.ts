@@ -243,7 +243,7 @@ export async function POST(request: NextRequest) {
     if (auth instanceof NextResponse) return withCors(auth, origin)
 
     // 바디 크기 제한: 8KB (URL 2048 + memo 2000 + 여유)
-    const contentLengthI = parseInt(request.headers.get('content-length') ?? '0', 10)
+    const contentLengthI = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
     if (contentLengthI > 8_192) {
       return withCors(NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 }), origin)
     }

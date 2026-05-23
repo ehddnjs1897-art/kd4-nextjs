@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
 
     let body: { title?: string; content?: string; category?: string }
     try {
-      const clPostsPost = parseInt(request.headers.get('content-length') ?? '0', 10)
+      const clPostsPost = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
       if (clPostsPost > 32_768) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
       body = await request.json()
     } catch {
