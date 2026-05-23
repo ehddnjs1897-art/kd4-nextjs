@@ -398,6 +398,7 @@ export default function BenefitsPage() {
           {/* 서우스튜디오 */}
           <Link
             href="/benefits/seowoo-studio"
+            aria-label="서우스튜디오 배우 프로필 촬영 제휴 혜택 자세히 보기"
             className="kd4-card-hover"
             style={{ display: 'flex', alignItems: 'center', gap: 'clamp(16px, 4vw, 24px)', background: '#ffffff', border: '1.5px solid rgba(21,72,138,0.18)', borderRadius: 12, padding: 'clamp(18px, 3vw, 24px)', textDecoration: 'none', position: 'relative', overflow: 'hidden', flexWrap: 'wrap' }}
           >
@@ -414,6 +415,7 @@ export default function BenefitsPage() {
           {/* 리플레이 */}
           <Link
             href="/benefits/replay"
+            aria-label="배우 커뮤니티 리플레이 혜택 자세히 보기"
             className="kd4-card-hover"
             style={{ display: 'flex', alignItems: 'center', gap: 'clamp(16px, 4vw, 24px)', background: '#ffffff', border: '1.5px solid rgba(21,72,138,0.18)', borderRadius: 12, padding: 'clamp(18px, 3vw, 24px)', textDecoration: 'none', position: 'relative', overflow: 'hidden', flexWrap: 'wrap' }}
           >

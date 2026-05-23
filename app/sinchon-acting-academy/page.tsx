@@ -31,6 +31,7 @@ export const metadata: Metadata = {
   description:
     '서대문구 대현동, 이대역 도보 3분. KD4 액팅 스튜디오는 마이즈너 테크닉 정규반과 출연영상 클래스 등 9개 클래스를 소수정예로 운영하는 신촌 연기학원입니다. 무료 상담 가능.',
   keywords: ['신촌 연기학원', '서대문 연기학원', '이대 연기학원', '아현 연기학원', '충정로 연기학원', 'KD4 액팅 스튜디오'],
+  robots: { index: true, follow: true },
   alternates: { canonical: PAGE_URL },
   openGraph: {
     type: 'website',

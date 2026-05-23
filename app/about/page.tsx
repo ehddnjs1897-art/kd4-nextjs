@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
-import { buildBreadcrumb, buildOrganization } from '@/lib/seo-schemas'
+import { buildBreadcrumb, buildOrganization, buildPersonDongwon } from '@/lib/seo-schemas'
 
 export const metadata: Metadata = {
   title: '스튜디오 소개',
@@ -88,6 +88,7 @@ export default function AboutPage() {
     <div style={{ background: 'var(--bg)', color: 'var(--white)', minHeight: '100vh', paddingTop: '64px' }}>
       <PageJsonLd schemas={[
         buildOrganization(),
+        buildPersonDongwon(),
         buildBreadcrumb([
           { name: '홈', url: SITE_URL },
           { name: '스튜디오 소개', url: `${SITE_URL}/about` },

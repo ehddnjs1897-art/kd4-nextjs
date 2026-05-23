@@ -104,8 +104,8 @@ async function fetchOgMeta(url: string) {
       redirect: 'follow',
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; InsightsBot/1.0)' },
     })
-    // 리다이렉트 후 최종 URL도 안전한지 재검증 (DNS rebinding 1차 방어)
-    if (res.url && !isSafeExternalUrl(res.url)) {
+    // 리다이렉트 후 최종 URL도 안전한지 재검증 (DNS rebinding 1차 방어) — res.url 없으면 fail-closed
+    if (!res.url || !isSafeExternalUrl(res.url)) {
       return { title: null, description: null, image_url: null }
     }
     // 응답 크기 상한 500KB — 대형 페이지 메모리 DoS 방어

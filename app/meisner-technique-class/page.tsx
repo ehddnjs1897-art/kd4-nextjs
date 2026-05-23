@@ -30,6 +30,7 @@ export const metadata: Metadata = {
     '이바나 처벅 테크닉',
     '연기하지 않는 연기',
   ],
+  robots: { index: true, follow: true },
   alternates: { canonical: PAGE_URL },
   openGraph: {
     type: 'website',

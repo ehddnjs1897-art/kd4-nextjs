@@ -23,6 +23,7 @@ export const metadata: Metadata = {
     '연기학원',
     '신촌 연기학원',
   ],
+  robots: { index: true, follow: true },
   alternates: { canonical: PAGE_URL },
   openGraph: {
     type: 'website',

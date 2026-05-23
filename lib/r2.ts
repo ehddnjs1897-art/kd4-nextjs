@@ -154,7 +154,9 @@ export async function videoExists(key: string): Promise<boolean> {
 
 /** R2 key 생성 컨벤션 — 일관된 경로 보장 */
 export function buildVideoKey(actorId: string, originalFileName: string): string {
-  const ext = originalFileName.split('.').pop()?.toLowerCase() || 'mp4'
+  const rawExt = originalFileName.split('.').pop()?.toLowerCase() || ''
+  const SAFE_EXTS = ['mp4', 'webm', 'mov', 'avi', 'mkv', 'm4v']
+  const ext = SAFE_EXTS.includes(rawExt) ? rawExt : 'mp4'
   const timestamp = Date.now()
   return `actors/${actorId}/${timestamp}.${ext}`
 }

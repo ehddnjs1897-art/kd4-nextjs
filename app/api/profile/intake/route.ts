@@ -273,7 +273,7 @@ export async function POST(request: NextRequest) {
     ok: true,
     actorId,
     ...(partialErrors.length > 0 && { warnings: partialErrors }),
-  })
+  }, { headers: { 'Cache-Control': 'private, no-store' } })
   } catch (err) {
     console.error('[profile/intake] 서버 오류:', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '서버 내부 오류가 발생했습니다.' }, { status: 500 })

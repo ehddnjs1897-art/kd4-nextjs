@@ -29,6 +29,7 @@ export const metadata: Metadata = {
     '오디션 영상',
     'KD4 출연영상 클래스',
   ],
+  robots: { index: true, follow: true },
   alternates: { canonical: PAGE_URL },
   openGraph: {
     type: 'website',

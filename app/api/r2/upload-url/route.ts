@@ -12,7 +12,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 import { getUploadUrl, isR2Configured } from '@/lib/r2'
 
 const MAX_SIZE_BYTES = 300 * 1024 * 1024 // 300MB
-const ALLOWED_VIDEO_TYPES = new Set(['video/mp4', 'video/quicktime', 'video/x-msvideo', 'video/webm', 'video/x-m4v'])
+const ALLOWED_VIDEO_TYPES = new Set(['video/mp4', 'video/quicktime', 'video/x-msvideo', 'video/webm', 'video/x-m4v', 'video/x-matroska'])
 const ALLOWED_UPLOAD_ROLES = new Set(['member', 'actor', 'editor', 'admin'])
 
 // 레이트 리밋: 10분 내 10회 presigned URL 발급 초과 시 차단
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const uploadUrl = await getUploadUrl(key, contentType, 600) // 10분 — 누출 시 노출 창 최소화
-    return NextResponse.json({ uploadUrl, key })
+    return NextResponse.json({ uploadUrl, key }, { headers: { 'Cache-Control': 'private, no-store' } })
   } catch (e) {
     console.error('[r2/upload-url] presigned URL 발급 실패:', e)
     return NextResponse.json({ error: '업로드 URL 발급에 실패했습니다.' }, { status: 500 })

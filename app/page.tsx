@@ -828,6 +828,7 @@ export default function HomePage() {
           <button
             type="button"
             aria-pressed={marqueePaused}
+            aria-label={marqueePaused ? '캐스팅 마퀴 재생' : '캐스팅 마퀴 일시정지'}
             onClick={() => setMarqueePaused(v => !v)}
             style={{
               background: 'none', border: '1px solid var(--border)',
@@ -1160,6 +1161,7 @@ export default function HomePage() {
           <button
             type="button"
             aria-pressed={reviewPaused}
+            aria-label={reviewPaused ? '멤버 이야기 마퀴 재생' : '멤버 이야기 마퀴 일시정지'}
             onClick={() => setReviewPaused(v => !v)}
             style={{
               background: 'none', border: '1px solid var(--border)',

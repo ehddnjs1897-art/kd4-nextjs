@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
     }
     const text = rawText.slice(0, 40_000)
 
-    return NextResponse.json({ text })
+    return NextResponse.json({ text }, { headers: { 'Cache-Control': 'private, no-store' } })
   } catch (innerErr) {
     console.error('[ai/route] 내부 오류:', innerErr instanceof Error ? innerErr.message : String(innerErr))
     return NextResponse.json({ error: '분석 중 오류가 발생했습니다.' }, { status: 500 })
