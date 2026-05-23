@@ -261,6 +261,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ height: height || null, weight: weight || null, skills: skills || null, instagram: instagram || null, casting_summary: castingSummary.trim() || null }),
       })
+      if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '저장 실패')
       setInfoMsg('저장되었습니다.')
     } catch (e) {
@@ -371,6 +372,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       fd.append('actorId', actorId)
       fd.append('bucket', 'actor-photos')
       const res = await fetch('/api/upload', { method: 'POST', body: fd })
+      if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '업로드 실패')
       const { url, id } = await res.json()
       setPhotos(prev => [...prev, { id, url, is_profile: prev.length === 0 }])
@@ -407,6 +409,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_profile: true }),
       })
+      if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '변경 실패')
       setPhotos(prev => prev.map(p => ({ ...p, is_profile: p.id === id })))
     } catch (e) {
@@ -429,6 +432,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ youtube_id: yid, title: videoTitle.trim() || null }),
       })
+      if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '추가 실패')
       const row = await res.json()
       setVideos(prev => [{ id: row.id, youtube_id: yid, title: videoTitle.trim() }, ...prev])

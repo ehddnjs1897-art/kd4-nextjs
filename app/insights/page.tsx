@@ -71,15 +71,23 @@ export default function InsightsPage() {
   useEffect(() => { fetchInsights() }, [fetchInsights])
 
   const handleSave = async () => {
-    if (!url.trim()) return
+    const trimmed = url.trim()
+    if (!trimmed) return
+    // URL 형식 검증
+    try { new URL(trimmed) } catch {
+      setSaveError('올바른 URL 형식이 아닙니다. (https://... 형태로 입력해주세요)')
+      setTimeout(() => setSaveError(''), 4000)
+      return
+    }
     setSaving(true)
     setSaveError('')
     try {
       const res = await fetch('/api/insights', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: url.trim(), memo: memo.trim() || undefined }),
+        body: JSON.stringify({ url: trimmed, memo: memo.trim() || undefined }),
       })
+      if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error()
       setUrl('')
       setMemo('')
