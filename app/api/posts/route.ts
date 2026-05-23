@@ -93,12 +93,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '잠시 후 다시 시도해주세요. (1분 최대 5개)' }, { status: 429 })
   }
 
-  // 작성자 이름 조회 (admin 클라이언트 → RLS 우회)
+  // 작성자 이름 + 역할 조회 (admin 클라이언트 → RLS 우회)
   const { data: profile } = await supabaseAdmin
     .from('profiles')
-    .select('name')
+    .select('name, role')
     .eq('id', user.id)
     .maybeSingle()
+
+  // '공지' 카테고리는 관리자만 사용 가능 (UI에서도 숨기지만 API 레벨에서도 강제)
+  if (category === '공지' && profile?.role !== 'admin') {
+    return NextResponse.json({ error: '공지 카테고리는 관리자만 사용할 수 있습니다.' }, { status: 403 })
+  }
 
   const authorName = profile?.name ?? user.email?.split('@')[0] ?? '익명'
 

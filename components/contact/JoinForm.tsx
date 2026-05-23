@@ -742,6 +742,7 @@ export default function JoinForm() {
       <button
         type="submit"
         disabled={loading}
+        aria-busy={loading}
         style={{
           width: '100%',
           padding: '16px',

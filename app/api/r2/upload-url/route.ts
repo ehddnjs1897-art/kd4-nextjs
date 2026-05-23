@@ -52,6 +52,9 @@ export async function POST(request: NextRequest) {
   if (!ALLOWED_VIDEO_TYPES.has(contentType)) {
     return NextResponse.json({ error: '지원하지 않는 영상 형식입니다. (mp4, mov, avi, webm만 가능)' }, { status: 400 })
   }
+  if (size <= 0) {
+    return NextResponse.json({ error: '파일 크기가 올바르지 않습니다.' }, { status: 400 })
+  }
   if (size > MAX_SIZE_BYTES) {
     return NextResponse.json(
       { error: `영상이 너무 큽니다. 최대 ${MAX_SIZE_BYTES / 1024 / 1024}MB까지 가능합니다.` },
@@ -59,8 +62,12 @@ export async function POST(request: NextRequest) {
     )
   }
 
+  // 확장자 allowlist — 클라이언트 제공 filename의 확장자 검증 (content-type과 별도)
+  const ALLOWED_EXTS = new Set(['mp4', 'mov', 'avi', 'webm', 'm4v', 'mkv'])
+  const rawExt = filename.split('.').pop()?.toLowerCase() || ''
+  const ext = ALLOWED_EXTS.has(rawExt) ? rawExt : 'mp4'
+
   // 사용자 네임스페이스 키 (배우 row 생성 전 단계 — intake)
-  const ext = filename.split('.').pop()?.toLowerCase() || 'mp4'
   const key = `actors/intake/${user.id}/${Date.now()}.${ext}`
 
   try {

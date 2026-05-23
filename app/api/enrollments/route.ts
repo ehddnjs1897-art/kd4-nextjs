@@ -58,6 +58,12 @@ export async function POST(request: Request) {
   if (!year_month || !/^\d{4}-\d{2}$/.test(year_month)) {
     return NextResponse.json({ error: '수강 월이 올바르지 않습니다.' }, { status: 400 })
   }
+  // 월 범위 검증 (1~12) — 형식은 맞지만 의미 없는 값 차단 (예: 2020-13, 9999-99)
+  const ym = year_month.split('-')
+  const ymMonth = parseInt(ym[1], 10)
+  if (ymMonth < 1 || ymMonth > 12) {
+    return NextResponse.json({ error: '수강 월이 올바르지 않습니다. (1~12월)' }, { status: 400 })
+  }
   if (phone && !/^0[0-9]{1,2}[\-\s]?[0-9]{3,4}[\-\s]?[0-9]{4}$/.test(phone.replace(/\s/g, ''))) {
     return NextResponse.json({ error: '연락처 형식이 올바르지 않습니다. (예: 010-1234-5678)' }, { status: 400 })
   }

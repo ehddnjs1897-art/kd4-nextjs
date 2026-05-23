@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     url: PAGE_URL,
     title: '마이즈너 테크닉 정규 클래스 — KD4 액팅 스튜디오',
     description: '권동원 대표 직강 4개월 정규 코스. 정원 8명 소수정예.',
-    images: [`${SITE_URL}/og-image.jpg`],
+    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: '마이즈너 테크닉 정규 클래스 — KD4 액팅 스튜디오' }],
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
   },

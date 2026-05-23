@@ -4,8 +4,9 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
-const CATEGORIES = ['일반', '공지', '질문', '자유', '수업'] as const
-type Category = typeof CATEGORIES[number]
+const ALL_CATEGORIES = ['일반', '공지', '질문', '자유', '수업'] as const
+const USER_CATEGORIES = ['일반', '질문', '자유', '수업'] as const
+type Category = typeof ALL_CATEGORIES[number]
 
 interface PostData {
   id: string
@@ -27,41 +28,48 @@ export default function EditPage() {
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   const loadPost = useCallback(async () => {
-    const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    try {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
 
-    if (!user) {
-      router.replace(`/auth/login?next=/board/${id}/edit`)
-      return
-    }
+      if (!user) {
+        router.replace(`/auth/login?next=/board/${id}/edit`)
+        return
+      }
 
-    // post + profile 병렬 조회
-    const [{ data, error: fetchError }, { data: profile }] = await Promise.all([
-      supabase.from('posts').select('id, title, content, category, author_id').eq('id', id).single(),
-      supabase.from('profiles').select('role').eq('id', user.id).single(),
-    ])
+      // post + profile 병렬 조회
+      const [{ data, error: fetchError }, { data: profile }] = await Promise.all([
+        supabase.from('posts').select('id, title, content, category, author_id').eq('id', id).maybeSingle(),
+        supabase.from('profiles').select('role').eq('id', user.id).maybeSingle(),
+      ])
 
-    if (fetchError || !data) {
-      setError('게시글을 찾을 수 없습니다.')
+      if (fetchError || !data) {
+        setError('게시글을 찾을 수 없습니다.')
+        setLoading(false)
+        return
+      }
+
+      const isAdminUser = profile?.role === 'admin'
+      setIsAdmin(isAdminUser)
+      if (data.author_id !== user.id && !isAdminUser) {
+        setError('수정 권한이 없습니다.')
+        setLoading(false)
+        return
+      }
+
+      const typedPost = data as PostData
+      setPost(typedPost)
+      setTitle(typedPost.title)
+      setContent(typedPost.content)
+      setCategory(typedPost.category as Category)
       setLoading(false)
-      return
-    }
-
-    const isAdmin = profile?.role === 'admin'
-    if (data.author_id !== user.id && !isAdmin) {
-      setError('수정 권한이 없습니다.')
+    } catch {
+      setError('게시글을 불러오는 중 오류가 발생했습니다.')
       setLoading(false)
-      return
     }
-
-    const typedPost = data as PostData
-    setPost(typedPost)
-    setTitle(typedPost.title)
-    setContent(typedPost.content)
-    setCategory(typedPost.category as Category)
-    setLoading(false)
   }, [id, router])
 
   useEffect(() => {
@@ -153,12 +161,12 @@ export default function EditPage() {
           <div style={{ marginBottom: '18px' }}>
             <span id="edit-category-label" style={labelStyle}>카테고리</span>
             <div role="group" aria-labelledby="edit-category-label" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '8px' }}>
-              {CATEGORIES.map((cat) => (
+              {(isAdmin ? ALL_CATEGORIES : USER_CATEGORIES).map((cat) => (
                 <button
                   key={cat}
                   type="button"
                   aria-pressed={category === cat}
-                  onClick={() => setCategory(cat)}
+                  onClick={() => setCategory(cat as Category)}
                   style={{
                     padding: '7px 16px',
                     borderRadius: 'var(--radius)',

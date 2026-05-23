@@ -52,10 +52,13 @@ export async function PATCH(
 
   const update: Record<string, unknown> = {}
 
-  // 수강 상태 — 본인/관리자
+  // 수강 상태 — 본인/관리자 (단, '확정' 설정은 관리자만 — 본인은 '휴강'/'취소'만 가능)
   if (body.status !== undefined) {
     if (!VALID_STATUS.includes(body.status)) {
       return NextResponse.json({ error: '잘못된 수강 상태입니다.' }, { status: 400 })
+    }
+    if (body.status === '확정' && !isAdmin) {
+      return NextResponse.json({ error: '확정 상태는 관리자만 설정할 수 있습니다.' }, { status: 403 })
     }
     update.status = body.status
   }

@@ -53,6 +53,7 @@ export default function WritePage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, content, category }),
+        signal: AbortSignal.timeout(15_000),
       })
 
       let json: { id?: string; error?: string } = {}
