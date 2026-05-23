@@ -125,7 +125,7 @@ export async function POST(request: NextRequest) {
     revalidateTag(`actor-${actorId}`)
     return NextResponse.json({ video: data })
   } catch (err) {
-    console.error('[upload] 예상치 못한 오류:', err)
+    console.error('[upload] 예상치 못한 오류:', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '업로드 처리 중 오류가 발생했습니다.' }, { status: 500 })
   }
 }

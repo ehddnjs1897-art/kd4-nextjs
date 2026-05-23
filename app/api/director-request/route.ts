@@ -6,6 +6,7 @@
  * 승인은 관리자가 /api/admin/approve-crew?uid=... 링크로 처리 (director_pending → director)
  */
 import { NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { notifyDirectorRequest } from '@/lib/email'
@@ -95,9 +96,10 @@ export async function POST() {
       )
     }
 
+    revalidatePath('/dashboard')
     return NextResponse.json({ success: true, role: 'director_pending' })
   } catch (err) {
-    console.error('[POST /api/director-request]', err)
+    console.error('[POST /api/director-request]', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '신청 처리 중 오류가 발생했습니다.' }, { status: 500 })
   }
 }

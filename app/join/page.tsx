@@ -165,7 +165,8 @@ export default function JoinPage() {
   const isDeadlineExpired = new Date() > new Date(DEADLINE)
 
   return (
-    <div
+    <main
+      id="main-content"
       className="uplift-page"
       style={{
         background: 'var(--bg)',
@@ -1568,6 +1569,6 @@ export default function JoinPage() {
       </section>
 
       <StickyBottomCTA />
-    </div>
+    </main>
   )
 }

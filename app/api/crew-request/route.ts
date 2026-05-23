@@ -4,6 +4,7 @@
  *   + 관리자 이메일 발송 + Solapi SMS 알림 (trally 패턴 차용)
  */
 import { NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { notifyCrewRequest } from '@/lib/email'
@@ -93,9 +94,10 @@ export async function POST() {
       )
     }
 
+    revalidatePath('/dashboard')
     return NextResponse.json({ success: true, role: 'crew_pending' })
   } catch (err) {
-    console.error('[POST /api/crew-request]', err)
+    console.error('[POST /api/crew-request]', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '신청 처리 중 오류가 발생했습니다.' }, { status: 500 })
   }
 }

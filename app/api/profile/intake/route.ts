@@ -240,9 +240,9 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // 4. 영상 rows (R2, 최대 3개 — reel 2 + monologue 1)
-  for (const vid of videos.slice(0, 3)) {
-    const { error: videoErr } = await supabaseAdmin.from('actor_videos').insert({
+  // 4. 영상 rows (R2, 최대 3개 — reel 2 + monologue 1) — 단일 배치 insert
+  if (videos.length > 0) {
+    const videoRows = videos.slice(0, 3).map((vid) => ({
       actor_id: actorId,
       title: vid.filename,
       r2_key: vid.key,
@@ -250,7 +250,8 @@ export async function POST(request: NextRequest) {
       uploaded_at: nowIso,
       is_public: false,
       video_type: vid.video_type ?? 'reel',
-    })
+    }))
+    const { error: videoErr } = await supabaseAdmin.from('actor_videos').insert(videoRows)
     if (videoErr) {
       console.error('[profile/intake] 영상 등록 실패:', videoErr.message)
       partialErrors.push('영상 등록 실패')

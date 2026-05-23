@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: '로그인 | KD4 액팅 스튜디오',
+  title: '로그인',
   robots: { index: false, follow: false },
 }
 

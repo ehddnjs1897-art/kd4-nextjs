@@ -99,12 +99,10 @@ function getCourseSchemas() {
     },
     ...(cls.instructor
       ? {
-          instructor: {
-            '@type': 'Person',
-            name: cls.instructor,
-          },
+          instructor: { '@id': `${SITE_URL}#dongwon` },
         }
       : {}),
+    url: `${SITE_URL}/classes`,
     courseMode: 'Offline',
     locationCreated: {
       '@type': 'Place',

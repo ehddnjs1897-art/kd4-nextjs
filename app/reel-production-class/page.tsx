@@ -18,7 +18,7 @@ const PAGE_URL = `${SITE_URL}/reel-production-class`
 const FILM_CLASS = CLASSES.find((c) => c.nameKo === '출연영상 클래스')!
 
 export const metadata: Metadata = {
-  title: '출연영상 클래스 — 배우 포트폴리오 제작 | KD4',
+  title: '출연영상 클래스 — 배우 포트폴리오 제작',
   description:
     '전문 영화팀과 함께 만드는 출연영상 포트폴리오. 마이즈너 테크닉 + 맞춤 시나리오 + 현장 촬영. 현직 배우 100명+ 참여한 시그니처 클래스.',
   keywords: [

@@ -32,13 +32,13 @@ export async function GET(request: NextRequest) {
     const { data, error } = await query
 
     if (error) {
-      console.error('[GET /api/game/scores] error:', error)
+      console.error('[GET /api/game/scores] error:', error?.message ?? String(error))
       return NextResponse.json({ error: '리더보드 조회 실패' }, { status: 500 })
     }
 
     return NextResponse.json({ data })
   } catch (err) {
-    console.error('[GET /api/game/scores]', err)
+    console.error('[GET /api/game/scores]', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '리더보드 조회 실패' }, { status: 500 })
   }
 }
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
     .maybeSingle()
 
   if (error || !data) {
-    console.error('[POST /api/game/scores] insert error:', error)
+    console.error('[POST /api/game/scores] insert error:', error?.message ?? String(error))
     return NextResponse.json({ error: '점수 저장 중 오류가 발생했습니다.' }, { status: 500 })
   }
 

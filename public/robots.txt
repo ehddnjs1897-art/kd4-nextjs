@@ -9,6 +9,9 @@ Disallow: /board
 Disallow: /enroll
 Disallow: /onboarding
 Disallow: /benefits/replay
+Disallow: /join
+Disallow: /ai-tools
+Disallow: /game
 
 # 네이버 검색봇 허용
 User-agent: Yeti

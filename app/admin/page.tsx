@@ -8,7 +8,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 import AdminDashboard from './AdminDashboard'
 
 export const metadata: Metadata = {
-  title: '관리자 | KD4 액팅 스튜디오',
+  title: '관리자',
   robots: { index: false, follow: false },
 }
 

@@ -175,7 +175,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     revalidateTag(`actor-${actorId}`)
     return NextResponse.json({ results, errors })
   } catch (err) {
-    console.error('[POST /api/actors/[id]/filmography/bulk]', err)
+    console.error('[POST /api/actors/[id]/filmography/bulk]', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '서버 오류가 발생했습니다.' }, { status: 500 })
   }
 }
