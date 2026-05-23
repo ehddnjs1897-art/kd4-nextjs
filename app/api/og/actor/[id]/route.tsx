@@ -104,7 +104,7 @@ export async function GET(
   const { id } = await params
   // UUID 검증 — 비 UUID id가 24h CDN 캐시를 오염시키는 DoS 방지
   if (!UUID_RE_OG.test(id)) {
-    return new ImageResponse(fallbackImage, { width: 1200, height: 630 })
+    return new ImageResponse(fallbackImage, { width: 1200, height: 630, headers: { 'X-Robots-Tag': 'noindex' } })
   }
   const actor = await fetchActor(id)
 
@@ -128,7 +128,7 @@ export async function GET(
           kd4.club
         </div>
       ),
-      { width: 1200, height: 630 }
+      { width: 1200, height: 630, headers: { 'X-Robots-Tag': 'noindex' } }
     )
   }
 
@@ -275,6 +275,7 @@ export async function GET(
       height: 630,
       headers: {
         'Cache-Control': 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400',
+        'X-Robots-Tag': 'noindex',
       },
     }
   )

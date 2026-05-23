@@ -300,9 +300,9 @@ export default function Footer() {
             gap: '12px',
           }}
         >
-          <p style={{ color: 'var(--gray)', fontSize: '0.75rem', lineHeight: 1.6 }}>
+          <address style={{ color: 'var(--gray)', fontSize: '0.75rem', lineHeight: 1.6, fontStyle: 'normal' }}>
             유익액터스 &middot; 대표 권동원 &middot; 사업자등록번호 284-11-02669
-          </p>
+          </address>
           <p style={{ color: 'var(--gray)', fontSize: '0.75rem' }}>
             &copy; {new Date().getFullYear()} KD4 액팅 스튜디오. All rights reserved.
           </p>

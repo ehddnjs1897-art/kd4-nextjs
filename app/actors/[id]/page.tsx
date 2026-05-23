@@ -200,7 +200,7 @@ export async function generateMetadata({
       description,
       url: pageUrl,
       siteName: 'KD4 액팅 스튜디오',
-      type: 'website',
+      type: 'profile',
       locale: 'ko_KR',
       images: [
         {
