@@ -106,6 +106,7 @@ export default function HomePage() {
        - 등장 이후에는 어떤 재조정도 없음 (리사이즈 리스너 제거)
        - 데스크톱에서 KoPub이 뒤늦게 적용돼서 h1 폭만 커지는 이슈 방지 */
   const [titleReady, setTitleReady] = useState(false)
+  const [marqueePaused, setMarqueePaused] = useState(false)
   useEffect(() => {
     let cancelled = false
     const container = heroTitleRef.current
@@ -825,8 +826,23 @@ export default function HomePage() {
         </div>
 
         {/* 마퀴 — 컨테이너 밖으로 full-width */}
+        {/* WCAG 2.2.2: 자동 이동 콘텐츠 일시정지 버튼 */}
+        <div style={{ textAlign: 'center', marginBottom: 8 }}>
+          <button
+            type="button"
+            aria-pressed={marqueePaused}
+            onClick={() => setMarqueePaused(v => !v)}
+            style={{
+              background: 'none', border: '1px solid var(--border)',
+              color: 'var(--gray)', borderRadius: 6, padding: '4px 12px',
+              fontSize: '0.72rem', cursor: 'pointer', letterSpacing: '0.05em',
+            }}
+          >
+            {marqueePaused ? '▶ 재생' : '⏸ 일시정지'}
+          </button>
+        </div>
         <div className="marquee-wrap">
-          <div className="marquee-track">
+          <div className="marquee-track" style={{ animationPlayState: marqueePaused ? 'paused' : 'running' }}>
             {[...CASTING_PHOTOS, ...CASTING_PHOTOS].map((photo, i) => (
               <div
                 key={`${photo.url}-${i}`}

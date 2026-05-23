@@ -62,6 +62,7 @@ export async function POST(request: NextRequest) {
     if (now - ts > INTAKE_COOLDOWN_MS) intakeCooldowns.delete(k)
   }
 
+  try {
   const clIntake = parseInt(request.headers.get('content-length') ?? '0', 10)
   if (clIntake > 32_768) {
     return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
@@ -273,4 +274,8 @@ export async function POST(request: NextRequest) {
     actorId,
     ...(partialErrors.length > 0 && { warnings: partialErrors }),
   })
+  } catch (err) {
+    console.error('[profile/intake] 서버 오류:', err instanceof Error ? err.message : String(err))
+    return NextResponse.json({ error: '서버 내부 오류가 발생했습니다.' }, { status: 500 })
+  }
 }

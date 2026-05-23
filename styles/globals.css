@@ -1938,7 +1938,7 @@ main {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .review-marquee-track, .partner-marquee-track {
+  .review-marquee-track, .partner-marquee-track, .marquee-track {
     animation: none !important;
   }
 }
