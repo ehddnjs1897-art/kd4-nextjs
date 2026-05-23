@@ -15,7 +15,7 @@ export default async function AdminActorsPage() {
   // ── 관리자 인증 ──────────────────────────────────────────────────────────────
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
+  if (!user) redirect('/auth/login?next=/admin/actors')
 
   const { data: profile } = await supabaseAdmin
     .from('profiles').select('role').eq('id', user.id).maybeSingle()

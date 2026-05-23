@@ -55,7 +55,7 @@ export default function UpdatePasswordPage() {
     const { error: updateError } = await supabase.auth.updateUser({ password })
 
     if (updateError) {
-      setError(`비밀번호 변경에 실패했습니다: ${updateError.message}`)
+      setError('비밀번호 변경에 실패했습니다. 링크가 만료된 경우 비밀번호 찾기를 다시 요청해 주세요.')
       setLoading(false)
       return
     }

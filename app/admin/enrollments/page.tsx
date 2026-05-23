@@ -10,7 +10,7 @@ export default async function AdminEnrollmentsPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
+  if (!user) redirect('/auth/login?next=/admin/enrollments')
 
   // 권한 확인 먼저 — PII 데이터(enrollments)는 role 확인 후에만 조회
   const { data: profile } = await supabaseAdmin

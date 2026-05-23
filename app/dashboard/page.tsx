@@ -43,7 +43,7 @@ const ROLE_COLOR: Record<string, string> = {
 export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
+  if (!user) redirect('/auth/login?next=/dashboard')
 
   // profile + enrollments 병렬 조회 (enrollments는 user.id만 있으면 됨)
   const now = new Date()

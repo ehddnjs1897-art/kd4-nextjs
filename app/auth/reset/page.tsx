@@ -70,6 +70,7 @@ export default function ResetPasswordPage() {
                 placeholder="example@email.com"
                 required
                 disabled={loading}
+                autoComplete="email"
                 style={styles.input}
               />
             </div>

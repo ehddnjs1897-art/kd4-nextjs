@@ -37,7 +37,7 @@ async function fetchProfiles(): Promise<Profile[]> {
 export default async function AdminUsersPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login?next=/admin/users')
+  if (!user) redirect('/auth/login?next=/admin')
 
   // 권한 확인 + 전체 profiles 병렬 조회
   const [{ data: myProfile }, profiles] = await Promise.all([

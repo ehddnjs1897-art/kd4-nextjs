@@ -18,14 +18,25 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/admin?error=invalid_uid`)
   }
 
+  // CSRF 방어 — Referer 또는 Origin이 같은 사이트에서 온 요청인지 확인
+  // (SameSite=Lax 쿠키는 cross-site img/link GET을 차단하지 않음)
+  const referer = request.headers.get('referer') ?? ''
+  const reqOrigin = request.headers.get('origin') ?? ''
+  const isSameSite = referer.startsWith(origin) || reqOrigin === origin || referer === ''
+  // referer === '' 허용 — 이메일 클라이언트는 Referer를 보내지 않음
+  if (!isSameSite) {
+    return NextResponse.redirect(`${origin}/admin?error=invalid_request`)
+  }
+
   // 관리자 인증 확인
   const supabase = await createClient()
   const { data: { user }, error: authErr } = await supabase.auth.getUser()
 
   if (authErr || !user) {
-    // 로그인 안 된 경우 → 로그인 후 다시 이 URL로 리디렉트
+    // 로그인 안 된 경우 → /admin으로 보냄 (API route를 next로 쓰면 로그인 후 JSON이 노출됨)
+    // 로그인 후 이메일 링크를 다시 클릭하면 정상 처리됨
     return NextResponse.redirect(
-      `${origin}/auth/login?next=${encodeURIComponent(`/api/admin/approve-crew?uid=${uid}`)}`
+      `${origin}/auth/login?next=${encodeURIComponent('/admin')}`
     )
   }
 

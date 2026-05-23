@@ -64,7 +64,7 @@ export default async function GalleryEditPage() {
   } = await supabase.auth.getUser()
 
   if (authErr || !user) {
-    redirect('/auth/login')
+    redirect('/auth/login?next=/dashboard/edit')
   }
 
   // ── 프로필 · 역할 확인 ─────────────────────────────────────────────────────
