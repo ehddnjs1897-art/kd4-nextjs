@@ -206,7 +206,7 @@ export async function POST(request: NextRequest) {
           signal: AbortSignal.timeout(10000),
         })
       } catch (err) {
-        console.error('[notify] Make webhook 실패:', err)
+        console.error('[notify] Make webhook 실패:', err instanceof Error ? err.message : String(err))
       }
     }
 
@@ -221,20 +221,20 @@ export async function POST(request: NextRequest) {
         : null
       const msg = `[KD4 신규상담] ${safeName} / ${safePhone}${safeClass ? ` / ${safeClass}` : ''}`
       await sendSMS(adminPhone, msg).catch((err) =>
-        console.error('[notify] 관리자 SMS 실패:', err)
+        console.error('[notify] 관리자 SMS 실패:', err instanceof Error ? err.message : String(err))
       )
     }
 
     // 4. Meta CAPI (서버사이드 Lead 이벤트) — iOS14 ATT 추적 누락 회복
     if (record) {
       sendMetaCAPI(record).catch((err) =>
-        console.error('[notify] Meta CAPI 실패:', err)
+        console.error('[notify] Meta CAPI 실패:', err instanceof Error ? err.message : String(err))
       )
     }
 
     return NextResponse.json({ ok: true, id: savedId })
   } catch (err) {
-    console.error('[notify] route 처리 실패:', err)
+    console.error('[notify] route 처리 실패:', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '요청 처리 실패' }, { status: 500 })
   }
 }

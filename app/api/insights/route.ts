@@ -258,7 +258,7 @@ export async function POST(request: NextRequest) {
 
     return withCors(NextResponse.json(data, { status: 201 }), origin)
   } catch (err) {
-    console.error('[POST /api/insights]', err)
+    console.error('[POST /api/insights]', err instanceof Error ? err.message : String(err))
     return withCors(NextResponse.json({ error: '인사이트 저장 중 오류가 발생했습니다.' }, { status: 500 }), origin)
   }
 }

@@ -139,6 +139,7 @@ export default function SignupPage() {
 
           <div style={styles.typeGrid}>
             <button
+              type="button"
               style={{
                 ...styles.typeCard,
                 ...(memberType === 'actor' ? styles.typeCardActive : {}),
@@ -155,6 +156,7 @@ export default function SignupPage() {
             </button>
 
             <button
+              type="button"
               style={{
                 ...styles.typeCard,
                 ...(memberType === 'director' ? styles.typeCardActive : {}),
@@ -172,6 +174,7 @@ export default function SignupPage() {
           </div>
 
           <button
+            type="button"
             style={styles.btnPrimary}
             onClick={() => setStep('form')}
           >
@@ -228,6 +231,7 @@ export default function SignupPage() {
             {memberType === 'actor' ? '🎬 배우 회원' : '🎥 디렉터 회원'}
           </span>
           <button
+            type="button"
             style={styles.typeChangeBtn}
             onClick={() => setStep('type-select')}
           >
@@ -237,7 +241,7 @@ export default function SignupPage() {
 
         <h1 style={styles.title}>회원가입</h1>
 
-        {error && <div style={styles.errorBox} role="alert">{error}</div>}
+        {error && <div style={styles.errorBox} role="alert" aria-live="assertive">{error}</div>}
 
         <form onSubmit={handleSignup} style={styles.form}>
           {/* 이름 */}

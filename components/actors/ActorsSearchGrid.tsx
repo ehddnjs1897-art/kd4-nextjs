@@ -64,6 +64,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
         />
         {query && (
           <button
+            type="button"
             onClick={() => setQuery('')}
             aria-label="검색 초기화"
             style={{
@@ -89,6 +90,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
             {query ? `"${query}" 에 해당하는 배우가 없습니다.` : '등록된 배우가 없습니다.'}
           </p>
           <button
+            type="button"
             onClick={() => setQuery('')}
             style={{
               display: 'inline-block', padding: '8px 20px',

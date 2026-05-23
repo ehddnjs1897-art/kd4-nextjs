@@ -65,7 +65,7 @@ export async function GET(
 
     return NextResponse.json({ actor: typedActor })
   } catch (err) {
-    console.error('[GET /api/actors/[id]] 예상치 못한 오류:', err)
+    console.error('[GET /api/actors/[id]] 예상치 못한 오류:', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '서버 내부 오류가 발생했습니다.' }, { status: 500 })
   }
 }
@@ -153,7 +153,7 @@ export async function PATCH(
     revalidateTag(`actor-${id}`)
     return NextResponse.json({ ok: true })
   } catch (err) {
-    console.error('[PATCH /api/actors/[id]]', err)
+    console.error('[PATCH /api/actors/[id]]', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '서버 내부 오류' }, { status: 500 })
   }
 }

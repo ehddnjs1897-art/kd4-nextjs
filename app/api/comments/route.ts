@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(data, { status: 201 })
   } catch (err) {
-    console.error('[POST /api/comments]', err)
+    console.error('[POST /api/comments]', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '댓글 작성 중 오류가 발생했습니다.' }, { status: 500 })
   }
 }

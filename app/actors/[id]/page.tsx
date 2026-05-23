@@ -447,8 +447,8 @@ export default async function ActorDetailPage({
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'center' }}>
                 {canContact ? (
                   <>
-                    {actor.phone && <a href={`tel:${actor.phone}`} style={{ fontSize: '0.9rem', color: 'var(--gold)', textDecoration: 'none', fontWeight: 600 }}><span aria-hidden="true">☎ </span>{actor.phone}</a>}
-                    {actor.email && <a href={`mailto:${actor.email}`} style={{ fontSize: '0.9rem', color: 'var(--gold)', textDecoration: 'none', fontWeight: 600 }}><span aria-hidden="true">✉ </span>{actor.email}</a>}
+                    {actor.phone && <a href={`tel:${actor.phone}`} aria-label={`전화하기 ${actor.phone}`} style={{ fontSize: '0.9rem', color: 'var(--gold)', textDecoration: 'none', fontWeight: 600 }}><span aria-hidden="true">☎ </span>{actor.phone}</a>}
+                    {actor.email && <a href={`mailto:${actor.email}`} aria-label={`이메일 보내기 ${actor.email}`} style={{ fontSize: '0.9rem', color: 'var(--gold)', textDecoration: 'none', fontWeight: 600 }}><span aria-hidden="true">✉ </span>{actor.email}</a>}
                   </>
                 ) : (
                   <p style={{ fontSize: '0.82rem', color: 'var(--gray)' }}>

@@ -239,7 +239,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
             alignItems: 'center',
           }}>
             <span>{approvedMsg}</span>
-            <button onClick={() => setApprovedMsg(null)} aria-label="닫기" style={{ background: 'none', border: 'none', color: '#4ade80', cursor: 'pointer', fontSize: '1.1rem' }}>×</button>
+            <button type="button" onClick={() => setApprovedMsg(null)} aria-label="닫기" style={{ background: 'none', border: 'none', color: '#4ade80', cursor: 'pointer', fontSize: '1.1rem' }}>×</button>
           </div>
         )}
 
@@ -313,6 +313,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                       </td>
                       <td style={s.td}>
                         <button
+                          type="button"
                           onClick={() => handleRoleChange(p.id, p.role)}
                           disabled={loadingId === p.id}
                           style={
@@ -366,6 +367,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                       </td>
                       <td style={s.td}>
                         <button
+                          type="button"
                           onClick={() => handleActorToggle(a.id, a.is_public)}
                           disabled={loadingId === a.id}
                           style={a.is_public ? s.actionBtnDanger : s.actionBtn}
@@ -417,11 +419,12 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                         <td style={s.td}>
                           {confirmingDeletePostId === p.id ? (
                             <div style={{ display: 'flex', gap: 4 }}>
-                              <button onClick={() => setConfirmingDeletePostId(null)} style={{ ...s.actionBtn, fontSize: '0.72rem', padding: '4px 8px' }}>취소</button>
-                              <button onClick={() => handleDeletePost(p.id)} disabled={loadingId === p.id} style={{ ...s.actionBtnDanger, background: '#ef4444', color: '#fff' }}>확인</button>
+                              <button type="button" onClick={() => setConfirmingDeletePostId(null)} style={{ ...s.actionBtn, fontSize: '0.72rem', padding: '4px 8px' }}>취소</button>
+                              <button type="button" onClick={() => handleDeletePost(p.id)} disabled={loadingId === p.id} style={{ ...s.actionBtnDanger, background: '#ef4444', color: '#fff' }}>확인</button>
                             </div>
                           ) : (
                             <button
+                              type="button"
                               onClick={() => handleDeletePost(p.id)}
                               disabled={loadingId === p.id}
                               style={s.actionBtnDanger}
@@ -482,6 +485,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                         <td style={s.td}>{formatDate(app.created_at)}</td>
                         <td style={s.td}>
                           <button
+                            type="button"
                             onClick={() => handleStatusChange(app.id, app.status)}
                             disabled={loadingId === app.id}
                             style={s.actionBtn}

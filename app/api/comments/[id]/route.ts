@@ -58,7 +58,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (err) {
-    console.error('[DELETE /api/comments/[id]]', err)
+    console.error('[DELETE /api/comments/[id]]', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '댓글 삭제 중 오류가 발생했습니다.' }, { status: 500 })
   }
 }

@@ -10,6 +10,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { uploadFile } from '@/lib/storage'
+import { revalidateTag } from '@/lib/revalidate'
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5 MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
@@ -183,6 +184,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'DB 삽입 실패' }, { status: 500 })
     }
 
+    revalidateTag('actors')
+    revalidateTag(`actor-${actorId}`)
     return NextResponse.json({ url: result.url, id: photoRow.id, path: result.path, provider: result.provider }, { status: 200 })
   } catch (err: unknown) {
     console.error('[POST /api/upload] 오류:', err instanceof Error ? err.message : err)
