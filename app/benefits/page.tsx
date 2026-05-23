@@ -105,7 +105,7 @@ function SectionHeader({ eyebrow, title, desc }: { eyebrow: string; title: strin
           marginBottom: '14px',
         }}
       >
-        {eyebrow}
+        <span lang="en">{eyebrow}</span>
       </p>
       <h2
         style={{
@@ -173,7 +173,7 @@ export default function BenefitsPage() {
             marginBottom: '24px',
           }}
         >
-          MEMBER BENEFITS
+          <span lang="en">MEMBER BENEFITS</span>
         </p>
         <h1
           style={{

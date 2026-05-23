@@ -202,7 +202,7 @@ export async function GET(request: NextRequest) {
     const rawLimit = parseInt(searchParams.get('limit') ?? '50', 10)
     const rawOffset = parseInt(searchParams.get('offset') ?? '0', 10)
     const limit = Number.isFinite(rawLimit) ? Math.min(100, Math.max(1, rawLimit)) : 50
-    const offset = Number.isFinite(rawOffset) ? Math.max(0, rawOffset) : 0
+    const offset = Number.isFinite(rawOffset) ? Math.min(1_000_000, Math.max(0, rawOffset)) : 0
 
     let query = supabaseAdmin
       .from('insights')

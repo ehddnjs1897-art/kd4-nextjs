@@ -471,7 +471,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
           <section key={cat} aria-label={CATEGORY_LABEL[cat]} style={s.section}>
             <h2 style={s.sectionHeading}>
               <span style={s.sectionNum}>{num}</span>
-              <span style={s.sectionTitle}>{CATEGORY_LABEL[cat].toUpperCase()}</span>
+              <span lang={cat === 'cf' ? 'en' : undefined} style={s.sectionTitle}>{CATEGORY_LABEL[cat].toUpperCase()}</span>
               {canEdit && (
                 <button
                   type="button"
@@ -638,7 +638,8 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
         )
       })}
       {/* 필모그래피 수정 오류 — map 밖에 1번만 노출 */}
-      {editErr && <p id="actor-edit-error" role="alert" style={{ color: '#f87171', fontSize: '0.82rem', marginTop: 8, padding: '6px 12px', background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)', borderRadius: 6 }}>{editErr}</p>}
+      {/* 필모그래피 수정 오류 — 항상 DOM에 유지 (persistent live region — AT가 선등록 후 변경 감지) */}
+      <p id="actor-edit-error" role="alert" aria-live="assertive" aria-atomic="true" style={{ color: '#f87171', fontSize: '0.82rem', marginTop: editErr ? 8 : 0, padding: editErr ? '6px 12px' : undefined, background: editErr ? 'rgba(248,113,113,0.08)' : undefined, border: editErr ? '1px solid rgba(248,113,113,0.2)' : 'none', borderRadius: 6 }}>{editErr}</p>
 
       {/* ============ 수상이력 ============ */}
       {awardEntries.length > 0 && (

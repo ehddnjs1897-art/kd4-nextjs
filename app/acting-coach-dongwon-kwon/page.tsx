@@ -91,7 +91,7 @@ export default function CoachPage() {
         <div className="container" style={{ maxWidth: '960px', margin: '0 auto', position: 'relative' }}>
           <div style={{ textAlign: 'center', marginBottom: 'clamp(28px, 5vw, 44px)' }}>
             <p className="section-eyebrow" style={{ color: '#F0A8A8', marginBottom: '14px', letterSpacing: '0.22em' }}>
-              THE LEADER · KD4
+              <span lang="en">THE LEADER · KD4</span>
             </p>
             <h1
               className="section-title-serif"
@@ -142,7 +142,7 @@ export default function CoachPage() {
       <section aria-label="가르치는 철학" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container" style={{ maxWidth: '720px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-            <p className="section-eyebrow">01 — PHILOSOPHY</p>
+            <p className="section-eyebrow"><span lang="en">01 — PHILOSOPHY</span></p>
             <h2 className="section-title-serif" style={{ marginBottom: '16px' }}>가르치는 철학</h2>
             <div aria-hidden style={{ width: '48px', height: '3px', background: 'var(--accent-red)', borderRadius: '2px', margin: '0 auto' }} />
           </div>
@@ -159,7 +159,7 @@ export default function CoachPage() {
       <section aria-label="주요 경력" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
-            <p className="section-eyebrow">02 — PROFILE</p>
+            <p className="section-eyebrow"><span lang="en">02 — PROFILE</span></p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>주요 경력</h2>
           </div>
           <ul style={{ maxWidth: '640px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -179,7 +179,7 @@ export default function CoachPage() {
       <section aria-label="필모그래피와 자격" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
-            <p className="section-eyebrow">03 — FILMOGRAPHY & CREDENTIALS</p>
+            <p className="section-eyebrow"><span lang="en">03 — FILMOGRAPHY &amp; CREDENTIALS</span></p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>필모그래피와 자격</h2>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px', maxWidth: '1040px', margin: '0 auto' }}>
@@ -212,7 +212,7 @@ export default function CoachPage() {
       <section aria-label="권동원 리더 직강 클래스" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--navy)', color: '#fff' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 36px', textAlign: 'center' }}>
-            <p className="section-eyebrow" style={{ color: '#F0A8A8' }}>04 — CLASSES</p>
+            <p className="section-eyebrow" style={{ color: '#F0A8A8' }}><span lang="en">04 — CLASSES</span></p>
             <h2 className="section-title-serif" style={{ color: '#fff', marginBottom: '12px' }}>권동원 리더 직강 클래스</h2>
             <p style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.78)', lineHeight: 1.7, wordBreak: 'keep-all' }}>
               오디션 테크닉·움직임 클래스를 제외한 모든 정규 트랙을 권동원 리더가 직접 지도합니다.
@@ -257,7 +257,7 @@ export default function CoachPage() {
       <section aria-label="자주 묻는 질문" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
-            <p className="section-eyebrow">FAQ</p>
+            <p className="section-eyebrow"><span lang="en">FAQ</span></p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>자주 묻는 질문</h2>
           </div>
           <FaqAccordion items={COACH_FAQ} />

@@ -80,7 +80,8 @@ export async function GET(
 
     // 접촉 권한 없는 경우 PII+내부 컬럼을 DB에서 처음부터 제외 (defence-in-depth)
     // JS 레벨 destructure는 하위 호환 안전망으로 유지
-    const SAFE_ACTOR_DETAIL = 'id,name,name_en,gender,age_group,height,weight,skills,is_public,profile_photo,casting_tags,casting_summary,instagram,profile_pdf_url,created_at,updated_at'
+    // profile_pdf_url 제거 — 배우/크루 역할은 /api/actors/[id]/profile 프록시를 통해서만 접근 가능 (직접 URL 유출 방지)
+    const SAFE_ACTOR_DETAIL = 'id,name,name_en,gender,age_group,height,weight,skills,is_public,profile_photo,casting_tags,casting_summary,instagram,created_at,updated_at'
     // Sub-select column lists — public omits internal fields; privileged adds r2_key (for signed-URL requests) but still omits file_size_bytes/uploaded_at
     const SAFE_PHOTOS = 'id,url,is_profile,sort_order'
     const SAFE_VIDEOS = 'id,title,youtube_id,video_type,sort_order'

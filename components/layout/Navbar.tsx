@@ -392,7 +392,9 @@ export default function Navbar() {
                 href="/auth/login"
                 className="desktop-auth"
                 style={{
-                  display: 'inline-block',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  minHeight: 44,
                   padding: '8px 12px',
                   color: '#111111',
                   fontFamily: 'var(--font-sans)',
@@ -412,7 +414,9 @@ export default function Navbar() {
                 href="/dashboard"
                 className="desktop-auth"
                 style={{
-                  display: 'inline-block',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  minHeight: 44,
                   padding: '8px 12px',
                   color: '#111111',
                   fontFamily: 'var(--font-sans)',

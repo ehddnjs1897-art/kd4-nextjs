@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
     // parseInt → NaN 방어: Math.max/min(NaN) = NaN → .range(NaN,NaN) → DB 500 방지
     const rawPage = parseInt(searchParams.get('page') ?? '1', 10)
     const rawLimit = parseInt(searchParams.get('limit') ?? '20', 10)
-    const page = Math.max(1, Number.isFinite(rawPage) ? rawPage : 1)
+    const page = Math.min(10_000, Math.max(1, Number.isFinite(rawPage) ? rawPage : 1))
     const limit = Math.min(100, Math.max(1, Number.isFinite(rawLimit) ? rawLimit : 20))
     const offset = (page - 1) * limit
 

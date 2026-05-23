@@ -123,7 +123,7 @@ export default function AboutPage() {
             marginBottom: '24px',
           }}
         >
-          KD4 Acting Studio
+          <span lang="en">KD4 Acting Studio</span>
         </p>
         <h1
           style={{
@@ -182,7 +182,7 @@ export default function AboutPage() {
       {/* ── 철학 ── */}
       <section id="meisner" aria-label="마이즈너 테크닉 소개" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
         <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px' }}>
-          PHILOSOPHY
+          <span lang="en">PHILOSOPHY</span>
         </p>
         <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', fontWeight: 700, lineHeight: 1.3, marginBottom: '20px' }}>
           연기하지 않는 연기
@@ -226,7 +226,7 @@ export default function AboutPage() {
               }}
             >
               <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '8px' }}>
-                {item.label}
+                <span lang="en">{item.label}</span>
               </p>
               <h3 style={{ fontFamily: 'var(--font-sans)', fontSize: '0.95rem', fontWeight: 700, color: 'var(--white)', marginBottom: '8px' }}>
                 {item.title}
@@ -265,7 +265,7 @@ export default function AboutPage() {
       {/* ── 이런 배우에게 ── */}
       <section aria-label="KD4가 필요한 배우" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
         <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px', textAlign: 'center' }}>
-          WHO NEEDS KD4
+          <span lang="en">WHO NEEDS KD4</span>
         </p>
         <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 700, textAlign: 'center', marginBottom: '40px' }}>
           이런 배우에게 필요합니다
@@ -306,7 +306,7 @@ export default function AboutPage() {
       {/* ── ALL IN ONE SYSTEM ── */}
       <section aria-label="KD4 성장 시스템" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
         <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px', textAlign: 'center' }}>
-          ALL IN ONE SYSTEM
+          <span lang="en">ALL IN ONE SYSTEM</span>
         </p>
         <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 700, textAlign: 'center', marginBottom: '48px' }}>
           KD4 성장 시스템
@@ -348,7 +348,7 @@ export default function AboutPage() {
           {/* 좌측: 텍스트 */}
           <div>
             <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px' }}>
-              ACTOR ACCELERATOR
+              <span lang="en">ACTOR ACCELERATOR</span>
             </p>
             <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', fontWeight: 700, marginBottom: '20px' }}>
               권동원 대표
@@ -406,7 +406,7 @@ export default function AboutPage() {
                 color: 'rgba(196,165,90,0.8)',
                 textTransform: 'uppercase',
               }}>
-                KD4 Acting Studio
+                <span lang="en">KD4 Acting Studio</span>
               </p>
             </div>
           </div>
@@ -418,7 +418,7 @@ export default function AboutPage() {
       {/* ── 멤버 이야기 ── */}
       <section id="reviews" aria-label="멤버 이야기" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
         <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px', textAlign: 'center' }}>
-          ACTORS SAY
+          <span lang="en">ACTORS SAY</span>
         </p>
         <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 700, textAlign: 'center', marginBottom: '40px' }}>
           멤버 이야기
@@ -449,7 +449,7 @@ export default function AboutPage() {
       {/* ── 협력 파트너 ── */}
       <section aria-label="협력 파트너" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
         <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px', textAlign: 'center' }}>
-          PARTNERSHIP
+          <span lang="en">PARTNERSHIP</span>
         </p>
         <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 700, textAlign: 'center', marginBottom: '32px' }}>
           협력 파트너

@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
       .from('actor_videos')
       .insert({
         actor_id: actorId,
-        title: title || file.name,
+        title: title || file.name.slice(0, 200),
         r2_key: r2Key,
         file_size_bytes: file.size,
         uploaded_at: new Date().toISOString(),

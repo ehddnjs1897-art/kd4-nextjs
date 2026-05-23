@@ -111,7 +111,7 @@ function LoginContent() {
         {/* 로고 영역 */}
         <div style={styles.logoArea}>
           <span style={styles.logoText}>KD4</span>
-          <span style={styles.logoSub}>ACTING STUDIO</span>
+          <span lang="en" style={styles.logoSub}>ACTING STUDIO</span>
         </div>
 
         <h1 style={styles.title}>로그인</h1>

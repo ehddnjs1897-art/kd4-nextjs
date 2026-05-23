@@ -403,7 +403,7 @@ export default function JoinPage() {
       >
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">01 — KD4 ONLY</p>
+            <p className="section-eyebrow"><span lang="en">01 — KD4 ONLY</span></p>
             {/* 섹션 번호: 01 KD4 ONLY · 02 METHOD · 03 CURRICULUM · 04 OFFER · 05 DISCOUNT · 06 LEADER · 07 PORTFOLIO · 08 REVIEWS · 09 FAQ · 10 PROMISE · 11 CONTACT */}
             <h2
               className="section-title-serif"
@@ -499,7 +499,7 @@ export default function JoinPage() {
       <section aria-label="마이즈너 테크닉 소개" className="section" style={{ background: 'var(--bg)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto', textAlign: 'center' }}>
-            <p className="section-eyebrow">02 — THE METHOD</p>
+            <p className="section-eyebrow"><span lang="en">02 — THE METHOD</span></p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.5rem, 3.6vw, 2.1rem)', marginBottom: '12px' }}
@@ -579,7 +579,7 @@ export default function JoinPage() {
       <section aria-label="6단계 훈련 커리큘럼" className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 48px', textAlign: 'center' }}>
-            <p className="section-eyebrow">03 — CURRICULUM</p>
+            <p className="section-eyebrow"><span lang="en">03 — CURRICULUM</span></p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '10px' }}
@@ -716,7 +716,7 @@ export default function JoinPage() {
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow">
-              {isDeadlineExpired ? '04 — SPECIAL OFFER' : '04 — SPRING SPECIAL'}
+              <span lang="en">{isDeadlineExpired ? '04 — SPECIAL OFFER' : '04 — SPRING SPECIAL'}</span>
             </p>
             <h2
               className="section-title-serif"
@@ -920,7 +920,7 @@ export default function JoinPage() {
               className="section-eyebrow"
               style={{ color: 'var(--navy)', marginBottom: '10px' }}
             >
-              05 — DISCOUNT BENEFITS
+              <span lang="en">05 — DISCOUNT BENEFITS</span>
             </p>
             <h3
               className="section-title-serif"
@@ -1054,7 +1054,7 @@ export default function JoinPage() {
       <section aria-label="강사 권동원 소개" className="section" style={{ background: 'var(--bg)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
-            <p className="section-eyebrow">06 — THE LEADER</p>
+            <p className="section-eyebrow"><span lang="en">06 — THE LEADER</span></p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.5rem, 3.6vw, 2.1rem)', marginBottom: '10px' }}
@@ -1103,7 +1103,7 @@ export default function JoinPage() {
                   fontWeight: 700,
                 }}
               >
-                PROFILE
+                <span lang="en">PROFILE</span>
               </p>
               <ul style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '24px', listStyle: 'none', padding: 0 }}>
                 {DIRECTOR.profileFlat.map((item) => (
@@ -1180,7 +1180,7 @@ export default function JoinPage() {
       <section aria-label="출연영상 포트폴리오" className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 48px', textAlign: 'center' }}>
-            <p className="section-eyebrow">07 — PORTFOLIO</p>
+            <p className="section-eyebrow"><span lang="en">07 — PORTFOLIO</span></p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
@@ -1309,7 +1309,7 @@ export default function JoinPage() {
       <section aria-label="멤버 후기" className="section" style={{ background: 'var(--bg2)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 28px', textAlign: 'center' }}>
-            <p className="section-eyebrow">08 — REAL REVIEWS</p>
+            <p className="section-eyebrow"><span lang="en">08 — REAL REVIEWS</span></p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.5rem, 3.6vw, 2.1rem)', marginBottom: 0 }}
@@ -1368,7 +1368,7 @@ export default function JoinPage() {
       <section aria-label="자주 묻는 질문" className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">09 — FAQ</p>
+            <p className="section-eyebrow"><span lang="en">09 — FAQ</span></p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)' }}
@@ -1386,7 +1386,7 @@ export default function JoinPage() {
       <section aria-label="KD4 약속" className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">10 — OUR PROMISE</p>
+            <p className="section-eyebrow"><span lang="en">10 — OUR PROMISE</span></p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.6rem, 4vw, 2.3rem)', marginBottom: 0 }}
@@ -1479,7 +1479,7 @@ export default function JoinPage() {
         <div className="container">
           <div style={{ maxWidth: '520px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-              <p className="section-eyebrow">11 — CONTACT</p>
+              <p className="section-eyebrow"><span lang="en">11 — CONTACT</span></p>
               <h2
                 className="section-title-serif"
                 style={{ fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', marginBottom: '10px' }}

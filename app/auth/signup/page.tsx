@@ -131,7 +131,7 @@ export default function SignupPage() {
         <div style={styles.card}>
           <div style={styles.logoArea}>
             <span style={styles.logoText}>KD4</span>
-            <span style={styles.logoSub}>ACTING STUDIO</span>
+            <span lang="en" style={styles.logoSub}>ACTING STUDIO</span>
           </div>
 
           <h1 id="type-group-label" style={styles.title}>회원 유형을 선택하세요</h1>
@@ -223,7 +223,7 @@ export default function SignupPage() {
       <div style={styles.card}>
         <div style={styles.logoArea}>
           <span style={styles.logoText}>KD4</span>
-          <span style={styles.logoSub}>ACTING STUDIO</span>
+          <span lang="en" style={styles.logoSub}>ACTING STUDIO</span>
         </div>
 
         {/* 유형 배지 */}
