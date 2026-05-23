@@ -162,6 +162,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
         {detailHref && (
           <Link
             href={detailHref}
+            aria-label={`${cls.nameKo} 상세 페이지 보기`}
             style={{
               display: 'block', textAlign: 'center', padding: '8px 0',
               fontSize: '0.82rem', fontFamily: 'var(--font-display)', letterSpacing: '0.04em',

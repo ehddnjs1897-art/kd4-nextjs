@@ -428,5 +428,6 @@ const styles: Record<string, React.CSSProperties> = {
     color: 'var(--gold)',
     fontSize: '0.85rem',
     textDecoration: 'none',
+    minHeight: 44,
   },
 }

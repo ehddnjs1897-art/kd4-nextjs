@@ -837,6 +837,7 @@ export default function HomePage() {
             {[...CASTING_PHOTOS, ...CASTING_PHOTOS].map((photo, i) => (
               <div
                 key={`${photo.url}-${i}`}
+                aria-hidden={i >= CASTING_PHOTOS.length || undefined}
                 style={{
                   flexShrink: 0,
                   width: "200px",
@@ -1038,7 +1039,7 @@ export default function HomePage() {
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
                   <span style={{
                     fontFamily: "var(--font-display), Oswald, sans-serif",
-                    fontSize: "0.65rem",
+                    fontSize: "0.75rem",
                     letterSpacing: "0.15em",
                     color: "var(--gold)",
                     textTransform: "uppercase",

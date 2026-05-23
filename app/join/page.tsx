@@ -830,7 +830,7 @@ export default function JoinPage() {
                       style={{
                         display: 'inline-block',
                         fontFamily: 'var(--font-display)',
-                        fontSize: '0.68rem',
+                        fontSize: '0.75rem',
                         letterSpacing: '0.12em',
                         color: 'var(--accent-red)',
                         fontWeight: 700,
@@ -979,7 +979,7 @@ export default function JoinPage() {
                     <span
                       style={{
                         fontFamily: 'var(--font-display)',
-                        fontSize: '0.6rem',
+                        fontSize: '0.75rem',
                         fontWeight: 700,
                         letterSpacing: '0.08em',
                         textTransform: 'uppercase',
@@ -1226,7 +1226,7 @@ export default function JoinPage() {
                       alignItems: 'center',
                       gap: '5px',
                       fontFamily: 'var(--font-display)',
-                      fontSize: '0.68rem',
+                      fontSize: '0.75rem',
                       fontWeight: 700,
                       letterSpacing: '0.12em',
                       textTransform: 'uppercase',
