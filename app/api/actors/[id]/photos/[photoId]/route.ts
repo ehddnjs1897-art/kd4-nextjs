@@ -40,6 +40,10 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
       return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })
     }
 
+    if (body.is_profile !== true) {
+      return NextResponse.json({ error: 'is_profile: true 만 허용됩니다.' }, { status: 400 })
+    }
+
     if (body.is_profile === true) {
       // photoId가 이 actor의 사진인지 먼저 검증 (IDOR 방어)
       const { data: owned } = await supabaseAdmin

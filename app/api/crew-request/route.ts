@@ -71,13 +71,17 @@ export async function POST() {
     const applicantName = profile?.name ?? user.user_metadata?.name ?? user.email?.split('@')[0] ?? '(이름 없음)'
     const applicantEmail = user.email ?? '(이메일 없음)'
 
-    notifyCrewRequest(applicantName, applicantEmail, user.id).catch(console.error)
+    notifyCrewRequest(applicantName, applicantEmail, user.id).catch(
+      (err: unknown) => console.error('[crew-request] 이메일 알림 실패:', err instanceof Error ? err.message : '(unknown)')
+    )
 
     if (ADMIN_PHONE) {
       sendSMS(
         ADMIN_PHONE,
         `[KD4] 크루 신청\n${applicantName} / ${applicantEmail}\n관리자 페이지에서 승인 처리`,
-      ).catch(console.error)
+      ).catch(
+        (err: unknown) => console.error('[crew-request] SMS 실패:', err instanceof Error ? err.message : '(unknown)')
+      )
     }
 
     return NextResponse.json({ success: true, role: 'crew_pending' })

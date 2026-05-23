@@ -75,13 +75,17 @@ export async function POST() {
     const applicantName = profile?.name ?? user.user_metadata?.name ?? user.email?.split('@')[0] ?? '(이름 없음)'
     const applicantEmail = user.email ?? '(이메일 없음)'
 
-    notifyDirectorRequest(applicantName, applicantEmail, user.id).catch(console.error)
+    notifyDirectorRequest(applicantName, applicantEmail, user.id).catch(
+      (err: unknown) => console.error('[director-request] 이메일 알림 실패:', err instanceof Error ? err.message : '(unknown)')
+    )
 
     if (ADMIN_PHONE) {
       sendSMS(
         ADMIN_PHONE,
         `[KD4] 디렉터 권한 신청\n${applicantName} / ${applicantEmail}\n승인 시 배우 연락처 열람 가능. 관리자 페이지에서 승인 처리`,
-      ).catch(console.error)
+      ).catch(
+        (err: unknown) => console.error('[director-request] SMS 실패:', err instanceof Error ? err.message : '(unknown)')
+      )
     }
 
     return NextResponse.json({ success: true, role: 'director_pending' })

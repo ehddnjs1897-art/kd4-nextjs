@@ -220,6 +220,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   const [videoUrl, setVideoUrl] = useState('')
   const [videoTitle, setVideoTitle] = useState('')
   const [videoMsg, setVideoMsg] = useState('')
+  const [videoAdding, setVideoAdding] = useState(false)
 
   // R2 업로드 영상
   const [r2Videos, setR2Videos] = useState<R2VideoItem[]>(initialData.r2Videos)
@@ -415,11 +416,13 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
 
   // ── 영상 추가 ───────────────────────────────────────────────────────────────
   async function addVideo() {
+    if (videoAdding) return
     const yid = extractYoutubeId(videoUrl.trim())
     if (!yid) {
       setVideoMsg('유효한 유튜브 URL 또는 영상 ID를 입력하세요.')
       return
     }
+    setVideoAdding(true)
     try {
       const res = await fetch(`/api/actors/${actorId}/videos`, {
         method: 'POST',
@@ -435,6 +438,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     } catch (e) {
       setVideoMsg((e as Error).message)
     } finally {
+      setVideoAdding(false)
       flashMsg(setVideoMsg)
     }
   }
@@ -652,7 +656,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           </div>
         </div>
         <input ref={pptRef} type="file" accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation" onChange={uploadPpt} style={{ display: 'none' }} />
-        <button onClick={() => pptRef.current?.click()} disabled={pptUploading} style={{ ...s.btn, ...s.btnGhost, opacity: pptUploading ? 0.6 : 1 }}>
+        <button type="button" onClick={() => pptRef.current?.click()} disabled={pptUploading} style={{ ...s.btn, ...s.btnGhost, opacity: pptUploading ? 0.6 : 1 }}>
           {pptUploading ? '업로드 중…' : hasPpt ? '📄 파일 교체' : '📄 파일 올리기'}
         </button>
         {pptMsg && <p role="alert" style={{ ...s.msg, color: pptMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{pptMsg}</p>}
@@ -691,7 +695,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
 
         <div style={{ marginTop: 20, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
           <input ref={fileRef} type="file" accept="image/*" onChange={uploadPhoto} style={{ display: 'none' }} />
-          <button onClick={() => fileRef.current?.click()} disabled={uploading} style={{ ...s.btn, ...s.btnPrimary, opacity: uploading ? 0.6 : 1 }}>
+          <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} style={{ ...s.btn, ...s.btnPrimary, opacity: uploading ? 0.6 : 1 }}>
             {uploading ? '업로드 중…' : '+ 사진 추가'}
           </button>
           <span style={{ fontSize: '0.78rem', color: 'var(--gray)' }}>JPG·PNG, 최대 5MB · 9:16 비율 권장</span>
@@ -731,7 +735,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           )}
           <div>
             <input ref={r2VideoRef} type="file" accept="video/*" onChange={uploadR2Video} style={{ display: 'none' }} />
-            <button onClick={() => r2VideoRef.current?.click()} disabled={r2Uploading} style={{ ...s.btn, ...s.btnGhost, opacity: r2Uploading ? 0.6 : 1 }}>
+            <button type="button" onClick={() => r2VideoRef.current?.click()} disabled={r2Uploading} style={{ ...s.btn, ...s.btnGhost, opacity: r2Uploading ? 0.6 : 1 }}>
               {r2Uploading ? r2UploadStatus || '업로드 중…' : '+ 영상 파일 업로드'}
             </button>
             <span style={{ fontSize: '0.74rem', color: 'var(--gray)', marginLeft: 12 }}>mp4 권장, 최대 300MB</span>
@@ -773,7 +777,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
               <label htmlFor="video-title" style={s.label}>제목 (선택)</label>
               <input id="video-title" value={videoTitle} onChange={e => setVideoTitle(e.target.value)} style={s.input} placeholder="단편영화 주연" />
             </div>
-            <button onClick={addVideo} style={{ ...s.btn, ...s.btnPrimary, marginBottom: 0 }}>추가</button>
+            <button type="button" onClick={addVideo} disabled={videoAdding} style={{ ...s.btn, ...s.btnPrimary, marginBottom: 0, opacity: videoAdding ? 0.6 : 1 }}>{videoAdding ? '추가 중…' : '추가'}</button>
           </div>
           {videoMsg && <p role="alert" style={{ ...s.msg, color: videoMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{videoMsg}</p>}
         </div>
