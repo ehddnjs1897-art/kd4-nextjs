@@ -127,7 +127,7 @@ export default function UpdatePasswordPage() {
             <h1 style={styles.title}>새 비밀번호 입력</h1>
 
             <form onSubmit={handleUpdate} style={styles.form} aria-label="새 비밀번호 입력">
-              {error && <div role="alert" style={styles.errorBox}>{error}</div>}
+              {error && <div id="update-error" role="alert" style={styles.errorBox}>{error}</div>}
 
               <div style={styles.fieldGroup}>
                 <label htmlFor="password" style={styles.label}>
@@ -143,7 +143,8 @@ export default function UpdatePasswordPage() {
                   required
                   disabled={loading}
                   autoComplete="new-password"
-                  aria-describedby="password-hint"
+                  aria-invalid={!!error}
+                  aria-describedby={error ? "password-hint update-error" : "password-hint"}
                   style={styles.input}
                 />
               </div>
@@ -161,6 +162,8 @@ export default function UpdatePasswordPage() {
                   required
                   disabled={loading}
                   autoComplete="new-password"
+                  aria-invalid={!!error}
+                  aria-describedby={error ? "update-error" : undefined}
                   style={{
                     ...styles.input,
                     borderColor:

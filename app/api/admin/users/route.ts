@@ -78,11 +78,29 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// ─── PATCH 레이트 리밋 ─────────────────────────────────────────────────────────
+// 역할 변경 오남용 방지 — 관리자 계정 탈취 시 일괄 권한 상승 속도 제한
+const usersRolePatchMap = new Map<string, number>()
+const USERS_PATCH_COOLDOWN_MS = 5_000
+
 // ─── PATCH ───────────────────────────────────────────────────────────────────
 
 export async function PATCH(request: NextRequest) {
   const check = await requireAdmin()
   if (check instanceof NextResponse) return check
+
+  // 레이트 리밋: 동일 admin 5초 쿨다운
+  const now = Date.now()
+  const last = usersRolePatchMap.get(check.userId) ?? 0
+  if (now - last < USERS_PATCH_COOLDOWN_MS) {
+    return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+  }
+  usersRolePatchMap.set(check.userId, now)
+  if (usersRolePatchMap.size > 100) {
+    for (const [k, ts] of usersRolePatchMap) {
+      if (now - ts > USERS_PATCH_COOLDOWN_MS * 2) usersRolePatchMap.delete(k)
+    }
+  }
 
   let body: { id?: string; role?: string }
   try {

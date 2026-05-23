@@ -638,7 +638,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
         )
       })}
       {/* 필모그래피 수정 오류 — map 밖에 1번만 노출 */}
-      {editErr && <p role="alert" style={{ color: '#f87171', fontSize: '0.82rem', marginTop: 8, padding: '6px 12px', background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)', borderRadius: 6 }}>{editErr}</p>}
+      {editErr && <p id="actor-edit-error" role="alert" style={{ color: '#f87171', fontSize: '0.82rem', marginTop: 8, padding: '6px 12px', background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)', borderRadius: 6 }}>{editErr}</p>}
 
       {/* ============ 수상이력 ============ */}
       {awardEntries.length > 0 && (

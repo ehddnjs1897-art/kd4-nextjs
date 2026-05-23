@@ -74,6 +74,12 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     // presigned URL 발급 시 `actors/intake/{user.id}/...` 패턴으로만 발급됨
     // admin/editor는 전용 /api/admin/videos/upload 경로를 통해 업로드하므로 자기 네임스페이스 제한 면제
     if (r2_key && typeof r2_key === 'string') {
+      // 경로 순회(path-traversal) 방어 — profile/intake/route.ts와 동일 패턴
+      // R2는 '..' 세그먼트를 오브젝트 키로 그대로 저장하지만, getVideoSignedUrl/deleteVideo에서 사용 시 문제 발생 가능
+      const hasPathTraversal = (p: string) => p.split('/').some(seg => seg === '..' || seg === '.')
+      if (hasPathTraversal(r2_key)) {
+        return NextResponse.json({ error: '허가되지 않은 파일 경로입니다.' }, { status: 403 })
+      }
       const isPrivileged = profile.role === 'admin' || profile.role === 'editor'
       const allowedPrefix = `actors/intake/${user.id}/`
       if (!isPrivileged && !r2_key.startsWith(allowedPrefix)) {

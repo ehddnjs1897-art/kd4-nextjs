@@ -431,6 +431,7 @@ export default function SeowooPartnershipPage() {
         <a
           href={INSTAGRAM_URL}
           target="_blank" rel="noopener noreferrer"
+          aria-label="서우스튜디오 인스타그램 포트폴리오 보기 (새 탭에서 열림)"
           style={{ textDecoration: 'none', display: 'block', maxWidth: 480, margin: '0 auto' }}
         >
           <div
@@ -551,6 +552,7 @@ export default function SeowooPartnershipPage() {
         <a
           href={INSTAGRAM_URL}
           target="_blank" rel="noopener noreferrer"
+          aria-label="서우스튜디오 인스타그램으로 문의하기 (새 탭에서 열림)"
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -583,6 +585,7 @@ export default function SeowooPartnershipPage() {
           <a
             href={INSTAGRAM_URL}
             target="_blank" rel="noopener noreferrer"
+            aria-label={`${INSTAGRAM_HANDLE} 인스타그램 (새 탭에서 열림)`}
             style={{ color: 'var(--gold)', fontWeight: 700, textDecoration: 'none' }}
           >
             {INSTAGRAM_HANDLE}

@@ -326,7 +326,10 @@ export default function SignupPage() {
               autoComplete="new-password"
               maxLength={128}
               aria-invalid={!!error || undefined}
-              aria-describedby={error ? 'signup-error' : undefined}
+              aria-describedby={
+                [error ? 'signup-error' : '', (passwordConfirm && password !== passwordConfirm) ? 'signup-pw-mismatch' : '']
+                  .filter(Boolean).join(' ') || undefined
+              }
               style={{
                 ...styles.input,
                 borderColor:
@@ -336,7 +339,7 @@ export default function SignupPage() {
               }}
             />
             {passwordConfirm && password !== passwordConfirm && (
-              <span style={styles.fieldError}>비밀번호가 일치하지 않습니다.</span>
+              <span id="signup-pw-mismatch" style={styles.fieldError}>비밀번호가 일치하지 않습니다.</span>
             )}
           </div>
 
