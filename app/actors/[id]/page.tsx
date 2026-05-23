@@ -15,6 +15,7 @@ import { UserRole } from '@/lib/types'
 import { canViewActorContact } from '@/lib/access'
 import { getVideoSignedUrl, isR2Configured } from '@/lib/r2'
 import { getActorPersonSchema, getActorVideoSchemas, serializeJsonLd } from '@/lib/seo'
+import { SITE_URL } from '@/lib/constants'
 
 /* ---- 타입 정의 ---- */
 interface Actor {
@@ -162,7 +163,6 @@ export async function generateMetadata({
   const actor = await getActorCached(id)
   if (!actor) return { title: '배우 프로필 | kd4.club', robots: { index: false, follow: false } }
 
-  const SITE_URL = 'https://kd4.club'
   const ogImage = `${SITE_URL}/api/og/actor/${actor.id}`
   const pageUrl = `${SITE_URL}/actors/${actor.id}`
 
@@ -189,7 +189,7 @@ export async function generateMetadata({
       title,
       description,
       url: pageUrl,
-      siteName: 'kd4.club',
+      siteName: 'KD4 액팅 스튜디오',
       type: 'profile',
       locale: 'ko_KR',
       images: [

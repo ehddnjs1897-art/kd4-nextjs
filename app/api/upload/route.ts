@@ -176,10 +176,10 @@ export async function POST(request: NextRequest) {
         sort_order: nextSortOrder,
       })
       .select('id')
-      .single()
+      .maybeSingle()
 
-    if (dbErr) {
-      console.error('[POST /api/upload] actor_photos 삽입 오류:', dbErr.message)
+    if (dbErr || !photoRow) {
+      console.error('[POST /api/upload] actor_photos 삽입 오류:', dbErr?.message)
       return NextResponse.json({ error: 'DB 삽입 실패' }, { status: 500 })
     }
 

@@ -236,6 +236,7 @@ export default function Navbar() {
                   }}
                   aria-haspopup="menu"
                   aria-expanded={crewDropOpen}
+                  onClick={() => setCrewDropOpen(v => !v)}
                 >
                   KD4 크루
                   <svg
@@ -256,6 +257,7 @@ export default function Navbar() {
                 {/* 드롭다운 패널 */}
                 {crewDropOpen && (
                   <div
+                    role="menu"
                     onMouseEnter={handleDropEnter}
                     onMouseLeave={handleDropLeave}
                     style={{
@@ -299,6 +301,7 @@ export default function Navbar() {
                     {crewLinks.map(item => (
                       <Link
                         key={item.label}
+                        role="menuitem"
                         href={item.href}
                         onClick={item.public ? undefined : (e => handleCrewLinkClick(e, item.href))}
                         style={{

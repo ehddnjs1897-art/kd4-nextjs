@@ -4,7 +4,7 @@ import '@/app/page-hero.css'
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { KD4_STATS } from "@/lib/stats";
 
 import { pixel } from "@/lib/analytics";
@@ -183,6 +183,9 @@ export default function HomePage() {
 
   /* ── GSAP 애니메이션 ── */
   useGSAP(() => {
+    /* prefers-reduced-motion: 모션 민감한 사용자 — 모든 GSAP 애니메이션 비활성화 */
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
     /* === HERO 요소 입장 (달리줌 중반에 맞춰 등장) === */
     gsap.from('.hero-subtitle', {
       y: 30, opacity: 0, duration: 0.8, ease: "power2.out", delay: 3.5,
@@ -730,9 +733,8 @@ export default function HomePage() {
                   icon: "🌟",
                 },
               ].map((s, i) => (
-                <>
+                <React.Fragment key={s.num}>
                   <div
-                    key={s.num}
                     className="step-card"
                     style={{
                       position: "relative",
@@ -821,7 +823,7 @@ export default function HomePage() {
                       </svg>
                     </div>
                   )}
-                </>
+                </React.Fragment>
               ))}
             </div>
           </div>

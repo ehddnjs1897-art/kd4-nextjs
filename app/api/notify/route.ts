@@ -161,7 +161,11 @@ export async function POST(request: NextRequest) {
         savedId = inserted?.id ?? null
       }
     } catch (dbError) {
-      console.error('[notify] Supabase insert 실패:', dbError, record)
+      // PII 제거 — Vercel 로그에 개인정보 평문 저장 방지
+      console.error('[notify] Supabase insert 실패:', dbError, {
+        phone: typeof record?.phone === 'string' ? record.phone.slice(0, 3) + '****' : null,
+        name: '[redacted]', email: '[redacted]',
+      })
     }
 
     // 2. Make webhook 발송 — await 로 변경 (2026-05-13)

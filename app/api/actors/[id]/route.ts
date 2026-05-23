@@ -88,6 +88,7 @@ export async function PATCH(
       .eq('id', user.id)
       .maybeSingle()
 
+    // 권한: 본인 actor_id | admin | editor (editor=콘텐츠팀 — 전체 배우 데이터 편집 가능, 역할 관리 불가)
     if (!profile || (profile.actor_id !== id && profile.role !== 'admin' && profile.role !== 'editor')) {
       return NextResponse.json({ error: '수정 권한이 없습니다.' }, { status: 403 })
     }

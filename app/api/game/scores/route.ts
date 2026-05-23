@@ -12,7 +12,8 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url)
     const period = searchParams.get('period') || 'weekly'
-    const limit = Math.min(50, parseInt(searchParams.get('limit') ?? '10', 10))
+    const rawLimit = parseInt(searchParams.get('limit') ?? '10', 10)
+    const limit = Math.min(50, Math.max(1, Number.isFinite(rawLimit) ? rawLimit : 10))
 
     let query = supabaseAdmin
       .from('game_scores')

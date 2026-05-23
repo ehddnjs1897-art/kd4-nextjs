@@ -1983,13 +1983,9 @@ main {
   }
 }
 
-/* ╔══════════════════════════════════════════════════════════════╗ */
-/* ║  /join visual uplift (PREVIEW — eduver-inspired rough demo)    ║ */
-/* ║  Branch: preview/visual-uplift-rough · 머지 전 검토용           ║ */
-/* ╚══════════════════════════════════════════════════════════════╝ */
+/* === /join 페이지 visual uplift === */
 
-/* A. 섹션 진입 fade-up — 페이지 로드 후 자동 stagger
-   (러프 데모용; 정식 구현은 IntersectionObserver로 스크롤 trigger 권장) */
+/* A. 섹션 진입 fade-up — 페이지 로드 후 자동 stagger */
 @keyframes upliftIn {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
