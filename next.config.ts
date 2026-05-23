@@ -81,6 +81,12 @@ const nextConfig: NextConfig = {
           { key: 'Cache-Control', value: 'public, max-age=2592000, stale-while-revalidate=86400' },
         ],
       },
+      {
+        source: '/sinchon-route-map.png',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=2592000, stale-while-revalidate=86400' },
+        ],
+      },
       // KoPub 폰트 woff2 — 파일명으로 버전관리(pyftsubset 고정), immutable 안전
       {
         source: '/fonts/:path*',

@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 
 export const metadata: Metadata = {
+  title: '글 수정',
   robots: { index: false, follow: false },
 }
 

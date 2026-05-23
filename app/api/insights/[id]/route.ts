@@ -51,6 +51,10 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     if (!UUID_RE.test(id)) {
       return withCors(NextResponse.json({ error: '잘못된 ID입니다.' }, { status: 400 }), origin)
     }
+    const clInsightPatch = parseInt(request.headers.get('content-length') ?? '0', 10)
+    if (clInsightPatch > 4_096) {
+      return withCors(NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 }), origin)
+    }
     let body: Record<string, unknown>
     try {
       body = await request.json()

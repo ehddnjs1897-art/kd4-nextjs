@@ -15,7 +15,7 @@ const ERROR_MESSAGES: Record<string, string> = {
 // useSearchParams를 Suspense로 감싸야 함 (Next.js 빌드 요구사항)
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div style={{ minHeight: '100vh', background: 'var(--bg)' }} />}>
+    <Suspense fallback={<div role="status" aria-label="로딩 중" style={{ minHeight: '100vh', background: 'var(--bg)' }} />}>
       <LoginContent />
     </Suspense>
   )

@@ -11,6 +11,11 @@ type Ctx = { params: Promise<{ id: string; videoId: string }> }
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
+// 레이트 리밋: 5분 내 10회 초과 차단 (R2 삭제 API 남용 방어)
+const videoDeleteMap = new Map<string, number[]>()
+const VIDEO_DELETE_WINDOW_MS = 5 * 60_000
+const VIDEO_DELETE_MAX = 10
+
 export async function DELETE(_request: NextRequest, { params }: Ctx) {
   try {
     const { id, videoId } = await params
@@ -20,6 +25,18 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
+
+    // 레이트 리밋 적용
+    const nowVD = Date.now()
+    const timesVD = (videoDeleteMap.get(user.id) ?? []).filter(t => nowVD - t < VIDEO_DELETE_WINDOW_MS)
+    if (timesVD.length >= VIDEO_DELETE_MAX) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
+    videoDeleteMap.set(user.id, [...timesVD, nowVD])
+    if (videoDeleteMap.size > 1000) {
+      const cutoffVD = nowVD - VIDEO_DELETE_WINDOW_MS
+      for (const [k, v] of videoDeleteMap) { if (v.every(t => t < cutoffVD)) videoDeleteMap.delete(k) }
+    }
 
     const { data: profile } = await supabaseAdmin
       .from('profiles').select('actor_id, role').eq('id', user.id).maybeSingle()

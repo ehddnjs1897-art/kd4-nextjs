@@ -112,11 +112,31 @@ function getCourseSchemas() {
   }))
 }
 
+/** WebSite schema — SearchAction for site search (AEO / Google Sitelinks Searchbox) */
+function getWebSiteSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${SITE_URL}#website`,
+    name: 'KD4 액팅 스튜디오',
+    url: SITE_URL,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${SITE_URL}/actors?q={search_term_string}`,
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  }
+}
+
 interface JsonLdProps {
   faqItems?: { q: string; a: string }[]
 }
 
 export default function JsonLd({ faqItems }: JsonLdProps) {
+  const website = getWebSiteSchema()
   const organization = buildOrganization()
   const school = buildEducationalOrganization()
   const dongwon = buildPersonDongwon()
@@ -125,6 +145,10 @@ export default function JsonLd({ faqItems }: JsonLdProps) {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(website) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(organization) }}

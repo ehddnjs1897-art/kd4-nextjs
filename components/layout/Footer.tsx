@@ -200,6 +200,7 @@ export default function Footer() {
                 <a
                   href="https://www.instagram.com/kd4actingstudio"
                   target="_blank" rel="noopener noreferrer"
+                  aria-label="인스타그램 (새 탭에서 열림)"
                   style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s' }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--gray-light)')}
@@ -211,6 +212,7 @@ export default function Footer() {
                 <a
                   href="https://pf.kakao.com/_ximxdqn"
                   target="_blank" rel="noopener noreferrer"
+                  aria-label="카카오채널 (새 탭에서 열림)"
                   onClick={() => pixel.contact()}
                   style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s' }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
@@ -223,6 +225,7 @@ export default function Footer() {
                 <a
                   href="https://blog.naver.com/kd4actingstudio"
                   target="_blank" rel="noopener noreferrer"
+                  aria-label="네이버 블로그 (새 탭에서 열림)"
                   style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s' }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--gray-light)')}
@@ -234,6 +237,7 @@ export default function Footer() {
                 <a
                   href="https://www.youtube.com/@kd4actingstudio"
                   target="_blank" rel="noopener noreferrer"
+                  aria-label="YouTube (새 탭에서 열림)"
                   style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s' }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--gray-light)')}

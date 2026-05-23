@@ -23,7 +23,8 @@ export async function GET(request: NextRequest) {
     const desc = searchParams.get('error_description') ?? oauthError
     console.error('[auth/callback] OAuth 오류:', oauthError, desc)
     return NextResponse.redirect(
-      `${origin}/auth/login?error=${encodeURIComponent(oauthError)}`
+      `${origin}/auth/login?error=${encodeURIComponent(oauthError)}`,
+      { headers: { 'Cache-Control': 'no-store' } }
     )
   }
 
@@ -33,7 +34,7 @@ export async function GET(request: NextRequest) {
       const { error } = await supabase.auth.exchangeCodeForSession(code)
 
       if (!error) {
-        return NextResponse.redirect(`${origin}${next}`)
+        return NextResponse.redirect(`${origin}${next}`, { headers: { 'Cache-Control': 'no-store' } })
       }
 
       console.error('[auth/callback] exchangeCodeForSession 오류:', error.message)
@@ -43,5 +44,5 @@ export async function GET(request: NextRequest) {
   }
 
   // code 없음 or 교환 실패 → 로그인 페이지로 리다이렉트
-  return NextResponse.redirect(`${origin}/auth/login?error=callback_failed`)
+  return NextResponse.redirect(`${origin}/auth/login?error=callback_failed`, { headers: { 'Cache-Control': 'no-store' } })
 }

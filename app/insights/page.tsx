@@ -329,7 +329,7 @@ export default function InsightsPage() {
         </div>
 
         {/* 검색 */}
-        <div style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
+        <form role="search" aria-label="인사이트 검색" onSubmit={e => e.preventDefault()} style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
           <input
             className="ins-input"
             aria-label="인사이트 검색"
@@ -344,7 +344,7 @@ export default function InsightsPage() {
               초기화
             </button>
           )}
-        </div>
+        </form>
 
         {/* 카드 목록 */}
         {fetchError && (
@@ -469,6 +469,7 @@ export default function InsightsPage() {
           <div style={{ position: 'relative' }}>
             <textarea
               readOnly
+              aria-label="브라우저 북마클릿 코드"
               value={bookmarkletOrigin ? buildBookmarklet() : '페이지를 새로고침하면 코드가 나타납니다.'}
               rows={3}
               style={{

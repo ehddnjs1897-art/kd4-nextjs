@@ -46,6 +46,8 @@ export async function PATCH(
       for (const [k, v] of enrollmentPatchMap) { if (v < cutoffEP) enrollmentPatchMap.delete(k) }
     }
 
+    const clEnroll = parseInt(request.headers.get('content-length') ?? '0', 10)
+    if (clEnroll > 4_096) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
     let body: { status?: string; payment_status?: string }
     try {
       body = await request.json()
