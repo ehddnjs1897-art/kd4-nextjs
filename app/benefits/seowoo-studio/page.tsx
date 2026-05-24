@@ -192,7 +192,7 @@ export default function SeowooPartnershipPage() {
                 textTransform: 'uppercase',
               }}
             >
-              KD4 ACTING STUDIO
+              <span lang="en">KD4 ACTING STUDIO</span>
             </span>
           </div>
           <span aria-hidden style={{ fontSize: '1.4rem', color: 'var(--gray)', fontWeight: 300 }}>

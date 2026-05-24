@@ -14,6 +14,18 @@ const HeroScene = dynamic(() => import("@/components/hero/HeroScene"), {
   ssr: false,
 });
 
+// profileFlat 항목 내 영어 고유명사 lang="en" 처리 (WCAG 3.1.2)
+const EN_HOME_PROFILE_TOKENS = ['LA Meisner Workshop', 'YouTube', 'The Chora'] as const
+function wrapHomeEnglishToken(text: string): React.ReactNode {
+  for (const token of EN_HOME_PROFILE_TOKENS) {
+    const idx = text.indexOf(token)
+    if (idx !== -1) {
+      return <>{text.slice(0, idx)}<span lang="en">{token}</span>{text.slice(idx + token.length)}</>
+    }
+  }
+  return text
+}
+
 // ─── 후기 마퀴 데이터 ────────────────────────────────────────────────────────
 
 const REVIEW_ITEMS = [
@@ -571,7 +583,7 @@ export default function HomePage() {
                           display: "inline-block",
                         }}
                       />
-                      {item}
+                      {wrapHomeEnglishToken(item)}
                     </li>
                   ))}
                 </ul>

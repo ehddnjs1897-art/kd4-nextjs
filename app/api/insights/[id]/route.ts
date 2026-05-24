@@ -124,6 +124,10 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
       return withCors(NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 }), origin)
     }
     insightMutateMap.set(insightDelUserId, nowDel)
+    if (insightMutateMap.size > 2000) {
+      const cutoffDel = nowDel - INSIGHT_COOLDOWN_MS
+      for (const [k, v] of insightMutateMap) { if (v < cutoffDel) insightMutateMap.delete(k) }
+    }
 
     const { id } = await params
     if (!UUID_RE.test(id)) {

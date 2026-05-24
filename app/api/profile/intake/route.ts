@@ -271,7 +271,7 @@ export async function POST(request: NextRequest) {
 
   // 4. 영상 rows (R2, 최대 3개 — reel 2 + monologue 1) — 단일 배치 insert
   if (videos.length > 0) {
-    const videoRows = videos.slice(0, 3).map((vid) => ({
+    const videoRows = videos.slice(0, 3).map((vid, idx) => ({
       actor_id: actorId,
       title: vid.filename,
       r2_key: vid.key,
@@ -279,6 +279,7 @@ export async function POST(request: NextRequest) {
       uploaded_at: nowIso,
       is_public: false,
       video_type: vid.video_type ?? 'reel',
+      sort_order: idx,
     }))
     const { error: videoErr } = await supabaseAdmin.from('actor_videos').insert(videoRows)
     if (videoErr) {

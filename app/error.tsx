@@ -38,7 +38,7 @@ export default function ErrorPage({
           textTransform: 'uppercase',
           marginBottom: 16,
         }}>
-          ERROR
+          <span lang="en">ERROR</span>
         </p>
         <h2 style={{
           fontFamily: 'var(--font-display)',
