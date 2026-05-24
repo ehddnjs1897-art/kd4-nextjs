@@ -77,7 +77,7 @@ export default function GameUI({ score, lives, height, stage, combo, specialText
       >
         {/* Score */}
         <div>
-          <div style={{ fontSize: 12, color: "#aaa", letterSpacing: "0.1em" }}>SCORE</div>
+          <div style={{ fontSize: 12, color: "#aaa", letterSpacing: "0.1em" }}><span lang="en">SCORE</span></div>
           <div
             aria-label={`점수 ${score.toLocaleString()}`}
             style={{ fontSize: 32, fontWeight: 700, letterSpacing: "0.05em" }}
@@ -134,7 +134,7 @@ export default function GameUI({ score, lives, height, stage, combo, specialText
             color: "#aaa",
           }}
         >
-          <div style={{ color: "#0057FF", fontWeight: 600 }}>ACT {stage.act}</div>
+          <div style={{ color: "#0057FF", fontWeight: 600 }}><span lang="en">ACT</span> {stage.act}</div>
           <div>{stage.title}</div>
         </div>
       )}
@@ -194,7 +194,7 @@ export default function GameUI({ score, lives, height, stage, combo, specialText
             {comboFlash.name}!
           </div>
           <div style={{ fontSize: 16, color: "#ffcc44" }}>
-            x{comboFlash.mult} COMBO
+            x{comboFlash.mult} <span lang="en">COMBO</span>
           </div>
         </div>
       )}
@@ -222,7 +222,7 @@ export default function GameUI({ score, lives, height, stage, combo, specialText
                 : "0 0 30px rgba(255,170,0,0.5)",
             }}
           >
-            {specialFlash}
+            <span lang="en">{specialFlash}</span>
           </div>
           {specialFlash === "OFF THE PLASTIC" && (
             <div style={{ fontSize: 14, color: "#00cc88", marginTop: 8 }}>

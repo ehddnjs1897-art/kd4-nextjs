@@ -91,9 +91,10 @@ export async function POST(request: NextRequest) {
 
     // 배우 존재 여부 + 현재 영상 수 병렬 확인 (고아 R2 파일 방지 + 50개 캡 강제)
     const MAX_VIDEOS_PER_ACTOR = 50
-    const [{ data: actorExists }, { count: currentVideoCount }] = await Promise.all([
+    const [{ data: actorExists }, { count: currentVideoCount }, { data: maxSortRow }] = await Promise.all([
       supabaseAdmin.from('actors').select('id').eq('id', actorId).maybeSingle(),
       supabaseAdmin.from('actor_videos').select('id', { count: 'exact', head: true }).eq('actor_id', actorId),
+      supabaseAdmin.from('actor_videos').select('sort_order').eq('actor_id', actorId).order('sort_order', { ascending: false }).limit(1).maybeSingle(),
     ])
     if (!actorExists) {
       return NextResponse.json({ error: '존재하지 않는 배우입니다.' }, { status: 404 })
@@ -148,6 +149,7 @@ export async function POST(request: NextRequest) {
         file_size_bytes: file.size,
         uploaded_at: new Date().toISOString(),
         is_public: false,
+        sort_order: (maxSortRow?.sort_order ?? -1) + 1,
       })
       .select('id, r2_key, actor_id, title, file_size_bytes')
       .maybeSingle()

@@ -116,7 +116,7 @@ export default function GameOver({
           marginBottom: 8,
         }}
       >
-        GAME OVER
+        <span lang="en">GAME OVER</span>
       </div>
 
       <div
@@ -145,15 +145,15 @@ export default function GameOver({
         }}
       >
         <div>
-          <div style={{ fontSize: 12, color: "#aaa" }}>STAGE</div>
+          <div style={{ fontSize: 12, color: "#aaa" }}><span lang="en">STAGE</span></div>
           <div style={{ fontSize: 24, fontWeight: 600 }}>{stageReached}</div>
         </div>
         <div>
-          <div style={{ fontSize: 12, color: "#aaa" }}>ITEMS</div>
+          <div style={{ fontSize: 12, color: "#aaa" }}><span lang="en">ITEMS</span></div>
           <div style={{ fontSize: 24, fontWeight: 600 }}>{itemsCollected}</div>
         </div>
         <div>
-          <div style={{ fontSize: 12, color: "#aaa" }}>TIME</div>
+          <div style={{ fontSize: 12, color: "#aaa" }}><span lang="en">TIME</span></div>
           <div style={{ fontSize: 24, fontWeight: 600 }}>
             {minutes}:{seconds.toString().padStart(2, "0")}
           </div>
@@ -180,7 +180,7 @@ export default function GameOver({
             fontFamily: "var(--font-oswald), sans-serif",
           }}
         >
-          RETRY
+          <span lang="en">RETRY</span>
         </button>
 
         {!saved && (
@@ -200,13 +200,13 @@ export default function GameOver({
               fontFamily: "var(--font-oswald), sans-serif",
             }}
           >
-            {saving ? "SAVING..." : "SAVE SCORE"}
+            <span lang="en">{saving ? 'SAVING...' : 'SAVE SCORE'}</span>
           </button>
         )}
 
         {saved && (
           <span style={{ color: "#00cc88", fontSize: 14, alignSelf: "center" }}>
-            SAVED!
+            <span lang="en">SAVED!</span>
           </span>
         )}
       </div>
@@ -228,7 +228,7 @@ export default function GameOver({
           padding: "0 8px",
         }}
       >
-        LEADERBOARD →
+        <span lang="en">LEADERBOARD</span> →
       </Link>
 
       <style>{`

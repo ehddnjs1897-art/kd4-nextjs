@@ -201,7 +201,7 @@ function LoginContent() {
             }}
           >
             <GoogleIcon />
-            Google로 계속하기
+            <span lang="en">Google</span>로 계속하기
           </button>
 
           <button

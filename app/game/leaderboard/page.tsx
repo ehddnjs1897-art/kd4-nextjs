@@ -98,7 +98,7 @@ export default function LeaderboardPage() {
               fontFamily: "var(--font-oswald), sans-serif",
             }}
           >
-            {p === "weekly" ? "WEEKLY" : "ALL TIME"}
+            <span lang="en">{p === "weekly" ? "WEEKLY" : "ALL TIME"}</span>
           </button>
         ))}
       </div>
@@ -124,7 +124,7 @@ export default function LeaderboardPage() {
             href="/game/play"
             style={{ color: "#0057FF", textDecoration: "none", fontSize: 14, marginTop: 12, display: "inline-flex", alignItems: "center", minHeight: 44, padding: "0 8px" }}
           >
-            PLAY NOW →
+            <span lang="en">PLAY NOW</span> →
           </Link>
         </div>
       ) : (
@@ -203,7 +203,7 @@ export default function LeaderboardPage() {
             fontFamily: "var(--font-oswald), sans-serif",
           }}
         >
-          PLAY
+          <span lang="en">PLAY</span>
         </Link>
       </div>
     </div>

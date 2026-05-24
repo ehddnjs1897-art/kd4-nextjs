@@ -5,6 +5,12 @@ export const metadata: Metadata = {
   title: 'LEADERBOARD — OFF THE PLASTIC',
   description: 'OFF THE PLASTIC 리더보드 — 최고 점수를 확인하세요.',
   robots: { index: false, follow: false },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'LEADERBOARD — OFF THE PLASTIC',
+    description: 'OFF THE PLASTIC 리더보드 — 최고 점수를 확인하세요.',
+    images: [`${SITE_URL}/og-image.jpg`],
+  },
   openGraph: {
     title: 'LEADERBOARD — OFF THE PLASTIC',
     description: 'OFF THE PLASTIC 리더보드 — 최고 점수를 확인하세요.',
