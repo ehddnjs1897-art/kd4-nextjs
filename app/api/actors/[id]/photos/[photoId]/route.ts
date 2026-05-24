@@ -70,10 +70,11 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
     const { data: owned } = await supabaseAdmin
       .from('actor_photos').select('id').eq('id', photoId).eq('actor_id', id).maybeSingle()
     if (!owned) return NextResponse.json({ error: '사진을 찾을 수 없습니다.' }, { status: 404 })
-    // 1. 기존 대표 해제
-    const { error: clearErr } = await supabaseAdmin
-      .from('actor_photos').update({ is_profile: false }).eq('actor_id', id)
+    // 1. 기존 대표 해제 (bulk clear — .select('id') 배열로 rows-affected 확인)
+    const { data: cleared, error: clearErr } = await supabaseAdmin
+      .from('actor_photos').update({ is_profile: false }).eq('actor_id', id).select('id')
     if (clearErr) throw new Error('대표 해제 실패')
+    if (!cleared?.length) console.warn('[PATCH /api/actors/[id]/photos] 해제할 기존 대표사진 없음 — actorId:', id)
     // 2. 새 대표 지정 + URL 즉시 반환 (select 체인으로 추가 round-trip 제거)
     const { data: photo, error: setErr } = await supabaseAdmin
       .from('actor_photos').update({ is_profile: true }).eq('id', photoId).eq('actor_id', id).select('url').maybeSingle()

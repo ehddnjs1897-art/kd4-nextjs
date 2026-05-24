@@ -150,12 +150,14 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       broadcaster: item.broadcaster ?? null,
       film_type: item.film_type ?? null,
     }))
-    const { error: upsertErr } = toUpdate.length > 0
-      ? await supabaseAdmin.from('actor_filmography').upsert(upsertRows, { onConflict: 'id' })
-      : { error: null }
+    const { data: upserted, error: upsertErr } = toUpdate.length > 0
+      ? await supabaseAdmin.from('actor_filmography').upsert(upsertRows, { onConflict: 'id' }).select('id')
+      : { data: [] as { id: string }[], error: null }
     if (upsertErr) console.error('[filmography/bulk] UPSERT 오류:', upsertErr.message)
+    // 반환된 ID Set으로 silent no-op(경쟁 삭제) 탐지
+    const upsertedIds = new Set((upserted ?? []).map(r => r.id))
     // upsertErr 발생 시 insertResult도 진행하지만 최종 응답에 207/500으로 반영됨
-    const updateResults = toUpdate.map(item => ({ id: item.id, ok: !upsertErr }))
+    const updateResults = toUpdate.map(item => ({ id: item.id, ok: !upsertErr && upsertedIds.has(item.id) }))
 
     // INSERT 필요한 경우 COUNT + MAX(sort_order)를 병렬 조회 (순차 2 round-trip → 1)
     let baseSortOrder = 0

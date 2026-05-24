@@ -335,7 +335,7 @@ export default function InsightsPage() {
         </div>
 
         {/* 검색 */}
-        <form role="search" aria-label="인사이트 검색" onSubmit={e => e.preventDefault()} style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
+        <form role="search" aria-label="인사이트 검색" onSubmit={e => { e.preventDefault(); setSearch(searchInput) }} style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
           <input
             className="ins-input"
             aria-label="인사이트 검색"
@@ -345,6 +345,8 @@ export default function InsightsPage() {
             onKeyDown={e => e.key === 'Enter' && setSearch(searchInput)}
             style={{ maxWidth: 320 }}
           />
+          {/* 모바일 키보드 "검색/Go" 키 활성화용 숨김 제출 버튼 */}
+          <button type="submit" className="sr-only">검색</button>
           {search && (
             <button type="button" className="ins-btn-ghost" style={{ fontSize: 13 }} onClick={() => { setSearch(''); setSearchInput('') }}>
               초기화
@@ -393,7 +395,7 @@ export default function InsightsPage() {
                       className="ins-tag"
                       onClick={() => setEditingCategoryId(editingCategoryId === insight.id ? null : insight.id)}
                       aria-label={`카테고리 변경: ${insight.category ?? '기타'}`}
-                      aria-haspopup="true"
+                      aria-haspopup="dialog"
                       aria-expanded={editingCategoryId === insight.id}
                       style={{ cursor: 'pointer', borderBottom: '1px dashed var(--gray)', background: 'none', border: 'none', padding: 0, font: 'inherit' }}
                     >
@@ -475,7 +477,7 @@ export default function InsightsPage() {
                           type="button"
                           onClick={() => deleteInsight(insight.id)}
                           style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--gray)', minHeight: 44, minWidth: 44 }}
-                          aria-label="삭제"
+                          aria-label={`${insight.title || insight.url} 삭제`}
                         >✕</button>
                       )}
                     </div>

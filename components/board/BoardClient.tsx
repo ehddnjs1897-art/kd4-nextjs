@@ -200,8 +200,8 @@ export default function BoardClient({
         )}
       </div>
 
-      {/* 검색 인풋 */}
-      <div style={{ marginBottom: '16px', position: 'relative' }}>
+      {/* 검색 인풋 — form role="search" 래핑: AT가 검색 랜드마크로 인식 + 모바일 "Go" 키 활성화 */}
+      <form role="search" aria-label="게시글 검색" onSubmit={e => e.preventDefault()} style={{ marginBottom: '16px', position: 'relative' }}>
         <span aria-hidden="true" style={{
           position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)',
           color: 'var(--gray)', fontSize: '0.9rem', pointerEvents: 'none',
@@ -225,7 +225,8 @@ export default function BoardClient({
             fontFamily: 'var(--font-sans)',
           }}
         />
-      </div>
+        <button type="submit" className="sr-only">검색</button>
+      </form>
 
       {/* 게시글 테이블 */}
       <div
