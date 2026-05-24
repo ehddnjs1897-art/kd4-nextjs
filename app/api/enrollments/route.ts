@@ -153,14 +153,19 @@ export async function POST(request: Request) {
       }
     }
 
-    // 중복(같은 달·같은 클래스)은 무시
-    const { error } = await supabaseAdmin
+    // 중복(같은 달·같은 클래스)은 무시 — .select('id') 체인으로 실제 삽입 수 관측
+    const { data: upserted, error } = await supabaseAdmin
       .from('enrollments')
       .upsert(rows, { onConflict: 'user_id,class_name,year_month', ignoreDuplicates: true })
+      .select('id')
 
     if (error) {
       console.error('[POST /api/enrollments]', error.message)
       return NextResponse.json({ error: '신청 처리 중 오류가 발생했습니다.' }, { status: 500 })
+    }
+    const inserted = (upserted ?? []).length
+    if (inserted < rows.length) {
+      console.warn(`[POST /api/enrollments] ${rows.length - inserted}/${rows.length}개 이미 신청됨 (ignoreDuplicates)`)
     }
 
     return NextResponse.json({ ok: true, count: rows.length }, { headers: { 'Cache-Control': 'private, no-store' } })

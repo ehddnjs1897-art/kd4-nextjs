@@ -53,31 +53,30 @@ export async function classifyActor(input: ActorClassifyInput): Promise<ActorCla
     return { tags: [], summary: '' }
   }
 
+  // 제어문자(줄바꿈 등) 제거 — 배우 데이터가 시스템 지시를 덮어쓰는 프롬프트 인젝션 방어
+  const sanitize = (s: string) => s.replace(/[\x00-\x1f]/g, ' ').trim()
+
   const filmoStr = input.filmography
     .slice(0, 15)
-    .map((f) => `${f.title}${f.role ? ` (${f.role})` : ''}${f.year ? ` ${f.year}` : ''}`)
+    .map((f) => `${sanitize(f.title)}${f.role ? ` (${sanitize(f.role)})` : ''}${f.year ? ` ${f.year}` : ''}`)
     .join('; ') || '미상'
 
-  const skillsStr = input.skills?.length ? input.skills.join(', ') : '미상'
+  const skillsStr = input.skills?.length ? input.skills.map(sanitize).join(', ') : '미상'
 
-  const prompt = `당신은 캐스팅 디렉터입니다. 아래 배우의 정보를 보고 캐스팅 매칭에 사용할 태그와 한 줄 요약을 생성하세요.
+  // 포맷 지시는 system_instruction에 분리 — contents에는 배우 데이터만 (인젝션 격리)
+  const systemInstruction = `당신은 캐스팅 디렉터입니다. 배우 정보를 분석하여 캐스팅 태그와 한 줄 요약을 생성합니다.
+화이트리스트에서 2~4개 태그를 선택하고 30자 이내로 요약하세요.
+화이트리스트: ${CASTING_TAG_OPTIONS.join(', ')}
+예시 요약: "생활감 있는 30대 회사원·형사 역할에 적합"
+반드시 JSON만 응답하세요: {"tags": ["태그1", "태그2"], "summary": "한 줄 요약"}`
 
-배우 정보:
-- 이름: ${input.name}
+  const actorData = `배우 정보:
+- 이름: ${sanitize(input.name)}
 - 성별: ${input.gender ?? '미상'}
 - 연령대: ${input.age_group ?? '미상'}
 - 키: ${input.height ? `${input.height}cm` : '미상'}
 - 스킬: ${skillsStr}
-- 필모그래피: ${filmoStr}
-
-작업:
-1. 아래 화이트리스트에서 이 배우에게 가장 적합한 태그를 2~4개 선택하세요.
-   화이트리스트: ${CASTING_TAG_OPTIONS.join(', ')}
-2. 한 줄 캐스팅 요약을 30자 이내로 작성하세요.
-   예시: "생활감 있는 30대 회사원·형사 역할에 적합"
-
-반드시 아래 JSON 형식으로만 응답하세요. 다른 설명 없이 JSON만:
-{"tags": ["태그1", "태그2"], "summary": "한 줄 요약"}`
+- 필모그래피: ${filmoStr}`
 
   try {
     const res = await fetch(
@@ -87,7 +86,8 @@ export async function classifyActor(input: ActorClassifyInput): Promise<ActorCla
         headers: { 'Content-Type': 'application/json', 'x-goog-api-key': GEMINI_KEY! },
         signal: AbortSignal.timeout(15_000),
         body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
+          system_instruction: { parts: [{ text: systemInstruction }] },
+          contents: [{ parts: [{ text: actorData }] }],
           generationConfig: {
             temperature: 0.4,
             // 한글 토큰 ≈ 2~3 토큰/자, 화이트리스트+요약 안전 여유 (256 → 512 상향)

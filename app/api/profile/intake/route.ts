@@ -39,6 +39,7 @@ const INTAKE_COOLDOWN_MS = 60_000
 export async function POST(request: NextRequest) {
   // SUPABASE_URL 없으면 사진 URL이 빈 경로로 DB에 저장되어 이미지가 전부 깨짐
   if (!SUPABASE_URL) {
+    console.error('[profile/intake] NEXT_PUBLIC_SUPABASE_URL 환경변수 누락')
     return NextResponse.json({ error: 'SUPABASE_URL 환경변수 누락' }, { status: 500 })
   }
 

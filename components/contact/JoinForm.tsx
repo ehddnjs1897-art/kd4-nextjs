@@ -118,7 +118,6 @@ export default function JoinForm() {
     color: '#111111',
     fontSize: '1rem',
     fontFamily: 'inherit',
-    outline: 'none',
     transition: 'border-color 0.2s',
     boxSizing: 'border-box',
     appearance: 'none',
@@ -566,7 +565,7 @@ export default function JoinForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+    <form onSubmit={handleSubmit} aria-label="수강신청" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
       {/* 이름 */}
       <input
         aria-label="이름"
