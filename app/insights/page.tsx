@@ -19,6 +19,7 @@ export default function InsightsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState('')
+  const [saveSuccess, setSaveSuccess] = useState('')
   const [fetchError, setFetchError] = useState('')
   const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null)
 
@@ -93,6 +94,8 @@ export default function InsightsPage() {
       setMemo('')
       setShowMemo(false)
       await fetchInsights()
+      setSaveSuccess('인사이트가 저장되었습니다.')
+      setTimeout(() => setSaveSuccess(''), 3000)
     } catch {
       setSaveError('저장 실패. 다시 시도해주세요.')
       setTimeout(() => setSaveError(''), 4000)
@@ -225,6 +228,8 @@ export default function InsightsPage() {
                 </button>
               </div>
               {saveError && <p role="alert" style={{ fontSize: 12, color: '#ef4444', marginTop: 6 }}>{saveError}</p>}
+              {/* 저장 성공 AT 알림 — 항상 DOM에 존재, 내용 변경 시 aria-live가 발화 */}
+              <p role="status" aria-live="polite" className="sr-only">{saveSuccess}</p>
               {showMemo && (
                 <textarea
                   className="ins-input"
