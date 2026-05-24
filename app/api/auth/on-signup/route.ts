@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
   }
 
   // supabaseAdmin으로 role + name + phone 업데이트 (클라이언트 RLS 우회)
-  const { error: upsertErr } = await supabaseAdmin.from('profiles').upsert(
+  const { data: upserted, error: upsertErr } = await supabaseAdmin.from('profiles').upsert(
     {
       id: user.id,
       name: name || null,
@@ -69,9 +69,13 @@ export async function POST(request: NextRequest) {
       role: newRole,
     },
     { onConflict: 'id' }
-  )
+  ).select('id').maybeSingle()
   if (upsertErr) {
     console.error('[on-signup] profiles upsert 실패:', upsertErr.message)
+    return NextResponse.json({ error: '프로필 설정 실패' }, { status: 500 })
+  }
+  if (!upserted) {
+    console.error('[on-signup] profiles upsert returned no row — user.id:', user.id)
     return NextResponse.json({ error: '프로필 설정 실패' }, { status: 500 })
   }
 

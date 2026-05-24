@@ -134,7 +134,7 @@ export default function ReplayPartnershipPage() {
               KD4 멤버 · 25% 할인
             </p>
             <p style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.9rem, 6vw, 2.6rem)', fontWeight: 700, color: 'var(--navy)', lineHeight: 1 }}>30,000원</p>
-            <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', color: 'var(--gray)', marginTop: 8 }}>40장 기준 · VAT 별도</p>
+            <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', color: 'var(--gray)', marginTop: 8 }}>40장 기준 · <span lang="en">VAT</span> 별도</p>
           </div>
         </div>
 
@@ -213,7 +213,7 @@ export default function ReplayPartnershipPage() {
           지금 바로 신청하세요
         </h2>
         <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.95rem', color: 'var(--secondary)', lineHeight: 1.8, marginBottom: '28px' }}>
-          KD4 멤버 전용 30,000원 (VAT 별도) · 40장 기준
+          KD4 멤버 전용 30,000원 (<span lang="en">VAT</span> 별도) · 40장 기준
         </p>
         <Link
           href={ENROLL_URL}

@@ -44,6 +44,7 @@ export async function POST(request: NextRequest) {
 
   const apiKey = process.env.GEMINI_KEY // NEXT_PUBLIC_ 접두사 제거 — 서버 전용
   if (!apiKey) {
+    console.error('[ai/route] GEMINI_KEY 환경변수가 설정되지 않았습니다.')
     return NextResponse.json({ error: 'AI 기능이 설정되지 않았습니다.' }, { status: 500 })
   }
 

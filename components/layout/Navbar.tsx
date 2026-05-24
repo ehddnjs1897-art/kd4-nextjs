@@ -304,27 +304,28 @@ export default function Navbar() {
                   </svg>
                 </button>
 
-                {/* 드롭다운 패널 */}
-                {crewDropOpen && (
-                  <div
-                    id="crew-nav-panel"
-                    aria-label="KD4 크루 메뉴"
-                    onMouseEnter={handleDropEnter}
-                    onMouseLeave={handleDropLeave}
-                    style={{
-                      position: 'absolute',
-                      top: 'calc(100% + 10px)',
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      background: '#E8E8DF',
-                      border: '1px solid rgba(21,72,138,0.2)',
-                      borderRadius: '8px',
-                      padding: '8px',
-                      minWidth: '150px',
-                      boxShadow: '0 8px 24px rgba(21,72,138,0.12)',
-                      zIndex: 10,
-                    }}
-                  >
+                {/* 드롭다운 패널 — 항상 DOM에 존재 (aria-controls 참조 깨짐 방지), hidden으로 숨김 */}
+                <div
+                  id="crew-nav-panel"
+                  aria-label="KD4 크루 메뉴"
+                  hidden={!crewDropOpen}
+                  onMouseEnter={handleDropEnter}
+                  onMouseLeave={handleDropLeave}
+                  style={{
+                    display: crewDropOpen ? 'block' : 'none',
+                    position: 'absolute',
+                    top: 'calc(100% + 10px)',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: '#E8E8DF',
+                    border: '1px solid rgba(21,72,138,0.2)',
+                    borderRadius: '8px',
+                    padding: '8px',
+                    minWidth: '150px',
+                    boxShadow: '0 8px 24px rgba(21,72,138,0.12)',
+                    zIndex: 10,
+                  }}
+                >
                     {/* 위쪽 삼각형 */}
                     <div style={{
                       position: 'absolute',
@@ -380,7 +381,6 @@ export default function Navbar() {
                     ))}
 
                   </div>
-                )}
               </li>
             )}
           </ul>

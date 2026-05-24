@@ -298,8 +298,8 @@ export default function InsightsPage() {
         </div>
 
         {/* 필터 */}
-        <div style={{ marginBottom: 10 }}>
-          <div style={{ fontSize: 11, color: 'var(--gray)', marginBottom: 6 }}>카테고리</div>
+        <div role="group" aria-label="카테고리 필터" style={{ marginBottom: 10 }}>
+          <div aria-hidden="true" style={{ fontSize: 11, color: 'var(--gray)', marginBottom: 6 }}>카테고리</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {CATEGORIES.map(c => (
               <button
@@ -312,8 +312,8 @@ export default function InsightsPage() {
             ))}
           </div>
         </div>
-        <div style={{ marginBottom: 16 }}>
-          <div style={{ fontSize: 11, color: 'var(--gray)', marginBottom: 6 }}>유형</div>
+        <div role="group" aria-label="인사이트 유형 필터" style={{ marginBottom: 16 }}>
+          <div aria-hidden="true" style={{ fontSize: 11, color: 'var(--gray)', marginBottom: 6 }}>유형</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {SOURCE_TYPES.map(s => (
               <button
@@ -393,7 +393,7 @@ export default function InsightsPage() {
                       className="ins-tag"
                       onClick={() => setEditingCategoryId(editingCategoryId === insight.id ? null : insight.id)}
                       aria-label={`카테고리 변경: ${insight.category ?? '기타'}`}
-                      aria-haspopup="listbox"
+                      aria-haspopup="true"
                       aria-expanded={editingCategoryId === insight.id}
                       style={{ cursor: 'pointer', borderBottom: '1px dashed var(--gray)', background: 'none', border: 'none', padding: 0, font: 'inherit' }}
                     >
