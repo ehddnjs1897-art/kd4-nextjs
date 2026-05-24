@@ -1,6 +1,38 @@
 "use client"
 
-import * as THREE from "three"
+import {
+  WebGLRenderer,
+  ACESFilmicToneMapping,
+  Scene,
+  FogExp2,
+  PerspectiveCamera,
+  Vector2,
+  Vector3,
+  AmbientLight,
+  DirectionalLight,
+  MeshStandardMaterial,
+  Mesh,
+  PlaneGeometry,
+  LineBasicMaterial,
+  Line,
+  BufferGeometry,
+  Group,
+  CircleGeometry,
+  MeshBasicMaterial,
+  AnimationMixer,
+  Color,
+  MeshPhongMaterial,
+  CapsuleGeometry,
+  SphereGeometry,
+  OctahedronGeometry,
+  RingGeometry,
+  TetrahedronGeometry,
+  BoxGeometry,
+  IcosahedronGeometry,
+  CylinderGeometry,
+  TorusGeometry,
+  DoubleSide,
+} from "three"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js"
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js"
@@ -134,39 +166,39 @@ export default function SpotlightRush({
 
     // ── Renderer ──
     const mobile = window.innerWidth <= 768
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: !mobile })
+    const renderer = new WebGLRenderer({ canvas, antialias: !mobile })
     renderer.setPixelRatio(mobile ? 1 : Math.min(devicePixelRatio, 2))
     renderer.setSize(innerWidth, innerHeight)
-    renderer.toneMapping = THREE.ACESFilmicToneMapping
+    renderer.toneMapping = ACESFilmicToneMapping
     renderer.toneMappingExposure = 1.4
 
     // ── Scene ──
-    const scene = new THREE.Scene()
-    scene.fog = new THREE.FogExp2(0x000510, 0.007)
+    const scene = new Scene()
+    scene.fog = new FogExp2(0x000510, 0.007)
 
     // ── Camera ── behind + above, looking down the corridor
-    const cam = new THREE.PerspectiveCamera(62, innerWidth / innerHeight, 0.1, 180)
+    const cam = new PerspectiveCamera(62, innerWidth / innerHeight, 0.1, 180)
     cam.position.set(0, 4.5, 10)
     cam.lookAt(0, 1, -20)
 
     // ── Bloom ──
     const composer = new EffectComposer(renderer)
     composer.addPass(new RenderPass(scene, cam))
-    const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.9, 0.4, 0.82)
+    const bloom = new UnrealBloomPass(new Vector2(innerWidth, innerHeight), 0.9, 0.4, 0.82)
     composer.addPass(bloom)
 
     // ── Lights ──
-    scene.add(new THREE.AmbientLight(0x334466, 2.8))
-    const keyLight = new THREE.DirectionalLight(0xfff4e0, 5.0)
+    scene.add(new AmbientLight(0x334466, 2.8))
+    const keyLight = new DirectionalLight(0xfff4e0, 5.0)
     keyLight.position.set(0, 10, 8)
     scene.add(keyLight)
-    const blueL = new THREE.DirectionalLight(0x0055ff, 2.5)
+    const blueL = new DirectionalLight(0x0055ff, 2.5)
     blueL.position.set(-8, 4, -6)
     scene.add(blueL)
-    const cyanR = new THREE.DirectionalLight(0x00ddff, 2.0)
+    const cyanR = new DirectionalLight(0x00ddff, 2.0)
     cyanR.position.set(8, 4, -6)
     scene.add(cyanR)
-    const rimBack = new THREE.DirectionalLight(0xff6600, 1.0)
+    const rimBack = new DirectionalLight(0xff6600, 1.0)
     rimBack.position.set(0, 1, 10)
     scene.add(rimBack)
 
@@ -174,16 +206,16 @@ export default function SpotlightRush({
     const TILE_LEN = 20
     const NUM_TILES = 10
     const FLOOR_W = 14
-    const floorMat = new THREE.MeshStandardMaterial({
+    const floorMat = new MeshStandardMaterial({
       color: 0x020210,
       emissive: 0x001133,
       emissiveIntensity: 0.25,
       roughness: 0.85,
       metalness: 0.15,
     })
-    const floorTiles: THREE.Mesh[] = []
+    const floorTiles: Mesh[] = []
     for (let i = 0; i < NUM_TILES; i++) {
-      const tile = new THREE.Mesh(new THREE.PlaneGeometry(FLOOR_W, TILE_LEN), floorMat.clone())
+      const tile = new Mesh(new PlaneGeometry(FLOOR_W, TILE_LEN), floorMat.clone())
       tile.rotation.x = -Math.PI / 2
       tile.position.z = 12 - i * TILE_LEN
       scene.add(tile)
@@ -191,12 +223,12 @@ export default function SpotlightRush({
     }
 
     // Grid lines (static, long — visual only)
-    const gridLineMat = new THREE.LineBasicMaterial({ color: 0x003388, transparent: true, opacity: 0.35 })
-    const laneDivMat = new THREE.LineBasicMaterial({ color: 0x0055ff, transparent: true, opacity: 0.45 })
+    const gridLineMat = new LineBasicMaterial({ color: 0x003388, transparent: true, opacity: 0.35 })
+    const laneDivMat = new LineBasicMaterial({ color: 0x0055ff, transparent: true, opacity: 0.45 })
     const FAR = 250
     for (let x = -7; x <= 7; x += 2) {
-      const pts = [new THREE.Vector3(x, 0.02, 15), new THREE.Vector3(x, 0.02, -FAR)]
-      scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), x % 3.5 === 0 ? laneDivMat : gridLineMat))
+      const pts = [new Vector3(x, 0.02, 15), new Vector3(x, 0.02, -FAR)]
+      scene.add(new Line(new BufferGeometry().setFromPoints(pts), x % 3.5 === 0 ? laneDivMat : gridLineMat))
     }
     // Transverse grid lines (move with world using env pool)
     // done below per-tile using line segments attached to floor tiles
@@ -204,25 +236,25 @@ export default function SpotlightRush({
     // ── GLB Loader ──
     const loader = new GLTFLoader()
 
-    const crystalModels: THREE.Group[] = []
+    const crystalModels: Group[] = []
     const crystalNames = ["Crystal_Cluster","Crystal_Small_01","Crystal_Small_02","Crystal_Small_03","Crystal_Small_04"]
     let crystalCount = 0
     crystalNames.forEach(n => loader.load(`/models/crystals/${n}.glb`, g => { crystalModels.push(g.scene); crystalCount++ }, undefined, () => crystalCount++))
 
-    const envModels: { name: string; scene: THREE.Group }[] = []
+    const envModels: { name: string; scene: Group }[] = []
     const envNames = ["Column_Vapor_01","Frame_Neon_Vapor_01","Frame_Neon_Vapor_02","Screen_Retro_01"]
     let envCount = 0
     envNames.forEach(n => loader.load(`/models/env/${n}.glb`, g => { envModels.push({ name: n, scene: g.scene }); envCount++ }, undefined, () => envCount++))
 
     // ── Character ──
-    const charGroup = new THREE.Group()
+    const charGroup = new Group()
     charGroup.position.set(LANES[1], 0, 0)
     scene.add(charGroup)
-    let mixer: THREE.AnimationMixer | null = null
+    let mixer: AnimationMixer | null = null
 
-    const glowDisc = new THREE.Mesh(
-      new THREE.CircleGeometry(0.85, 20),
-      new THREE.MeshBasicMaterial({ color: 0x0066ff, transparent: true, opacity: 0.3, side: THREE.DoubleSide })
+    const glowDisc = new Mesh(
+      new CircleGeometry(0.85, 20),
+      new MeshBasicMaterial({ color: 0x0066ff, transparent: true, opacity: 0.3, side: DoubleSide })
     )
     glowDisc.rotation.x = -Math.PI / 2
     glowDisc.position.y = 0.02
@@ -236,20 +268,20 @@ export default function SpotlightRush({
       loader.load(glbPath, (gltf) => {
         const model = gltf.scene
         model.traverse((c) => {
-          if ((c as THREE.Mesh).isMesh) {
-            const arr = Array.isArray((c as THREE.Mesh).material)
-              ? (c as THREE.Mesh).material as THREE.MeshStandardMaterial[]
-              : [(c as THREE.Mesh).material as THREE.MeshStandardMaterial]
+          if ((c as Mesh).isMesh) {
+            const arr = Array.isArray((c as Mesh).material)
+              ? (c as Mesh).material as MeshStandardMaterial[]
+              : [(c as Mesh).material as MeshStandardMaterial]
             arr.forEach(m => {
               if (m.isMeshStandardMaterial) {
-                m.emissive = new THREE.Color(character === "soldier" ? 0x002244 : 0x0022aa)
+                m.emissive = new Color(character === "soldier" ? 0x002244 : 0x0022aa)
                 m.emissiveIntensity = 0.3
               }
             })
           }
         })
         charGroup.add(model)
-        mixer = new THREE.AnimationMixer(model)
+        mixer = new AnimationMixer(model)
         if (gltf.animations.length) {
           const clip = gltf.animations.find(a => /run|walk/i.test(a.name)) ?? gltf.animations[0]
           mixer.clipAction(clip).play()
@@ -257,21 +289,21 @@ export default function SpotlightRush({
       })
     } else {
       // NEON capsule character
-      const mat = new THREE.MeshPhongMaterial({ color: 0x1155ff, emissive: 0x0022aa, emissiveIntensity: 0.5, shininess: 100 })
-      const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.35, 1.0, 6, 12), mat)
+      const mat = new MeshPhongMaterial({ color: 0x1155ff, emissive: 0x0022aa, emissiveIntensity: 0.5, shininess: 100 })
+      const body = new Mesh(new CapsuleGeometry(0.35, 1.0, 6, 12), mat)
       body.position.y = 0.9; charGroup.add(body)
-      const head = new THREE.Mesh(new THREE.SphereGeometry(0.28, 10, 8), mat.clone())
+      const head = new Mesh(new SphereGeometry(0.28, 10, 8), mat.clone())
       head.position.y = 1.95; charGroup.add(head)
-      const visor = new THREE.Mesh(
-        new THREE.SphereGeometry(0.2, 8, 6, 0, Math.PI * 2, 0, Math.PI * 0.5),
-        new THREE.MeshPhongMaterial({ color: 0x44ccff, emissive: 0x0088ff, emissiveIntensity: 0.9, transparent: true, opacity: 0.75 })
+      const visor = new Mesh(
+        new SphereGeometry(0.2, 8, 6, 0, Math.PI * 2, 0, Math.PI * 0.5),
+        new MeshPhongMaterial({ color: 0x44ccff, emissive: 0x0088ff, emissiveIntensity: 0.9, transparent: true, opacity: 0.75 })
       )
       visor.rotation.x = Math.PI / 2; visor.position.set(0, 2.0, 0.12); charGroup.add(visor)
     }
 
     // ── World Object Pools ──
     interface GameObj {
-      group: THREE.Group
+      group: Group
       type: "collect" | "obstacle" | "special"
       lane: number   // 0/1/2
       points: number
@@ -281,38 +313,38 @@ export default function SpotlightRush({
     const gameObjs: GameObj[] = []
 
     interface EnvObj {
-      group: THREE.Group
+      group: Group
     }
     const envObjs: EnvObj[] = []
 
     // Particles
-    const particles: { m: THREE.Mesh; v: THREE.Vector3; life: number }[] = []
+    const particles: { m: Mesh; v: Vector3; life: number }[] = []
 
-    const burst = (pos: THREE.Vector3, color: number, n: number) => {
+    const burst = (pos: Vector3, color: number, n: number) => {
       for (let i = 0; i < n; i++) {
-        const m = new THREE.Mesh(
-          new THREE.TetrahedronGeometry(0.04 + Math.random() * 0.05, 0),
-          new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 1 })
+        const m = new Mesh(
+          new TetrahedronGeometry(0.04 + Math.random() * 0.05, 0),
+          new MeshBasicMaterial({ color, transparent: true, opacity: 1 })
         )
         m.position.copy(pos); scene.add(m)
         particles.push({
           m, life: 1,
-          v: new THREE.Vector3((Math.random() - 0.5) * 0.5, (Math.random() * 0.4), (Math.random() - 0.5) * 0.4)
+          v: new Vector3((Math.random() - 0.5) * 0.5, (Math.random() * 0.4), (Math.random() - 0.5) * 0.4)
         })
       }
     }
 
     // ── Spawn Helpers ──
-    const tintClone = (template: THREE.Group, accent: number) => {
+    const tintClone = (template: Group, accent: number) => {
       const clone = template.clone()
       clone.traverse((c) => {
-        if ((c as THREE.Mesh).isMesh) {
-          const arr = Array.isArray((c as THREE.Mesh).material)
-            ? (c as THREE.Mesh).material as THREE.MeshStandardMaterial[]
-            : [(c as THREE.Mesh).material as THREE.MeshStandardMaterial]
+        if ((c as Mesh).isMesh) {
+          const arr = Array.isArray((c as Mesh).material)
+            ? (c as Mesh).material as MeshStandardMaterial[]
+            : [(c as Mesh).material as MeshStandardMaterial]
           arr.forEach(m => {
             if (m.isMeshStandardMaterial) {
-              m.emissive = new THREE.Color(accent)
+              m.emissive = new Color(accent)
               m.emissiveIntensity = 0.85
             }
           })
@@ -323,22 +355,22 @@ export default function SpotlightRush({
 
     const spawnCrystal = (z: number, lane: number) => {
       const accent = ACT_CFG[act]?.accent ?? 0x0088ff
-      const g = new THREE.Group()
+      const g = new Group()
 
       if (crystalCount > 0 && crystalModels.length > 0) {
         const clone = tintClone(crystalModels[Math.floor(Math.random() * crystalModels.length)], accent)
         clone.scale.setScalar(0.4 + Math.random() * 0.25)
         g.add(clone)
       } else {
-        g.add(new THREE.Mesh(
-          new THREE.OctahedronGeometry(0.28, 0),
-          new THREE.MeshPhongMaterial({ color: accent, emissive: accent, emissiveIntensity: 0.8, flatShading: true })
+        g.add(new Mesh(
+          new OctahedronGeometry(0.28, 0),
+          new MeshPhongMaterial({ color: accent, emissive: accent, emissiveIntensity: 0.8, flatShading: true })
         ))
       }
       // Halo
-      const halo = new THREE.Mesh(
-        new THREE.RingGeometry(0.38, 0.48, 10),
-        new THREE.MeshBasicMaterial({ color: accent, transparent: true, opacity: 0.3, side: THREE.DoubleSide })
+      const halo = new Mesh(
+        new RingGeometry(0.38, 0.48, 10),
+        new MeshBasicMaterial({ color: accent, transparent: true, opacity: 0.3, side: DoubleSide })
       )
       halo.rotation.x = -Math.PI / 2
       g.add(halo)
@@ -366,19 +398,19 @@ export default function SpotlightRush({
       while (blocked.size < maxBlock) blocked.add(Math.floor(Math.random() * 3))
 
       blocked.forEach(lane => {
-        const g = new THREE.Group()
+        const g = new Group()
         // Main bar
-        const barMat = new THREE.MeshPhongMaterial({ color: 0x110022, emissive: 0xff0044, emissiveIntensity: 0.5 })
-        g.add(new THREE.Mesh(new THREE.BoxGeometry(2.6, 1.0, 0.35), barMat))
+        const barMat = new MeshPhongMaterial({ color: 0x110022, emissive: 0xff0044, emissiveIntensity: 0.5 })
+        g.add(new Mesh(new BoxGeometry(2.6, 1.0, 0.35), barMat))
         // Warning nodes
-        const nodeMat = new THREE.MeshPhongMaterial({ color: 0xff2244, emissive: 0xff0022, emissiveIntensity: 0.7, flatShading: true })
-        const nL = new THREE.Mesh(new THREE.IcosahedronGeometry(0.17, 0), nodeMat)
+        const nodeMat = new MeshPhongMaterial({ color: 0xff2244, emissive: 0xff0022, emissiveIntensity: 0.7, flatShading: true })
+        const nL = new Mesh(new IcosahedronGeometry(0.17, 0), nodeMat)
         nL.position.x = -1.15; g.add(nL)
         const nR = nL.clone(); nR.position.x = 1.15; g.add(nR)
         // Glow plane
-        g.add(new THREE.Mesh(
-          new THREE.PlaneGeometry(3.2, 1.6),
-          new THREE.MeshBasicMaterial({ color: 0xff0022, transparent: true, opacity: 0.06, side: THREE.DoubleSide })
+        g.add(new Mesh(
+          new PlaneGeometry(3.2, 1.6),
+          new MeshBasicMaterial({ color: 0xff0022, transparent: true, opacity: 0.06, side: DoubleSide })
         ))
 
         g.position.set(LANES[lane], 0.65, z)
@@ -391,21 +423,21 @@ export default function SpotlightRush({
       const r = Math.random()
       if (r < 0.06) {
         // 1UP
-        const g = new THREE.Group()
-        g.add(new THREE.Mesh(new THREE.IcosahedronGeometry(0.38, 1),
-          new THREE.MeshPhongMaterial({ color: 0x00ffaa, emissive: 0x00ffaa, emissiveIntensity: 0.85, flatShading: true })))
-        g.add(new THREE.Mesh(new THREE.IcosahedronGeometry(0.16, 0),
-          new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.5 })))
+        const g = new Group()
+        g.add(new Mesh(new IcosahedronGeometry(0.38, 1),
+          new MeshPhongMaterial({ color: 0x00ffaa, emissive: 0x00ffaa, emissiveIntensity: 0.85, flatShading: true })))
+        g.add(new Mesh(new IcosahedronGeometry(0.16, 0),
+          new MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.5 })))
         g.position.set(LANES[Math.floor(Math.random() * 3)], 1.5, z)
         scene.add(g)
         gameObjs.push({ group: g, type: "special", lane: Math.floor(g.position.x < -1 ? 0 : g.position.x < 1 ? 1 : 2), points: 0, specialType: "1up", done: false })
       } else if (r < 0.12) {
         // Magnet
-        const g = new THREE.Group()
-        g.add(new THREE.Mesh(new THREE.OctahedronGeometry(0.28, 0),
-          new THREE.MeshPhongMaterial({ color: 0xffaa00, emissive: 0xffaa00, emissiveIntensity: 0.7, flatShading: true })))
-        const torus = new THREE.Mesh(new THREE.TorusGeometry(0.4, 0.04, 6, 12),
-          new THREE.MeshBasicMaterial({ color: 0xffcc44, transparent: true, opacity: 0.4 }))
+        const g = new Group()
+        g.add(new Mesh(new OctahedronGeometry(0.28, 0),
+          new MeshPhongMaterial({ color: 0xffaa00, emissive: 0xffaa00, emissiveIntensity: 0.7, flatShading: true })))
+        const torus = new Mesh(new TorusGeometry(0.4, 0.04, 6, 12),
+          new MeshBasicMaterial({ color: 0xffcc44, transparent: true, opacity: 0.4 }))
         torus.rotation.x = Math.PI / 2; g.add(torus)
         g.position.set(LANES[Math.floor(Math.random() * 3)], 1.5, z)
         scene.add(g)
@@ -422,7 +454,7 @@ export default function SpotlightRush({
         for (const sx of [-7.5, 7.5]) {
           const clone = tintClone(em.scene, accent)
           clone.scale.setScalar(0.7 + Math.random() * 0.5)
-          const g = new THREE.Group()
+          const g = new Group()
           g.add(clone)
           g.position.set(sx, 0, z)
           g.rotation.y = sx > 0 ? -Math.PI / 5 : Math.PI / 5
@@ -431,10 +463,10 @@ export default function SpotlightRush({
         }
       } else {
         // Fallback neon columns
-        const colMat = new THREE.MeshPhongMaterial({ color: 0x002244, emissive: 0x0044ff, emissiveIntensity: 0.4 })
+        const colMat = new MeshPhongMaterial({ color: 0x002244, emissive: 0x0044ff, emissiveIntensity: 0.4 })
         for (const sx of [-7, 7]) {
-          const g = new THREE.Group()
-          g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 5, 8), colMat.clone()))
+          const g = new Group()
+          g.add(new Mesh(new CylinderGeometry(0.22, 0.22, 5, 8), colMat.clone()))
           g.position.set(sx, 2.5, z)
           scene.add(g)
           envObjs.push({ group: g })
@@ -545,7 +577,7 @@ export default function SpotlightRush({
       charGroup.position.set(charX, charY, 0)
       // Lean into lane change
       charGroup.rotation.z = -(LANES[targetLane] - charX) * 0.08
-      ;(glowDisc.material as THREE.MeshBasicMaterial).opacity = 0.2 + Math.sin(now * 0.004) * 0.08
+      ;(glowDisc.material as MeshBasicMaterial).opacity = 0.2 + Math.sin(now * 0.004) * 0.08
 
       // Camera smoothly follows charX
       const camTargetX = charX * 0.35
@@ -562,7 +594,7 @@ export default function SpotlightRush({
         tile.position.z += spd * dt
         if (tile.position.z > 15) tile.position.z -= NUM_TILES * TILE_LEN
         // Update floor emissive color per act
-        ;(tile.material as THREE.MeshStandardMaterial).emissive.set(ACT_CFG[act]?.floorEmit ?? 0x001133)
+        ;(tile.material as MeshStandardMaterial).emissive.set(ACT_CFG[act]?.floorEmit ?? 0x001133)
       }
 
       // Move env objects
@@ -659,7 +691,7 @@ export default function SpotlightRush({
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i]
         p.m.position.add(p.v); p.life -= dt * 2.5
-        ;(p.m.material as THREE.MeshBasicMaterial).opacity = Math.max(0, p.life)
+        ;(p.m.material as MeshBasicMaterial).opacity = Math.max(0, p.life)
         if (p.life <= 0) { scene.remove(p.m); particles.splice(i, 1) }
       }
 
@@ -667,7 +699,7 @@ export default function SpotlightRush({
       charGroup.visible = iframes > 0 ? Math.floor(now / 80) % 2 === 0 : true
 
       // Fog color per act
-      ;(scene.fog as THREE.FogExp2).color.set(ACT_CFG[act]?.fog ?? 0x000510)
+      ;(scene.fog as FogExp2).color.set(ACT_CFG[act]?.fog ?? 0x000510)
 
       composer.render()
     }

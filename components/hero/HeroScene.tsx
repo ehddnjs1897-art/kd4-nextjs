@@ -1,6 +1,29 @@
 "use client";
 
-import * as THREE from "three";
+import {
+  WebGLRenderer,
+  ACESFilmicToneMapping,
+  Scene,
+  Color,
+  FogExp2,
+  PerspectiveCamera,
+  CanvasTexture,
+  RepeatWrapping,
+  SRGBColorSpace,
+  MeshStandardMaterial,
+  Mesh,
+  PlaneGeometry,
+  MeshBasicMaterial,
+  BoxGeometry,
+  CylinderGeometry,
+  CircleGeometry,
+  ConeGeometry,
+  SpotLight,
+  AmbientLight,
+  DirectionalLight,
+  DoubleSide,
+  Material,
+} from "three";
 import { useEffect, useRef } from "react";
 
 export default function HeroScene() {
@@ -13,23 +36,23 @@ export default function HeroScene() {
     let animFrameId: number;
 
     try {
-      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+      const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: false });
       const isMobile = window.innerWidth <= 768;
       renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.shadowMap.enabled = false; // 섀도우 OFF — 텍스처 유닛 한도 회피
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMapping = ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1.05;
 
       // ── Scene ─────────────────────────────────────────────────────────────
-      const scene = new THREE.Scene();
+      const scene = new Scene();
       // 웜그레이 배경 — 사이트 전체 톤과 통일
-      scene.background = new THREE.Color(0xE8E4D8);
+      scene.background = new Color(0xE8E4D8);
       // 포그 강하게 — 사이드 엣지가 자연스럽게 풀어지도록
-      scene.fog = new THREE.FogExp2(0xE8E4D8, 0.055);
+      scene.fog = new FogExp2(0xE8E4D8, 0.055);
 
       // ── Camera ────────────────────────────────────────────────────────────
-      const camera = new THREE.PerspectiveCamera(
+      const camera = new PerspectiveCamera(
         50, window.innerWidth / window.innerHeight, 0.1, 120
       );
       camera.position.set(0, 3.0, 22);
@@ -37,7 +60,7 @@ export default function HeroScene() {
 
       // ── FLOOR — 프로시저럴 우드플로어 (Canvas2D 랜덤 엇갈림 판자) ─────
       // 모바일은 해상도 1/2 + 디테일(나뭇결, 하이라이트) 생략 — 시각 차이 거의 없음
-      const makeWoodFloorTexture = (): THREE.CanvasTexture => {
+      const makeWoodFloorTexture = (): CanvasTexture => {
         const canvas = document.createElement("canvas");
         const SCALE = isMobile ? 0.5 : 1;
         canvas.width = 1024 * SCALE;
@@ -99,11 +122,11 @@ export default function HeroScene() {
           colIdx++;
         }
 
-        const tex = new THREE.CanvasTexture(canvas);
-        tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+        const tex = new CanvasTexture(canvas);
+        tex.wrapS = tex.wrapT = RepeatWrapping;
         tex.anisotropy = isMobile ? 2 : 8;
         if ("colorSpace" in tex) {
-          (tex as any).colorSpace = THREE.SRGBColorSpace;
+          (tex as any).colorSpace = SRGBColorSpace;
         } else {
           (tex as any).encoding = 3001;
         }
@@ -115,7 +138,7 @@ export default function HeroScene() {
       woodTex.repeat.set(1.5, 3);
 
       // 밝은 톤 — 텍스처와 곱해져 더 밝은 우드 바닥으로
-      const floorMat = new THREE.MeshStandardMaterial({
+      const floorMat = new MeshStandardMaterial({
         map: woodTex,
         color: 0xD8CCB8, // 밝은 웜베이지 (텍스처 색과 곱해져 밝아짐)
         roughness: 0.85,
@@ -123,8 +146,8 @@ export default function HeroScene() {
       });
 
       // 바닥 — 카메라 시작점(z=22)까지 덮도록 넉넉하게 연장 (22×48, z=0 중심)
-      const floor = new THREE.Mesh(
-        new THREE.PlaneGeometry(22, 48),
+      const floor = new Mesh(
+        new PlaneGeometry(22, 48),
         floorMat
       );
       floor.rotation.x = -Math.PI / 2;
@@ -132,17 +155,17 @@ export default function HeroScene() {
       scene.add(floor);
 
       // ── WALLS (웜그레이 톤 — 배경과 이어지도록) ──────────────────────
-      const wallMat = new THREE.MeshStandardMaterial({ color: 0xE2DCCD, roughness: 0.95 });
+      const wallMat = new MeshStandardMaterial({ color: 0xE2DCCD, roughness: 0.95 });
 
       // 뒷벽
-      const backWall = new THREE.Mesh(new THREE.PlaneGeometry(22, 5.5), wallMat);
+      const backWall = new Mesh(new PlaneGeometry(22, 5.5), wallMat);
       backWall.position.set(0, 2.75, -20);
       scene.add(backWall);
 
       // 뒷벽 가운데에 유리문 암시 (밝은 세로 띠)
-      const doorHint = new THREE.Mesh(
-        new THREE.PlaneGeometry(1.8, 3.2),
-        new THREE.MeshBasicMaterial({
+      const doorHint = new Mesh(
+        new PlaneGeometry(1.8, 3.2),
+        new MeshBasicMaterial({
           color: 0xFFF8E8, transparent: true, opacity: 0.55,
         })
       );
@@ -152,117 +175,117 @@ export default function HeroScene() {
       // 타이틀은 DOM/CSS로 렌더 (픽셀 단위 선명도) — page.tsx의 .hero-title-wall 참고
 
       // 왼쪽 벽 — 톤 살짝 낮춰서 배경과 구분, 카메라 시작점까지 확장 (길이 48)
-      const sideWallMat = new THREE.MeshStandardMaterial({
-        color: 0xD6CFBE, roughness: 0.95, side: THREE.DoubleSide,
+      const sideWallMat = new MeshStandardMaterial({
+        color: 0xD6CFBE, roughness: 0.95, side: DoubleSide,
       });
-      const wallL = new THREE.Mesh(new THREE.PlaneGeometry(48, 5.5), sideWallMat);
+      const wallL = new Mesh(new PlaneGeometry(48, 5.5), sideWallMat);
       wallL.rotation.y = Math.PI / 2;
       wallL.position.set(-11, 2.75, 0);
       scene.add(wallL);
 
       // 오른쪽 벽
-      const wallR = new THREE.Mesh(new THREE.PlaneGeometry(48, 5.5), sideWallMat.clone());
+      const wallR = new Mesh(new PlaneGeometry(48, 5.5), sideWallMat.clone());
       wallR.rotation.y = -Math.PI / 2;
       wallR.position.set(11, 2.75, 0);
       scene.add(wallR);
 
       // ── 사이드 벽 디테일: 베이스보드 + 허리선 몰딩 ─────────────────────
       // 다크 우드 걸레받이 (바닥 경계 명확하게) — 연장된 벽 길이(48)에 맞춤
-      const baseboardMat = new THREE.MeshStandardMaterial({
+      const baseboardMat = new MeshStandardMaterial({
         color: 0x3E2E1F, roughness: 0.6, metalness: 0.05,
       });
-      const baseL = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.18, 48), baseboardMat);
+      const baseL = new Mesh(new BoxGeometry(0.04, 0.18, 48), baseboardMat);
       baseL.position.set(-10.98, 0.09, 0);
       scene.add(baseL);
-      const baseR = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.18, 48), baseboardMat);
+      const baseR = new Mesh(new BoxGeometry(0.04, 0.18, 48), baseboardMat);
       baseR.position.set(10.98, 0.09, 0);
       scene.add(baseR);
-      const baseB = new THREE.Mesh(new THREE.BoxGeometry(22, 0.18, 0.04), baseboardMat);
+      const baseB = new Mesh(new BoxGeometry(22, 0.18, 0.04), baseboardMat);
       baseB.position.set(0, 0.09, -19.98);
       scene.add(baseB);
 
       // 허리선 몰딩 (chair rail) — 은은한 구분선
-      const trimMat = new THREE.MeshStandardMaterial({
+      const trimMat = new MeshStandardMaterial({
         color: 0xC8BFA8, roughness: 0.6, metalness: 0.08,
       });
-      const trimL = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.05, 48), trimMat);
+      const trimL = new Mesh(new BoxGeometry(0.03, 0.05, 48), trimMat);
       trimL.position.set(-10.97, 1.35, 0);
       scene.add(trimL);
-      const trimR = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.05, 48), trimMat);
+      const trimR = new Mesh(new BoxGeometry(0.03, 0.05, 48), trimMat);
       trimR.position.set(10.97, 1.35, 0);
       scene.add(trimR);
 
       // ── 크라운 몰딩 (천장-벽 경계) — 다크한 실선으로 명확하게 ─────────
-      const crownMat = new THREE.MeshBasicMaterial({ color: 0x2A251E });
+      const crownMat = new MeshBasicMaterial({ color: 0x2A251E });
       // 왼쪽 벽 상단
-      const crownL = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.08, 48), crownMat);
+      const crownL = new Mesh(new BoxGeometry(0.05, 0.08, 48), crownMat);
       crownL.position.set(-10.95, 5.46, 0);
       scene.add(crownL);
       // 오른쪽 벽 상단
-      const crownR = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.08, 48), crownMat);
+      const crownR = new Mesh(new BoxGeometry(0.05, 0.08, 48), crownMat);
       crownR.position.set(10.95, 5.46, 0);
       scene.add(crownR);
       // 뒷벽 상단
-      const crownB = new THREE.Mesh(new THREE.BoxGeometry(22, 0.08, 0.05), crownMat);
+      const crownB = new Mesh(new BoxGeometry(22, 0.08, 0.05), crownMat);
       crownB.position.set(0, 5.46, -19.95);
       scene.add(crownB);
 
       // ── CEILING (밝은 웜그레이) — 카메라 시작점까지 연장 ─────────────
-      const ceil = new THREE.Mesh(
-        new THREE.PlaneGeometry(22, 48),
-        new THREE.MeshStandardMaterial({ color: 0xF0EDE4, roughness: 1 })
+      const ceil = new Mesh(
+        new PlaneGeometry(22, 48),
+        new MeshStandardMaterial({ color: 0xF0EDE4, roughness: 1 })
       );
       ceil.rotation.x = Math.PI / 2;
       ceil.position.set(0, 5.5, 0);
       scene.add(ceil);
 
       // T-bar 격자 (드롭 천장 느낌) — 얇은 금속 레일
-      const tbarMat = new THREE.MeshStandardMaterial({ color: 0xBDBAB0, roughness: 0.5, metalness: 0.4 });
+      const tbarMat = new MeshStandardMaterial({ color: 0xBDBAB0, roughness: 0.5, metalness: 0.4 });
       // 가로 레일 — 연장된 천장에 맞춰 더 많이
       for (let z = 20; z > -20; z -= 4) {
-        const rail = new THREE.Mesh(new THREE.BoxGeometry(22, 0.03, 0.04), tbarMat);
+        const rail = new Mesh(new BoxGeometry(22, 0.03, 0.04), tbarMat);
         rail.position.set(0, 5.48, z);
         scene.add(rail);
       }
       // 세로 레일 — 연장된 천장 전체
       [-7, 0, 7].forEach((x) => {
-        const rail = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.03, 48), tbarMat);
+        const rail = new Mesh(new BoxGeometry(0.04, 0.03, 48), tbarMat);
         rail.position.set(x, 5.48, 0);
         scene.add(rail);
       });
 
       // ── 3개의 강한 스포트라이트 (임팩트 포인트) ─────────────────────────
-      const bodyMat = new THREE.MeshStandardMaterial({ color: 0x2A2A2A, roughness: 0.6, metalness: 0.3 });
+      const bodyMat = new MeshStandardMaterial({ color: 0x2A2A2A, roughness: 0.6, metalness: 0.3 });
 
       const addSpot = (z: number) => {
         // 천장 트랙 마운트
-        const mount = new THREE.Mesh(
-          new THREE.BoxGeometry(0.15, 0.08, 0.15),
+        const mount = new Mesh(
+          new BoxGeometry(0.15, 0.08, 0.15),
           bodyMat
         );
         mount.position.set(0, 5.5, z);
         scene.add(mount);
 
         // 암
-        const arm = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.018, 0.018, 0.45, 8),
+        const arm = new Mesh(
+          new CylinderGeometry(0.018, 0.018, 0.45, 8),
           bodyMat
         );
         arm.position.set(0, 5.22, z);
         scene.add(arm);
 
         // 본체 (큰 원통)
-        const body = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.13, 0.10, 0.30, 12),
+        const body = new Mesh(
+          new CylinderGeometry(0.13, 0.10, 0.30, 12),
           bodyMat
         );
         body.position.set(0, 4.90, z);
         scene.add(body);
 
         // 빛나는 렌즈
-        const lens = new THREE.Mesh(
-          new THREE.CircleGeometry(0.09, 16),
-          new THREE.MeshBasicMaterial({ color: 0xFFF2C8 })
+        const lens = new Mesh(
+          new CircleGeometry(0.09, 16),
+          new MeshBasicMaterial({ color: 0xFFF2C8 })
         );
         lens.rotation.x = Math.PI / 2;
         lens.position.set(0, 4.74, z);
@@ -270,20 +293,20 @@ export default function HeroScene() {
 
         // 빛 원뿔 — 단일 원뿔 (깔끔하게)
         // ConeGeometry 기본: apex(뾰족) = +y (렌즈 근처), base(넓은 끝) = -y (바닥)
-        const cone = new THREE.Mesh(
-          new THREE.ConeGeometry(1.5, 4.7, 28, 1, true),
-          new THREE.MeshBasicMaterial({
+        const cone = new Mesh(
+          new ConeGeometry(1.5, 4.7, 28, 1, true),
+          new MeshBasicMaterial({
             color: 0xFFF2CC, transparent: true, opacity: 0.12,
-            side: THREE.DoubleSide, depthWrite: false,
+            side: DoubleSide, depthWrite: false,
           })
         );
         cone.position.set(0, 2.35, z);
         scene.add(cone);
 
         // 바닥 풀 — 부드러운 글로우
-        const pool = new THREE.Mesh(
-          new THREE.CircleGeometry(1.5, 32),
-          new THREE.MeshBasicMaterial({
+        const pool = new Mesh(
+          new CircleGeometry(1.5, 32),
+          new MeshBasicMaterial({
             color: 0xFFECC0, transparent: true, opacity: 0.22,
             depthWrite: false,
           })
@@ -293,7 +316,7 @@ export default function HeroScene() {
         scene.add(pool);
 
         // SpotLight (섀도우 없이)
-        const spot = new THREE.SpotLight(0xFFF0C8, 2.0, 12, Math.PI / 6, 0.55, 1.4);
+        const spot = new SpotLight(0xFFF0C8, 2.0, 12, Math.PI / 6, 0.55, 1.4);
         spot.position.set(0, 4.7, z);
         spot.target.position.set(0, 0, z);
         scene.add(spot);
@@ -312,10 +335,10 @@ export default function HeroScene() {
 
       // ── AMBIENT ───────────────────────────────────────────────────────────
       // 웜그레이 톤 ambient — 과한 주황빛 방지
-      scene.add(new THREE.AmbientLight(0xEFEADD, 1.7));
+      scene.add(new AmbientLight(0xEFEADD, 1.7));
 
       // 부드러운 필 라이트
-      const fill = new THREE.DirectionalLight(0xF0E8D0, 0.5);
+      const fill = new DirectionalLight(0xF0E8D0, 0.5);
       fill.position.set(3, 5, 8);
       scene.add(fill);
 
@@ -404,11 +427,11 @@ export default function HeroScene() {
         observer.disconnect();
         // 지오메트리·머테리얼·텍스처 GPU 메모리 해제
         scene.traverse((obj) => {
-          const mesh = obj as THREE.Mesh
+          const mesh = obj as Mesh
           if (mesh.geometry) mesh.geometry.dispose()
           if (mesh.material) {
             const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material]
-            mats.forEach((m: THREE.Material) => m.dispose())
+            mats.forEach((m: Material) => m.dispose())
           }
         })
         woodTex.dispose()

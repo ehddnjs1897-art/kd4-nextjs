@@ -59,7 +59,6 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
             color: 'var(--white)',
             fontSize: '0.88rem',
             fontFamily: 'var(--font-sans)',
-            outline: 'none',
           }}
         />
         {query && (

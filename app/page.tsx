@@ -12,6 +12,7 @@ import { pixel } from "@/lib/analytics";
 import { CASTING_PHOTOS } from "@/lib/casting-photos"
 const HeroScene = dynamic(() => import("@/components/hero/HeroScene"), {
   ssr: false,
+  loading: () => <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: '#E8E4D8' }} />,
 });
 
 // profileFlat 항목 내 영어 고유명사 lang="en" 처리 (WCAG 3.1.2)
