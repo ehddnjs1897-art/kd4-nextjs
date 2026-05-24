@@ -261,6 +261,7 @@ export default function ClassesPage() {
               <a
                 key={title}
                 href="#class-cards-step1"
+                aria-label={`${title} — 클래스 카드로 이동`}
                 onClick={(e) => {
                   e.preventDefault()
                   const reduceMotion =

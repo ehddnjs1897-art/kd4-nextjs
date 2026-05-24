@@ -142,13 +142,16 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
         .limit(1)
         .maybeSingle()
       if (next) {
-        const { error: promoteErr } = await supabaseAdmin.from('actor_photos').update({ is_profile: true }).eq('id', next.id)
+        const { data: promoted, error: promoteErr } = await supabaseAdmin.from('actor_photos').update({ is_profile: true }).eq('id', next.id).select('id').maybeSingle()
         if (promoteErr) { console.error('[photos DELETE] 대표 승격 실패:', promoteErr.message); deleteWarnings.push('대표사진 승격 실패') }
-        const { error: thumbErr } = await supabaseAdmin.from('actors').update({ profile_photo: next.url }).eq('id', id)
+        else if (!promoted) { console.error('[photos DELETE] 대표 승격 no-op — photo id:', next.id); deleteWarnings.push('대표사진 승격 실패') }
+        const { data: thumbed, error: thumbErr } = await supabaseAdmin.from('actors').update({ profile_photo: next.url }).eq('id', id).select('id').maybeSingle()
         if (thumbErr) { console.error('[photos DELETE] profile_photo 업데이트 실패:', thumbErr.message); deleteWarnings.push('프로필 사진 업데이트 실패') }
+        else if (!thumbed) { console.error('[photos DELETE] profile_photo 업데이트 no-op — actor id:', id); deleteWarnings.push('프로필 사진 업데이트 실패') }
       } else {
-        const { error: clearErr } = await supabaseAdmin.from('actors').update({ profile_photo: null }).eq('id', id)
+        const { data: cleared, error: clearErr } = await supabaseAdmin.from('actors').update({ profile_photo: null }).eq('id', id).select('id').maybeSingle()
         if (clearErr) { console.error('[photos DELETE] profile_photo 초기화 실패:', clearErr.message); deleteWarnings.push('프로필 사진 초기화 실패') }
+        else if (!cleared) { console.error('[photos DELETE] profile_photo 초기화 no-op — actor id:', id); deleteWarnings.push('프로필 사진 초기화 실패') }
       }
     }
 

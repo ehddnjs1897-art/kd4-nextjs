@@ -73,16 +73,21 @@ export async function matchActorOnSignup(
   // 3. profiles 테이블 업데이트 — actor_id만 연결, role은 변경 X
   //    (이전: role을 'editor'로 자동 승급 → 사칭 가입 시 갤러리 편집 권한 획득 위험)
   //    이제: actor_id 연결만, editor 권한은 관리자 수동 승인 필요
-  const { error: updateError } = await supabaseAdmin
+  const { data: linked, error: updateError } = await supabaseAdmin
     .from('profiles')
     .update({
       actor_id: matched.id,
       matched_at: new Date().toISOString(),
     })
     .eq('id', profileId)
+    .select('id').maybeSingle()
 
   if (updateError) {
     console.error('[actor-matching] profiles 업데이트 실패:', updateError.message)
+    return { matched: false }
+  }
+  if (!linked) {
+    console.error('[actor-matching] profiles row 소실 — profileId:', profileId)
     return { matched: false }
   }
 

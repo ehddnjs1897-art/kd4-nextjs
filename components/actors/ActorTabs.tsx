@@ -379,6 +379,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                       src={`https://www.youtube.com/embed/${video.youtube_id}`}
                       title={video.title || `${actor.name} 출연영상`}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
                       allowFullScreen
                       loading="lazy"
                       style={s.iframe}
@@ -416,6 +417,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                       src={`https://www.youtube.com/embed/${video.youtube_id}`}
                       title={video.title || '전략적 독백'}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
                       allowFullScreen
                       loading="lazy"
                       style={s.iframe}
