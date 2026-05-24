@@ -239,7 +239,10 @@ export async function PATCH(
       .select('id')
       .maybeSingle()
 
-    if (error) return NextResponse.json({ error: '배우 정보 수정에 실패했습니다.' }, { status: 500 })
+    if (error) {
+      console.error('[PATCH /api/actors/[id]] DB 오류:', error.message)
+      return NextResponse.json({ error: '배우 정보 수정에 실패했습니다.' }, { status: 500 })
+    }
     if (!updated) return NextResponse.json({ error: '배우를 찾을 수 없습니다.' }, { status: 404 })
     revalidateTag('actors')
     revalidateTag(`actor-${id}`)

@@ -120,8 +120,11 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
       try { await deleteFile(photo.storage_path, 'actor-photos') } catch { /* 이미 없는 경우 무시 */ }
     }
 
-    const { error } = await supabaseAdmin.from('actor_photos').delete().eq('id', photoId).eq('actor_id', id)
+    const { data: deletedPhoto, error } = await supabaseAdmin
+      .from('actor_photos').delete().eq('id', photoId).eq('actor_id', id)
+      .select('id').maybeSingle()
     if (error) return NextResponse.json({ error: '사진 삭제에 실패했습니다.' }, { status: 500 })
+    if (!deletedPhoto) return NextResponse.json({ error: '사진을 찾을 수 없습니다.' }, { status: 404 })
 
     // 삭제된 사진이 대표였으면 다음 사진을 대표로
     const deleteWarnings: string[] = []

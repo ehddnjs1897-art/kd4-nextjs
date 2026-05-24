@@ -49,11 +49,14 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
       .from('actor_videos').select('r2_key').eq('id', videoId).eq('actor_id', id).maybeSingle()
     if (!videoRow) return NextResponse.json({ error: '영상을 찾을 수 없습니다.' }, { status: 404 })
 
-    const { error } = await supabaseAdmin.from('actor_videos').delete().eq('id', videoId).eq('actor_id', id)
+    const { data: deletedVideo, error } = await supabaseAdmin
+      .from('actor_videos').delete().eq('id', videoId).eq('actor_id', id)
+      .select('id').maybeSingle()
     if (error) {
       console.error('[videos DELETE] DB 오류:', error.message)
       return NextResponse.json({ error: '영상 삭제에 실패했습니다.' }, { status: 500 })
     }
+    if (!deletedVideo) return NextResponse.json({ error: '영상을 찾을 수 없습니다.' }, { status: 404 })
 
     // R2 파일 삭제 (DB 삭제 성공 후 — 실패해도 클라이언트에 영향 없음)
     if (videoRow.r2_key && isR2Configured()) {

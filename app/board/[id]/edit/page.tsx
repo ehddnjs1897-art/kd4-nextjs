@@ -144,7 +144,7 @@ export default function EditPage() {
 
         <form onSubmit={handleSubmit} aria-label="게시글 수정">
           {error && (
-            <div role="alert" style={{
+            <div id="edit-form-error" role="alert" style={{
               padding: '12px 16px',
               background: '#e74c3c22',
               border: '1px solid #e74c3c55',
@@ -198,6 +198,8 @@ export default function EditPage() {
               placeholder="제목을 입력하세요"
               required
               maxLength={200}
+              aria-invalid={!!error}
+              aria-describedby={error ? 'edit-form-error' : undefined}
               style={inputStyle}
             />
             <div aria-live="polite" style={{ textAlign: 'right', fontSize: '0.72rem', marginTop: '4px', color: title.length > 180 ? '#e74c3c' : 'var(--gray)' }}>
@@ -216,6 +218,8 @@ export default function EditPage() {
               required
               rows={14}
               maxLength={10000}
+              aria-invalid={!!error}
+              aria-describedby={error ? 'edit-form-error' : undefined}
               style={{
                 ...inputStyle,
                 resize: 'vertical',
