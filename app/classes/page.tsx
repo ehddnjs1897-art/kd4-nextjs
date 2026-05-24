@@ -390,7 +390,7 @@ export default function ClassesPage() {
                 <span aria-hidden="true" style={{ fontSize: '0.85rem', color: 'var(--gray)', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s', display: 'inline-block', marginTop: '4px' }}>▼</span>
               </button>
               {/* 패널은 DOM에 항상 유지 — hidden 속성으로 가시성만 제어 (ARIA accordion 패턴) */}
-              <div id={`step-${filter}-panel`} role="region" aria-labelledby={`btn-${filter}`} hidden={!open} className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: '12px', opacity: 0.85, marginTop: open ? '20px' : 0 }}>
+              <div id={`step-${filter}-panel`} role="region" aria-labelledby={`btn-${filter}`} className="classes-grid" style={{ display: open ? 'grid' : 'none', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: '12px', opacity: 0.85, marginTop: open ? '20px' : 0 }}>
                 {CLASSES.filter(c => c.category === filter).map((cls, i) => <ClassCard key={i} cls={cls} />)}
               </div>
             </div>

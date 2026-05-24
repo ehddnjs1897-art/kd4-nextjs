@@ -102,23 +102,23 @@ export async function POST(request: Request) {
       }
     }
   
-    // 레이트 리밋: 5분 내 30행 초과 시 차단 (정상 신청 최대 20행/회)
+    // 레이트 리밋 + 프로필 병렬 조회 (순차 2 round-trip → 1)
     const fiveMinAgo = new Date(Date.now() - 5 * 60_000).toISOString()
-    const { count: recentCount } = await supabaseAdmin
-      .from('enrollments')
-      .select('id', { count: 'exact', head: true })
-      .eq('user_id', user.id)
-      .gte('created_at', fiveMinAgo)
+    const [{ count: recentCount }, { data: profile }] = await Promise.all([
+      supabaseAdmin
+        .from('enrollments')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .gte('created_at', fiveMinAgo),
+      supabaseAdmin
+        .from('profiles')
+        .select('name, email, phone, actor_id')
+        .eq('id', user.id)
+        .maybeSingle(),
+    ])
     if ((recentCount ?? 0) >= 30) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
     }
-
-    // 프로필 (이름·이메일·연락처·배우 연결)
-    const { data: profile } = await supabaseAdmin
-      .from('profiles')
-      .select('name, email, phone, actor_id')
-      .eq('id', user.id)
-      .maybeSingle()
 
     const baseRow = {
       user_id: user.id,

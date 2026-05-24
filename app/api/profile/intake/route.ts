@@ -226,7 +226,8 @@ export async function POST(request: NextRequest) {
     .eq('actor_id', actorId)
     .order('sort_order', { ascending: false })
     .limit(1)
-  const photoBase = (existingPhotosMax?.[0]?.sort_order ?? -1) + 1
+    .maybeSingle()
+  const photoBase = (existingPhotosMax?.sort_order ?? -1) + 1
 
   // 3. 사진 rows
   if (photos.length > 0) {

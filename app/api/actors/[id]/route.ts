@@ -81,6 +81,9 @@ export async function GET(
     // JS 레벨 destructure는 하위 호환 안전망으로 유지
     // profile_pdf_url 제거 — 배우/크루 역할은 /api/actors/[id]/profile 프록시를 통해서만 접근 가능 (직접 URL 유출 방지)
     const SAFE_ACTOR_DETAIL = 'id,name,name_en,gender,age_group,height,weight,skills,is_public,profile_photo,casting_tags,casting_summary,instagram,created_at,updated_at'
+    // Privileged columns add PII (phone/email) but exclude internal paths (drive IDs, R2 keys, storage paths)
+    // Aligned with PRIV_LIST_COLS in /api/actors — profile download uses /api/actors/[id]/profile proxy
+    const PRIV_ACTOR_DETAIL = 'id,name,name_en,gender,age_group,height,weight,skills,is_public,profile_photo,casting_tags,casting_summary,instagram,phone,email,created_at,updated_at'
     // Sub-select column lists — public omits internal fields; privileged adds r2_key (for signed-URL requests) but still omits file_size_bytes/uploaded_at
     const SAFE_PHOTOS = 'id,url,is_profile,sort_order'
     const SAFE_VIDEOS = 'id,title,youtube_id,video_type,sort_order'
@@ -90,7 +93,7 @@ export async function GET(
       .from('actors')
       .select(
         canSeeContact
-          ? `*, actor_photos(${SAFE_PHOTOS}), actor_videos(${PRIV_VIDEOS}), actor_filmography(${SAFE_FILMOGRAPHY})`
+          ? `${PRIV_ACTOR_DETAIL}, actor_photos(${SAFE_PHOTOS}), actor_videos(${PRIV_VIDEOS}), actor_filmography(${SAFE_FILMOGRAPHY})`
           : `${SAFE_ACTOR_DETAIL}, actor_photos(${SAFE_PHOTOS}), actor_videos(${SAFE_VIDEOS}), actor_filmography(${SAFE_FILMOGRAPHY})`
       )
       .eq('id', id)

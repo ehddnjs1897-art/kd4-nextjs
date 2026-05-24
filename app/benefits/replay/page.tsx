@@ -96,13 +96,13 @@ export default function ReplayPartnershipPage() {
             <div style={{ width: 120, height: 120, borderRadius: 12, background: '#ffffff', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 12 }}>
               <Image src="/partners/replay-logo.webp" alt="REPLAY" width={96} height={96} style={{ objectFit: 'contain' }} priority />
             </div>
-            <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.72rem', fontWeight: 700, color: 'var(--secondary)', letterSpacing: '0.05em' }}>REPLAY</span>
+            <span lang="en" style={{ fontFamily: 'var(--font-sans)', fontSize: '0.72rem', fontWeight: 700, color: 'var(--secondary)', letterSpacing: '0.05em' }}>REPLAY</span>
           </div>
           <span aria-hidden style={{ fontSize: '1.4rem', color: 'var(--gray)', fontWeight: 300 }}>×</span>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
             <Image src="/heart-logo.png" alt="KD4 액팅 스튜디오" width={120} height={120} style={{ objectFit: 'contain' }} priority />
             <span style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.58rem', letterSpacing: '0.22em', color: 'var(--gold)', fontWeight: 700, textTransform: 'uppercase' }}>
-              KD4 ACTING STUDIO
+              <span lang="en">KD4 ACTING STUDIO</span>
             </span>
           </div>
         </div>

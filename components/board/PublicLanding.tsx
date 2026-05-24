@@ -25,7 +25,7 @@ export default function PublicLanding() {
               marginBottom: 20,
             }}
           >
-            KD4 Community
+            <span lang="en">KD4 Community</span>
           </p>
           <h1
             style={{
@@ -69,7 +69,7 @@ export default function PublicLanding() {
               textAlign: 'center',
             }}
           >
-            What's Inside
+            <span lang="en">What's Inside</span>
           </p>
           <h2
             style={{
