@@ -312,7 +312,10 @@ export async function POST(request: NextRequest) {
       console.error('[POST /api/insights]', error.message)
       return withCors(NextResponse.json({ error: '인사이트 저장에 실패했습니다.' }, { status: 500 }), origin)
     }
-    if (!data) return withCors(NextResponse.json({ error: '저장에 실패했습니다.' }, { status: 500 }), origin)
+    if (!data) {
+      console.error('[POST /api/insights] insert returned no data (unexpected)')
+      return withCors(NextResponse.json({ error: '저장에 실패했습니다.' }, { status: 500 }), origin)
+    }
 
     return withCors(NextResponse.json(data, { status: 201 }), origin)
   } catch (err) {

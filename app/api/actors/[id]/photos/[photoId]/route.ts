@@ -78,10 +78,13 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
     const { data: photo, error: setErr } = await supabaseAdmin
       .from('actor_photos').update({ is_profile: true }).eq('id', photoId).eq('actor_id', id).select('url').maybeSingle()
     if (setErr) throw new Error('대표 지정 실패')
-    // 3. actors 테이블 profile_photo URL 업데이트
+    // 3. actors 테이블 profile_photo URL 업데이트 + rows-affected 확인
     if (photo) {
-      const { error: actorPhotoErr } = await supabaseAdmin.from('actors').update({ profile_photo: photo.url }).eq('id', id)
+      const { data: updatedActor, error: actorPhotoErr } = await supabaseAdmin
+        .from('actors').update({ profile_photo: photo.url }).eq('id', id)
+        .select('id').maybeSingle()
       if (actorPhotoErr) throw new Error('actors 대표사진 업데이트 실패')
+      if (!updatedActor) console.error('[PATCH /api/actors/[id]/photos/[photoId]] actors row 소실:', id)
     }
 
     revalidateTag('actors')

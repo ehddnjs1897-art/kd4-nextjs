@@ -53,6 +53,7 @@ async function requireAdmin(): Promise<{ userId: string } | NextResponse> {
 
 export async function POST(request: NextRequest) {
   if (!isR2Configured()) {
+    console.error('[admin/videos/upload] R2 환경변수 미설정')
     return NextResponse.json(
       { error: 'R2 환경변수가 설정되지 않았습니다. 관리자에게 문의하세요.' },
       { status: 500 }

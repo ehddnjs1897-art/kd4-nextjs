@@ -451,6 +451,8 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                                 type="button"
                                 onClick={() => handleDeletePost(p.id)}
                                 disabled={loadingId === p.id}
+                                aria-label={loadingId === p.id ? `${p.title} 삭제 처리 중` : `${p.title} 삭제`}
+                                aria-busy={loadingId === p.id}
                                 style={s.actionBtnDanger}
                               >
                                 {loadingId === p.id ? '...' : '삭제'}

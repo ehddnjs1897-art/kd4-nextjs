@@ -27,6 +27,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   if (!isR2Configured()) {
+    console.error('[signed-url] R2 환경변수 미설정')
     return NextResponse.json({ error: 'R2 미설정' }, { status: 500 })
   }
 

@@ -224,9 +224,15 @@ export async function POST(request: NextRequest) {
   if (docPath) actorPatch.profile_doc_path = docPath
   if (ogPhotoPath) actorPatch.profile_photo = photoPublicUrl(ogPhotoPath)
   if (castingSummary) actorPatch.casting_summary = castingSummary
-  const { error: patchErr } = await supabaseAdmin.from('actors').update(actorPatch).eq('id', actorId)
+  const { data: patched, error: patchErr } = await supabaseAdmin
+    .from('actors').update(actorPatch).eq('id', actorId)
+    .select('id').maybeSingle()
   if (patchErr) {
     console.error('[profile/intake] actor 패치 실패:', patchErr.message)
+    return NextResponse.json({ error: '프로필 제출 중 오류가 발생했습니다. 다시 시도해주세요.' }, { status: 500 })
+  }
+  if (!patched) {
+    console.error('[profile/intake] actor row 소실 — actorId:', actorId)
     return NextResponse.json({ error: '프로필 제출 중 오류가 발생했습니다. 다시 시도해주세요.' }, { status: 500 })
   }
 
