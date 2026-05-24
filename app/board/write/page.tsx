@@ -262,5 +262,4 @@ const inputStyle: React.CSSProperties = {
   padding: '11px 14px',
   fontSize: '0.9rem',
   fontFamily: 'var(--font-sans)',
-  outline: 'none',
 }

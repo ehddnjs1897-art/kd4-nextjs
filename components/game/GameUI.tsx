@@ -82,7 +82,7 @@ export default function GameUI({ score, lives, height, stage, combo, specialText
             aria-label={`점수 ${score.toLocaleString()}`}
             style={{ fontSize: 32, fontWeight: 700, letterSpacing: "0.05em" }}
           >
-            {score.toLocaleString()}
+            <span aria-hidden="true">{score.toLocaleString()}</span>
           </div>
         </div>
 

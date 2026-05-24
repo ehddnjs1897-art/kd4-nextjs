@@ -696,7 +696,7 @@ export default function Navbar() {
                   letterSpacing: '0.06em',
                 }}
               >
-                <Image src="/icons/kakao.png" alt="" width={18} height={18} style={{ objectFit: 'contain' }} />
+                <Image src="/icons/kakao.png" alt="" aria-hidden="true" width={18} height={18} style={{ objectFit: 'contain' }} />
                 카카오로 문의하기
               </a>
             </div>

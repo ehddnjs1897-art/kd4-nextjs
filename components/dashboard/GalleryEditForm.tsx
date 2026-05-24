@@ -114,7 +114,6 @@ const s: Record<string, React.CSSProperties> = {
     padding: '10px 14px',
     color: 'var(--white)',
     fontSize: '0.9rem',
-    outline: 'none',
     width: '100%',
   },
   btn: {

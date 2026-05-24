@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import type {
   AdminProfile,
   AdminActor,
@@ -98,6 +98,13 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
   const [loadingId, setLoadingId] = useState<string | null>(null)
   const [confirmingDeletePostId, setConfirmingDeletePostId] = useState<string | null>(null)
   const [toastMsg, setToastMsg] = useState<{ text: string; type: 'error' | 'ok' } | null>(null)
+
+  // 탭 활성화 시 tabpanel로 포커스 이동 (WCAG 2.1.1 / ARIA Authoring Practices)
+  const tabFirstMount = useRef(true)
+  useEffect(() => {
+    if (tabFirstMount.current) { tabFirstMount.current = false; return }
+    document.getElementById(`admin-panel-${activeTab}`)?.focus()
+  }, [activeTab])
 
   function showToast(text: string, type: 'error' | 'ok' = 'error') {
     setToastMsg({ text, type })
@@ -541,7 +548,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
 
 function StatCard({ label, value }: { label: string; value: number }) {
   return (
-    <div style={s.statCard} role="group" aria-label={`${label}: ${value}`}>
+    <div style={s.statCard} aria-label={`${label}: ${value}`}>
       <p style={s.statValue}>{value}</p>
       <p style={s.statLabel}>{label}</p>
     </div>

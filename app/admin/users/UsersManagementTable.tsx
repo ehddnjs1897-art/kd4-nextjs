@@ -144,9 +144,12 @@ export default function UsersManagementTable({ profiles: initialProfiles }: Prop
           width: '100%', maxWidth: 320, marginBottom: 16,
           background: 'var(--bg2)', border: '1px solid var(--border)',
           borderRadius: 6, padding: '8px 12px', color: 'var(--white)',
-          fontSize: '0.85rem', fontFamily: 'var(--font-sans)', outline: 'none',
+          fontSize: '0.85rem', fontFamily: 'var(--font-sans)',
         }}
       />
+      <span role="status" aria-live="polite" style={{ fontSize: '0.78rem', color: 'var(--gray)', display: 'block', marginBottom: 8 }}>
+        {filtered.length}명
+      </span>
 
       {/* 테이블 */}
       <div style={{ overflowX: 'auto' }}>

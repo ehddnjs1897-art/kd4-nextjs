@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
@@ -63,6 +63,13 @@ export default function AIToolsPage() {
   const [rawText, setRawText] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<TabKey>('utaHagen')
+
+  // 탭 활성화 시 tabpanel로 포커스 이동 (WCAG 2.1.1 / ARIA Authoring Practices)
+  const tabFirstMount = useRef(true)
+  useEffect(() => {
+    if (tabFirstMount.current) { tabFirstMount.current = false; return }
+    document.getElementById(`tabpanel-${activeTab}`)?.focus()
+  }, [activeTab])
 
   const [hasAccess, setHasAccess] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -519,7 +526,6 @@ const s: Record<string, React.CSSProperties> = {
     padding: '11px 14px',
     fontSize: '0.9rem',
     color: 'var(--white)',
-    outline: 'none',
     width: '100%',
     boxSizing: 'border-box' as const,
   },
@@ -530,7 +536,6 @@ const s: Record<string, React.CSSProperties> = {
     padding: '12px 14px',
     fontSize: '0.9rem',
     color: 'var(--white)',
-    outline: 'none',
     width: '100%',
     minHeight: 200,
     resize: 'vertical' as const,

@@ -76,7 +76,8 @@ export async function POST(request: NextRequest) {
     const isJpeg = sig[0] === 0xff && sig[1] === 0xd8 && sig[2] === 0xff
     const isPng  = sig[0] === 0x89 && sig[1] === 0x50 && sig[2] === 0x4e && sig[3] === 0x47
     const isGif  = sig[0] === 0x47 && sig[1] === 0x49 && sig[2] === 0x46
-    const isWebp = sig[8] === 0x57 && sig[9] === 0x45 && sig[10] === 0x42 && sig[11] === 0x50
+    const isWebp = sig[0] === 0x52 && sig[1] === 0x49 && sig[2] === 0x46 && sig[3] === 0x46
+                && sig[8] === 0x57 && sig[9] === 0x45 && sig[10] === 0x42 && sig[11] === 0x50
     if (!isJpeg && !isPng && !isGif && !isWebp) {
       return NextResponse.json({ error: '지원하지 않는 이미지 형식입니다.' }, { status: 400 })
     }

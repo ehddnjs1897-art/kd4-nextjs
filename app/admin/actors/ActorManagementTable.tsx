@@ -105,7 +105,7 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
             style={{
               width: '100%', paddingLeft: 32, paddingRight: 10, paddingTop: 8, paddingBottom: 8,
               background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 6,
-              color: 'var(--white)', fontSize: '0.82rem', fontFamily: 'var(--font-sans)', outline: 'none',
+              color: 'var(--white)', fontSize: '0.82rem', fontFamily: 'var(--font-sans)',
             }}
           />
         </div>

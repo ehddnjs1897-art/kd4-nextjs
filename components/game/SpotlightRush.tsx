@@ -730,5 +730,5 @@ export default function SpotlightRush({
     return () => { c?.(); gameRef.current?.cleanup() }
   }, [initGame])
 
-  return <canvas ref={canvasRef} aria-label="Spotlight Rush 게임 화면 — 방향키(←→) 또는 A/D로 레인 이동, 스페이스바 또는 W로 점프" style={{ display: "block", width: "100%", height: "100%", touchAction: "none" }} />
+  return <canvas ref={canvasRef} role="application" aria-label="Spotlight Rush 게임 화면 — 방향키(←→) 또는 A/D로 레인 이동, 스페이스바 또는 W로 점프" style={{ display: "block", width: "100%", height: "100%", touchAction: "none" }} />
 }

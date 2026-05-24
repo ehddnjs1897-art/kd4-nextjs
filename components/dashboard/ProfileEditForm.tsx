@@ -95,7 +95,6 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
     padding: '9px 12px',
     fontSize: '0.88rem',
     fontFamily: 'var(--font-sans)',
-    outline: 'none',
   }
 
   const readonlyStyle: React.CSSProperties = {

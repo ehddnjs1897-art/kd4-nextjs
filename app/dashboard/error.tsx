@@ -34,14 +34,14 @@ export default function DashboardError({
         }}>
           오류 발생
         </p>
-        <h2 style={{
+        <h1 style={{
           fontFamily: 'var(--font-display)',
           fontSize: '1.3rem',
           color: 'var(--white)',
           marginBottom: 12,
         }}>
           페이지를 불러오지 못했습니다
-        </h2>
+        </h1>
         <p style={{ color: 'var(--gray)', fontSize: '0.88rem', marginBottom: 24, lineHeight: 1.6 }}>
           일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.
         </p>
