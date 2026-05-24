@@ -201,13 +201,19 @@ export async function POST(request: NextRequest) {
     }
     actorId = created.id
 
-    // 프로필에 actor_id 연결
-    const { error: linkErr } = await supabaseAdmin
+    // 프로필에 actor_id 연결 + rows-affected 확인 (user row 消失 시 silent no-op 방지)
+    const { data: linked, error: linkErr } = await supabaseAdmin
       .from('profiles').update({ actor_id: actorId }).eq('id', user.id)
+      .select('id').maybeSingle()
     if (linkErr) {
       console.error('[profile/intake] actor_id 연결 실패 — 생성된 actor row 정리:', linkErr.message)
       // 고아 row 방지: 방금 생성한 actor row best-effort 삭제 후 500 반환
       // (재시도 시 profile.actor_id가 여전히 null이므로 중복 생성 방지)
+      try { await supabaseAdmin.from('actors').delete().eq('id', actorId) } catch { /* ignore */ }
+      return NextResponse.json({ error: '프로필 생성에 실패했습니다.' }, { status: 500 })
+    }
+    if (!linked) {
+      console.error('[profile/intake] profiles row 소실 — actor row 정리 후 500 반환. user.id:', user.id)
       try { await supabaseAdmin.from('actors').delete().eq('id', actorId) } catch { /* ignore */ }
       return NextResponse.json({ error: '프로필 생성에 실패했습니다.' }, { status: 500 })
     }

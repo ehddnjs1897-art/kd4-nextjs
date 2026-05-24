@@ -123,7 +123,10 @@ export async function DELETE(_request: NextRequest, { params }: Ctx) {
     const { data: deletedPhoto, error } = await supabaseAdmin
       .from('actor_photos').delete().eq('id', photoId).eq('actor_id', id)
       .select('id').maybeSingle()
-    if (error) return NextResponse.json({ error: '사진 삭제에 실패했습니다.' }, { status: 500 })
+    if (error) {
+      console.error('[DELETE /api/actors/[id]/photos/[photoId]] delete error:', error.message)
+      return NextResponse.json({ error: '사진 삭제에 실패했습니다.' }, { status: 500 })
+    }
     if (!deletedPhoto) return NextResponse.json({ error: '사진을 찾을 수 없습니다.' }, { status: 404 })
 
     // 삭제된 사진이 대표였으면 다음 사진을 대표로

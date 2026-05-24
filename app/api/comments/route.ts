@@ -81,6 +81,7 @@ export async function POST(request: NextRequest) {
       .maybeSingle()
 
     if (error || !data) {
+      console.error('[POST /api/comments] insert error:', error?.message)
       return NextResponse.json({ error: '댓글 작성 중 오류가 발생했습니다.' }, { status: 500 })
     }
 

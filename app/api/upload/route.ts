@@ -41,6 +41,7 @@ async function requireUploadAccess(
     .maybeSingle()
 
   if (profileErr || !profile) {
+    if (profileErr) console.error('[upload] profile fetch error:', profileErr.message)
     return NextResponse.json(
       { error: '프로필 정보를 가져올 수 없습니다.' },
       { status: 500 }

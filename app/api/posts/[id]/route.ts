@@ -165,6 +165,7 @@ export async function PATCH(
     ).select('id').maybeSingle()
 
     if (updateError) {
+      console.error('[PATCH /api/posts/[id]] updateError:', updateError.message)
       return NextResponse.json({ error: '게시글 수정 중 오류가 발생했습니다.' }, { status: 500 })
     }
     if (!updatedPost) {
@@ -232,6 +233,7 @@ export async function DELETE(
     ).select('id').maybeSingle()
 
     if (deleteError) {
+      console.error('[DELETE /api/posts/[id]] deleteError:', deleteError.message)
       return NextResponse.json({ error: '게시글 삭제 중 오류가 발생했습니다.' }, { status: 500 })
     }
     if (!deleted) {

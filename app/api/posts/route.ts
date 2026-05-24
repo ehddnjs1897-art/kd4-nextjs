@@ -81,6 +81,7 @@ export async function GET(request: NextRequest) {
     const { data, error, count } = await query
 
     if (error) {
+      console.error('[GET /api/posts] query error:', error.message)
       return NextResponse.json({ error: '게시글 조회 중 오류가 발생했습니다.' }, { status: 500 })
     }
 

@@ -66,6 +66,7 @@ export async function DELETE(
     ).select('id').maybeSingle()
 
     if (deleteError) {
+      console.error('[DELETE /api/comments/[id]] deleteError:', deleteError.message)
       return NextResponse.json({ error: '댓글 삭제 중 오류가 발생했습니다.' }, { status: 500 })
     }
     if (!deleted) {

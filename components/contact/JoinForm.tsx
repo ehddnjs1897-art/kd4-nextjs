@@ -794,12 +794,15 @@ export default function JoinForm() {
         </span>
       </label>
 
-      {/* 에러 — 조건부 렌더링으로 DOM 삽입 시 자동 AT 공지 (role="alert"은 항상 존재 시 첫 공지 누락) */}
-      {error && (
-        <p id="join-form-error" role="alert" style={{ color: '#b91c1c', fontSize: '0.85rem', margin: 0 }}>
-          {error}
-        </p>
-      )}
+      {/* 에러 — 항상 DOM에 존재 (aria-describedby 참조 깨짐 방지), 비어있을 때는 sr-only로 시각 은닉 */}
+      <p
+        id="join-form-error"
+        role="alert"
+        className={error ? undefined : 'sr-only'}
+        style={{ color: '#b91c1c', fontSize: '0.85rem', margin: 0 }}
+      >
+        {error || ''}
+      </p>
 
       {/* 제출 버튼 */}
       <button

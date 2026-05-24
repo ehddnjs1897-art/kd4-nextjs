@@ -45,12 +45,11 @@ export async function GET(request: NextRequest) {
     )
   }
 
-  // admin 여부 확인
-  const { data: profile } = await supabaseAdmin
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .maybeSingle()
+  // admin 프로필 + 대상 유저 정보 병렬 조회 (두 쿼리 독립적 — user.id vs uid)
+  const [{ data: profile }, { data: target }] = await Promise.all([
+    supabaseAdmin.from('profiles').select('role').eq('id', user.id).maybeSingle(),
+    supabaseAdmin.from('profiles').select('role, name, email, phone').eq('id', uid).maybeSingle(),
+  ])
 
   if (!profile || profile.role !== 'admin') {
     return NextResponse.redirect(`${origin}/?error=not_admin`)
@@ -68,13 +67,6 @@ export async function GET(request: NextRequest) {
       if (nowAC - ts > APPROVE_COOLDOWN_MS) approveCrewMap.delete(k)
     }
   }
-
-  // 대상 유저 정보 조회 (phone 포함)
-  const { data: target } = await supabaseAdmin
-    .from('profiles')
-    .select('role, name, email, phone')
-    .eq('id', uid)
-    .maybeSingle()
 
   if (!target) {
     return NextResponse.redirect(`${origin}/admin?error=user_not_found`)

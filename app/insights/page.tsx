@@ -401,7 +401,7 @@ export default function InsightsPage() {
                     </button>
                     {editingCategoryId === insight.id && (
                       <div
-                        role="listbox"
+                        role="group"
                         aria-label="카테고리 선택"
                         onKeyDown={e => { if (e.key === 'Escape') { e.stopPropagation(); setEditingCategoryId(null) } }}
                         style={{
@@ -414,8 +414,7 @@ export default function InsightsPage() {
                           <button
                             type="button"
                             key={c}
-                            role="option"
-                            aria-selected={insight.category === c}
+                            aria-pressed={insight.category === c}
                             onClick={() => changeCategory(insight, c)}
                             style={{
                               padding: '3px 10px', minHeight: 44, borderRadius: 12, border: 'none', cursor: 'pointer', fontSize: 12,
