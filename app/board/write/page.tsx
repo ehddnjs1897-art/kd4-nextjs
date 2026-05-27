@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
@@ -20,6 +20,10 @@ export default function WritePage() {
   const [error, setError] = useState<string | null>(null)
   const [checkingAuth, setCheckingAuth] = useState(true)
   const [isAdmin, setIsAdmin] = useState(false)
+  const errorRef = useRef<HTMLDivElement>(null)
+
+  // 에러 발생 시 포커스 이동 (WCAG 2.4.3)
+  useEffect(() => { if (error) errorRef.current?.focus() }, [error])
 
   useEffect(() => {
     const supabase = createClient()
@@ -109,7 +113,7 @@ export default function WritePage() {
         </div>
 
         <form onSubmit={handleSubmit} aria-label="게시글 작성">
-          <div id="write-form-error" role="alert" aria-live="assertive" aria-atomic="true" style={{
+          <div ref={errorRef} id="write-form-error" tabIndex={-1} role="alert" aria-live="assertive" aria-atomic="true" style={{ outline: 'none',
             padding: error ? '12px 16px' : undefined,
             background: error ? '#e74c3c22' : undefined,
             border: error ? '1px solid #e74c3c55' : undefined,

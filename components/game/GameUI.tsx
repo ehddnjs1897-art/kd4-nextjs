@@ -77,10 +77,10 @@ export default function GameUI({ score, lives, height, stage, combo, specialText
       >
         {/* Score */}
         <div>
-          <div style={{ fontSize: 12, color: "#aaa", letterSpacing: "0.1em" }}><span lang="en">SCORE</span></div>
+          <div style={{ fontSize: "0.75rem", color: "#aaa", letterSpacing: "0.1em" }}><span lang="en">SCORE</span></div>
           <div
             aria-label={`점수 ${score.toLocaleString()}`}
-            style={{ fontSize: 32, fontWeight: 700, letterSpacing: "0.05em" }}
+            style={{ fontSize: "2rem", fontWeight: 700, letterSpacing: "0.05em" }}
           >
             <span aria-hidden="true">{score.toLocaleString()}</span>
           </div>
@@ -114,7 +114,7 @@ export default function GameUI({ score, lives, height, stage, combo, specialText
           position: "absolute",
           top: 70,
           left: 16,
-          fontSize: 12,
+          fontSize: "0.75rem",
           color: "#aaa",
           letterSpacing: "0.1em",
         }}
@@ -130,12 +130,12 @@ export default function GameUI({ score, lives, height, stage, combo, specialText
             top: 70,
             right: 16,
             textAlign: "right",
-            fontSize: 12,
+            fontSize: "0.75rem",
             color: "#aaa",
           }}
         >
-          <div style={{ color: "#0057FF", fontWeight: 600 }}><span lang="en">ACT</span> {stage.act}</div>
-          <div>{stage.title}</div>
+          <div style={{ color: "#0057FF", fontWeight: 600, fontSize: "0.75rem" }}><span lang="en">ACT</span> {stage.act}</div>
+          <div style={{ fontSize: "0.75rem" }}>{stage.title}</div>
         </div>
       )}
 
@@ -153,7 +153,7 @@ export default function GameUI({ score, lives, height, stage, combo, specialText
         >
           <div
             style={{
-              fontSize: 13,
+              fontSize: "0.8125rem",
               color: "#0057FF",
               letterSpacing: "0.2em",
               marginBottom: 8,
@@ -163,7 +163,7 @@ export default function GameUI({ score, lives, height, stage, combo, specialText
           </div>
           <div
             style={{
-              fontSize: "clamp(24px, 6vw, 40px)",
+              fontSize: "clamp(1.5rem, 6vw, 2.5rem)",
               fontWeight: 700,
               letterSpacing: "0.06em",
               marginBottom: 8,
@@ -172,7 +172,7 @@ export default function GameUI({ score, lives, height, stage, combo, specialText
           >
             {stageFlash.title}
           </div>
-          <div style={{ fontSize: 14, color: "#aaa", fontStyle: "italic" }}>
+          <div style={{ fontSize: "0.875rem", color: "#aaa", fontStyle: "italic" }}>
             {stageFlash.sub}
           </div>
         </div>
@@ -190,10 +190,10 @@ export default function GameUI({ score, lives, height, stage, combo, specialText
             animation: "fadeInUp 0.3s ease-out",
           }}
         >
-          <div style={{ fontSize: 28, fontWeight: 700, color: "#ffaa00" }}>
+          <div style={{ fontSize: "1.75rem", fontWeight: 700, color: "#ffaa00" }}>
             {comboFlash.name}!
           </div>
-          <div style={{ fontSize: 16, color: "#ffcc44" }}>
+          <div style={{ fontSize: "1rem", color: "#ffcc44" }}>
             x{comboFlash.mult} <span lang="en">COMBO</span>
           </div>
         </div>
@@ -213,7 +213,7 @@ export default function GameUI({ score, lives, height, stage, combo, specialText
         >
           <div
             style={{
-              fontSize: "clamp(28px, 7vw, 48px)",
+              fontSize: "clamp(1.75rem, 7vw, 3rem)",
               fontWeight: 700,
               letterSpacing: "0.08em",
               color: specialFlash === "OFF THE PLASTIC" ? "#00ffaa" : "#ffaa00",
@@ -225,7 +225,7 @@ export default function GameUI({ score, lives, height, stage, combo, specialText
             <span lang="en">{specialFlash}</span>
           </div>
           {specialFlash === "OFF THE PLASTIC" && (
-            <div style={{ fontSize: 14, color: "#00cc88", marginTop: 8 }}>
+            <div style={{ fontSize: "0.875rem", color: "#00cc88", marginTop: 8 }}>
               +1 UP
             </div>
           )}

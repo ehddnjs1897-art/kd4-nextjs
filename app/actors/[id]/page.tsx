@@ -3,10 +3,11 @@ import { unstable_cache } from 'next/cache'
 
 import Image from 'next/image'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
-import ActorTabs from '@/components/actors/ActorTabs'
+const ActorTabs = dynamic(() => import('@/components/actors/ActorTabs'), { ssr: false })
 import ShareButton from '@/components/actors/ShareButton'
 import ActorDownloadButton from '@/components/actors/ActorDownloadButton'
 import ActorDbLocked from '@/components/actors/ActorDbLocked'

@@ -2127,6 +2127,12 @@ main {
   50%       { opacity: 0.45; }
 }
 
+/* prefers-reduced-motion: pulse·spin 인라인 스타일 사용자는 CSS @keyframes 재정의로 억제 */
+@media (prefers-reduced-motion: reduce) {
+  @keyframes pulse { 0%, 50%, 100% { opacity: 1; } }
+  @keyframes spin  { to { transform: none; } }
+}
+
 /* === SKIP NAV === */
 .skip-nav {
   position: absolute;

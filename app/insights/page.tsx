@@ -187,19 +187,19 @@ export default function InsightsPage() {
       <style>{`
         .ins-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color .2s; }
         .ins-card:hover { border-color: var(--gold); }
-        .ins-tag { background: var(--bg3); border-radius: 4px; padding: 2px 8px; font-size: 12px; color: #3E3A37; }
-        .filter-btn { padding: 5px 14px; min-height: 44px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--gray); cursor: pointer; font-size: 13px; transition: all .15s; }
+        .ins-tag { background: var(--bg3); border-radius: 4px; padding: 2px 8px; font-size: 0.75rem; color: #3E3A37; }
+        .filter-btn { padding: 5px 14px; min-height: 44px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--gray); cursor: pointer; font-size: 0.8125rem; transition: all .15s; }
         .filter-btn.active { background: var(--gold); color: #000; border-color: var(--gold); font-weight: 600; }
-        .ins-input { width: 100%; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--white); font-size: 14px; font-family: var(--font-sans); }
+        .ins-input { width: 100%; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--white); font-size: 0.875rem; font-family: var(--font-sans); }
         .ins-input:focus { outline: 2px solid var(--gold); outline-offset: -1px; border-color: var(--gold); box-shadow: 0 0 0 2px rgba(21,72,138,0.15); }
-        .ins-btn { padding: 10px 22px; background: var(--gold); color: #000; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; white-space: nowrap; min-height: 44px; }
+        .ins-btn { padding: 10px 22px; background: var(--gold); color: #000; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.875rem; white-space: nowrap; min-height: 44px; }
         .ins-btn:disabled { opacity: .5; cursor: not-allowed; }
-        .ins-btn-ghost { padding: 10px 22px; background: transparent; color: var(--gray); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 14px; min-height: 44px; }
+        .ins-btn-ghost { padding: 10px 22px; background: transparent; color: var(--gray); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 0.875rem; min-height: 44px; }
       `}</style>
 
       <div style={{ maxWidth: 960, margin: '0 auto', padding: '40px 20px' }}>
         <h1 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 700, marginBottom: 4 }}>인사이트 <span aria-hidden="true">📎</span></h1>
-        <p style={{ color: 'var(--gray)', fontSize: 13, marginBottom: 32 }}>
+        <p style={{ color: 'var(--gray)', fontSize: '0.8125rem', marginBottom: 32 }}>
           보다가 좋았던 영상·블로그 링크를 모아두는 공간 · 총 {total}개
         </p>
 
@@ -226,11 +226,11 @@ export default function InsightsPage() {
                 <button type="button" className="ins-btn" aria-label="인사이트 저장" onClick={handleSave} disabled={saving || !url.trim()} aria-busy={saving}>
                   {saving ? '저장 중…' : '저장'}
                 </button>
-                <button type="button" className="ins-btn-ghost" aria-expanded={showMemo} aria-label={showMemo ? '메모 접기' : '메모 펼치기'} onClick={() => setShowMemo(v => !v)} style={{ fontSize: 13 }}>
+                <button type="button" className="ins-btn-ghost" aria-expanded={showMemo} aria-label={showMemo ? '메모 접기' : '메모 펼치기'} onClick={() => setShowMemo(v => !v)} style={{ fontSize: '0.8125rem' }}>
                   메모 {showMemo ? '▲' : '▼'}
                 </button>
               </div>
-              <p role="alert" aria-live="assertive" aria-atomic="true" style={{ fontSize: 12, color: '#ef4444', marginTop: 6 }}>{saveError ?? ''}</p>
+              <p role="alert" aria-live="assertive" aria-atomic="true" style={{ fontSize: '0.75rem', color: '#ef4444', marginTop: 6 }}>{saveError ?? ''}</p>
               {/* 저장 성공 AT 알림 — 항상 DOM에 존재, 내용 변경 시 aria-live가 발화 */}
               <p role="status" aria-live="polite" className="sr-only">{saveSuccess}</p>
               {showMemo && (

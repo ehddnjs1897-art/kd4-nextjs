@@ -88,11 +88,15 @@ export default function JoinForm() {
   const [focused, setFocused] = useState<string | null>(null)
   const [formStarted, setFormStarted] = useState(false)
   const successRef = useRef<HTMLDivElement>(null)
+  const errorRef = useRef<HTMLParagraphElement>(null)
 
   // 성공 화면 전환 시 포커스 이동 (WCAG 2.4.3 Focus Order)
   useEffect(() => {
     if (done) successRef.current?.focus()
   }, [done])
+
+  // 유효성 오류 발생 시 포커스 이동 (WCAG 2.4.3)
+  useEffect(() => { if (error) errorRef.current?.focus() }, [error])
 
   /** UTM 파라미터 — 마운트 시 1회 캡처해 ref 에 보관 (재렌더 영향 X) */
   const utmRef = useRef<UTMData>({
@@ -378,6 +382,7 @@ export default function JoinForm() {
             {/* 카드 1: 권동원 대표 */}
             <a
               href="/#director"
+              aria-label="권동원 대표 소개 자세히 보기"
               style={{
                 display: 'block',
                 background: '#ffffff',
@@ -423,6 +428,7 @@ export default function JoinForm() {
             {/* 카드 2: 캐스팅 결과 */}
             <a
               href="/#casting"
+              aria-label="KD4 캐스팅 결과 자세히 보기"
               style={{
                 display: 'block',
                 background: '#ffffff',
@@ -473,6 +479,7 @@ export default function JoinForm() {
             {/* 카드 3: 마이즈너 테크닉 */}
             <a
               href="/about#meisner"
+              aria-label="마이즈너 테크닉 자세히 보기"
               style={{
                 display: 'block',
                 background: '#ffffff',
@@ -523,6 +530,7 @@ export default function JoinForm() {
             {/* 카드 4: 멤버 이야기 */}
             <a
               href="/about#reviews"
+              aria-label="KD4 멤버 이야기 자세히 보기"
               style={{
                 display: 'block',
                 background: '#ffffff',
@@ -814,10 +822,12 @@ export default function JoinForm() {
 
       {/* 에러 — 항상 DOM에 존재 (aria-describedby 참조 깨짐 방지), 비어있을 때는 sr-only로 시각 은닉 */}
       <p
+        ref={errorRef}
+        tabIndex={-1}
         id={errorId}
         role="alert"
         className={error ? undefined : 'sr-only'}
-        style={{ color: '#b91c1c', fontSize: '0.85rem', margin: 0 }}
+        style={{ color: '#b91c1c', fontSize: '0.85rem', margin: 0, outline: 'none' }}
       >
         {error || ''}
       </p>

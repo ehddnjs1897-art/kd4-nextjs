@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
@@ -29,6 +29,10 @@ export default function EditPage() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isAdmin, setIsAdmin] = useState(false)
+  const errorRef = useRef<HTMLDivElement>(null)
+
+  // 에러 발생 시 포커스 이동 (WCAG 2.4.3)
+  useEffect(() => { if (error) errorRef.current?.focus() }, [error])
 
   const loadPost = useCallback(async () => {
     try {
@@ -144,7 +148,7 @@ export default function EditPage() {
         </div>
 
         <form onSubmit={handleSubmit} aria-label="게시글 수정">
-          <div id="edit-form-error" role="alert" aria-live="assertive" aria-atomic="true" style={{
+          <div ref={errorRef} id="edit-form-error" tabIndex={-1} role="alert" aria-live="assertive" aria-atomic="true" style={{ outline: 'none',
             padding: error ? '12px 16px' : undefined,
             background: error ? '#e74c3c22' : undefined,
             border: error ? '1px solid #e74c3c55' : undefined,

@@ -110,7 +110,7 @@ export default function GameOver({
     >
       <div
         style={{
-          fontSize: 13,
+          fontSize: "0.8125rem",
           color: "#aaa",
           letterSpacing: "0.2em",
           marginBottom: 8,
@@ -121,7 +121,7 @@ export default function GameOver({
 
       <div
         style={{
-          fontSize: "clamp(48px, 10vw, 80px)",
+          fontSize: "clamp(3rem, 10vw, 5rem)",
           fontWeight: 700,
           letterSpacing: "0.05em",
           marginBottom: 4,
@@ -130,7 +130,7 @@ export default function GameOver({
         {score.toLocaleString()}
       </div>
 
-      <div style={{ fontSize: 14, color: "#0057FF", marginBottom: 32 }}>
+      <div style={{ fontSize: "0.875rem", color: "#0057FF", marginBottom: 32 }}>
         {stageName}
       </div>
 
@@ -145,16 +145,16 @@ export default function GameOver({
         }}
       >
         <div>
-          <div style={{ fontSize: 12, color: "#aaa" }}><span lang="en">STAGE</span></div>
-          <div style={{ fontSize: 24, fontWeight: 600 }}>{stageReached}</div>
+          <div style={{ fontSize: "0.75rem", color: "#aaa" }}><span lang="en">STAGE</span></div>
+          <div style={{ fontSize: "1.5rem", fontWeight: 600 }}>{stageReached}</div>
         </div>
         <div>
-          <div style={{ fontSize: 12, color: "#aaa" }}><span lang="en">ITEMS</span></div>
-          <div style={{ fontSize: 24, fontWeight: 600 }}>{itemsCollected}</div>
+          <div style={{ fontSize: "0.75rem", color: "#aaa" }}><span lang="en">ITEMS</span></div>
+          <div style={{ fontSize: "1.5rem", fontWeight: 600 }}>{itemsCollected}</div>
         </div>
         <div>
-          <div style={{ fontSize: 12, color: "#aaa" }}><span lang="en">TIME</span></div>
-          <div style={{ fontSize: 24, fontWeight: 600 }}>
+          <div style={{ fontSize: "0.75rem", color: "#aaa" }}><span lang="en">TIME</span></div>
+          <div style={{ fontSize: "1.5rem", fontWeight: 600 }}>
             {minutes}:{seconds.toString().padStart(2, "0")}
           </div>
         </div>
@@ -173,7 +173,7 @@ export default function GameOver({
             border: "none",
             borderRadius: 10,
             padding: "14px 40px",
-            fontSize: 16,
+            fontSize: "1rem",
             fontWeight: 700,
             letterSpacing: "0.1em",
             cursor: "pointer",
@@ -195,7 +195,7 @@ export default function GameOver({
               border: "1px solid rgba(255,255,255,0.15)",
               borderRadius: 10,
               padding: "14px 28px",
-              fontSize: 14,
+              fontSize: "0.875rem",
               cursor: saving ? "wait" : "pointer",
               fontFamily: "var(--font-oswald), sans-serif",
             }}
@@ -205,19 +205,19 @@ export default function GameOver({
         )}
 
         {saved && (
-          <span style={{ color: "#00cc88", fontSize: 14, alignSelf: "center" }}>
+          <span style={{ color: "#00cc88", fontSize: "0.875rem", alignSelf: "center" }}>
             <span lang="en">SAVED!</span>
           </span>
         )}
       </div>
 
-      <p role="alert" aria-live="assertive" aria-atomic="true" style={{ color: "#ff6666", fontSize: 12, marginTop: 12 }}>{error ?? ''}</p>
+      <p role="alert" aria-live="assertive" aria-atomic="true" style={{ color: "#ff6666", fontSize: "0.75rem", marginTop: 12 }}>{error ?? ''}</p>
 
       <Link
         href="/game/leaderboard"
         style={{
           color: "#aaa",
-          fontSize: 13,
+          fontSize: "0.8125rem",
           marginTop: 24,
           textDecoration: "none",
           display: "inline-flex",

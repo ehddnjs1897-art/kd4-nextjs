@@ -87,8 +87,7 @@ export default function R2Video({
             onContextMenu={(e) => e.preventDefault()}
             style={{ ...s.video, opacity: playing ? 1 : 0, pointerEvents: playing ? 'auto' : 'none' }}
           >
-            {/* WCAG 1.2.2: 자막 트랙 — 현재 자막 미제공 (배우 오디션 영상) */}
-            <track kind="captions" label="자막 없음" srcLang="ko" default />
+            {/* WCAG 1.2.2: 자막 트랙 — 현재 자막 미제공 (배우 오디션 영상). src 없는 빈 track은 AT 오인식 유발로 제거. */}
           </video>
         )}
 

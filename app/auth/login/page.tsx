@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
@@ -28,6 +28,10 @@ function LoginContent() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const errorRef = useRef<HTMLDivElement>(null)
+
+  // 에러 발생 시 포커스 이동 (WCAG 2.4.3)
+  useEffect(() => { if (error) errorRef.current?.focus() }, [error])
 
   // 이미 로그인된 경우 대시보드로 리다이렉트
   useEffect(() => {
@@ -117,7 +121,7 @@ function LoginContent() {
         <h1 style={styles.title}>로그인</h1>
 
         {/* 에러 메시지 */}
-        <div id="login-error" style={error ? styles.errorBox : {}} role="alert" aria-live="assertive" aria-atomic="true">{error ?? ''}</div>
+        <div ref={errorRef} id="login-error" tabIndex={-1} style={{ ...(error ? styles.errorBox : {}), outline: 'none' }} role="alert" aria-live="assertive" aria-atomic="true">{error ?? ''}</div>
 
         {/* 이메일 로그인 폼 */}
         <form onSubmit={handleEmailLogin} style={styles.form} aria-label="이메일 로그인">
