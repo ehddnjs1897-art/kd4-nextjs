@@ -107,7 +107,7 @@ export default function LeaderboardPage() {
       {loading ? (
         <div role="status" aria-label="리더보드 로딩 중" style={{ textAlign: "center", color: "#aaa", padding: 40 }}><span lang="en">LOADING...</span></div>
       ) : fetchError ? (
-        <div role="alert" style={{ textAlign: "center", color: "#aaa", padding: 40 }}>
+        <div role="alert" aria-live="assertive" aria-atomic="true" style={{ textAlign: "center", color: "#aaa", padding: 40 }}>
           <p style={{ marginBottom: 12 }}>불러오기 실패</p>
           <button
             type="button"

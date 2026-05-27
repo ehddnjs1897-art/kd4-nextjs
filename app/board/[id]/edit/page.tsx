@@ -117,7 +117,7 @@ export default function EditPage() {
   if (error && !post) {
     return (
       <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <p role="alert" style={{ color: '#e74c3c' }}>{error}</p>
+        <p role="alert" aria-live="assertive" aria-atomic="true" style={{ color: '#e74c3c' }}>{error}</p>
       </div>
     )
   }
