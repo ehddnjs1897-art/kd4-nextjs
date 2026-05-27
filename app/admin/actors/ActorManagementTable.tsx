@@ -126,8 +126,8 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
         )}
       </div>
 
-      {/* 테이블 */}
-      <div style={{ overflowX: 'auto' }}>
+      {/* 테이블 — tabIndex={0}: 키보드로 가로 스크롤 가능 (WCAG 2.1.1) */}
+      <div role="region" aria-label="배우 목록 테이블" tabIndex={0} style={{ overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
           <caption className="sr-only">배우 목록</caption>
           <thead>

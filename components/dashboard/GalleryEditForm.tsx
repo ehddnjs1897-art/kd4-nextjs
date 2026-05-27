@@ -819,8 +819,9 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       <section style={s.section} aria-labelledby="gallery-section-filmography">
         <h2 id="gallery-section-filmography" style={s.sectionTitle}>필모그래피</h2>
 
+        {/* tabIndex={0}: 키보드로 가로 스크롤 가능 (WCAG 2.1.1) */}
         {filmography.length > 0 && (
-          <div style={{ marginBottom: 20, overflowX: 'auto' }}>
+          <div role="region" aria-label="필모그래피 목록" tabIndex={0} style={{ marginBottom: 20, overflowX: 'auto' }}>
             <div style={{ minWidth: 460 }}>
             <div style={{ ...s.filmRow, marginBottom: 4 }}>
               {['구분', '연도', '작품명', '배역', ''].map(h => (

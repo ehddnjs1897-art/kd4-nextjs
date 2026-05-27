@@ -62,22 +62,15 @@ export default function UsersManagementTable({ profiles: initialProfiles }: Prop
   const [loadingId, setLoadingId] = useState<string | null>(null)
   const [toast, setToast] = useState('')
   const [search, setSearch] = useState('')
+  // 인라인 역할 변경 확인 — window.confirm 대체 (WCAG 2.4.3 + UX)
+  const [confirmingRole, setConfirmingRole] = useState<{ id: string; next: string; msg: string } | null>(null)
 
   function showToast(msg: string) {
     setToast(msg)
     setTimeout(() => setToast(''), 3500)
   }
 
-  async function handleRoleChange(profileId: string, currentRole: string) {
-    if (loadingId) return
-    const newRole = ROLE_CYCLE[currentRole] ?? 'user'
-    // 관리자 권한 박탈 또는 기본 역할로 강등 시 확인
-    if (currentRole === 'admin' || newRole === 'member') {
-      const msg = currentRole === 'admin'
-        ? '관리자 권한을 제거하시겠습니까? 이 작업은 즉시 적용됩니다.'
-        : `역할을 '${ROLE_LABEL[newRole] ?? newRole}'으로 변경하시겠습니까?`
-      if (!window.confirm(msg)) return
-    }
+  async function executeRoleChange(profileId: string, newRole: string) {
     setLoadingId(profileId)
     try {
       const res = await fetch('/api/admin/users', {
@@ -97,6 +90,20 @@ export default function UsersManagementTable({ profiles: initialProfiles }: Prop
     } finally {
       setLoadingId(null)
     }
+  }
+
+  function handleRoleChange(profileId: string, currentRole: string) {
+    if (loadingId) return
+    const newRole = ROLE_CYCLE[currentRole] ?? 'user'
+    // 관리자 권한 박탈 또는 기본 역할로 강등 시 인라인 확인 (window.confirm 대체)
+    if (currentRole === 'admin' || newRole === 'member') {
+      const msg = currentRole === 'admin'
+        ? '관리자 권한을 제거하시겠습니까?'
+        : `역할을 '${ROLE_LABEL[newRole] ?? newRole}'으로 변경하시겠습니까?`
+      setConfirmingRole({ id: profileId, next: newRole, msg })
+      return
+    }
+    executeRoleChange(profileId, newRole)
   }
 
   const filtered = search.trim()
@@ -151,8 +158,8 @@ export default function UsersManagementTable({ profiles: initialProfiles }: Prop
         {filtered.length}명
       </span>
 
-      {/* 테이블 */}
-      <div style={{ overflowX: 'auto' }}>
+      {/* 테이블 — tabIndex={0}: 키보드로 가로 스크롤 가능 (WCAG 2.1.1) */}
+      <div role="region" aria-label="회원 목록 테이블" tabIndex={0} style={{ overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.83rem' }}>
           <caption className="sr-only">회원 목록</caption>
           <thead>
@@ -180,24 +187,45 @@ export default function UsersManagementTable({ profiles: initialProfiles }: Prop
                   {p.email || '—'}
                 </td>
                 <td style={{ padding: '10px 12px' }}>
-                  <button
-                    onClick={() => handleRoleChange(p.id, p.role)}
-                    disabled={loadingId === p.id}
-                    aria-label={`${p.name || p.email || p.id} 역할: ${ROLE_LABEL[p.role] ?? p.role}. 클릭 시 순환 변경`}
-                    aria-busy={loadingId === p.id}
-                    style={{
-                      padding: '3px 10px', borderRadius: 12,
-                      border: `1px solid ${ROLE_COLOR[p.role] ?? 'var(--border)'}`,
-                      color: ROLE_COLOR[p.role] ?? 'var(--gray)',
-                      background: 'transparent', cursor: loadingId === p.id ? 'not-allowed' : 'pointer',
-                      fontSize: '0.75rem', fontFamily: 'var(--font-sans)',
-                      opacity: loadingId === p.id ? 0.5 : 1,
-                      minHeight: 44, minWidth: 44,
-                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                    }}
-                  >
-                    {loadingId === p.id ? '…' : (ROLE_LABEL[p.role] ?? p.role)}
-                  </button>
+                  {confirmingRole?.id === p.id ? (
+                    /* 인라인 확인 UI — window.confirm 대체 (WCAG 2.4.3 포커스 유지) */
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--gray)', marginRight: 2, whiteSpace: 'nowrap' }}>
+                        {confirmingRole.msg}
+                      </span>
+                      <button
+                        // eslint-disable-next-line jsx-a11y/no-autofocus
+                        autoFocus
+                        onClick={() => { void executeRoleChange(confirmingRole.id, confirmingRole.next); setConfirmingRole(null) }}
+                        aria-label={`${confirmingRole.msg} 확인`}
+                        style={{ padding: '2px 8px', borderRadius: 10, background: '#c9403a', color: '#fff', border: 'none', cursor: 'pointer', fontSize: '0.72rem', fontFamily: 'var(--font-sans)', minHeight: 32 }}
+                      >확인</button>
+                      <button
+                        onClick={() => setConfirmingRole(null)}
+                        aria-label="역할 변경 취소"
+                        style={{ padding: '2px 8px', borderRadius: 10, background: 'transparent', color: 'var(--gray)', border: '1px solid var(--border)', cursor: 'pointer', fontSize: '0.72rem', fontFamily: 'var(--font-sans)', minHeight: 32 }}
+                      >취소</button>
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => handleRoleChange(p.id, p.role)}
+                      disabled={loadingId === p.id}
+                      aria-label={`${p.name || p.email || p.id} 역할: ${ROLE_LABEL[p.role] ?? p.role}. 클릭 시 순환 변경`}
+                      aria-busy={loadingId === p.id}
+                      style={{
+                        padding: '3px 10px', borderRadius: 12,
+                        border: `1px solid ${ROLE_COLOR[p.role] ?? 'var(--border)'}`,
+                        color: ROLE_COLOR[p.role] ?? 'var(--gray)',
+                        background: 'transparent', cursor: loadingId === p.id ? 'not-allowed' : 'pointer',
+                        fontSize: '0.75rem', fontFamily: 'var(--font-sans)',
+                        opacity: loadingId === p.id ? 0.5 : 1,
+                        minHeight: 44, minWidth: 44,
+                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                      }}
+                    >
+                      {loadingId === p.id ? '…' : (ROLE_LABEL[p.role] ?? p.role)}
+                    </button>
+                  )}
                 </td>
                 <td style={{ padding: '10px 12px', color: p.actor_id ? 'var(--gold)' : 'var(--gray)', fontSize: '0.8rem' }}>
                   {p.actor_id ? '✓ 연결됨' : '—'}
