@@ -187,8 +187,10 @@ export default function SeowooCarousel() {
         ))}
       </div>
 
-      {/* counter */}
+      {/* counter — aria-live: 슬라이드 이동 시 현재 위치를 스크린 리더에게 알림 (WCAG 4.1.3) */}
       <p
+        aria-live="polite"
+        aria-atomic="true"
         style={{
           textAlign: 'center',
           fontFamily: 'var(--font-display), Oswald, sans-serif',

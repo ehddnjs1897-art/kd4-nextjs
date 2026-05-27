@@ -182,8 +182,9 @@ export default async function PostDetailPage({ params }: { params: Params }) {
                 {formatDate(typedPost.created_at)}
               </time>
               {typedPost.updated_at && typedPost.updated_at !== typedPost.created_at && (
+                // 수정일자: AT 사용자가 수정 날짜를 들을 수 있도록 날짜 텍스트 포함 (WCAG 1.3.3)
                 <time dateTime={typedPost.updated_at} style={{ fontSize: '0.78rem', color: 'var(--gray)' }}>
-                  (수정됨)
+                  (수정: {formatDate(typedPost.updated_at)})
                 </time>
               )}
               <span style={{ fontSize: '0.82rem', color: 'var(--gray)' }}>
