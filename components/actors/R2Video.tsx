@@ -77,18 +77,21 @@ export default function R2Video({
       <div style={s.wrapper}>
         {/* 영상 (항상 렌더, playing일 때만 보임) */}
         {url && (
-          <video
-            ref={videoRef}
-            src={url}
-            title={title || '배우 출연영상'}
-            controls
-            preload="none"
-            controlsList="nodownload"
-            onContextMenu={(e) => e.preventDefault()}
-            style={{ ...s.video, opacity: playing ? 1 : 0, pointerEvents: playing ? 'auto' : 'none' }}
-          >
-            {/* WCAG 1.2.2: 자막 트랙 — 현재 자막 미제공 (배우 오디션 영상). src 없는 빈 track은 AT 오인식 유발로 제거. */}
-          </video>
+          <>
+            <video
+              ref={videoRef}
+              src={url}
+              title={title || '배우 출연영상'}
+              controls
+              preload="none"
+              controlsList="nodownload"
+              onContextMenu={(e) => e.preventDefault()}
+              tabIndex={playing ? 0 : -1}
+              style={{ ...s.video, opacity: playing ? 1 : 0, pointerEvents: playing ? 'auto' : 'none' }}
+            />
+            {/* WCAG 1.2.2: 자막 미제공 안내 — 배우 오디션 영상은 자막 미제공 */}
+            <p className="sr-only">이 영상은 자막을 제공하지 않습니다.</p>
+          </>
         )}
 
         {/* 썸네일 + 재생 오버레이 (playing 전) */}

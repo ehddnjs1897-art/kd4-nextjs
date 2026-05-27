@@ -15,8 +15,9 @@ export default function FaqAccordion({ items }: { items: FaqItem[] }) {
     <div className="faq-list" style={{ maxWidth: '680px', margin: '0 auto' }}>
       {items.map((item, i) => {
         const isOpen = openIndex === i
+        const stableKey = item.q.slice(0, 40)
         return (
-          <div key={i} className={`faq-item ${isOpen ? 'open' : ''}`}>
+          <div key={stableKey} className={`faq-item ${isOpen ? 'open' : ''}`}>
             <button
               id={`faq-btn-${i}`}
               type="button"

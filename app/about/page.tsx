@@ -263,7 +263,6 @@ export default function AboutPage() {
             title="KD4 연기하지 않는 연기"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
-            loading="lazy"
             sandbox="allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox"
             style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
           />

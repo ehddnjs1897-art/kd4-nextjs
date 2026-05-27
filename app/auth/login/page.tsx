@@ -149,6 +149,7 @@ function LoginContent() {
             <label htmlFor="password" style={styles.label}>
               비밀번호
             </label>
+            <span id="login-pw-hint" className="sr-only">8자 이상의 비밀번호를 입력하세요</span>
             <input
               id="password"
               type="password"
@@ -159,7 +160,7 @@ function LoginContent() {
               minLength={8}
               maxLength={72}
               aria-invalid={!!error || undefined}
-              aria-describedby={error ? 'login-error' : undefined}
+              aria-describedby={error ? 'login-pw-hint login-error' : 'login-pw-hint'}
               disabled={loading}
               autoComplete="current-password"
               style={styles.input}
