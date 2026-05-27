@@ -584,7 +584,7 @@ export default function JoinPage() {
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '10px' }}
             >
-              배우지망생 → <span style={{ color: 'var(--gold)' }}>진짜 배우</span>
+              배우지망생 <span aria-hidden="true">→</span> <span style={{ color: 'var(--gold)' }}>진짜 배우</span>
             </h2>
             <p
               style={{

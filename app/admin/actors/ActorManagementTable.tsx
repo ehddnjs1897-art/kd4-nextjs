@@ -192,7 +192,7 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
                     border: `1px solid ${actor.is_public ? 'rgba(74,222,128,0.3)' : 'var(--border)'}`,
                     color: actor.is_public ? '#4ade80' : 'var(--gray)',
                   }}>
-                    {actor.is_public ? '● 공개' : '○ 비공개'}
+                    {actor.is_public ? <><span aria-hidden="true">●</span> 공개</> : <><span aria-hidden="true">○</span> 비공개</>}
                   </span>
                 </td>
                 {/* 액션 */}

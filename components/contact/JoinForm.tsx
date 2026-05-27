@@ -268,7 +268,7 @@ export default function JoinForm() {
             color: '#111111',
           }}
         >
-          배우지망생 → <span style={{ color: 'var(--navy)' }}>진짜 배우</span>
+          배우지망생 <span aria-hidden="true">→</span> <span style={{ color: 'var(--navy)' }}>진짜 배우</span>
         </p>
         <p
           style={{

@@ -617,7 +617,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         </div>
         {completionPct === 100 && (
           <p style={{ fontSize: '0.78rem', color: '#4ade80', marginTop: 10, fontWeight: 500 }}>
-            ✨ 프로필이 완성됐어요! 관리자 검토 후 배우 DB에 공개됩니다.
+            <span aria-hidden="true">✨</span> 프로필이 완성됐어요! 관리자 검토 후 배우 DB에 공개됩니다.
           </p>
         )}
         {completionPct === 0 && (
