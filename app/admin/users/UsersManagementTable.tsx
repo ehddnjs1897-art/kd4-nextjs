@@ -202,6 +202,7 @@ export default function UsersManagementTable({ profiles: initialProfiles }: Prop
                         {confirmingRole.msg}
                       </span>
                       <button
+                        type="button"
                         // eslint-disable-next-line jsx-a11y/no-autofocus
                         autoFocus
                         onClick={() => { void executeRoleChange(confirmingRole.id, confirmingRole.next); setConfirmingRole(null) }}
@@ -209,6 +210,7 @@ export default function UsersManagementTable({ profiles: initialProfiles }: Prop
                         style={{ padding: '2px 8px', borderRadius: 10, background: '#c9403a', color: '#fff', border: 'none', cursor: 'pointer', fontSize: '0.72rem', fontFamily: 'var(--font-sans)', minHeight: 32 }}
                       >확인</button>
                       <button
+                        type="button"
                         onClick={() => setConfirmingRole(null)}
                         aria-label="역할 변경 취소"
                         style={{ padding: '2px 8px', borderRadius: 10, background: 'transparent', color: 'var(--gray)', border: '1px solid var(--border)', cursor: 'pointer', fontSize: '0.72rem', fontFamily: 'var(--font-sans)', minHeight: 32 }}
@@ -216,6 +218,7 @@ export default function UsersManagementTable({ profiles: initialProfiles }: Prop
                     </span>
                   ) : (
                     <button
+                      type="button"
                       onClick={() => handleRoleChange(p.id, p.role)}
                       disabled={loadingId === p.id}
                       aria-label={`${p.name || p.email || p.id} 역할: ${ROLE_LABEL[p.role] ?? p.role}. 클릭 시 순환 변경`}

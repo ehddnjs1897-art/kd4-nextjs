@@ -1327,13 +1327,7 @@ ul, ol { list-style: none; }
   .actor-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
 }
 
-/* === HERO KEYFRAME ANIMATIONS === */
-@keyframes heroFadeUp {
-  from { opacity: 0; transform: translateY(28px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* heroPulse 제거됨 */
+/* heroPulse, heroFadeUp 제거됨 (GSAP로 대체) */
 
 /* === SCROLL REVEAL — reveal-section/is-visible 제거됨 (GSAP ScrollTrigger로 통합) === */
 @media (scripting: none) {

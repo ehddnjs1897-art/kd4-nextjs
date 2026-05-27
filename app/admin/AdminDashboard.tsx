@@ -297,6 +297,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
         >
           {(Object.keys(TAB_LABELS) as Tab[]).map((key) => (
             <button
+              type="button"
               key={key}
               role="tab"
               id={`admin-tab-${key}`}
