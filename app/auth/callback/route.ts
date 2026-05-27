@@ -99,7 +99,7 @@ export async function GET(request: Request) {
         // 미리 넣어둔 수강 기록(user_id 없는)을 이름으로 연결
         await linkEnrollmentsOnSignup(user.id, name, res.actorId)
       } catch (e) {
-        console.error('[auth/callback] 매칭/수강연결 오류:', e)
+        console.error('[auth/callback] 매칭/수강연결 오류:', e instanceof Error ? e.message : String(e))
       }
     }
 
@@ -182,7 +182,7 @@ export async function GET(request: Request) {
           : { actorId: undefined as string | undefined }
       await linkEnrollmentsOnSignup(user.id, name, res.actorId)
     } catch (e) {
-      console.error('[auth/callback] 매칭/수강연결 오류:', e)
+      console.error('[auth/callback] 매칭/수강연결 오류:', e instanceof Error ? e.message : String(e))
     }
   }
 

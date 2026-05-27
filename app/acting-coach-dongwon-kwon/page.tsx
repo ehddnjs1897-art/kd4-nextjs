@@ -132,7 +132,7 @@ export default function CoachPage() {
               src={DIRECTOR.photo}
               alt="권동원 KD4 액팅 코치 (리더)"
               fill
-              sizes="(max-width: 1000px) 100vw, 960px"
+              sizes="(max-width: 960px) calc(100vw - 48px), 912px"
               style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
               priority
               fetchPriority="high"
