@@ -84,7 +84,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
     const params = new URLSearchParams(window.location.search)
     const approved = params.get('approved')
     if (approved) {
-      setApprovedMsg(`✓ ${approved} 님이 KD4 크루로 승인되었습니다.`)
+      setApprovedMsg(`${approved} 님이 KD4 크루로 승인되었습니다.`)
       // URL 파라미터 정리
       window.history.replaceState({}, '', '/admin')
     }
@@ -364,9 +364,9 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                           {loadingId === p.id
                             ? '...'
                             : p.role === 'crew_pending'
-                            ? '✓ 크루 승인'
+                            ? <><span aria-hidden="true">✓</span> 크루 승인</>
                             : p.role === 'director_pending'
-                            ? '✓ 디렉터 승인'
+                            ? <><span aria-hidden="true">✓</span> 디렉터 승인</>
                             : `→ ${ROLE_LABEL[ROLE_CYCLE[p.role] ?? 'user']}`}
                         </button>
                       </td>

@@ -227,9 +227,9 @@ export default function OnboardingForm({
         </p>
         <input ref={pptRef} type="file" accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation" disabled={loading} onChange={e => pickPpt(e.target.files?.[0] ?? null)} style={{ display: 'none' }} aria-hidden="true" />
         <button type="button" onClick={() => pptRef.current?.click()} disabled={loading} style={fileBtn}>
-          {ppt ? `📄 ${ppt.name} (${(ppt.size / MB).toFixed(1)}MB) — 변경` : '📄 파일 선택'}
+          {ppt ? <><span aria-hidden="true">📄</span>{` ${ppt.name} (${(ppt.size / MB).toFixed(1)}MB) — 변경`}</> : <><span aria-hidden="true">📄</span>{' 파일 선택'}</>}
         </button>
-        {ppt && <p style={picked}>✓ {ppt.name} 선택됨</p>}
+        {ppt && <p style={picked}><span aria-hidden="true">✓</span> {ppt.name} 선택됨</p>}
       </section>
 
       {/* 사진 */}
@@ -241,10 +241,10 @@ export default function OnboardingForm({
         </p>
         <input ref={photosRef} type="file" accept="image/*" multiple disabled={loading} onChange={e => pickPhotos(e.target.files)} style={{ display: 'none' }} aria-hidden="true" />
         <button type="button" onClick={() => photosRef.current?.click()} disabled={loading} style={fileBtn}>
-          {photos.length > 0 ? `🖼 ${photos.length}장 선택됨 — 변경` : '🖼 사진 선택'}
+          {photos.length > 0 ? <><span aria-hidden="true">🖼</span>{` ${photos.length}장 선택됨 — 변경`}</> : <><span aria-hidden="true">🖼</span>{' 사진 선택'}</>}
         </button>
         {photos.length > 0 && (
-          <p style={picked}>✓ {photos.map(p => p.name).join(', ')}</p>
+          <p style={picked}><span aria-hidden="true">✓</span> {photos.map(p => p.name).join(', ')}</p>
         )}
 
         {/* 현재사진 */}
@@ -283,8 +283,8 @@ export default function OnboardingForm({
               <input ref={videoRefs[idx]} type="file" accept="video/*" disabled={loading} onChange={e => pickVideo(idx, e.target.files?.[0] ?? null)} style={{ display: 'none' }} aria-hidden="true" />
               <button type="button" onClick={() => videoRefs[idx].current?.click()} disabled={loading} style={{ ...fileBtn, width: '100%', justifyContent: 'flex-start' }}>
                 {videos[idx]
-                  ? `🎬 ${idx === 2 ? '전략적 독백' : `출연영상 ${idx + 1}`}: ${videos[idx]!.name} (${(videos[idx]!.size / MB).toFixed(0)}MB) — 변경`
-                  : `🎬 ${idx === 2 ? '전략적 독백 (선택)' : `출연영상 ${idx + 1}${idx > 0 ? ' (선택)' : ''}`} 선택`}
+                  ? <><span aria-hidden="true">🎬</span>{` ${idx === 2 ? '전략적 독백' : `출연영상 ${idx + 1}`}: ${videos[idx]!.name} (${(videos[idx]!.size / MB).toFixed(0)}MB) — 변경`}</>
+                  : <><span aria-hidden="true">🎬</span>{` ${idx === 2 ? '전략적 독백 (선택)' : `출연영상 ${idx + 1}${idx > 0 ? ' (선택)' : ''}`} 선택`}</>}
               </button>
             </div>
           ))}
@@ -303,7 +303,7 @@ export default function OnboardingForm({
       >{error}</div>
       {loading && status && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', background: 'rgba(196,165,90,0.08)', border: '1px solid rgba(196,165,90,0.2)', borderRadius: 8, marginBottom: 16 }}>
-          <span style={{ fontSize: '1rem' }}>⏳</span>
+          <span style={{ fontSize: '1rem' }} aria-hidden="true">⏳</span>
           <p role="status" aria-live="polite" style={{ fontSize: '0.85rem', color: 'var(--gold)' }}>{status}</p>
         </div>
       )}

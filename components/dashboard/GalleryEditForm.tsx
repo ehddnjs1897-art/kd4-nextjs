@@ -308,7 +308,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '저장 실패')
       setHasPpt(true)
-      setPptMsg(`✓ ${file.name} 업로드 완료`)
+      setPptMsg(`${file.name} 업로드 완료`)
     } catch (e) {
       setPptMsg((e as Error).message)
     } finally {
@@ -611,7 +611,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
               color: item.done ? '#4ade80' : 'var(--gray)',
             }}>
               <span aria-hidden="true">{item.done ? '✓' : '○'}</span>
-              <span>{item.icon} {item.label}</span>
+              <span><span aria-hidden="true">{item.icon}</span> {item.label}</span>
             </span>
           ))}
         </div>
@@ -676,7 +676,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
             width: 40, height: 40, borderRadius: 6, background: 'rgba(196,165,90,0.12)',
             border: '1px solid rgba(196,165,90,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: '1.2rem', flexShrink: 0,
-          }}>
+          }} aria-hidden="true">
             📄
           </div>
           <div>
@@ -742,12 +742,12 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
 
         {/* R2 업로드 영상 */}
         <div style={{ marginBottom: 28 }}>
-          <p style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--gray)', letterSpacing: '0.08em', marginBottom: 12 }}>📁 직접 업로드 영상</p>
+          <p style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--gray)', letterSpacing: '0.08em', marginBottom: 12 }}><span aria-hidden="true">📁</span> 직접 업로드 영상</p>
           {r2Videos.length > 0 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 14 }}>
               {r2Videos.map(v => (
                 <div key={v.id} style={{ display: 'flex', gap: 12, alignItems: 'center', background: 'var(--bg3)', borderRadius: 6, padding: '10px 14px' }}>
-                  <span style={{ fontSize: '1rem', flexShrink: 0 }}>🎬</span>
+                  <span style={{ fontSize: '1rem', flexShrink: 0 }} aria-hidden="true">🎬</span>
                   <p style={{ flex: 1, fontSize: '0.84rem', color: 'var(--white)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {v.title || v.r2_key.split('/').pop()}
                     <span style={{ fontSize: '0.72rem', color: 'var(--gray)', marginLeft: 6 }}>
@@ -778,7 +778,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
 
         {/* 유튜브 연결 영상 */}
         <div style={{ paddingTop: 20, borderTop: '1px solid var(--border)' }}>
-          <p style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--gray)', letterSpacing: '0.08em', marginBottom: 12 }}>🎬 유튜브 영상 연결</p>
+          <p style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--gray)', letterSpacing: '0.08em', marginBottom: 12 }}><span aria-hidden="true">🎬</span> 유튜브 영상 연결</p>
           {videos.length > 0 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 14 }}>
               {videos.map(v => (

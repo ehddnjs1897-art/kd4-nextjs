@@ -327,7 +327,7 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
           border: '1px solid rgba(74,222,128,0.2)',
           borderRadius: 5,
         }}>
-          ✓ 정보가 저장되었습니다.
+          <span aria-hidden="true">✓</span> 정보가 저장되었습니다.
         </p>
       )}
       {/* 배우 자동 재매칭 성공 */}
