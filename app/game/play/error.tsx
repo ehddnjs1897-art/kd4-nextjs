@@ -42,6 +42,7 @@ export default function PlayError({
             border: 'none',
             borderRadius: 8,
             padding: '10px 24px',
+            minHeight: 44,
             fontSize: 13,
             fontWeight: 600,
             cursor: 'pointer',
@@ -52,10 +53,12 @@ export default function PlayError({
         <Link
           href="/game"
           style={{
-            display: 'inline-block',
+            display: 'inline-flex',
+            alignItems: 'center',
             border: '1px solid #333',
             borderRadius: 8,
             padding: '10px 24px',
+            minHeight: 44,
             fontSize: 13,
             color: '#aaa',
             textDecoration: 'none',

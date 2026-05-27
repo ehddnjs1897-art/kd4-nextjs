@@ -205,7 +205,9 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: 24,
   },
   btnBack: {
-    display: 'inline-block',
+    display: 'inline-flex',
+    alignItems: 'center',
+    minHeight: 44,
     background: 'var(--gold)',
     color: '#ffffff',
     borderRadius: 6,

@@ -52,11 +52,16 @@ export default function GlobalError({
             <a
               href="/"
               style={{
-                display: 'inline-block',
+                display: 'inline-flex',
+                alignItems: 'center',
                 marginTop: 12,
+                padding: '10px 24px',
+                minHeight: 44,
+                border: '1px solid #333',
+                borderRadius: 4,
                 color: '#888',
                 fontSize: '0.85rem',
-                textDecoration: 'underline',
+                textDecoration: 'none',
                 cursor: 'pointer',
               }}
             >
