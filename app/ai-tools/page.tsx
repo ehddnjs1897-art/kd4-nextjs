@@ -66,10 +66,14 @@ export default function AIToolsPage() {
 
   // 탭 활성화 시 tabpanel로 포커스 이동 (WCAG 2.1.1 / ARIA Authoring Practices)
   const tabFirstMount = useRef(true)
+  const errorRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     if (tabFirstMount.current) { tabFirstMount.current = false; return }
     document.getElementById(`tabpanel-${activeTab}`)?.focus()
   }, [activeTab])
+
+  // 에러 발생 시 포커스 이동 (WCAG 2.4.3)
+  useEffect(() => { if (error) errorRef.current?.focus() }, [error])
 
   const [hasAccess, setHasAccess] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -253,8 +257,15 @@ export default function AIToolsPage() {
                 </p>
               </div>
 
-              {/* 항상 DOM에 존재 — 스크린 리더 즉시 알림 보장 (WCAG 4.1.3) */}
-              <div role="alert" aria-live="assertive" aria-atomic="true" style={error ? s.errorBox : {}}>
+              {/* 항상 DOM에 존재 — 스크린 리더 즉시 알림 보장 (WCAG 4.1.3) + 포커스 이동 (WCAG 2.4.3) */}
+              <div
+                ref={errorRef}
+                tabIndex={-1}
+                role="alert"
+                aria-live="assertive"
+                aria-atomic="true"
+                style={{ outline: 'none', ...(error ? s.errorBox : {}) }}
+              >
                 {error ? <><span aria-hidden="true" style={s.errorIcon}>!</span>{error}</> : ''}
               </div>
 

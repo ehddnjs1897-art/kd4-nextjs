@@ -6,7 +6,7 @@
  * 이메일 가입 유저는 signup 폼에서 이미 선택하므로 여기 오지 않음.
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
@@ -18,6 +18,10 @@ export default function SetupPage() {
   const [loading, setLoading] = useState(false)
   const [checking, setChecking] = useState(true)
   const [error, setError] = useState('')
+  const errorRef = useRef<HTMLDivElement>(null)
+
+  // 에러 발생 시 포커스 이동 (WCAG 2.4.3)
+  useEffect(() => { if (error) errorRef.current?.focus() }, [error])
 
   // 로그인 여부 확인 (비로그인이면 login 페이지로)
   useEffect(() => {
@@ -81,7 +85,14 @@ export default function SetupPage() {
         <h1 style={styles.title}>회원 유형을 선택하세요</h1>
         <p style={styles.subtitle}>가입 목적에 맞는 유형을 선택해 주세요.</p>
 
-        <div role="alert" aria-live="assertive" aria-atomic="true" style={error ? styles.errorBox : {}}>{error ?? ''}</div>
+        <div
+          ref={errorRef}
+          tabIndex={-1}
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+          style={{ outline: 'none', ...(error ? styles.errorBox : {}) }}
+        >{error ?? ''}</div>
 
         <form onSubmit={handleSubmit} aria-label="회원 유형 선택">
           <div role="group" aria-label="회원 유형" style={styles.typeGrid}>

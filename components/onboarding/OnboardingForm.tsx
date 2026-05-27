@@ -57,6 +57,10 @@ export default function OnboardingForm({
   const cp2Ref = useRef<HTMLInputElement>(null)
   const cp3Ref = useRef<HTMLInputElement>(null)
   const currentPhotoRefs = [cp0Ref, cp1Ref, cp2Ref, cp3Ref]
+  const errorRef = useRef<HTMLDivElement>(null)
+
+  // 에러 발생 시 포커스 이동 (WCAG 2.4.3)
+  useEffect(() => { if (error) errorRef.current?.focus() }, [error])
 
   function checkLandscape(file: File): Promise<boolean> {
     return new Promise((resolve) => {
@@ -288,7 +292,14 @@ export default function OnboardingForm({
 
       {/* 항상 DOM에 존재 — 스크린 리더 즉시 알림 보장 (WCAG 4.1.3) */}
       <p role="status" aria-live="polite" aria-atomic="true" style={warning ? warnStyle : {}}>{warning}</p>
-      <p role="alert" aria-live="assertive" aria-atomic="true" style={error ? errStyle : {}}>{error}</p>
+      <div
+        ref={errorRef}
+        tabIndex={-1}
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+        style={{ outline: 'none', ...(error ? errStyle : {}) }}
+      >{error}</div>
       {loading && status && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', background: 'rgba(196,165,90,0.08)', border: '1px solid rgba(196,165,90,0.2)', borderRadius: 8, marginBottom: 16 }}>
           <span style={{ fontSize: '1rem' }}>⏳</span>
