@@ -124,7 +124,7 @@ export default function LeaderboardPage() {
             href="/game/play"
             style={{ color: "#0057FF", textDecoration: "none", fontSize: 14, marginTop: 12, display: "inline-flex", alignItems: "center", minHeight: 44, padding: "0 8px" }}
           >
-            <span lang="en">PLAY NOW</span> →
+            <span lang="en">PLAY NOW</span> <span aria-hidden="true">→</span>
           </Link>
         </div>
       ) : (

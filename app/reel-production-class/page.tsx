@@ -167,7 +167,7 @@ export default function ReelPage() {
           </div>
           <div style={{ textAlign: 'center', marginTop: '28px' }}>
             <a href={PORTFOLIO_PLAYLIST} target="_blank" rel="noopener noreferrer" aria-label="출연영상 클래스 포트폴리오 YouTube 재생목록 (새 탭에서 열림)" className="btn-primary" style={{ background: 'var(--navy)', color: '#fff' }}>
-              포트폴리오 더보기 (유튜브 재생목록) →
+              포트폴리오 더보기 (유튜브 재생목록) <span aria-hidden="true">→</span>
             </a>
           </div>
         </div>
@@ -286,10 +286,10 @@ export default function ReelPage() {
       {/* CROSS-LINK */}
       <section aria-label="관련 클래스 바로가기" style={{ padding: '24px', background: 'var(--bg)', textAlign: 'center', borderTop: '1px solid var(--border)' }}>
         <Link href="/meisner-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
-          ← 마이즈너 정규 클래스
+          <span aria-hidden="true">← </span>마이즈너 정규 클래스
         </Link>
         <Link href="/classes" style={{ fontSize: '0.9rem', color: 'var(--navy)' }}>
-          전체 클래스 보기 →
+          전체 클래스 보기 <span aria-hidden="true">→</span>
         </Link>
       </section>
     </div>

@@ -382,7 +382,7 @@ export default function BenefitsPage() {
               boxShadow: '0 2px 8px rgba(21,72,138,0.18)',
             }}
           >
-            편집 서비스 신청하기 →
+            편집 서비스 신청하기 <span aria-hidden="true">→</span>
           </Link>
         </div>
       </section>

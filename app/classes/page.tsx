@@ -417,7 +417,7 @@ export default function ClassesPage() {
                 className="btn-primary"
                 style={{ background: 'var(--navy)', color: '#fff', textDecoration: 'none', boxShadow: '0 4px 20px rgba(21,72,138,0.3)' }}
               >
-                무료 상담 신청 →
+                무료 상담 신청 <span aria-hidden="true">→</span>
               </Link>
               <a
                 href="https://pf.kakao.com/_ximxdqn"

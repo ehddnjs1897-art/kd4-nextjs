@@ -150,7 +150,7 @@ export default function ReplayPartnershipPage() {
               borderRadius: 12, letterSpacing: '0.03em', textDecoration: 'none',
             }}
           >
-            멤버 할인가로 신청하기 →
+            멤버 할인가로 신청하기 <span aria-hidden="true">→</span>
           </Link>
           <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.76rem', color: 'var(--gray)', marginTop: 10 }}>
             로그인 후 퍼스널 브랜딩 서비스 탭에서 자동으로 선택됩니다

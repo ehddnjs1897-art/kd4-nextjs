@@ -501,7 +501,7 @@ export default function AboutPage() {
               textDecoration: 'none',
             }}
           >
-            제휴 혜택 전체 보기 →
+            제휴 혜택 전체 보기 <span aria-hidden="true">→</span>
           </Link>
         </div>
       </section>

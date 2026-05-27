@@ -892,7 +892,7 @@ export default function JoinPage() {
                             fontWeight: 600,
                           }}
                         >
-                          한번에 결제 시 5만원 추가 할인 →{' '}
+                          한번에 결제 시 5만원 추가 할인 <span aria-hidden="true">→</span>{' '}
                           <strong>{lumpSumPrice.toLocaleString()}원</strong>
                         </p>
                       </>
