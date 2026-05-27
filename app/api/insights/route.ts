@@ -171,7 +171,8 @@ async function classifyWithGemini(url: string, title: string | null, memo: strin
     const jsonMatch = raw.match(/\{[\s\S]*\}/)
     if (!jsonMatch) throw new Error('no json')
     return JSON.parse(jsonMatch[0])
-  } catch {
+  } catch (err) {
+    console.error('[insights] Gemini classify 실패:', err instanceof Error ? err.message : String(err))
     const isVideo = /youtube\.com|youtu\.be|vimeo\.com|tiktok\.com/.test(url)
     return {
       category: '기타',

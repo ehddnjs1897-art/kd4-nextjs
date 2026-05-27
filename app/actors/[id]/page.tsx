@@ -301,7 +301,7 @@ export default async function ActorDetailPage({
   /* ── SEO: Person + VideoObject JSON-LD ── */
   const personSchema = getActorPersonSchema({
     id: actor.id,
-    name: actor.name,
+    name: actor.name.slice(0, 100),
     gender: actor.gender,
     age_group: actor.age_group ?? null,
     height: actor.height,
@@ -309,9 +309,14 @@ export default async function ActorDetailPage({
     skills: actor.skills ?? null,
     instagram: actor.instagram,
     imageUrl: photoUrl.startsWith('http') ? photoUrl : `${SITE_URL}${photoUrl}`,
-    filmography: actor.actor_filmography ?? [],
+    // 타이틀·제작사 길이 제한 — 과도한 DB 문자열이 inline JSON-LD 스크립트를 비대하게 만드는 것 방지
+    filmography: (actor.actor_filmography ?? []).map((f) => ({
+      ...f,
+      title: f.title.slice(0, 100),
+      production: f.production?.slice(0, 100) ?? null,
+    })),
     castingTags: actor.casting_tags,
-    castingSummary: actor.casting_summary,
+    castingSummary: actor.casting_summary?.slice(0, 200),
   })
   const videoSchemas = getActorVideoSchemas(
     { id: actor.id, name: actor.name },

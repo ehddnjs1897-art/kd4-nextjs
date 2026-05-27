@@ -12,7 +12,7 @@ const BOARD_URL = `${SITE_URL}/board`
 
 export const metadata: Metadata = {
   title: '커뮤니티',
-  description: 'KD4 멤버들의 연기·오디션 이야기, 클래스 후기, 공지사항을 공유하는 커뮤니티입니다.',
+  description: 'KD4 멤버들의 연기·오디션 이야기, 클래스 후기, 공지사항을 함께 공유하는 커뮤니티입니다.',
   openGraph: {
     type: 'website',
     title: '커뮤니티 — KD4 액팅 스튜디오',
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: '커뮤니티 — KD4 액팅 스튜디오',
-    description: 'KD4 멤버들의 연기·오디션 이야기, 클래스 후기, 공지사항을 공유하는 커뮤니티입니다.',
+    description: 'KD4 멤버들의 연기·오디션 이야기, 클래스 후기, 공지사항을 함께 공유하는 커뮤니티입니다.',
     images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 커뮤니티' }],
   },
   robots: { index: false, follow: false },

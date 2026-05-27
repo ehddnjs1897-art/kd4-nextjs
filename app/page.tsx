@@ -1230,7 +1230,10 @@ export default function HomePage() {
           </button>
         </div>
         <ul className="sr-only">
-          {PARTNERS.map((p) => <li key={p.name}>{p.name}</li>)}
+          {PARTNERS.map((p) => {
+            const isLatin = /^[\x20-\x7E]+$/.test(p.name)
+            return <li key={p.name}>{isLatin ? <span lang="en">{p.name}</span> : p.name}</li>
+          })}
         </ul>
         <div className="partner-marquee" aria-hidden="true">
           <div className="partner-marquee-track" style={{ animationPlayState: partnerPaused ? 'paused' : 'running' }}>
