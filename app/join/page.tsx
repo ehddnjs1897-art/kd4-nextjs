@@ -1106,7 +1106,8 @@ export default function JoinPage() {
               >
                 <span lang="en">PROFILE</span>
               </p>
-              <ul style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '24px', listStyle: 'none', padding: 0 }}>
+              {/* role="list": listStyle:none 시 Safari VoiceOver가 리스트 의미 제거하는 버그 방지 (WCAG 1.3.1) */}
+              <ul role="list" style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '24px', listStyle: 'none', padding: 0 }}>
                 {DIRECTOR.profileFlat.map((item) => (
                   <li
                     key={item}
@@ -1163,7 +1164,7 @@ export default function JoinPage() {
                   >
                     {group.cat}
                   </p>
-                  <ul style={{ display: 'flex', flexDirection: 'column', gap: '4px', listStyle: 'none', padding: 0 }}>
+                  <ul role="list" style={{ display: 'flex', flexDirection: 'column', gap: '4px', listStyle: 'none', padding: 0 }}>
                     {group.items.map((item) => (
                       <li key={item} style={{ fontSize: '0.82rem', color: 'var(--gray-light)' }}>
                         {item}

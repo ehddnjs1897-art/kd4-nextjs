@@ -175,7 +175,8 @@ export default function Footer() {
             >
               <span lang="en">Contact</span>
             </p>
-            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {/* role="list": listStyle:none 시 Safari VoiceOver 리스트 의미 보존 (WCAG 1.3.1) */}
+            <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <li>
                 <a
                   href="tel:010-8564-0244"
@@ -262,7 +263,7 @@ export default function Footer() {
             >
               <span lang="en">Quick Links</span>
             </p>
-            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {[
                 { label: '스튜디오 소개', href: '/#about' },
                 { label: '클래스 안내', href: '/classes' },

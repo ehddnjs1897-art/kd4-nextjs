@@ -369,7 +369,9 @@ export default function SeowooPartnershipPage() {
           title="이용 절차"
           desc="복잡한 신청서 없이, 인스타그램 DM 한 번이면 됩니다."
         />
+        {/* role="list": listStyle:none 시 Safari VoiceOver 리스트 의미 보존 (WCAG 1.3.1) */}
         <ol
+          role="list"
           style={{
             listStyle: 'none',
             padding: 0,

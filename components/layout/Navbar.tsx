@@ -223,7 +223,9 @@ export default function Navbar() {
           </Link>
 
           {/* ── Desktop Nav ── */}
+          {/* role="list": listStyle:none 시 Safari VoiceOver 리스트 의미 보존 (WCAG 1.3.1) */}
           <ul
+            role="list"
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -536,7 +538,7 @@ export default function Navbar() {
           }}
         >
           <nav aria-label="사이트 내비게이션" style={{ width: '100%', padding: '0 32px', flex: 1 }}>
-            <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+            <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
               {/* 공개 링크 */}
               {publicLinks.map(link => (
                 <li key={link.label} style={{ borderBottom: '1px solid var(--border)' }}>
