@@ -54,6 +54,7 @@ export default function DashboardEditError({
               border: 'none',
               borderRadius: 6,
               padding: '11px 24px',
+              minHeight: 44,
               fontSize: '0.88rem',
               fontWeight: 700,
               cursor: 'pointer',
@@ -64,12 +65,15 @@ export default function DashboardEditError({
           <Link
             href="/dashboard"
             style={{
-              display: 'inline-block',
+              display: 'inline-flex',
+              alignItems: 'center',
               border: '1px solid var(--border)',
               borderRadius: 6,
               padding: '11px 24px',
+              minHeight: 44,
               fontSize: '0.88rem',
               color: 'var(--gray-light)',
+              textDecoration: 'none',
             }}
           >
             마이페이지로

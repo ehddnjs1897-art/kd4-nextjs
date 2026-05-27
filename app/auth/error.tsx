@@ -37,6 +37,7 @@ export default function AuthError({
           onClick={reset}
           style={{
             padding: '10px 22px',
+            minHeight: 44,
             background: 'var(--navy)',
             color: '#fff',
             border: 'none',
@@ -50,7 +51,10 @@ export default function AuthError({
         <Link
           href="/auth/login"
           style={{
+            display: 'inline-flex',
+            alignItems: 'center',
             padding: '10px 22px',
+            minHeight: 44,
             background: 'transparent',
             color: 'var(--gray)',
             border: '1px solid var(--border)',
