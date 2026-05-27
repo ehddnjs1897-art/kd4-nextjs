@@ -175,7 +175,7 @@ export default function CoachPage() {
             <p className="section-eyebrow"><span lang="en">02 — PROFILE</span></p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>주요 경력</h2>
           </div>
-          <ul style={{ maxWidth: '640px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <ul role="list" style={{ maxWidth: '640px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {DIRECTOR.profileFlat.map((line, i) => (
               <li key={i} style={{ padding: '14px 16px 14px 44px', background: 'var(--bg)', border: '1px solid var(--border)', borderLeft: '3px solid var(--navy)', borderRadius: '8px', fontSize: '0.94rem', color: '#111', position: 'relative' }}>
                 <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', fontFamily: 'var(--font-display)', fontSize: '0.78rem', color: 'var(--navy)', fontWeight: 700 }}>
@@ -207,7 +207,7 @@ export default function CoachPage() {
                 <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '0.78rem', letterSpacing: '0.15em', color: 'var(--navy)', fontWeight: 700, marginBottom: '12px' }}>
                   <span lang="en">{label}</span>
                 </h3>
-                <ul style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <ul role="list" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   {items.map((title) => (
                     <li key={title} style={{ fontSize: '0.88rem', color: 'var(--gray-light)', lineHeight: 1.6, paddingLeft: '14px', position: 'relative' }}>
                       <span style={{ position: 'absolute', left: 0, top: '0.6em', width: '6px', height: '1px', background: 'var(--navy)' }} />

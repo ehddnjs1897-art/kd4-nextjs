@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     type: 'website',
     url: PAGE_URL,
     title: '마이즈너 테크닉 정규 클래스 — KD4 액팅 스튜디오',
-    description: '권동원 대표 직강 4개월 정규 코스. 정원 8명 소수정예.',
+    description: '권동원 대표 직강, 4개월 코스, 정원 8명 소수정예. Repetition 훈련으로 억지 감정 없는 살아있는 연기를 만듭니다.',
     images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: '마이즈너 테크닉 정규 클래스 — KD4 액팅 스튜디오' }],
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: '마이즈너 테크닉 정규 클래스 — KD4',
-    description: '권동원 대표 직강 4개월 정규 코스.',
+    description: '권동원 대표 직강, 4개월 코스, 정원 8명. Repetition 훈련으로 억지 감정 없는 살아있는 연기.',
     images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: '마이즈너 테크닉 정규 클래스 — KD4 액팅 스튜디오' }],
   },
 }
@@ -148,7 +148,7 @@ export default function MeisnerPage() {
           <div style={{ maxWidth: '640px', margin: '0 auto', background: 'var(--bg)', border: '1.5px solid var(--navy)', borderRadius: '12px', padding: '24px' }}>
             <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.15rem', fontWeight: 700, marginBottom: '4px' }}>{MAIN_CLASS.nameKo}</p>
             <p lang="en" style={{ fontSize: '0.78rem', color: 'var(--gray)', letterSpacing: '0.08em', marginBottom: '20px' }}>{MAIN_CLASS.nameEn}</p>
-            <ul style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
+            <ul role="list" style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
               {MAIN_CLASS.bullets.map((b, i) => (
                 <li key={i} style={{ fontSize: '0.92rem', color: 'var(--gray-light)', lineHeight: 1.7, paddingLeft: '16px', position: 'relative' }}>
                   <span style={{ position: 'absolute', left: 0, top: '0.55em', width: '8px', height: '1px', background: 'var(--navy)' }} />
@@ -189,7 +189,7 @@ export default function MeisnerPage() {
               <p style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--navy)', fontSize: '0.95rem', marginBottom: '16px', lineHeight: 1.7, wordBreak: 'keep-all' }}>
                 &ldquo;{DIRECTOR.quote}&rdquo;
               </p>
-              <ul style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '16px' }}>
+              <ul role="list" style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '16px' }}>
                 {DIRECTOR.highlights.map((line, i) => (
                   <li key={i} style={{ fontSize: '0.88rem', color: 'var(--gray-light)', lineHeight: 1.6, paddingLeft: '14px', position: 'relative' }}>
                     <span style={{ position: 'absolute', left: 0, top: '0.6em', width: '6px', height: '1px', background: 'var(--navy)' }} />

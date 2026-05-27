@@ -548,7 +548,7 @@ export default function HomePage() {
                 >
                   <span lang="en">PROFILE</span>
                 </p>
-                <ul aria-label="권동원 주요 경력" style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                <ul role="list" aria-label="권동원 주요 경력" style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                   {DIRECTOR.profileFlat.map((item, i) => (
                     <li
                       key={i}
@@ -605,7 +605,7 @@ export default function HomePage() {
                     >
                       {group.cat}
                     </p>
-                    <ul aria-label={`권동원 ${group.cat} 필모그래피`} style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                    <ul role="list" aria-label={`권동원 ${group.cat} 필모그래피`} style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                       {group.items.map((item, i) => (
                         <li
                           key={i}
@@ -662,7 +662,7 @@ export default function HomePage() {
                 lineHeight: 1.2,
               }}
             >
-              배우지망생 →{" "}
+              배우지망생 <span aria-hidden="true">→</span>{" "}
               <span style={{ color: "var(--gold)" }}>진짜 배우</span>
             </h2>
             <p
@@ -837,11 +837,11 @@ export default function HomePage() {
               minHeight: 44, fontSize: '0.72rem', cursor: 'pointer', letterSpacing: '0.05em',
             }}
           >
-            {marqueePaused ? '▶ 재생' : '⏸ 일시정지'}
+            {marqueePaused ? <><span aria-hidden="true">▶</span> 재생</> : <><span aria-hidden="true">⏸</span> 일시정지</>}
           </button>
         </div>
         {/* 스크린 리더용 배우 목록 — 마퀴는 시각적 전용 */}
-        <ul className="sr-only">
+        <ul role="list" className="sr-only">
           {CASTING_PHOTOS.map((photo) => (
             <li key={photo.url}>{photo.name}{photo.work ? ` — ${photo.work}` : ''}</li>
           ))}
@@ -1170,7 +1170,7 @@ export default function HomePage() {
               minHeight: 44, fontSize: '0.72rem', cursor: 'pointer', letterSpacing: '0.05em',
             }}
           >
-            {reviewPaused ? '▶ 재생' : '⏸ 일시정지'}
+            {reviewPaused ? <><span aria-hidden="true">▶</span> 재생</> : <><span aria-hidden="true">⏸</span> 일시정지</>}
           </button>
         </div>
 
@@ -1199,7 +1199,7 @@ export default function HomePage() {
         </div>
 
         {/* 스크린리더 전용 후기 목록 */}
-        <ul className="sr-only">
+        <ul role="list" className="sr-only">
           {[...REVIEW_ITEMS, ...REVIEW_ITEMS_2].map((r, i) => (
             <li key={i}>&ldquo;{r.text}&rdquo; — {r.author}</li>
           ))}
@@ -1226,10 +1226,10 @@ export default function HomePage() {
               minHeight: 44, fontSize: '0.72rem', cursor: 'pointer', letterSpacing: '0.05em',
             }}
           >
-            {partnerPaused ? '▶ 재생' : '⏸ 일시정지'}
+            {partnerPaused ? <><span aria-hidden="true">▶</span> 재생</> : <><span aria-hidden="true">⏸</span> 일시정지</>}
           </button>
         </div>
-        <ul className="sr-only">
+        <ul role="list" className="sr-only">
           {PARTNERS.map((p) => {
             const isLatin = /^[\x20-\x7E]+$/.test(p.name)
             return <li key={p.name}>{isLatin ? <span lang="en">{p.name}</span> : p.name}</li>
@@ -1280,7 +1280,7 @@ export default function HomePage() {
               lineHeight: 1.7,
             }}
           >
-            배우지망생 → 진짜 배우
+            배우지망생 <span aria-hidden="true">→</span> 진짜 배우
             <br />
             연기 훈련부터 캐스팅까지
           </p>

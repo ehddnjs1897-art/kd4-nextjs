@@ -147,7 +147,7 @@ export default function CommentSection({
           첫 댓글을 남겨보세요.
         </p>
       ) : (
-        <ul style={{ marginBottom: '32px' }}>
+        <ul role="list" style={{ marginBottom: '32px' }}>
           {comments.map((comment) => {
             const canDelete = currentUserId === comment.author_id || isAdmin
             return (

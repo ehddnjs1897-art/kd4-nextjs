@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     type: 'website',
     url: PAGE_URL,
     title: '출연영상 클래스 — 배우 포트폴리오 제작 | KD4',
-    description: '전문 영화팀과 함께 만드는 캐스팅용 출연영상 포트폴리오.',
+    description: '전문 영화팀 + 맞춤 시나리오로 만드는 캐스팅용 출연영상 포트폴리오. 현직 배우 100명+ 참여한 시그니처 클래스.',
     images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: '출연영상 클래스 — 배우 포트폴리오 제작 | KD4' }],
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: '출연영상 클래스 — KD4',
-    description: '전문 영화팀과 함께 만드는 배우 포트폴리오.',
+    description: '전문 영화팀 + 맞춤 시나리오로 만드는 캐스팅용 출연영상 포트폴리오.',
     images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: '출연영상 클래스 — KD4' }],
   },
 }
@@ -204,7 +204,7 @@ export default function ReelPage() {
           <div style={{ maxWidth: '640px', margin: '0 auto', background: 'var(--bg)', border: '1.5px solid var(--navy)', borderRadius: '12px', padding: '24px' }}>
             <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.15rem', fontWeight: 700, marginBottom: '4px' }}>{FILM_CLASS.nameKo}</p>
             <p lang="en" style={{ fontSize: '0.78rem', color: 'var(--gray)', letterSpacing: '0.08em', marginBottom: '20px' }}>{FILM_CLASS.nameEn}</p>
-            <ul style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
+            <ul role="list" style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
               {FILM_CLASS.bullets.map((b, i) => (
                 <li key={i} style={{ fontSize: '0.92rem', color: 'var(--gray-light)', lineHeight: 1.7, paddingLeft: '16px', position: 'relative' }}>
                   <span style={{ position: 'absolute', left: 0, top: '0.55em', width: '8px', height: '1px', background: 'var(--navy)' }} />
@@ -240,7 +240,7 @@ export default function ReelPage() {
               영상 소유권은 KD4가 보유하되 멤버는 캐스팅 활동에 자유롭게 사용 가능합니다.
             </p>
           </div>
-          <ul style={{ maxWidth: '600px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <ul role="list" style={{ maxWidth: '600px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {INCLUDES.map((item, i) => (
               <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '8px' }}>
                 {item.yes ? <Check aria-hidden={true} size={18} color="var(--navy)" strokeWidth={2.2} /> : <X aria-hidden={true} size={18} color="var(--gray)" strokeWidth={2.2} />}
