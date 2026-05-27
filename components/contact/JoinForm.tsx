@@ -644,7 +644,9 @@ export default function JoinForm() {
         </div>
       ) : (
         <div style={{ position: 'relative' }}>
+          <label htmlFor={`join-class-${uid}`} className="sr-only">희망 클래스</label>
           <select
+            id={`join-class-${uid}`}
             aria-label="희망 클래스"
             aria-invalid={invalidFields.has('className')}
             aria-describedby={invalidFields.has('className') ? errorId : undefined}
@@ -655,7 +657,7 @@ export default function JoinForm() {
             style={{ ...inputStyle('class'), cursor: 'pointer' }}
             required
           >
-            <option value="">희망 클래스</option>
+            <option value="" disabled hidden>희망 클래스</option>
             {OPEN_CLASSES.map((c) => (
               <option key={c.nameKo} value={c.nameKo}>
                 {c.nameKo}
@@ -681,7 +683,9 @@ export default function JoinForm() {
 
       {/* 마이즈너 경험 (필수) */}
       <div style={{ position: 'relative' }}>
+        <label htmlFor={`join-meisner-${uid}`} className="sr-only">마이즈너 경험</label>
         <select
+          id={`join-meisner-${uid}`}
           aria-label="마이즈너 경험"
           aria-invalid={invalidFields.has('meisnerExp')}
           aria-describedby={invalidFields.has('meisnerExp') ? errorId : undefined}
@@ -693,7 +697,7 @@ export default function JoinForm() {
           required
         >
           {MEISNER_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>
+            <option key={o.value} value={o.value} disabled={o.value === ''} hidden={o.value === ''}>
               {o.label === '마이즈너 경험 선택' ? '마이즈너 경험' : o.label}
             </option>
           ))}
@@ -716,7 +720,9 @@ export default function JoinForm() {
 
       {/* 유입 경로 (필수) */}
       <div style={{ position: 'relative' }}>
+        <label htmlFor={`join-source-${uid}`} className="sr-only">KD4를 어떻게 알게 되셨나요</label>
         <select
+          id={`join-source-${uid}`}
           aria-label="KD4를 어떻게 알게 되셨나요"
           aria-invalid={invalidFields.has('source')}
           aria-describedby={invalidFields.has('source') ? errorId : undefined}
@@ -728,7 +734,7 @@ export default function JoinForm() {
           required
         >
           {SOURCE_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>
+            <option key={o.value} value={o.value} disabled={o.value === ''} hidden={o.value === ''}>
               {o.value === '' ? 'KD4를 어떻게 알게 되셨나요?' : o.label}
             </option>
           ))}

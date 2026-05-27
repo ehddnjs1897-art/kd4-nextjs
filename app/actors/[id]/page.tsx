@@ -11,7 +11,7 @@ import ShareButton from '@/components/actors/ShareButton'
 import ActorDownloadButton from '@/components/actors/ActorDownloadButton'
 import ActorDbLocked from '@/components/actors/ActorDbLocked'
 import { UserRole } from '@/lib/types'
-import { canViewActorContact } from '@/lib/access'
+import { canViewActorContact, canViewActorDb } from '@/lib/access'
 import { isR2Configured } from '@/lib/r2'
 import { getActorPersonSchema, getActorVideoSchemas, serializeJsonLd } from '@/lib/seo'
 import { buildBreadcrumb } from '@/lib/seo-schemas'
@@ -258,6 +258,12 @@ export default async function ActorDetailPage({
 
   // 디렉터 승인 대기 → 잠금 화면 (안내 메시지 다름)
   if (role === 'director_pending') {
+    return <ActorDbLocked role={role} nextUrl={`/actors/${id}`} />
+  }
+
+  // 비허용 역할 → 잠금 화면 (user, member, crew_pending 등 canViewActorDb 미충족)
+  // API 라우트(app/api/actors/route.ts, app/api/actors/[id]/route.ts)와 동일 정책 적용
+  if (!canViewActorDb(role)) {
     return <ActorDbLocked role={role} nextUrl={`/actors/${id}`} />
   }
 

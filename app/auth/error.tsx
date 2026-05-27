@@ -27,6 +27,7 @@ export default function AuthError({
         textAlign: 'center',
       }}
     >
+      <h1 className="sr-only">인증 오류</h1>
       <p style={{ fontSize: '0.95rem', color: 'var(--gray)' }}>
         인증 처리 중 오류가 발생했습니다.
       </p>

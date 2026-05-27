@@ -23,14 +23,18 @@ export default function ActorDbLocked({
     title = '디렉터 승인 대기 중입니다'
     desc =
       '디렉터 권한이 승인되면 배우 연락처까지 열람하실 수 있습니다. 승인까지 잠시만 기다려 주세요.'
+  } else if (!loggedOut) {
+    title = '배우 DB 열람 권한이 없습니다'
+    desc =
+      '배우·크루·디렉터 회원 전용 서비스입니다. 회원 유형 변경 문의는 마이페이지를 통해 주세요.'
   }
 
   const loginHref = `/auth/login?next=${encodeURIComponent(nextUrl)}`
 
   return (
-    <div style={styles.page}>
+    <main style={styles.page}>
       <div style={styles.box}>
-        <div style={styles.icon}>🔒</div>
+        <div style={styles.icon} aria-hidden="true">🔒</div>
         <h1 style={styles.title}>{title}</h1>
         <p style={styles.desc}>{desc}</p>
         <div style={styles.btns}>
@@ -45,7 +49,7 @@ export default function ActorDbLocked({
           )}
         </div>
       </div>
-    </div>
+    </main>
   )
 }
 
@@ -89,11 +93,14 @@ const styles: Record<string, React.CSSProperties> = {
     gap: 10,
   },
   btnPrimary: {
-    display: 'block',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     background: 'var(--gold)',
     color: '#ffffff',
     borderRadius: 6,
     padding: '12px 0',
+    minHeight: 44,
     fontSize: '0.9rem',
     fontWeight: 700,
     fontFamily: 'var(--font-display)',
@@ -111,9 +118,12 @@ const styles: Record<string, React.CSSProperties> = {
     textDecoration: 'none',
   },
   btnTertiary: {
-    display: 'block',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     color: 'var(--gray)',
     padding: '8px 0',
+    minHeight: 44,
     fontSize: '0.82rem',
     textDecoration: 'none',
     marginTop: 4,

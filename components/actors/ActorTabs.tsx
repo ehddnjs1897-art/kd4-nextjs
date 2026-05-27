@@ -363,6 +363,19 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
         </section>
       )}
 
+      {/* ============ 영상 없음 안내 ============ */}
+      {reelVideos.length === 0 && monologueVideos.length === 0 && (
+        <section style={s.section} aria-label="영상 없음">
+          <h2 style={s.sectionHeading}>
+            <span style={s.sectionNum}>01</span>
+            <span lang="en" style={s.sectionTitle}>REEL</span>
+          </h2>
+          <p role="status" style={{ fontSize: '0.85rem', color: 'var(--gray)', textAlign: 'center', padding: '24px 0' }}>
+            현재 업로드된 영상이 없습니다.
+          </p>
+        </section>
+      )}
+
       {/* ============ 01 · REEL ============ */}
       {reelVideos.length > 0 && (
         <section style={s.section} aria-label={`${actor.name} REEL 영상`}>
