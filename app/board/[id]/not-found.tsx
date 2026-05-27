@@ -20,25 +20,27 @@ export default function PostNotFound() {
         }}>
           404
         </p>
-        <h2 style={{
+        <h1 style={{
           fontFamily: 'var(--font-display)',
           fontSize: '1.3rem',
           color: 'var(--white)',
           marginBottom: 12,
         }}>
           게시글을 찾을 수 없습니다
-        </h2>
+        </h1>
         <p style={{ color: 'var(--gray)', fontSize: '0.88rem', marginBottom: 24 }}>
           삭제되었거나 존재하지 않는 게시글입니다.
         </p>
         <Link
           href="/board"
           style={{
-            display: 'inline-block',
+            display: 'inline-flex',
+            alignItems: 'center',
             background: 'var(--gold)',
             color: '#fff',
             borderRadius: 6,
             padding: '11px 24px',
+            minHeight: 44,
             fontSize: '0.88rem',
             fontWeight: 700,
             textDecoration: 'none',

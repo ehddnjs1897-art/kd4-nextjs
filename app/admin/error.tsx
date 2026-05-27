@@ -24,7 +24,7 @@ export default function AdminError({
       padding: '0 20px',
     }}>
       <div style={{ textAlign: 'center', maxWidth: 400 }}>
-        <h2 style={{
+        <h1 style={{
           fontFamily: 'var(--font-display)',
           fontSize: '1.3rem',
           fontWeight: 700,
@@ -32,7 +32,7 @@ export default function AdminError({
           marginBottom: 12,
         }}>
           대시보드를 불러오지 못했습니다
-        </h2>
+        </h1>
         <p style={{ color: 'var(--gray)', fontSize: '0.88rem', marginBottom: 8, lineHeight: 1.6 }}>
           {error.message || '일시적인 오류가 발생했습니다.'}
         </p>
@@ -51,6 +51,7 @@ export default function AdminError({
               border: 'none',
               borderRadius: 6,
               padding: '10px 22px',
+              minHeight: 44,
               fontSize: '0.88rem',
               fontWeight: 700,
               cursor: 'pointer',
@@ -68,6 +69,7 @@ export default function AdminError({
               border: '1px solid var(--border)',
               borderRadius: 6,
               padding: '10px 22px',
+              minHeight: 44,
               fontSize: '0.88rem',
               color: 'var(--gray)',
               textDecoration: 'none',
