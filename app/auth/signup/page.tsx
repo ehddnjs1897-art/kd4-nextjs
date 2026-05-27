@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -22,6 +22,12 @@ export default function SignupPage() {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const successRef = useRef<HTMLDivElement>(null)
+
+  // 성공 화면 전환 시 포커스 이동 (WCAG 2.4.3 Focus Order)
+  useEffect(() => {
+    if (step === 'success') successRef.current?.focus()
+  }, [step])
 
   // 이미 로그인된 경우 대시보드로 리다이렉트
   useEffect(() => {
@@ -197,7 +203,7 @@ export default function SignupPage() {
   if (step === 'success') {
     return (
       <div style={styles.page}>
-        <div role="status" style={styles.card}>
+        <div ref={successRef} tabIndex={-1} role="status" style={{ ...styles.card, outline: 'none' }}>
           <div style={styles.successIcon} aria-hidden="true">✓</div>
           <h1 style={styles.title}>이메일을 확인해 주세요</h1>
           <p style={styles.successDesc}>

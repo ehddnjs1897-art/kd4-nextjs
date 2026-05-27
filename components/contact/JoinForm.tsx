@@ -87,6 +87,12 @@ export default function JoinForm() {
   const [ticketNo, setTicketNo] = useState('')
   const [focused, setFocused] = useState<string | null>(null)
   const [formStarted, setFormStarted] = useState(false)
+  const successRef = useRef<HTMLDivElement>(null)
+
+  // 성공 화면 전환 시 포커스 이동 (WCAG 2.4.3 Focus Order)
+  useEffect(() => {
+    if (done) successRef.current?.focus()
+  }, [done])
 
   /** UTM 파라미터 — 마운트 시 1회 캡처해 ref 에 보관 (재렌더 영향 X) */
   const utmRef = useRef<UTMData>({
@@ -221,6 +227,8 @@ export default function JoinForm() {
   if (done) {
     return (
       <div
+        ref={successRef}
+        tabIndex={-1}
         role="status"
         aria-live="polite"
         style={{
@@ -229,6 +237,7 @@ export default function JoinForm() {
           borderRadius: '16px',
           padding: '40px 28px',
           textAlign: 'center',
+          outline: 'none',
         }}
       >
         <div
