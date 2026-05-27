@@ -857,7 +857,7 @@ export default function JoinForm() {
           fontFamily: 'inherit',
         }}
       >
-        {loading ? '신청 중...' : '무료 상담 신청 →'}
+        {loading ? '신청 중...' : <>무료 상담 신청 <span aria-hidden="true">→</span></>}
       </button>
     </form>
   )

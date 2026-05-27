@@ -225,11 +225,11 @@ export default function ReplayPartnershipPage() {
             borderRadius: 12, letterSpacing: '0.03em', textDecoration: 'none',
           }}
         >
-          프로필 투어 신청하기 →
+          프로필 투어 신청하기 <span aria-hidden="true">→</span>
         </Link>
         <div style={{ marginTop: '40px' }}>
           <Link href="/benefits" style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none' }}>
-            ← 멤버 혜택으로 돌아가기
+            <span aria-hidden="true">← </span>멤버 혜택으로 돌아가기
           </Link>
         </div>
       </section>

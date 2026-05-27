@@ -339,7 +339,8 @@ export default function ClassesPage() {
               marginTop: 28,
             }}
           >
-            ↓ 카드를 클릭하면 클래스 상세로 이동합니다
+            {/* ↓ 장식용 — 스크린 리더 불필요 (WCAG 1.3.3) */}
+            <span aria-hidden="true">↓ </span>카드를 클릭하면 클래스 상세로 이동합니다
           </p>
         </div>
       </section>

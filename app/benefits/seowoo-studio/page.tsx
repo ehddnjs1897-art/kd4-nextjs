@@ -602,7 +602,7 @@ export default function SeowooPartnershipPage() {
               textDecoration: 'none',
             }}
           >
-            ← 멤버 혜택으로 돌아가기
+            <span aria-hidden="true">← </span>멤버 혜택으로 돌아가기
           </Link>
         </div>
       </section>

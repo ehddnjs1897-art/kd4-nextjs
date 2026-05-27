@@ -395,7 +395,7 @@ export default function EnrollForm({
             </span>
             {userPhone
               ? <span style={{ fontSize: '0.83rem', fontWeight: 700, color: '#111', whiteSpace: 'nowrap' }}>{userPhone}</span>
-              : <Link href="/dashboard" style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--navy)', textDecoration: 'underline', whiteSpace: 'nowrap' }}>마이페이지에서 등록 →</Link>
+              : <Link href="/dashboard" style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--navy)', textDecoration: 'underline', whiteSpace: 'nowrap' }}>마이페이지에서 등록 <span aria-hidden="true">→</span></Link>
             }
           </div>
         </div>
