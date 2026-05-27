@@ -119,6 +119,13 @@ export async function GET(
     bucketOG.count++
   } else {
     ogRateMap.set(ip, { count: 1, resetAt: nowOG + OG_RATE_WINDOW_MS })
+    // GC: 만료된 IP 엔트리 정리 (다른 rate-limit Map과 동일 패턴)
+    if (ogRateMap.size > 2000) {
+      const cutoffOG = Date.now()
+      for (const [k, v] of ogRateMap) {
+        if (cutoffOG > v.resetAt) ogRateMap.delete(k)
+      }
+    }
   }
 
   const { id } = await params

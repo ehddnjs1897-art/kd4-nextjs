@@ -26,7 +26,7 @@ export default function ActorDbLocked({
   } else if (!loggedOut) {
     title = '배우 DB 열람 권한이 없습니다'
     desc =
-      '배우·크루·디렉터 회원 전용 서비스입니다. 회원 유형 변경 문의는 마이페이지를 통해 주세요.'
+      '현재 회원 유형으로는 배우 DB를 열람하실 수 없습니다. 회원 유형 변경 문의는 마이페이지를 통해 주세요.'
   }
 
   const loginHref = `/auth/login?next=${encodeURIComponent(nextUrl)}`
@@ -45,7 +45,10 @@ export default function ActorDbLocked({
               <Link href="/actors" style={styles.btnTertiary}>← 배우 목록으로 돌아가기</Link>
             </>
           ) : (
-            <Link href="/dashboard" style={styles.btnPrimary}>마이페이지로 이동</Link>
+            <>
+              <Link href="/dashboard" style={styles.btnPrimary}>마이페이지로 이동</Link>
+              <Link href="/actors" style={styles.btnTertiary}>← 배우 목록으로 돌아가기</Link>
+            </>
           )}
         </div>
       </div>
