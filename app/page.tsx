@@ -1220,8 +1220,6 @@ export default function HomePage() {
       </section>
 
       {/* ── Partners ─────────────────────────────────────────────────────────── */}
-      {/* 잠깐 숨김 (2026-05-25). 복구하려면 아래 false 를 true 로 바꾸면 됨. */}
-      {false && (
       <section id="partners" aria-label="함께한 기업" style={{ padding: '48px 0', borderTop: '1px solid var(--border)' }}>
         <p style={{ fontFamily: 'var(--font-display), "Noto Sans KR", sans-serif', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.2em', color: 'var(--secondary)', textAlign: 'center', marginBottom: '16px', opacity: 0.6 }}>
           함께한 기업
@@ -1256,7 +1254,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      )}
 
       {/* ── 12. CTA ──────────────────────────────────────────────────────────── */}
       <section
