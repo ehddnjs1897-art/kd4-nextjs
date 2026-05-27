@@ -326,11 +326,8 @@ export default function SignupPage() {
               disabled={loading}
               autoComplete="new-password"
               maxLength={128}
-              aria-invalid={!!error || undefined}
-              aria-describedby={
-                [error ? 'signup-error' : '', (passwordConfirm && password !== passwordConfirm) ? 'signup-pw-mismatch' : '']
-                  .filter(Boolean).join(' ') || undefined
-              }
+              aria-invalid={!!error || (passwordConfirm ? password !== passwordConfirm : false) || undefined}
+              aria-describedby={[error ? 'signup-error' : '', 'signup-pw-mismatch'].filter(Boolean).join(' ')}
               style={{
                 ...styles.input,
                 borderColor:
@@ -339,9 +336,16 @@ export default function SignupPage() {
                     : undefined,
               }}
             />
-            {passwordConfirm && password !== passwordConfirm && (
-              <span id="signup-pw-mismatch" style={styles.fieldError}>비밀번호가 일치하지 않습니다.</span>
-            )}
+            {/* 항상 DOM에 존재 — aria-describedby 참조 유효성 + 스크린 리더 즉시 알림 (WCAG 4.1.3) */}
+            <span
+              id="signup-pw-mismatch"
+              role="alert"
+              aria-live="assertive"
+              aria-atomic="true"
+              style={passwordConfirm && password !== passwordConfirm ? styles.fieldError : {}}
+            >
+              {passwordConfirm && password !== passwordConfirm ? '비밀번호가 일치하지 않습니다.' : ''}
+            </span>
           </div>
 
           {/* 배우 회원: 전화번호 */}

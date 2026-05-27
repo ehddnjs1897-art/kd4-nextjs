@@ -254,16 +254,14 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
 
         </div>
 
-        {/* 에러 */}
-        {error && (
-          <p id="profile-edit-error" role="alert" aria-live="assertive" style={{
+        {/* 에러 — 항상 DOM에 존재 (WCAG 4.1.3) */}
+        <p id="profile-edit-error" role="alert" aria-live="assertive" aria-atomic="true" style={error ? {
             fontSize: '0.8rem', color: '#ff6b6b', marginTop: 14,
             padding: '8px 12px', background: 'rgba(220,38,38,0.08)',
             border: '1px solid rgba(220,38,38,0.2)', borderRadius: 5,
-          }}>
-            {error}
-          </p>
-        )}
+          } : {}}>
+          {error ?? ''}
+        </p>
 
         {/* 저장 / 취소 버튼 */}
         {editing && (

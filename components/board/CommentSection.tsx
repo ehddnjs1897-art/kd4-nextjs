@@ -241,15 +241,14 @@ export default function CommentSection({
       {/* 댓글 작성 폼 */}
       {currentUserId ? (
         <form onSubmit={handleSubmit}>
-          {error && (
-            <p role="alert" aria-live="assertive" style={{
-              color: '#e74c3c',
-              fontSize: '0.85rem',
-              marginBottom: '10px',
-            }}>
-              {error}
-            </p>
-          )}
+          {/* 항상 DOM에 존재 — 스크린 리더 즉시 알림 보장 (WCAG 4.1.3) */}
+          <p role="alert" aria-live="assertive" aria-atomic="true" style={error ? {
+            color: '#e74c3c',
+            fontSize: '0.85rem',
+            marginBottom: '10px',
+          } : {}}>
+            {error ?? ''}
+          </p>
           <label htmlFor="comment-input" className="sr-only">댓글 입력</label>
           <textarea
             id="comment-input"

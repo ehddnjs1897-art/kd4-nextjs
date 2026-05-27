@@ -252,12 +252,10 @@ export default function AIToolsPage() {
                 </p>
               </div>
 
-              {error && (
-                <div role="alert" style={s.errorBox}>
-                  <span style={s.errorIcon}>!</span>
-                  {error}
-                </div>
-              )}
+              {/* 항상 DOM에 존재 — 스크린 리더 즉시 알림 보장 (WCAG 4.1.3) */}
+              <div role="alert" aria-live="assertive" aria-atomic="true" style={error ? s.errorBox : {}}>
+                {error ? <><span aria-hidden="true" style={s.errorIcon}>!</span>{error}</> : ''}
+              </div>
 
               <button
                 type="button"
