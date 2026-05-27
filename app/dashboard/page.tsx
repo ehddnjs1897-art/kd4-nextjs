@@ -173,7 +173,7 @@ export default async function DashboardPage() {
                   </Link>
                 ) : (
                   <p style={{ fontSize: '0.8rem', color: 'var(--gray)', padding: '4px 0' }}>
-                    ⏳ 프로필 검토 준비 중 — 자료를 등록하면 관리자 검토 후 공개됩니다.
+                    <span aria-hidden="true">⏳</span> 프로필 검토 준비 중 — 자료를 등록하면 관리자 검토 후 공개됩니다.
                   </p>
                 )}
                 <Link href="/dashboard/edit" style={tileBtn}>

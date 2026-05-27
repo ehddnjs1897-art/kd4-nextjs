@@ -161,7 +161,7 @@ export default function SignupPage() {
               onClick={() => setMemberType('actor')}
               aria-pressed={memberType === 'actor'}
             >
-              <span style={styles.typeIcon}>🎬</span>
+              <span style={styles.typeIcon} aria-hidden="true">🎬</span>
               <span style={styles.typeLabel}>배우 회원</span>
               <span style={styles.typeDesc}>
                 KD4에서 활동하는 배우
@@ -178,7 +178,7 @@ export default function SignupPage() {
               onClick={() => setMemberType('director')}
               aria-pressed={memberType === 'director'}
             >
-              <span style={styles.typeIcon}>🎥</span>
+              <span style={styles.typeIcon} aria-hidden="true">🎥</span>
               <span style={styles.typeLabel}>디렉터 회원</span>
               <span style={styles.typeDesc}>
                 캐스팅 디렉터, 조감독, 제작사
@@ -243,7 +243,7 @@ export default function SignupPage() {
         {/* 유형 배지 */}
         <div style={styles.typeBadgeRow}>
           <span style={styles.typeBadge}>
-            {memberType === 'actor' ? '🎬 배우 회원' : '🎥 디렉터 회원'}
+            {memberType === 'actor' ? <><span aria-hidden="true">🎬</span> 배우 회원</> : <><span aria-hidden="true">🎥</span> 디렉터 회원</>}
           </span>
           <button
             type="button"
@@ -393,7 +393,7 @@ export default function SignupPage() {
                 style={styles.input}
               />
               <p id="phone-hint" style={styles.hint}>
-                📌 KD4에 등록된 번호와 동일해야 배우 프로필과 자동 연결됩니다.
+                <span aria-hidden="true">📌</span> KD4에 등록된 번호와 동일해야 배우 프로필과 자동 연결됩니다.
               </p>
             </div>
           )}

@@ -304,7 +304,7 @@ export default function AIToolsPage() {
               </div>
               <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
                 <button type="button" onClick={handleCopy} style={{ ...s.btnReset, color: copied ? 'var(--gold)' : 'var(--gray)', borderColor: copied ? 'var(--gold)' : undefined }}>
-                  {copied ? '✓ 복사됨' : '텍스트 복사'}
+                  {copied ? <><span aria-hidden="true">✓</span> 복사됨</> : '텍스트 복사'}
                 </button>
                 <span className="sr-only" aria-live="polite">{copied ? '클립보드에 복사되었습니다.' : ''}</span>
                 <button type="button" onClick={handleReset} style={s.btnReset}>

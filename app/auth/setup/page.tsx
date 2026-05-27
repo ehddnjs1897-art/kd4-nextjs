@@ -107,7 +107,7 @@ export default function SetupPage() {
               }}
               onClick={() => setMemberType('actor')}
             >
-              <span style={styles.typeIcon}>🎬</span>
+              <span style={styles.typeIcon} aria-hidden="true">🎬</span>
               <span style={styles.typeLabel}>배우 회원</span>
               <span style={styles.typeDesc}>
                 KD4에서 활동하는 배우
@@ -124,7 +124,7 @@ export default function SetupPage() {
               }}
               onClick={() => setMemberType('director')}
             >
-              <span style={styles.typeIcon}>🎥</span>
+              <span style={styles.typeIcon} aria-hidden="true">🎥</span>
               <span style={styles.typeLabel}>디렉터 회원</span>
               <span style={styles.typeDesc}>
                 캐스팅 디렉터, 조감독, 제작사

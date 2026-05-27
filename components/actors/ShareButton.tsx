@@ -54,7 +54,7 @@ export default function ShareButton({ webUrl }: Props) {
           padding: '6px 12px', borderRadius: 6, whiteSpace: 'nowrap',
           pointerEvents: 'none', zIndex: 10,
         }}>
-          {shared ? '✓ 카카오톡 공유 완료' : '✓ 링크 복사됨 — 카카오톡에 붙여넣어 공유하세요'}
+          {shared ? <><span aria-hidden="true">✓</span> 카카오톡 공유 완료</> : <><span aria-hidden="true">✓</span> 링크 복사됨 — 카카오톡에 붙여넣어 공유하세요</>}
         </div>
       )}
     </div>

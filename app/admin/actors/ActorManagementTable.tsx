@@ -175,7 +175,7 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
                 {/* PPTX */}
                 <td style={{ padding: '12px 12px' }}>
                   {actor.profile_doc_path
-                    ? <span style={{ color: '#4ade80', fontSize: '0.75rem', fontWeight: 600 }}>✓ 있음</span>
+                    ? <span style={{ color: '#4ade80', fontSize: '0.75rem', fontWeight: 600 }}><span aria-hidden="true">✓</span> 있음</span>
                     : <span style={{ color: 'var(--gray)', fontSize: '0.75rem' }}>—</span>
                   }
                 </td>

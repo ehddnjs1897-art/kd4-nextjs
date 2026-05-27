@@ -45,7 +45,7 @@ export default function CrewRequestButton() {
         fontSize: '0.82rem',
         color: 'var(--navy)',
       }}>
-        <span>✓</span>
+        <span aria-hidden="true">✓</span>
         <span>신청이 접수되었습니다. 관리자 승인 후 이용 가능합니다.</span>
       </div>
     )

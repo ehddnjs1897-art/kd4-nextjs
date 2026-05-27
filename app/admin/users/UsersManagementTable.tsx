@@ -239,7 +239,7 @@ export default function UsersManagementTable({ profiles: initialProfiles }: Prop
                   )}
                 </td>
                 <td style={{ padding: '10px 12px', color: p.actor_id ? 'var(--gold)' : 'var(--gray)', fontSize: '0.8rem' }}>
-                  {p.actor_id ? '✓ 연결됨' : '—'}
+                  {p.actor_id ? <><span aria-hidden="true">✓</span> 연결됨</> : '—'}
                 </td>
                 <td style={{ padding: '10px 12px', color: 'var(--gray)' }}>
                   <time dateTime={p.created_at}>{formatDate(p.created_at)}</time>
