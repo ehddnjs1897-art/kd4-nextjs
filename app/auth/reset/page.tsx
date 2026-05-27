@@ -81,6 +81,7 @@ export default function ResetPasswordPage() {
             <button
               type="submit"
               disabled={loading}
+              aria-busy={loading}
               style={{ ...styles.btnPrimary, opacity: loading ? 0.6 : 1 }}
             >
               {loading ? '발송 중...' : '재설정 링크 받기'}

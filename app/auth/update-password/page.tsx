@@ -178,6 +178,7 @@ export default function UpdatePasswordPage() {
               <button
                 type="submit"
                 disabled={loading}
+                aria-busy={loading}
                 style={{ ...styles.btnPrimary, opacity: loading ? 0.6 : 1 }}
               >
                 {loading ? '변경 중...' : '비밀번호 변경'}

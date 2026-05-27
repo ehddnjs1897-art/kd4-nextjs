@@ -223,7 +223,7 @@ export default function InsightsPage() {
                   onKeyDown={e => e.key === 'Enter' && !saving && handleSave()}
                   maxLength={2000}
                 />
-                <button type="button" className="ins-btn" aria-label="인사이트 저장" onClick={handleSave} disabled={saving || !url.trim()}>
+                <button type="button" className="ins-btn" aria-label="인사이트 저장" onClick={handleSave} disabled={saving || !url.trim()} aria-busy={saving}>
                   {saving ? '저장 중…' : '저장'}
                 </button>
                 <button type="button" className="ins-btn-ghost" aria-expanded={showMemo} aria-label={showMemo ? '메모 접기' : '메모 펼치기'} onClick={() => setShowMemo(v => !v)} style={{ fontSize: 13 }}>

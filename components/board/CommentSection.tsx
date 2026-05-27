@@ -203,6 +203,7 @@ export default function CommentSection({
                           aria-label={`${comment.author_name} 댓글 삭제 확인`}
                           onClick={() => handleDelete(comment.id)}
                           disabled={deletingId === comment.id}
+                          aria-busy={deletingId === comment.id}
                           style={{ fontSize: '0.75rem', color: '#fff', background: '#ef4444', border: 'none', borderRadius: 4, cursor: 'pointer', padding: '2px 8px', minHeight: '44px', minWidth: '44px' }}
                         >
                           삭제
@@ -213,6 +214,7 @@ export default function CommentSection({
                         type="button"
                         onClick={() => handleDelete(comment.id)}
                         disabled={deletingId === comment.id}
+                        aria-busy={deletingId === comment.id}
                         aria-label={`${comment.author_name} 댓글 삭제`}
                         style={{
                           fontSize: '0.78rem',
@@ -284,6 +286,7 @@ export default function CommentSection({
             <button
               type="submit"
               disabled={submitting || !content.trim()}
+              aria-busy={submitting}
               style={{
                 padding: '12px 22px',
                 minHeight: 44,

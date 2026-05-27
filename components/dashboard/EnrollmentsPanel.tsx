@@ -118,7 +118,7 @@ export default function EnrollmentsPanel({
           <p style={{ fontSize: '0.78rem', color: 'var(--gray)', marginBottom: 10, lineHeight: 1.5 }}>
             {continuable.map((e) => e.class_name).join(', ')}
           </p>
-          <button type="button" onClick={continueNext} disabled={loading} style={{ ...S.btnPrimary, opacity: loading ? 0.6 : 1, cursor: loading ? 'not-allowed' : 'pointer', width: '100%' }}>
+          <button type="button" onClick={continueNext} disabled={loading} aria-busy={loading} style={{ ...S.btnPrimary, opacity: loading ? 0.6 : 1, cursor: loading ? 'not-allowed' : 'pointer', width: '100%' }}>
             {loading ? '처리 중...' : '이어서 수강하기'}
           </button>
         </div>
@@ -154,10 +154,10 @@ export default function EnrollmentsPanel({
                 confirmingRestId === e.id ? (
                   <div style={{ display: 'flex', gap: 5 }}>
                     <button type="button" aria-label={`${e.class_name} 휴강 취소`} onClick={() => setConfirmingRestId(null)} style={{ ...S.btnGhost, fontSize: '0.75rem', padding: '4px 8px', minHeight: 44, minWidth: 44 }}>취소</button>
-                    <button type="button" aria-label={`${e.class_name} 휴강 확인`} onClick={() => setRest(e.id)} disabled={loading} style={{ ...S.btnGhost, background: 'rgba(239,68,68,0.1)', borderColor: 'rgba(239,68,68,0.3)', color: '#ef4444', fontSize: '0.75rem', padding: '4px 8px', minHeight: 44, minWidth: 44 }}>확인</button>
+                    <button type="button" aria-label={`${e.class_name} 휴강 확인`} onClick={() => setRest(e.id)} disabled={loading} aria-busy={loading} style={{ ...S.btnGhost, background: 'rgba(239,68,68,0.1)', borderColor: 'rgba(239,68,68,0.3)', color: '#ef4444', fontSize: '0.75rem', padding: '4px 8px', minHeight: 44, minWidth: 44 }}>확인</button>
                   </div>
                 ) : (
-                  <button type="button" aria-label={`${e.class_name} 휴강 신청`} onClick={() => setRest(e.id)} disabled={loading} style={{ ...S.btnGhost, minHeight: 44, minWidth: 44 }}>
+                  <button type="button" aria-label={`${e.class_name} 휴강 신청`} onClick={() => setRest(e.id)} disabled={loading} aria-busy={loading} style={{ ...S.btnGhost, minHeight: 44, minWidth: 44 }}>
                     휴강
                   </button>
                 )

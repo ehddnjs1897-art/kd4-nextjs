@@ -114,6 +114,7 @@ export default function R2Video({
               type="button"
               onClick={handlePlay}
               disabled={prefetching || !!error}
+              aria-busy={prefetching}
               style={s.playBtn}
               aria-label="영상 재생"
             >

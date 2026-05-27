@@ -345,6 +345,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                           type="button"
                           onClick={() => handleRoleChange(p.id, p.role)}
                           disabled={loadingId === p.id}
+                          aria-busy={loadingId === p.id}
                           aria-label={
                             loadingId === p.id ? '처리 중'
                             : p.role === 'crew_pending' ? `${p.name || p.email || '회원'} 크루 승인`
@@ -404,6 +405,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                           type="button"
                           onClick={() => handleActorToggle(a.id, a.is_public)}
                           disabled={loadingId === a.id}
+                          aria-busy={loadingId === a.id}
                           aria-label={loadingId === a.id ? '처리 중' : `${a.name} ${a.is_public ? '비공개로 전환' : '공개로 전환'}`}
                           style={a.is_public ? s.actionBtnDanger : s.actionBtn}
                         >
@@ -455,7 +457,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                             {confirmingDeletePostId === p.id ? (
                               <div style={{ display: 'flex', gap: 4 }}>
                                 <button type="button" onClick={() => setConfirmingDeletePostId(null)} aria-label={`${p.title} 삭제 취소`} style={{ ...s.actionBtn, fontSize: '0.72rem', padding: '4px 8px' }}>취소</button>
-                                <button type="button" onClick={() => handleDeletePost(p.id)} disabled={loadingId === p.id} aria-label={`${p.title} 삭제 확인`} style={{ ...s.actionBtnDanger, background: '#ef4444', color: '#fff' }}>확인</button>
+                                <button type="button" onClick={() => handleDeletePost(p.id)} disabled={loadingId === p.id} aria-busy={loadingId === p.id} aria-label={`${p.title} 삭제 확인`} style={{ ...s.actionBtnDanger, background: '#ef4444', color: '#fff' }}>확인</button>
                               </div>
                             ) : (
                               <button

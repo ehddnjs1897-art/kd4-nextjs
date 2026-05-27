@@ -74,6 +74,7 @@ export default function DeletePostButton({ postId }: DeletePostButtonProps) {
           type="button"
           onClick={handleDelete}
           disabled={deleting}
+          aria-busy={deleting}
           aria-label="게시글 삭제 확인"
           style={{ ...baseStyle, border: 'none', background: '#ef4444', color: '#fff' }}
         >
@@ -89,6 +90,7 @@ export default function DeletePostButton({ postId }: DeletePostButtonProps) {
       type="button"
       onClick={handleDelete}
       disabled={deleting}
+      aria-busy={deleting}
       style={{ ...baseStyle, border: '1px solid #e74c3c55', color: deleting ? 'var(--gray)' : '#e74c3c', background: 'transparent' }}
     >
       {deleting ? '삭제 중...' : '삭제'}
