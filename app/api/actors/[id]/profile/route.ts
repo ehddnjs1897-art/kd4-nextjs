@@ -122,7 +122,7 @@ export async function GET(
       if (obj.contentLength) headers['Content-Length'] = String(obj.contentLength)
       return new Response(obj.body, { headers })
     } catch (e) {
-      console.error('[actor profile] R2 스트림 실패:', e)
+      console.error('[actor profile] R2 스트림 실패:', e instanceof Error ? e.message : String(e))
       return NextResponse.json({ error: '프로필 파일을 가져오지 못했습니다.' }, { status: 502 })
     }
   }
@@ -176,7 +176,7 @@ export async function GET(
       // Content-Length 미전달 — 파일 존재 여부 추론 방지 (사이즈 오라클 방어)
       return new Response(limitedBody, { headers })
     } catch (e) {
-      console.error('[actor profile] 외부 URL 프록시 실패:', e)
+      console.error('[actor profile] 외부 URL 프록시 실패:', e instanceof Error ? e.message : String(e))
       return NextResponse.json({ error: '프로필 파일을 가져오지 못했습니다.' }, { status: 502 })
     }
   }

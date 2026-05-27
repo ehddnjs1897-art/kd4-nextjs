@@ -586,7 +586,9 @@ export default function JoinForm() {
   return (
     <form onSubmit={handleSubmit} aria-label="수강신청" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
       {/* 이름 */}
+      <label htmlFor={`join-name-${uid}`} className="sr-only">이름</label>
       <input
+        id={`join-name-${uid}`}
         aria-label="이름"
         aria-invalid={invalidFields.has('name')}
         aria-describedby={invalidFields.has('name') ? errorId : undefined}
@@ -605,7 +607,9 @@ export default function JoinForm() {
       />
 
       {/* 연락처 */}
+      <label htmlFor={`join-phone-${uid}`} className="sr-only">연락처</label>
       <input
+        id={`join-phone-${uid}`}
         aria-label="연락처"
         aria-invalid={invalidFields.has('phone')}
         aria-describedby={invalidFields.has('phone') ? errorId : undefined}
@@ -624,7 +628,9 @@ export default function JoinForm() {
       />
 
       {/* 이메일 — 필수 (2026-05-20: 대표 지시로 필수 복귀) */}
+      <label htmlFor={`join-email-${uid}`} className="sr-only">이메일</label>
       <input
+        id={`join-email-${uid}`}
         aria-label="이메일"
         aria-invalid={invalidFields.has('email')}
         aria-describedby={invalidFields.has('email') ? errorId : undefined}

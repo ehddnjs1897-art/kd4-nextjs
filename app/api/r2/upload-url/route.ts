@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
     const uploadUrl = await getUploadUrl(key, contentType, 600, size) // 10분 + ContentLength 강제 (선언 크기 우회 방어)
     return NextResponse.json({ uploadUrl, key }, { headers: { 'Cache-Control': 'private, no-store' } })
   } catch (e) {
-    console.error('[r2/upload-url] presigned URL 발급 실패:', e)
+    console.error('[r2/upload-url] presigned URL 발급 실패:', e instanceof Error ? e.message : String(e))
     return NextResponse.json({ error: '업로드 URL 발급에 실패했습니다.' }, { status: 500 })
   }
 }

@@ -113,7 +113,7 @@ export default function OnboardingForm({
     const supabase = createClient()
     const ext = file.name.split('.').pop()?.toLowerCase() || 'bin'
     // intake API は intake/${userId}/... 패턴만 허용 — 네임스페이스 일치 필수
-    const path = `intake/${userId}/${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`
+    const path = `intake/${userId}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${ext}`
     const { error: upErr } = await supabase.storage.from(bucket).upload(path, file, {
       contentType: contentType || file.type || undefined,
       upsert: false,

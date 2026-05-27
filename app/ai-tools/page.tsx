@@ -340,6 +340,7 @@ export default function AIToolsPage() {
                   {(Object.keys(TAB_LABELS) as TabKey[]).map((key) => (
                     <button
                       key={key}
+                      type="button"
                       role="tab"
                       id={`tab-${key}`}
                       aria-selected={activeTab === key}

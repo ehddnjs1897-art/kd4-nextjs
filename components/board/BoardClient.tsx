@@ -76,6 +76,9 @@ export default function BoardClient({
   const [fetchError, setFetchError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const searchMounted = useRef(false)
+  // 검색 디바운스 useEffect에서 activeCategory 스테일 클로저 방지
+  const activeCategoryRef = useRef(activeCategory)
+  useEffect(() => { activeCategoryRef.current = activeCategory }, [activeCategory])
 
   const fetchPosts = useCallback(async (category: Category, page: number, append: boolean, q?: string) => {
     // 이전 요청 취소 — 카테고리 전환 시 응답 순서 역전 방지
@@ -116,14 +119,15 @@ export default function BoardClient({
   }, [currentUserId])
 
   // 검색어 디바운스 (300ms) — 초기 마운트는 건너뜀
+  // activeCategoryRef.current로 스테일 클로저 방지 (카테고리 변경 후 검색 시 잘못된 결과 방어)
   useEffect(() => {
     if (!searchMounted.current) { searchMounted.current = true; return }
     const timer = setTimeout(() => {
       setCurrentPage(1)
-      fetchPosts(activeCategory, 1, false, searchQuery)
+      fetchPosts(activeCategoryRef.current, 1, false, searchQuery)
     }, 300)
     return () => clearTimeout(timer)
-  }, [searchQuery]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [searchQuery, fetchPosts])
 
   function handleCategoryChange(cat: Category) {
     if (cat === activeCategory) return

@@ -339,7 +339,7 @@ export default function InsightsPage() {
               aria-pressed={filterFavorite}
               aria-label="즐겨찾기 필터"
               onClick={() => setFilterFavorite(v => !v)}
-            >★ 즐겨찾기</button>
+            ><span aria-hidden="true">★</span> 즐겨찾기</button>
           </div>
         </div>
 
@@ -468,7 +468,7 @@ export default function InsightsPage() {
                         onClick={() => toggleFavorite(insight)}
                         style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 16, color: insight.is_favorite ? 'var(--gold)' : 'var(--gray)', minHeight: 44, minWidth: 44 }}
                         aria-label={insight.is_favorite ? '즐겨찾기 해제' : '즐겨찾기'}
-                      >★</button>
+                      ><span aria-hidden="true">★</span></button>
                       {confirmingDeleteId === insight.id ? (
                         <>
                           <button
@@ -490,7 +490,7 @@ export default function InsightsPage() {
                           onClick={() => deleteInsight(insight.id)}
                           style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--gray)', minHeight: 44, minWidth: 44 }}
                           aria-label={`${insight.title || insight.url} 삭제`}
-                        >✕</button>
+                        ><span aria-hidden="true">✕</span></button>
                       )}
                     </div>
                   </div>

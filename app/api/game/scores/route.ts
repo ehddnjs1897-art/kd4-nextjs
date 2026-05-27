@@ -130,33 +130,38 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '유효하지 않은 아이템 수입니다.' }, { status: 400 })
   }
 
-  // 시간당 점수 제출 횟수 제한 — DB 크로스 인스턴스 확인 (인메모리 조기 차단 후 2차 검증)
-  const hourAgo = new Date(Date.now() - 3_600_000).toISOString()
-  const { count: recentScoreCount } = await supabaseAdmin
-    .from('game_scores')
-    .select('id', { count: 'exact', head: true })
-    .eq('user_id', user.id)
-    .gte('created_at', hourAgo)
-  if ((recentScoreCount ?? 0) >= MAX_SCORES_PER_HOUR) {
-    return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
-  }
+  try {
+    // 시간당 점수 제출 횟수 제한 — DB 크로스 인스턴스 확인 (인메모리 조기 차단 후 2차 검증)
+    const hourAgo = new Date(Date.now() - 3_600_000).toISOString()
+    const { count: recentScoreCount } = await supabaseAdmin
+      .from('game_scores')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .gte('created_at', hourAgo)
+    if ((recentScoreCount ?? 0) >= MAX_SCORES_PER_HOUR) {
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
+    }
 
-  const { data, error } = await supabaseAdmin
-    .from('game_scores')
-    .insert({
-      user_id: user.id,
-      score,
-      duration_ms,
-      stage,
-      items_collected,
-    })
-    .select('id')
-    .maybeSingle()
+    const { data, error } = await supabaseAdmin
+      .from('game_scores')
+      .insert({
+        user_id: user.id,
+        score,
+        duration_ms,
+        stage,
+        items_collected,
+      })
+      .select('id')
+      .maybeSingle()
 
-  if (error || !data) {
-    console.error('[POST /api/game/scores] insert error:', error?.message ?? String(error))
+    if (error || !data) {
+      console.error('[POST /api/game/scores] insert error:', error?.message ?? String(error))
+      return NextResponse.json({ error: '점수 저장 중 오류가 발생했습니다.' }, { status: 500 })
+    }
+
+    return NextResponse.json({ id: data.id }, { status: 201 })
+  } catch (err) {
+    console.error('[POST /api/game/scores] 예외:', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '점수 저장 중 오류가 발생했습니다.' }, { status: 500 })
   }
-
-  return NextResponse.json({ id: data.id }, { status: 201 })
 }

@@ -267,7 +267,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
           {toastMsg?.type === 'ok' ? toastMsg.text : approvedMsg ? (
             <>
               <span>{approvedMsg}</span>
-              <button type="button" onClick={() => setApprovedMsg(null)} aria-label="닫기" style={{ background: 'none', border: 'none', color: '#4ade80', cursor: 'pointer', fontSize: '1.1rem' }}>×</button>
+              <button type="button" onClick={() => setApprovedMsg(null)} aria-label="닫기" style={{ background: 'none', border: 'none', color: '#4ade80', cursor: 'pointer', fontSize: '1.1rem' }}><span aria-hidden="true">×</span></button>
             </>
           ) : ''}
         </div>

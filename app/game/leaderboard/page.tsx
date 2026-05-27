@@ -128,7 +128,7 @@ export default function LeaderboardPage() {
           </Link>
         </div>
       ) : (
-        {/* role="list": listStyle:none 시 Safari VoiceOver 리스트 의미 보존 (WCAG 1.3.1) */}
+        /* role="list": listStyle:none 시 Safari VoiceOver 리스트 의미 보존 (WCAG 1.3.1) */
         <ol role="list" aria-label={`${period === 'weekly' ? '주간' : '전체'} 순위`} style={{ maxWidth: 500, margin: "0 auto", padding: 0, listStyle: "none" }}>
           {data.map((entry, i) => (
             <li
