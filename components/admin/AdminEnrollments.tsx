@@ -51,6 +51,7 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
       const res = await fetch(`/api/enrollments/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        signal: AbortSignal.timeout(10_000),
         body: JSON.stringify({ status: newStatus }),
       })
       if (res.ok) {
@@ -71,6 +72,7 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
       const res = await fetch(`/api/enrollments/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        signal: AbortSignal.timeout(10_000),
         body: JSON.stringify({ payment_status: next }),
       })
       if (res.ok) {

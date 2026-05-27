@@ -37,7 +37,7 @@ export default function ActorDownloadButton({
       }
       for (const id of videoIds) {
         try {
-          const res = await fetch(`/api/videos/${id}/signed-url?download=1`)
+          const res = await fetch(`/api/videos/${id}/signed-url?download=1`, { signal: AbortSignal.timeout(10_000) })
           const j = await res.json()
           if (res.ok && j.url) {
             trigger(j.url)

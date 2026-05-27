@@ -506,6 +506,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       const res = await fetch(`/api/actors/${actorId}/filmography/bulk`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: AbortSignal.timeout(10_000),
         body: JSON.stringify({ items }),
       })
       if (res.status === 401) { window.location.href = '/auth/login'; return }
@@ -543,7 +544,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     setConfirmingFilmIdx(null)
     if (f.id) {
       try {
-        const res = await fetch(`/api/actors/${actorId}/filmography/${f.id}`, { method: 'DELETE' })
+        const res = await fetch(`/api/actors/${actorId}/filmography/${f.id}`, { method: 'DELETE', signal: AbortSignal.timeout(10_000) })
         if (res.status === 401) { window.location.href = '/auth/login'; return }
         if (!res.ok) throw new Error((await res.json()).error || '삭제 실패')
       } catch (e) {

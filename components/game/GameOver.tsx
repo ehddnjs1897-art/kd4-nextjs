@@ -66,6 +66,7 @@ export default function GameOver({
       const res = await fetch("/api/game/scores", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: AbortSignal.timeout(10_000),
         body: JSON.stringify({
           score,
           duration_ms: durationMs,

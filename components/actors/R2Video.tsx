@@ -53,7 +53,7 @@ export default function R2Video({
   async function downloadVideo() {
     setDownloading(true)
     try {
-      const res = await fetch(`/api/videos/${videoId}/signed-url?download=1`)
+      const res = await fetch(`/api/videos/${videoId}/signed-url?download=1`, { signal: AbortSignal.timeout(10_000) })
       const j = await res.json()
       if (!res.ok || !j.url) {
         setError(j.error || '다운로드 링크 발급에 실패했습니다.')

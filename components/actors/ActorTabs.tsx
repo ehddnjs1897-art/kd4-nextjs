@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import R2Video from '@/components/actors/R2Video'
 
@@ -105,6 +105,10 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
   const [saving, setSaving] = useState(false)
   const [editErr, setEditErr] = useState('')
   const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null)
+  const editErrRef = useRef<HTMLDivElement>(null)
+
+  // 필모그래피 편집 오류 발생 시 포커스 이동 (WCAG 2.4.3)
+  useEffect(() => { if (editErr) editErrRef.current?.focus() }, [editErr])
 
   function startEdit(entry: FilmoEntry) {
     setEditingId(entry.id)
@@ -126,6 +130,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
       const res = await fetch(`/api/actors/${actor.id}/filmography/${entry.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        signal: AbortSignal.timeout(10_000),
         body: JSON.stringify({
           year: editFields.year ? parseInt(editFields.year) : null,
           title: editFields.title.trim(),
@@ -154,7 +159,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
     setConfirmingDeleteId(null)
     setSaving(true)
     try {
-      const res = await fetch(`/api/actors/${actor.id}/filmography/${filmId}`, { method: 'DELETE' })
+      const res = await fetch(`/api/actors/${actor.id}/filmography/${filmId}`, { method: 'DELETE', signal: AbortSignal.timeout(10_000) })
       if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) { const j = await res.json(); throw new Error(j.error || '삭제 실패') }
       setFilmo(prev => prev.filter(f => f.id !== filmId))
@@ -170,6 +175,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
       const res = await fetch(`/api/actors/${actor.id}/filmography`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: AbortSignal.timeout(10_000),
         body: JSON.stringify({
           category: cat,
           year: newEntry.year ? parseInt(newEntry.year) : null,
@@ -654,9 +660,16 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
           </section>
         )
       })}
-      {/* 필모그래피 수정 오류 — map 밖에 1번만 노출 */}
-      {/* 필모그래피 수정 오류 — 항상 DOM에 유지 (persistent live region — AT가 선등록 후 변경 감지) */}
-      <p id="actor-edit-error" role="alert" aria-live="assertive" aria-atomic="true" style={{ color: '#f87171', fontSize: '0.82rem', marginTop: editErr ? 8 : 0, padding: editErr ? '6px 12px' : undefined, background: editErr ? 'rgba(248,113,113,0.08)' : undefined, border: editErr ? '1px solid rgba(248,113,113,0.2)' : 'none', borderRadius: 6 }}>{editErr}</p>
+      {/* 필모그래피 수정 오류 — 항상 DOM에 유지 (persistent live region — WCAG 4.1.3) + 포커스 이동 (WCAG 2.4.3) */}
+      <div
+        ref={editErrRef}
+        id="actor-edit-error"
+        tabIndex={-1}
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+        style={{ outline: 'none', ...(editErr ? { color: '#f87171', fontSize: '0.82rem', marginTop: 8, padding: '6px 12px', background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)', borderRadius: 6 } : {}) }}
+      >{editErr}</div>
 
       {/* ============ 수상이력 ============ */}
       {awardEntries.length > 0 && (
