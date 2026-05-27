@@ -123,6 +123,7 @@ export default function OnboardingForm({
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ filename: file.name, contentType: file.type || 'video/mp4', size: file.size }),
+      signal: AbortSignal.timeout(10_000),
     })
     const j = await res.json()
     if (!res.ok) throw new Error(j.error || '영상 업로드 URL 발급 실패')
@@ -174,6 +175,7 @@ export default function OnboardingForm({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ docPath, photos: photoPaths, currentPhotos: currentPhotoPaths, videos: videoMetas, ogPhotoPath, castingSummary: castingSummary.trim() || undefined }),
+        signal: AbortSignal.timeout(15_000),
       })
       const j = await res.json()
       if (!res.ok) throw new Error(j.error || '등록에 실패했습니다.')

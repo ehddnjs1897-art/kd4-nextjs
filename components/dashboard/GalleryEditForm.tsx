@@ -424,6 +424,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_profile: true }),
+        signal: AbortSignal.timeout(10_000),
       })
       if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '변경 실패')
@@ -447,6 +448,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ youtube_id: yid, title: videoTitle.trim() || null }),
+        signal: AbortSignal.timeout(10_000),
       })
       if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '추가 실패')
