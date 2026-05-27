@@ -405,7 +405,7 @@ export default function InsightsPage() {
                       className="ins-tag"
                       onClick={() => setEditingCategoryId(editingCategoryId === insight.id ? null : insight.id)}
                       aria-label={`카테고리 변경: ${insight.category ?? '기타'}`}
-                      aria-haspopup="dialog"
+                      aria-haspopup="true"
                       aria-expanded={editingCategoryId === insight.id}
                       aria-controls={`ins-cat-panel-${insight.id}`}
                       style={{ cursor: 'pointer', borderBottom: '1px dashed var(--gray)', background: 'none', border: 'none', padding: 0, font: 'inherit' }}

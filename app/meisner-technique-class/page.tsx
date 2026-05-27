@@ -198,7 +198,7 @@ export default function MeisnerPage() {
                 ))}
               </ul>
               <Link href="/acting-coach-dongwon-kwon" style={{ fontSize: '0.88rem', color: 'var(--navy)', fontWeight: 600 }}>
-                액팅 코치 프로필 자세히 보기 →
+                액팅 코치 프로필 자세히 보기 <span aria-hidden="true">→</span>
               </Link>
             </div>
           </div>
@@ -279,10 +279,10 @@ export default function MeisnerPage() {
       <section aria-label="관련 클래스 바로가기" style={{ padding: '32px 24px', background: 'var(--bg2)', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
         <div className="container" style={{ display: 'flex', justifyContent: 'center', gap: '32px', flexWrap: 'wrap' }}>
           <Link href="/classes" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
-            ← 전체 클래스 보기
+            <span aria-hidden="true">← </span>전체 클래스 보기
           </Link>
           <Link href="/reel-production-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
-            출연영상 클래스 →
+            출연영상 클래스 <span aria-hidden="true">→</span>
           </Link>
         </div>
       </section>

@@ -437,7 +437,7 @@ export default function HomePage() {
               boxShadow: "0 4px 14px rgba(21,72,138,0.2)",
             }}
           >
-            클래스 알아보기 →
+            클래스 알아보기 <span aria-hidden="true">→</span>
           </Link>
           <Link
             href="/actors"
@@ -915,7 +915,7 @@ export default function HomePage() {
               boxSizing: "border-box",
             } as React.CSSProperties}
           >
-            마이즈너 테크닉 알아보기 →
+            마이즈너 테크닉 알아보기 <span aria-hidden="true">→</span>
           </Link>
         </div>
       </div>
@@ -1107,7 +1107,7 @@ export default function HomePage() {
                 boxShadow: "0 4px 20px rgba(21,72,138,0.25)",
               }}
             >
-              전체 클래스 보러가기 →
+              전체 클래스 보러가기 <span aria-hidden="true">→</span>
             </Link>
             <Link
               href="/join#form-hero"
@@ -1300,7 +1300,7 @@ export default function HomePage() {
                 boxShadow: "0 6px 18px rgba(21,72,138,0.2)",
               }}
             >
-              무료 상담 신청 →
+              무료 상담 신청 <span aria-hidden="true">→</span>
             </Link>
             <a
               href="https://pf.kakao.com/_ximxdqn"
