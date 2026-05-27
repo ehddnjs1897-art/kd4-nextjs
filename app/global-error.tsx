@@ -26,9 +26,9 @@ export default function GlobalError({
             <p style={{ fontSize: '0.72rem', letterSpacing: '0.3em', color: '#c4a55a', textTransform: 'uppercase', marginBottom: 16 }}>
               <span lang="en">CRITICAL ERROR</span>
             </p>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: 12 }}>
+            <h1 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: 12 }}>
               오류가 발생했습니다
-            </h2>
+            </h1>
             <p style={{ color: '#888', fontSize: '0.9rem', lineHeight: 1.7, marginBottom: 24 }}>
               페이지를 불러오는 중 치명적인 오류가 발생했습니다.
             </p>

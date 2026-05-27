@@ -21,7 +21,7 @@ export default function ErrorPage({
   }, [error])
 
   return (
-    <div role="main" style={{
+    <div style={{
       minHeight: '100vh',
       background: 'var(--bg)',
       display: 'flex',
@@ -40,14 +40,14 @@ export default function ErrorPage({
         }}>
           <span lang="en">ERROR</span>
         </p>
-        <h2 style={{
+        <h1 style={{
           fontFamily: 'var(--font-display)',
           fontSize: 'clamp(1.4rem, 3vw, 1.8rem)',
           color: 'var(--white)',
           marginBottom: 12,
         }}>
           오류가 발생했습니다
-        </h2>
+        </h1>
         <p style={{ color: 'var(--gray)', fontSize: '0.88rem', lineHeight: 1.7, marginBottom: 28 }}>
           일시적인 문제입니다. 다시 시도하거나 페이지를 새로고침해 주세요.
         </p>
