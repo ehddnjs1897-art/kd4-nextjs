@@ -32,7 +32,7 @@ export default function ActorDbLocked({
   const loginHref = `/auth/login?next=${encodeURIComponent(nextUrl)}`
 
   return (
-    <main style={styles.page}>
+    <div style={styles.page}>
       <div style={styles.box}>
         <div style={styles.icon} aria-hidden="true">🔒</div>
         <h1 style={styles.title}>{title}</h1>
@@ -52,7 +52,7 @@ export default function ActorDbLocked({
           )}
         </div>
       </div>
-    </main>
+    </div>
   )
 }
 

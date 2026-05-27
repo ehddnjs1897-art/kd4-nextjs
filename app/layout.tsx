@@ -98,6 +98,11 @@ export default function RootLayout({
         {/* KoPubWorld 서브셋 폰트 preload — Vercel edge에서 직서빙, 64~122KB */}
         <link rel="preload" href="/fonts/KoPubWorldDotum-Medium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/KoPubWorldBatang-Medium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        {/* 서드파티 도메인 preconnect — TCP+TLS를 미리 열어 스크립트 로딩 지연 감소 */}
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://www.google-analytics.com" />
+        <link rel="dns-prefetch" href="https://t1.kakaocdn.net" />
+        <link rel="dns-prefetch" href="https://connect.facebook.net" />
       </head>
       <body
         className={`${notoSansKR.variable} ${notoSerifKR.variable} ${oswald.variable}`}

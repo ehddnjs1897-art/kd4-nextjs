@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
   const key = `actors/intake/${user.id}/${Date.now()}-${rand}.${ext}`
 
   try {
-    const uploadUrl = await getUploadUrl(key, contentType, 600) // 10분 — 누출 시 노출 창 최소화
+    const uploadUrl = await getUploadUrl(key, contentType, 600, size) // 10분 + ContentLength 강제 (선언 크기 우회 방어)
     return NextResponse.json({ uploadUrl, key }, { headers: { 'Cache-Control': 'private, no-store' } })
   } catch (e) {
     console.error('[r2/upload-url] presigned URL 발급 실패:', e)

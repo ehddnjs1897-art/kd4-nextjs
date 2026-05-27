@@ -78,16 +78,23 @@ export async function uploadVideo(
  * @param key R2 경로
  * @param contentType MIME (예: "video/mp4")
  * @param expiresInSec 만료 시간 (초). 기본 1시간.
+ * @param maxBytes ContentLength 조건 — R2 버킷에서 실제 업로드 크기 강제 (선언 값 우회 방어)
  */
 export async function getUploadUrl(
   key: string,
   contentType: string,
-  expiresInSec = 3600
+  expiresInSec = 3600,
+  maxBytes?: number
 ): Promise<string> {
   const c = getClient()
   return getSignedUrl(
     c,
-    new PutObjectCommand({ Bucket: BUCKET_NAME, Key: key, ContentType: contentType }),
+    new PutObjectCommand({
+      Bucket: BUCKET_NAME,
+      Key: key,
+      ContentType: contentType,
+      ...(maxBytes ? { ContentLength: maxBytes } : {}),
+    }),
     { expiresIn: expiresInSec }
   )
 }

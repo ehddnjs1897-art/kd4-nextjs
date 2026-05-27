@@ -148,6 +148,24 @@ export async function GET(
       if (upstream.url && !isSafeProfileUrl(upstream.url)) {
         return NextResponse.json({ error: '허용되지 않는 프로필 링크입니다.' }, { status: 400 })
       }
+      // Content-Length 헤더 기반 사전 차단 (R2 경로의 50MB 가드와 동일 기준)
+      const upstreamLength = upstream.headers.get('content-length')
+      const MAX_PROXY_BYTES = 50 * 1024 * 1024
+      if (upstreamLength && Number(upstreamLength) > MAX_PROXY_BYTES) {
+        return NextResponse.json({ error: '파일이 너무 큽니다 (최대 50MB).' }, { status: 413 })
+      }
+      // 스트림 바이트 카운터 — Content-Length 없는 경우 방어 (50MB 초과 시 스트림 종료)
+      let bytesReceived = 0
+      const limitedBody = upstream.body.pipeThrough(new TransformStream({
+        transform(chunk, controller) {
+          bytesReceived += chunk.byteLength
+          if (bytesReceived > MAX_PROXY_BYTES) {
+            controller.error(new Error('파일 크기 초과'))
+          } else {
+            controller.enqueue(chunk)
+          }
+        },
+      }))
       const rawExt = target.pathname.split('?')[0].split('.').pop() ?? 'pdf'
       const ext = rawExt.replace(/[^a-z0-9]/gi, '').slice(0, 8) || 'pdf'
       const headers: Record<string, string> = {
@@ -156,7 +174,7 @@ export async function GET(
         'Cache-Control': 'private, no-store',
       }
       // Content-Length 미전달 — 파일 존재 여부 추론 방지 (사이즈 오라클 방어)
-      return new Response(upstream.body, { headers })
+      return new Response(limitedBody, { headers })
     } catch (e) {
       console.error('[actor profile] 외부 URL 프록시 실패:', e)
       return NextResponse.json({ error: '프로필 파일을 가져오지 못했습니다.' }, { status: 502 })

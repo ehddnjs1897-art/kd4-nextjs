@@ -102,6 +102,8 @@
 
 html {
   -webkit-font-smoothing: antialiased;
+  /* WCAG 2.4.11: focus-not-obscured — fixed Navbar(64px)에 의해 포커스 요소가 가려지지 않도록 */
+  scroll-padding-top: 64px;
 }
 
 body {
