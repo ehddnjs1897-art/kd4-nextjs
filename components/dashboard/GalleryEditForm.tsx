@@ -242,6 +242,12 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   const [confirmingR2VideoId, setConfirmingR2VideoId] = useState<string | null>(null)
   const [confirmingFilmIdx, setConfirmingFilmIdx] = useState<number | null>(null)
 
+  // 포커스 복원용 refs — 삭제 취소 시 트리거 버튼으로 포커스 반환 (WCAG 2.4.3)
+  const deletePhotoRefs = useRef<Map<string, HTMLButtonElement | null>>(new Map())
+  const deleteVideoRefs = useRef<Map<string, HTMLButtonElement | null>>(new Map())
+  const deleteR2VideoRefs = useRef<Map<string, HTMLButtonElement | null>>(new Map())
+  const deleteFilmRefs = useRef<Map<number, HTMLButtonElement | null>>(new Map())
+
   // ── 타이머 관리 (언마운트 시 clearTimeout으로 메모리 누수 방지) ──────────────
   const timerIds = useRef<ReturnType<typeof setTimeout>[]>([])
   const flashMsg = (setter: (v: string) => void, delay = 3000) => {
@@ -692,7 +698,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
               <div style={s.photoActions}>
                 {confirmingPhotoId === p.id ? (
                   <div style={{ display: 'flex', gap: 5 }}>
-                    <button type="button" onClick={() => setConfirmingPhotoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 44 }}>취소</button>
+                    <button type="button" onClick={() => { setConfirmingPhotoId(null); deletePhotoRefs.current.get(p.id)?.focus() }} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 44 }}>취소</button>
                     <button type="button" onClick={() => deletePhoto(p.id, p.is_profile)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 44, border: 'none' }}>확인</button>
                   </div>
                 ) : (
@@ -702,7 +708,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                         대표 지정
                       </button>
                     )}
-                    <button type="button" onClick={() => deletePhoto(p.id, p.is_profile)} aria-label={p.is_profile ? '대표 프로필 사진 삭제' : `사진 ${idx + 1} 삭제`} style={{ ...s.btn, ...s.btnDanger }}>
+                    <button ref={el => { deletePhotoRefs.current.set(p.id, el) }} type="button" onClick={() => deletePhoto(p.id, p.is_profile)} aria-label={p.is_profile ? '대표 프로필 사진 삭제' : `사진 ${idx + 1} 삭제`} style={{ ...s.btn, ...s.btnDanger }}>
                       삭제
                     </button>
                   </>
@@ -742,11 +748,11 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                   </p>
                   {confirmingR2VideoId === v.id ? (
                     <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
-                      <button type="button" onClick={() => setConfirmingR2VideoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 44 }}>취소</button>
+                      <button type="button" onClick={() => { setConfirmingR2VideoId(null); deleteR2VideoRefs.current.get(v.id)?.focus() }} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 44 }}>취소</button>
                       <button type="button" onClick={() => deleteR2Video(v.id)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 44, border: 'none' }}>확인</button>
                     </div>
                   ) : (
-                    <button type="button" onClick={() => deleteR2Video(v.id)} aria-label={`${v.title || '영상'} 삭제`} style={{ ...s.btn, ...s.btnDanger, flexShrink: 0 }}>삭제</button>
+                    <button ref={el => { deleteR2VideoRefs.current.set(v.id, el) }} type="button" onClick={() => deleteR2Video(v.id)} aria-label={`${v.title || '영상'} 삭제`} style={{ ...s.btn, ...s.btnDanger, flexShrink: 0 }}>삭제</button>
                   )}
                 </div>
               ))}
@@ -777,11 +783,11 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                   </p>
                   {confirmingVideoId === v.id ? (
                     <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
-                      <button type="button" onClick={() => setConfirmingVideoId(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 44 }}>취소</button>
+                      <button type="button" onClick={() => { setConfirmingVideoId(null); deleteVideoRefs.current.get(v.id)?.focus() }} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 44 }}>취소</button>
                       <button type="button" onClick={() => deleteVideo(v.id)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 44, border: 'none' }}>확인</button>
                     </div>
                   ) : (
-                    <button type="button" onClick={() => deleteVideo(v.id)} aria-label={`${v.title || v.youtube_id} 삭제`} style={{ ...s.btn, ...s.btnDanger, flexShrink: 0 }}>삭제</button>
+                    <button ref={el => { deleteVideoRefs.current.set(v.id, el) }} type="button" onClick={() => deleteVideo(v.id)} aria-label={`${v.title || v.youtube_id} 삭제`} style={{ ...s.btn, ...s.btnDanger, flexShrink: 0 }}>삭제</button>
                   )}
                 </div>
               ))}
@@ -829,11 +835,11 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                 <input aria-label={`필모그래피 ${i + 1}번 배역`} value={f.role} onChange={e => updateFilm(i, 'role', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} placeholder="배역" />
                 {confirmingFilmIdx === i ? (
                   <div style={{ display: 'flex', gap: 5 }}>
-                    <button type="button" onClick={() => setConfirmingFilmIdx(null)} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 44 }}>취소</button>
+                    <button type="button" onClick={() => { setConfirmingFilmIdx(null); deleteFilmRefs.current.get(i)?.focus() }} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 44 }}>취소</button>
                     <button type="button" onClick={() => deleteFilm(i)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 44, border: 'none' }}>확인</button>
                   </div>
                 ) : (
-                  <button type="button" onClick={() => deleteFilm(i)} aria-label={`필모그래피 ${i + 1}번 삭제`} style={{ ...s.btn, ...s.btnDanger }}>삭제</button>
+                  <button ref={el => { deleteFilmRefs.current.set(i, el) }} type="button" onClick={() => deleteFilm(i)} aria-label={`필모그래피 ${i + 1}번 삭제`} style={{ ...s.btn, ...s.btnDanger }}>삭제</button>
                 )}
               </div>
             ))}
