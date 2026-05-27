@@ -113,7 +113,7 @@ export default function WritePage() {
         </div>
 
         <form onSubmit={handleSubmit} aria-label="게시글 작성">
-          <div ref={errorRef} id="write-form-error" tabIndex={-1} role="alert" aria-live="assertive" aria-atomic="true" style={{ outline: 'none',
+          <div ref={errorRef} id="write-form-error" tabIndex={-1} role="alert" aria-atomic="true" style={{ outline: 'none',
             padding: error ? '12px 16px' : undefined,
             background: error ? '#e74c3c22' : undefined,
             border: error ? '1px solid #e74c3c55' : undefined,

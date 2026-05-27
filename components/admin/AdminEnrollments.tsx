@@ -94,7 +94,7 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
           <Link href="/admin" style={{ fontSize: '0.85rem', color: '#15488a', textDecoration: 'underline' }}><span aria-hidden="true">← </span>관리자 홈</Link>
         </div>
         {/* 항상 DOM에 존재 — 스크린 리더 즉시 알림 보장 (WCAG 4.1.3) */}
-        <p role="alert" aria-live="assertive" aria-atomic="true" style={toastMsg ? { fontSize: '0.82rem', color: '#c0392b', background: 'rgba(192,57,43,0.08)', border: '1px solid rgba(192,57,43,0.2)', borderRadius: 6, padding: '8px 12px', marginBottom: 16 } : {}}>
+        <p role="alert" aria-atomic="true" style={toastMsg ? { fontSize: '0.82rem', color: '#c0392b', background: 'rgba(192,57,43,0.08)', border: '1px solid rgba(192,57,43,0.2)', borderRadius: 6, padding: '8px 12px', marginBottom: 16 } : {}}>
           {toastMsg}
         </p>
 
@@ -166,7 +166,7 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
                       color: e.status === '확정' ? '#2d8a56' : e.status === '취소' ? '#c0392b' : '#9a938b',
                     }}
                     aria-label={`${e.name || '(이름없음)'} ${e.class_name} 상태: ${e.status} — 클릭해서 변경`}
-                    title="클릭해서 상태 변경"
+
                   >
                     {e.status} ▾
                   </button>

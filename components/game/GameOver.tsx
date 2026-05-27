@@ -216,7 +216,7 @@ export default function GameOver({
         )}
       </div>
 
-      <p ref={errorRef} tabIndex={-1} role="alert" aria-live="assertive" aria-atomic="true" style={{ outline: 'none', ...(error ? { color: "#ff6666", fontSize: "0.75rem", marginTop: 12 } : {}) }}>{error ?? ''}</p>
+      <p ref={errorRef} tabIndex={-1} role="alert" aria-atomic="true" style={{ outline: 'none', ...(error ? { color: "#ff6666", fontSize: "0.75rem", marginTop: 12 } : {}) }}>{error ?? ''}</p>
 
       <Link
         href="/game/leaderboard"

@@ -117,7 +117,7 @@ export default function EditPage() {
   if (error && !post) {
     return (
       <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <p role="alert" aria-live="assertive" aria-atomic="true" style={{ color: '#e74c3c' }}>{error}</p>
+        <p role="alert" aria-atomic="true" style={{ color: '#e74c3c' }}>{error}</p>
       </div>
     )
   }
@@ -148,7 +148,7 @@ export default function EditPage() {
         </div>
 
         <form onSubmit={handleSubmit} aria-label="게시글 수정">
-          <div ref={errorRef} id="edit-form-error" tabIndex={-1} role="alert" aria-live="assertive" aria-atomic="true" style={{ outline: 'none',
+          <div ref={errorRef} id="edit-form-error" tabIndex={-1} role="alert" aria-atomic="true" style={{ outline: 'none',
             padding: error ? '12px 16px' : undefined,
             background: error ? '#e74c3c22' : undefined,
             border: error ? '1px solid #e74c3c55' : undefined,

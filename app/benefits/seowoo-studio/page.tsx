@@ -473,7 +473,7 @@ export default function SeowooPartnershipPage() {
                 style={{
                   fontFamily: 'var(--font-sans)',
                   fontSize: '0.88rem',
-                  color: '#777',
+                  color: '#6B6660',
                   lineHeight: 1.7,
                   wordBreak: 'keep-all',
                 }}

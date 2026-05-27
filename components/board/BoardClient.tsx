@@ -261,7 +261,7 @@ export default function BoardClient({
           </div>
         ) : fetchError ? (
           <div style={{ padding: '60px 20px', textAlign: 'center' }}>
-            <p role="alert" aria-live="assertive" aria-atomic="true" style={{ color: '#e74c3c', fontSize: '0.875rem' }}>{fetchError}</p>
+            <p role="alert" aria-atomic="true" style={{ color: '#e74c3c', fontSize: '0.875rem' }}>{fetchError}</p>
           </div>
         ) : posts.length === 0 ? (
           <div role="status" style={{ padding: '60px 20px', textAlign: 'center', color: 'var(--gray)' }}>

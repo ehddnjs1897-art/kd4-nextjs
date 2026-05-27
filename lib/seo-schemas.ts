@@ -39,7 +39,12 @@ export function buildOrganization() {
     name: 'KD4 액팅 스튜디오',
     alternateName: 'KD4 Acting Studio',
     url: SITE_URL,
-    logo: `${SITE_URL}/heart-logo.png`,
+    logo: {
+      '@type': 'ImageObject',
+      url: `${SITE_URL}/heart-logo.png`,
+      width: 400,
+      height: 400,
+    },
     image: `${SITE_URL}/og-image.jpg`,
     description:
       '서울 신촌 마이즈너 테크닉 기반 연기학원. 마이즈너 정규 클래스·출연영상 제작·캐스팅 연계 운영.',
@@ -67,7 +72,12 @@ export function buildEducationalOrganization() {
     description:
       '마이즈너 테크닉 기반의 연기 훈련, 출연영상 포트폴리오 제작, 캐스팅 연계를 운영하는 서울 신촌의 연기학원.',
     url: SITE_URL,
-    logo: `${SITE_URL}/heart-logo.png`,
+    logo: {
+      '@type': 'ImageObject',
+      url: `${SITE_URL}/heart-logo.png`,
+      width: 400,
+      height: 400,
+    },
     image: `${SITE_URL}/og-image.jpg`,
     address: ADDRESS,
     founder: { '@id': `${SITE_URL}#dongwon` },
@@ -203,5 +213,16 @@ export function buildCourseFromClass(cls: ClassItem, opts: { url: string }) {
       name: 'KD4 액팅 스튜디오',
       address: ADDRESS,
     },
+    hasCourseInstance: [
+      {
+        '@type': 'CourseInstance',
+        courseMode: 'Offline',
+        location: {
+          '@type': 'Place',
+          name: 'KD4 액팅 스튜디오',
+          address: ADDRESS,
+        },
+      },
+    ],
   }
 }

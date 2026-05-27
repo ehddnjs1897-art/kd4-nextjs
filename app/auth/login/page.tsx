@@ -121,7 +121,7 @@ function LoginContent() {
         <h1 style={styles.title}>로그인</h1>
 
         {/* 에러 메시지 */}
-        <div ref={errorRef} id="login-error" tabIndex={-1} style={{ ...(error ? styles.errorBox : {}), outline: 'none' }} role="alert" aria-live="assertive" aria-atomic="true">{error ?? ''}</div>
+        <div ref={errorRef} id="login-error" tabIndex={-1} style={{ ...(error ? styles.errorBox : {}), outline: 'none' }} role="alert" aria-atomic="true">{error ?? ''}</div>
 
         {/* 이메일 로그인 폼 */}
         <form onSubmit={handleEmailLogin} style={styles.form} aria-label="이메일 로그인">

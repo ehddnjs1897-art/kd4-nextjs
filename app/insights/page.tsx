@@ -230,7 +230,7 @@ export default function InsightsPage() {
                   메모 {showMemo ? '▲' : '▼'}
                 </button>
               </div>
-              <p role="alert" aria-live="assertive" aria-atomic="true" style={{ fontSize: '0.75rem', color: '#ef4444', marginTop: 6 }}>{saveError ?? ''}</p>
+              <p role="alert" aria-atomic="true" style={{ fontSize: '0.75rem', color: '#ef4444', marginTop: 6 }}>{saveError ?? ''}</p>
               {/* 저장 성공 AT 알림 — 항상 DOM에 존재, 내용 변경 시 aria-live가 발화 */}
               <p role="status" aria-live="polite" className="sr-only">{saveSuccess}</p>
               {showMemo && (
@@ -370,7 +370,7 @@ export default function InsightsPage() {
 
         {/* 카드 목록 */}
         {/* 항상 DOM에 존재 — 스크린 리더 즉시 알림 보장 (WCAG 4.1.3) */}
-        <p role="alert" aria-live="assertive" aria-atomic="true" style={fetchError ? { fontSize: 13, color: '#ef4444', marginBottom: 8, textAlign: 'center' } : {}}>{fetchError}</p>
+        <p role="alert" aria-atomic="true" style={fetchError ? { fontSize: 13, color: '#ef4444', marginBottom: 8, textAlign: 'center' } : {}}>{fetchError}</p>
         {fetchError && (
           <div style={{ textAlign: 'center', padding: '8px 0 16px' }}>
             <button type="button" className="ins-btn-ghost" style={{ fontSize: 13 }} onClick={fetchInsights}>다시 시도</button>
