@@ -91,11 +91,10 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
           <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.5rem', fontWeight: 800 }}>수강 현황</h1>
           <Link href="/admin" style={{ fontSize: '0.85rem', color: '#15488a', textDecoration: 'underline' }}>← 관리자 홈</Link>
         </div>
-        {toastMsg && (
-          <p role="alert" style={{ fontSize: '0.82rem', color: '#c0392b', background: 'rgba(192,57,43,0.08)', border: '1px solid rgba(192,57,43,0.2)', borderRadius: 6, padding: '8px 12px', marginBottom: 16 }}>
-            {toastMsg}
-          </p>
-        )}
+        {/* 항상 DOM에 존재 — 스크린 리더 즉시 알림 보장 (WCAG 4.1.3) */}
+        <p role="alert" aria-live="assertive" aria-atomic="true" style={toastMsg ? { fontSize: '0.82rem', color: '#c0392b', background: 'rgba(192,57,43,0.08)', border: '1px solid rgba(192,57,43,0.2)', borderRadius: 6, padding: '8px 12px', marginBottom: 16 } : {}}>
+          {toastMsg}
+        </p>
 
         {/* 월 필터 */}
         <div role="group" aria-label="월별 필터" style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>

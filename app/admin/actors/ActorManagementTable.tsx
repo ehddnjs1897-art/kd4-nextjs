@@ -64,11 +64,10 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
 
   return (
     <div>
-      {errorMsg && (
-        <p role="alert" style={{ fontSize: '0.82rem', color: '#ef4444', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 6, padding: '8px 12px', marginBottom: 16 }}>
-          {errorMsg}
-        </p>
-      )}
+      {/* 항상 DOM에 존재 — 스크린 리더 즉시 알림 보장 (WCAG 4.1.3) */}
+      <p role="alert" aria-live="assertive" aria-atomic="true" style={errorMsg ? { fontSize: '0.82rem', color: '#ef4444', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 6, padding: '8px 12px', marginBottom: 16 } : {}}>
+        {errorMsg}
+      </p>
       {/* 통계 카드 */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12, marginBottom: 32 }}>
         {[
