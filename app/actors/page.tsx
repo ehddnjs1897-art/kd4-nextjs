@@ -235,6 +235,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
                 <Link
                   key={opt.value}
                   href={filterHref('gender', opt.value)}
+                  aria-current={gender === opt.value ? "true" : undefined}
                   aria-label={gender === opt.value ? `${opt.label} (선택됨)` : opt.label}
                   style={{
                     ...styles.filterBtn,
@@ -254,6 +255,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
                 <Link
                   key={opt.value}
                   href={filterHref('ageGroup', opt.value)}
+                  aria-current={ageGroup === opt.value ? "true" : undefined}
                   aria-label={ageGroup === opt.value ? `${opt.label} (선택됨)` : opt.label}
                   style={{
                     ...styles.filterBtn,
@@ -273,6 +275,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
               <div role="group" aria-labelledby="filter-label-tag" style={styles.filterBtnGroup}>
                 <Link
                   href={filterHref('tag', 'all')}
+                  aria-current={tag === 'all' ? "true" : undefined}
                   aria-label={tag === 'all' ? '전체 (선택됨)' : '전체'}
                   style={{
                     ...styles.filterBtn,
@@ -285,6 +288,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
                   <Link
                     key={t}
                     href={filterHref('tag', t)}
+                    aria-current={tag === t ? "true" : undefined}
                     aria-label={tag === t ? `${t} (선택됨)` : t}
                     style={{
                       ...styles.filterBtn,

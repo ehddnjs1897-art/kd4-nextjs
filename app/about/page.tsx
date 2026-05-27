@@ -399,6 +399,7 @@ export default function AboutPage() {
               alt="권동원 대표"
               fill
               priority
+              fetchPriority="high"
               style={{ objectFit: 'cover', objectPosition: 'center top' }}
               sizes="(max-width: 768px) 100vw, 400px"
             />

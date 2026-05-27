@@ -107,6 +107,7 @@ export default function SinchonPage() {
                 height={1402}
                 sizes="(max-width: 760px) 100vw, 440px"
                 priority
+                fetchPriority="high"
                 style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '10px' }}
               />
             </div>

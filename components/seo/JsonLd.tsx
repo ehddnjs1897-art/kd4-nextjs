@@ -103,7 +103,7 @@ function getCourseSchemas() {
         }
       : {}),
     url: `${SITE_URL}/classes`,
-    courseMode: 'Offline',
+    courseMode: 'OnSite',
     locationCreated: {
       '@type': 'Place',
       name: 'KD4 액팅 스튜디오',

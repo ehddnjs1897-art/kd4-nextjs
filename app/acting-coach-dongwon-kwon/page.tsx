@@ -135,6 +135,7 @@ export default function CoachPage() {
               sizes="(max-width: 1000px) 100vw, 960px"
               style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
               priority
+              fetchPriority="high"
             />
             <div aria-hidden style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(15,51,100,0.45), transparent 45%)' }} />
           </div>
