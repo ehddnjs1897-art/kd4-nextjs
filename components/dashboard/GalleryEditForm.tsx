@@ -657,7 +657,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         <button type="button" onClick={saveInfo} disabled={infoSaving} aria-busy={infoSaving} style={{ ...s.btn, ...s.btnPrimary, opacity: infoSaving ? 0.6 : 1 }}>
           {infoSaving ? '저장 중…' : '저장'}
         </button>
-        {infoMsg && <p role={infoMsg.includes('실패') || infoMsg.includes('오류') ? 'alert' : 'status'} aria-live={infoMsg.includes('실패') || infoMsg.includes('오류') ? 'assertive' : 'polite'} style={{ ...s.msg, color: infoMsg.includes('실패') || infoMsg.includes('오류') ? '#ef4444' : 'var(--gold)', marginTop: 10 }}>{infoMsg}</p>}
+        <p role="status" aria-live="polite" aria-atomic="true" style={{ ...s.msg, color: infoMsg && (infoMsg.includes('실패') || infoMsg.includes('오류')) ? '#ef4444' : 'var(--gold)', marginTop: 10 }}>{infoMsg}</p>
       </section>
 
       {/* ── 프로필 자료 (PPTX) ── */}
@@ -684,7 +684,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         <button type="button" onClick={() => pptRef.current?.click()} disabled={pptUploading} aria-busy={pptUploading} style={{ ...s.btn, ...s.btnGhost, opacity: pptUploading ? 0.6 : 1 }}>
           {pptUploading ? '업로드 중…' : <><span aria-hidden="true">📄</span>{hasPpt ? ' 파일 교체' : ' 파일 올리기'}</>}
         </button>
-        {pptMsg && <p role={pptMsg.includes('완료') ? 'status' : 'alert'} aria-live={pptMsg.includes('완료') ? 'polite' : 'assertive'} style={{ ...s.msg, color: pptMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{pptMsg}</p>}
+        <p role="status" aria-live="polite" aria-atomic="true" style={{ ...s.msg, color: pptMsg && !pptMsg.includes('완료') ? '#ef4444' : 'var(--gold)', marginTop: 8 }}>{pptMsg}</p>
       </section>
 
       {/* ── 사진 ── */}
@@ -725,7 +725,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           </button>
           <span style={{ fontSize: '0.78rem', color: 'var(--gray)' }}>JPG·PNG, 최대 5MB · 9:16 비율 권장</span>
         </div>
-        {photoMsg && <p role={photoMsg.includes('완료') ? 'status' : 'alert'} aria-live={photoMsg.includes('완료') ? 'polite' : 'assertive'} style={{ ...s.msg, color: photoMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{photoMsg}</p>}
+        <p role="status" aria-live="polite" aria-atomic="true" style={{ ...s.msg, color: photoMsg && !photoMsg.includes('완료') ? '#ef4444' : 'var(--gold)', marginTop: 8 }}>{photoMsg}</p>
       </section>
 
       {/* ── 영상 ── */}
@@ -765,7 +765,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
             </button>
             <span style={{ fontSize: '0.74rem', color: 'var(--gray)', marginLeft: 12 }}>mp4 권장, 최대 300MB</span>
           </div>
-          {r2VideoMsg && <p role={r2VideoMsg.includes('완료') ? 'status' : 'alert'} aria-live={r2VideoMsg.includes('완료') ? 'polite' : 'assertive'} style={{ ...s.msg, color: r2VideoMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{r2VideoMsg}</p>}
+          <p role="status" aria-live="polite" aria-atomic="true" style={{ ...s.msg, color: r2VideoMsg && !r2VideoMsg.includes('완료') ? '#ef4444' : 'var(--gold)', marginTop: 8 }}>{r2VideoMsg}</p>
         </div>
 
         {/* 유튜브 연결 영상 */}
@@ -804,7 +804,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
             </div>
             <button type="button" onClick={addVideo} disabled={videoAdding} aria-busy={videoAdding} style={{ ...s.btn, ...s.btnPrimary, marginBottom: 0, opacity: videoAdding ? 0.6 : 1 }}>{videoAdding ? '추가 중…' : '추가'}</button>
           </div>
-          {videoMsg && <p role={videoMsg.includes('완료') ? 'status' : 'alert'} aria-live={videoMsg.includes('완료') ? 'polite' : 'assertive'} style={{ ...s.msg, color: videoMsg.includes('완료') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{videoMsg}</p>}
+          <p role="status" aria-live="polite" aria-atomic="true" style={{ ...s.msg, color: videoMsg && !videoMsg.includes('완료') ? '#ef4444' : 'var(--gold)', marginTop: 8 }}>{videoMsg}</p>
         </div>
       </section>
 
@@ -857,7 +857,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
             </button>
           )}
         </div>
-        {filmMsg && <p role={filmMsg.includes('저장') ? 'status' : 'alert'} aria-live={filmMsg.includes('저장') ? 'polite' : 'assertive'} style={{ ...s.msg, color: filmMsg.includes('저장') ? 'var(--gold)' : '#ef4444', marginTop: 8 }}>{filmMsg}</p>}
+        <p role="status" aria-live="polite" aria-atomic="true" style={{ ...s.msg, color: filmMsg && !filmMsg.includes('저장') ? '#ef4444' : 'var(--gold)', marginTop: 8 }}>{filmMsg}</p>
       </section>
     </div>
   )

@@ -357,8 +357,7 @@ export default function EnrollForm({
         )}
 
         {/* ── 선택 요약 ── */}
-        {selected.length > 0 && (
-          <div aria-live="polite" style={{ marginBottom: 20, padding: '16px 18px', background: 'rgba(21,72,138,0.05)', borderRadius: 12, border: '1px solid rgba(21,72,138,0.14)' }}>
+        <div aria-live="polite" aria-atomic="true" style={selected.length > 0 ? { marginBottom: 20, padding: '16px 18px', background: 'rgba(21,72,138,0.05)', borderRadius: 12, border: '1px solid rgba(21,72,138,0.14)' } : { display: 'none' }}>
             <p style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--navy)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 10 }}>
               선택 항목
             </p>
@@ -380,8 +379,7 @@ export default function EnrollForm({
                 {total.toLocaleString()}원
               </span>
             </div>
-          </div>
-        )}
+        </div>
 
         {/* ── 연락처 ── */}
         <div style={{ marginBottom: 24, borderRadius: 12, border: '1px solid var(--border)', overflow: 'hidden' }}>
@@ -398,11 +396,9 @@ export default function EnrollForm({
         </div>
 
         {/* ── 에러 ── */}
-        {error && (
-          <div role="alert" aria-live="assertive" style={{ padding: '12px 16px', background: 'var(--accent-red-soft)', border: '1px solid rgba(199,62,62,0.25)', borderRadius: 10, marginBottom: 16 }}>
-            <p style={{ color: '#b91c1c', fontSize: '0.84rem' }}>{error}</p>
-          </div>
-        )}
+        <div role="alert" aria-live="assertive" aria-atomic="true" style={error ? { padding: '12px 16px', background: 'var(--accent-red-soft)', border: '1px solid rgba(199,62,62,0.25)', borderRadius: 10, marginBottom: 16 } : {}}>
+          {error && <p style={{ color: '#b91c1c', fontSize: '0.84rem' }}>{error}</p>}
+        </div>
 
         {/* ── 신청 버튼 ── */}
         <p role="status" aria-live="polite" className="sr-only">

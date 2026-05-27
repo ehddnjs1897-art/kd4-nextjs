@@ -211,9 +211,7 @@ export default function GameOver({
         )}
       </div>
 
-      {error && (
-        <p role="alert" style={{ color: "#ff6666", fontSize: 12, marginTop: 12 }}>{error}</p>
-      )}
+      <p role="alert" aria-live="assertive" aria-atomic="true" style={{ color: "#ff6666", fontSize: 12, marginTop: 12 }}>{error ?? ''}</p>
 
       <Link
         href="/game/leaderboard"
