@@ -284,8 +284,9 @@ export default function OnboardingForm({
         </div>
       </section>
 
-      {warning && <p role="status" aria-live="polite" style={warnStyle}>{warning}</p>}
-      {error && <p role="alert" aria-live="assertive" style={errStyle}>{error}</p>}
+      {/* 항상 DOM에 존재 — 스크린 리더 즉시 알림 보장 (WCAG 4.1.3) */}
+      <p role="status" aria-live="polite" aria-atomic="true" style={warning ? warnStyle : {}}>{warning}</p>
+      <p role="alert" aria-live="assertive" aria-atomic="true" style={error ? errStyle : {}}>{error}</p>
       {loading && status && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', background: 'rgba(196,165,90,0.08)', border: '1px solid rgba(196,165,90,0.2)', borderRadius: 8, marginBottom: 16 }}>
           <span style={{ fontSize: '1rem' }}>⏳</span>

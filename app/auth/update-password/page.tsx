@@ -127,7 +127,8 @@ export default function UpdatePasswordPage() {
             <h1 style={styles.title}>새 비밀번호 입력</h1>
 
             <form onSubmit={handleUpdate} style={styles.form} aria-label="새 비밀번호 입력">
-              {error && <div id="update-error" role="alert" style={styles.errorBox}>{error}</div>}
+              {/* 항상 DOM에 존재 — aria-describedby 참조 유효성 + 스크린 리더 즉시 알림 (WCAG 4.1.3) */}
+              <div id="update-error" role="alert" aria-live="assertive" aria-atomic="true" style={error ? styles.errorBox : {}}>{error}</div>
 
               <div style={styles.fieldGroup}>
                 <label htmlFor="password" style={styles.label}>
@@ -144,7 +145,7 @@ export default function UpdatePasswordPage() {
                   disabled={loading}
                   autoComplete="new-password"
                   aria-invalid={!!error}
-                  aria-describedby={error ? "password-hint update-error" : "password-hint"}
+                  aria-describedby="password-hint update-error"
                   style={styles.input}
                 />
               </div>
@@ -163,7 +164,7 @@ export default function UpdatePasswordPage() {
                   disabled={loading}
                   autoComplete="new-password"
                   aria-invalid={!!error}
-                  aria-describedby={error ? "update-error" : undefined}
+                  aria-describedby="update-error"
                   style={{
                     ...styles.input,
                     borderColor:

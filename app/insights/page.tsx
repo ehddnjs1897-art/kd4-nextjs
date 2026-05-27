@@ -365,9 +365,10 @@ export default function InsightsPage() {
         </p>
 
         {/* 카드 목록 */}
+        {/* 항상 DOM에 존재 — 스크린 리더 즉시 알림 보장 (WCAG 4.1.3) */}
+        <p role="alert" aria-live="assertive" aria-atomic="true" style={fetchError ? { fontSize: 13, color: '#ef4444', marginBottom: 8, textAlign: 'center' } : {}}>{fetchError}</p>
         {fetchError && (
-          <div style={{ textAlign: 'center', padding: '16px 0' }}>
-            <p role="alert" style={{ fontSize: 13, color: '#ef4444', marginBottom: 8 }}>{fetchError}</p>
+          <div style={{ textAlign: 'center', padding: '8px 0 16px' }}>
             <button type="button" className="ins-btn-ghost" style={{ fontSize: 13 }} onClick={fetchInsights}>다시 시도</button>
           </div>
         )}
