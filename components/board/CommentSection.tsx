@@ -271,6 +271,7 @@ export default function CommentSection({
             rows={3}
             required
             maxLength={2000}
+            aria-describedby="comment-char-count"
             style={{
               width: '100%',
               background: 'var(--bg2)',
@@ -286,10 +287,15 @@ export default function CommentSection({
             }}
           />
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-            <span style={{
-              fontSize: '0.75rem',
-              color: content.length > 1800 ? '#e74c3c' : 'var(--gray)',
-            }}>
+            <span
+              id="comment-char-count"
+              aria-live="polite"
+              aria-atomic="true"
+              style={{
+                fontSize: '0.75rem',
+                color: content.length > 1800 ? '#e74c3c' : 'var(--gray)',
+              }}
+            >
               {content.length}/2000
             </span>
           </div>

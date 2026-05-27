@@ -657,9 +657,10 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
             maxLength={120}
             rows={2}
             placeholder='예: "장르를 넘나드는 탄탄한 기본기의 배우"'
+            aria-describedby="actor-casting-summary-count"
             style={{ ...s.input, resize: 'vertical', minHeight: 64, lineHeight: 1.6, fontFamily: 'inherit' }}
           />
-          <span style={{ fontSize: '0.72rem', color: 'var(--gray)', textAlign: 'right' }}>{castingSummary.length}/120</span>
+          <span id="actor-casting-summary-count" aria-live="polite" aria-atomic="true" style={{ fontSize: '0.72rem', color: 'var(--gray)', textAlign: 'right' }}>{castingSummary.length}/120</span>
         </div>
         <button type="button" onClick={saveInfo} disabled={infoSaving} aria-busy={infoSaving} style={{ ...s.btn, ...s.btnPrimary, opacity: infoSaving ? 0.6 : 1 }}>
           {infoSaving ? '저장 중…' : '저장'}
