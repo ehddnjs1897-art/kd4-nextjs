@@ -1842,6 +1842,12 @@ a:focus-visible {
   outline-offset: 2px;
 }
 
+/* 탭패널 포커스 링 — div[tabindex=0][role="tabpanel"] (WCAG 2.4.7) */
+[role="tabpanel"]:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
 /* 입력필드 키보드 포커스 링 — !important로 인라인 outline:none 오버라이드 방지 (WCAG 2.4.7) */
 input:focus-visible,
 textarea:focus-visible,

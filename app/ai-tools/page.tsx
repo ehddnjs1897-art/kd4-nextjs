@@ -275,7 +275,7 @@ export default function AIToolsPage() {
         {/* 로딩 */}
         {loading && (
           <div role="status" aria-live="polite" style={s.loadingBox}>
-            <div style={s.spinner} />
+            <div className="kd4-spinner" />
             <p style={s.loadingText}>AI가 분석 중입니다...</p>
             <p style={s.loadingSubText}>최대 30초 정도 소요될 수 있습니다.</p>
           </div>
@@ -449,6 +449,10 @@ const spinnerCss = `
   border-radius: 50%;
   animation: kd4spin 0.8s linear infinite;
 }
+@media (prefers-reduced-motion: reduce) {
+  @keyframes kd4spin { to { transform: none; } }
+  .kd4-spinner { animation: none !important; }
+}
 `
 
 // ─── 인라인 스타일 ───────────────────────────────────────────────────────────
@@ -603,14 +607,6 @@ const s: Record<string, React.CSSProperties> = {
     justifyContent: 'center',
     gap: 16,
     minHeight: 240,
-  },
-  spinner: {
-    width: 40,
-    height: 40,
-    border: '3px solid rgba(196,165,90,0.2)',
-    borderTopColor: 'var(--gold)',
-    borderRadius: '50%',
-    animation: 'kd4spin 0.8s linear infinite',
   },
   loadingText: {
     fontSize: '1rem',

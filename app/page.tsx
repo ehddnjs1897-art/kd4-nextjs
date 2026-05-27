@@ -1189,7 +1189,7 @@ export default function HomePage() {
         </div>
 
         {/* 1행: 왼쪽으로 */}
-        <div className="review-marquee" style={{ marginBottom: "12px" }}>
+        <div className="review-marquee" aria-hidden="true" style={{ marginBottom: "12px" }}>
           <div className="review-marquee-track" style={{ animationPlayState: reviewPaused ? 'paused' : 'running' }}>
             {[...REVIEW_ITEMS, ...REVIEW_ITEMS].map((r, i) => (
               <div key={`${r.author}-${i}`} aria-hidden={i >= REVIEW_ITEMS.length ? true : undefined} style={reviewCardStyle}>
@@ -1201,7 +1201,7 @@ export default function HomePage() {
         </div>
 
         {/* 2행: 오른쪽으로 */}
-        <div className="review-marquee reverse">
+        <div className="review-marquee reverse" aria-hidden="true">
           <div className="review-marquee-track" style={{ animationPlayState: reviewPaused ? 'paused' : 'running' }}>
             {[...REVIEW_ITEMS_2, ...REVIEW_ITEMS_2].map((r, i) => (
               <div key={`${r.author}-${i}`} aria-hidden={i >= REVIEW_ITEMS_2.length ? true : undefined} style={reviewCardStyle}>

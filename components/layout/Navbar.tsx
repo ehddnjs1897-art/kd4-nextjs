@@ -285,6 +285,7 @@ export default function Navbar() {
                   }}
                   aria-expanded={crewDropOpen}
                   aria-controls="crew-nav-panel"
+                  aria-haspopup="true"
                   onClick={() => setCrewDropOpen(v => !v)}
                 >
                   KD4 크루
