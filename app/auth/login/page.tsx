@@ -117,7 +117,7 @@ function LoginContent() {
         <h1 style={styles.title}>로그인</h1>
 
         {/* 에러 메시지 */}
-        {error && <div id="login-error" style={styles.errorBox} role="alert">{error}</div>}
+        <div id="login-error" style={styles.errorBox} role="alert" aria-live="assertive" aria-atomic="true">{error ?? ''}</div>
 
         {/* 이메일 로그인 폼 */}
         <form onSubmit={handleEmailLogin} style={styles.form} aria-label="이메일 로그인">

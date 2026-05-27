@@ -57,7 +57,7 @@ export default function ResetPasswordPage() {
           </div>
         ) : (
           <form onSubmit={handleReset} style={styles.form} aria-label="비밀번호 재설정">
-            {error && <div id="reset-error" role="alert" style={styles.errorBox}>{error}</div>}
+            <div id="reset-error" role="alert" aria-live="assertive" aria-atomic="true" style={styles.errorBox}>{error ?? ''}</div>
 
             <div style={styles.fieldGroup}>
               <label htmlFor="email" style={styles.label}>

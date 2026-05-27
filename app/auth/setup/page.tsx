@@ -81,7 +81,7 @@ export default function SetupPage() {
         <h1 style={styles.title}>회원 유형을 선택하세요</h1>
         <p style={styles.subtitle}>가입 목적에 맞는 유형을 선택해 주세요.</p>
 
-        {error && <div role="alert" aria-live="assertive" style={styles.errorBox}>{error}</div>}
+        <div role="alert" aria-live="assertive" aria-atomic="true" style={styles.errorBox}>{error ?? ''}</div>
 
         <form onSubmit={handleSubmit} aria-label="회원 유형 선택">
           <div role="group" aria-label="회원 유형" style={styles.typeGrid}>

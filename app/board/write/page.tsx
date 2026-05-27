@@ -109,19 +109,17 @@ export default function WritePage() {
         </div>
 
         <form onSubmit={handleSubmit} aria-label="게시글 작성">
-          {error && (
-            <div id="write-form-error" role="alert" style={{
-              padding: '12px 16px',
-              background: '#e74c3c22',
-              border: '1px solid #e74c3c55',
-              borderRadius: 'var(--radius)',
-              color: '#e74c3c',
-              fontSize: '0.875rem',
-              marginBottom: '20px',
-            }}>
-              {error}
-            </div>
-          )}
+          <div id="write-form-error" role="alert" aria-live="assertive" aria-atomic="true" style={{
+            padding: error ? '12px 16px' : undefined,
+            background: error ? '#e74c3c22' : undefined,
+            border: error ? '1px solid #e74c3c55' : undefined,
+            borderRadius: error ? 'var(--radius)' : undefined,
+            color: '#e74c3c',
+            fontSize: '0.875rem',
+            marginBottom: error ? '20px' : undefined,
+          }}>
+            {error ?? ''}
+          </div>
 
           {/* 카테고리 */}
           <div style={{ marginBottom: '18px' }}>

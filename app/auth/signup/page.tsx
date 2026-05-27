@@ -243,7 +243,7 @@ export default function SignupPage() {
 
         <h1 style={styles.title}>회원가입</h1>
 
-        {error && <div id="signup-error" style={styles.errorBox} role="alert" aria-live="assertive">{error}</div>}
+        <div id="signup-error" style={styles.errorBox} role="alert" aria-live="assertive" aria-atomic="true">{error ?? ''}</div>
 
         <p className="sr-only">별표(*)는 필수 항목입니다</p>
         <form onSubmit={handleSignup} style={styles.form}>

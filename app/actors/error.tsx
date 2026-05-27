@@ -33,14 +33,14 @@ export default function ActorsError({
         }}>
           오류
         </p>
-        <h2 style={{
+        <h1 style={{
           fontFamily: 'var(--font-display)',
           fontSize: '1.3rem',
           color: 'var(--white)',
           marginBottom: 12,
         }}>
           배우 목록을 불러오지 못했습니다
-        </h2>
+        </h1>
         <p style={{ color: 'var(--gray)', fontSize: '0.88rem', marginBottom: 24 }}>
           잠시 후 다시 시도해주세요.
         </p>
@@ -54,6 +54,7 @@ export default function ActorsError({
               border: 'none',
               borderRadius: 6,
               padding: '11px 24px',
+              minHeight: 44,
               fontSize: '0.88rem',
               fontWeight: 700,
               cursor: 'pointer',
@@ -70,6 +71,7 @@ export default function ActorsError({
               border: '1px solid var(--border)',
               borderRadius: 6,
               padding: '11px 24px',
+              minHeight: 44,
               fontSize: '0.88rem',
               color: 'var(--gray)',
               textDecoration: 'none',

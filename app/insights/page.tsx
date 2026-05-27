@@ -227,7 +227,7 @@ export default function InsightsPage() {
                   메모 {showMemo ? '▲' : '▼'}
                 </button>
               </div>
-              {saveError && <p role="alert" style={{ fontSize: 12, color: '#ef4444', marginTop: 6 }}>{saveError}</p>}
+              <p role="alert" aria-live="assertive" aria-atomic="true" style={{ fontSize: 12, color: '#ef4444', marginTop: 6 }}>{saveError ?? ''}</p>
               {/* 저장 성공 AT 알림 — 항상 DOM에 존재, 내용 변경 시 aria-live가 발화 */}
               <p role="status" aria-live="polite" className="sr-only">{saveSuccess}</p>
               {showMemo && (
