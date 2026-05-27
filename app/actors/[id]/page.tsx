@@ -9,6 +9,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 import ActorTabs from '@/components/actors/ActorTabs'
 import ShareButton from '@/components/actors/ShareButton'
 import ActorDownloadButton from '@/components/actors/ActorDownloadButton'
+import ActorDbLocked from '@/components/actors/ActorDbLocked'
 import { UserRole } from '@/lib/types'
 import { canViewActorContact } from '@/lib/access'
 import { isR2Configured } from '@/lib/r2'
@@ -231,7 +232,7 @@ export default async function ActorDetailPage({
   const { id } = await params
   if (!UUID_RE_ACTOR.test(id)) notFound()
 
-  /* ---- 비로그인도 접근 가능 (공개 페이지) ---- */
+  /* ---- 개별 프로필은 로그인 회원만 열람 가능 (목록은 누구나 OK) ---- */
   const supabase = await createClient()
 
   // getUser() + actor 병렬 조회 — getUser는 서버에서 JWT 검증 (getSession은 조작 쿠키 우회 가능)
@@ -241,17 +242,23 @@ export default async function ActorDetailPage({
   ])
   if (!actor) notFound()
 
-  // 역할 조회 (로그인 시에만, 비로그인은 null)
-  let role: UserRole | null = null
-  let isOwner = false
-  if (user) {
-    const { data: profile } = await supabaseAdmin
-      .from('profiles')
-      .select('role, actor_id')
-      .eq('id', user.id)
-      .maybeSingle()
-    role = (profile?.role ?? 'user') as UserRole
-    isOwner = profile?.actor_id === id || role === 'admin'
+  // 비로그인 → 잠금 화면 (로그인/회원가입 유도, 로그인 후 이 페이지로 복귀)
+  if (!user) {
+    return <ActorDbLocked role={null} nextUrl={`/actors/${id}`} />
+  }
+
+  // 역할 조회 (로그인 사용자만)
+  const { data: profile } = await supabaseAdmin
+    .from('profiles')
+    .select('role, actor_id')
+    .eq('id', user.id)
+    .maybeSingle()
+  const role: UserRole = (profile?.role ?? 'user') as UserRole
+  const isOwner = profile?.actor_id === id || role === 'admin'
+
+  // 디렉터 승인 대기 → 잠금 화면 (안내 메시지 다름)
+  if (role === 'director_pending') {
+    return <ActorDbLocked role={role} nextUrl={`/actors/${id}`} />
   }
 
   // 비공개 프로필은 본인(isOwner) 또는 관리자만 접근 가능

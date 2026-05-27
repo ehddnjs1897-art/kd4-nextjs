@@ -2,27 +2,30 @@ import Link from 'next/link'
 import type { UserRole } from '@/lib/types'
 
 /**
- * 배우 DB 열람 권한이 없을 때 보여주는 안내 화면.
- * - 비로그인: 로그인 / 회원가입 유도
+ * 배우 개인 프로필 페이지에 비로그인/권한 없음 접근 시 보여주는 안내 화면.
+ * - 비로그인: 로그인 / 회원가입 유도 (목록은 누구나 볼 수 있고, 개별 프로필만 회원 전용)
  * - 디렉터 승인대기: 승인 대기 안내
- * - 일반회원(디렉터 미신청 등): 디렉터 권한 신청 유도
  */
-export default function ActorDbLocked({ role }: { role: UserRole | null }) {
+export default function ActorDbLocked({
+  role,
+  nextUrl = '/actors',
+}: {
+  role: UserRole | null
+  nextUrl?: string
+}) {
   const loggedOut = !role
   const pending = role === 'director_pending'
 
-  let title = '배우 DB는 KD4 회원 전용입니다'
+  let title = '배우 프로필은 KD4 회원 전용입니다'
   let desc =
-    '배우 목록과 프로필은 로그인 후 열람할 수 있습니다. 배우 연락처는 승인된 디렉터만 볼 수 있습니다.'
+    '배우 목록은 누구나 둘러볼 수 있지만, 개별 프로필 열람은 로그인 후 가능합니다. 연락처는 승인된 디렉터만 확인할 수 있습니다.'
   if (pending) {
     title = '디렉터 승인 대기 중입니다'
     desc =
-      '디렉터 권한이 승인되면 배우 DB(목록·프로필·연락처)를 열람하실 수 있습니다. 승인까지 잠시만 기다려 주세요.'
-  } else if (!loggedOut) {
-    title = '배우 DB 열람 권한이 없습니다'
-    desc =
-      '배우 DB는 KD4 멤버·승인된 디렉터만 열람할 수 있습니다. 디렉터라면 마이페이지에서 권한을 신청해 주세요.'
+      '디렉터 권한이 승인되면 배우 연락처까지 열람하실 수 있습니다. 승인까지 잠시만 기다려 주세요.'
   }
+
+  const loginHref = `/auth/login?next=${encodeURIComponent(nextUrl)}`
 
   return (
     <div style={styles.page}>
@@ -33,8 +36,9 @@ export default function ActorDbLocked({ role }: { role: UserRole | null }) {
         <div style={styles.btns}>
           {loggedOut ? (
             <>
-              <Link href="/auth/login?next=/actors" style={styles.btnPrimary}>로그인</Link>
+              <Link href={loginHref} style={styles.btnPrimary}>로그인</Link>
               <Link href="/auth/signup" style={styles.btnSecondary}>회원가입</Link>
+              <Link href="/actors" style={styles.btnTertiary}>← 배우 목록으로 돌아가기</Link>
             </>
           ) : (
             <Link href="/dashboard" style={styles.btnPrimary}>마이페이지로 이동</Link>
@@ -105,5 +109,13 @@ const styles: Record<string, React.CSSProperties> = {
     minHeight: 44,
     fontSize: '0.88rem',
     textDecoration: 'none',
+  },
+  btnTertiary: {
+    display: 'block',
+    color: 'var(--gray)',
+    padding: '8px 0',
+    fontSize: '0.82rem',
+    textDecoration: 'none',
+    marginTop: 4,
   },
 }
