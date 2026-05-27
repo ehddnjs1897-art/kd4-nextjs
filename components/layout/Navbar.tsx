@@ -277,6 +277,7 @@ export default function Navbar() {
                     fontWeight: 600,
                     transition: 'color 0.2s',
                     padding: '4px 0',
+                    minHeight: 44,
                     letterSpacing: '0.02em',
                   }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--navy)')}
@@ -438,8 +439,11 @@ export default function Navbar() {
               href="/enroll"
               className="desktop-cta"
               style={{
-                display: 'inline-block',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 padding: '8px 20px',
+                minHeight: 44,
                 background: 'var(--gold)',
                 color: '#ffffff',
                 fontFamily: 'var(--font-sans)',

@@ -39,6 +39,12 @@ export async function GET(request: Request) {
     supabaseUrl,
     supabaseAnonKey,
     {
+      // httpOnly: true — 세션 쿠키를 JS에서 읽지 못하게 보호 (XSS 세션 탈취 방어)
+      cookieOptions: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax' as const,
+      },
       cookies: {
         getAll() {
           return cookieStore.getAll()

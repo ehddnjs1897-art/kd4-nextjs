@@ -786,6 +786,8 @@ export default function JoinForm() {
           checked={consent}
           onChange={(e) => setConsent(e.target.checked)}
           required
+          aria-invalid={invalidFields.has('consent')}
+          aria-describedby={invalidFields.has('consent') ? errorId : undefined}
           style={{
             width: '24px',
             height: '24px',

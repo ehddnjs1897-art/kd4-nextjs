@@ -267,6 +267,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ height: height || null, weight: weight || null, skills: skills || null, instagram: instagram || null, casting_summary: castingSummary.trim() || null }),
+        signal: AbortSignal.timeout(10_000),
       })
       if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '저장 실패')
@@ -302,6 +303,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ profile_doc_path: path }),
+        signal: AbortSignal.timeout(10_000),
       })
       if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '저장 실패')
@@ -327,6 +329,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ filename: file.name, contentType: file.type || 'video/mp4', size: file.size }),
+        signal: AbortSignal.timeout(10_000),
       })
       if (urlRes.status === 401) { window.location.href = '/auth/login'; return }
       if (!urlRes.ok) throw new Error('URL 발급 실패')
@@ -339,6 +342,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ r2_key: key, title: file.name }),
+        signal: AbortSignal.timeout(10_000),
       })
       if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '기록 실패')
@@ -358,7 +362,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     if (confirmingR2VideoId !== id) { setConfirmingR2VideoId(id); return }
     setConfirmingR2VideoId(null)
     try {
-      const res = await fetch(`/api/actors/${actorId}/videos/${id}`, { method: 'DELETE' })
+      const res = await fetch(`/api/actors/${actorId}/videos/${id}`, { method: 'DELETE', signal: AbortSignal.timeout(10_000) })
       if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '삭제 실패')
       setR2Videos(prev => prev.filter(v => v.id !== id))
@@ -401,7 +405,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     if (confirmingPhotoId !== id) { setConfirmingPhotoId(id); return }
     setConfirmingPhotoId(null)
     try {
-      const res = await fetch(`/api/actors/${actorId}/photos/${id}`, { method: 'DELETE' })
+      const res = await fetch(`/api/actors/${actorId}/photos/${id}`, { method: 'DELETE', signal: AbortSignal.timeout(10_000) })
       if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '삭제 실패')
       setPhotos(prev => {
@@ -463,7 +467,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     if (confirmingVideoId !== id) { setConfirmingVideoId(id); return }
     setConfirmingVideoId(null)
     try {
-      const res = await fetch(`/api/actors/${actorId}/videos/${id}`, { method: 'DELETE' })
+      const res = await fetch(`/api/actors/${actorId}/videos/${id}`, { method: 'DELETE', signal: AbortSignal.timeout(10_000) })
       if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '삭제 실패')
       setVideos(prev => prev.filter(v => v.id !== id))

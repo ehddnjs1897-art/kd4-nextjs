@@ -51,7 +51,7 @@ export default function SeowooCarousel() {
   }
 
   return (
-    <div style={{ maxWidth: 480, margin: '0 auto', position: 'relative' }}>
+    <div role="group" aria-label="서우스튜디오 촬영 가이드 슬라이드" style={{ maxWidth: 480, margin: '0 auto', position: 'relative' }}>
       {/* track */}
       <div
         ref={trackRef}
