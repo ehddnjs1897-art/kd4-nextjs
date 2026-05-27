@@ -335,7 +335,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                           {ROLE_LABEL[p.role] ?? p.role}
                         </span>
                       </td>
-                      <td style={s.td}>{formatDate(p.created_at)}</td>
+                      <td style={s.td}><time dateTime={p.created_at}>{formatDate(p.created_at)}</time></td>
                       <td style={s.td}>
                         <span style={p.actor_id ? s.yes : s.no}>
                           {p.actor_id ? '연결됨' : '없음'}
@@ -452,7 +452,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                         </td>
                         <td style={s.td}>{p.author_name || '—'}</td>
                         <td style={s.td}>{p.category || '—'}</td>
-                        <td style={s.td}>{formatDate(p.created_at)}</td>
+                        <td style={s.td}><time dateTime={p.created_at}>{formatDate(p.created_at)}</time></td>
                         <td style={s.td}>
                           <div aria-live="polite">
                             {confirmingDeletePostId === p.id ? (
@@ -522,7 +522,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
                             {STATUS_LABEL[app.status] ?? app.status}
                           </span>
                         </td>
-                        <td style={s.td}>{formatDate(app.created_at)}</td>
+                        <td style={s.td}><time dateTime={app.created_at}>{formatDate(app.created_at)}</time></td>
                         <td style={s.td}>
                           <button
                             type="button"

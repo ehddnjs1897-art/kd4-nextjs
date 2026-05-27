@@ -178,9 +178,9 @@ export default function CommentSection({
                       }}>
                         {comment.author_name}
                       </span>
-                      <span style={{ fontSize: '0.78rem', color: 'var(--gray)' }}>
+                      <time dateTime={comment.created_at} style={{ fontSize: '0.78rem', color: 'var(--gray)' }}>
                         {formatDate(comment.created_at)}
-                      </span>
+                      </time>
                     </div>
                     <p style={{
                       fontSize: '0.9rem',

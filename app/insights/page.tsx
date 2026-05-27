@@ -456,9 +456,9 @@ export default function InsightsPage() {
                     </p>
                   )}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
-                    <span style={{ fontSize: 11, color: 'var(--gray)' }}>
+                    <time dateTime={insight.created_at} style={{ fontSize: 11, color: 'var(--gray)' }}>
                       {new Date(insight.created_at).toLocaleDateString('ko-KR')}
-                    </span>
+                    </time>
                     <div style={{ display: 'flex', gap: 8 }}>
                       <button
                         type="button"
