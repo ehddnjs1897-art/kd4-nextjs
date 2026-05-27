@@ -810,7 +810,7 @@ export default function JoinPage() {
 
                 <div className="class-card-header">
                   <p className="class-step">{cls.step}</p>
-                  <p className="class-name-ko">{cls.nameKo}</p>
+                  <h3 className="class-name-ko">{cls.nameKo}</h3>
                   <p className="class-name-en" lang="en">{cls.nameEn}</p>
                 </div>
                 <div className="class-card-body">

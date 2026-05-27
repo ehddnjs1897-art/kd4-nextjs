@@ -72,6 +72,7 @@ const OPEN_CLASSES = CLASSES.filter((c) => c.isNewMemberOpen && c.nameKo !== '�
 export default function JoinForm() {
   const uid = useId()
   const consentId = `join-consent-${uid}`
+  const errorId = `join-form-error-${uid}`
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
@@ -570,7 +571,7 @@ export default function JoinForm() {
       <input
         aria-label="이름"
         aria-invalid={invalidFields.has('name')}
-        aria-describedby={invalidFields.has('name') ? "join-form-error" : undefined}
+        aria-describedby={invalidFields.has('name') ? errorId : undefined}
         type="text"
         placeholder="이름 *"
         value={name}
@@ -588,7 +589,7 @@ export default function JoinForm() {
       <input
         aria-label="연락처"
         aria-invalid={invalidFields.has('phone')}
-        aria-describedby={invalidFields.has('phone') ? "join-form-error" : undefined}
+        aria-describedby={invalidFields.has('phone') ? errorId : undefined}
         type="tel"
         placeholder="연락처 * 010-0000-0000"
         value={phone}
@@ -606,7 +607,7 @@ export default function JoinForm() {
       <input
         aria-label="이메일"
         aria-invalid={invalidFields.has('email')}
-        aria-describedby={invalidFields.has('email') ? "join-form-error" : undefined}
+        aria-describedby={invalidFields.has('email') ? errorId : undefined}
         type="email"
         placeholder="이메일 *"
         value={email}
@@ -646,7 +647,7 @@ export default function JoinForm() {
           <select
             aria-label="희망 클래스"
             aria-invalid={invalidFields.has('className')}
-            aria-describedby={invalidFields.has('className') ? "join-form-error" : undefined}
+            aria-describedby={invalidFields.has('className') ? errorId : undefined}
             value={className}
             onChange={(e) => setClassName(e.target.value)}
             onFocus={() => handleFieldFocus('class')}
@@ -683,7 +684,7 @@ export default function JoinForm() {
         <select
           aria-label="마이즈너 경험"
           aria-invalid={invalidFields.has('meisnerExp')}
-          aria-describedby={invalidFields.has('meisnerExp') ? "join-form-error" : undefined}
+          aria-describedby={invalidFields.has('meisnerExp') ? errorId : undefined}
           value={meisnerExp}
           onChange={(e) => setMeisnerExp(e.target.value)}
           onFocus={() => handleFieldFocus('meisner')}
@@ -718,7 +719,7 @@ export default function JoinForm() {
         <select
           aria-label="KD4를 어떻게 알게 되셨나요"
           aria-invalid={invalidFields.has('source')}
-          aria-describedby={invalidFields.has('source') ? "join-form-error" : undefined}
+          aria-describedby={invalidFields.has('source') ? errorId : undefined}
           value={source}
           onChange={(e) => setSource(e.target.value)}
           onFocus={() => handleFieldFocus('source')}
@@ -795,7 +796,7 @@ export default function JoinForm() {
 
       {/* 에러 — 항상 DOM에 존재 (aria-describedby 참조 깨짐 방지), 비어있을 때는 sr-only로 시각 은닉 */}
       <p
-        id="join-form-error"
+        id={errorId}
         role="alert"
         className={error ? undefined : 'sr-only'}
         style={{ color: '#b91c1c', fontSize: '0.85rem', margin: 0 }}

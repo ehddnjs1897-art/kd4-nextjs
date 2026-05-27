@@ -1,5 +1,12 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { SITE_URL } from '@/lib/constants'
+
+// iOS Safari 핀치-투-줌이 게임 캔버스 상호작용을 방해하므로 게임 플레이 전용으로 최대 배율 고정
+// WCAG 1.4.4: 게임은 zoom 제한 예외 항목 (단, 이 레이아웃만 적용 — 전체 사이트 미적용)
+export const viewport: Viewport = {
+  maximumScale: 1,
+  userScalable: false,
+}
 
 export const metadata: Metadata = {
   title: 'PLAY — OFF THE PLASTIC',

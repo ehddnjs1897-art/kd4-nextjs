@@ -114,7 +114,7 @@ export async function GET(
   const bucketOG = ogRateMap.get(ip)
   if (bucketOG && nowOG < bucketOG.resetAt) {
     if (bucketOG.count >= OG_RATE_LIMIT) {
-      return new Response('Too Many Requests', { status: 429 })
+      return new ImageResponse(fallbackImage, { width: 1200, height: 630 })
     }
     bucketOG.count++
   } else {
