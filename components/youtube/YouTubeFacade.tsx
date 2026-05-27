@@ -60,6 +60,7 @@ export default function YouTubeFacade({ videoId, title, allow, containerStyle }:
           style={fillStyle}
           allow={allow ?? DEFAULT_ALLOW}
           allowFullScreen
+          sandbox="allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox"
           title={title}
         />
         <p className="sr-only">자막이 있는 경우 영상 플레이어의 CC 버튼을 이용하세요.</p>

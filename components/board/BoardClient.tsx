@@ -220,7 +220,6 @@ export default function BoardClient({
             borderRadius: 'var(--radius)',
             fontSize: '0.875rem',
             color: 'var(--white)',
-            outline: 'none',
             boxSizing: 'border-box',
             fontFamily: 'var(--font-sans)',
           }}

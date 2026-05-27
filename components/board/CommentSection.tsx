@@ -270,7 +270,6 @@ export default function CommentSection({
               fontFamily: 'var(--font-sans)',
               lineHeight: 1.6,
               resize: 'vertical',
-              outline: 'none',
               marginBottom: '6px',
             }}
           />
