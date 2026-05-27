@@ -633,11 +633,11 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         <div style={{ ...s.row, marginBottom: 20 }}>
           <div style={{ ...s.field, flex: '1 1 120px' }}>
             <label htmlFor="actor-height" style={s.label}>신장 (cm)</label>
-            <input id="actor-height" type="number" value={height} onChange={e => setHeight(e.target.value)} style={s.input} placeholder="170" />
+            <input id="actor-height" type="number" value={height} onChange={e => setHeight(e.target.value)} style={s.input} placeholder="170" min={100} max={230} autoComplete="off" />
           </div>
           <div style={{ ...s.field, flex: '1 1 120px' }}>
             <label htmlFor="actor-weight" style={s.label}>체중 (kg)</label>
-            <input id="actor-weight" type="number" value={weight} onChange={e => setWeight(e.target.value)} style={s.input} placeholder="60" />
+            <input id="actor-weight" type="number" value={weight} onChange={e => setWeight(e.target.value)} style={s.input} placeholder="60" min={30} max={200} autoComplete="off" />
           </div>
           <div style={{ ...s.field, flex: '2 1 240px' }}>
             <label htmlFor="actor-skills" style={s.label}>특기</label>
@@ -838,7 +838,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                   <option value="musical">뮤지컬</option>
                   <option value="etc">기타</option>
                 </select>
-                <input aria-label={`필모그래피 ${i + 1}번 연도`} type="number" value={f.year} onChange={e => updateFilm(i, 'year', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} />
+                <input aria-label={`필모그래피 ${i + 1}번 연도`} type="number" value={f.year} onChange={e => updateFilm(i, 'year', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} min={1990} max={2099} autoComplete="off" />
                 <input aria-label={`필모그래피 ${i + 1}번 작품명`} value={f.title} onChange={e => updateFilm(i, 'title', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} placeholder="작품명" />
                 <input aria-label={`필모그래피 ${i + 1}번 배역`} value={f.role} onChange={e => updateFilm(i, 'role', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} placeholder="배역" />
                 {confirmingFilmIdx === i ? (

@@ -519,27 +519,30 @@ export default function AboutPage() {
             <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.4rem, 3vw, 1.8rem)', fontWeight: 700, marginBottom: '16px' }}>
               유익액터스 홀
             </h2>
-            <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.95rem', color: 'var(--secondary)', lineHeight: 1.8 }}>
-              서울시 서대문구 이화여대1안길 12<br />
-              아리움3차 1층 101호<br />
-              <span style={{ color: 'var(--gold)', fontSize: '0.85rem' }}>이대역 도보 2분 · 1층 위치</span>
-            </p>
-            <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <a
-                href="mailto:uikactors@gmail.com"
-                aria-label="이메일 보내기 uikactors@gmail.com"
-                style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: 'var(--secondary)', display: 'flex', gap: '8px', alignItems: 'center' }}
-              >
-                <span aria-hidden="true">✉</span> uikactors@gmail.com
-              </a>
-              <a
-                href="tel:010-8564-0244"
-                aria-label="전화하기 010-8564-0244"
-                style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: 'var(--secondary)', display: 'flex', gap: '8px', alignItems: 'center' }}
-              >
-                <span aria-hidden="true">☎</span> 010-8564-0244
-              </a>
-            </div>
+            {/* address: 조직 연락처 시맨틱 마크업 — WCAG 1.3.1 / HTML semantics */}
+            <address style={{ fontStyle: 'normal' }}>
+              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.95rem', color: 'var(--secondary)', lineHeight: 1.8 }}>
+                서울시 서대문구 이화여대1안길 12<br />
+                아리움3차 1층 101호<br />
+                <span style={{ color: 'var(--gold)', fontSize: '0.85rem' }}>이대역 도보 2분 · 1층 위치</span>
+              </p>
+              <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <a
+                  href="mailto:uikactors@gmail.com"
+                  aria-label="이메일 보내기 uikactors@gmail.com"
+                  style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: 'var(--secondary)', display: 'flex', gap: '8px', alignItems: 'center' }}
+                >
+                  <span aria-hidden="true">✉</span> uikactors@gmail.com
+                </a>
+                <a
+                  href="tel:010-8564-0244"
+                  aria-label="전화하기 010-8564-0244"
+                  style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', color: 'var(--secondary)', display: 'flex', gap: '8px', alignItems: 'center' }}
+                >
+                  <span aria-hidden="true">☎</span> 010-8564-0244
+                </a>
+              </div>
+            </address>
           </div>
           <div
             style={{

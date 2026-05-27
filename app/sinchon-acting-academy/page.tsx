@@ -139,7 +139,10 @@ export default function SinchonPage() {
                   <MapPin aria-hidden={true} size={18} strokeWidth={2} />
                   <span lang="en" style={{ fontFamily: 'var(--font-display)', fontSize: '0.78rem', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.82)' }}>ADDRESS</span>
                 </div>
-                <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.02rem', fontWeight: 700, lineHeight: 1.5, wordBreak: 'keep-all' }}>{ADDRESS_FULL}</p>
+                {/* address: 조직 연락처 시맨틱 마크업 — WCAG 1.3.1 / HTML semantics */}
+                <address style={{ fontStyle: 'normal' }}>
+                  <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.02rem', fontWeight: 700, lineHeight: 1.5, wordBreak: 'keep-all' }}>{ADDRESS_FULL}</p>
+                </address>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <a href={NAVER_MAP} target="_blank" rel="noopener noreferrer" aria-label="네이버 지도로 길찾기 (새 탭에서 열림)" style={mapBtn}>
