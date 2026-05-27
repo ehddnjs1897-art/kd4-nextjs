@@ -96,6 +96,18 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        source: '/og-image.jpg',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=2592000, stale-while-revalidate=86400' },
+        ],
+      },
+      {
+        source: '/placeholder-actor.svg',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=2592000, stale-while-revalidate=86400' },
+        ],
+      },
+      {
         source: '/partners/:path*',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=2592000, stale-while-revalidate=86400' },
