@@ -313,7 +313,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
         </div>
 
         {/* ── 회원 관리 ── */}
-        <section style={s.section} role="tabpanel" id="admin-panel-users" aria-labelledby="admin-tab-users" hidden={activeTab !== 'users'} tabIndex={0}>
+        <section style={s.section} role="tabpanel" id="admin-panel-users" aria-labelledby="admin-tab-users" hidden={activeTab !== 'users'}>
             <h2 style={s.sectionTitle}>회원 목록 ({localProfiles.length}명)</h2>
             <div style={s.tableWrapper}>
               <table style={s.table}>
@@ -378,7 +378,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
         </section>
 
         {/* ── 배우 목록 ── */}
-        <section style={s.section} role="tabpanel" id="admin-panel-actors" aria-labelledby="admin-tab-actors" hidden={activeTab !== 'actors'} tabIndex={0}>
+        <section style={s.section} role="tabpanel" id="admin-panel-actors" aria-labelledby="admin-tab-actors" hidden={activeTab !== 'actors'}>
             <h2 style={s.sectionTitle}>배우 목록 ({localActors.length}명)</h2>
             <div style={s.tableWrapper}>
               <table style={s.table}>
@@ -425,7 +425,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
         </section>
 
         {/* ── 게시판 관리 ── */}
-        <section style={s.section} role="tabpanel" id="admin-panel-posts" aria-labelledby="admin-tab-posts" hidden={activeTab !== 'posts'} tabIndex={0}>
+        <section style={s.section} role="tabpanel" id="admin-panel-posts" aria-labelledby="admin-tab-posts" hidden={activeTab !== 'posts'}>
             <h2 style={s.sectionTitle}>최근 게시글 ({localPosts.length}개)</h2>
             <div style={s.tableWrapper}>
               <table style={s.table}>
@@ -483,7 +483,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
         </section>
 
         {/* ── 수강신청 목록 ── */}
-        <section style={s.section} role="tabpanel" id="admin-panel-applications" aria-labelledby="admin-tab-applications" hidden={activeTab !== 'applications'} tabIndex={0}>
+        <section style={s.section} role="tabpanel" id="admin-panel-applications" aria-labelledby="admin-tab-applications" hidden={activeTab !== 'applications'}>
             <h2 style={s.sectionTitle}>수강신청 목록 ({localApplications.length}건)</h2>
             <div style={s.tableWrapper}>
               <table style={s.table}>

@@ -501,7 +501,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                   onClick={() => { setAddingCat(isAdding ? null : cat); setEditingId(null) }}
                   disabled={saving}
                   style={s.addRowBtn}
-                  aria-label="행 추가"
+                  aria-label={`${CATEGORY_LABEL[cat]} 행 추가`}
                 >＋ 추가</button>
               )}
             </h2>

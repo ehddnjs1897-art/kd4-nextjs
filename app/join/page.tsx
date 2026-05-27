@@ -68,8 +68,8 @@ const FILM_CLASS = CLASSES.find((c) => c.nameKo === '출연영상 클래스')!
 
 /* Sticky 상단 모집 중 반 (기수 정보 포함) */
 const OPEN_COHORTS = [
-  { name: '마이즈너', cohort: '3기', seats: MAIN_CLASS.remainingSeats ?? 0, price: parseInt(MAIN_CLASS.price.replace(/,/g, '')) },
-  { name: '출연영상', cohort: '19기', seats: FILM_CLASS.remainingSeats ?? 0, price: parseInt(FILM_CLASS.price.replace(/,/g, '')) },
+  { name: '마이즈너', cohort: '3기', seats: MAIN_CLASS.remainingSeats ?? 0, price: parseInt(MAIN_CLASS.price.replace(/,/g, ''), 10) },
+  { name: '출연영상', cohort: '19기', seats: FILM_CLASS.remainingSeats ?? 0, price: parseInt(FILM_CLASS.price.replace(/,/g, ''), 10) },
 ]
 
 /* ── 할인 혜택 목록 ─────────────────────────────────────────── */
@@ -867,10 +867,10 @@ export default function JoinPage() {
 
                   {/* 코스 총액 (첫달 할인 반영) */}
                   {cls.course && (() => {
-                    const months = parseInt(cls.course.match(/\d+/)?.[0] ?? '1')
-                    const first = parseInt(cls.price.replace(/,/g, ''))
+                    const months = parseInt(cls.course.match(/\d+/)?.[0] ?? '1', 10)
+                    const first = parseInt(cls.price.replace(/,/g, ''), 10)
                     const regular = cls.originalPrice
-                      ? parseInt(cls.originalPrice.replace(/,/g, ''))
+                      ? parseInt(cls.originalPrice.replace(/,/g, ''), 10)
                       : first
                     const total = first + regular * (months - 1)
                     const lumpSumDiscount = cls.lumpSumDiscount ?? 50000

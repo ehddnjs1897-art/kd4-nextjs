@@ -226,7 +226,7 @@ export default function InsightsPage() {
                 <button type="button" className="ins-btn" aria-label="인사이트 저장" onClick={handleSave} disabled={saving || !url.trim()} aria-busy={saving}>
                   {saving ? '저장 중…' : '저장'}
                 </button>
-                <button type="button" className="ins-btn-ghost" aria-expanded={showMemo} aria-label={showMemo ? '메모 접기' : '메모 펼치기'} onClick={() => setShowMemo(v => !v)} style={{ fontSize: '0.8125rem' }}>
+                <button type="button" className="ins-btn-ghost" aria-expanded={showMemo} aria-controls="ins-memo-panel" aria-label={showMemo ? '메모 접기' : '메모 펼치기'} onClick={() => setShowMemo(v => !v)} style={{ fontSize: '0.8125rem' }}>
                   메모 {showMemo ? '▲' : '▼'}
                 </button>
               </div>
@@ -234,16 +234,18 @@ export default function InsightsPage() {
               {/* 저장 성공 AT 알림 — 항상 DOM에 존재, 내용 변경 시 aria-live가 발화 */}
               <p role="status" aria-live="polite" className="sr-only">{saveSuccess}</p>
               {showMemo && (
-                <textarea
-                  className="ins-input"
-                  aria-label="메모"
-                  placeholder="짧은 메모 — AI가 3줄 요약으로 확장해줌"
-                  value={memo}
-                  onChange={e => setMemo(e.target.value)}
-                  rows={2}
-                  maxLength={500}
-                  style={{ resize: 'vertical' }}
-                />
+                <div id="ins-memo-panel">
+                  <textarea
+                    className="ins-input"
+                    aria-label="메모"
+                    placeholder="짧은 메모 — AI가 3줄 요약으로 확장해줌"
+                    value={memo}
+                    onChange={e => setMemo(e.target.value)}
+                    rows={2}
+                    maxLength={500}
+                    style={{ resize: 'vertical' }}
+                  />
+                </div>
               )}
             </>
           ) : (
@@ -406,12 +408,14 @@ export default function InsightsPage() {
                       aria-label={`카테고리 변경: ${insight.category ?? '기타'}`}
                       aria-haspopup="dialog"
                       aria-expanded={editingCategoryId === insight.id}
+                      aria-controls={`ins-cat-panel-${insight.id}`}
                       style={{ cursor: 'pointer', borderBottom: '1px dashed var(--gray)', background: 'none', border: 'none', padding: 0, font: 'inherit' }}
                     >
                       {insight.category ?? '기타'} ▾
                     </button>
                     {editingCategoryId === insight.id && (
                       <div
+                        id={`ins-cat-panel-${insight.id}`}
                         role="group"
                         aria-label="카테고리 선택"
                         onKeyDown={e => { if (e.key === 'Escape') { e.stopPropagation(); setEditingCategoryId(null) } }}

@@ -5,6 +5,7 @@
  * Body (PATCH): { id: string, role: 'user' | 'editor' | 'admin' }
  */
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
@@ -177,6 +178,7 @@ export async function PATCH(request: NextRequest) {
 
     // audit log: email 제외 (Vercel 로그 PII 최소화 — id로 충분)
     console.warn('[audit] 역할 변경:', { adminId, targetId: id, newRole: role, at: new Date().toISOString() })
+    revalidatePath('/admin')
     return NextResponse.json({ user: data })
   } catch (err) {
     console.error('[PATCH /api/admin/users] 예상치 못한 오류:', err instanceof Error ? err.message : String(err))
