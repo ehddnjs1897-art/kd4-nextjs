@@ -48,6 +48,7 @@ const REVIEW_ITEMS_2 = [
 const PARTNERS = [
   { name: '서울대학교', logo: '/partners/snu-logo.png' },
   { name: '고려대학교', logo: '/partners/ku-logo.png' },
+  { name: 'CGV', logo: '/partners/cgv-logo.jpeg' },
   { name: 'Needs.N', logo: '/partners/neezn-logo.jpeg' },
   { name: '컴플렉시온', logo: '/partners/complexion-logo.jpeg' },
   { name: '서우스튜디오', logo: '/partners/seowoo-logo.webp' },
