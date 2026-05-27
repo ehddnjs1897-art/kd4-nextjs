@@ -67,6 +67,7 @@ export default function StickyBottomCTA() {
         transform: shouldShow ? 'translateY(0)' : 'translateY(110%)',
         transition: 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
         pointerEvents: shouldShow ? 'auto' : 'none',
+        visibility: shouldShow ? 'visible' : 'hidden',
       }}
       aria-hidden={!shouldShow}
     >

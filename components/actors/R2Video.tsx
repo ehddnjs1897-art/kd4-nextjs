@@ -108,26 +108,27 @@ export default function R2Video({
               <div style={s.darkBg} />
             )}
 
-            {/* 재생 버튼 */}
+            {/* 재생 버튼 — 에러 텍스트는 버튼 바깥에 별도 배치 (버튼 accessible name 오염 방지) */}
             <button
               type="button"
               onClick={handlePlay}
               disabled={prefetching || !!error}
               aria-busy={prefetching}
               style={s.playBtn}
-              aria-label="영상 재생"
+              aria-label={error ? `영상 로딩 실패: ${error}` : '영상 재생'}
             >
               {prefetching ? (
                 <span style={s.spinner} />
-              ) : error ? (
-                <span role="alert" style={{ fontSize: '0.75rem', color: '#fff', padding: '0 12px', textAlign: 'center' }}>{error}</span>
               ) : (
-                /* 재생 삼각형 */
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="white" aria-hidden="true">
+                /* 재생 삼각형 — 에러 시 비표시 */
+                <svg width="28" height="28" viewBox="0 0 24 24" fill={error ? 'transparent' : 'white'} aria-hidden="true">
                   <polygon points="5,3 19,12 5,21" />
                 </svg>
               )}
             </button>
+            {error && (
+              <p role="status" aria-live="polite" style={{ position: 'absolute', bottom: 8, left: 0, right: 0, textAlign: 'center', fontSize: '0.7rem', color: '#ff6b6b', padding: '0 8px', zIndex: 3 }}>{error}</p>
+            )}
           </div>
         )}
       </div>

@@ -82,12 +82,16 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
           : `총 ${totalBeforeSearch}명`}
       </p>
 
-      {/* 배우 그리드 */}
-      {filtered.length === 0 ? (
-        <div role="status" aria-live="polite" style={{ textAlign: 'center', padding: '80px 0' }}>
-          <p style={{ fontSize: '0.95rem', color: 'var(--gray)', marginBottom: 16 }}>
-            {query ? `"${query}" 에 해당하는 배우가 없습니다.` : '등록된 배우가 없습니다.'}
-          </p>
+      {/* 배우 그리드 — 빈 결과 status 영역은 항상 마운트(aria-live 사전마운트 WCAG 요건) */}
+      <div
+        role="status"
+        aria-live="polite"
+        style={filtered.length === 0 ? { textAlign: 'center', padding: '80px 0' } : { display: 'none' }}
+      >
+        <p style={{ fontSize: '0.95rem', color: 'var(--gray)', marginBottom: 16 }}>
+          {query ? `"${query}" 에 해당하는 배우가 없습니다.` : '등록된 배우가 없습니다.'}
+        </p>
+        {query && (
           <button
             type="button"
             onClick={() => setQuery('')}
@@ -100,8 +104,9 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
           >
             검색 초기화
           </button>
-        </div>
-      ) : (
+        )}
+      </div>
+      {filtered.length > 0 && (
         <div style={gridStyle} className="actors-grid">
           {filtered.map((actor, idx) => (
             <Link key={actor.id} href={`/actors/${actor.id}`} style={cardStyle} className="actor-card" aria-label={`${actor.name} 배우 프로필 보기`}>

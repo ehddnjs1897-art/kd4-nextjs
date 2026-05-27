@@ -76,7 +76,7 @@ export async function generateMetadata({ params }: { params: Params }) {
   return {
     title,
     description,
-    robots: { index: false, follow: false },
+    robots: { index: false, follow: true },
     alternates: { canonical: `${SITE_URL}/board/${id}` },
     openGraph: {
       title,

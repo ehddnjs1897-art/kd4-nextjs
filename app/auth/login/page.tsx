@@ -175,6 +175,7 @@ function LoginContent() {
           <button
             type="submit"
             disabled={loading}
+            aria-busy={loading}
             style={{
               ...styles.btnPrimary,
               opacity: loading ? 0.6 : 1,

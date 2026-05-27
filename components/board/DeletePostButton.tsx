@@ -51,7 +51,7 @@ export default function DeletePostButton({ postId }: DeletePostButtonProps) {
   if (deleteError) {
     return (
       <div style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}>
-        <span role="alert" style={{ fontSize: '0.78rem', color: '#ef4444' }}>{deleteError}</span>
+        <span role="alert" aria-live="assertive" aria-atomic="true" style={{ fontSize: '0.78rem', color: '#ef4444' }}>{deleteError}</span>
         <button type="button" onClick={() => setDeleteError('')} aria-label="오류 닫기" style={{ fontSize: '0.75rem', color: 'var(--gray)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, minHeight: 44, minWidth: 44 }}>✕</button>
       </div>
     )

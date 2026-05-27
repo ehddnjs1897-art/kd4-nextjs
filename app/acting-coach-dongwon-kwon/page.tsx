@@ -61,7 +61,7 @@ export const metadata: Metadata = {
     url: PAGE_URL,
     title: '권동원 — 액팅 코치 (리더) · 현역 배우 | KD4 대표',
     description: 'KD4 액팅 스튜디오 대표. 마이즈너 테크닉 정통 코치(리더)이자 현역 배우.',
-    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: '권동원 KD4 액팅 코치' }],
+    images: [{ url: `${SITE_URL}/director.jpg`, width: 1200, height: 630, alt: '권동원 KD4 액팅 코치' }],
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
   },
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: '권동원 — KD4 대표 · 액팅 코치 (리더)',
     description: 'Disney+ 무빙2 · Netflix 중증외상센터 출연 중인 현역 배우.',
-    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: '권동원 KD4 액팅 코치' }],
+    images: [{ url: `${SITE_URL}/director.jpg`, width: 1200, height: 630, alt: '권동원 KD4 액팅 코치' }],
   },
 }
 
