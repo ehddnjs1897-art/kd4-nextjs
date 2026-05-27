@@ -207,8 +207,8 @@ export default function InsightsPage() {
         <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 12, padding: 20, marginBottom: 28 }}>
           {/* 탭 */}
           <div style={{ display: 'flex', gap: 6, marginBottom: 14 }}>
-            <button type="button" className={`filter-btn${tab === 'url' ? ' active' : ''}`} aria-pressed={tab === 'url'} onClick={() => setTab('url')}>🔗 링크</button>
-            <button type="button" className={`filter-btn${tab === 'image' ? ' active' : ''}`} aria-pressed={tab === 'image'} onClick={() => setTab('image')}>🖼 이미지</button>
+            <button type="button" className={`filter-btn${tab === 'url' ? ' active' : ''}`} aria-pressed={tab === 'url'} onClick={() => setTab('url')}><span aria-hidden="true">🔗</span> 링크</button>
+            <button type="button" className={`filter-btn${tab === 'image' ? ' active' : ''}`} aria-pressed={tab === 'image'} onClick={() => setTab('image')}><span aria-hidden="true">🖼</span> 이미지</button>
           </div>
 
           {tab === 'url' ? (

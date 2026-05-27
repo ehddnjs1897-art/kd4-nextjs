@@ -94,7 +94,7 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
       {/* 검색 + 필터 */}
       <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center' }}>
         <div style={{ position: 'relative', flex: '1 1 200px', minWidth: 180 }}>
-          <span style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--gray)', fontSize: '0.85rem', pointerEvents: 'none' }}>🔍</span>
+          <span style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--gray)', fontSize: '0.85rem', pointerEvents: 'none' }} aria-hidden="true">🔍</span>
           <input
             type="search"
             autoComplete="off"

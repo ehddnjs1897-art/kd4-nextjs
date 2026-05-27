@@ -130,7 +130,7 @@ export default function GameStartPage() {
                 transition: "all 0.15s",
               }}
             >
-              <div style={{ fontSize: 28, marginBottom: 6 }}>{c.emoji}</div>
+              <div style={{ fontSize: 28, marginBottom: 6 }} aria-hidden="true">{c.emoji}</div>
               <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.08em", color: selected === c.id ? "#4488ff" : "#aaa" }}>
                 <span lang="en">{c.name}</span>
               </div>
