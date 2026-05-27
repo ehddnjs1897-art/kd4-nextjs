@@ -120,6 +120,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: profileId, role: newRole }),
+        signal: AbortSignal.timeout(10_000),
       })
       if (!res.ok) {
         const { error } = await res.json()
@@ -144,6 +145,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_public: !current }),
+        signal: AbortSignal.timeout(10_000),
       })
       if (!res.ok) {
         const { error } = await res.json()
@@ -168,6 +170,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
     try {
       const res = await fetch(`/api/posts/${postId}`, {
         method: 'DELETE',
+        signal: AbortSignal.timeout(10_000),
       })
       if (!res.ok) {
         const { error } = await res.json().catch(() => ({ error: '알 수 없는 오류' }))
@@ -191,6 +194,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
+        signal: AbortSignal.timeout(10_000),
       })
       if (!res.ok) {
         const { error } = await res.json().catch(() => ({ error: '알 수 없는 오류' }))

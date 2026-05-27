@@ -134,6 +134,7 @@ export default function AIToolsPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ scriptText, characterName }),
+        signal: AbortSignal.timeout(60_000), // AI 응답 최대 60초
       })
 
       const data = await res.json()

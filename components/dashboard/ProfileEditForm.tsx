@@ -59,6 +59,7 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, phone }),
+        signal: AbortSignal.timeout(10_000),
       })
       const data = await res.json()
       if (!res.ok) {

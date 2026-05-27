@@ -84,6 +84,7 @@ export default function UsersManagementTable({ profiles: initialProfiles }: Prop
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: profileId, role: newRole }),
+        signal: AbortSignal.timeout(10_000),
       })
       if (!res.ok) {
         const { error } = await res.json()

@@ -148,6 +148,7 @@ export default function EnrollForm({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ enrollment_type: type, class_names: classNames, year_month: nextMonth }),
+        signal: AbortSignal.timeout(15_000),
       })
       const json = await res.json()
       if (!res.ok) {

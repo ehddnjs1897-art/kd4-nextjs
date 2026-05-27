@@ -57,7 +57,7 @@ export default function InsightsPage() {
       if (filterFavorite) params.set('favorite', 'true')
       if (search) params.set('q', search)
 
-      const res = await fetch(`/api/insights?${params}`)
+      const res = await fetch(`/api/insights?${params}`, { signal: AbortSignal.timeout(15_000) })
       const json = await res.json()
       if (!res.ok) { setFetchError('목록을 불러오지 못했습니다.'); return }
       setInsights(json.data ?? [])
@@ -87,6 +87,7 @@ export default function InsightsPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: trimmed, memo: memo.trim() || undefined }),
+        signal: AbortSignal.timeout(30_000), // AI 요약 처리 최대 30초
       })
       if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error()
@@ -112,6 +113,7 @@ export default function InsightsPage() {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_favorite: !insight.is_favorite }),
+        signal: AbortSignal.timeout(10_000),
       })
       if (!res.ok) throw new Error()
     } catch {
@@ -124,7 +126,7 @@ export default function InsightsPage() {
     if (confirmingDeleteId !== id) { setConfirmingDeleteId(id); return }
     setConfirmingDeleteId(null)
     try {
-      await fetch(`/api/insights/${id}`, { method: 'DELETE' })
+      await fetch(`/api/insights/${id}`, { method: 'DELETE', signal: AbortSignal.timeout(10_000) })
       setInsights((prev: Insight[]) => prev.filter((i: Insight) => i.id !== id))
       setTotal((t: number) => t - 1)
     } catch { /* 낙관적 업데이트 실패 시 무시 */ }
@@ -142,6 +144,7 @@ export default function InsightsPage() {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ category }),
+        signal: AbortSignal.timeout(10_000),
       })
       if (!res.ok) throw new Error()
     } catch {

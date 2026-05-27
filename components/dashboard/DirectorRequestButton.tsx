@@ -13,7 +13,7 @@ export default function DirectorRequestButton() {
     setLoading(true)
     setError('')
     try {
-      const res = await fetch('/api/director-request', { method: 'POST' })
+      const res = await fetch('/api/director-request', { method: 'POST', signal: AbortSignal.timeout(10_000) })
       const data = await res.json()
       if (!res.ok) {
         setError(data.error || '신청 중 오류가 발생했습니다.')

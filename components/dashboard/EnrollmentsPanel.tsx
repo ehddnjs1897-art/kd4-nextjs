@@ -60,6 +60,7 @@ export default function EnrollmentsPanel({
           class_names: continuable.map((e) => e.class_name),
           year_month: nextMonth,
         }),
+        signal: AbortSignal.timeout(10_000),
       })
       const json = await res.json()
       if (!res.ok) {
@@ -86,6 +87,7 @@ export default function EnrollmentsPanel({
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: '휴강' }),
+        signal: AbortSignal.timeout(10_000),
       })
       if (res.ok) {
         setConfirmingRestId(null)

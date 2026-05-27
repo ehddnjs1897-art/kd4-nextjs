@@ -202,6 +202,7 @@ export default function JoinForm() {
             event_id: eventId,
           },
         }),
+        signal: AbortSignal.timeout(15_000),
       })
       notifyOk = notifyRes.ok
     } catch {
