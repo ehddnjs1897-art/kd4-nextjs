@@ -1335,6 +1335,12 @@ ul, ol { list-style: none; }
   .hero-scroll-indicator { opacity: 1 !important; transform: none !important; }
 }
 
+/* prefers-reduced-motion: GSAP가 transition을 skip하므로 CSS opacity:0 초기값도 해제 필요 */
+@media (prefers-reduced-motion: reduce) {
+  .hero-subtitle,
+  .hero-studio-label { opacity: 1 !important; transition: none !important; }
+}
+
 /* === STEP PROGRESSION GRID === */
 .steps-journey {
   display: flex;

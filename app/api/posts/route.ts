@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
@@ -205,6 +206,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '게시글 작성 중 오류가 발생했습니다.' }, { status: 500 })
     }
 
+    revalidatePath('/board')
     return NextResponse.json({ id: data.id }, { status: 201 })
   } catch (err) {
     console.error('[POST /api/posts] 예상치 못한 오류:', err instanceof Error ? err.message : String(err))

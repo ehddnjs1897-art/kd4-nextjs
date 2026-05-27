@@ -4,6 +4,7 @@
  * - 결제 상태 변경(결제대기/결제완료): 관리자만
  */
 import { NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
@@ -109,6 +110,8 @@ export async function PATCH(
       return NextResponse.json({ error: '수정할 항목을 찾을 수 없습니다.' }, { status: 404 })
     }
 
+    revalidatePath('/dashboard')
+    revalidatePath('/admin')
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error('[PATCH /api/enrollments/[id]] 예상치 못한 오류:', err instanceof Error ? err.message : String(err))
