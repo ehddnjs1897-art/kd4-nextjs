@@ -202,6 +202,7 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
                 onChange={e => setName(e.target.value)}
                 required maxLength={50}
                 autoComplete="name"
+                spellCheck={false}
                 aria-invalid={!!error}
                 aria-describedby={error ? 'profile-edit-error' : undefined}
                 style={inputStyle}
@@ -219,6 +220,7 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
               <input
                 id="profile-phone"
                 type="tel"
+                inputMode="numeric"
                 value={phone}
                 onChange={e => setPhone(e.target.value)}
                 placeholder="010-0000-0000"

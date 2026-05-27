@@ -268,6 +268,7 @@ export default function SignupPage() {
               disabled={loading}
               autoComplete="name"
               maxLength={50}
+              spellCheck={false}
               aria-invalid={!!error || undefined}
               aria-describedby={error ? 'signup-error' : undefined}
               style={styles.input}

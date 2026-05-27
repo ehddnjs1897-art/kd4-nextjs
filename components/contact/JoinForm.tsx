@@ -598,6 +598,7 @@ export default function JoinForm() {
         onBlur={() => setFocused(null)}
         autoComplete="name"
         maxLength={50}
+        spellCheck={false}
         style={inputStyle('name')}
         required
         aria-required="true"
@@ -609,6 +610,7 @@ export default function JoinForm() {
         aria-invalid={invalidFields.has('phone')}
         aria-describedby={invalidFields.has('phone') ? errorId : undefined}
         type="tel"
+        inputMode="numeric"
         placeholder="연락처 * 010-0000-0000"
         value={phone}
         onChange={(e) => setPhone(e.target.value)}
