@@ -1925,6 +1925,31 @@ main {
   border-color: rgba(21, 72, 138, 0.3);
 }
 
+/* btn + uplift 카드 hover transform — reduced-motion 사용자에게는 transform 억제 */
+@media (prefers-reduced-motion: reduce) {
+  .btn-primary {
+    transition: box-shadow 0.18s ease, filter 0.18s ease;
+  }
+  .btn-primary:hover {
+    transform: none;
+  }
+  .btn-outline {
+    transition: border-color 0.18s ease, background 0.18s ease;
+  }
+  .btn-outline:hover {
+    transform: none;
+  }
+  .uplift-page .class-card,
+  .uplift-page .step-card,
+  .uplift-page .stats-card {
+    transition: box-shadow 0.22s, border-color 0.22s ease;
+  }
+  .uplift-page .class-card:hover,
+  .uplift-page .step-card:hover {
+    transform: none;
+  }
+}
+
 /* seowoo 캐러셀 — WebKit 스크롤바 숨김 */
 .seowoo-carousel-track::-webkit-scrollbar {
   display: none;
