@@ -87,6 +87,7 @@ export default function EditPage() {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, content, category }),
+        signal: AbortSignal.timeout(15_000),
       })
       const json = await res.json()
       if (!res.ok) {

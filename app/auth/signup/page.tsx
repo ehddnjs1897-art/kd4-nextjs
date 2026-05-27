@@ -109,7 +109,7 @@ export default function SignupPage() {
 
     if (userId && hasSession) {
       // role 설정 + 배우 매칭은 서버에서 처리 (클라이언트에선 role 변경 불가 - RLS)
-      const onSignupRes = await fetch('/api/auth/on-signup', { method: 'POST' })
+      const onSignupRes = await fetch('/api/auth/on-signup', { method: 'POST', signal: AbortSignal.timeout(15_000) })
       if (!onSignupRes.ok) {
         // 초기화 실패 시 사용자에게 알림 (role이 user로 남아 배우 기능 못 쓸 수 있음)
         console.error('[signup] on-signup failed:', await onSignupRes.text())

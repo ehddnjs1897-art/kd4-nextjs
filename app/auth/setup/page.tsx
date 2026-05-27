@@ -51,7 +51,7 @@ export default function SetupPage() {
     // 디렉터 선택 시: 승인 대기 상태로 신청 + 관리자 알림 (승인 후 연락처 열람 가능)
     if (memberType === 'director') {
       try {
-        await fetch('/api/director-request', { method: 'POST' })
+        await fetch('/api/director-request', { method: 'POST', signal: AbortSignal.timeout(10_000) })
       } catch {
         // 신청 실패해도 대시보드에서 다시 신청 가능 → 흐름 막지 않음
       }

@@ -51,6 +51,7 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_public: next }),
+        signal: AbortSignal.timeout(10_000),
       })
       if (!res.ok) throw new Error('변경 실패')
       setActors(prev => prev.map(a => a.id === actor.id ? { ...a, is_public: next } : a))
