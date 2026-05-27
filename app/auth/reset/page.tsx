@@ -100,7 +100,7 @@ export default function ResetPasswordPage() {
             </button>
 
             <Link href="/auth/login" style={styles.backLink}>
-              ← 로그인으로 돌아가기
+              <span aria-hidden="true">← </span>로그인으로 돌아가기
             </Link>
           </form>
         )}

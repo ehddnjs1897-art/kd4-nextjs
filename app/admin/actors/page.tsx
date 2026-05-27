@@ -94,7 +94,7 @@ export default async function AdminActorsPage() {
             background: 'transparent', border: '1px solid var(--border)',
             color: 'var(--gray)', textDecoration: 'none',
           }}>
-            ← 관리자 홈
+            <span aria-hidden="true">← </span>관리자 홈
           </Link>
         </div>
 

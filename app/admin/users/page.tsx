@@ -47,7 +47,7 @@ export default async function AdminUsersPage() {
         <div style={{ marginBottom: 32 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 8 }}>
             <Link href="/admin" style={{ fontSize: '0.82rem', color: 'var(--gray)', textDecoration: 'none' }}>
-              ← 관리자 홈
+              <span aria-hidden="true">← </span>관리자 홈
             </Link>
           </div>
           <p style={{ fontSize: '0.68rem', letterSpacing: '0.35em', color: 'var(--gold)', textTransform: 'uppercase', fontFamily: 'var(--font-display)', marginBottom: 8 }}>

@@ -139,7 +139,7 @@ export default function SetupPage() {
             aria-busy={loading}
             style={{ ...styles.btnPrimary, opacity: loading ? 0.6 : 1 }}
           >
-            {loading ? '저장 중...' : '완료 →'}
+            {loading ? '저장 중...' : <>완료 <span aria-hidden="true">→</span></>}
           </button>
         </form>
       </div>
