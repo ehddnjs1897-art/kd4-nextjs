@@ -10,6 +10,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 
 // 관리자 세그먼트 전체 noindex — 신규 페이지 추가 시 자동 적용
 export const metadata: Metadata = {
+  title: '관리자 패널',
   description: 'KD4 액팅 스튜디오 관리자 패널',
   robots: { index: false, follow: false },
   openGraph: { siteName: 'KD4 액팅 스튜디오' },

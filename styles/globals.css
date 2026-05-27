@@ -91,6 +91,8 @@
   --radius: 4px;
   --transition: 0.25s ease;
   --container: 1200px;
+  /* 브라우저에게 라이트 테마 힌트 → 폼 컨트롤(input/select 등) 라이트 모드로 렌더링 */
+  color-scheme: light;
 }
 
 /* === RESET === */

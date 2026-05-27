@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface Profile {
   id: string
@@ -64,6 +64,14 @@ export default function UsersManagementTable({ profiles: initialProfiles }: Prop
   const [search, setSearch] = useState('')
   // 인라인 역할 변경 확인 — window.confirm 대체 (WCAG 2.4.3 + UX)
   const [confirmingRole, setConfirmingRole] = useState<{ id: string; next: string; msg: string } | null>(null)
+
+  // Escape 키로 확인 UI 닫기 (WCAG 2.1.1)
+  useEffect(() => {
+    if (!confirmingRole) return
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setConfirmingRole(null) }
+    document.addEventListener('keydown', handler)
+    return () => document.removeEventListener('keydown', handler)
+  }, [confirmingRole])
 
   function showToast(msg: string) {
     setToast(msg)

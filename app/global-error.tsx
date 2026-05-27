@@ -5,12 +5,19 @@
  * <html><body>를 직접 렌더링해야 함 (layout.tsx가 교체됨)
  */
 
+import { useEffect } from 'react'
+
 export default function GlobalError({
+  error,
   reset,
 }: {
   error: Error & { digest?: string }
   reset: () => void
 }) {
+  // 프로덕션 로그 보존 — next.config.ts removeConsole이 console.error는 유지
+  useEffect(() => {
+    console.error('[GlobalError]', error)
+  }, [error])
   return (
     <html lang="ko">
       <body style={{ margin: 0, background: '#0a0a0a', color: '#ffffff', fontFamily: 'sans-serif' }}>
