@@ -1660,6 +1660,13 @@ a:focus-visible {
   outline-offset: 2px;
 }
 
+/* 스크롤 가능 영역 포커스 링 — tabIndex={0} role="region" (WCAG 2.4.7)
+   R224에서 추가한 가로 스크롤 테이블 영역 (admin 배우/회원 목록, 갤러리 필모그래피) */
+[role="region"]:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
 /* 입력필드 키보드 포커스 링 — !important로 인라인 outline:none 오버라이드 방지 (WCAG 2.4.7) */
 input:focus-visible,
 textarea:focus-visible,
