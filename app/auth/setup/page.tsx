@@ -23,11 +23,13 @@ export default function SetupPage() {
   // 에러 발생 시 포커스 이동 (WCAG 2.4.3)
   useEffect(() => { if (error) errorRef.current?.focus() }, [error])
 
-  // 로그인 여부 확인 (비로그인이면 login 페이지로)
+  // 로그인 여부 확인 (비로그인이면 login, 이미 setup 완료된 유저면 dashboard로)
   useEffect(() => {
     const supabase = createClient()
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) router.replace('/auth/login')
+      // OAuth 신규 유저만 이 페이지에 접근. 이미 member_type이 설정된 유저는 dashboard로
+      else if (user.user_metadata?.member_type) router.replace('/dashboard')
       else setChecking(false)
     })
   }, [router])

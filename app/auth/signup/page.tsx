@@ -56,6 +56,10 @@ export default function SignupPage() {
       setError('비밀번호는 8자 이상이어야 합니다.')
       return
     }
+    if (!/\d/.test(password)) {
+      setError('비밀번호에 숫자를 1개 이상 포함해야 합니다.')
+      return
+    }
     if (password !== passwordConfirm) {
       setError('비밀번호가 일치하지 않습니다.')
       return
@@ -313,13 +317,13 @@ export default function SignupPage() {
             <label htmlFor="password" style={styles.label}>
               비밀번호 <span aria-hidden="true" style={styles.required}>*</span>
             </label>
-            <span id="password-hint" className="sr-only">8자 이상 입력해주세요</span>
+            <span id="password-hint" className="sr-only">8자 이상, 숫자 1개 이상 포함</span>
             <input
               id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="8자 이상"
+              placeholder="8자 이상, 숫자 포함"
               required
               disabled={loading}
               autoComplete="new-password"
