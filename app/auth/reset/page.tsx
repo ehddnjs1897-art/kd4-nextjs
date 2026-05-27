@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { SITE_URL } from '@/lib/constants'
@@ -12,6 +12,10 @@ export default function ResetPasswordPage() {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const errorRef = useRef<HTMLDivElement>(null)
+
+  // 에러 발생 시 포커스 이동 (WCAG 2.4.3)
+  useEffect(() => { if (error) errorRef.current?.focus() }, [error])
 
   async function handleReset(e: React.FormEvent) {
     e.preventDefault()
@@ -57,7 +61,15 @@ export default function ResetPasswordPage() {
           </div>
         ) : (
           <form onSubmit={handleReset} style={styles.form} aria-label="비밀번호 재설정">
-            <div id="reset-error" role="alert" aria-live="assertive" aria-atomic="true" style={error ? styles.errorBox : {}}>{error ?? ''}</div>
+            <div
+              ref={errorRef}
+              id="reset-error"
+              tabIndex={-1}
+              role="alert"
+              aria-live="assertive"
+              aria-atomic="true"
+              style={{ outline: 'none', ...(error ? styles.errorBox : {}) }}
+            >{error ?? ''}</div>
 
             <div style={styles.fieldGroup}>
               <label htmlFor="email" style={styles.label}>

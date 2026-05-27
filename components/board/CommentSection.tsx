@@ -36,6 +36,10 @@ export default function CommentSection({
   const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const mountedRef = useRef(true)
+  const errorRef = useRef<HTMLDivElement>(null)
+
+  // 에러 발생 시 포커스 이동 (WCAG 2.4.3)
+  useEffect(() => { if (error) errorRef.current?.focus() }, [error])
 
   // Escape 키로 삭제 확인 닫기 (alertdialog 접근성)
   useEffect(() => {
@@ -132,7 +136,7 @@ export default function CommentSection({
         marginBottom: '24px',
         letterSpacing: '0.05em',
       }}>
-        댓글 {comments.length > 0 && <span aria-live="polite" aria-atomic="true" style={{ color: 'var(--gold)', marginLeft: '6px' }}>{comments.length}</span>}
+        댓글 <span aria-live="polite" aria-atomic="true" style={{ color: 'var(--gold)', marginLeft: '6px' }}>{comments.length > 0 ? comments.length : ''}</span>
       </h2>
 
       {/* 댓글 목록 */}
@@ -243,14 +247,21 @@ export default function CommentSection({
       {/* 댓글 작성 폼 */}
       {currentUserId ? (
         <form onSubmit={handleSubmit}>
-          {/* 항상 DOM에 존재 — 스크린 리더 즉시 알림 보장 (WCAG 4.1.3) */}
-          <p role="alert" aria-live="assertive" aria-atomic="true" style={error ? {
-            color: '#e74c3c',
-            fontSize: '0.85rem',
-            marginBottom: '10px',
-          } : {}}>
+          {/* 항상 DOM에 존재 — 스크린 리더 즉시 알림 보장 (WCAG 4.1.3) + 포커스 이동 (WCAG 2.4.3) */}
+          <div
+            ref={errorRef}
+            tabIndex={-1}
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+            style={{ outline: 'none', ...(error ? {
+              color: '#e74c3c',
+              fontSize: '0.85rem',
+              marginBottom: '10px',
+            } : {}) }}
+          >
             {error ?? ''}
-          </p>
+          </div>
           <label htmlFor="comment-input" className="sr-only">댓글 입력</label>
           <textarea
             id="comment-input"

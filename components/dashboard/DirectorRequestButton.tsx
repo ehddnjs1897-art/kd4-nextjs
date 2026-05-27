@@ -1,13 +1,17 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function DirectorRequestButton() {
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
+  const errorRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
+
+  // 에러 발생 시 포커스 이동 (WCAG 2.4.3)
+  useEffect(() => { if (error) errorRef.current?.focus() }, [error])
 
   async function handleRequest() {
     setLoading(true)
@@ -49,17 +53,24 @@ export default function DirectorRequestButton() {
 
   return (
     <>
-      {/* 항상 DOM에 존재 — 스크린 리더 즉시 알림 보장 (WCAG 4.1.3) */}
-      <p role="alert" aria-live="assertive" aria-atomic="true" style={error ? {
+      {/* 항상 DOM에 존재 — 스크린 리더 즉시 알림 보장 (WCAG 4.1.3) + 포커스 이동 (WCAG 2.4.3) */}
+      <div
+        ref={errorRef}
+        tabIndex={-1}
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+        style={{ outline: 'none', ...(error ? {
           fontSize: '0.8rem',
           color: '#ff6b6b',
           padding: '8px 12px',
           background: 'rgba(220,38,38,0.08)',
           border: '1px solid rgba(220,38,38,0.2)',
           borderRadius: 5,
-        } : {}}>
+        } : {}) }}
+      >
         {error}
-      </p>
+      </div>
       <button
         type="button"
         onClick={handleRequest}

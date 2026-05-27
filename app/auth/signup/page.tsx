@@ -23,11 +23,15 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const successRef = useRef<HTMLDivElement>(null)
+  const errorRef = useRef<HTMLDivElement>(null)
 
   // 성공 화면 전환 시 포커스 이동 (WCAG 2.4.3 Focus Order)
   useEffect(() => {
     if (step === 'success') successRef.current?.focus()
   }, [step])
+
+  // 에러 발생 시 포커스 이동 (WCAG 2.4.3)
+  useEffect(() => { if (error) errorRef.current?.focus() }, [error])
 
   // 이미 로그인된 경우 대시보드로 리다이렉트
   useEffect(() => {
@@ -249,7 +253,15 @@ export default function SignupPage() {
 
         <h1 style={styles.title}>회원가입</h1>
 
-        <div id="signup-error" style={error ? styles.errorBox : {}} role="alert" aria-live="assertive" aria-atomic="true">{error ?? ''}</div>
+        <div
+          ref={errorRef}
+          id="signup-error"
+          tabIndex={-1}
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+          style={{ outline: 'none', ...(error ? styles.errorBox : {}) }}
+        >{error ?? ''}</div>
 
         <p className="sr-only">별표(*)는 필수 항목입니다</p>
         <form onSubmit={handleSignup} style={styles.form}>
@@ -406,6 +418,7 @@ export default function SignupPage() {
           <button
             type="submit"
             disabled={loading}
+            aria-busy={loading}
             style={{
               ...styles.btnPrimary,
               opacity: loading ? 0.6 : 1,

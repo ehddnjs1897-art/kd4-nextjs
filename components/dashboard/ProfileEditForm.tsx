@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 interface Props {
@@ -37,7 +37,11 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   const [matchedMsg, setMatchedMsg] = useState('')
+  const errorRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
+
+  // 에러 발생 시 포커스 이동 (WCAG 2.4.3)
+  useEffect(() => { if (error) errorRef.current?.focus() }, [error])
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault()
@@ -133,6 +137,7 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
           <button
             type="button"
             onClick={() => { setEditing(true); setSuccess(false) }}
+            aria-label="내 정보 수정"
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 5,
               padding: '10px 14px',
@@ -257,14 +262,22 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
 
         </div>
 
-        {/* 에러 — 항상 DOM에 존재 (WCAG 4.1.3) */}
-        <p id="profile-edit-error" role="alert" aria-live="assertive" aria-atomic="true" style={error ? {
+        {/* 에러 — 항상 DOM에 존재 (WCAG 4.1.3) + 포커스 이동 (WCAG 2.4.3) */}
+        <div
+          ref={errorRef}
+          id="profile-edit-error"
+          tabIndex={-1}
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+          style={{ outline: 'none', ...(error ? {
             fontSize: '0.8rem', color: '#ff6b6b', marginTop: 14,
             padding: '8px 12px', background: 'rgba(220,38,38,0.08)',
             border: '1px solid rgba(220,38,38,0.2)', borderRadius: 5,
-          } : {}}>
+          } : {}) }}
+        >
           {error ?? ''}
-        </p>
+        </div>
 
         {/* 저장 / 취소 버튼 */}
         {editing && (

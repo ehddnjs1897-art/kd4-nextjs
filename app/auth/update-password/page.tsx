@@ -24,6 +24,10 @@ export default function UpdatePasswordPage() {
   const [error, setError] = useState('')
   const [sessionReady, setSessionReady] = useState<boolean | null>(null)
   const redirectTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const errorRef = useRef<HTMLDivElement>(null)
+
+  // 에러 발생 시 포커스 이동 (WCAG 2.4.3)
+  useEffect(() => { if (error) errorRef.current?.focus() }, [error])
 
   // 페이지 진입 시 recovery 세션이 있는지 확인
   useEffect(() => {
@@ -128,7 +132,15 @@ export default function UpdatePasswordPage() {
 
             <form onSubmit={handleUpdate} style={styles.form} aria-label="새 비밀번호 입력">
               {/* 항상 DOM에 존재 — aria-describedby 참조 유효성 + 스크린 리더 즉시 알림 (WCAG 4.1.3) */}
-              <div id="update-error" role="alert" aria-live="assertive" aria-atomic="true" style={error ? styles.errorBox : {}}>{error}</div>
+              <div
+                ref={errorRef}
+                id="update-error"
+                tabIndex={-1}
+                role="alert"
+                aria-live="assertive"
+                aria-atomic="true"
+                style={{ outline: 'none', ...(error ? styles.errorBox : {}) }}
+              >{error}</div>
 
               <div style={styles.fieldGroup}>
                 <label htmlFor="password" style={styles.label}>

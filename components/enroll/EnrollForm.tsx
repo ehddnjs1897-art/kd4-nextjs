@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { CheckCircle, ArrowRight } from 'lucide-react'
 
@@ -104,6 +104,10 @@ export default function EnrollForm({
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
+  const errorRef = useRef<HTMLDivElement>(null)
+
+  // 에러 발생 시 포커스 이동 (WCAG 2.4.3)
+  useEffect(() => { if (error) errorRef.current?.focus() }, [error])
 
   const isMaintain = type === '수업 유지'
 
@@ -397,7 +401,14 @@ export default function EnrollForm({
         </div>
 
         {/* ── 에러 ── */}
-        <div role="alert" aria-live="assertive" aria-atomic="true" style={error ? { padding: '12px 16px', background: 'var(--accent-red-soft)', border: '1px solid rgba(199,62,62,0.25)', borderRadius: 10, marginBottom: 16 } : {}}>
+        <div
+          ref={errorRef}
+          tabIndex={-1}
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+          style={{ outline: 'none', ...(error ? { padding: '12px 16px', background: 'var(--accent-red-soft)', border: '1px solid rgba(199,62,62,0.25)', borderRadius: 10, marginBottom: 16 } : {}) }}
+        >
           {error && <p style={{ color: '#b91c1c', fontSize: '0.84rem' }}>{error}</p>}
         </div>
 
