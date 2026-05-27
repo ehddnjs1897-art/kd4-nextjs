@@ -289,24 +289,9 @@ export default function HomePage() {
     }
   }, [])
 
-  /* ── 기존 섹션 리빌 (IntersectionObserver) ── */
-  useEffect(() => {
-    const els = document.querySelectorAll<HTMLElement>('section[id]:not(#hero):not(#classes)')
-    els.forEach((el) => el.classList.add('reveal-section'))
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add('is-visible')
-            observer.unobserve(e.target)
-          }
-        })
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -60px 0px' }
-    )
-    els.forEach((el) => observer.observe(el))
-    return () => observer.disconnect()
-  }, [])
+  /* ── 기존 섹션 리빌: GSAP ScrollTrigger가 동일한 section[id]:not(#hero):not(#classes)를
+     opacity/y 애니메이션으로 처리하므로 IO + CSS transition 중복 실행 제거.
+     (GSAP 인라인 스타일 vs CSS transition 충돌 방지, will-change 이중 등록 해소) */
 
   return (
     <>
