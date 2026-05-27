@@ -289,7 +289,7 @@ export default function CommentSection({
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
             <span
               id="comment-char-count"
-              aria-live="polite"
+              aria-live="off"
               aria-atomic="true"
               style={{
                 fontSize: '0.75rem',

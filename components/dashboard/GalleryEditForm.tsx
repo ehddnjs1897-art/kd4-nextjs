@@ -610,7 +610,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
               border: `1px solid ${item.done ? 'rgba(74,222,128,0.3)' : 'var(--border)'}`,
               color: item.done ? '#4ade80' : 'var(--gray)',
             }}>
-              <span>{item.done ? '✓' : '○'}</span>
+              <span aria-hidden="true">{item.done ? '✓' : '○'}</span>
               <span>{item.icon} {item.label}</span>
             </span>
           ))}
@@ -660,7 +660,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
             aria-describedby="actor-casting-summary-count"
             style={{ ...s.input, resize: 'vertical', minHeight: 64, lineHeight: 1.6, fontFamily: 'inherit' }}
           />
-          <span id="actor-casting-summary-count" aria-live="polite" aria-atomic="true" style={{ fontSize: '0.72rem', color: 'var(--gray)', textAlign: 'right' }}>{castingSummary.length}/120</span>
+          <span id="actor-casting-summary-count" aria-live="off" aria-atomic="true" style={{ fontSize: '0.72rem', color: 'var(--gray)', textAlign: 'right' }}>{castingSummary.length}/120</span>
         </div>
         <button type="button" onClick={saveInfo} disabled={infoSaving} aria-busy={infoSaving} style={{ ...s.btn, ...s.btnPrimary, opacity: infoSaving ? 0.6 : 1 }}>
           {infoSaving ? '저장 중…' : '저장'}

@@ -231,7 +231,7 @@ export default function GameOver({
           padding: "0 8px",
         }}
       >
-        <span lang="en">LEADERBOARD</span> →
+        <span lang="en">LEADERBOARD</span> <span aria-hidden="true">→</span>
       </Link>
 
       <style>{`

@@ -205,7 +205,7 @@ export default function EditPage() {
               aria-describedby={error ? 'edit-form-error' : 'edit-title-count'}
               style={inputStyle}
             />
-            <div id="edit-title-count" aria-live="polite" style={{ textAlign: 'right', fontSize: '0.72rem', marginTop: '4px', color: title.length > 180 ? '#e74c3c' : 'var(--gray)' }}>
+            <div id="edit-title-count" aria-live="off" style={{ textAlign: 'right', fontSize: '0.72rem', marginTop: '4px', color: title.length > 180 ? '#e74c3c' : 'var(--gray)' }}>
               {title.length}/200
             </div>
           </div>
@@ -229,7 +229,7 @@ export default function EditPage() {
                 lineHeight: 1.7,
               }}
             />
-            <div id="edit-content-count" aria-live="polite" style={{ textAlign: 'right', fontSize: '0.72rem', marginTop: '4px', color: content.length > 9000 ? '#e74c3c' : 'var(--gray)' }}>
+            <div id="edit-content-count" aria-live="off" style={{ textAlign: 'right', fontSize: '0.72rem', marginTop: '4px', color: content.length > 9000 ? '#e74c3c' : 'var(--gray)' }}>
               {content.length}/10000
             </div>
           </div>

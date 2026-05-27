@@ -153,7 +153,7 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
                         }}
                       >{s}</button>
                     ))}
-                    <button type="button" onClick={() => setEditingStatusId(null)} aria-label="닫기" style={{ padding: '3px 6px', minHeight: 44, minWidth: 44, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', borderRadius: 4, border: '1px solid #e4ddd3', background: '#fff', fontSize: '0.72rem', cursor: 'pointer', fontFamily: 'inherit' }}>✕</button>
+                    <button type="button" onClick={() => setEditingStatusId(null)} aria-label="닫기" style={{ padding: '3px 6px', minHeight: 44, minWidth: 44, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', borderRadius: 4, border: '1px solid #e4ddd3', background: '#fff', fontSize: '0.72rem', cursor: 'pointer', fontFamily: 'inherit' }}><span aria-hidden="true">✕</span></button>
                   </div>
                 ) : (
                   <button
@@ -191,7 +191,7 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
                     background: e.payment_status === '결제완료' ? '#2d8a56' : '#fbeed5',
                   }}
                 >
-                  {e.payment_status === '결제완료' ? '결제완료 ✓' : '결제대기'}
+                  {e.payment_status === '결제완료' ? <>결제완료 <span aria-hidden="true">✓</span></> : '결제대기'}
                 </button>
               </div>
             ))}

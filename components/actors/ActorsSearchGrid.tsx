@@ -71,7 +71,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
               background: 'none', border: 'none', color: 'var(--gray)',
               cursor: 'pointer', fontSize: '1rem', padding: 8, minHeight: 44, minWidth: 44,
             }}
-          >✕</button>
+          ><span aria-hidden="true">✕</span></button>
         )}
       </form>
 

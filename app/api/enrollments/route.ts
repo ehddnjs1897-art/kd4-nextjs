@@ -7,6 +7,7 @@
  * - 같은 (user_id, class_name, year_month) 중복은 무시(이미 신청한 달/클래스).
  */
 import { NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { CLASSES } from '@/lib/classes'
@@ -168,6 +169,8 @@ export async function POST(request: Request) {
       console.warn(`[POST /api/enrollments] ${rows.length - inserted}/${rows.length}개 이미 신청됨 (ignoreDuplicates)`)
     }
 
+    revalidatePath('/dashboard')
+    revalidatePath('/admin')
     return NextResponse.json({ ok: true, count: rows.length }, { headers: { 'Cache-Control': 'private, no-store' } })
   } catch (err) {
     console.error('[POST /api/enrollments] 예상치 못한 오류:', err instanceof Error ? err.message : String(err))

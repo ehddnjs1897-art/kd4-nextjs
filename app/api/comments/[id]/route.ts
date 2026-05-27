@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
@@ -73,6 +74,7 @@ export async function DELETE(
       return NextResponse.json({ error: '댓글을 찾을 수 없거나 이미 삭제되었습니다.' }, { status: 404 })
     }
 
+    revalidatePath('/board')
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error('[DELETE /api/comments/[id]]', err instanceof Error ? err.message : String(err))

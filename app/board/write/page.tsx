@@ -170,7 +170,7 @@ export default function WritePage() {
               aria-describedby={error ? 'write-form-error' : 'write-title-count'}
               style={inputStyle}
             />
-            <div id="write-title-count" aria-live="polite" style={{ textAlign: 'right', fontSize: '0.72rem', marginTop: '4px', color: title.length > 180 ? '#e74c3c' : 'var(--gray)' }}>
+            <div id="write-title-count" aria-live="off" style={{ textAlign: 'right', fontSize: '0.72rem', marginTop: '4px', color: title.length > 180 ? '#e74c3c' : 'var(--gray)' }}>
               {title.length}/200
             </div>
           </div>
@@ -194,7 +194,7 @@ export default function WritePage() {
                 lineHeight: 1.7,
               }}
             />
-            <div id="write-content-count" aria-live="polite" style={{ textAlign: 'right', fontSize: '0.72rem', marginTop: '4px', color: content.length > 9000 ? '#e74c3c' : 'var(--gray)' }}>
+            <div id="write-content-count" aria-live="off" style={{ textAlign: 'right', fontSize: '0.72rem', marginTop: '4px', color: content.length > 9000 ? '#e74c3c' : 'var(--gray)' }}>
               {content.length}/10000
             </div>
           </div>

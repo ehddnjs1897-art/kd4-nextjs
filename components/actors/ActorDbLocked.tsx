@@ -42,12 +42,12 @@ export default function ActorDbLocked({
             <>
               <Link href={loginHref} style={styles.btnPrimary}>로그인</Link>
               <Link href="/auth/signup" style={styles.btnSecondary}>회원가입</Link>
-              <Link href="/actors" style={styles.btnTertiary}>← 배우 목록으로 돌아가기</Link>
+              <Link href="/actors" style={styles.btnTertiary}><span aria-hidden="true">← </span>배우 목록으로 돌아가기</Link>
             </>
           ) : (
             <>
               <Link href="/dashboard" style={styles.btnPrimary}>마이페이지로 이동</Link>
-              <Link href="/actors" style={styles.btnTertiary}>← 배우 목록으로 돌아가기</Link>
+              <Link href="/actors" style={styles.btnTertiary}><span aria-hidden="true">← </span>배우 목록으로 돌아가기</Link>
             </>
           )}
         </div>
