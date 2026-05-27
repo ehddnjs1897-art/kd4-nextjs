@@ -30,6 +30,10 @@ export default function GameOver({
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState("")
   const dialogRef = useRef<HTMLDivElement>(null)
+  const errorRef = useRef<HTMLParagraphElement>(null)
+
+  // 점수 저장 오류 발생 시 포커스 이동 (WCAG 2.4.3)
+  useEffect(() => { if (error) errorRef.current?.focus() }, [error])
 
   // 포커스 트랩 + Escape 핸들러 (role=dialog aria-modal=true 접근성 요건)
   useEffect(() => {
@@ -212,7 +216,7 @@ export default function GameOver({
         )}
       </div>
 
-      <p role="alert" aria-live="assertive" aria-atomic="true" style={{ color: "#ff6666", fontSize: "0.75rem", marginTop: 12 }}>{error ?? ''}</p>
+      <p ref={errorRef} tabIndex={-1} role="alert" aria-live="assertive" aria-atomic="true" style={{ outline: 'none', ...(error ? { color: "#ff6666", fontSize: "0.75rem", marginTop: 12 } : {}) }}>{error ?? ''}</p>
 
       <Link
         href="/game/leaderboard"

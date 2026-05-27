@@ -1040,6 +1040,13 @@ ul, ol { list-style: none; }
 
 .actor-card:hover .actor-photo img { transform: scale(1.04); }
 
+/* 키보드 포커스 — hover와 동일한 시각적 피드백 (WCAG 2.4.7) */
+.actor-card:focus-visible {
+  border-color: rgba(21,72,138,0.4);
+  transform: translateY(-4px);
+}
+.actor-card:focus-visible .actor-photo img { transform: scale(1.04); }
+
 .actor-info {
   padding: 12px 14px;
 }

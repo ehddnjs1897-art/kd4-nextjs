@@ -357,6 +357,8 @@ export default function BoardClient({
         }
         .board-row:hover { background: var(--bg3); }
         .board-row:hover a { color: var(--gold) !important; }
+        /* 키보드 포커스 — 게시글 링크 색상 (WCAG 2.4.7) */
+        .board-row a:focus-visible { color: var(--gold) !important; }
         @media (max-width: 560px) {
           .board-header, .board-row { grid-template-columns: 72px 1fr; }
           .board-col-hide-sm, .board-col-hide-xs { display: none; }
