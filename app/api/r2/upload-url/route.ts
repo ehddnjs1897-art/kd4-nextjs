@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
 
   // 사용자 네임스페이스 키 (배우 row 생성 전 단계 — intake)
   // Date.now() 단독 사용 시 동일 ms 내 충돌 가능 → 랜덤 suffix 추가
-  const rand = Math.random().toString(36).slice(2, 8)
+  const rand = crypto.randomUUID().slice(0, 8)
   const key = `actors/intake/${user.id}/${Date.now()}-${rand}.${ext}`
 
   try {

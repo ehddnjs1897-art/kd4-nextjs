@@ -21,6 +21,14 @@ Disallow: /admin
 Disallow: /auth/
 Disallow: /dashboard
 Disallow: /api/
+Disallow: /board
+Disallow: /enroll
+Disallow: /onboarding
+Disallow: /benefits/replay
+Disallow: /join
+Disallow: /ai-tools
+Disallow: /game
+Disallow: /insights
 
 # AI 검색봇 허용 (공개 페이지만)
 User-agent: GPTBot
@@ -29,6 +37,14 @@ Disallow: /admin
 Disallow: /auth/
 Disallow: /dashboard
 Disallow: /api/
+Disallow: /board
+Disallow: /enroll
+Disallow: /onboarding
+Disallow: /benefits/replay
+Disallow: /join
+Disallow: /ai-tools
+Disallow: /game
+Disallow: /insights
 
 User-agent: ChatGPT-User
 Allow: /
@@ -36,6 +52,14 @@ Disallow: /admin
 Disallow: /auth/
 Disallow: /dashboard
 Disallow: /api/
+Disallow: /board
+Disallow: /enroll
+Disallow: /onboarding
+Disallow: /benefits/replay
+Disallow: /join
+Disallow: /ai-tools
+Disallow: /game
+Disallow: /insights
 
 User-agent: PerplexityBot
 Allow: /
@@ -43,6 +67,14 @@ Disallow: /admin
 Disallow: /auth/
 Disallow: /dashboard
 Disallow: /api/
+Disallow: /board
+Disallow: /enroll
+Disallow: /onboarding
+Disallow: /benefits/replay
+Disallow: /join
+Disallow: /ai-tools
+Disallow: /game
+Disallow: /insights
 
 User-agent: ClaudeBot
 Allow: /
@@ -50,5 +82,13 @@ Disallow: /admin
 Disallow: /auth/
 Disallow: /dashboard
 Disallow: /api/
+Disallow: /board
+Disallow: /enroll
+Disallow: /onboarding
+Disallow: /benefits/replay
+Disallow: /join
+Disallow: /ai-tools
+Disallow: /game
+Disallow: /insights
 
 Sitemap: https://kd4.club/sitemap.xml

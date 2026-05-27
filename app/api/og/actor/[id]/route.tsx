@@ -16,7 +16,7 @@
 import { ImageResponse } from 'next/og'
 import { type NextRequest } from 'next/server'
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 export const revalidate = 3600 // 1h — 배우가 프로필 수정해도 최대 1시간 내 OG 이미지 갱신
 
 // IP 레이트 리밋: 30 req/min (CDN이 1차 방어, in-memory는 2차 — per-edge-instance)
