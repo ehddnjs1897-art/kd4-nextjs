@@ -308,7 +308,7 @@ export default function CommentSection({
                 padding: '12px 22px',
                 minHeight: 44,
                 background: submitting || !content.trim() ? 'var(--border)' : 'var(--gold)',
-                color: submitting || !content.trim() ? 'var(--gray)' : 'var(--bg)',
+                color: submitting || !content.trim() ? 'var(--gray)' : '#ffffff',
                 border: 'none',
                 borderRadius: 'var(--radius)',
                 fontSize: '0.875rem',

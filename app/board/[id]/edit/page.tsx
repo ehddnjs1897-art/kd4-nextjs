@@ -176,7 +176,7 @@ export default function EditPage() {
                     borderRadius: 'var(--radius)',
                     fontSize: '0.85rem',
                     fontWeight: category === cat ? 600 : 400,
-                    color: category === cat ? 'var(--bg)' : 'var(--gray)',
+                    color: category === cat ? '#ffffff' : 'var(--gray)',
                     background: category === cat ? 'var(--gold)' : 'transparent',
                     border: `1px solid ${category === cat ? 'var(--gold)' : 'var(--border)'}`,
                     cursor: 'pointer',
@@ -260,7 +260,7 @@ export default function EditPage() {
               style={{
                 padding: '10px 26px',
                 background: submitting || !title.trim() || !content.trim() ? 'var(--border)' : 'var(--gold)',
-                color: submitting || !title.trim() || !content.trim() ? 'var(--gray)' : 'var(--bg)',
+                color: submitting || !title.trim() || !content.trim() ? 'var(--gray)' : '#ffffff',
                 border: 'none',
                 borderRadius: 'var(--radius)',
                 fontSize: '0.9rem',

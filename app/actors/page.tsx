@@ -14,7 +14,7 @@ export const revalidate = 3600
 export const metadata: Metadata = {
   title: '배우 DB',
   description: 'KD4 액팅 스튜디오 배우 데이터베이스. 마이즈너 테크닉으로 훈련한 배우들의 프로필·필모그래피·출연영상을 확인하세요. 캐스팅 디렉터 전용 연락처 열람 가능.',
-  keywords: ['KD4 배우 DB', '마이즈너 배우', '캐스팅 디렉터', '배우 프로필', '신촌 연기학원 배우', 'KD4 액팅 스튜디오 배우'],
+  keywords: ['배우 DB', 'KD4 배우 DB', '마이즈너 배우', '캐스팅 디렉터', '배우 프로필', '신촌 연기학원 배우', 'KD4 액팅 스튜디오 배우'],
   robots: { index: true, follow: true },
   alternates: { canonical: `${SITE_URL}/actors` },
   openGraph: {
@@ -309,13 +309,33 @@ export default async function ActorsPage({ searchParams }: PageProps) {
           <div role="status" aria-live="polite" aria-atomic="true" style={styles.emptyState}>
             <p style={styles.emptyText}>데이터베이스 연결 오류가 발생했습니다.</p>
             <p style={{ fontSize: '0.8rem', color: 'var(--gray)', marginTop: '8px' }}>
-              잠시 후 다시 시도해 주세요.
+              잠시 후 다시 시도해 주세요. 문제가 계속되면 카카오 채널로 알려주세요.
             </p>
+            <div style={{ marginTop: 16, display: 'inline-flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
+              <a
+                href="https://pf.kakao.com/_ximxdqn"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={styles.resetLink}
+              >
+                카카오 채널 문의
+              </a>
+            </div>
           </div>
         ) : actors.length === 0 ? (
           <div role="status" aria-live="polite" style={styles.emptyState}>
             <p style={styles.emptyText}>해당 조건의 배우가 없습니다.</p>
-            <Link href="/actors" style={styles.resetLink}>필터 초기화</Link>
+            <p style={{ fontSize: '0.8rem', color: 'var(--gray)', marginTop: 6, lineHeight: 1.6 }}>
+              {[
+                gender !== 'all' && `성별 ${gender}`,
+                ageGroup !== 'all' && `연령대 ${ageGroup}`,
+                tag !== 'all' && `태그 ${tag}`,
+              ].filter(Boolean).join(' · ')}
+            </p>
+            <div style={{ marginTop: 16, display: 'inline-flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
+              <Link href="/actors" style={styles.resetLink}>전체 필터 초기화</Link>
+              <Link href="/about" style={{ ...styles.resetLink, borderColor: 'var(--border)', color: 'var(--gray)' }}>스튜디오 소개로</Link>
+            </div>
           </div>
         ) : (
           <ActorsSearchGrid

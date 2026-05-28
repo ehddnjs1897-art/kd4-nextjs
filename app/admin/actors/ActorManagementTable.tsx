@@ -114,7 +114,7 @@ export default function ActorManagementTable({ actors: initialActors }: Props) {
             padding: '7px 14px', borderRadius: 6, fontSize: '0.78rem', cursor: 'pointer',
             minHeight: 44,
             background: statusFilter === f ? 'var(--gold)' : 'var(--bg2)',
-            color: statusFilter === f ? 'var(--bg)' : 'var(--gray)',
+            color: statusFilter === f ? '#ffffff' : 'var(--gray)',
             border: `1px solid ${statusFilter === f ? 'var(--gold)' : 'var(--border)'}`,
             fontWeight: statusFilter === f ? 700 : 400, fontFamily: 'var(--font-sans)',
           }}>

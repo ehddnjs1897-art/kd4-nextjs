@@ -168,7 +168,7 @@ export default function BoardClient({
                 borderRadius: 'var(--radius)',
                 fontSize: '0.875rem',
                 fontWeight: activeCategory === cat ? 600 : 400,
-                color: activeCategory === cat ? 'var(--bg)' : 'var(--gray)',
+                color: activeCategory === cat ? '#ffffff' : 'var(--gray)',
                 background: activeCategory === cat ? 'var(--gold)' : 'transparent',
                 border: `1px solid ${activeCategory === cat ? 'var(--gold)' : 'var(--border)'}`,
                 cursor: 'pointer',

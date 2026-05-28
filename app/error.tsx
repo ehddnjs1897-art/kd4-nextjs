@@ -57,7 +57,7 @@ export default function ErrorPage({
               padding: '10px 22px',
               minHeight: 44,
               background: 'var(--gold)',
-              color: 'var(--bg)',
+              color: '#ffffff',
               border: 'none',
               borderRadius: 'var(--radius)',
               fontSize: '0.88rem',
