@@ -91,7 +91,6 @@ export default function SetupPage() {
           ref={errorRef}
           tabIndex={-1}
           role="alert"
-          aria-live="assertive"
           aria-atomic="true"
           style={{ outline: 'none', ...(error ? styles.errorBox : {}) }}
         >{error ?? ''}</div>

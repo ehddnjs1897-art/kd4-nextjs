@@ -107,9 +107,10 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
         )}
       </div>
       {filtered.length > 0 && (
-        <div style={gridStyle} className="actors-grid" role="list" aria-label="배우 목록">
+        <ul style={{ ...gridStyle, listStyle: 'none', padding: 0, margin: 0 }} className="actors-grid" aria-label="배우 목록">
           {filtered.map((actor, idx) => (
-            <Link key={actor.id} href={`/actors/${actor.id}`} style={cardStyle} className="actor-card" aria-label={`${actor.name} 배우 프로필 보기`}>
+            <li key={actor.id} style={cardStyle}>
+            <Link href={`/actors/${actor.id}`} style={{ display: 'block', position: 'absolute', inset: 0, textDecoration: 'none' }} className="actor-card" aria-label={`${actor.name} 배우 프로필 보기`}>
               <div style={imageWrapStyle}>
                 <ActorCardImage
                   src={actor.photoSrc}
@@ -132,8 +133,9 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
                 </div>
               </div>
             </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </>
   )

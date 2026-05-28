@@ -66,7 +66,6 @@ export default function ResetPasswordPage() {
               id="reset-error"
               tabIndex={-1}
               role="alert"
-              aria-live="assertive"
               aria-atomic="true"
               style={{ outline: 'none', ...(error ? styles.errorBox : {}) }}
             >{error ?? ''}</div>
