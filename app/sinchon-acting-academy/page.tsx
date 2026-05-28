@@ -170,6 +170,40 @@ export default function SinchonPage() {
         </div>
       </section>
 
+      {/* ===== STUDIO — 외관·연습실·라운지 (미니멀 3장) ===== */}
+      <section aria-label="스튜디오" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)', borderTop: '1px solid var(--border)' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
+            <p className="section-eyebrow"><span lang="en">02 — STUDIO</span></p>
+            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>스튜디오</h2>
+            <p className="section-desc">정돈된 연습 공간과 머무는 라운지. 직접 보러 오셔도 됩니다.</p>
+          </div>
+          <div className="sinchon-studio-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', maxWidth: '1080px', margin: '0 auto' }}>
+            {[
+              { src: '/sinchon/exterior.jpg', alt: 'KD4 액팅 스튜디오 외관 — 통유리 입구와 파란 사인', w: 1280, h: 996 },
+              { src: '/sinchon/studio.jpg',   alt: 'KD4 액팅 스튜디오 연습실 — 원목 바닥과 정돈된 빈 공간', w: 1280, h: 720 },
+              { src: '/sinchon/lounge.jpg',   alt: 'KD4 액팅 스튜디오 라운지 — 회색 소파와 스튜디오 조명',   w: 1280, h: 720 },
+            ].map((img) => (
+              <div key={img.src} style={{ aspectRatio: '4 / 3', borderRadius: '10px', overflow: 'hidden', background: 'var(--bg2)' }}>
+                <Image
+                  src={img.src}
+                  alt={img.alt}
+                  width={img.w}
+                  height={img.h}
+                  sizes="(max-width: 760px) 100vw, 360px"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      <style>{`
+        @media (max-width: 760px) {
+          .sinchon-studio-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
+
       {/* ===== FAQ ===== */}
       <section aria-label="위치·교통 자주 묻는 질문" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
