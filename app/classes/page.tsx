@@ -88,7 +88,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
         {/* bullets */}
         <ul role="list" style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '20px' }}>
           {cls.bullets.map((b, i) => (
-            <li key={i} style={{ fontSize: '0.82rem', color: 'var(--gray-light)', lineHeight: 1.5, paddingLeft: '14px', position: 'relative' }}>
+            <li key={b} style={{ fontSize: '0.82rem', color: 'var(--gray-light)', lineHeight: 1.5, paddingLeft: '14px', position: 'relative' }}>
               <span style={{ position: 'absolute', left: 0, top: '0.45em', width: '5px', height: '1px', background: 'var(--gold)', display: 'inline-block' }} />
               {b}
             </li>
@@ -361,7 +361,7 @@ export default function ClassesPage() {
               <p style={{ fontSize: 'clamp(0.9rem, 2vw, 1rem)', color: 'var(--navy)', fontWeight: 600, margin: 0 }}>신규 멤버 신청 가능</p>
             </div>
             <div id="class-cards-step1" className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))', gap: '16px', scrollMarginTop: 80 }}>
-              {CLASSES.filter(c => c.isNewMemberOpen).map((cls, i) => <ClassCard key={i} cls={cls} />)}
+              {CLASSES.filter(c => c.isNewMemberOpen).map((cls) => <ClassCard key={cls.nameEn} cls={cls} />)}
             </div>
           </div>
 
@@ -393,7 +393,7 @@ export default function ClassesPage() {
               </button>
               {/* 패널은 DOM에 항상 유지 — display:none으로 가시성 제어 (ARIA accordion 패턴) */}
               <div id={`step-${filter}-panel`} aria-labelledby={`btn-${filter}`} className="classes-grid" style={{ display: open ? 'grid' : 'none', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: '12px', opacity: 0.85, marginTop: open ? '20px' : 0 }}>
-                {CLASSES.filter(c => c.category === filter).map((cls, i) => <ClassCard key={i} cls={cls} />)}
+                {CLASSES.filter(c => c.category === filter).map((cls) => <ClassCard key={cls.nameEn} cls={cls} />)}
               </div>
             </div>
           ))}

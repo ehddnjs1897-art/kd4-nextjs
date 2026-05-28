@@ -1200,7 +1200,7 @@ export default function HomePage() {
         {/* 스크린리더 전용 후기 목록 */}
         <ul role="list" className="sr-only">
           {[...REVIEW_ITEMS, ...REVIEW_ITEMS_2].map((r, i) => (
-            <li key={i}>&ldquo;{r.text}&rdquo; — {r.author}</li>
+            <li key={`${r.author}-${i}`}>&ldquo;{r.text}&rdquo; — {r.author}</li>
           ))}
         </ul>
       </section>

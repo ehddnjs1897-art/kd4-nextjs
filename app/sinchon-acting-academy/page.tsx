@@ -118,7 +118,7 @@ export default function SinchonPage() {
                 { t: '이화여대1길 직진 (약 480m)', d: '오피스텔촌 따라 북서쪽으로' },
                 { t: 'KD4 액팅 스튜디오 도착', d: '아리움3차 1층 101호' },
               ].map((s, i, arr) => (
-                <li key={i} style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+                <li key={s.t} style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
                   <div style={{ flexShrink: 0, width: '30px', height: '30px', borderRadius: '50%', background: i === arr.length - 1 ? 'var(--accent-red)' : 'var(--navy)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.9rem' }}>
                     {i + 1}
                   </div>
