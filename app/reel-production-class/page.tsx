@@ -28,6 +28,8 @@ export const metadata: Metadata = {
     '배우 프로필 영상',
     '오디션 영상',
     'KD4 출연영상 클래스',
+    '신촌 출연영상',
+    '서울 배우 포트폴리오',
   ],
   robots: { index: true, follow: true },
   alternates: { canonical: PAGE_URL },
