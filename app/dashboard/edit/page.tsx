@@ -27,6 +27,7 @@ interface ActorRow {
   height: number | null
   weight: number | null
   skills: string[] | null   // DB 타입: text[] — string | null 이었던 오류 수정
+  advanced_skills: string[] | null  // ⭐ 고급 숙련도 (2026-05-29 추가)
   instagram: string | null
   casting_summary: string | null
   profile_doc_path: string | null
@@ -116,9 +117,24 @@ export default async function GalleryEditPage() {
   const [actorRes, photosRes, videosRes, filmRes, r2VideosRes] = await Promise.all([
     supabaseAdmin
       .from('actors')
-      .select('height, weight, skills, instagram, casting_summary, profile_doc_path')
+      .select('height, weight, skills, advanced_skills, instagram, casting_summary, profile_doc_path')
       .eq('id', actor_id)
-      .maybeSingle(),
+      .maybeSingle()
+      .then(async (r) => {
+        // advanced_skills 컬럼 미존재(42703) — 마이그레이션 미실행 시 fallback
+        if (r.error && (r.error.code === '42703' || /column .*advanced_skills.* does not exist/i.test(r.error.message ?? ''))) {
+          const fallback = await supabaseAdmin
+            .from('actors')
+            .select('height, weight, skills, instagram, casting_summary, profile_doc_path')
+            .eq('id', actor_id)
+            .maybeSingle()
+          if (fallback.data) {
+            return { data: { ...fallback.data, advanced_skills: null }, error: null }
+          }
+          return fallback
+        }
+        return r
+      }),
     supabaseAdmin
       .from('actor_photos')
       .select('id, url, is_profile, storage_path')
@@ -159,6 +175,7 @@ export default async function GalleryEditPage() {
     height: actor.height ?? undefined,
     weight: actor.weight ?? undefined,
     skills: actor.skills?.join(', ') ?? undefined,  // text[] → 쉼표 구분 문자열 (폼 표시용)
+    advancedSkills: actor.advanced_skills?.join(', ') ?? undefined,
     instagram: actor.instagram ?? undefined,
     castingSummary: actor.casting_summary ?? undefined,
     profileDocPath: actor.profile_doc_path ?? null,

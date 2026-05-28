@@ -48,6 +48,7 @@ interface InitialData {
   height?: number
   weight?: number
   skills?: string
+  advancedSkills?: string
   instagram?: string
   castingSummary?: string
   profileDocPath?: string | null
@@ -199,6 +200,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   const [height, setHeight] = useState(initialData.height ?? '')
   const [weight, setWeight] = useState(initialData.weight ?? '')
   const [skills, setSkills] = useState(initialData.skills ?? '')
+  const [advancedSkills, setAdvancedSkills] = useState(initialData.advancedSkills ?? '')
   const [instagram, setInstagram] = useState(initialData.instagram ?? '')
   const [castingSummary, setCastingSummary] = useState(initialData.castingSummary ?? '')
   const [infoMsg, setInfoMsg] = useState('')
@@ -263,10 +265,22 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     setInfoSaving(true)
     setInfoMsg('')
     try {
+      // 콤마 구분 → 배열. advanced는 skills 부분집합으로 필터링.
+      const skillsArr = skills.split(',').map(s => s.trim()).filter(Boolean).slice(0, 30)
+      const advRaw = advancedSkills.split(',').map(s => s.trim()).filter(Boolean).slice(0, 30)
+      const skillsSet = new Set(skillsArr)
+      const advArr = advRaw.filter(s => skillsSet.has(s))
       const res = await fetch(`/api/actors/${actorId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ height: height || null, weight: weight || null, skills: skills || null, instagram: instagram || null, casting_summary: castingSummary.trim() || null }),
+        body: JSON.stringify({
+          height: height || null,
+          weight: weight || null,
+          skills: skillsArr.length > 0 ? skillsArr : null,
+          advanced_skills: advArr.length > 0 ? advArr : null,
+          instagram: instagram || null,
+          casting_summary: castingSummary.trim() || null,
+        }),
         signal: AbortSignal.timeout(10_000),
       })
       if (res.status === 401) { window.location.href = '/auth/login'; return }
@@ -641,8 +655,14 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           </div>
           <div style={{ ...s.field, flex: '2 1 240px' }}>
             <label htmlFor="actor-skills" style={s.label}>특기</label>
-            <input id="actor-skills" value={skills} onChange={e => setSkills(e.target.value)} style={s.input} placeholder="수영, 검도, 피아노..." />
+            <input id="actor-skills" value={skills} onChange={e => setSkills(e.target.value)} style={s.input} placeholder="수영, 검도, 피아노, 영어, 사투리(경상도)" />
           </div>
+        </div>
+        <div style={{ ...s.field, marginBottom: 20 }}>
+          <label htmlFor="actor-advanced-skills" style={s.label}>
+            <span aria-hidden="true">⭐</span> 고급 숙련도 <span style={{ fontWeight: 400, fontSize: '0.75rem', color: 'var(--gray)' }}>(전문가급/네이티브만. 위 특기 중 콤마로 구분해 다시 입력)</span>
+          </label>
+          <input id="actor-advanced-skills" value={advancedSkills} onChange={e => setAdvancedSkills(e.target.value)} style={s.input} placeholder="검도, 영어" />
         </div>
         <div style={{ ...s.field, marginBottom: 20 }}>
           <label htmlFor="actor-instagram" style={s.label}>인스타그램 ID</label>

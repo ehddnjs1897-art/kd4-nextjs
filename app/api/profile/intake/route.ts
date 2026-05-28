@@ -123,7 +123,24 @@ export async function POST(request: NextRequest) {
   const ogPhotoPath: string | null = typeof body?.ogPhotoPath === 'string' ? body.ogPhotoPath.slice(0, MAX_PATH_LEN) : null
   const castingSummary: string | null = typeof body?.castingSummary === 'string' && body.castingSummary.trim() ? body.castingSummary.trim().slice(0, MAX_SUMMARY_LEN) : null
 
-  if (!docPath && photos.length === 0 && videos.length === 0 && !castingSummary) {
+  // 스킬 + 고급 숙련도 (콤마 구분 배열, 각 100자/30개 상한, advanced는 skills의 부분집합)
+  const MAX_SKILLS = 30
+  const MAX_SKILL_LEN = 100
+  const sanitizeSkillList = (input: unknown): string[] => {
+    if (!Array.isArray(input)) return []
+    return input
+      .filter((s: unknown): s is string => typeof s === 'string')
+      .map((s: string) => s.replace(/[\x00-\x1f\x7f]/g, ' ').trim())
+      .filter((s: string) => s.length > 0 && s.length <= MAX_SKILL_LEN)
+      .slice(0, MAX_SKILLS)
+  }
+  const skills = sanitizeSkillList(body?.skills)
+  const advancedSkillsInput = sanitizeSkillList(body?.advancedSkills)
+  // advanced_skills는 skills의 부분집합으로만 허용 (오타·미입력 항목 차단)
+  const skillsSet = new Set(skills)
+  const advancedSkills = advancedSkillsInput.filter((s) => skillsSet.has(s))
+
+  if (!docPath && photos.length === 0 && videos.length === 0 && !castingSummary && skills.length === 0) {
     return NextResponse.json({ error: '제출할 파일이 없습니다.' }, { status: 400 })
   }
 
@@ -225,9 +242,23 @@ export async function POST(request: NextRequest) {
   if (docPath) actorPatch.profile_doc_path = docPath
   if (ogPhotoPath) actorPatch.profile_photo = photoPublicUrl(ogPhotoPath)
   if (castingSummary) actorPatch.casting_summary = castingSummary
-  const { data: patched, error: patchErr } = await supabaseAdmin
-    .from('actors').update(actorPatch).eq('id', actorId)
-    .select('id').maybeSingle()
+  if (skills.length > 0) actorPatch.skills = skills
+  if (advancedSkills.length > 0) actorPatch.advanced_skills = advancedSkills
+
+  // advanced_skills 컬럼 미존재(42703) 대응 — 마이그레이션 미실행 환경 안전 처리
+  const patchAttempt = async (includeAdvanced: boolean) => {
+    const finalPatch: Record<string, unknown> = { ...actorPatch }
+    if (!includeAdvanced) delete finalPatch.advanced_skills
+    return supabaseAdmin.from('actors').update(finalPatch).eq('id', actorId)
+      .select('id').maybeSingle()
+  }
+  let { data: patched, error: patchErr } = await patchAttempt(true)
+  if (patchErr && (patchErr.code === '42703' || /column .*advanced_skills.* does not exist/i.test(patchErr.message ?? ''))) {
+    console.warn('[profile/intake] advanced_skills 컬럼 미존재 — 마이그레이션 미실행, 해당 필드 제외하고 재시도')
+    const retry = await patchAttempt(false)
+    patched = retry.data
+    patchErr = retry.error
+  }
   if (patchErr) {
     console.error('[profile/intake] actor 패치 실패:', patchErr.message)
     return NextResponse.json({ error: '프로필 제출 중 오류가 발생했습니다. 다시 시도해주세요.' }, { status: 500 })

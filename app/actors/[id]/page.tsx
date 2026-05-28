@@ -27,6 +27,7 @@ interface Actor {
   height: number | null
   weight: number | null
   skills: string[]
+  advanced_skills: string[] | null
   drive_photo_id: string | null
   storage_photo_path: string | null
   profile_photo: string | null
@@ -93,12 +94,12 @@ function isUndefinedColumnError(err: { code?: string; message?: string } | null)
 
 // 운영 DB에 일부 컬럼이 누락돼 있어도(마이그레이션 미적용) 상세 페이지가 죽지 않도록
 // 단계적으로 select 컬럼을 줄여가며 재조회한다. (42703 → 다음 단계)
-function actorSelect(opts: { casting: boolean; videoType: boolean; filmExtra: boolean }): string {
+function actorSelect(opts: { casting: boolean; videoType: boolean; filmExtra: boolean; advancedSkills: boolean }): string {
   return `
       id, name, name_en, gender, age_group, height, weight, skills, is_public,
       drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram, profile_doc_path${
         opts.casting ? ',\n      casting_tags, casting_summary, profile_pdf_url' : ''
-      },
+      }${opts.advancedSkills ? ',\n      advanced_skills' : ''},
       actor_photos ( id, drive_photo_id, url, storage_path, caption, sort_order, photo_type, label ),
       actor_videos ( id, youtube_id, r2_key, title${opts.videoType ? ', video_type' : ''} ),
       actor_filmography ( id, category, title, role, year, production${
@@ -111,30 +112,38 @@ async function getActor(id: string): Promise<Actor | null> {
   const fetchWith = (cols: string) =>
     supabaseAdmin.from('actors').select(cols).eq('id', id).maybeSingle()
 
-  // 1차: 전체 스키마
-  const full = await fetchWith(actorSelect({ casting: true, videoType: true, filmExtra: true }))
+  // 1차: 전체 스키마 (advanced_skills 포함)
+  const full = await fetchWith(actorSelect({ casting: true, videoType: true, filmExtra: true, advancedSkills: true }))
   if (full.data) return full.data as unknown as Actor
   // maybeSingle: data=null + error=null → not found
   if (!full.error) return null
   // 컬럼 누락(42703)이 아닌 실제 오류 → not found 처리
   if (!isUndefinedColumnError(full.error)) return null
 
+  // 1.5차: advanced_skills만 누락된 경우 (2026-05-29 마이그레이션 미실행)
+  console.warn('[ActorDetail] advanced_skills 컬럼 미존재 — 제외하고 재조회')
+  const noAdvanced = await fetchWith(actorSelect({ casting: true, videoType: true, filmExtra: true, advancedSkills: false }))
+  if (noAdvanced.data) return { ...(noAdvanced.data as unknown as Record<string, unknown>), advanced_skills: null } as unknown as Actor
+  if (!noAdvanced.error) return null
+  if (!isUndefinedColumnError(noAdvanced.error)) return null
+
   // 2차: video_type 컬럼 미존재 대응 (운영 DB 마이그레이션 미적용) — 나머지 컬럼은 유지
   console.warn('[ActorDetail] 확장 컬럼 미존재 — video_type 제외하고 재조회')
-  const noVideoType = await fetchWith(actorSelect({ casting: true, videoType: false, filmExtra: true }))
-  if (noVideoType.data) return noVideoType.data as unknown as Actor
+  const noVideoType = await fetchWith(actorSelect({ casting: true, videoType: false, filmExtra: true, advancedSkills: false }))
+  if (noVideoType.data) return { ...(noVideoType.data as unknown as Record<string, unknown>), advanced_skills: null } as unknown as Actor
   if (!noVideoType.error) return null
   if (!isUndefinedColumnError(noVideoType.error)) return null
 
   // 3차: 캐스팅/필모 확장 컬럼까지 누락된 레거시 DB 대응 (기본 스키마)
   console.warn('[ActorDetail] casting/filmography 확장 컬럼 미존재 — 기본 스키마로 fallback')
-  const base = await fetchWith(actorSelect({ casting: false, videoType: false, filmExtra: false }))
+  const base = await fetchWith(actorSelect({ casting: false, videoType: false, filmExtra: false, advancedSkills: false }))
   if (!base.data) return null
   return {
-    ...(base.data as unknown as Omit<Actor, 'casting_tags' | 'casting_summary' | 'profile_pdf_url'>),
+    ...(base.data as unknown as Omit<Actor, 'casting_tags' | 'casting_summary' | 'profile_pdf_url' | 'advanced_skills'>),
     casting_tags: null,
     casting_summary: null,
     profile_pdf_url: null,
+    advanced_skills: null,
   }
 }
 
@@ -458,17 +467,23 @@ export default async function ActorDetailPage({
               {/* 특기 */}
               {actor.skills && actor.skills.length > 0 && (
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 28 }}>
-                  {actor.skills.map((sk, i) => (
-                    <span key={i} style={{
-                      padding: '4px 12px',
-                      background: 'rgba(255,255,255,0.05)',
-                      border: '1px solid var(--border)',
-                      borderRadius: 4,
-                      fontSize: '0.78rem',
-                      color: 'var(--gray)',
-                      letterSpacing: '0.03em',
-                    }}>{sk}</span>
-                  ))}
+                  {actor.skills.map((sk) => {
+                    const isAdvanced = (actor.advanced_skills ?? []).includes(sk)
+                    return (
+                      <span key={sk} style={{
+                        padding: '4px 12px',
+                        background: isAdvanced ? 'rgba(199,62,62,0.08)' : 'rgba(255,255,255,0.05)',
+                        border: isAdvanced ? '1px solid rgba(199,62,62,0.3)' : '1px solid var(--border)',
+                        borderRadius: 4,
+                        fontSize: '0.78rem',
+                        color: isAdvanced ? 'var(--accent-red)' : 'var(--gray)',
+                        letterSpacing: '0.03em',
+                        fontWeight: isAdvanced ? 700 : 400,
+                      }}>
+                        {isAdvanced && <span aria-label="고급 숙련도">⭐ </span>}{sk}
+                      </span>
+                    )
+                  })}
                 </div>
               )}
 
@@ -572,16 +587,22 @@ export default async function ActorDetailPage({
                     <span lang="en">SPECIAL SKILLS</span>
                   </p>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                    {featuredSkills.map((sk) => (
-                      <span key={sk} style={{
-                        fontSize: '0.78rem',
-                        background: 'rgba(21,72,138,0.08)',
-                        border: '1px solid rgba(21,72,138,0.18)',
-                        color: 'var(--gold)',
-                        padding: '4px 10px',
-                        borderRadius: 4,
-                      }}>{sk}</span>
-                    ))}
+                    {featuredSkills.map((sk) => {
+                      const isAdvanced = (actor.advanced_skills ?? []).includes(sk)
+                      return (
+                        <span key={sk} style={{
+                          fontSize: '0.78rem',
+                          background: isAdvanced ? 'rgba(199,62,62,0.08)' : 'rgba(21,72,138,0.08)',
+                          border: isAdvanced ? '1px solid rgba(199,62,62,0.3)' : '1px solid rgba(21,72,138,0.18)',
+                          color: isAdvanced ? 'var(--accent-red)' : 'var(--gold)',
+                          padding: '4px 10px',
+                          borderRadius: 4,
+                          fontWeight: isAdvanced ? 700 : 400,
+                        }}>
+                          {isAdvanced && <span aria-label="고급 숙련도">⭐ </span>}{sk}
+                        </span>
+                      )
+                    })}
                   </div>
                 </div>
               )}

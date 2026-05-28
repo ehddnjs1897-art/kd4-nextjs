@@ -29,6 +29,8 @@ export default function OnboardingForm({
   const [landscapeIdx, setLandscapeIdx] = useState<number>(-1)
   const [videos, setVideos] = useState<(File | null)[]>([null, null, null])
   const [castingSummary, setCastingSummary] = useState('')
+  const [skills, setSkills] = useState('')             // 콤마 구분 (예: "수영, 검도, 피아노")
+  const [advancedSkills, setAdvancedSkills] = useState('') // 콤마 구분 — skills의 부분집합 (⭐ 표시)
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
@@ -175,10 +177,18 @@ export default function OnboardingForm({
 
       setStatus('등록 마무리 중...')
       const ogPhotoPath = landscapeIdx >= 0 && photoPaths[landscapeIdx] ? photoPaths[landscapeIdx].path : undefined
+      // 콤마 구분 → 배열 + 트림 + 빈값 제거
+      const skillsArr = skills.split(',').map(s => s.trim()).filter(Boolean).slice(0, 30)
+      const advArr = advancedSkills.split(',').map(s => s.trim()).filter(Boolean).slice(0, 30)
       const res = await fetch('/api/profile/intake', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ docPath, photos: photoPaths, currentPhotos: currentPhotoPaths, videos: videoMetas, ogPhotoPath, castingSummary: castingSummary.trim() || undefined }),
+        body: JSON.stringify({
+          docPath, photos: photoPaths, currentPhotos: currentPhotoPaths, videos: videoMetas, ogPhotoPath,
+          castingSummary: castingSummary.trim() || undefined,
+          skills: skillsArr.length > 0 ? skillsArr : undefined,
+          advancedSkills: advArr.length > 0 ? advArr : undefined,
+        }),
         signal: AbortSignal.timeout(15_000),
       })
       const j = await res.json()
@@ -195,6 +205,41 @@ export default function OnboardingForm({
   // ─── 렌더 ────────────────────────────────────────────────────────────────────
   return (
     <div style={{ maxWidth: 680 }}>
+
+      {/* 특기 + 고급 숙련도 */}
+      <section style={sec} aria-labelledby="onb-skills">
+        <h2 id="onb-skills" style={secTitle}>특기</h2>
+        <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 12 }}>
+          캐스팅에 도움 되는 기술·스킬을 콤마로 구분해 입력하세요. (수영, 검도, 피아노, 사투리, 영어 등)
+        </p>
+        <input
+          id="onb-skills-input"
+          name="skills"
+          type="text"
+          value={skills}
+          onChange={(e) => setSkills(e.target.value)}
+          disabled={loading}
+          placeholder="수영, 검도, 피아노, 영어, 사투리(경상도)"
+          aria-label="특기"
+          style={inp}
+          autoComplete="off"
+        />
+        <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginTop: 18, marginBottom: 8 }}>
+          <span aria-hidden="true">⭐</span> <strong style={{ color: 'rgba(255,255,255,0.85)' }}>고급 숙련도</strong> — 전문가급/네이티브 수준만. 위에 입력한 특기 중 콤마로 구분해 다시 적어주세요.
+        </p>
+        <input
+          id="onb-advanced-skills-input"
+          name="advanced_skills"
+          type="text"
+          value={advancedSkills}
+          onChange={(e) => setAdvancedSkills(e.target.value)}
+          disabled={loading}
+          placeholder="검도, 영어"
+          aria-label="고급 숙련도 (전문가급 스킬만)"
+          style={inp}
+          autoComplete="off"
+        />
+      </section>
 
       {/* 한줄소개 */}
       <section style={sec} aria-labelledby="onb-casting-summary">
