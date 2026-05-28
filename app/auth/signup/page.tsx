@@ -268,7 +268,7 @@ export default function SignupPage() {
         >{error ?? ''}</div>
 
         <p className="sr-only">별표(*)는 필수 항목입니다</p>
-        <form onSubmit={handleSignup} style={styles.form}>
+        <form onSubmit={handleSignup} aria-label="회원가입" style={styles.form}>
           {/* 이름 */}
           <div style={styles.fieldGroup}>
             <label htmlFor="name" style={styles.label}>
