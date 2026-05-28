@@ -198,7 +198,7 @@ export default function JsonLd({ faqItems }: JsonLdProps) {
       )}
       {courses.map((course, i) => (
         <script
-          key={i}
+          key={`course-${i}`}
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(course) }}
         />

@@ -153,9 +153,9 @@ export default function SeowooCarousel() {
 
       {/* dot indicator */}
       <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 16 }}>
-        {SLIDES.map((_, i) => (
+        {SLIDES.map((s, i) => (
           <button
-            key={i}
+            key={s.src}
             type="button"
             onClick={() => scrollTo(i)}
             aria-label={`${i + 1}번 슬라이드`}

@@ -93,7 +93,7 @@ export default function GameUI({ score, lives, height, stage, combo, specialText
         >
           {Array.from({ length: 5 }).map((_, i) => (
             <div
-              key={i}
+              key={`life-${i}`}
               aria-hidden="true"
               style={{
                 width: 12,

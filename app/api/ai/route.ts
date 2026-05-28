@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
+// Vercel 기본 15s보다 길게 — Gemini API AbortSignal(30s) 안에 함수가 먼저 죽지 않도록
+export const maxDuration = 60
+
 // 모듈 레벨 쿨다운 Map (Vercel 인스턴스 유지 기간 내 — Gemini 비용 폭탄 방지)
 const aiCooldowns = new Map<string, number>()
 

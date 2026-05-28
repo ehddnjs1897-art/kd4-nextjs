@@ -265,7 +265,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
             onDragStart={(e) => e.preventDefault()}
           >
             {stripPhotos.map((url, i) => (
-              <div key={i} style={s.photoCard}>
+              <div key={url} style={s.photoCard}>
                 {imageProtected ? (
                   <>
                     <div

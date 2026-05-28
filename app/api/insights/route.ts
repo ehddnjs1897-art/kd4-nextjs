@@ -4,6 +4,9 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 import { randomUUID } from 'crypto'
 import type { InsightSourceType, InsightCategory } from '@/lib/types'
 
+// Vercel 기본 15s — insights 외부 fetch AbortSignal(15s)과 경합 방지
+export const maxDuration = 30
+
 // GEMINI_KEY는 서버 전용. NEXT_PUBLIC_* 접두사 사용 금지.
 const GEMINI_KEY = process.env.GEMINI_KEY
 

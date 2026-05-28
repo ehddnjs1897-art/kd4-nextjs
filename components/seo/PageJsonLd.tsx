@@ -9,7 +9,7 @@ export default function PageJsonLd({ schemas }: { schemas: object[] }) {
     <>
       {schemas.map((schema, i) => (
         <script
-          key={i}
+          key={`schema-${i}`}
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(schema) }}
         />
