@@ -258,7 +258,7 @@ export default function MeisnerPage() {
       </section>
 
       {/* FORM */}
-      <section id="form" aria-label="무료 상담 신청" style={{ padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg)' }}>
+      <section id="form" aria-label="무료 상담 신청" style={{ scrollMarginTop: '80px', padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '520px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>

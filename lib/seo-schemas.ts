@@ -11,7 +11,7 @@
  *   - '#dongwon'  → Person (권동원 대표)
  */
 import type { ClassItem } from './classes'
-import { DIRECTOR } from './classes'
+import { DIRECTOR, PROMO_DEADLINE } from './classes'
 import { SITE_URL } from './constants'
 
 const ADDRESS = {
@@ -203,6 +203,7 @@ export function buildCourseFromClass(cls: ClassItem, opts: { url: string }) {
       priceCurrency: 'KRW',
       availability: 'https://schema.org/InStock',
       url: opts.url,
+      ...(cls.originalPrice ? { priceValidUntil: PROMO_DEADLINE } : {}),
     },
     ...(cls.instructor ? { instructor: { '@id': `${SITE_URL}#dongwon` } } : {}),
     courseMode: 'Offline',

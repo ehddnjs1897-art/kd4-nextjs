@@ -1474,6 +1474,7 @@ export default function JoinPage() {
         aria-label="무료 상담 신청"
         className="section"
         style={{
+          scrollMarginTop: '80px',
           background: 'radial-gradient(ellipse at 50% 0%, rgba(21,72,138,0.08) 0%, var(--bg) 70%)',
           padding: 'clamp(64px, 12vw, 100px) 0',
         }}

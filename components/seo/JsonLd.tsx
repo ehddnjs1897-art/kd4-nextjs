@@ -9,7 +9,7 @@
  *   - kd4.club#local    → LocalBusiness
  *   - kd4.club#dongwon  → Person (권동원)
  */
-import { CLASSES } from '@/lib/classes'
+import { CLASSES, PROMO_DEADLINE } from '@/lib/classes'
 import {
   buildOrganization,
   buildEducationalOrganization,
@@ -96,6 +96,7 @@ function getCourseSchemas() {
       price: Number(cls.price.replace(/,/g, '')),
       priceCurrency: 'KRW',
       availability: 'https://schema.org/InStock',
+      ...(cls.originalPrice ? { priceValidUntil: PROMO_DEADLINE } : {}),
     },
     ...(cls.instructor
       ? {
