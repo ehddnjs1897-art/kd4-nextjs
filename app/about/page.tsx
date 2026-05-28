@@ -623,7 +623,7 @@ export default function AboutPage() {
             클래스 신청
           </a>
           <Link
-            href="/#classes"
+            href="/classes"
             style={{
               display: 'inline-block',
               padding: '14px 32px',
