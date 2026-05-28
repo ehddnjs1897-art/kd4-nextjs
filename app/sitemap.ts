@@ -25,16 +25,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   // 배우 프로필 페이지 (공개 배우만 — 비공개는 페이지 컴포넌트에서 404 반환)
+  // lastModified: actors.updated_at 사용 — 검색엔진에 "변경된 페이지만" 명확히 신호 (NOW 일괄보다 신뢰도 ↑)
   const { data: actors, error: actorsError } = await supabaseAdmin
     .from('actors')
-    .select('id')
+    .select('id, updated_at')
     .eq('is_public', true)
-    .order('created_at', { ascending: false })
+    .order('updated_at', { ascending: false })
   if (actorsError) console.error('[sitemap] actors 조회 실패:', actorsError.message)
 
   const actorPages: MetadataRoute.Sitemap = (actors ?? []).map((a) => ({
     url: `${BASE}/actors/${a.id}`,
-    lastModified: NOW,
+    lastModified: a.updated_at ? new Date(a.updated_at) : NOW,
     changeFrequency: 'weekly' as const,
     priority: 0.75,
   }))
