@@ -279,12 +279,15 @@ export default function MeisnerPage() {
 
       {/* 관련 클래스 크로스링크 */}
       <section aria-label="관련 클래스 바로가기" style={{ padding: '32px 24px', background: 'var(--bg2)', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'center', gap: '32px', flexWrap: 'wrap' }}>
+        <div className="container" style={{ display: 'flex', justifyContent: 'center', gap: '24px', flexWrap: 'wrap' }}>
           <Link href="/classes" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
             <span aria-hidden="true">← </span>전체 클래스 보기
           </Link>
           <Link href="/reel-production-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
             출연영상 클래스 <span aria-hidden="true">→</span>
+          </Link>
+          <Link href="/sinchon-acting-academy" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+            신촌 스튜디오 오시는 길
           </Link>
         </div>
       </section>
