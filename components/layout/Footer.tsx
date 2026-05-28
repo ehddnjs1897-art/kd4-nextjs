@@ -180,6 +180,7 @@ export default function Footer() {
               <li>
                 <a
                   href="tel:010-8564-0244"
+                  aria-label="전화하기 010-8564-0244"
                   style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s', display: 'inline-flex', alignItems: 'center', padding: '6px 0', minHeight: 44 }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--gray-light)')}
@@ -190,6 +191,7 @@ export default function Footer() {
               <li>
                 <a
                   href="mailto:uikactors@gmail.com"
+                  aria-label="이메일 보내기 uikactors@gmail.com"
                   style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s', display: 'inline-flex', alignItems: 'center', padding: '6px 0', minHeight: 44 }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--gray-light)')}

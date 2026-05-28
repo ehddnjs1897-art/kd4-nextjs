@@ -102,7 +102,7 @@ export default function SinchonPage() {
           <div className="sinchon-route-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 440px) 1fr', gap: '28px', maxWidth: '960px', margin: '0 auto', alignItems: 'center' }}>
             <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '16px', padding: '8px', boxShadow: '0 18px 48px -28px rgba(15,51,100,0.5)', overflow: 'hidden' }}>
               <Image
-                src="/sinchon-route-map.png"
+                src="/sinchon-route-map.webp"
                 alt="이대역 5번 출구에서 KD4 액팅 스튜디오(아리움3차)까지 도보 약도 — 성산로 → 예스APM·가인볼링장 코너 → 이화여대1길"
                 width={1122}
                 height={1402}

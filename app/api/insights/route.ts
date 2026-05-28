@@ -154,7 +154,6 @@ async function classifyWithGemini(url: string, title: string | null, memo: strin
   const userContent = `URL: ${url}\n제목: ${title ?? '없음'}\n메모: ${memo ?? '없음'}`
 
   try {
-    if (!GEMINI_KEY) throw new Error('no key')
     const res = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent`,
       {

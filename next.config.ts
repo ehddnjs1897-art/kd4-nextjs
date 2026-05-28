@@ -91,7 +91,7 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: '/sinchon-route-map.png',
+        source: '/sinchon-route-map.webp',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=2592000, stale-while-revalidate=86400' },
         ],
