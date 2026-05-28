@@ -290,6 +290,9 @@ export default function ReelPage() {
         <Link href="/meisner-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
           <span aria-hidden="true">← </span>마이즈너 정규 클래스
         </Link>
+        <Link href="/acting-coach-dongwon-kwon" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
+          권동원 리더 소개
+        </Link>
         <Link href="/classes" style={{ fontSize: '0.9rem', color: 'var(--navy)' }}>
           전체 클래스 보기 <span aria-hidden="true">→</span>
         </Link>
