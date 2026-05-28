@@ -46,9 +46,8 @@ const REVIEW_ITEMS_2 = [
 ]
 
 const PARTNERS = [
-  // 서울대·고려대 — 공식 로고 출처 검증 전까지 일시 제외 (2026-05-25)
-  // { name: '서울대학교', logo: '/partners/snu-logo.png' },
-  // { name: '고려대학교', logo: '/partners/ku-logo.png' },
+  { name: '서울대학교', logo: '/partners/snu-logo.png' },
+  { name: '고려대학교', logo: '/partners/ku-logo.png' },
   { name: 'CGV', logo: '/partners/cgv-logo.jpeg' },
   { name: 'Needs.N', logo: '/partners/neezn-logo.jpeg' },
   { name: '컴플렉시온', logo: '/partners/complexion-logo.jpeg' },
@@ -114,7 +113,6 @@ export default function HomePage() {
   const [titleReady, setTitleReady] = useState(false)
   const [marqueePaused, setMarqueePaused] = useState(false)
   const [reviewPaused, setReviewPaused] = useState(false)
-  const [partnerPaused, setPartnerPaused] = useState(false)
   useEffect(() => {
     let cancelled = false
     const container = heroTitleRef.current
@@ -1208,30 +1206,13 @@ export default function HomePage() {
       </section>
 
       {/* ── Partners ─────────────────────────────────────────────────────────── */}
-      {/* 메인 페이지에서 임시 숨김 (2026-05-25). 복구하려면 아래 false 를 true 로 바꾸면 됨. */}
-      {false && (
+      {/* 일시정지 버튼 제거 — prefers-reduced-motion 사용자는 globals.css에서 자동 정지됨 */}
       <section id="partners" aria-label="함께한 기업" style={{ padding: '48px 0', borderTop: '1px solid var(--border)' }}>
         {/* sr-only h2: AT 헤딩 내비게이션용 (시각적으로는 아래 p가 표시됨) */}
         <h2 className="sr-only">함께한 기업</h2>
-        <p style={{ fontFamily: 'var(--font-display), "Noto Sans KR", sans-serif', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.2em', color: 'var(--secondary)', textAlign: 'center', marginBottom: '16px', opacity: 0.6 }}>
+        <p style={{ fontFamily: 'var(--font-display), "Noto Sans KR", sans-serif', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.2em', color: 'var(--secondary)', textAlign: 'center', marginBottom: '24px', opacity: 0.6 }}>
           함께한 기업
         </p>
-        {/* WCAG 2.2.2: 자동 이동 콘텐츠 일시정지 버튼 */}
-        <div style={{ textAlign: 'center', marginBottom: '12px' }}>
-          <button
-            type="button"
-            aria-pressed={partnerPaused}
-            aria-label={partnerPaused ? '파트너 마퀴 재생' : '파트너 마퀴 일시정지'}
-            onClick={() => setPartnerPaused(v => !v)}
-            style={{
-              background: 'none', border: '1px solid var(--border)',
-              color: 'var(--gray)', borderRadius: 6, padding: '4px 12px',
-              minHeight: 44, fontSize: '0.72rem', cursor: 'pointer', letterSpacing: '0.05em',
-            }}
-          >
-            {partnerPaused ? <><span aria-hidden="true">▶</span> 재생</> : <><span aria-hidden="true">⏸</span> 일시정지</>}
-          </button>
-        </div>
         <ul role="list" className="sr-only">
           {PARTNERS.map((p) => {
             const isLatin = /^[\x20-\x7E]+$/.test(p.name)
@@ -1239,7 +1220,7 @@ export default function HomePage() {
           })}
         </ul>
         <div className="partner-marquee" aria-hidden="true">
-          <div className="partner-marquee-track" style={{ animationPlayState: partnerPaused ? 'paused' : 'running' }}>
+          <div className="partner-marquee-track">
             {[...PARTNERS, ...PARTNERS].map((p, i) => (
               <div key={`${p.name}-${i}`} className="partner-marquee-item">
                 <Image src={p.logo} alt="" width={80} height={40} style={{ objectFit: 'contain' }} />
@@ -1249,7 +1230,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      )}
 
       {/* ── 12. CTA ──────────────────────────────────────────────────────────── */}
       <section
