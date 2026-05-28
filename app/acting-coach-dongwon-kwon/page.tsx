@@ -276,6 +276,23 @@ export default function CoachPage() {
         </div>
       </section>
 
+      {/* ===== CROSS-LINK — 관련 페이지 바로가기 ===== */}
+      <section aria-label="관련 페이지 바로가기" style={{ padding: '28px 0', background: 'var(--bg)', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
+        <div className="container">
+          <nav aria-label="관련 페이지 내비게이션" style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link href="/meisner-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', padding: '8px 16px', border: '1px solid var(--border)', borderRadius: '6px', textDecoration: 'none' }}>
+              마이즈너 정규 클래스
+            </Link>
+            <Link href="/reel-production-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', padding: '8px 16px', border: '1px solid var(--border)', borderRadius: '6px', textDecoration: 'none' }}>
+              출연영상 클래스
+            </Link>
+            <Link href="/sinchon-acting-academy" style={{ fontSize: '0.9rem', color: 'var(--navy)', padding: '8px 16px', border: '1px solid var(--border)', borderRadius: '6px', textDecoration: 'none' }}>
+              신촌 스튜디오 오시는 길
+            </Link>
+          </nav>
+        </div>
+      </section>
+
       {/* ===== FORM ===== */}
       <section id="form" aria-label="무료 상담 신청" style={{ scrollMarginTop: '80px', padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg2)' }}>
         <div className="container">
