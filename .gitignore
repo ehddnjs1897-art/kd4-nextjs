@@ -57,6 +57,10 @@ public/partners/replay.JPG
 # Supabase CLI temp files
 supabase/.temp/
 
+# 작업 초안 문서 — KD4-HUB로 옮기고 repo에는 두지 않음
+DRAFT_*.md
+DRAFT_*.txt
+
 # One-time diagnostic scripts (not for deployment)
 scripts/apply_utm_migration.ts
 scripts/convert-seowoo.mjs

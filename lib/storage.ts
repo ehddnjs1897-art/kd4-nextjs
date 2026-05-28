@@ -49,9 +49,10 @@ export async function uploadFile(
     return { url, path, provider: 'supabase' }
   }
 
-  // Phase B — R2
-  // TODO: Cloudflare R2 연동 구현
-  throw new Error('R2 not yet configured')
+  // Phase B (이미지/문서 R2): 미구현
+  // 영상용 R2는 lib/r2.ts에 별도 구현되어 사용 중.
+  // 이미지·문서를 R2로 이전할 계획이 생기면 여기에 구현.
+  throw new Error('R2 not configured for images/docs — videos use lib/r2.ts')
 }
 
 /**
@@ -66,9 +67,8 @@ export async function deleteFile(path: string, bucket: string): Promise<void> {
     return
   }
 
-  // Phase B — R2
-  // TODO: Cloudflare R2 연동 구현
-  throw new Error('R2 not yet configured')
+  // Phase B (이미지/문서 R2): 미구현 — lib/r2.ts는 영상 전용
+  throw new Error('R2 not configured for images/docs — videos use lib/r2.ts')
 }
 
 /**
@@ -80,7 +80,6 @@ export function getPublicUrl(path: string, bucket: string): string {
     return data.publicUrl
   }
 
-  // Phase B — R2
-  // TODO: Cloudflare R2 public URL 조합
-  throw new Error('R2 not yet configured')
+  // Phase B (이미지/문서 R2): 미구현 — lib/r2.ts는 영상 전용
+  throw new Error('R2 not configured for images/docs — videos use lib/r2.ts')
 }
