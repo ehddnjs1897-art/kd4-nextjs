@@ -293,6 +293,9 @@ export default function ReelPage() {
         <Link href="/acting-coach-dongwon-kwon" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
           권동원 리더 소개
         </Link>
+        <Link href="/sinchon-acting-academy" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
+          신촌 스튜디오 오시는 길
+        </Link>
         <Link href="/classes" style={{ fontSize: '0.9rem', color: 'var(--navy)' }}>
           전체 클래스 보기 <span aria-hidden="true">→</span>
         </Link>
