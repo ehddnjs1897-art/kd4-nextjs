@@ -61,6 +61,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   icons: {
     icon: '/favicon.ico',
+    apple: '/heart-logo.png',
   },
   openGraph: {
     title: 'KD4 액팅 스튜디오 | 서울 신촌 마이즈너 테크닉 연기학원',
