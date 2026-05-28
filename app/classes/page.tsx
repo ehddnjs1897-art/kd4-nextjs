@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { CLASSES, PROMO_DEADLINE } from '@/lib/classes'
 
 import { pixel } from '@/lib/analytics'
@@ -14,8 +14,12 @@ const CLASS_DETAIL_HREF: Record<string, string> = {
 }
 
 function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
-  // 모듈 스코프가 아닌 렌더 시 계산 — 장시간 탭 오픈 시 프로모 만료 즉시 반영
-  const isPromoExpired = Date.now() > new Date(PROMO_DEADLINE).getTime()
+  // useEffect로 client-only 계산 — SSR/hydration mismatch 방지 (PROMO_DEADLINE 경계 순간)
+  // SSR에서는 false(프로모 활성)로 렌더, 클라이언트 mount 시 실제 시각 반영
+  const [isPromoExpired, setIsPromoExpired] = useState(false)
+  useEffect(() => {
+    setIsPromoExpired(Date.now() > new Date(PROMO_DEADLINE).getTime())
+  }, [])
   const detailHref = CLASS_DETAIL_HREF[cls.nameKo]
   return (
     <div
