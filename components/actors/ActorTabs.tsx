@@ -3,6 +3,7 @@
 import { useState, useMemo, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import R2Video from '@/components/actors/R2Video'
+import PhotoLightbox from '@/components/actors/PhotoLightbox'
 
 /* ---- 타입 ---- */
 interface ActorPhoto {
@@ -105,6 +106,8 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
   const [saving, setSaving] = useState(false)
   const [editErr, setEditErr] = useState('')
   const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null)
+  // 라이트박스 상태 — 'profile' 또는 'current' + 인덱스
+  const [lightbox, setLightbox] = useState<{ source: 'profile' | 'current'; index: number } | null>(null)
   const editErrRef = useRef<HTMLDivElement>(null)
 
   // 필모그래피 편집 오류 발생 시 포커스 이동 (WCAG 2.4.3)
@@ -265,7 +268,13 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
             onDragStart={(e) => e.preventDefault()}
           >
             {stripPhotos.map((url, i) => (
-              <div key={url} style={s.photoCard}>
+              <button
+                key={url}
+                type="button"
+                onClick={() => setLightbox({ source: 'profile', index: i })}
+                aria-label={`${actor.name} 프로필 사진 ${i + 1} 확대 보기`}
+                style={{ ...s.photoCard, padding: 0, border: 'none', background: 'transparent', cursor: 'zoom-in' }}
+              >
                 {imageProtected ? (
                   <>
                     <div
@@ -290,7 +299,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                     />
                   </div>
                 )}
-              </div>
+              </button>
             ))}
           </div>
         </section>
@@ -313,15 +322,31 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
             {CURRENT_LABELS.map((labelText) => {
               const photo = currentPhotos.find(p => p.label === labelText)
               const src = photo ? photoSrc(photo) : null
+              // 라이트박스 인덱스: 이 라벨까지 src 존재하는 사진 카운트 - 1
+              const existingBeforeMe = CURRENT_LABELS
+                .slice(0, CURRENT_LABELS.indexOf(labelText))
+                .filter(l => {
+                  const p = currentPhotos.find(p => p.label === l)
+                  return p && photoSrc(p)
+                }).length
+              const lightboxIdx = src ? existingBeforeMe : -1
+              const openLightbox = src ? () => setLightbox({ source: 'current', index: lightboxIdx }) : undefined
               return (
                 <div key={labelText} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  <div style={{
-                    position: 'relative',
-                    width: '100%',
-                    paddingBottom: '133%', // 3:4 portrait
-                    background: 'var(--bg3)',
-                    borderRadius: 6,
-                    overflow: 'hidden',
+                  <div
+                    onClick={openLightbox}
+                    onKeyDown={openLightbox ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox() } } : undefined}
+                    role={openLightbox ? 'button' : undefined}
+                    tabIndex={openLightbox ? 0 : undefined}
+                    aria-label={openLightbox ? `${actor.name} ${labelText} 확대 보기` : undefined}
+                    style={{
+                      position: 'relative',
+                      width: '100%',
+                      paddingBottom: '133%', // 3:4 portrait
+                      background: 'var(--bg3)',
+                      borderRadius: 6,
+                      overflow: 'hidden',
+                      cursor: openLightbox ? 'zoom-in' : 'default',
                   }}>
                     {src ? (
                       imageProtected ? (
@@ -707,6 +732,30 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
           </div>
         </section>
       )}
+
+      {/* 사진 라이트박스 — 프로필 + 현재사진 통합 */}
+      {lightbox && (() => {
+        const sourcePhotos = lightbox.source === 'profile'
+          ? stripPhotos.map((url, i) => ({ url, alt: `${actor.name} 프로필 사진 ${i + 1}` }))
+          : (() => {
+              const items: { url: string; alt: string }[] = []
+              for (const label of CURRENT_LABELS) {
+                const photo = currentPhotos.find(p => p.label === label)
+                const src = photo ? photoSrc(photo) : null
+                if (src) items.push({ url: src, alt: `${actor.name} ${label}` })
+              }
+              return items
+            })()
+        return (
+          <PhotoLightbox
+            photos={sourcePhotos}
+            activeIndex={lightbox.index}
+            imageProtected={imageProtected}
+            onClose={() => setLightbox(null)}
+            onChange={(next) => setLightbox({ source: lightbox.source, index: next })}
+          />
+        )
+      })()}
     </div>
   )
 }

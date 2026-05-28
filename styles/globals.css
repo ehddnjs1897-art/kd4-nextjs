@@ -2017,10 +2017,56 @@ main {
 
 /* === PRINT STYLES — 배우 프로필 인쇄 최적화 === */
 @media print {
-  nav, footer, .no-print { display: none !important; }
-  body { background: #fff !important; color: #000 !important; }
+  /* 네비/푸터/플로팅 UI 모두 숨김 */
+  nav, footer, .no-print,
+  [role="dialog"],
+  .navbar, .sticky-top-bar, .sticky-bottom-cta,
+  button[aria-label*="공유"], button[aria-label*="복사"],
+  a[href*="kakao"], a[href*="instagram"],
+  .partner-marquee, .review-marquee, .marquee-wrap {
+    display: none !important;
+  }
+
+  /* 페이지 여백 */
+  @page { margin: 16mm 12mm; }
+
+  /* 라이트 색상 강제 */
+  html, body {
+    background: #fff !important;
+    color: #000 !important;
+    overflow: visible !important;
+  }
+
+  /* 본문 텍스트 컬러 일관성 */
+  h1, h2, h3, h4, h5, h6, p, span, li, td, th {
+    color: #000 !important;
+  }
+
+  /* 링크 — 검정·밑줄 제거 (인쇄용 깔끔) */
   a { color: #000 !important; text-decoration: none !important; }
-  img { max-width: 100% !important; page-break-inside: avoid; }
-  section, article { page-break-inside: avoid; }
-  h1, h2, h3 { page-break-after: avoid; }
+
+  /* 이미지 — 페이지 넘김 방지 + 최대 폭 */
+  img { max-width: 100% !important; page-break-inside: avoid; break-inside: avoid; }
+
+  /* 섹션 분리 보호 */
+  section, article, .card { page-break-inside: avoid; break-inside: avoid; }
+
+  /* 헤딩 다음 페이지로 끊김 방지 */
+  h1, h2, h3 { page-break-after: avoid; break-after: avoid; }
+
+  /* 골드/네이비 배경 제거 — 잉크 절약 */
+  [style*="background: var(--navy)"],
+  [style*="background:var(--navy)"],
+  [style*="background: var(--gold)"],
+  [style*="background:var(--gold)"],
+  [style*="background: var(--bg2)"],
+  [style*="background:var(--bg2)"] {
+    background: transparent !important;
+    border: 1px solid #ccc !important;
+  }
+
+  /* 입력 폼 / 버튼 — 인쇄에 무의미 */
+  input, textarea, select, button {
+    display: none !important;
+  }
 }

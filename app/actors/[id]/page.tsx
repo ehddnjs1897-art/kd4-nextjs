@@ -510,6 +510,86 @@ export default async function ActorDetailPage({
       {/* 메인 구분선 */}
       <div style={{ borderTop: '2px solid var(--border)' }} />
 
+      {/* 하이라이트 strip — 수상·최근출연·특이 스킬 (있을 때만 노출) */}
+      {(() => {
+        const awards = (actor.actor_filmography ?? []).filter(f => f.award && f.award.trim())
+        const currentYear = new Date().getFullYear()
+        const recent = (actor.actor_filmography ?? [])
+          .filter(f => (f.year ?? 0) >= currentYear - 1 && f.title)
+          .sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
+          .slice(0, 2)
+        const featuredSkills = (actor.skills ?? []).slice(0, 4)
+        const hasHighlight = awards.length > 0 || recent.length > 0 || featuredSkills.length > 0 || (actor.casting_tags && actor.casting_tags.length > 0)
+        if (!hasHighlight) return null
+
+        return (
+          <section
+            aria-label={`${actor.name} 하이라이트`}
+            style={{
+              maxWidth: 960,
+              margin: '0 auto',
+              padding: '32px clamp(20px,4vw,32px) 0',
+            }}
+          >
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gap: 14,
+            }}>
+              {recent.length > 0 && (
+                <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 8, padding: '14px 18px' }}>
+                  <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.65rem', letterSpacing: '0.2em', color: 'var(--gold)', marginBottom: 8 }}>
+                    <span lang="en">NOW PLAYING</span>
+                  </p>
+                  <ul role="list" style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    {recent.map((f) => (
+                      <li key={f.id} style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--white)', lineHeight: 1.4 }}>
+                        {f.title}
+                        {f.role && <span style={{ color: 'var(--gray)', fontWeight: 400, fontSize: '0.78rem' }}> · {f.role}</span>}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {awards.length > 0 && (
+                <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 8, padding: '14px 18px' }}>
+                  <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.65rem', letterSpacing: '0.2em', color: 'var(--gold)', marginBottom: 8 }}>
+                    <span lang="en">AWARDS</span>
+                  </p>
+                  <ul role="list" style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    {awards.slice(0, 3).map((f) => (
+                      <li key={f.id} style={{ fontSize: '0.85rem', color: 'var(--white)', lineHeight: 1.4 }}>
+                        {f.award}
+                        {f.title && <span style={{ color: 'var(--gray)', fontSize: '0.78rem' }}> · {f.title}</span>}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {featuredSkills.length > 0 && (
+                <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 8, padding: '14px 18px' }}>
+                  <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.65rem', letterSpacing: '0.2em', color: 'var(--gold)', marginBottom: 8 }}>
+                    <span lang="en">SPECIAL SKILLS</span>
+                  </p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    {featuredSkills.map((sk) => (
+                      <span key={sk} style={{
+                        fontSize: '0.78rem',
+                        background: 'rgba(21,72,138,0.08)',
+                        border: '1px solid rgba(21,72,138,0.18)',
+                        color: 'var(--gold)',
+                        padding: '4px 10px',
+                        borderRadius: 4,
+                      }}>{sk}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+        )
+      })()}
+
       {/* ActorTabs — 전체 폭 */}
       <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 clamp(20px,4vw,32px)', paddingTop: 44 }}>
         <ActorTabs actor={actorForClient} canViewContact={canContact} imageProtected={!canContact} canEdit={isOwner} />
