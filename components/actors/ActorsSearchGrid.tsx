@@ -107,7 +107,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
         )}
       </div>
       {filtered.length > 0 && (
-        <div style={gridStyle} className="actors-grid">
+        <div style={gridStyle} className="actors-grid" role="list" aria-label="배우 목록">
           {filtered.map((actor, idx) => (
             <Link key={actor.id} href={`/actors/${actor.id}`} style={cardStyle} className="actor-card" aria-label={`${actor.name} 배우 프로필 보기`}>
               <div style={imageWrapStyle}>

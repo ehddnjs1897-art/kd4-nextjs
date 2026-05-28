@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
+import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { MapPin, Train, Clock, Navigation, Map as MapIcon } from 'lucide-react'
 import { SINCHON_FAQ } from '@/lib/landing-faqs'
@@ -201,6 +202,27 @@ export default function SinchonPage() {
           .sinchon-studio-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
+
+      {/* ===== RELATED CLASSES — 내부 교차 링크 ===== */}
+      <section aria-label="신촌에서 배울 수 있는 클래스" style={{ padding: 'clamp(40px, 7vw, 64px) 0', background: 'var(--bg)', borderTop: '1px solid var(--border)' }}>
+        <div className="container">
+          <div style={{ maxWidth: '760px', margin: '0 auto', textAlign: 'center' }}>
+            <p className="section-eyebrow"><span lang="en">CLASSES</span></p>
+            <h2 className="section-title-serif" style={{ marginBottom: '20px' }}>신촌에서 배울 수 있는 클래스</h2>
+            <nav aria-label="클래스 페이지 바로가기" style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <Link href="/meisner-technique-class" style={{ display: 'inline-block', padding: '11px 22px', background: 'var(--bg2)', border: '1px solid var(--border-strong)', borderRadius: '8px', fontSize: '0.88rem', fontWeight: 600, color: 'var(--navy)', textDecoration: 'none' }}>
+                마이즈너 테크닉 정규 클래스 →
+              </Link>
+              <Link href="/reel-production-class" style={{ display: 'inline-block', padding: '11px 22px', background: 'var(--bg2)', border: '1px solid var(--border-strong)', borderRadius: '8px', fontSize: '0.88rem', fontWeight: 600, color: 'var(--navy)', textDecoration: 'none' }}>
+                출연영상 클래스 →
+              </Link>
+              <Link href="/acting-coach-dongwon-kwon" style={{ display: 'inline-block', padding: '11px 22px', background: 'var(--bg2)', border: '1px solid var(--border-strong)', borderRadius: '8px', fontSize: '0.88rem', fontWeight: 600, color: 'var(--navy)', textDecoration: 'none' }}>
+                권동원 연기코치 소개 →
+              </Link>
+            </nav>
+          </div>
+        </div>
+      </section>
 
       {/* ===== FAQ ===== */}
       <section aria-label="위치·교통 자주 묻는 질문" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>

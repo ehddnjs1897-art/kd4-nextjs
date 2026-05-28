@@ -30,6 +30,7 @@ const nextConfig: NextConfig = {
       },
     ],
     formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 86400,
   },
   experimental: {
     optimizePackageImports: ['lucide-react', 'gsap', 'three'],

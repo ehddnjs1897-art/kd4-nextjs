@@ -1020,13 +1020,13 @@ export default function HomePage() {
           {/* 3개 미니 카드 — canonical 카드 패턴 (tag + 클래스명 + 한 줄) */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14, marginBottom: 40 }}>
             {[
-              { tag: "BEGINNER", num: "01", title: "베이직 클래스", desc: "취미로 연기를 시작하고 싶은 분" },
-              { tag: "TRAINING", num: "02", title: "마이즈너 테크닉 정규 클래스", desc: "제대로 배우 훈련을 받고 싶은 분" },
-              { tag: "PORTFOLIO", num: "03", title: "출연영상 클래스", desc: "캐스팅되는 포트폴리오를 만들고 싶은 분" },
-            ].map(({ tag, num, title, desc }) => (
+              { tag: "BEGINNER", num: "01", title: "베이직 클래스", desc: "취미로 연기를 시작하고 싶은 분", href: "/classes" },
+              { tag: "TRAINING", num: "02", title: "마이즈너 테크닉 정규 클래스", desc: "제대로 배우 훈련을 받고 싶은 분", href: "/meisner-technique-class" },
+              { tag: "PORTFOLIO", num: "03", title: "출연영상 클래스", desc: "캐스팅되는 포트폴리오를 만들고 싶은 분", href: "/reel-production-class" },
+            ].map(({ tag, num, title, desc, href }) => (
               <Link
                 key={title}
-                href="/classes"
+                href={href}
                 style={{
                   background: "var(--bg2)",
                   border: "1px solid var(--border)",
@@ -1126,6 +1126,14 @@ export default function HomePage() {
               무료 상담 신청
             </Link>
           </div>
+
+          {/* 내부 교차 링크 — SEO: Googlebot 1-hop 연결 */}
+          <nav aria-label="강사 및 위치 안내" style={{ marginTop: 28, textAlign: "center", borderTop: "1px solid var(--border)", paddingTop: 20 }}>
+            <div style={{ display: "flex", gap: 24, justifyContent: "center", flexWrap: "wrap" }}>
+              <Link href="/acting-coach-dongwon-kwon" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none" }}>권동원 연기코치 →</Link>
+              <Link href="/sinchon-acting-academy" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none" }}>신촌 연기학원 오시는 길 →</Link>
+            </div>
+          </nav>
         </div>
       </section>
 
