@@ -14,7 +14,7 @@ const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
 const PAGE_URL = `${SITE_URL}/sinchon-acting-academy`
 
 // 위치 / 길찾기 (구글 지도 임베드 제거 — 약도가 메인)
-const ADDRESS_FULL = '서울시 서대문구 대현동 90-7 아리움3차 1층 101호'
+const ADDRESS_FULL = '서울시 서대문구 이화여대1안길 12 아리움3차 1층 101호'
 const PLACE_Q = encodeURIComponent('KD4 액팅 스튜디오')
 // 길찾기 버튼은 상호명으로 검색 (주소로 하면 '아리움3차오피스텔'이 떠서)
 const NAVER_MAP = `https://map.naver.com/p/search/${PLACE_Q}`
@@ -29,7 +29,7 @@ const ACCESS_ITEMS = [
 export const metadata: Metadata = {
   title: '신촌 연기학원 — 서대문·이대·아현 마이즈너 테크닉',
   description:
-    '서대문구 대현동, 이대역 도보 3분. KD4 액팅 스튜디오는 마이즈너 테크닉 정규반과 출연영상 클래스 등 9개 클래스를 소수정예로 운영하는 신촌 연기학원입니다. 무료 상담 가능.',
+    '서대문구 이화여대1안길, 이대역 도보 3분. KD4 액팅 스튜디오는 마이즈너 테크닉 정규반과 출연영상 클래스 등 9개 클래스를 소수정예로 운영하는 신촌 연기학원입니다. 무료 상담 가능.',
   keywords: ['신촌 연기학원', '서대문 연기학원', '이대 연기학원', '아현 연기학원', '충정로 연기학원', 'KD4 액팅 스튜디오'],
   robots: { index: true, follow: true },
   alternates: { canonical: PAGE_URL },
@@ -75,7 +75,7 @@ export default function SinchonPage() {
             이대역 도보 3분,<br />신촌 마이즈너 테크닉 연기학원
           </h1>
           <p style={{ fontSize: 'clamp(0.95rem, 2.6vw, 1.05rem)', color: 'rgba(255,255,255,0.86)', lineHeight: 1.7, marginBottom: '32px', maxWidth: '560px', margin: '0 auto 32px', wordBreak: 'keep-all' }}>
-            서대문구 대현동, 권동원 리더 직강. 마이즈너 테크닉 정규반과 출연영상 클래스를 운영합니다.
+            서대문구 이화여대1안길, 권동원 리더 직강. 마이즈너 테크닉 정규반과 출연영상 클래스를 운영합니다.
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <JoinCTALink href="#form" location="sinchon-hero" label="무료 상담 신청" className="btn-primary" style={{ background: '#fff', color: 'var(--navy)' }}>

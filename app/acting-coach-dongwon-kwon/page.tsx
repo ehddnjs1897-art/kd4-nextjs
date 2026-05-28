@@ -14,7 +14,7 @@ const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
 
 const PAGE_URL = `${SITE_URL}/acting-coach-dongwon-kwon`
 
-// 권동원 직강 클래스 (오디션 테크닉·움직임·베이직 제외 — 전부 대표 직강)
+// 권동원 직강 클래스 (오디션 테크닉·움직임·베이직 제외 — 전부 리더 직강)
 const COACH_CLASS_NAMES = [
   '마이즈너 테크닉 정규 클래스',
   '출연영상 클래스',

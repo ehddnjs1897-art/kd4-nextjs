@@ -1590,7 +1590,7 @@ export default function JoinPage() {
                 letterSpacing: '0.01em',
               }}
             >
-              서울시 서대문구 대현동 90-7 아리움3차 1F
+              서울시 서대문구 이화여대1안길 12 아리움3차 1F
             </p>
           </div>
         </div>

@@ -233,7 +233,7 @@ export interface DirectorProfile {
 
 export const DIRECTOR: DirectorProfile = {
   name: "권동원",
-  title: "KD4 대표 · 현역 배우",
+  title: "KD4 액팅 코치 (리더) · 현역 배우",
   photo: "/director.jpg",
   quote:
     "같이 현장에서 일하는 동료로서 훈련을 리드합니다. 이론만이 아니라 지금 촬영장에서 통하는 연기와 노하우를 공유합니다.",

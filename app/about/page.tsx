@@ -523,7 +523,7 @@ export default function AboutPage() {
               <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.95rem', color: 'var(--secondary)', lineHeight: 1.8 }}>
                 서울시 서대문구 이화여대1안길 12<br />
                 아리움3차 1층 101호<br />
-                <span style={{ color: 'var(--gold)', fontSize: '0.85rem' }}>이대역 도보 2분 · 1층 위치</span>
+                <span style={{ color: 'var(--gold)', fontSize: '0.85rem' }}>이대역 도보 3분 · 1층 위치</span>
               </p>
               <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <a
