@@ -46,8 +46,9 @@ const REVIEW_ITEMS_2 = [
 ]
 
 const PARTNERS = [
-  { name: '서울대학교', logo: '/partners/snu-logo.png' },
-  { name: '고려대학교', logo: '/partners/ku-logo.png' },
+  // 서울대·고려대 — 공식 로고 출처 검증 전까지 일시 제외 (2026-05-25)
+  // { name: '서울대학교', logo: '/partners/snu-logo.png' },
+  // { name: '고려대학교', logo: '/partners/ku-logo.png' },
   { name: 'CGV', logo: '/partners/cgv-logo.jpeg' },
   { name: 'Needs.N', logo: '/partners/neezn-logo.jpeg' },
   { name: '컴플렉시온', logo: '/partners/complexion-logo.jpeg' },
@@ -1207,6 +1208,8 @@ export default function HomePage() {
       </section>
 
       {/* ── Partners ─────────────────────────────────────────────────────────── */}
+      {/* 메인 페이지에서 임시 숨김 (2026-05-25). 복구하려면 아래 false 를 true 로 바꾸면 됨. */}
+      {false && (
       <section id="partners" aria-label="함께한 기업" style={{ padding: '48px 0', borderTop: '1px solid var(--border)' }}>
         {/* sr-only h2: AT 헤딩 내비게이션용 (시각적으로는 아래 p가 표시됨) */}
         <h2 className="sr-only">함께한 기업</h2>
@@ -1246,6 +1249,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* ── 12. CTA ──────────────────────────────────────────────────────────── */}
       <section
