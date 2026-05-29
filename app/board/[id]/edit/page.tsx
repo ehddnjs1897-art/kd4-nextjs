@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, lazy, Suspense } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+const RichTextEditor = lazy(() => import('@/components/board/RichTextEditor'))
 
 const ALL_CATEGORIES = ['일반', '공지', '질문', '자유', '수업'] as const
 const USER_CATEGORIES = ['일반', '질문', '자유', '수업'] as const
@@ -212,26 +213,10 @@ export default function EditPage() {
 
           {/* 내용 */}
           <div style={{ marginBottom: '28px' }}>
-            <label style={labelStyle} htmlFor="content">내용</label>
-            <textarea
-              id="content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="내용을 입력하세요"
-              required
-              rows={14}
-              maxLength={10000}
-              aria-invalid={!!error}
-              aria-describedby={error ? 'edit-form-error' : 'edit-content-count'}
-              style={{
-                ...inputStyle,
-                resize: 'vertical',
-                lineHeight: 1.7,
-              }}
-            />
-            <div id="edit-content-count" aria-live="off" style={{ textAlign: 'right', fontSize: '0.72rem', marginTop: '4px', color: content.length > 9000 ? '#e74c3c' : 'var(--gray)' }}>
-              {content.length}/10000
-            </div>
+            <label style={labelStyle}>내용</label>
+            <Suspense fallback={<div style={{ ...inputStyle, minHeight: 280, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray)', fontSize: '0.85rem' }}>에디터 로딩 중…</div>}>
+              <RichTextEditor value={content} onChange={setContent} placeholder="내용을 입력하세요 (이미지는 툴바의 🖼 이미지 버튼으로 삽입)" />
+            </Suspense>
           </div>
 
           {/* 버튼 */}

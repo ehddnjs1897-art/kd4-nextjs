@@ -2070,3 +2070,16 @@ main {
     display: none !important;
   }
 }
+
+/* === 게시글 HTML 본문 렌더링 === */
+.post-html-content p { margin: 0 0 4px; }
+.post-html-content h2 { font-size: 1.25rem; font-weight: 700; margin: 20px 0 8px; color: var(--white); font-family: var(--font-display); }
+.post-html-content h3 { font-size: 1.05rem; font-weight: 600; margin: 16px 0 6px; color: var(--white); font-family: var(--font-display); }
+.post-html-content ul { padding-left: 1.4em; list-style: disc; margin: 6px 0; }
+.post-html-content ol { padding-left: 1.4em; list-style: decimal; margin: 6px 0; }
+.post-html-content li { margin: 2px 0; }
+.post-html-content hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+.post-html-content strong { font-weight: 700; }
+.post-html-content em { font-style: italic; }
+.post-html-content img { max-width: 100%; height: auto; border-radius: var(--radius); margin: 12px 0; display: block; }
+.post-html-content a { color: var(--gold); text-decoration: underline; }

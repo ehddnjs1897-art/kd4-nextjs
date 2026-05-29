@@ -1,6 +1,7 @@
 import { cache } from 'react'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
+import DOMPurify from 'isomorphic-dompurify'
 import { createClient } from '@/lib/supabase/server'
 import CommentSection from '@/components/board/CommentSection'
 import DeletePostButton from '@/components/board/DeletePostButton'
@@ -36,6 +37,18 @@ interface Post {
   views: number
   created_at: string
   updated_at: string | null
+}
+
+function isHtmlContent(content: string) {
+  return /<[a-z][\s\S]*>/i.test(content)
+}
+
+function sanitizeHtml(html: string) {
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'h2', 'h3', 'ul', 'ol', 'li', 'hr', 'img', 'a'],
+    ALLOWED_ATTR: ['src', 'alt', 'href', 'target', 'rel'],
+    FORCE_BODY: true,
+  })
 }
 
 function formatDate(iso: string) {
@@ -218,20 +231,20 @@ export default async function PostDetailPage({ params }: { params: Params }) {
           </div>
         </div>
 
-        {/* 본문 */}
-        <div style={{
-          fontSize: '0.95rem',
-          color: 'var(--white)',
-          lineHeight: 1.9,
-          minHeight: '200px',
-          marginBottom: '16px',
-        }}>
-          {typedPost.content.split('\n').map((line, i) => (
-            <p key={i} style={{ margin: 0 }}>
-              {line || <>&nbsp;</>}
-            </p>
-          ))}
-        </div>
+        {/* 본문 — HTML이면 dangerouslySetInnerHTML, 아니면 줄바꿈 렌더 */}
+        {isHtmlContent(typedPost.content) ? (
+          <div
+            className="post-html-content"
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(typedPost.content) }}
+            style={{ fontSize: '0.95rem', color: 'var(--white)', lineHeight: 1.9, minHeight: '200px', marginBottom: '16px' }}
+          />
+        ) : (
+          <div style={{ fontSize: '0.95rem', color: 'var(--white)', lineHeight: 1.9, minHeight: '200px', marginBottom: '16px' }}>
+            {typedPost.content.split('\n').map((line, i) => (
+              <p key={i} style={{ margin: 0 }}>{line || <>&nbsp;</>}</p>
+            ))}
+          </div>
+        )}
         </article>
 
         {/* 댓글 섹션 */}
