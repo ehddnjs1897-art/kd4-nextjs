@@ -175,13 +175,13 @@ export default function SinchonPage() {
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow"><span lang="en">02 — STUDIO</span></p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>스튜디오</h2>
-            <p className="section-desc">정돈된 연습 공간과 머무는 라운지. 직접 보러 오셔도 됩니다.</p>
+            <p className="section-desc">배우를 위한 최적의 공간. 1층, 공조시설 완비. 대도구·소도구를 활용한 씬 액팅에 최적화.</p>
           </div>
           <div className="sinchon-studio-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', maxWidth: '1080px', margin: '0 auto' }}>
             {[
-              { src: '/sinchon/exterior.jpg', alt: 'KD4 액팅 스튜디오 외관 — 통유리 입구와 파란 사인', w: 1280, h: 996 },
-              { src: '/sinchon/studio.jpg',   alt: 'KD4 액팅 스튜디오 연습실 — 원목 바닥과 정돈된 빈 공간', w: 1280, h: 720 },
-              { src: '/sinchon/lounge.jpg',   alt: 'KD4 액팅 스튜디오 라운지 — 회색 소파와 스튜디오 조명',   w: 1280, h: 720 },
+              { src: '/sinchon/exterior.webp', alt: 'KD4 액팅 스튜디오 외관 — 통유리 입구와 파란 사인', w: 1280, h: 996 },
+              { src: '/sinchon/studio.webp',   alt: 'KD4 액팅 스튜디오 연습실 — 탁 트인 넓은 공간과 원목 바닥', w: 1280, h: 720 },
+              { src: '/sinchon/lounge.webp',   alt: 'KD4 액팅 스튜디오 — 씬 액팅 공간과 소파 라운지', w: 1280, h: 720 },
             ].map((img) => (
               <div key={img.src} style={{ aspectRatio: '4 / 3', borderRadius: '10px', overflow: 'hidden', background: 'var(--bg2)' }}>
                 <Image
