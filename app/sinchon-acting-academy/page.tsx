@@ -175,7 +175,7 @@ export default function SinchonPage() {
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow"><span lang="en">02 — STUDIO</span></p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>스튜디오</h2>
-            <p className="section-desc">배우를 위한 최적의 공간. 1층, 공조시설 완비. 대도구·소도구를 활용한 씬 액팅에 최적화.</p>
+            <p className="section-desc" style={{ textAlign: 'center', margin: '0 auto' }}>배우를 위한 최적의 공간. 1층, 공조시설 완비. 대도구·소도구를 활용한 씬 액팅에 최적화.</p>
           </div>
           <div className="sinchon-studio-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', maxWidth: '1080px', margin: '0 auto' }}>
             {[
