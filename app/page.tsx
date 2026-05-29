@@ -1212,9 +1212,10 @@ export default function HomePage() {
       </section>
 
       {/* ── Partners ─────────────────────────────────────────────────────────── */}
-      {/* 일시정지 버튼 제거 — prefers-reduced-motion 사용자는 globals.css에서 자동 정지됨 */}
+      {/* 2026-05-30: 대표님 요청으로 메인페이지에서 숨김 (이전 복원 커밋 7ac0082 무효화) */}
+      {/* 복원 시 아래 주석을 풀고 PARTNERS 상수도 유지할 것 */}
+      {/*
       <section id="partners" aria-label="함께한 기업" style={{ padding: '48px 0', borderTop: '1px solid var(--border)' }}>
-        {/* sr-only h2: AT 헤딩 내비게이션용 (시각적으로는 아래 p가 표시됨) */}
         <h2 className="sr-only">함께한 기업</h2>
         <p style={{ fontFamily: 'var(--font-display), "Noto Sans KR", sans-serif', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.2em', color: 'var(--secondary)', textAlign: 'center', marginBottom: '24px', opacity: 0.6 }}>
           함께한 기업
@@ -1236,6 +1237,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      */}
 
       {/* ── 12. CTA ──────────────────────────────────────────────────────────── */}
       <section
