@@ -58,6 +58,7 @@ interface CommunityItem {
   title: string
   leader: string
   desc: string
+  pricing?: { label: string; price: string; note?: string }[]
 }
 
 const COMMUNITIES: CommunityItem[] = [
@@ -66,6 +67,11 @@ const COMMUNITIES: CommunityItem[] = [
     title: '레피티션 스터디',
     leader: '홍수민 리더',
     desc: '자율적으로 모여 마이즈너 테크닉 레피티션을 훈련합니다. KD4 멤버가 아니어도 누구나 참여 가능',
+    pricing: [
+      { label: '대표 직강 수강 중', price: '무료', note: '출연영상 클래스·마이즈너 정규·출연영상 1달·출연영상 심화·리더 클래스' },
+      { label: '강사 수업 수강 중', price: '50,000원', note: '오디션 테크닉·베이직 클래스 (50% 할인)' },
+      { label: '비수강생', price: '100,000원' },
+    ],
   },
   {
     emoji: '🎥',
@@ -521,6 +527,34 @@ export default function BenefitsPage() {
                 color: 'var(--secondary)',
                 lineHeight: 1.7,
               }}>{item.desc}</p>
+
+              {item.pricing && (
+                <>
+                  <hr style={{ border: 'none', borderTop: '1px solid rgba(255,255,255,0.08)', margin: '8px 0 4px' }} />
+                  <p style={{
+                    fontFamily: 'var(--font-display), Oswald, sans-serif',
+                    fontSize: '0.68rem',
+                    letterSpacing: '0.2em',
+                    color: 'var(--gold)',
+                    textTransform: 'uppercase',
+                    marginBottom: '8px',
+                    fontWeight: 700,
+                  }}>참여비 (월 기준)</p>
+                  <ul role="list" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 7 }}>
+                    {item.pricing.map((p) => (
+                      <li key={p.label} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 8 }}>
+                          <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.83rem', color: 'var(--secondary)' }}>{p.label}</span>
+                          <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 700, color: 'var(--white)', whiteSpace: 'nowrap' }}>{p.price}</span>
+                        </div>
+                        {p.note && (
+                          <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.73rem', color: 'rgba(255,255,255,0.32)', lineHeight: 1.45 }}>{p.note}</span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
             </div>
           ))}
         </div>
