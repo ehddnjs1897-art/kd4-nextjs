@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
 
     let query = supabase
       .from('posts')
-      .select('id, title, category, author_name, views, created_at', { count: 'exact' })
+      .select('id, title, category, author_name, views, created_at, content', { count: 'exact' })
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1)
 
@@ -86,7 +86,14 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: '게시글 조회 중 오류가 발생했습니다.' }, { status: 500 })
     }
 
-    return NextResponse.json({ data, total: count, page, limit }, { headers: { 'Cache-Control': 'private, no-store' } })
+    // content에서 첫 번째 <img src="..."> 추출해 thumbnail_url로 노출, content 자체는 제거
+    const IMG_RE = /<img[^>]+src="([^"]+)"/i
+    const mapped = (data ?? []).map(({ content, ...rest }) => ({
+      ...rest,
+      thumbnail_url: content ? (IMG_RE.exec(content)?.[1] ?? null) : null,
+    }))
+
+    return NextResponse.json({ data: mapped, total: count, page, limit }, { headers: { 'Cache-Control': 'private, no-store' } })
   } catch (err) {
     console.error('[GET /api/posts]', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '게시글 조회 중 오류가 발생했습니다.' }, { status: 500 })

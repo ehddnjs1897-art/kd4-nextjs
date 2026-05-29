@@ -14,6 +14,7 @@ interface Post {
   author_name: string
   views: number
   created_at: string
+  thumbnail_url?: string | null
 }
 
 function formatDate(iso: string) {
@@ -231,7 +232,42 @@ export default function BoardClient({
         <button type="submit" className="sr-only">검색</button>
       </form>
 
-      {/* 게시글 테이블 */}
+      {/* 공지 갤러리 — 공지 카테고리이거나 전체 탭에서 공지 포함 시 카드 그리드 표시 */}
+      {(() => {
+        const notices = posts.filter(p => p.category === '공지' && p.thumbnail_url)
+        if (notices.length === 0) return null
+        // 공지 탭이면 전체를 갤러리로, 전체 탭이면 상단에만 표시
+        const showingNoticeTab = activeCategory === '공지'
+        return (
+          <section aria-label="공지 갤러리" style={{ marginBottom: '28px' }}>
+            {!showingNoticeTab && (
+              <p style={{ fontSize: '0.75rem', fontWeight: 600, color: '#e74c3c', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>
+                📢 공지
+              </p>
+            )}
+            <div className="notice-gallery">
+              {notices.map(post => (
+                <Link key={post.id} href={`/board/${post.id}`} className="notice-card" aria-label={post.title}>
+                  <div className="notice-card-img">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={post.thumbnail_url!} alt={post.title} loading="lazy" />
+                  </div>
+                  <div className="notice-card-body">
+                    <span className="notice-card-badge">공지</span>
+                    <p className="notice-card-title">{post.title}</p>
+                    <time className="notice-card-date" dateTime={post.created_at}>{formatDate(post.created_at)}</time>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )
+      })()}
+
+      {/* 공지 탭이고 전부 갤러리로 렌더했으면 테이블 숨김 */}
+      {activeCategory === '공지' && posts.every(p => p.thumbnail_url) ? null : (
+
+      /* 게시글 테이블 */
       <div
         role="table"
         aria-label="게시글 목록"
@@ -301,6 +337,7 @@ export default function BoardClient({
         )}
         </div>
       </div>
+      )}
 
       {/* 더 보기 버튼 */}
       {!loading && !fetchError && hasMore && (
@@ -370,6 +407,72 @@ export default function BoardClient({
         @media (min-width: 561px) and (max-width: 720px) {
           .board-header, .board-row { grid-template-columns: 72px 1fr 90px; }
           .board-col-hide-xs { display: none; }
+        }
+
+        /* 공지 갤러리 */
+        .notice-gallery {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 16px;
+        }
+        @media (max-width: 640px) {
+          .notice-gallery { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        }
+        .notice-card {
+          text-decoration: none;
+          border-radius: calc(var(--radius) + 2px);
+          overflow: hidden;
+          border: 1px solid var(--border);
+          background: var(--bg2);
+          transition: box-shadow 0.2s, transform 0.2s;
+          display: flex;
+          flex-direction: column;
+        }
+        .notice-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
+        .notice-card-img {
+          aspect-ratio: 16/9;
+          overflow: hidden;
+          background: var(--bg3);
+        }
+        .notice-card-img img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          transition: transform 0.3s;
+        }
+        .notice-card:hover .notice-card-img img { transform: scale(1.04); }
+        .notice-card-body {
+          padding: 12px 14px;
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+        }
+        .notice-card-badge {
+          display: inline-block;
+          padding: 2px 7px;
+          background: #e74c3c;
+          color: #fff;
+          font-size: 0.68rem;
+          font-weight: 700;
+          border-radius: 2px;
+          letter-spacing: 0.05em;
+          width: fit-content;
+        }
+        .notice-card-title {
+          font-size: 0.88rem;
+          font-weight: 600;
+          color: var(--white);
+          line-height: 1.4;
+          margin: 0;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+        .notice-card-date {
+          font-size: 0.75rem;
+          color: var(--gray);
         }
       `}</style>
     </div>
