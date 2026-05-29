@@ -217,7 +217,7 @@ export default function SinchonPage() {
                 출연영상 클래스 →
               </Link>
               <Link href="/acting-coach-dongwon-kwon" style={{ display: 'inline-block', padding: '11px 22px', background: 'var(--bg2)', border: '1px solid var(--border-strong)', borderRadius: '8px', fontSize: '0.88rem', fontWeight: 600, color: 'var(--navy)', textDecoration: 'none' }}>
-                권동원 연기코치 소개 →
+                권동원 액팅코치 소개 →
               </Link>
             </nav>
           </div>
