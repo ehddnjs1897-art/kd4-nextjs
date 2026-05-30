@@ -8,7 +8,7 @@ import { buildBreadcrumb, buildOrganization } from '@/lib/seo-schemas'
 export const metadata: Metadata = {
   title: '멤버 혜택',
   description:
-    'KD4 멤버가 누리는 혜택과 커뮤니티 — 보강제도, 출연영상·프로필 편집 서비스(편집 5만원·프로필 3만원), 레피티션 스터디, 굿무비 굿액팅, 크리스쳔 액터스 커뮤니티, 신규 멤버 최대 10만원 할인.',
+    'KD4 멤버가 누리는 혜택과 커뮤니티 — 보강제도, 출연영상·프로필 편집 서비스(편집 5만원·프로필 3만원), 레피티션 스터디, 굿무비 굿액팅, 크리스쳔 액터스 커뮤니티, 다양한 할인 혜택.',
   robots: { index: true, follow: true },
   alternates: { canonical: `${SITE_URL}/benefits` },
   keywords: ['KD4 멤버 혜택', '연기학원 혜택', '배우 프로필 편집', '출연영상 제작', '레피티션 스터디', '신촌 연기 커뮤니티', 'KD4 커뮤니티'],
@@ -88,7 +88,6 @@ const COMMUNITIES: CommunityItem[] = [
 ]
 
 const DISCOUNTS = [
-  { tag: '웰컴 할인', title: '첫 달 10만원 할인', desc: '또는 무료 오픈클래스 중 택1 · 신규 등록 시 적용' },
   { tag: '컴백 할인', title: '첫 달 5만원 할인', desc: '6개월 이상 휴면 후 복귀 시 적용' },
   { tag: '포트폴리오 할인', title: '출연영상 1달 완성 클래스 신청 시 30% 할인', desc: '출연영상 2회 이상 수료한 KD4 멤버' },
   { tag: '앰배서더 할인', title: '지인 소개로 등록 시 두 분 모두 각 3만원 할인', desc: '지인 소개로 등록 시, 소개한 분과 등록한 분 모두 각 3만원씩 할인' },

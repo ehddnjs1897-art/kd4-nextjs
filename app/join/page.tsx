@@ -60,7 +60,9 @@ export const revalidate = 3600
 
 /* ── 상수 ────────────────────────────────────────────────────────── */
 /* 강사 사진은 DIRECTOR.photo 참조 (/director.jpg) — Director 섹션용 */
-const DEADLINE = '2026-05-31T23:59:59'  // 5월 모집 마감 (날짜 확정 시 업데이트)
+// 2026-05-30: 봄맞이 프로모션 종료 — 과거 시각으로 두어 isDeadlineExpired=true 유지
+// 다음 프로모션 시작 시 미래 날짜로 갱신 (lib/classes.ts의 promoLabel/originalPrice도 함께 부활)
+const DEADLINE = '2026-05-30T00:00:00'
 
 /* ── lib/classes.ts 데이터 재사용 ─────────────────────────────────── */
 const MAIN_CLASS = CLASSES.find((c) => c.nameKo === '마이즈너 테크닉 정규 클래스')!
@@ -74,12 +76,6 @@ const OPEN_COHORTS = [
 
 /* ── 할인 혜택 목록 ─────────────────────────────────────────── */
 const DISCOUNTS = [
-  {
-    tag: '웰컴 할인',
-    title: '첫 달 10만원 할인',
-    desc: '또는 무료 오픈클래스 중 택1 · 신규 등록 시 적용',
-    isNew: false,
-  },
   {
     tag: '컴백 할인',
     title: '첫 달 5만원 할인',
@@ -716,16 +712,16 @@ export default function JoinPage() {
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow">
-              <span lang="en">{isDeadlineExpired ? '04 — SPECIAL OFFER' : '04 — SPRING SPECIAL'}</span>
+              <span lang="en">04 — SPECIAL OFFER</span>
             </p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
             >
-              {isDeadlineExpired ? '수강 신청 혜택' : <><span aria-hidden="true">🌸</span> 봄맞이 스페셜</>}
+              수강 신청 혜택
             </h2>
             <p style={{ fontSize: '0.95rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-              <strong style={{ color: 'var(--accent-red)' }}>첫 달 10만원 할인</strong>
+              KD4 멤버를 위한 다양한 할인 혜택
             </p>
           </div>
 
@@ -825,21 +821,8 @@ export default function JoinPage() {
                   </div>
                 </div>
                 <div className="class-card-footer">
-                  {/* 첫 달 할인가 (강조) */}
+                  {/* 월 수강료 */}
                   <div style={{ marginBottom: '8px' }}>
-                    <span
-                      style={{
-                        display: 'inline-block',
-                        fontFamily: 'var(--font-display)',
-                        fontSize: '0.75rem',
-                        letterSpacing: '0.12em',
-                        color: 'var(--accent-red)',
-                        fontWeight: 700,
-                        marginBottom: '4px',
-                      }}
-                    >
-                      첫 달
-                    </span>
                     <div
                       style={{
                         display: 'flex',
