@@ -10,7 +10,6 @@ import {
   Handshake,
   ArrowRight,
   MessageCircle,
-  Clock,
   ShieldCheck,
   HeartHandshake,
 } from 'lucide-react'
@@ -28,7 +27,6 @@ const JoinPageView = dynamic(() => import('@/components/analytics/JoinPageView')
 const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
 const StickyBottomCTA = dynamic(() => import('@/components/join/StickyBottomCTA'))
 const ScrollDepth = dynamic(() => import('@/components/analytics/ScrollDepth'))
-const CountdownTimer = dynamic(() => import('@/components/ui/CountdownTimer'))
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
 const YouTubeFacade = dynamic(() => import('@/components/youtube/YouTubeFacade'))
 
@@ -54,15 +52,12 @@ export const metadata: Metadata = {
   },
 }
 
-// isDeadlineExpired는 new Date()를 사용 → 빌드 시 정적 캐싱되면 마감일 이후에도 stale 값이 됨
-// revalidate = 3600으로 최대 1시간 내 반드시 재생성
 export const revalidate = 3600
 
 /* ── 상수 ────────────────────────────────────────────────────────── */
 /* 강사 사진은 DIRECTOR.photo 참조 (/director.jpg) — Director 섹션용 */
-// 2026-05-30: 봄맞이 프로모션 종료 — 과거 시각으로 두어 isDeadlineExpired=true 유지
-// 다음 프로모션 시작 시 미래 날짜로 갱신 (lib/classes.ts의 promoLabel/originalPrice도 함께 부활)
-const DEADLINE = '2026-05-30T00:00:00'
+/* 2026-05-30: 봄맞이 프로모션 종료 — 카운트다운/마감 카피 전부 제거.
+   다음 프로모션 시 CountdownTimer + DEADLINE + lib/classes.ts promoLabel/originalPrice 부활. */
 
 /* ── lib/classes.ts 데이터 재사용 ─────────────────────────────────── */
 const MAIN_CLASS = CLASSES.find((c) => c.nameKo === '마이즈너 테크닉 정규 클래스')!
@@ -162,8 +157,6 @@ const GUARANTEES = [
 /* ══════════════════════════════════════════════════════════════════ */
 
 export default function JoinPage() {
-  const isDeadlineExpired = new Date() > new Date(DEADLINE)
-
   return (
     <>
       <div
@@ -725,39 +718,6 @@ export default function JoinPage() {
             </p>
           </div>
 
-          {/* 카운트다운 — 마감 전에만 표시 */}
-          {!isDeadlineExpired && (
-            <div
-              style={{
-                background: 'var(--bg2)',
-                border: '1px solid var(--border)',
-                borderRadius: 'var(--radius)',
-                padding: '28px 20px',
-                maxWidth: '520px',
-                margin: '0 auto 28px',
-                textAlign: 'center',
-              }}
-            >
-              <p
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: '0.7rem',
-                  letterSpacing: '0.2em',
-                  color: 'var(--accent-red)',
-                  marginBottom: '16px',
-                  textTransform: 'uppercase',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                }}
-              >
-                <Clock aria-hidden={true} size={13} strokeWidth={1.8} />
-                할인 마감까지
-              </p>
-              <CountdownTimer deadline={DEADLINE} />
-            </div>
-          )}
-
           {/* 클래스 카드 */}
           <div
             style={{
@@ -875,7 +835,7 @@ export default function JoinPage() {
                             fontWeight: 600,
                           }}
                         >
-                          한번에 결제 시 5만원 추가 할인 <span aria-hidden="true">→</span>{' '}
+                          전체 수강료 일시납 시 5만원 할인 <span aria-hidden="true">→</span>{' '}
                           <strong>{lumpSumPrice.toLocaleString()}원</strong>
                         </p>
                       </>
@@ -1007,12 +967,7 @@ export default function JoinPage() {
                 지금 신청하기
                 <ArrowRight aria-hidden={true} size={15} strokeWidth={2.2} />
               </JoinCTALink>
-              {!isDeadlineExpired && (
-                <p style={{ fontSize: '0.72rem', color: 'var(--gray)', marginTop: '8px' }}>
-                  * 5월까지 · 선착순 마감 시 조기 종료
-                </p>
-              )}
-              <p style={{ fontSize: '0.72rem', color: 'var(--gray)', marginTop: '4px' }}>
+              <p style={{ fontSize: '0.72rem', color: 'var(--gray)', marginTop: '8px' }}>
                 * 모든 할인은 중복 적용되지 않으며, 가장 큰 혜택 하나만 적용됩니다
               </p>
             </div>

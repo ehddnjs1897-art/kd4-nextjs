@@ -13,7 +13,7 @@ export interface ClassItem {
   price: string;
   originalPrice?: string;       // 할인 전 원가 (할인 중일 때만, 2026-05-30 봄맞이 종료로 모두 제거)
   promoLabel?: string;           // 프로모션 라벨 (현재 미사용, 다음 프로모션 시 부활 가능)
-  lumpSumDiscount?: number;      // 일시불 결제 시 추가 할인액
+  lumpSumDiscount?: number;      // 전체 수강료 일시납 시 추가 할인액
   remainingSeats?: number;       // 잔여석 뱃지 (null이면 표시 안 함)
   instructor?: string;
   highlight?: boolean;
@@ -62,7 +62,7 @@ export const CLASSES: ClassItem[] = [
     duration: "4시간",
     capacity: "8명",
     course: "4개월 코스",
-    price: "250,000",
+    price: "350,000",
     remainingSeats: 3,
     instructor: "권동원 대표",
     highlight: true,
@@ -85,7 +85,7 @@ export const CLASSES: ClassItem[] = [
     duration: "4시간",
     capacity: "6명",
     course: "3개월 코스",
-    price: "300,000",
+    price: "400,000",
     remainingSeats: 2,
     instructor: "권동원 대표",
     highlight: true,
