@@ -319,12 +319,12 @@ export default function JoinPage() {
             <JoinCTALink
               href="#form-hero"
               location="hero"
-              label={`잔여 ${MAIN_CLASS.remainingSeats ?? 2}석 — 지금 무료 상담 신청`}
+              label="지금 무료 상담 신청"
               fireLead
               className="btn-primary uplift-cta-pulse"
               style={{ background: 'var(--navy)', color: '#ffffff' }}
             >
-              잔여 {MAIN_CLASS.remainingSeats ?? 2}석 — 지금 무료 상담 신청
+              지금 무료 상담 신청
               <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} />
             </JoinCTALink>
             <JoinCTALink
@@ -730,8 +730,8 @@ export default function JoinPage() {
           >
             {[MAIN_CLASS, FILM_CLASS].map((cls) => (
               <div key={cls.nameKo} className="class-card" style={{ position: 'relative' }}>
-                {/* 잔여석 뱃지 — 우측 상단 */}
-                {cls.remainingSeats !== undefined && (
+                {/* HOT 뱃지 — 우측 상단 (인기 클래스) */}
+                {cls.hot && (
                   <span
                     style={{
                       position: 'absolute',
@@ -740,28 +740,18 @@ export default function JoinPage() {
                       zIndex: 2,
                       display: 'inline-flex',
                       alignItems: 'center',
-                      gap: '5px',
+                      gap: '4px',
                       fontSize: '0.72rem',
-                      fontWeight: 700,
-                      color: 'var(--accent-red)',
-                      background: 'var(--accent-red-soft)',
-                      border: '1px solid rgba(199,62,62,0.25)',
+                      fontWeight: 800,
+                      color: '#fff',
+                      background: 'var(--accent-red)',
                       borderRadius: '999px',
-                      padding: '4px 10px',
-                      letterSpacing: '0.02em',
+                      padding: '4px 12px',
+                      letterSpacing: '0.05em',
                       whiteSpace: 'nowrap',
                     }}
                   >
-                    <span
-                      style={{
-                        width: '5px',
-                        height: '5px',
-                        borderRadius: '50%',
-                        background: 'var(--accent-red)',
-                        display: 'inline-block',
-                      }}
-                    />
-                    잔여 {cls.remainingSeats}석
+                    🔥 HOT
                   </span>
                 )}
 
@@ -816,8 +806,9 @@ export default function JoinPage() {
                       ? parseInt(cls.originalPrice.replace(/,/g, ''), 10)
                       : first
                     const total = first + regular * (months - 1)
-                    const lumpSumDiscount = cls.lumpSumDiscount ?? 50000
+                    const lumpSumDiscount = cls.lumpSumDiscount ?? 100000
                     const lumpSumPrice = total - lumpSumDiscount
+                    const lumpSumManwon = Math.round(lumpSumDiscount / 10000)
                     return (
                       <>
                         <p style={{ fontSize: '0.78rem', color: 'var(--gray-light)', marginBottom: '6px' }}>
@@ -835,7 +826,7 @@ export default function JoinPage() {
                             fontWeight: 600,
                           }}
                         >
-                          전체 수강료 일시납 시 5만원 할인 <span aria-hidden="true">→</span>{' '}
+                          전체 수강료 일시납 시 {lumpSumManwon}만원 할인 <span aria-hidden="true">→</span>{' '}
                           <strong>{lumpSumPrice.toLocaleString()}원</strong>
                         </p>
                       </>

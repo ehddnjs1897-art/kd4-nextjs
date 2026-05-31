@@ -14,7 +14,8 @@ export interface ClassItem {
   originalPrice?: string;       // 할인 전 원가 (할인 중일 때만, 2026-05-30 봄맞이 종료로 모두 제거)
   promoLabel?: string;           // 프로모션 라벨 (현재 미사용, 다음 프로모션 시 부활 가능)
   lumpSumDiscount?: number;      // 전체 수강료 일시납 시 추가 할인액
-  remainingSeats?: number;       // 잔여석 뱃지 (null이면 표시 안 함)
+  remainingSeats?: number;       // (2026-05-30 비활성) 잔여석 수치 — UI 미표시, HOT 뱃지로 대체
+  hot?: boolean;                 // 🔥 HOT 뱃지 (인기 클래스)
   instructor?: string;
   highlight?: boolean;
   isNewMemberOpen?: boolean;    // 신규 신청 가능 클래스
@@ -63,11 +64,11 @@ export const CLASSES: ClassItem[] = [
     capacity: "8명",
     course: "4개월 코스",
     price: "350,000",
-    remainingSeats: 3,
     instructor: "권동원 대표",
     highlight: true,
     isNewMemberOpen: true,
-    lumpSumDiscount: 50000,
+    lumpSumDiscount: 100000,
+    hot: true,
   },
   {
     step: "STEP 1",
@@ -86,11 +87,11 @@ export const CLASSES: ClassItem[] = [
     capacity: "6명",
     course: "3개월 코스",
     price: "400,000",
-    remainingSeats: 2,
     instructor: "권동원 대표",
     highlight: true,
     isNewMemberOpen: true,
-    lumpSumDiscount: 50000,
+    lumpSumDiscount: 100000,
+    hot: true,
   },
   {
     step: "STEP 2",

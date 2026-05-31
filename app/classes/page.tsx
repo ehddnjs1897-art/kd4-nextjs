@@ -33,15 +33,15 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
         position: 'relative',
       }}
     >
-      {/* 잔여석 뱃지 */}
-      {cls.remainingSeats != null && (
+      {/* HOT 뱃지 — 인기 클래스 */}
+      {cls.hot && (
         <span style={{
           position: 'absolute', top: '12px', right: '12px',
           padding: '6px 14px', background: 'var(--accent-red)', color: '#fff',
           fontSize: '0.85rem', fontWeight: 800, borderRadius: '6px',
-          letterSpacing: '0.04em', zIndex: 1,
+          letterSpacing: '0.06em', zIndex: 1,
         }}>
-          잔여 {cls.remainingSeats}석
+          🔥 HOT
         </span>
       )}
 

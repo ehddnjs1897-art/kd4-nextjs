@@ -1020,10 +1020,10 @@ export default function HomePage() {
           {/* 3개 미니 카드 — canonical 카드 패턴 (tag + 클래스명 + 한 줄) */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14, marginBottom: 40 }}>
             {[
-              { tag: "BEGINNER", num: "01", title: "베이직 클래스", desc: "취미로 연기를 시작하고 싶은 분", href: "/classes" },
-              { tag: "TRAINING", num: "02", title: "마이즈너 테크닉 정규 클래스", desc: "제대로 배우 훈련을 받고 싶은 분", href: "/meisner-technique-class" },
-              { tag: "PORTFOLIO", num: "03", title: "출연영상 클래스", desc: "캐스팅되는 포트폴리오를 만들고 싶은 분", href: "/reel-production-class" },
-            ].map(({ tag, num, title, desc, href }) => (
+              { tag: "BEGINNER", num: "01", title: "베이직 클래스", desc: "취미로 연기를 시작하고 싶은 분", href: "/classes", hot: false },
+              { tag: "TRAINING", num: "02", title: "마이즈너 테크닉 정규 클래스", desc: "제대로 배우 훈련을 받고 싶은 분", href: "/meisner-technique-class", hot: true },
+              { tag: "PORTFOLIO", num: "03", title: "출연영상 클래스", desc: "캐스팅되는 포트폴리오를 만들고 싶은 분", href: "/reel-production-class", hot: true },
+            ].map(({ tag, num, title, desc, href, hot }) => (
               <Link
                 key={title}
                 href={href}
@@ -1059,14 +1059,28 @@ export default function HomePage() {
                     borderRadius: 3,
                     padding: "3px 9px",
                   }} lang="en">{tag}</span>
-                  <span aria-hidden style={{
-                    fontFamily: "var(--font-display), Oswald, sans-serif",
-                    fontSize: "1.3rem",
-                    fontWeight: 300,
-                    color: "var(--gray)",
-                    letterSpacing: "0.05em",
-                    lineHeight: 1,
-                  }}>{num}</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    {hot && (
+                      <span style={{
+                        fontFamily: "var(--font-sans)",
+                        fontSize: "0.68rem",
+                        fontWeight: 800,
+                        color: "#fff",
+                        background: "var(--accent-red)",
+                        borderRadius: 999,
+                        padding: "2px 8px",
+                        letterSpacing: "0.05em",
+                      }}>🔥 HOT</span>
+                    )}
+                    <span aria-hidden style={{
+                      fontFamily: "var(--font-display), Oswald, sans-serif",
+                      fontSize: "1.3rem",
+                      fontWeight: 300,
+                      color: "var(--gray)",
+                      letterSpacing: "0.05em",
+                      lineHeight: 1,
+                    }}>{num}</span>
+                  </div>
                 </div>
                 <h3 style={{
                   fontFamily: "var(--font-sans)",

@@ -14,16 +14,11 @@ function wan(price: number) {
 }
 
 export default function StickyTopBar({
-  seats,
   cohorts,
 }: {
   seats?: number
   cohorts?: Cohort[]
 }) {
-  const totalSeats = cohorts
-    ? cohorts.reduce((sum, c) => sum + c.seats, 0)
-    : (seats ?? 0)
-
   return (
     <div
       style={{
@@ -46,7 +41,7 @@ export default function StickyTopBar({
         첫 달
       </span>
 
-      {/* 클래스별 가격 + 잔여석 */}
+      {/* 클래스별 가격 + HOT 뱃지 */}
       {cohorts && cohorts.length > 0 ? (
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', overflow: 'hidden', flex: 1, minWidth: 0 }}>
           {cohorts.map((c, i) => (
@@ -60,11 +55,8 @@ export default function StickyTopBar({
                   ₩{wan(c.price)}
                 </span>
               )}
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
-                <span aria-hidden="true" style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--accent-red)', flexShrink: 0, display: 'inline-block' }} />
-                <span style={{ fontSize: '0.73rem', color: 'var(--white)', fontWeight: 600 }}>
-                  {c.seats}석
-                </span>
+              <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#fff', background: 'var(--accent-red)', borderRadius: '999px', padding: '2px 7px', letterSpacing: '0.04em' }}>
+                🔥 HOT
               </span>
             </span>
           ))}
@@ -72,9 +64,8 @@ export default function StickyTopBar({
       ) : (
         <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--navy)', fontFamily: 'var(--font-display)', flex: 1 }}>
           ₩250,000~ &nbsp;
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--accent-red)', display: 'inline-block' }} />
-            <span style={{ fontSize: '0.73rem', color: 'var(--white)', fontWeight: 600 }}>잔여 {totalSeats}석</span>
+          <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#fff', background: 'var(--accent-red)', borderRadius: '999px', padding: '2px 7px', letterSpacing: '0.04em' }}>
+            🔥 HOT
           </span>
         </span>
       )}
