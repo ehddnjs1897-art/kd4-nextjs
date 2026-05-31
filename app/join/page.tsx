@@ -1150,7 +1150,7 @@ export default function JoinPage() {
               { youtubeId: 'PUlrhjOkvjA', genre: '드라마', subtitle: '단편 「외사랑」', cohort: '출연영상 16기' },
               { youtubeId: 'zoDJtGT3aQM', genre: '드라마', subtitle: '단편 「그 사람이 떠나기 전날 밤」', cohort: '심화 2기' },
               { youtubeId: 'tLAZZOGd3FA', genre: '드라마', subtitle: '단편 「백만 원에 난리난 현실남매」', cohort: '출연영상 1달 클래스' },
-              { youtubeId: 's_AE-Vy0Ka0', genre: '드라마', subtitle: '단편 「사채업자 로맨스」', cohort: '출연영상 심화 1기' },
+              { youtubeId: 's_AE-Vy0Ka0', genre: '드라마', subtitle: '단편 「우리들의 로맨스」', cohort: '심화 1기' },
             ] as const).map(({ youtubeId, genre, subtitle, cohort }) => (
               <div key={youtubeId}>
                 {/* 장르 뱃지 */}
