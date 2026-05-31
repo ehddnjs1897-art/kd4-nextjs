@@ -13,7 +13,6 @@ interface Actor {
   casting_summary: string | null
   photoSrc: string
   unoptimized: boolean
-  has_video: boolean
 }
 
 interface Props {
@@ -108,47 +107,32 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
         )}
       </div>
       {filtered.length > 0 && (
-        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }} className="actors-grid" aria-label="배우 목록">
+        <ul style={{ ...gridStyle, listStyle: 'none', padding: 0, margin: 0 }} className="actors-grid" aria-label="배우 목록">
           {filtered.map((actor, idx) => (
             <li key={actor.id} style={cardStyle}>
-              <Link
-                href={`/actors/${actor.id}`}
-                style={{ display: 'block', position: 'absolute', inset: 0, textDecoration: 'none' }}
-                className="actor-card"
-                aria-label={`${actor.name} 배우 프로필 보기`}
-              >
-                <div style={imageWrapStyle}>
-                  <ActorCardImage
-                    src={actor.photoSrc}
-                    alt={actor.name}
-                    unoptimized={actor.unoptimized}
-                    priority={idx < 4}
-                  />
-
-                  {/* 출연영상 뱃지 — 골드, KD4 스타일 */}
-                  {actor.has_video && (
-                    <div style={videoBadgeStyle} aria-label="출연영상 보유">
-                      <span aria-hidden="true" style={videoDotStyle} />
-                      <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.1em' }}>출연영상</span>
+            <Link href={`/actors/${actor.id}`} style={{ display: 'block', position: 'absolute', inset: 0, textDecoration: 'none' }} className="actor-card" aria-label={`${actor.name} 배우 프로필 보기`}>
+              <div style={imageWrapStyle}>
+                <ActorCardImage
+                  src={actor.photoSrc}
+                  alt={actor.name}
+                  unoptimized={actor.unoptimized}
+                  priority={idx < 2}
+                />
+                <div style={overlayStyle}>
+                  <span style={nameStyle}>{actor.name}</span>
+                  <span style={metaStyle}>
+                    {actor.gender ?? ''}{actor.gender && actor.age_group ? ' · ' : ''}{actor.age_group ?? ''}
+                  </span>
+                  {actor.casting_tags && actor.casting_tags.length > 0 && (
+                    <div style={tagsStyle}>
+                      {actor.casting_tags.slice(0, 3).map((t) => (
+                        <span key={t} style={tagStyle}>{t}</span>
+                      ))}
                     </div>
                   )}
-
-                  {/* 하단 정보 오버레이 */}
-                  <div style={overlayStyle}>
-                    <span style={nameStyle}>{actor.name}</span>
-                    <span style={metaStyle}>
-                      {[actor.gender, actor.age_group].filter(Boolean).join(' · ')}
-                    </span>
-                    {actor.casting_tags && actor.casting_tags.length > 0 && (
-                      <div style={tagsStyle}>
-                        {actor.casting_tags.slice(0, 2).map((t) => (
-                          <span key={t} style={tagStyle}>{t}</span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
                 </div>
-              </Link>
+              </div>
+            </Link>
             </li>
           ))}
         </ul>
@@ -157,14 +141,20 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
   )
 }
 
-// 세로형 카드 스타일 (Portrait 2:3) — REPLAY와 다른 KD4 아트하우스 방향
+const gridStyle: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(2, 1fr)',
+  gap: 12,
+}
+
 const cardStyle: React.CSSProperties = {
   display: 'block',
-  borderRadius: 10,
+  textDecoration: 'none',
+  borderRadius: 8,
   overflow: 'hidden',
   border: '1px solid var(--border)',
-  transition: 'border-color 0.25s, box-shadow 0.25s, transform 0.25s',
-  aspectRatio: '2/3',
+  transition: 'border-color 0.2s, transform 0.2s',
+  aspectRatio: '3/2',
   position: 'relative',
   background: 'var(--bg3)',
 }
@@ -175,73 +165,44 @@ const imageWrapStyle: React.CSSProperties = {
   background: 'var(--bg3)',
 }
 
-// 출연영상 뱃지 — 우상단, 골드 KD4 스타일
-const videoBadgeStyle: React.CSSProperties = {
-  position: 'absolute',
-  top: 10,
-  right: 10,
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: 5,
-  background: 'rgba(0,0,0,0.72)',
-  border: '1px solid var(--gold)',
-  borderRadius: 4,
-  padding: '4px 9px',
-  color: 'var(--gold)',
-  backdropFilter: 'blur(6px)',
-  zIndex: 2,
-}
-
-const videoDotStyle: React.CSSProperties = {
-  width: 5,
-  height: 5,
-  borderRadius: '50%',
-  background: 'var(--gold)',
-  flexShrink: 0,
-  boxShadow: '0 0 4px var(--gold)',
-}
-
-// 하단 그라디언트 오버레이
 const overlayStyle: React.CSSProperties = {
   position: 'absolute',
   bottom: 0, left: 0, right: 0,
-  padding: '48px 14px 16px',
-  background: 'linear-gradient(to top, rgba(0,0,0,0.96) 0%, rgba(0,0,0,0.55) 50%, transparent 100%)',
+  padding: '40px 18px 16px',
+  background: 'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 60%, transparent 100%)',
   display: 'flex',
   flexDirection: 'column',
   gap: 3,
 }
 
 const nameStyle: React.CSSProperties = {
-  fontFamily: 'var(--font-serif)',
-  fontSize: '1rem',
+  fontFamily: 'var(--font-display)',
+  fontSize: '1.1rem',
   fontWeight: 700,
   color: 'var(--white)',
-  letterSpacing: '0.02em',
-  lineHeight: 1.2,
+  letterSpacing: '0.04em',
 }
 
 const metaStyle: React.CSSProperties = {
-  fontFamily: 'var(--font-sans)',
-  fontSize: '0.72rem',
-  color: 'rgba(255,255,255,0.6)',
-  letterSpacing: '0.04em',
+  fontSize: '0.75rem',
+  color: 'rgba(255,255,255,0.65)',
 }
 
 const tagsStyle: React.CSSProperties = {
   display: 'flex',
   gap: 4,
-  flexWrap: 'wrap' as const,
-  marginTop: 5,
+  flexWrap: 'wrap',
+  marginTop: 6,
 }
 
 const tagStyle: React.CSSProperties = {
-  fontSize: '0.6rem',
+  fontSize: '0.65rem',
   fontWeight: 600,
-  color: 'var(--gold)',
-  background: 'rgba(196,165,90,0.12)',
-  border: '1px solid rgba(196,165,90,0.35)',
+  color: 'rgba(255,255,255,0.92)',
+  background: 'rgba(255,255,255,0.16)',
+  border: '1px solid rgba(255,255,255,0.25)',
   borderRadius: 3,
-  padding: '2px 6px',
-  letterSpacing: '0.04em',
+  padding: '2px 7px',
+  letterSpacing: '0.02em',
+  backdropFilter: 'blur(4px)',
 }

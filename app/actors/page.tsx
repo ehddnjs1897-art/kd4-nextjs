@@ -43,7 +43,6 @@ interface Actor {
   storage_photo_path: string | null
   casting_tags: string[] | null
   casting_summary: string | null
-  reel_url: string | null
 }
 
 type GenderFilter = 'all' | '남' | '여'
@@ -84,7 +83,7 @@ async function fetchActors(gender: string, ageGroup: string, tag: string): Promi
   let actors: Actor[] = []
   let castingSchemaAvailable = true
   {
-    let query = buildQuery('id, name, gender, age_group, drive_photo_id, storage_photo_path, casting_tags, casting_summary, reel_url')
+    let query = buildQuery('id, name, gender, age_group, drive_photo_id, storage_photo_path, casting_tags, casting_summary')
     if (tag && tag !== 'all') query = query.contains('casting_tags', [tag])
     const { data, error } = await query
     if (error && isUndefinedColumnError(error)) {
@@ -108,8 +107,8 @@ async function fetchActors(gender: string, ageGroup: string, tag: string): Promi
       console.error('[ActorsPage] Fallback Supabase 오류:', error.message)
       return { actors: [], dbError: true, allTags: [] }
     }
-    actors = ((data ?? []) as unknown as Array<Omit<Actor, 'casting_tags' | 'casting_summary' | 'reel_url'>>)
-      .map((a) => ({ ...a, casting_tags: null, casting_summary: null, reel_url: null }))
+    actors = ((data ?? []) as unknown as Array<Omit<Actor, 'casting_tags' | 'casting_summary'>>)
+      .map((a) => ({ ...a, casting_tags: null, casting_summary: null }))
   }
 
   // 필터 UI용 distinct 태그 (마이그레이션 안 됐으면 빈 배열)
@@ -211,29 +210,13 @@ export default async function ActorsPage({ searchParams }: PageProps) {
         },
       ]} />
       <style>{`
-        /* 반응형 그리드 — 세로 카드 기준 */
-        .actors-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 10px;
+        @media (max-width: 640px) {
+          .actors-grid { grid-template-columns: 1fr !important; }
+          .actor-card:hover { transform: none !important; }
         }
-        @media (min-width: 540px) {
-          .actors-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        }
-        @media (min-width: 860px) {
-          .actors-grid { grid-template-columns: repeat(4, 1fr); gap: 14px; }
-        }
-        @media (min-width: 1200px) {
-          .actors-grid { grid-template-columns: repeat(5, 1fr); gap: 16px; }
-        }
-        /* 카드 호버 — 골드 글로우 */
         .actor-card:hover {
-          border-color: rgba(196,165,90,0.6) !important;
-          box-shadow: 0 0 0 1px rgba(196,165,90,0.2), 0 8px 24px rgba(0,0,0,0.4) !important;
-          transform: translateY(-3px) !important;
-        }
-        @media (hover: none) {
-          .actor-card:hover { transform: none !important; box-shadow: none !important; }
+          border-color: rgba(196,165,90,0.5) !important;
+          transform: translateY(-2px);
         }
       `}</style>
       <div className="container">
@@ -365,7 +348,6 @@ export default async function ActorsPage({ searchParams }: PageProps) {
               casting_summary: actor.casting_summary,
               photoSrc: getActorPhotoUrl(actor),
               unoptimized: !shouldOptimize(actor),
-              has_video: !!actor.reel_url,
             }))}
             totalBeforeSearch={actors.length}
           />
