@@ -1148,6 +1148,8 @@ export default function JoinPage() {
               { youtubeId: '7Q62XeyVLbc', genre: '드라마', subtitle: '단편 「여배우들」', cohort: '심화 1기' },
               { youtubeId: 'IWL6hlOrU-w', genre: '드라마', subtitle: '「메소드 연기」', cohort: '출연영상 17기' },
               { youtubeId: 'PUlrhjOkvjA', genre: '드라마', subtitle: '단편 「외사랑」', cohort: '출연영상 16기' },
+              { youtubeId: 'zoDJtGT3aQM', genre: '드라마', subtitle: '단편 「그 사람이 떠나기 전날 밤」', cohort: '심화 2기' },
+              { youtubeId: 'tLAZZOGd3FA', genre: '드라마', subtitle: '단편 「백만 원에 난리난 현실남매」', cohort: '출연영상 1달 클래스' },
             ] as const).map(({ youtubeId, genre, subtitle, cohort }) => (
               <div key={youtubeId}>
                 {/* 장르 뱃지 */}
