@@ -701,20 +701,20 @@ export default function JoinPage() {
       {/* ⑨ OFFER — 가격 + 카운트다운 + Anchor Price 배지           */}
       {/* C. 풀스크린 섹션 (Preview) — 100vw + 강조 그라데이션 배경 */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section aria-label="수강료 특별 혜택" className="section uplift-fullscreen-offer" style={{ padding: 'clamp(64px, 12vw, 100px) 0' }}>
+      <section aria-label="KD4 시그니처 클래스" className="section uplift-fullscreen-offer" style={{ padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow">
-              <span lang="en">04 — SPECIAL OFFER</span>
+              <span lang="en">04 — SIGNATURE CLASSES</span>
             </p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
             >
-              수강 신청 혜택
+              KD4 시그니처 클래스
             </h2>
             <p style={{ fontSize: '0.95rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-              KD4 멤버를 위한 다양한 할인 혜택
+              현역 배우들이 선택한 KD4의 대표 정규 클래스
             </p>
           </div>
 
