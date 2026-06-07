@@ -76,7 +76,7 @@ export default function OnboardingForm({
 
   async function pickPhotos(list: FileList | null) {
     if (!list) return
-    const arr = Array.from(list).slice(0, 3)
+    const arr = Array.from(list).slice(0, 4)
     for (const f of arr) {
       if (f.size > 5 * MB) { setError(`사진은 5MB 이하여야 합니다: ${f.name}`); return }
     }
@@ -281,8 +281,8 @@ export default function OnboardingForm({
       <section style={sec} aria-labelledby="onb-photos">
         <h2 id="onb-photos" style={secTitle}>프로필 사진</h2>
         <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 14 }}>
-          최대 3장, 가로·세로 무관, 장당 5MB 이하.
-          카카오톡 공유용 <strong>가로(16:9·4:3)</strong> 사진을 1장 이상 포함해 주세요.
+          최대 4장, 가로·세로 무관, 장당 5MB 이하.
+          프로필에 <strong>세로형 헤드샷 3~4장</strong>을 올리면 가장 보기 좋습니다.
         </p>
         <input ref={photosRef} type="file" accept="image/*" multiple disabled={loading} onChange={e => pickPhotos(e.target.files)} style={{ display: 'none' }} aria-hidden="true" />
         <button type="button" onClick={() => photosRef.current?.click()} disabled={loading} style={fileBtn}>

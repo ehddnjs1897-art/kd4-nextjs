@@ -210,21 +210,17 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
   // 필모 전체 (연도 내림차순) — 렌더마다 재정렬 방지
   const allFilmo = useMemo(() => [...filmo].sort((a, b) => (b.year ?? 0) - (a.year ?? 0)), [filmo])
 
-  // 프로필 사진 목록 (profile_photo + actor_photos, 최대 3장)
-  const mainPhotoUrl = actor.profile_photo
-    ?? (actor.drive_photo_id
-      ? `https://drive.google.com/thumbnail?id=${actor.drive_photo_id}&sz=w1200`
-      : null)
+  // 세로형 헤드샷 갤러리 — 회원이 직접 업로드한 사진(actor_photos)만 (최대 4장).
+  // 상단 헤더가 메인 프로필/이력서 이미지를 이미 크게 보여주므로, 여기서는 중복 없이 헤드샷만 노출.
   const sortedPhotos = [...actor.actor_photos].sort((a, b) => a.sort_order - b.sort_order)
 
   // 프로필사진: photo_type='profile' 또는 null/undefined
   const profilePhotos = sortedPhotos.filter(p => !p.photo_type || p.photo_type === 'profile')
   const stripPhotos: string[] = []
-  if (mainPhotoUrl) stripPhotos.push(mainPhotoUrl)
   for (const p of profilePhotos) {
     const src = photoSrc(p)
     if (src && !stripPhotos.includes(src)) stripPhotos.push(src)
-    if (stripPhotos.length >= 3) break
+    if (stripPhotos.length >= 4) break
   }
 
   // 현재사진: photo_type='current'

@@ -1,7 +1,6 @@
 import { Metadata } from 'next'
 import { unstable_cache } from 'next/cache'
 
-import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
@@ -352,13 +351,9 @@ export default async function ActorDetailPage({
 
       {/* 반응형 헬퍼 */}
       <style>{`
-        .actor-profile-wrap { display:flex; gap:48px; align-items:flex-start; }
-        .actor-profile-photo { flex:0 0 290px; position:sticky; top:86px; }
-        .actor-profile-info { flex:1 1 0; min-width:0; }
-        @media(max-width:660px){
-          .actor-profile-wrap { flex-direction:column; gap:28px; }
-          .actor-profile-photo { flex:none; width:200px; margin:0 auto; position:static; }
-        }
+        .actor-profile-wrap { display:flex; flex-direction:column; gap:36px; align-items:stretch; }
+        .actor-profile-top { max-width:680px; margin:0 auto; width:100%; }
+        .actor-profile-info { width:100%; }
       `}</style>
 
       {/* 배우 프로필 헤더 */}
@@ -366,41 +361,41 @@ export default async function ActorDetailPage({
         <div style={{ maxWidth: 960, margin: '0 auto', padding: '48px clamp(20px,4vw,32px) 40px' }}>
           <div className="actor-profile-wrap">
 
-            {/* 왼쪽: 세로형 사진 */}
-            <div className="actor-profile-photo">
+            {/* 상단: 프로필/이력서 이미지 — 가로형 전체 표시 (자르지 않음) */}
+            <div className="actor-profile-top">
               <div style={{
-                aspectRatio: '2/3',
                 borderRadius: 10,
                 overflow: 'hidden',
                 background: 'var(--bg2)',
                 boxShadow: '0 12px 40px rgba(0,0,0,0.5)',
-                position: 'relative',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}>
                 {photoUrl !== '/placeholder-actor.svg' ? (
-                  <Image
+                  // 이력서/프로필 이미지는 가로·세로 비율이 제각각 → 자연 비율 그대로 노출(잘림 방지).
+                  // 알 수 없는 비율이라 next/image fill·고정크기 대신 일반 img가 정확. (eslint 경고는 빌드 차단 아님)
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
                     src={photoUrl}
-                    alt={`${actor.name} 배우 프로필 사진`}
-                    fill
-                    sizes="(max-width: 660px) 200px, 290px"
-                    style={{ objectFit: 'cover', objectPosition: 'top center' }}
-                    priority
-                    unoptimized={!actor.storage_photo_path || !!actor.profile_photo}
+                    alt={`${actor.name} 배우 프로필`}
+                    style={{ width: '100%', height: 'auto', maxHeight: '82vh', objectFit: 'contain', display: 'block' }}
                   />
                 ) : (
-                  <>
+                  <div style={{ aspectRatio: '3/2', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray)', fontSize: '3rem' }}>
                     <span className="sr-only">{actor.name} 프로필 사진 없음</span>
-                    <div aria-hidden="true" style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray)', fontSize: '3rem' }}>👤</div>
-                  </>
+                    <span aria-hidden="true">👤</span>
+                  </div>
                 )}
               </div>
-              {/* 공유/다운로드 — 사진 아래 */}
-              <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {/* 공유/다운로드 — 이미지 아래 */}
+              <div style={{ marginTop: 16, display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
                 <ShareButton webUrl={pageUrl} />
                 {canContact && <ActorDownloadButton profileUrl={profileDocUrl} videoIds={downloadVideoIds} />}
               </div>
             </div>
 
-            {/* 오른쪽: 정보 */}
+            {/* 정보 */}
             <div className="actor-profile-info" style={{ paddingTop: 8 }}>
 
               {/* 캐스팅 태그 */}
