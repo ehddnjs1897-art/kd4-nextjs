@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { getRedirectOrigin } from '@/lib/constants'
 
 type MemberType = 'actor' | 'director'
 type Step = 'type-select' | 'form' | 'success'
@@ -88,7 +89,7 @@ export default function SignupPage() {
       password,
       options: {
         data: metadata,
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? (typeof window !== 'undefined' ? window.location.origin : 'https://kd4.club')}/auth/callback`,
+        emailRedirectTo: `${getRedirectOrigin()}/auth/callback`,
       },
     })
 

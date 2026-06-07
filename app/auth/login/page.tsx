@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { getRedirectOrigin } from '@/lib/constants'
 
 const ERROR_MESSAGES: Record<string, string> = {
   missing_code: '인증 코드가 없습니다. 다시 시도해 주세요.',
@@ -84,7 +85,7 @@ function LoginContent() {
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? location.origin}/auth/callback`,
+        redirectTo: `${getRedirectOrigin()}/auth/callback`,
       },
     })
     if (authError) {
@@ -100,7 +101,7 @@ function LoginContent() {
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: 'kakao',
       options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? location.origin}/auth/callback`,
+        redirectTo: `${getRedirectOrigin()}/auth/callback`,
       },
     })
     if (authError) {

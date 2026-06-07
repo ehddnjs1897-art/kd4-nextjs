@@ -27,8 +27,9 @@ export async function GET(request: Request) {
   // 오픈 리다이렉트 방지: '//' 및 '/\' (브라우저 정규화로 //evil.com으로 변환 가능) 차단
   const next = rawNext.startsWith('/') && !rawNext.startsWith('//') && !rawNext.startsWith('/\\') ? rawNext : '/dashboard'
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  // .trim() — env 값 끝 개행/공백 방어 (2026-06-08 OAuth 사고)
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim()
   if (!supabaseUrl || !supabaseAnonKey) {
     console.error('[auth/callback] NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY 미설정')
     return NextResponse.redirect(`${origin}/auth/login?error=server_config`)

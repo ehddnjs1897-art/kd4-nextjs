@@ -9,8 +9,9 @@ let _admin: SupabaseClient | null = null
 
 export function getSupabaseAdmin(): SupabaseClient {
   if (!_admin) {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+    // .trim() — env 값 끝 개행/공백 방어 (2026-06-08 OAuth 사고)
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()
     if (!url || !key) throw new Error('Supabase admin env vars (NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY) are not set')
     _admin = createClient(
       url,
