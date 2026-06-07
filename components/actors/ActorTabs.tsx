@@ -66,8 +66,8 @@ const CATEGORY_LABEL: Record<FilmoCategory, string> = {
   drama: '드라마',
   film: '영화',
   cf: 'CF',
-  musical: '뮤지컬',
-  theater: '연극',
+  musical: '공연',  // 2026-06-08 연극+뮤지컬 → '공연' 통합 표시
+  theater: '공연',
   etc: '기타',
 }
 
@@ -81,10 +81,10 @@ const FILM_TYPE_STYLE: Record<string, React.CSSProperties> = {
 const SECTION_NUMS: Record<FilmoCategory, string> = {
   drama: '03',
   film: '04',
-  cf: '05',
-  theater: '06',
-  musical: '07',
-  etc: '08',
+  theater: '05',  // 공연(연극+뮤지컬)
+  musical: '05',
+  cf: '06',
+  etc: '07',
 }
 
 function photoSrc(p: ActorPhoto): string {
@@ -238,7 +238,8 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
   const filmoMap = useMemo(() => {
     const map: Partial<Record<FilmoCategory, typeof allFilmo>> = {}
     for (const f of allFilmo) {
-      const cat = f.category as FilmoCategory
+      // 뮤지컬은 '공연'(theater) 섹션으로 통합 (2026-06-08)
+      const cat = (f.category === 'musical' ? 'theater' : f.category) as FilmoCategory
       if (!map[cat]) map[cat] = []
       map[cat]!.push(f)
     }
@@ -250,7 +251,8 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
   const awardEntries = allFilmo.filter((f) => f.award != null && f.award !== '')
 
   // 카테고리 순서
-  const CATEGORY_ORDER: FilmoCategory[] = ['drama', 'film', 'cf', 'theater', 'musical', 'etc']
+  // 표시 순서: 드라마 → 영화 → 공연(연극+뮤지컬) → CF. 기타·뮤지컬단독 제외, CF는 공연 아래 (2026-06-08)
+  const CATEGORY_ORDER: FilmoCategory[] = ['drama', 'film', 'theater', 'cf']
 
   return (
     <div style={s.root}>

@@ -351,9 +351,10 @@ export default async function ActorDetailPage({
 
       {/* 반응형 헬퍼 */}
       <style>{`
-        .actor-profile-wrap { display:flex; flex-direction:column; gap:36px; align-items:stretch; }
+        .actor-profile-wrap { display:flex; flex-direction:column; gap:36px; align-items:center; }
         .actor-profile-top { max-width:680px; margin:0 auto; width:100%; }
-        .actor-profile-info { width:100%; }
+        /* 정보 영역도 이미지와 동일 폭 가운데 정렬 — 좌측 쏠림 방지 */
+        .actor-profile-info { max-width:680px; margin:0 auto; width:100%; }
       `}</style>
 
       {/* 배우 프로필 헤더 */}
