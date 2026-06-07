@@ -818,17 +818,73 @@ export default function JoinPage() {
                           </strong>
                           {' '}· 기본 월납 (할부 가능)
                         </p>
-                        <p
+                        {/* 일시납 패키지 강조 박스 — 캐시플로 회수 가속 (2026-05-23)
+                            카드 안에 추가 컴포넌트로만 삽입, 기존 카드 디자인은 유지.
+                            색상 토큰(--accent-red / --bg2) 그대로 사용. */}
+                        <div
+                          aria-label="일시납 패키지 혜택"
                           style={{
-                            fontSize: '0.78rem',
-                            color: 'var(--accent-red)',
-                            marginBottom: '6px',
-                            fontWeight: 600,
+                            background: 'var(--bg2)',
+                            border: '1.5px solid var(--accent-red)',
+                            borderRadius: '12px',
+                            padding: '10px 12px',
+                            marginBottom: '8px',
+                            position: 'relative',
                           }}
                         >
-                          전체 수강료 일시납 시 {lumpSumManwon}만원 할인 <span aria-hidden="true">→</span>{' '}
-                          <strong>{lumpSumPrice.toLocaleString()}원</strong>
-                        </p>
+                          <span
+                            aria-hidden="true"
+                            style={{
+                              position: 'absolute',
+                              top: '-9px',
+                              left: '10px',
+                              background: 'var(--accent-red)',
+                              color: '#fff',
+                              fontSize: '0.66rem',
+                              fontWeight: 800,
+                              letterSpacing: '0.04em',
+                              padding: '2px 8px',
+                              borderRadius: '999px',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            일시납 패키지
+                          </span>
+                          <p
+                            style={{
+                              fontSize: '0.78rem',
+                              color: 'var(--accent-red)',
+                              fontWeight: 700,
+                              marginBottom: '2px',
+                              lineHeight: 1.4,
+                            }}
+                          >
+                            한번에 결제 시 {lumpSumManwon}만원 할인
+                          </p>
+                          <p
+                            style={{
+                              fontSize: '0.82rem',
+                              color: 'var(--navy)',
+                              fontWeight: 700,
+                              marginBottom: '2px',
+                            }}
+                          >
+                            <strong>{lumpSumPrice.toLocaleString()}원</strong>
+                            <span
+                              style={{
+                                fontSize: '0.7rem',
+                                color: 'var(--gray-light)',
+                                fontWeight: 500,
+                                marginLeft: '6px',
+                              }}
+                            >
+                              ({cls.course} 일시납가)
+                            </span>
+                          </p>
+                          <p style={{ fontSize: '0.7rem', color: 'var(--gray-light)', lineHeight: 1.5 }}>
+                            자리 확정 + 캐시 부담 한번에 정리
+                          </p>
+                        </div>
                       </>
                     )
                   })()}
@@ -976,6 +1032,21 @@ export default function JoinPage() {
               무료 상담 신청
               <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} />
             </JoinCTALink>
+            {/* 일시납 보조 안내 — CTA 직하 강조 카피 (2026-05-23) */}
+            <p
+              style={{
+                fontSize: '0.8rem',
+                color: 'var(--accent-red)',
+                fontWeight: 700,
+                marginTop: '12px',
+                lineHeight: 1.5,
+              }}
+            >
+              일시납 = 자리 확정 + 추가 할인
+            </p>
+            <p style={{ fontSize: '0.72rem', color: 'var(--gray-light)', marginTop: '4px' }}>
+              상담 시 일시납 패키지를 선택하시면 추가 혜택을 받을 수 있어요
+            </p>
           </div>
         </div>
       </section>
