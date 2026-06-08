@@ -87,6 +87,8 @@ export default function JoinForm() {
   const [ticketNo, setTicketNo] = useState('')
   const [focused, setFocused] = useState<string | null>(null)
   const [formStarted, setFormStarted] = useState(false)
+  // 허니팟 — 봇이 채우면 조용히 성공 처리 (DB 저장 안 함, 광고 전환 오염 방지)
+  const [honeypot, setHoneypot] = useState('')
   const successRef = useRef<HTMLDivElement>(null)
   const errorRef = useRef<HTMLParagraphElement>(null)
 
@@ -137,6 +139,8 @@ export default function JoinForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (loading) return  // 더블 클릭 방지
+    // 허니팟 체크 — 봇 제출 조용히 막기
+    if (honeypot) { setDone(true); return }
     // 2026-05-20: 전 항목 필수로 — 대표 지시
     // per-field 유효성: aria-invalid가 실제 오류 필드에만 표시되도록 추적
     const emptyFields = new Set<string>()
@@ -179,12 +183,8 @@ export default function JoinForm() {
         ? crypto.randomUUID()
         : `lead_${Date.now()}_${Math.random().toString(36).slice(2)}`
 
-    analytics.lead({
-      source: 'join_form_instagram_ad',
-      className: className || undefined,
-      eventId,
-    })
-
+    // Lead 이벤트는 서버 저장 성공 확인 후에만 발화 (실패·봇 제출 오염 방지)
+    // 이전: 발화 → 저장 순서 → 실패 건도 Lead로 집계되어 광고 알고리즘 오염
     let notifyOk = false
     try {
       const notifyRes = await fetch('/api/notify', {
@@ -218,6 +218,13 @@ export default function JoinForm() {
       setLoading(false)
       return
     }
+
+    // 저장 성공 확인 후 Lead 발화 (2026-06-09 fix: 성공 후 이동)
+    analytics.lead({
+      source: 'join_form_instagram_ad',
+      className: className || undefined,
+      eventId,
+    })
 
     /* 간단한 접수번호 생성 (UX용) — KD 연-월-일-4자리 */
     const now = new Date()
@@ -585,6 +592,17 @@ export default function JoinForm() {
 
   return (
     <form onSubmit={handleSubmit} aria-label="수강신청" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      {/* 허니팟 — 봇 방지: 화면 밖, 스크린리더 숨김, 탭 불가 */}
+      <input
+        type="text"
+        name="company"
+        value={honeypot}
+        onChange={e => setHoneypot(e.target.value)}
+        aria-hidden="true"
+        tabIndex={-1}
+        autoComplete="off"
+        style={{ position: 'absolute', left: '-9999px', opacity: 0, pointerEvents: 'none', height: 0 }}
+      />
       {/* 이름 */}
       <label htmlFor={`join-name-${uid}`} className="sr-only">이름</label>
       <input

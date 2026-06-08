@@ -8,7 +8,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { KD4_STATS } from "@/lib/stats";
 import { DIRECTOR } from "@/lib/classes";
 
-import { pixel } from "@/lib/analytics";
+import { analytics } from "@/lib/analytics";
 import { CASTING_PHOTOS } from "@/lib/casting-photos"
 const HeroScene = dynamic(() => import("@/components/hero/HeroScene"), {
   ssr: false,
@@ -894,7 +894,7 @@ export default function HomePage() {
           </p>
           <Link
             href="/about"
-            onClick={() => pixel.contact()}
+            onClick={() => analytics.contact('kakao')}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -1124,7 +1124,7 @@ export default function HomePage() {
             </Link>
             <Link
               href="/join#form-hero"
-              onClick={() => pixel.contact()}
+              onClick={() => analytics.contact('kakao')}
               style={{
                 display: "inline-block",
                 padding: "14px 32px",
@@ -1299,7 +1299,7 @@ export default function HomePage() {
           >
             <Link
               href="/join#form"
-              onClick={() => pixel.contact()}
+              onClick={() => analytics.contact('kakao')}
               className="btn-primary"
               style={{
                 background: "var(--navy)",
@@ -1314,7 +1314,7 @@ export default function HomePage() {
               href="https://pf.kakao.com/_ximxdqn"
               target="_blank" rel="noopener noreferrer"
               aria-label="카카오로 문의하기 (새 탭에서 열림)"
-              onClick={() => pixel.contact()}
+              onClick={() => analytics.contact('kakao')}
               style={{
                 display: "inline-block",
                 padding: "18px 52px",

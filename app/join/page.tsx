@@ -355,6 +355,7 @@ export default function JoinPage() {
         aria-label="즉시 무료 상담 신청"
         className="section"
         style={{
+          scrollMarginTop: '80px', // sticky 상단바 가림 보정 (모양 불변)
           background: 'radial-gradient(ellipse at 50% 0%, rgba(21,72,138,0.08) 0%, var(--bg) 70%)',
           padding: 'clamp(48px, 9vw, 80px) 0',
         }}

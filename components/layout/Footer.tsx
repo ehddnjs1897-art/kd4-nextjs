@@ -267,8 +267,8 @@ export default function Footer() {
             </p>
             <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {[
-                { label: '스튜디오 소개', href: '/#about' },
-                { label: '클래스 안내', href: '/classes' },
+                { label: '스튜디오 소개', href: '/about' },
+                { label: '클래스 소개', href: '/classes' },
                 { label: '마이즈너 정규 클래스', href: '/meisner-technique-class' },
                 { label: '출연영상 클래스', href: '/reel-production-class' },
                 { label: 'KD4 액팅 코치', href: '/acting-coach-dongwon-kwon' },
