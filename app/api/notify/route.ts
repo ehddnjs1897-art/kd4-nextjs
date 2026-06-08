@@ -108,6 +108,13 @@ export async function POST(request: NextRequest) {
     }
     const record = data?.record ?? data
 
+    // 서버사이드 허니팟 체크 — 클라이언트 차단 우회 방어 (스펙 2-E)
+    // `company` 필드가 비어있어야 실제 사람. 봇은 보통 모든 필드를 채움.
+    if (typeof record?.company === 'string' && record.company.trim()) {
+      // 봇으로 판단 — 조용히 성공 응답 (봇이 재시도 안 하도록)
+      return NextResponse.json({ ok: true, dbSaved: false })
+    }
+
     // 필수 필드 검증 — 상담 폼은 항상 name + phone 포함
     const name = typeof record?.name === 'string' ? record.name.trim().slice(0, 100) : null
     const phone = typeof record?.phone === 'string' ? record.phone.trim().slice(0, 20) : null
