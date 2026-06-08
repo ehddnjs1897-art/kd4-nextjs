@@ -33,6 +33,11 @@ export default function HeroScene() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    // 씬 초기화를 브라우저 idle 시간으로 연기 — LCP(제목 텍스트) 확정 후 실행 (성능)
+    let cleanupFn: (() => void) | undefined;
+    const initScene = () => {
+      if (!canvasRef.current) return; // unmount 체크
+
     let animFrameId: number;
 
     try {
@@ -421,7 +426,7 @@ export default function HeroScene() {
       };
       window.addEventListener("resize", onResize);
 
-      return () => {
+      cleanupFn = () => {
         cancelAnimationFrame(animFrameId);
         window.removeEventListener("resize", onResize);
         observer.disconnect();
@@ -445,6 +450,25 @@ export default function HeroScene() {
         const parent = canvasRef.current.parentElement;
         if (parent) parent.style.background = "#E8E4D8";
       }
+    }
+    }; // end initScene
+
+    // requestIdleCallback 지원 환경에서는 idle 시 실행 (최대 2초 대기)
+    // 미지원(iOS Safari 17 이전) 환경은 100ms 후 실행
+    let idleId: number | ReturnType<typeof setTimeout>;
+    if (typeof window.requestIdleCallback === 'function') {
+      idleId = window.requestIdleCallback(initScene, { timeout: 2000 })
+    } else {
+      idleId = setTimeout(initScene, 100)
+    }
+
+    return () => {
+      if (typeof window.requestIdleCallback === 'function') {
+        window.cancelIdleCallback(idleId as number)
+      } else {
+        clearTimeout(idleId as ReturnType<typeof setTimeout>)
+      }
+      cleanupFn?.()
     }
   }, []);
 
