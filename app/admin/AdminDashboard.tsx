@@ -219,6 +219,16 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
           <p style={s.eyebrow}><span lang="en">ADMIN</span></p>
           <h1 style={s.pageTitle}>관리자 대시보드</h1>
           <a
+            href="/admin/sales"
+            style={{
+              display: 'inline-block', marginTop: 10, marginRight: 10, padding: '8px 16px', borderRadius: 8,
+              background: '#15488A', color: '#fff', textDecoration: 'none',
+              fontSize: '0.85rem', fontWeight: 700,
+            }}
+          >
+            💰 매출/수강 대시보드 →
+          </a>
+          <a
             href="/admin/character-generator"
             style={{
               display: 'inline-block', marginTop: 10, padding: '8px 16px', borderRadius: 8,
