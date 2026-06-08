@@ -371,10 +371,10 @@ export default function SalesDashboard({
           </h1>
           <div className="sub">매출(Supabase) + 스케줄표(구글시트) 월별 연동</div>
         </div>
-        <select value={selected} onChange={(e) => setSelected(e.target.value)}>
+        <select value={selected} onChange={(e) => setSelected(e.target.value)} aria-label="월 선택">
           {monthKeys.map((k) => (
             <option key={k} value={k}>
-              📅 {labelByKey[k] ?? k}
+              {labelByKey[k] ?? k}
             </option>
           ))}
         </select>
@@ -412,12 +412,12 @@ export default function SalesDashboard({
             <span className="unit">건</span>
           </div>
           <div className="delta warn">
-            {unpaid.length > 0 ? `⚠️ ${formatMan(Math.round(unpaidTotal / 10000))}만원` : '없음'}
+            {unpaid.length > 0 ? <><span aria-hidden="true">⚠️</span>{` ${formatMan(Math.round(unpaidTotal / 10000))}만원`}</> : '없음'}
           </div>
         </div>
       </div>
 
-      <div className="sect">📈 월별 매출 추이 (단위 만원)</div>
+      <div className="sect"><span aria-hidden="true">📈</span> 월별 매출 추이 (단위 만원)</div>
       <div className="panel">
         <div className="bars">
           {revenue.map((r) => {
@@ -444,7 +444,7 @@ export default function SalesDashboard({
         </div>
       </div>
 
-      <div className="sect">👥 {curLabel} 수강 현황 — 기수별 명단</div>
+      <div className="sect"><span aria-hidden="true">👥</span> {curLabel} 수강 현황 — 기수별 명단</div>
       <div className="cls">
         {schOrder.length === 0 ? (
           <div className="note">이 달 스케줄 데이터 없음</div>
@@ -453,7 +453,7 @@ export default function SalesDashboard({
             <div className="clsrow" key={name}>
               <div className="clshd">
                 <span className="clsname">
-                  {ICON[name] || '📚'} {name}
+                  <span aria-hidden="true">{ICON[name] || '📚'}</span>{' '}{name}
                 </span>
                 <span className="clscnt">{mem.length}명</span>
               </div>
@@ -466,9 +466,9 @@ export default function SalesDashboard({
         * 스케줄표 구글시트 월별 탭 파싱. 손작성 비정형 시트라 일부 이름은 검증 필요할 수 있어요.
       </div>
 
-      <div className="sect">💳 결제 관리</div>
+      <div className="sect"><span aria-hidden="true">💳</span> 결제 관리</div>
       <div className="unpaid-box">
-        <h3>⚠️ 미납 현황</h3>
+        <h3><span aria-hidden="true">⚠️</span> 미납 현황</h3>
         {unpaid.length === 0 ? (
           <div className="note" style={{ marginTop: 0 }}>
             현재 미납 건이 없습니다.
