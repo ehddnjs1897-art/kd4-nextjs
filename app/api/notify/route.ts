@@ -77,7 +77,7 @@ async function sendMetaCAPI(record: { name?: string | null; phone?: string | nul
 /* ── 노션 상담자 DB 자동 row 생성 ─────────────────────────────────────
  * KD4 상담자 현황 DB(e4f5f376-3214-4e18-8deb-b2ab1e5dd9da)에 상담 신청을
  * 자동 동기화. 본문엔 통화 메모 + 등록 확정 메시지 템플릿 미리 주입.
- * env(NOTION_API_TOKEN) 없으면 silent skip — 다른 기능에 영향 0.
+ * env(NOTION_TOKEN) 없으면 silent skip — 다른 기능에 영향 0.
  * 노션 API 실패해도 throw X — 로깅만 (Supabase 데이터는 이미 보존됨).
  * ──────────────────────────────────────────────────────────────────── */
 const NOTION_DATABASE_ID = 'e4f5f376-3214-4e18-8deb-b2ab1e5dd9da'
@@ -104,7 +104,7 @@ async function sendNotionConsultation(payload: {
   utm_medium: string | null
   utm_campaign: string | null
 }) {
-  const token = process.env.NOTION_API_TOKEN?.trim()
+  const token = process.env.NOTION_TOKEN?.trim()
   if (!token) return  // env 없으면 silent skip — 사용자가 토큰 만들면 바로 작동
 
   // UTM 합본 (있는 것만 조합)
@@ -455,7 +455,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 5. 노션 KD4 상담자 현황 DB 자동 row 생성 — 본문 미니멀 템플릿 주입
-    //    NOTION_API_TOKEN 없으면 silent skip. 실패해도 응답에 영향 없음 (Supabase는 이미 보존).
+    //    NOTION_TOKEN 없으면 silent skip. 실패해도 응답에 영향 없음 (Supabase는 이미 보존).
     await sendNotionConsultation({
       name,
       phone,
