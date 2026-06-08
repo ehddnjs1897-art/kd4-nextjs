@@ -218,6 +218,8 @@ export function buildCourseFromClass(cls: ClassItem, opts: { url: string }) {
       {
         '@type': 'CourseInstance',
         courseMode: 'Offline',
+        ...(cls.instructor ? { instructor: { '@id': `${SITE_URL}#dongwon` } } : {}),
+        inLanguage: 'ko',
         location: {
           '@type': 'Place',
           name: 'KD4 액팅 스튜디오',
