@@ -500,7 +500,7 @@ export default async function ActorDetailPage({
                         letterSpacing: '0.03em',
                         fontWeight: isAdvanced ? 700 : 400,
                       }}>
-                        {isAdvanced && <span aria-label="고급 숙련도">⭐ </span>}{sk}
+                        {isAdvanced && <span role="img" aria-label="고급 숙련도">⭐ </span>}{sk}
                       </span>
                     )
                   })}
@@ -642,7 +642,7 @@ export default async function ActorDetailPage({
                           borderRadius: 4,
                           fontWeight: isAdvanced ? 700 : 400,
                         }}>
-                          {isAdvanced && <span aria-label="고급 숙련도">⭐ </span>}{sk}
+                          {isAdvanced && <span role="img" aria-label="고급 숙련도">⭐ </span>}{sk}
                         </span>
                       )
                     })}
