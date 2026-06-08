@@ -11,6 +11,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { DIALECT_OPTIONS } from '@/lib/dialects'
 
 const MB = 1024 * 1024
 
@@ -31,6 +32,7 @@ export default function OnboardingForm({
   const [castingSummary, setCastingSummary] = useState('')
   const [skills, setSkills] = useState('')             // 콤마 구분 (예: "수영, 검도, 피아노")
   const [advancedSkills, setAdvancedSkills] = useState('') // 콤마 구분 — skills의 부분집합 (⭐ 표시)
+  const [dialects, setDialects] = useState<string[]>([])   // 사투리 가능 지역 (멀티선택)
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
@@ -188,6 +190,7 @@ export default function OnboardingForm({
           castingSummary: castingSummary.trim() || undefined,
           skills: skillsArr.length > 0 ? skillsArr : undefined,
           advancedSkills: advArr.length > 0 ? advArr : undefined,
+          dialects: dialects.length > 0 ? dialects : undefined,
         }),
         signal: AbortSignal.timeout(15_000),
       })
@@ -239,6 +242,38 @@ export default function OnboardingForm({
           style={inp}
           autoComplete="off"
         />
+      </section>
+
+      {/* 사투리 (가능 지역) */}
+      <section style={sec} aria-labelledby="onb-dialects">
+        <h2 id="onb-dialects" style={secTitle}>사투리 (가능 지역)</h2>
+        <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 12 }}>
+          네이티브 수준으로 구사 가능한 사투리 지역을 선택하세요. (해당 없으면 비워두세요)
+        </p>
+        <div role="group" aria-label="사투리 가능 지역" style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+          {DIALECT_OPTIONS.map((d) => {
+            const on = dialects.includes(d)
+            return (
+              <button
+                key={d}
+                type="button"
+                disabled={loading}
+                aria-pressed={on}
+                onClick={() => setDialects((prev) => prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d])}
+                style={{
+                  padding: '8px 16px', borderRadius: 999, cursor: loading ? 'default' : 'pointer',
+                  fontSize: '0.85rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
+                  background: on ? 'var(--navy)' : 'transparent',
+                  color: on ? '#fff' : 'var(--gray)',
+                  border: `1px solid ${on ? 'var(--navy)' : 'var(--border)'}`,
+                  transition: 'all 0.15s',
+                }}
+              >
+                {on ? '✓ ' : ''}{d}
+              </button>
+            )
+          })}
+        </div>
       </section>
 
       {/* 한줄소개 */}

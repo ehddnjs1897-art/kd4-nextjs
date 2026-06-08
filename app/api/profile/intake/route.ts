@@ -22,6 +22,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { revalidateTag } from '@/lib/revalidate'
+import { sanitizeDialects } from '@/lib/dialects'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 
@@ -139,6 +140,8 @@ export async function POST(request: NextRequest) {
   // advanced_skills는 skills의 부분집합으로만 허용 (오타·미입력 항목 차단)
   const skillsSet = new Set(skills)
   const advancedSkills = advancedSkillsInput.filter((s) => skillsSet.has(s))
+  // 사투리 가능 지역 (허용 옵션만 화이트리스트)
+  const dialects = sanitizeDialects(body?.dialects)
 
   if (!docPath && photos.length === 0 && videos.length === 0 && !castingSummary && skills.length === 0) {
     return NextResponse.json({ error: '제출할 파일이 없습니다.' }, { status: 400 })
@@ -244,18 +247,26 @@ export async function POST(request: NextRequest) {
   if (castingSummary) actorPatch.casting_summary = castingSummary
   if (skills.length > 0) actorPatch.skills = skills
   if (advancedSkills.length > 0) actorPatch.advanced_skills = advancedSkills
+  if (dialects.length > 0) actorPatch.dialects = dialects
 
-  // advanced_skills 컬럼 미존재(42703) 대응 — 마이그레이션 미실행 환경 안전 처리
-  const patchAttempt = async (includeAdvanced: boolean) => {
+  // 마이그레이션 미실행 가능 컬럼(42703) 대응 — 누락된 컬럼만 빼고 재시도해 안전 처리
+  const OPTIONAL_COLS = ['advanced_skills', 'dialects']
+  const patchAttempt = async (dropCols: Set<string>) => {
     const finalPatch: Record<string, unknown> = { ...actorPatch }
-    if (!includeAdvanced) delete finalPatch.advanced_skills
+    for (const c of dropCols) delete finalPatch[c]
     return supabaseAdmin.from('actors').update(finalPatch).eq('id', actorId)
       .select('id').maybeSingle()
   }
-  let { data: patched, error: patchErr } = await patchAttempt(true)
-  if (patchErr && (patchErr.code === '42703' || /column .*advanced_skills.* does not exist/i.test(patchErr.message ?? ''))) {
-    console.warn('[profile/intake] advanced_skills 컬럼 미존재 — 마이그레이션 미실행, 해당 필드 제외하고 재시도')
-    const retry = await patchAttempt(false)
+  const dropped = new Set<string>()
+  let { data: patched, error: patchErr } = await patchAttempt(dropped)
+  let guard = 0
+  while (patchErr && patchErr.code === '42703' && guard < OPTIONAL_COLS.length) {
+    guard++
+    const missing = OPTIONAL_COLS.find((c) => !dropped.has(c) && new RegExp(`column .*${c}.* does not exist`, 'i').test(patchErr?.message ?? ''))
+    if (missing) dropped.add(missing)
+    else OPTIONAL_COLS.forEach((c) => dropped.add(c)) // 컬럼 특정 불가 시 옵션 컬럼 모두 제외
+    console.warn(`[profile/intake] 컬럼 미존재(42703) — 제외 후 재시도: ${[...dropped].join(', ')}`)
+    const retry = await patchAttempt(dropped)
     patched = retry.data
     patchErr = retry.error
   }

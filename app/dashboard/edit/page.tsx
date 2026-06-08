@@ -28,6 +28,7 @@ interface ActorRow {
   weight: number | null
   skills: string[] | null   // DB 타입: text[] — string | null 이었던 오류 수정
   advanced_skills: string[] | null  // ⭐ 고급 숙련도 (2026-05-29 추가)
+  dialects: string[] | null  // 사투리 가능 지역 (2026-06-08 추가)
   instagram: string | null
   casting_summary: string | null
   profile_doc_path: string | null
@@ -117,21 +118,27 @@ export default async function GalleryEditPage() {
   const [actorRes, photosRes, videosRes, filmRes, r2VideosRes] = await Promise.all([
     supabaseAdmin
       .from('actors')
-      .select('height, weight, skills, advanced_skills, instagram, casting_summary, profile_doc_path')
+      .select('height, weight, skills, advanced_skills, dialects, instagram, casting_summary, profile_doc_path')
       .eq('id', actor_id)
       .maybeSingle()
       .then(async (r) => {
-        // advanced_skills 컬럼 미존재(42703) — 마이그레이션 미실행 시 fallback
-        if (r.error && (r.error.code === '42703' || /column .*advanced_skills.* does not exist/i.test(r.error.message ?? ''))) {
-          const fallback = await supabaseAdmin
+        // 신규 컬럼(advanced_skills/dialects) 미존재(42703) — 마이그레이션 미실행 시 단계적 fallback
+        if (r.error && r.error.code === '42703') {
+          // 1) dialects만 제외 (advanced_skills는 존재할 수 있음)
+          const f1 = await supabaseAdmin
+            .from('actors')
+            .select('height, weight, skills, advanced_skills, instagram, casting_summary, profile_doc_path')
+            .eq('id', actor_id)
+            .maybeSingle()
+          if (!f1.error && f1.data) return { data: { ...f1.data, dialects: null }, error: null }
+          // 2) 둘 다 제외
+          const f2 = await supabaseAdmin
             .from('actors')
             .select('height, weight, skills, instagram, casting_summary, profile_doc_path')
             .eq('id', actor_id)
             .maybeSingle()
-          if (fallback.data) {
-            return { data: { ...fallback.data, advanced_skills: null }, error: null }
-          }
-          return fallback
+          if (f2.data) return { data: { ...f2.data, advanced_skills: null, dialects: null }, error: null }
+          return f2
         }
         return r
       }),
@@ -176,6 +183,7 @@ export default async function GalleryEditPage() {
     weight: actor.weight ?? undefined,
     skills: actor.skills?.join(', ') ?? undefined,  // text[] → 쉼표 구분 문자열 (폼 표시용)
     advancedSkills: actor.advanced_skills?.join(', ') ?? undefined,
+    dialects: actor.dialects ?? undefined,  // text[] 그대로 (멀티선택)
     instagram: actor.instagram ?? undefined,
     castingSummary: actor.casting_summary ?? undefined,
     profileDocPath: actor.profile_doc_path ?? null,

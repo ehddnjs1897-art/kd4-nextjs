@@ -11,6 +11,7 @@
  */
 
 import { useState, useRef, useMemo, useEffect } from 'react'
+import { DIALECT_OPTIONS } from '@/lib/dialects'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 
@@ -49,6 +50,7 @@ interface InitialData {
   weight?: number
   skills?: string
   advancedSkills?: string
+  dialects?: string[]
   instagram?: string
   castingSummary?: string
   profileDocPath?: string | null
@@ -201,6 +203,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   const [weight, setWeight] = useState(initialData.weight ?? '')
   const [skills, setSkills] = useState(initialData.skills ?? '')
   const [advancedSkills, setAdvancedSkills] = useState(initialData.advancedSkills ?? '')
+  const [dialects, setDialects] = useState<string[]>(initialData.dialects ?? [])
   const [instagram, setInstagram] = useState(initialData.instagram ?? '')
   const [castingSummary, setCastingSummary] = useState(initialData.castingSummary ?? '')
   const [infoMsg, setInfoMsg] = useState('')
@@ -278,6 +281,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           weight: weight || null,
           skills: skillsArr.length > 0 ? skillsArr : null,
           advanced_skills: advArr.length > 0 ? advArr : null,
+          dialects: dialects.length > 0 ? dialects : null,
           instagram: instagram || null,
           casting_summary: castingSummary.trim() || null,
         }),
@@ -663,6 +667,32 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
             <span aria-hidden="true">⭐</span> 고급 숙련도 <span style={{ fontWeight: 400, fontSize: '0.75rem', color: 'var(--gray)' }}>(전문가급/네이티브만. 위 특기 중 콤마로 구분해 다시 입력)</span>
           </label>
           <input id="actor-advanced-skills" value={advancedSkills} onChange={e => setAdvancedSkills(e.target.value)} style={s.input} placeholder="검도, 영어" />
+        </div>
+        <div style={{ ...s.field, marginBottom: 20 }}>
+          <label style={s.label}>사투리 <span style={{ fontWeight: 400, fontSize: '0.75rem', color: 'var(--gray)' }}>(네이티브 수준 가능 지역만 선택)</span></label>
+          <div role="group" aria-label="사투리 가능 지역" style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 4 }}>
+            {DIALECT_OPTIONS.map((d) => {
+              const on = dialects.includes(d)
+              return (
+                <button
+                  key={d}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => setDialects((prev) => prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d])}
+                  style={{
+                    padding: '7px 15px', borderRadius: 999, cursor: 'pointer',
+                    fontSize: '0.83rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
+                    background: on ? 'var(--navy)' : 'transparent',
+                    color: on ? '#fff' : 'var(--gray)',
+                    border: `1px solid ${on ? 'var(--navy)' : 'var(--border)'}`,
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  {on ? '✓ ' : ''}{d}
+                </button>
+              )
+            })}
+          </div>
         </div>
         <div style={{ ...s.field, marginBottom: 20 }}>
           <label htmlFor="actor-instagram" style={s.label}>인스타그램 ID</label>

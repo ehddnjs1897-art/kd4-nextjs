@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { revalidateTag } from '@/lib/revalidate'
 import { canViewActorDb } from '@/lib/access'
+import { DIALECT_OPTIONS } from '@/lib/dialects'
 import type { Actor, ActorDetail, UserRole } from '@/lib/types'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -232,23 +233,35 @@ export async function PATCH(
       if (body.advanced_skills.length > 50 || body.advanced_skills.some((s: unknown) => typeof s !== 'string' || s.length > 100))
         return NextResponse.json({ error: '고급 스킬 형식이 올바르지 않습니다.' }, { status: 400 })
     }
+    if ('dialects' in body && body.dialects !== null) {
+      if (!Array.isArray(body.dialects) || body.dialects.length > DIALECT_OPTIONS.length
+        || body.dialects.some((d: unknown) => typeof d !== 'string' || !(DIALECT_OPTIONS as readonly string[]).includes(d)))
+        return NextResponse.json({ error: '사투리 형식이 올바르지 않습니다.' }, { status: 400 })
+    }
 
-    const allowed = ['height', 'weight', 'skills', 'advanced_skills', 'instagram', 'casting_summary', 'casting_tags', 'name_en', 'age_group', 'profile_doc_path']
+    const allowed = ['height', 'weight', 'skills', 'advanced_skills', 'dialects', 'instagram', 'casting_summary', 'casting_tags', 'name_en', 'age_group', 'profile_doc_path']
     const patch: Record<string, unknown> = {}
     for (const k of allowed) {
       if (k in body) patch[k] = body[k]
     }
 
-    // advanced_skills 컬럼 미존재(42703) fallback — 마이그레이션 미실행 안전
-    const doUpdate = async (includeAdvanced: boolean) => {
+    // 신규 컬럼(advanced_skills/dialects) 미존재(42703) fallback — 마이그레이션 미실행 안전
+    const OPTIONAL_COLS = ['advanced_skills', 'dialects']
+    const doUpdate = async (dropCols: Set<string>) => {
       const finalPatch: Record<string, unknown> = { ...patch, updated_at: new Date().toISOString() }
-      if (!includeAdvanced) delete finalPatch.advanced_skills
+      for (const c of dropCols) delete finalPatch[c]
       return supabaseAdmin.from('actors').update(finalPatch).eq('id', id).select('id').maybeSingle()
     }
-    let { data: updated, error } = await doUpdate(true)
-    if (error && (error.code === '42703' || /column .*advanced_skills.* does not exist/i.test(error.message ?? ''))) {
-      console.warn('[PATCH /api/actors/[id]] advanced_skills 컬럼 미존재 — 제외하고 재시도')
-      const retry = await doUpdate(false)
+    const dropped = new Set<string>()
+    let { data: updated, error } = await doUpdate(dropped)
+    let guard = 0
+    while (error && error.code === '42703' && guard < OPTIONAL_COLS.length) {
+      guard++
+      const missing = OPTIONAL_COLS.find((c) => !dropped.has(c) && new RegExp(`column .*${c}.* does not exist`, 'i').test(error?.message ?? ''))
+      if (missing) dropped.add(missing)
+      else OPTIONAL_COLS.forEach((c) => dropped.add(c))
+      console.warn(`[PATCH /api/actors/[id]] 컬럼 미존재(42703) — 제외 후 재시도: ${[...dropped].join(', ')}`)
+      const retry = await doUpdate(dropped)
       updated = retry.data
       error = retry.error
     }

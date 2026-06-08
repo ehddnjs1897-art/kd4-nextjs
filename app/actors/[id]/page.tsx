@@ -27,6 +27,7 @@ interface Actor {
   weight: number | null
   skills: string[]
   advanced_skills: string[] | null
+  dialects: string[] | null
   drive_photo_id: string | null
   storage_photo_path: string | null
   profile_photo: string | null
@@ -108,6 +109,20 @@ function actorSelect(opts: { casting: boolean; videoType: boolean; filmExtra: bo
 }
 
 async function getActor(id: string): Promise<Actor | null> {
+  const core = await getActorCore(id)
+  if (!core) return null
+  // dialects(사투리)는 신규 컬럼 — 정교한 폴백을 건드리지 않도록 별도 안전 조회.
+  // 마이그레이션 미실행이면 컬럼 없음 → 빈 배열(표시 안 함).
+  let dialects: string[] = []
+  try {
+    const dq = await supabaseAdmin.from('actors').select('dialects').eq('id', id).maybeSingle()
+    const d = (dq.data as { dialects?: unknown } | null)?.dialects
+    if (!dq.error && Array.isArray(d)) dialects = d.filter((x): x is string => typeof x === 'string')
+  } catch { /* 컬럼 미존재 등 — 무시 */ }
+  return { ...core, dialects } as Actor
+}
+
+async function getActorCore(id: string): Promise<Actor | null> {
   const fetchWith = (cols: string) =>
     supabaseAdmin.from('actors').select(cols).eq('id', id).maybeSingle()
 
@@ -480,6 +495,25 @@ export default async function ActorDetailPage({
                       </span>
                     )
                   })}
+                </div>
+              )}
+
+              {/* 사투리 */}
+              {actor.dialects && actor.dialects.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center', marginBottom: 28 }}>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--gray)', letterSpacing: '0.05em', marginRight: 2 }}>사투리</span>
+                  {actor.dialects.map((d) => (
+                    <span key={d} style={{
+                      padding: '4px 12px',
+                      background: 'rgba(21,72,138,0.08)',
+                      border: '1px solid rgba(21,72,138,0.25)',
+                      borderRadius: 4,
+                      fontSize: '0.78rem',
+                      color: 'var(--gold)',
+                      letterSpacing: '0.03em',
+                      fontWeight: 600,
+                    }}>{d}</span>
+                  ))}
                 </div>
               )}
 
