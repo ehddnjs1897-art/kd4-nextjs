@@ -77,7 +77,7 @@ export default function JoinForm() {
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
   const [source, setSource] = useState('')
-  const [className, setClassName] = useState('')
+  const [selectedClass, setSelectedClass] = useState('')
   const [meisnerExp, setMeisnerExp] = useState('')
   const [consent, setConsent] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -147,7 +147,7 @@ export default function JoinForm() {
     if (!name) emptyFields.add('name')
     if (!phone) emptyFields.add('phone')
     if (!email) emptyFields.add('email')
-    if (!className) emptyFields.add('className')
+    if (!selectedClass) emptyFields.add('className')
     if (!meisnerExp) emptyFields.add('meisnerExp')
     if (!source) emptyFields.add('source')
     if (emptyFields.size > 0) {
@@ -172,7 +172,7 @@ export default function JoinForm() {
 
     const motivationParts = [
       source ? `유입경로: ${source}` : '유입경로: /join 랜딩',
-      className && `희망클래스: ${className}`,
+      selectedClass && `희망클래스: ${selectedClass}`,
       meisnerExp && `마이즈너경험: ${meisnerExp}`,
     ].filter(Boolean)
     const motivation = motivationParts.join(' / ')
@@ -196,7 +196,7 @@ export default function JoinForm() {
             name,
             phone,
             email: email || null,
-            class_name: className || null,
+            class_name: selectedClass || null,
             source: source || '/join 랜딩',
             motivation,
             status: '대기',
@@ -230,7 +230,7 @@ export default function JoinForm() {
     // 저장 성공 확인 후 Lead 발화 (2026-06-09 fix: 성공 후 이동)
     analytics.lead({
       source: 'join_form_instagram_ad',
-      className: className || undefined,
+      className: selectedClass || undefined,
       eventId,
     })
 
@@ -702,8 +702,8 @@ export default function JoinForm() {
             aria-label="희망 클래스"
             aria-invalid={invalidFields.has('className')}
             aria-describedby={invalidFields.has('className') ? errorId : undefined}
-            value={className}
-            onChange={(e) => setClassName(e.target.value)}
+            value={selectedClass}
+            onChange={(e) => setSelectedClass(e.target.value)}
             onFocus={() => handleFieldFocus('class')}
             onBlur={() => setFocused(null)}
             style={{ ...inputStyle('class'), cursor: 'pointer' }}
