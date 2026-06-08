@@ -25,6 +25,7 @@ import LogoutButton from '@/components/layout/LogoutButton'
 import CrewRequestButton from '@/components/dashboard/CrewRequestButton'
 import DirectorRequestButton from '@/components/dashboard/DirectorRequestButton'
 import ProfileEditForm from '@/components/dashboard/ProfileEditForm'
+import ProfileCompletenessCard from '@/components/dashboard/ProfileCompletenessCard'
 import EnrollmentsPanel from '@/components/dashboard/EnrollmentsPanel'
 import { UserRole } from '@/lib/types'
 import { canViewActorDb as canViewActorDbFn } from '@/lib/access'
@@ -87,11 +88,55 @@ export default async function DashboardPage() {
   const enrollments = enrData ?? []
 
   // actor_id가 있어도 실제 DB row가 없으면 404 → 미리 확인
+  // + 존재하면 프로필 완성도 표시용 데이터(메타 + 카운트)를 가볍게 함께 조회
   let actorExists = false
+  let completeness: import('@/lib/profile-completeness').CompletenessInput | null = null
   if (actorId) {
-    const { data: actorCheck } = await supabaseAdmin
-      .from('actors').select('id').eq('id', actorId).maybeSingle()
-    actorExists = !!actorCheck
+    // 메타(특기·소개·사투리). dialects 컬럼 미적용(42703) 시 단계적 fallback — edit 페이지와 동일 패턴
+    const metaPromise = supabaseAdmin
+      .from('actors')
+      .select('id, casting_summary, skills, dialects')
+      .eq('id', actorId)
+      .maybeSingle()
+      .then(async (r) => {
+        if (r.error && r.error.code === '42703') {
+          const f = await supabaseAdmin
+            .from('actors')
+            .select('id, casting_summary, skills')
+            .eq('id', actorId)
+            .maybeSingle()
+          if (f.data) return { data: { ...f.data, dialects: null }, error: null, hasDialects: false }
+          return { ...f, hasDialects: false }
+        }
+        return { ...r, hasDialects: true }
+      })
+
+    // 카운트는 head:true 로 row 본문 없이 개수만 (가벼움)
+    const [meta, photoCnt, ytVidCnt, r2VidCnt, filmCnt] = await Promise.all([
+      metaPromise,
+      supabaseAdmin.from('actor_photos').select('id', { count: 'exact', head: true }).eq('actor_id', actorId),
+      supabaseAdmin.from('actor_videos').select('id', { count: 'exact', head: true }).eq('actor_id', actorId).not('youtube_id', 'is', null),
+      supabaseAdmin.from('actor_videos').select('id', { count: 'exact', head: true }).eq('actor_id', actorId).not('r2_key', 'is', null),
+      supabaseAdmin.from('actor_filmography').select('id', { count: 'exact', head: true }).eq('actor_id', actorId),
+    ])
+
+    actorExists = !!meta.data
+    if (meta.data) {
+      const m = meta.data as { casting_summary: string | null; skills: string[] | null; dialects: string[] | null }
+      const hasProfilePhotoRes = await supabaseAdmin
+        .from('actor_photos').select('id', { count: 'exact', head: true })
+        .eq('actor_id', actorId).eq('is_profile', true)
+      completeness = {
+        hasProfilePhoto: (hasProfilePhotoRes.count ?? 0) > 0,
+        photoCount: photoCnt.count ?? 0,
+        videoCount: (ytVidCnt.count ?? 0) + (r2VidCnt.count ?? 0),
+        hasCastingSummary: !!(m.casting_summary && m.casting_summary.trim().length > 0),
+        filmographyCount: filmCnt.count ?? 0,
+        skillsCount: Array.isArray(m.skills) ? m.skills.length : 0,
+        dialectsCount: Array.isArray(m.dialects) ? m.dialects.length : 0,
+        hasDialectsColumn: meta.hasDialects,
+      }
+    }
   }
 
   const isAdmin = role === 'admin'
@@ -167,6 +212,9 @@ export default async function DashboardPage() {
             <h2 style={sectionTitle}>내 배우 프로필</h2>
             {actorId ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {actorExists && completeness && (
+                  <ProfileCompletenessCard {...completeness} />
+                )}
                 {actorExists ? (
                   <Link href={`/actors/${actorId}`} style={primaryBtn}>
                     내 배우 페이지 보기 <span aria-hidden="true">→</span>
@@ -176,10 +224,13 @@ export default async function DashboardPage() {
                     <span aria-hidden="true">⏳</span> 프로필 검토 준비 중 — 자료를 등록하면 관리자 검토 후 공개됩니다.
                   </p>
                 )}
-                <Link href="/dashboard/edit" style={tileBtn}>
-                  <span style={tileIcon} aria-hidden="true">✏️</span>
-                  <span>프로필 관리</span>
-                </Link>
+                {/* 완성도 카드 안에 편집 버튼이 이미 있으므로, 카드가 없을 때만 별도 타일 노출 (중복 방지) */}
+                {!(actorExists && completeness) && (
+                  <Link href="/dashboard/edit" style={tileBtn}>
+                    <span style={tileIcon} aria-hidden="true">✏️</span>
+                    <span>프로필 관리</span>
+                  </Link>
+                )}
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
