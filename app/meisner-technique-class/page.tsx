@@ -7,7 +7,7 @@ import { CLASSES, DIRECTOR } from '@/lib/classes'
 import { MEISNER_FAQ } from '@/lib/landing-faqs'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import JoinCTALink from '@/components/join/JoinCTALink'
-import { buildBreadcrumb, buildFaqPage, buildCourseFromClass, buildEducationalOrganization } from '@/lib/seo-schemas'
+import { buildBreadcrumb, buildFaqPage, buildCourseFromClass } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
@@ -87,7 +87,6 @@ export default function MeisnerPage() {
             { name: '마이즈너 테크닉 정규 클래스', url: PAGE_URL },
           ]),
           buildCourseFromClass(MAIN_CLASS, { url: PAGE_URL }),
-          buildEducationalOrganization(),
           buildFaqPage(MEISNER_FAQ),
         ]}
       />

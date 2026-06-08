@@ -6,7 +6,7 @@ import { CLASSES } from '@/lib/classes'
 import { REEL_FAQ } from '@/lib/landing-faqs'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import JoinCTALink from '@/components/join/JoinCTALink'
-import { buildBreadcrumb, buildFaqPage, buildCourseFromClass, buildEducationalOrganization } from '@/lib/seo-schemas'
+import { buildBreadcrumb, buildFaqPage, buildCourseFromClass } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
@@ -99,7 +99,6 @@ export default function ReelPage() {
             { name: '출연영상 클래스', url: PAGE_URL },
           ]),
           buildCourseFromClass(FILM_CLASS, { url: PAGE_URL }),
-          buildEducationalOrganization(),
           buildFaqPage(REEL_FAQ),
         ]}
       />
