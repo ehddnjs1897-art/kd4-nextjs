@@ -226,7 +226,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
               fontSize: '0.85rem', fontWeight: 700,
             }}
           >
-            💰 매출/수강 대시보드 →
+            <span aria-hidden="true">💰</span> 매출/수강 대시보드 <span aria-hidden="true">→</span>
           </a>
           <a
             href="/admin/character-generator"
@@ -236,7 +236,7 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
               fontSize: '0.85rem', fontWeight: 700,
             }}
           >
-            캐릭터셋 프로필 생성기 →
+            캐릭터셋 프로필 생성기 <span aria-hidden="true">→</span>
           </a>
         </div>
 
