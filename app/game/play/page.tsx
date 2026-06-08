@@ -96,6 +96,15 @@ function GamePlayInner() {
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
       <h1 className="sr-only">OFF THE PLASTIC — 게임 플레이</h1>
+      {/* 게임 상태 변화 AT 알림 — 스테이지 진입 등을 화면 밖 live region으로 전달 (WCAG 1.3.1) */}
+      <p
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {stage ? `스테이지 ${stage.act} — ${stage.label}` : ''}
+      </p>
       <SpotlightRush key={gameKey} callbacks={callbacks} character={character} />
       <GameUI
         score={score}
