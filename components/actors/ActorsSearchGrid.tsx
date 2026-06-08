@@ -13,6 +13,7 @@ interface Actor {
   casting_summary: string | null
   photoSrc: string
   unoptimized: boolean
+  hasVideo?: boolean
 }
 
 interface Props {
@@ -36,25 +37,32 @@ const CHOSEONG_ONLY = /^[ㄱ-ㅎ\s]+$/
 
 export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
   const [query, setQuery] = useState('')
+  const [videoOnly, setVideoOnly] = useState(false)
+  const anyVideo = useMemo(() => actors.some((a) => a.hasVideo), [actors])
 
   const filtered = useMemo(() => {
     const raw = query.trim()
-    if (!raw) return actors
-    // 초성만 입력한 경우 (ㄱㄷㅇ → 권동원): 이름·태그의 초성으로 매칭
-    if (CHOSEONG_ONLY.test(raw)) {
-      const qCho = raw.replace(/\s/g, '')
-      return actors.filter((a) =>
-        toChoseong(a.name).includes(qCho) ||
-        (a.casting_tags ?? []).some((t) => toChoseong(t).includes(qCho))
-      )
+    let list = actors
+    if (raw) {
+      // 초성만 입력한 경우 (ㄱㄷㅇ → 권동원): 이름·태그의 초성으로 매칭
+      if (CHOSEONG_ONLY.test(raw)) {
+        const qCho = raw.replace(/\s/g, '')
+        list = actors.filter((a) =>
+          toChoseong(a.name).includes(qCho) ||
+          (a.casting_tags ?? []).some((t) => toChoseong(t).includes(qCho))
+        )
+      } else {
+        const q = raw.toLowerCase()
+        list = actors.filter((a) =>
+          a.name.toLowerCase().includes(q) ||
+          (a.casting_summary ?? '').toLowerCase().includes(q) ||
+          (a.casting_tags ?? []).some((t) => t.toLowerCase().includes(q))
+        )
+      }
     }
-    const q = raw.toLowerCase()
-    return actors.filter((a) =>
-      a.name.toLowerCase().includes(q) ||
-      (a.casting_summary ?? '').toLowerCase().includes(q) ||
-      (a.casting_tags ?? []).some((t) => t.toLowerCase().includes(q))
-    )
-  }, [actors, query])
+    if (videoOnly) list = list.filter((a) => a.hasVideo)
+    return list
+  }, [actors, query, videoOnly])
 
   return (
     <>
@@ -97,6 +105,28 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
           ><span aria-hidden="true">✕</span></button>
         )}
       </form>
+
+      {/* 출연영상 보유 배우 필터 토글 (영상 보유 배우가 있을 때만) */}
+      {anyVideo && (
+        <div style={{ marginBottom: 16 }}>
+          <button
+            type="button"
+            onClick={() => setVideoOnly((v) => !v)}
+            aria-pressed={videoOnly}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              padding: '7px 14px', borderRadius: 999, cursor: 'pointer',
+              fontSize: '0.8rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
+              background: videoOnly ? 'var(--navy)' : 'var(--bg2)',
+              color: videoOnly ? '#fff' : 'var(--gray)',
+              border: `1px solid ${videoOnly ? 'var(--navy)' : 'var(--border)'}`,
+              transition: 'all 0.15s',
+            }}
+          >
+            <span aria-hidden="true">🎬</span> 출연영상 있는 배우만
+          </button>
+        </div>
+      )}
 
       {/* 결과 수 */}
       <p role="status" aria-live="polite" aria-atomic="true" style={{ fontSize: '0.8rem', color: 'var(--gray)', marginBottom: 20 }}>

@@ -65,7 +65,7 @@ function isUndefinedColumnError(err: { code?: string; message?: string } | null)
   return err.code === '42703' || /column .* does not exist/i.test(err.message ?? '')
 }
 
-async function fetchActors(gender: string, ageGroup: string, tag: string): Promise<{ actors: Actor[]; dbError: boolean; allTags: string[] }> {
+async function fetchActors(gender: string, ageGroup: string, tag: string): Promise<{ actors: Actor[]; dbError: boolean; allTags: string[]; videoActorIds: string[] }> {
   // 새 컬럼(casting_tags/summary) 포함 쿼리 — 마이그레이션 미실행 시 fallback
   const buildQuery = (cols: string) => {
     let q = supabaseAdmin
@@ -94,7 +94,7 @@ async function fetchActors(gender: string, ageGroup: string, tag: string): Promi
       castingSchemaAvailable = false
     } else if (error) {
       console.error('[ActorsPage] Supabase 오류:', error.message)
-      return { actors: [], dbError: true, allTags: [] }
+      return { actors: [], dbError: true, allTags: [], videoActorIds: [] }
     } else {
       actors = (data ?? []) as unknown as Actor[]
     }
@@ -105,7 +105,7 @@ async function fetchActors(gender: string, ageGroup: string, tag: string): Promi
     const { data, error } = await buildQuery('id, name, gender, age_group, drive_photo_id, storage_photo_path')
     if (error) {
       console.error('[ActorsPage] Fallback Supabase 오류:', error.message)
-      return { actors: [], dbError: true, allTags: [] }
+      return { actors: [], dbError: true, allTags: [], videoActorIds: [] }
     }
     actors = ((data ?? []) as unknown as Array<Omit<Actor, 'casting_tags' | 'casting_summary'>>)
       .map((a) => ({ ...a, casting_tags: null, casting_summary: null }))
@@ -141,7 +141,18 @@ async function fetchActors(gender: string, ageGroup: string, tag: string): Promi
     }
   }
 
-  return { actors, dbError: false, allTags }
+  // 출연영상 보유 배우 id (필터용) — 테이블/컬럼 없으면 빈 배열 폴백 (페이지 안 깨지게)
+  let videoActorIds: string[] = []
+  try {
+    const { data: vids, error: vErr } = await supabaseAdmin.from('actor_videos').select('actor_id')
+    if (!vErr && vids) {
+      videoActorIds = Array.from(
+        new Set((vids as Array<{ actor_id: string | null }>).map((v) => v.actor_id).filter((x): x is string => !!x))
+      )
+    }
+  } catch { /* actor_videos 미존재 등 — 필터 비활성 */ }
+
+  return { actors, dbError: false, allTags, videoActorIds }
 }
 
 // 배우 목록은 모든 회원에게 동일(공개 데이터) → 120초 캐시.
@@ -182,7 +193,8 @@ export default async function ActorsPage({ searchParams }: PageProps) {
   const ageGroup = VALID_AGE_GROUPS.has(params.ageGroup ?? '') ? (params.ageGroup ?? 'all') : 'all'
   const tag = (params.tag ?? 'all').replace(/[{},\\"]/g, '').slice(0, 50)  // PostgREST 메타문자({},\") 제거 + 50자 상한
 
-  const { actors, dbError, allTags } = await getActorsCached(gender, ageGroup, tag)
+  const { actors, dbError, allTags, videoActorIds } = await getActorsCached(gender, ageGroup, tag)
+  const videoIdSet = new Set(videoActorIds)
 
   function filterHref(key: string, value: string) {
     const next = new URLSearchParams()
@@ -348,6 +360,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
               casting_summary: actor.casting_summary,
               photoSrc: getActorPhotoUrl(actor),
               unoptimized: !shouldOptimize(actor),
+              hasVideo: videoIdSet.has(actor.id),
             }))}
             totalBeforeSearch={actors.length}
           />
