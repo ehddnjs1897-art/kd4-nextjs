@@ -705,7 +705,6 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
         id="actor-edit-error"
         tabIndex={-1}
         role="alert"
-        aria-live="assertive"
         aria-atomic="true"
         style={{ outline: 'none', ...(editErr ? { color: '#f87171', fontSize: '0.82rem', marginTop: 8, padding: '6px 12px', background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)', borderRadius: 6 } : {}) }}
       >{editErr}</div>

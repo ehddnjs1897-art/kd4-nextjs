@@ -263,7 +263,6 @@ export default function AIToolsPage() {
                 ref={errorRef}
                 tabIndex={-1}
                 role="alert"
-                aria-live="assertive"
                 aria-atomic="true"
                 style={{ outline: 'none', ...(error ? s.errorBox : {}) }}
               >

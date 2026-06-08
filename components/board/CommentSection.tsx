@@ -252,7 +252,6 @@ export default function CommentSection({
             ref={errorRef}
             tabIndex={-1}
             role="alert"
-            aria-live="assertive"
             aria-atomic="true"
             style={{ outline: 'none', ...(error ? {
               color: '#e74c3c',

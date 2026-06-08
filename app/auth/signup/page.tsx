@@ -263,7 +263,6 @@ export default function SignupPage() {
           id="signup-error"
           tabIndex={-1}
           role="alert"
-          aria-live="assertive"
           aria-atomic="true"
           style={{ outline: 'none', ...(error ? styles.errorBox : {}) }}
         >{error ?? ''}</div>
@@ -364,7 +363,6 @@ export default function SignupPage() {
             <span
               id="signup-pw-mismatch"
               role="alert"
-              aria-live="assertive"
               aria-atomic="true"
               style={passwordConfirm && password !== passwordConfirm ? styles.fieldError : {}}
             >

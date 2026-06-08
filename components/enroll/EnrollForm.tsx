@@ -405,7 +405,6 @@ export default function EnrollForm({
           ref={errorRef}
           tabIndex={-1}
           role="alert"
-          aria-live="assertive"
           aria-atomic="true"
           style={{ outline: 'none', ...(error ? { padding: '12px 16px', background: 'var(--accent-red-soft)', border: '1px solid rgba(199,62,62,0.25)', borderRadius: 10, marginBottom: 16 } : {}) }}
         >

@@ -268,7 +268,6 @@ export default function ProfileEditForm({ initialName, initialPhone, email, role
           id="profile-edit-error"
           tabIndex={-1}
           role="alert"
-          aria-live="assertive"
           aria-atomic="true"
           style={{ outline: 'none', ...(error ? {
             fontSize: '0.8rem', color: '#ff6b6b', marginTop: 14,

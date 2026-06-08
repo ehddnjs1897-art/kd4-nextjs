@@ -58,7 +58,6 @@ export default function DirectorRequestButton() {
         ref={errorRef}
         tabIndex={-1}
         role="alert"
-        aria-live="assertive"
         aria-atomic="true"
         style={{ outline: 'none', ...(error ? {
           fontSize: '0.8rem',

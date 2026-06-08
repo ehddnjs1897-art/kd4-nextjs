@@ -834,7 +834,6 @@ export default function JoinForm() {
         tabIndex={-1}
         id={errorId}
         role="alert"
-        aria-live="assertive"
         aria-atomic="true"
         className={error ? undefined : 'sr-only'}
         style={{ color: '#b91c1c', fontSize: '0.85rem', margin: 0, outline: 'none' }}

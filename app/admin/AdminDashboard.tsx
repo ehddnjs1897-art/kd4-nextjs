@@ -243,7 +243,6 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
         {/* 에러 토스트 — always mounted so AT registers the live region before first announcement */}
         <div
           role="alert"
-          aria-live="assertive"
           aria-atomic="true"
           style={toastMsg?.type === 'error' ? {
             padding: '12px 18px',
