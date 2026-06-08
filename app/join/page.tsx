@@ -1005,7 +1005,7 @@ export default function JoinPage() {
             ))}
             <div style={{ padding: '14px 20px', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
               <JoinCTALink
-                href="#form"
+                href="#form-hero"
                 location="offer_discount"
                 label="지금 신청하기"
                 fireLead
@@ -1023,7 +1023,7 @@ export default function JoinPage() {
 
           <div style={{ textAlign: 'center', marginTop: '40px' }}>
             <JoinCTALink
-              href="#form"
+              href="#form-hero"
               location="offer_bottom"
               label="무료 상담 신청"
               fireLead
@@ -1345,7 +1345,7 @@ export default function JoinPage() {
           {/* 인라인 CTA */}
           <div style={{ textAlign: 'center', marginTop: '24px' }}>
             <JoinCTALink
-              href="#form"
+              href="#form-hero"
               location="inline_proof"
               label="나도 진짜 배우로 · 무료 상담 신청"
               fireLead
