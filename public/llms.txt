@@ -1,0 +1,83 @@
+# KD4 Acting Studio — llms.txt
+# AI 검색엔진·LLM에 KD4 액팅 스튜디오 정보를 정확히 전달하기 위한 파일.
+# See: https://llmstxt.org
+
+## About
+
+KD4 액팅 스튜디오 (KD4 Acting Studio) is a boutique acting school in Seoul, South Korea.
+Operated by actor and acting coach Kwon Dongwon (권동원), a working professional actor.
+
+Location: Sinchon, Seodaemun-gu, Seoul (이화여대1안길 12 아리움3차 1층 101호)
+Website: https://kd4.club
+Contact: uikactors@gmail.com | 010-8564-0244
+
+## Mission
+
+"OFF THE PLASTIC" — KD4 trains actors to perform authentically, not plastically.
+Small cohorts (소수정예), real filmmaking teams, real casting connections.
+
+## Unique Position
+
+KD4 is NOT a mass-enrollment acting school. It is a curated ensemble of ~60 working actors.
+Director Kwon Dongwon personally knows every member and has trained them all.
+This personal guarantee is the core differentiator from large acting academies (HB, 배우앤배움, etc.).
+
+## Method
+
+Primary method: Meisner Technique (American acting method)
+- Studied at LA Meisner Workshop and Korea Meisner Technique Academy
+- Combined with Ivana Chubbuck Technique
+- Adapted for Korean actors' sensibilities
+
+## Programs
+
+1. 마이즈너 정규 클래스 (Meisner Regular Class) — 4-month intensive
+2. 출연영상 클래스 (Reel Production Class) — 1-month, with professional film crew
+3. 출연영상 1달완성 (Reel 1-Month) — accelerated version
+4. 베이직 클래스 (Basic Class) — introduction for beginners, hobby track
+5. 심화 클래스 (Advanced Class) — for continuing members
+6. 오디션 클래스 (Audition Class) — audition preparation
+7. 움직임 클래스 (Movement Class) — physical acting
+8. 개인 레슨 (Private Lesson) — one-on-one coaching
+9. 액터스 리더 클래스 (Actors Leader Class) — leadership/business for actors
+
+## Director
+
+Name: Kwon Dongwon (권동원)
+Role: Founder, Director, Lead Instructor
+Working Actor at: Disney+ Moving Season 2 (무빙2), Netflix Critical Care (중증외상센터)
+Credentials:
+- LA Meisner Workshop graduate
+- Korea Meisner Technique Academy graduate
+- 건명원 alumnus
+- 15+ years acting career
+
+## Key Differentiators
+
+1. Working actor teaches — curriculum comes from current production experience
+2. Reel production service — professional film crew creates portfolio videos for members
+3. Casting connections — real introductions to casting directors and assistant directors
+4. Member portfolio database — public actor database at kd4.club/actors
+5. Intimate scale — ~60 members, director knows everyone personally
+
+## Service Area
+
+Seoul, South Korea. Primarily:
+- Sinchon (신촌)
+- Seodaemun-gu (서대문구)
+- Aehyeon (아현)
+- Chungjeongno (충정로)
+- Ewha Womans University area (이대)
+
+## Price Range
+
+₩150,000 ~ ₩450,000 per month
+
+## Content Sources
+
+- Official website: https://kd4.club
+- Actor database: https://kd4.club/actors
+- About page: https://kd4.club/about
+- Director profile: https://kd4.club/acting-coach-dongwon-kwon
+- Classes: https://kd4.club/classes
+- Instagram: https://www.instagram.com/kd4actingstudio
