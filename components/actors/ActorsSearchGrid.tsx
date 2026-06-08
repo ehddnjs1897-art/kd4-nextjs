@@ -20,12 +20,35 @@ interface Props {
   totalBeforeSearch: number
 }
 
+// ── 한국어 초성검색 (외부 라이브러리 없이) ──
+const CHO = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ']
+function toChoseong(str: string): string {
+  let out = ''
+  for (const ch of str) {
+    const code = ch.charCodeAt(0)
+    if (code >= 0xac00 && code <= 0xd7a3) out += CHO[Math.floor((code - 0xac00) / 588)]
+    else out += ch
+  }
+  return out
+}
+// 입력이 초성(자음)만으로 이뤄졌는지 (예: "ㄱㄷㅇ")
+const CHOSEONG_ONLY = /^[ㄱ-ㅎ\s]+$/
+
 export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
   const [query, setQuery] = useState('')
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    if (!q) return actors
+    const raw = query.trim()
+    if (!raw) return actors
+    // 초성만 입력한 경우 (ㄱㄷㅇ → 권동원): 이름·태그의 초성으로 매칭
+    if (CHOSEONG_ONLY.test(raw)) {
+      const qCho = raw.replace(/\s/g, '')
+      return actors.filter((a) =>
+        toChoseong(a.name).includes(qCho) ||
+        (a.casting_tags ?? []).some((t) => toChoseong(t).includes(qCho))
+      )
+    }
+    const q = raw.toLowerCase()
     return actors.filter((a) =>
       a.name.toLowerCase().includes(q) ||
       (a.casting_summary ?? '').toLowerCase().includes(q) ||
@@ -45,7 +68,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="이름, 캐스팅 타입으로 검색..."
+          placeholder="이름·초성(ㄱㄷㅇ)·캐스팅 타입으로 검색..."
           aria-label="배우 검색"
           style={{
             width: '100%',
