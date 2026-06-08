@@ -1601,6 +1601,21 @@ export default function JoinPage() {
         </div>
       </section>
 
+      {/* 폼 아래 탈출구 — CLEAN_ROUTE라 네비 없음, 결심 전 방문자에게 탐색 경로 제공 */}
+      <nav aria-label="추가 탐색" style={{ textAlign: 'center', padding: '24px 24px 48px', borderTop: '1px solid var(--border)' }}>
+        <p style={{ color: 'var(--gray)', fontSize: '0.78rem', marginBottom: '14px', letterSpacing: '0.03em' }}>
+          더 알아보고 싶다면
+        </p>
+        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <a href="/classes" style={{ padding: '9px 18px', borderRadius: 8, border: '1px solid var(--border)', color: 'var(--gray)', fontSize: '0.82rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
+            클래스 자세히 보기
+          </a>
+          <a href="/about" style={{ padding: '9px 18px', borderRadius: 8, border: '1px solid var(--border)', color: 'var(--gray)', fontSize: '0.82rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
+            스튜디오 소개
+          </a>
+        </div>
+      </nav>
+
       <StickyBottomCTA />
       </div>
     </>
