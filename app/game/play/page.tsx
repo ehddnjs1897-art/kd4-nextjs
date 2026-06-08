@@ -103,7 +103,7 @@ function GamePlayInner() {
         aria-atomic="true"
         className="sr-only"
       >
-        {stage ? `스테이지 ${stage.act} — ${stage.label}` : ''}
+        {stage ? `스테이지 ${stage.act} — ${stage.title}` : ''}
       </p>
       <SpotlightRush key={gameKey} callbacks={callbacks} character={character} />
       <GameUI
