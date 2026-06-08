@@ -12,7 +12,21 @@ import { analytics } from "@/lib/analytics";
 import { CASTING_PHOTOS } from "@/lib/casting-photos"
 const HeroScene = dynamic(() => import("@/components/hero/HeroScene"), {
   ssr: false,
-  loading: () => <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: '#E8E4D8' }} />,
+  // 로딩 중 또는 WebGL 미지원 환경: 단색 대신 director.jpg 정지 포스터 (스펙 3-9A)
+  // Next.js Image 없이 인라인 style로 — fallback은 very brief, 최적화 필요 없음
+  loading: () => (
+    <div
+      aria-hidden="true"
+      style={{
+        position: 'absolute', inset: 0,
+        background: '#E8E4D8',
+        backgroundImage: 'url(/director.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center 15%',
+        filter: 'brightness(0.7) grayscale(0.2)',
+      }}
+    />
+  ),
 });
 
 // profileFlat 항목 내 영어 고유명사 lang="en" 처리 (WCAG 3.1.2)

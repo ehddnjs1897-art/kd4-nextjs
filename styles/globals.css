@@ -2015,6 +2015,16 @@ main {
   border-width: 0;
 }
 
+/* === PERFORMANCE: content-visibility (스펙 3-12) ===
+   폴드 아래 긴 섹션의 렌더·레이아웃 연산을 뷰포트 진입 시점으로 지연.
+   contain-intrinsic-size: 예상 높이 설정 필수 — 미설정 시 CLS 발생.
+   ⚠️ GSAP/ScrollTrigger 타깃에 사용 금지 — GSAP가 레이아웃 선측정 실패.
+   ⚠️ 즉시 보여야 하는 핵심 콘텐츠에 사용 금지 (5/6 ScrollTrigger 사고 교훈). */
+.below-fold-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px; /* 섹션 예상 최소 높이 */
+}
+
 /* === PRINT STYLES — 배우 프로필 인쇄 최적화 === */
 @media print {
   /* 네비/푸터/플로팅 UI 모두 숨김 */
