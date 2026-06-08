@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { CLASSES, PROMO_DEADLINE } from '@/lib/classes'
 
-import { pixel } from '@/lib/analytics'
+import { analytics } from '@/lib/analytics'
 import { ArrowRight } from 'lucide-react'
 
 /** 신규 SEO 상세 페이지 매핑 — 마이즈너/출연영상 카드 하단에 상세 페이지 링크 노출 */
@@ -151,7 +151,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
         <a
           href="/join"
           aria-label={`${cls.nameKo} 무료 상담 신청`}
-          onClick={() => { pixel.viewContent(cls.nameKo); pixel.contact() }}
+          onClick={() => { analytics.viewContent(cls.nameKo); analytics.contact('kakao') }}
           style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '12px 0', minHeight: 44,
             background: 'var(--gold)', color: '#fff', fontWeight: 700,
@@ -200,7 +200,7 @@ export default function ClassesPage() {
           </p>
           <Link
             href="/join"
-            onClick={() => pixel.contact()}
+            onClick={() => analytics.contact('kakao')}
             className="btn-primary"
             style={{ background: 'var(--navy)', color: '#fff', textDecoration: 'none' }}
           >
@@ -418,7 +418,7 @@ export default function ClassesPage() {
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
               <Link
                 href="/join"
-                onClick={() => pixel.contact()}
+                onClick={() => analytics.contact('kakao')}
                 className="btn-primary"
                 style={{ background: 'var(--navy)', color: '#fff', textDecoration: 'none', boxShadow: '0 4px 20px rgba(21,72,138,0.3)' }}
               >
@@ -428,7 +428,7 @@ export default function ClassesPage() {
                 href="https://pf.kakao.com/_ximxdqn"
                 target="_blank" rel="noopener noreferrer"
                 aria-label="카카오 채널 상담 (새 탭에서 열림)"
-                onClick={() => pixel.contact()}
+                onClick={() => analytics.contact('kakao')}
                 style={{
                   display: 'inline-block', padding: '14px 32px',
                   border: '1px solid rgba(17,17,17,0.35)', color: '#111111',

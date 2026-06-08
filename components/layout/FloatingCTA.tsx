@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { pixel } from '@/lib/analytics'
+import { analytics } from '@/lib/analytics'
 
 /** 배우DB · 커뮤니티 · 대본분석 · 인증 · 상담신청 페이지에서는 CTA 표시 안 함 */
 const HIDE_ON: string[] = ['/actors', '/board', '/ai-tools', '/auth', '/dashboard', '/admin', '/join']
@@ -21,7 +21,7 @@ export default function FloatingCTA() {
         href="https://pf.kakao.com/_ximxdqn"
         target="_blank" rel="noopener noreferrer"
         aria-label="카카오 채널 상담"
-        onClick={() => pixel.contact()}
+        onClick={() => analytics.contact('kakao')}
         style={{
           position: 'fixed',
           bottom: '84px',
@@ -63,7 +63,7 @@ export default function FloatingCTA() {
       >
         <Link
           href="/join"
-          onClick={() => pixel.contact()}
+          onClick={() => analytics.contact('kakao')}
           style={{
             display: 'flex',
             alignItems: 'center',

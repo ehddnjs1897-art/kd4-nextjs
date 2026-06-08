@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { pixel } from '@/lib/analytics'
+import { analytics } from '@/lib/analytics'
 
 const socialLinks = [
   {
@@ -100,7 +100,7 @@ export default function Footer() {
                 target="_blank" rel="noopener noreferrer"
                 aria-label={`${s.label} (새 탭에서 열림)`}
                 title={s.label}
-                onClick={s.label === '카카오 채널' ? () => pixel.contact() : undefined}
+                onClick={s.label === '카카오 채널' ? () => analytics.contact('kakao') : undefined}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -216,7 +216,7 @@ export default function Footer() {
                   href="https://pf.kakao.com/_ximxdqn"
                   target="_blank" rel="noopener noreferrer"
                   aria-label="카카오채널 (새 탭에서 열림)"
-                  onClick={() => pixel.contact()}
+                  onClick={() => analytics.contact('kakao')}
                   style={{ color: 'var(--gray-light)', fontSize: '0.85rem', transition: 'color 0.2s', display: 'inline-flex', alignItems: 'center', padding: '6px 0', minHeight: 44 }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--gray-light)')}
