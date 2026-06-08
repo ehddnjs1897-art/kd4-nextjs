@@ -144,20 +144,33 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
         <p style={{ fontSize: '0.95rem', color: 'var(--gray)', marginBottom: 16 }}>
           {query ? `"${query}" 에 해당하는 배우가 없습니다.` : '등록된 배우가 없습니다.'}
         </p>
-        {query && (
-          <button
-            type="button"
-            onClick={() => setQuery('')}
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
+          {query && (
+            <button
+              type="button"
+              onClick={() => setQuery('')}
+              style={{
+                display: 'inline-flex', alignItems: 'center', padding: '8px 20px',
+                minHeight: 44, border: '1px solid var(--gold)', borderRadius: 4,
+                color: 'var(--gold)', fontSize: '0.85rem',
+                background: 'none', cursor: 'pointer', fontFamily: 'inherit',
+              }}
+            >
+              검색 초기화
+            </button>
+          )}
+          {/* 서버사이드 필터 초기화 — URL 파라미터 포함 (WCAG 3.3.2) */}
+          <a
+            href="/actors"
             style={{
               display: 'inline-flex', alignItems: 'center', padding: '8px 20px',
-              minHeight: 44, border: '1px solid var(--gold)', borderRadius: 4,
-              color: 'var(--gold)', fontSize: '0.85rem',
-              background: 'none', cursor: 'pointer', fontFamily: 'inherit',
+              minHeight: 44, border: '1px solid var(--border)', borderRadius: 4,
+              color: 'var(--gray)', fontSize: '0.85rem', textDecoration: 'none',
             }}
           >
-            검색 초기화
-          </button>
-        )}
+            전체 필터 초기화
+          </a>
+        </div>
       </div>
       {filtered.length > 0 && (
         <ul style={{ ...gridStyle, listStyle: 'none', padding: 0, margin: 0 }} className="actors-grid" aria-label="배우 목록">

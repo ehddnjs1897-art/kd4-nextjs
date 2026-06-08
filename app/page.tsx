@@ -1226,7 +1226,7 @@ export default function HomePage() {
       {/* ── 9. CTA ──────────────────────────────────────────────────────────── */}
       <section
         id="cta"
-        aria-label="수강 신청"
+        aria-label="무료 상담 신청"
         style={{
           padding: "120px 24px",
           background:

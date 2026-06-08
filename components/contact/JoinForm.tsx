@@ -599,7 +599,7 @@ export default function JoinForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} aria-label="수강신청" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+    <form onSubmit={handleSubmit} aria-label="무료 상담 신청" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
       {/* 허니팟 — 봇 방지: 화면 밖, 스크린리더 숨김, 탭 불가 */}
       <input
         type="text"
