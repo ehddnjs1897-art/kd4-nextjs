@@ -1,11 +1,17 @@
 import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
+import { fetchScheduleFromNotion } from '@/lib/notion/schedule'
 import scheduleByMonth from '@/data/schedule-by-month.json'
 import SalesDashboard, {
   type MonthRevenue,
   type ScheduleMap,
   type UnpaidRow,
 } from './SalesDashboard'
+
+// 매출 대시보드는 이 이메일로 로그인한 경우에만 열람 가능 (관리자 중에서도 대표 전용)
+const ADMIN_SALES_EMAILS = ['uikactors@gmail.com']
 
 export const metadata: Metadata = {
   title: '매출/수강 통합 대시보드 (관리자)',
@@ -57,7 +63,13 @@ function normalizeYM(raw: string | null | undefined): string | null {
 }
 
 export default async function AdminSalesPage() {
-  // auth/role은 app/admin/layout.tsx에서 처리
+  // 1차 가드: app/admin/layout.tsx에서 로그인 + role=admin 확인 완료
+  // 2차 가드: 매출은 대표 이메일만 (admin 권한이라도 이 이메일이 아니면 차단)
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user || !ADMIN_SALES_EMAILS.includes((user.email || '').trim().toLowerCase())) {
+    redirect('/admin')
+  }
 
   const enrollRes = await supabaseAdmin
     .from('enrollments')
@@ -96,9 +108,11 @@ export default async function AdminSalesPage() {
     man: Math.round((revByMonth[k] || 0) / 10000),
   }))
 
-  // 수강현황 (월별 기수별 명단) — _meta 키 제외
+  // 수강현황 (월별 기수별 명단) — 노션 토큰 있으면 실시간, 없으면 정적 JSON fallback
+  const liveSchedule = await fetchScheduleFromNotion()
+  const rawSchedule: Record<string, unknown> = liveSchedule ?? (scheduleByMonth as Record<string, unknown>)
   const schedule: ScheduleMap = {}
-  for (const [k, v] of Object.entries(scheduleByMonth as Record<string, unknown>)) {
+  for (const [k, v] of Object.entries(rawSchedule)) {
     if (k.startsWith('_')) continue
     schedule[k] = v as Record<string, string[]>
   }
