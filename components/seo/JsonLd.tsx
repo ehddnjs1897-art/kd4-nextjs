@@ -9,11 +9,9 @@
  *   - kd4.club#local    → LocalBusiness
  *   - kd4.club#dongwon  → Person (권동원)
  */
-import { CLASSES, PROMO_DEADLINE } from '@/lib/classes'
 import {
   buildOrganization,
   buildEducationalOrganization,
-  buildPersonDongwon,
 } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
 import { serializeJsonLd } from '@/lib/seo'
@@ -79,64 +77,8 @@ function getFaqSchema(faqItems: { q: string; a: string }[]) {
   }
 }
 
-/** Course — 각 클래스를 Course 스키마로 */
-function getCourseSchemas() {
-  return CLASSES.map((cls) => ({
-    '@context': 'https://schema.org',
-    '@type': 'Course',
-    name: `${cls.nameKo} (${cls.nameEn})`,
-    description: cls.quote,
-    provider: {
-      '@type': 'Organization',
-      name: 'KD4 액팅 스튜디오',
-      url: SITE_URL,
-    },
-    offers: {
-      '@type': 'Offer',
-      price: Number(cls.price.replace(/,/g, '')),
-      priceCurrency: 'KRW',
-      availability: 'https://schema.org/InStock',
-      ...(cls.originalPrice ? { priceValidUntil: PROMO_DEADLINE } : {}),
-    },
-    ...(cls.instructor
-      ? {
-          instructor: { '@id': `${SITE_URL}#dongwon` },
-        }
-      : {}),
-    url: `${SITE_URL}/classes`,
-    courseMode: 'Offline',
-    locationCreated: {
-      '@type': 'Place',
-      name: 'KD4 액팅 스튜디오',
-      address: {
-        '@type': 'PostalAddress',
-        streetAddress: '이화여대1안길 12 아리움3차 1층 101호',
-        addressLocality: '서울특별시',
-        addressRegion: '서대문구',
-        postalCode: '03760',
-        addressCountry: 'KR',
-      },
-    },
-    hasCourseInstance: [
-      {
-        '@type': 'CourseInstance',
-        courseMode: 'Offline',
-        location: {
-          '@type': 'Place',
-          name: 'KD4 액팅 스튜디오',
-          address: {
-            '@type': 'PostalAddress',
-            streetAddress: '이화여대1안길 12 아리움3차 1층 101호',
-            addressLocality: '서울특별시',
-            addressRegion: '서대문구',
-            postalCode: '03760',
-            addressCountry: 'KR',
-          },
-        },
-      },
-    ],
-  }))
-}
+// Course 스키마는 각 클래스 페이지(classes/layout.tsx, meisner, reel 등)에서 정의됨.
+// 글로벌 JsonLd에서 Course 제거 → 중복 선언 방지 (SEO 엔티티 신호 오염 차단)
 
 /** WebSite schema — SearchAction for site search (AEO / Google Sitelinks Searchbox) */
 function getWebSiteSchema() {
@@ -165,9 +107,7 @@ export default function JsonLd({ faqItems }: JsonLdProps) {
   const website = getWebSiteSchema()
   const organization = buildOrganization()
   const school = buildEducationalOrganization()
-  const dongwon = buildPersonDongwon()
   const localBusiness = getLocalBusinessSchema()
-  const courses = getCourseSchemas()
 
   return (
     <>
@@ -183,10 +123,8 @@ export default function JsonLd({ faqItems }: JsonLdProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(school) }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: serializeJsonLd(dongwon) }}
-      />
+      {/* Person(권동원)은 acting-coach-dongwon-kwon 페이지에서 상세 정의.
+          Organization.founder = { @id: #dongwon } 참조로 그래프 연결 유지. */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(localBusiness) }}
@@ -197,13 +135,6 @@ export default function JsonLd({ faqItems }: JsonLdProps) {
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(getFaqSchema(faqItems)) }}
         />
       )}
-      {courses.map((course, i) => (
-        <script
-          key={`course-${i}`}
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: serializeJsonLd(course) }}
-        />
-      ))}
     </>
   )
 }
