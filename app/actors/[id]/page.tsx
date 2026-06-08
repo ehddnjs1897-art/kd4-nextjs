@@ -523,7 +523,11 @@ export default async function ActorDetailPage({
 
       {/* 하이라이트 strip — 수상·최근출연·특이 스킬 (있을 때만 노출) */}
       {(() => {
-        const awards = (actor.actor_filmography ?? []).filter(f => f.award && f.award.trim())
+        // 진짜 수상만 하이라이트 (영화제 출품·선정·후보는 제외 — 필모 표에서 작품 옆 빨강 표기)
+        const awards = (actor.actor_filmography ?? []).filter(f =>
+          f.award && f.award.trim()
+          && /(수상|대상|그랑프리|최우수|우수상|신인상|연기상|작품상|남우|여우|특별상|심사위원|감독상|인기상)/.test(f.award)
+          && !/(후보|노미네이트|노미네이션|nominee|nominat)/i.test(f.award))
         const currentYear = new Date().getFullYear()
         const recent = (actor.actor_filmography ?? [])
           .filter(f => (f.year ?? 0) >= currentYear - 1 && f.title)

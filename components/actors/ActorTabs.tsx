@@ -78,6 +78,15 @@ const FILM_TYPE_STYLE: Record<string, React.CSSProperties> = {
   '단편': { background: 'rgba(80,80,80,0.06)', color: 'var(--gray)', border: '1px solid var(--border)' },
 }
 
+// 실제 수상만 AWARD 섹션 노출 / 영화제 출품·선정·초청·후보는 작품 옆 빨강 표기
+const WIN_RE = /(수상|대상|그랑프리|최우수|우수상|신인상|연기상|작품상|남우|여우|특별상|심사위원|감독상|인기상)/
+const NOMINEE_RE = /(후보|노미네이트|노미네이션|nominee|nominat)/i
+const FEST_RE = /(영화제|페스티벌|출품|선정|초청|상영|경쟁부문|nominee|festival)/i
+// 진짜 수상 = 수상 키워드 포함 AND 후보가 아님 (예: "청룡영화제 신인상 후보" → 수상 아님)
+function isWinAward(a?: string | null): boolean {
+  return !!a && WIN_RE.test(a) && !NOMINEE_RE.test(a)
+}
+
 const SECTION_NUMS: Record<FilmoCategory, string> = {
   drama: '03',
   film: '04',
@@ -248,7 +257,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
   const filmoByCategory = (cat: FilmoCategory) => filmoMap[cat] ?? []
 
   // 수상이력
-  const awardEntries = allFilmo.filter((f) => f.award != null && f.award !== '')
+  const awardEntries = allFilmo.filter((f) => isWinAward(f.award))
 
   // 카테고리 순서
   // 표시 순서: 드라마 → 영화 → 공연(연극+뮤지컬) → CF. 기타·뮤지컬단독 제외, CF는 공연 아래 (2026-06-08)
@@ -611,7 +620,9 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                               fontSize: '0.75rem',
                               fontWeight: 600,
                               letterSpacing: '0.03em',
-                              ...(FILM_TYPE_STYLE[entry.film_type] ?? {}),
+                              ...(FEST_RE.test(entry.film_type)
+                                ? { color: 'var(--accent-red)', border: '1px solid rgba(199,62,62,0.3)', background: 'rgba(199,62,62,0.08)' }
+                                : (FILM_TYPE_STYLE[entry.film_type] ?? {})),
                             }}>
                               {entry.film_type}
                             </span>
@@ -620,6 +631,11 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                       )}
                       <td style={{ ...s.td, fontWeight: 600, color: 'var(--white)' }}>
                         {entry.title}
+                        {entry.award && !isWinAward(entry.award) && (
+                          <span style={{ display: 'block', marginTop: 3, fontSize: '0.72rem', fontWeight: 600, color: 'var(--accent-red)', lineHeight: 1.35 }}>
+                            {entry.award}
+                          </span>
+                        )}
                       </td>
                       <td style={s.td}>{entry.role ?? '—'}</td>
                       {canEdit && (
