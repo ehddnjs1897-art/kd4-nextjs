@@ -33,11 +33,13 @@ export default function PhotoLightbox({
   const open = activeIndex !== null
   const [imgLoaded, setImgLoaded] = useState(false)
   const closeBtnRef = useRef<HTMLButtonElement>(null)
+  const dialogRef = useRef<HTMLDivElement>(null)
 
-  // 키보드 핸들러
+  // 키보드 핸들러 + 포커스 트랩 (WCAG 2.4.3)
   useEffect(() => {
     if (!open) return
     setImgLoaded(false)
+    const FOCUSABLE = 'button:not([disabled]), [tabindex]:not([tabindex="-1"])'
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault()
@@ -48,6 +50,19 @@ export default function PhotoLightbox({
       } else if (e.key === 'ArrowRight' && activeIndex! < photos.length - 1) {
         e.preventDefault()
         onChange(activeIndex! + 1)
+      } else if (e.key === 'Tab') {
+        // 포커스 트랩: 다이얼로그 내 포커스만 순환
+        const focusable = Array.from(
+          dialogRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []
+        )
+        if (focusable.length === 0) return
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+        if (e.shiftKey) {
+          if (document.activeElement === first) { e.preventDefault(); last.focus() }
+        } else {
+          if (document.activeElement === last) { e.preventDefault(); first.focus() }
+        }
       }
     }
     window.addEventListener('keydown', handleKey)
@@ -73,6 +88,7 @@ export default function PhotoLightbox({
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-label={current.alt ?? `사진 ${activeIndex! + 1} / ${photos.length}`}

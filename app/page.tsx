@@ -875,6 +875,8 @@ export default function HomePage() {
                   alt={i < CASTING_PHOTOS.length ? photo.name : ""}
                   fill
                   sizes="200px"
+                  priority={i < 6}
+                  loading={i < 6 ? "eager" : "lazy"}
                   style={{ objectFit: "cover", zIndex: 1 }}
                   onError={(e) => { (e.target as HTMLImageElement).style.display = "none" }}
                 />

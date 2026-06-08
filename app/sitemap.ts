@@ -8,19 +8,20 @@ export const revalidate = 86400 // 24시간
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const NOW = new Date()
 
-  // 공개 정적 페이지 (/actors는 robots:index:true — 배우 목록 페이지도 sitemap에 포함)
+  // 정적 페이지 lastModified: 실제 마지막 수정일 상수
+  // (NOW 일괄 사용 시 검색엔진에 매일 "변경됨" 거짓 신호 → 신뢰도 하락)
   const staticPages: MetadataRoute.Sitemap = [
-    { url: BASE, lastModified: NOW, changeFrequency: 'weekly', priority: 1.0 },
-    { url: `${BASE}/about`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.9 },
-    { url: `${BASE}/classes`, lastModified: NOW, changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${BASE}/meisner-technique-class`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.85 },
-    { url: `${BASE}/reel-production-class`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.85 },
-    { url: `${BASE}/sinchon-acting-academy`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${BASE}/acting-coach-dongwon-kwon`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.75 },
-    { url: `${BASE}/actors`, lastModified: NOW, changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${BASE}/benefits`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${BASE}/benefits/seowoo-studio`, lastModified: NOW, changeFrequency: 'monthly', priority: 0.65 },
-    { url: `${BASE}/board`, lastModified: NOW, changeFrequency: 'daily', priority: 0.6 },
+    { url: BASE,                                   lastModified: new Date('2026-06-09'), changeFrequency: 'weekly',  priority: 1.0 },
+    { url: `${BASE}/about`,                        lastModified: new Date('2026-05-30'), changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${BASE}/classes`,                      lastModified: new Date('2026-06-01'), changeFrequency: 'weekly',  priority: 0.9 },
+    { url: `${BASE}/meisner-technique-class`,      lastModified: new Date('2026-05-20'), changeFrequency: 'monthly', priority: 0.85 },
+    { url: `${BASE}/reel-production-class`,        lastModified: new Date('2026-05-20'), changeFrequency: 'monthly', priority: 0.85 },
+    { url: `${BASE}/sinchon-acting-academy`,       lastModified: new Date('2026-05-15'), changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${BASE}/acting-coach-dongwon-kwon`,    lastModified: new Date('2026-06-01'), changeFrequency: 'monthly', priority: 0.75 },
+    { url: `${BASE}/actors`,                       lastModified: NOW,                   changeFrequency: 'weekly',  priority: 0.8 },
+    { url: `${BASE}/benefits`,                     lastModified: new Date('2026-05-10'), changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${BASE}/benefits/seowoo-studio`,       lastModified: new Date('2026-05-20'), changeFrequency: 'monthly', priority: 0.65 },
+    { url: `${BASE}/board`,                        lastModified: NOW,                   changeFrequency: 'daily',   priority: 0.6 },
     // /benefits/replay 는 robots:noindex + robots.txt Disallow → 사이트맵 제외
   ]
 
