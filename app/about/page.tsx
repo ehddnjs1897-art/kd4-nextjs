@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
-import { buildBreadcrumb, buildOrganization, buildPersonDongwon } from '@/lib/seo-schemas'
+import { buildBreadcrumb } from '@/lib/seo-schemas'
 
 export const metadata: Metadata = {
   title: '스튜디오 소개',
@@ -94,9 +94,9 @@ const TESTIMONIALS = [
 export default function AboutPage() {
   return (
     <div style={{ background: 'var(--bg)', color: 'var(--white)', minHeight: '100vh', paddingTop: '64px' }}>
+      {/* Organization·Person은 글로벌 JsonLd(layout.tsx)에서 출력.
+          @id 참조 그래프로 연결 유지. */}
       <PageJsonLd schemas={[
-        buildOrganization(),
-        buildPersonDongwon(),
         buildBreadcrumb([
           { name: '홈', url: SITE_URL },
           { name: '스튜디오 소개', url: `${SITE_URL}/about` },
