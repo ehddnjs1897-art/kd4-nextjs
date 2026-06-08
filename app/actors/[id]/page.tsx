@@ -77,13 +77,22 @@ interface FilmoEntry {
 
 const UUID_RE_ACTOR = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
-/* ---- 정적 파라미터 — 공개 배우 페이지 빌드 타임 사전 렌더 ---- */
+/* ---- 정적 파라미터 — 공개 배우 페이지 빌드 타임 사전 렌더 ----
+   빌드 내성: Supabase env(특히 SUPABASE_SERVICE_ROLE_KEY)가 주입되지 않은
+   환경(예: 키가 Production 전용으로 묶인 Vercel preview 배포)에서도 빌드가
+   죽지 않도록 방어. 실패 시 빈 배열 → 개별 배우 페이지는 on-demand 렌더로 폴백.
+   (env 있는 production에서는 기존과 100% 동일하게 사전 렌더) */
 export async function generateStaticParams() {
-  const { data } = await supabaseAdmin
-    .from('actors')
-    .select('id')
-    .eq('is_public', true)
-  return (data ?? []).map((row: { id: string }) => ({ id: row.id }))
+  try {
+    const { data } = await supabaseAdmin
+      .from('actors')
+      .select('id')
+      .eq('is_public', true)
+    return (data ?? []).map((row: { id: string }) => ({ id: row.id }))
+  } catch (e) {
+    console.warn('[actors/[id]] generateStaticParams: Supabase 접근 실패 — on-demand 폴백', e instanceof Error ? e.message : e)
+    return []
+  }
 }
 
 /* ---- 데이터 fetch (admin 클라이언트 — is_public 포함, 페이지에서 접근 제어) ---- */

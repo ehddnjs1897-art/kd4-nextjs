@@ -26,19 +26,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // 배우 프로필 페이지 (공개 배우만 — 비공개는 페이지 컴포넌트에서 404 반환)
   // lastModified: actors.updated_at 사용 — 검색엔진에 "변경된 페이지만" 명확히 신호 (NOW 일괄보다 신뢰도 ↑)
-  const { data: actors, error: actorsError } = await supabaseAdmin
-    .from('actors')
-    .select('id, updated_at')
-    .eq('is_public', true)
-    .order('updated_at', { ascending: false })
-  if (actorsError) console.error('[sitemap] actors 조회 실패:', actorsError.message)
+  // 빌드 내성: Supabase env가 없는 환경(예: 키가 Production 전용인 Vercel preview)에서도
+  // 사이트맵 생성이 죽지 않도록 try/catch — 실패 시 정적 페이지만 반환.
+  let actorPages: MetadataRoute.Sitemap = []
+  try {
+    const { data: actors, error: actorsError } = await supabaseAdmin
+      .from('actors')
+      .select('id, updated_at')
+      .eq('is_public', true)
+      .order('updated_at', { ascending: false })
+    if (actorsError) console.error('[sitemap] actors 조회 실패:', actorsError.message)
 
-  const actorPages: MetadataRoute.Sitemap = (actors ?? []).map((a) => ({
-    url: `${BASE}/actors/${a.id}`,
-    lastModified: a.updated_at ? new Date(a.updated_at) : NOW,
-    changeFrequency: 'weekly' as const,
-    priority: 0.75,
-  }))
+    actorPages = (actors ?? []).map((a) => ({
+      url: `${BASE}/actors/${a.id}`,
+      lastModified: a.updated_at ? new Date(a.updated_at) : NOW,
+      changeFrequency: 'weekly' as const,
+      priority: 0.75,
+    }))
+  } catch (e) {
+    console.warn('[sitemap] Supabase 접근 실패 — 정적 페이지만 반환', e instanceof Error ? e.message : e)
+  }
 
   return [...staticPages, ...actorPages]
 }
