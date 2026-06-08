@@ -505,7 +505,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 4. DIRECTOR ──────────────────────────────────────────────────────── */}
+      {/* ── 3. DIRECTOR ──────────────────────────────────────────────────────── */}
       <section
         id="director"
         aria-label="강사 소개"
@@ -610,7 +610,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 3. ABOUT ─────────────────────────────────────────────────────────── */}
+      {/* ── 4. ABOUT ─────────────────────────────────────────────────────────── */}
       <section id="about" aria-label="KD4 소개" className="section" style={{ background: "var(--bg)" }}>
         <div className="container">
           {/* 헤더 영역은 중앙 정렬 720px 유지 (가독성) */}
@@ -766,7 +766,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 8. CASTING ───────────────────────────────────────────────────────── */}
+      {/* ── 5. CASTING ───────────────────────────────────────────────────────── */}
       <section
         id="casting"
         aria-label="캐스팅 연계"
@@ -888,7 +888,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── 7. HOW IT WORKS ──────────────────────────────────────────────────── */}
+      {/* ── 6. HOW IT WORKS ──────────────────────────────────────────────────── */}
       <section id="how" aria-label="수업 방식" className="section" style={{ background: "var(--bg)" }}>
         <div className="container">
           <div style={{ textAlign: "center", marginBottom: "60px" }}>
@@ -973,8 +973,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 5. CLASSES ───────────────────────────────────────────────────────── */}
-      {/* ── 8. CLASSES — 압축 버전 (전체 보기는 /classes로) ─────────────────── */}
+      {/* ── 7. CLASSES — 압축 버전 (전체 보기는 /classes로) ─────────────────── */}
       <section id="classes" aria-label="클래스 소개" className="section" style={{ background: "var(--bg)" }}>
         <div className="container" style={{ maxWidth: 980 }}>
           <div style={{ textAlign: "center", marginBottom: "40px" }}>
@@ -1122,7 +1121,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 8.5 REVIEWS MARQUEE ─────────────────────────────────────────────── */}
+      {/* ── 8. REVIEWS MARQUEE ─────────────────────────────────────────────── */}
       <section
         id="reviews"
         aria-label="멤버 후기"
@@ -1224,7 +1223,7 @@ export default function HomePage() {
       </section>
       */}
 
-      {/* ── 12. CTA ──────────────────────────────────────────────────────────── */}
+      {/* ── 9. CTA ──────────────────────────────────────────────────────────── */}
       <section
         id="cta"
         aria-label="수강 신청"
