@@ -10,6 +10,7 @@ import { DIRECTOR } from "@/lib/classes";
 
 import { analytics } from "@/lib/analytics";
 import { STAT_ICONS } from "@/lib/stat-icons";
+import DirectorFilmography from "@/components/director/DirectorFilmography";
 import { CASTING_PHOTOS } from "@/lib/casting-photos"
 const HeroScene = dynamic(() => import("@/components/hero/HeroScene"), {
   ssr: false,
@@ -581,46 +582,9 @@ export default function HomePage() {
                 </ul>
               </div>
 
-              {/* 필모 */}
+              {/* 필모 — DirectorFilmography 공용 컴포넌트 (스펙 2-F) */}
               <div>
-                <p
-                  style={{
-                    fontSize: "0.7rem",
-                    letterSpacing: "0.15em",
-                    color: "var(--gold)",
-                    marginBottom: "16px",
-                  }}
-                >
-                  <span lang="en">FILMOGRAPHY</span>
-                </p>
-                {[
-                  { cat: "드라마", items: DIRECTOR.filmography.drama },
-                  { cat: "영화",   items: DIRECTOR.filmography.film },
-                  { cat: "CF",     items: DIRECTOR.filmography.cf },
-                ].map((group) => (
-                  <div key={group.cat} style={{ marginBottom: "20px" }}>
-                    <p
-                      style={{
-                        fontSize: "0.72rem",
-                        color: "var(--gray)",
-                        marginBottom: "8px",
-                        letterSpacing: "0.05em",
-                      }}
-                    >
-                      {group.cat}
-                    </p>
-                    <ul role="list" aria-label={`권동원 ${group.cat} 필모그래피`} style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                      {group.items.map((item, i) => (
-                        <li
-                          key={i}
-                          style={{ fontSize: "0.82rem", color: "var(--gray-light)" }}
-                        >
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+                <DirectorFilmography labelColor="var(--gold)" />
               </div>
             </div>
             </div>{/* end 텍스트 영역 */}

@@ -16,6 +16,7 @@ import {
 import { CLASSES, DIRECTOR } from '@/lib/classes'
 import { KD4_STATS } from '@/lib/stats'
 import { STAT_ICONS } from '@/lib/stat-icons'
+import DirectorFilmography from '@/components/director/DirectorFilmography'
 import { FAQ_ITEMS } from '@/lib/faq-items'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { buildBreadcrumb } from '@/lib/seo-schemas'
@@ -1110,44 +1111,8 @@ export default function JoinPage() {
                 ))}
               </ul>
 
-              {/* FILMOGRAPHY */}
-              <p
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: '0.7rem',
-                  letterSpacing: '0.15em',
-                  color: 'var(--navy)',
-                  marginBottom: '12px',
-                  fontWeight: 700,
-                }}
-              >
-                <span lang="en">FILMOGRAPHY</span>
-              </p>
-              {[
-                { cat: '드라마', items: DIRECTOR.filmography.drama },
-                { cat: '영화', items: DIRECTOR.filmography.film },
-                { cat: 'CF', items: DIRECTOR.filmography.cf },
-              ].map((group) => (
-                <div key={group.cat} style={{ marginBottom: '14px' }}>
-                  <p
-                    style={{
-                      fontSize: '0.72rem',
-                      color: 'var(--gray)',
-                      marginBottom: '6px',
-                      letterSpacing: '0.05em',
-                    }}
-                  >
-                    {group.cat}
-                  </p>
-                  <ul role="list" style={{ display: 'flex', flexDirection: 'column', gap: '4px', listStyle: 'none', padding: 0 }}>
-                    {group.items.map((item) => (
-                      <li key={item} style={{ fontSize: '0.82rem', color: 'var(--gray-light)' }}>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+              {/* FILMOGRAPHY — DirectorFilmography 공용 컴포넌트 (스펙 2-F) */}
+              <DirectorFilmography labelColor="var(--navy)" />
             </div>
           </div>
         </div>
