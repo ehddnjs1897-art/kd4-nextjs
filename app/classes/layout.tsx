@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     title: '연기 클래스 전체 보기 — KD4 액팅 스튜디오',
     description:
       '베이직부터 액터스 리더까지 9개 클래스. 마이즈너 테크닉 기반 연기 훈련 · 출연영상 · 캐스팅 연계.',
-    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 — 연기 클래스' }],
+    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 — 연기 클래스', type: 'image/jpeg' }],
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
   },
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: '연기 클래스 전체 보기 — KD4',
     description: '베이직부터 출연영상·오디션까지 9개 클래스. 마이즈너 테크닉 기반 소수정예 연기 훈련.',
-    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 — 연기 클래스' }],
+    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 — 연기 클래스', type: 'image/jpeg' }],
   },
 }
 

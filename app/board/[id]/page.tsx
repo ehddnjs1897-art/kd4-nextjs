@@ -44,11 +44,19 @@ function isHtmlContent(content: string) {
 }
 
 function sanitizeHtml(html: string) {
-  return DOMPurify.sanitize(html, {
+  // 외부 링크 reverse-tabnabbing 방어: target=_blank 에 rel=noopener noreferrer 강제 (OWASP)
+  DOMPurify.addHook('afterSanitizeAttributes', (node) => {
+    if (node.tagName === 'A' && node.getAttribute('target') === '_blank') {
+      node.setAttribute('rel', 'noopener noreferrer')
+    }
+  })
+  const clean = DOMPurify.sanitize(html, {
     ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'h2', 'h3', 'ul', 'ol', 'li', 'hr', 'img', 'a'],
     ALLOWED_ATTR: ['src', 'alt', 'href', 'target', 'rel'],
     FORCE_BODY: true,
   })
+  DOMPurify.removeHooks('afterSanitizeAttributes')
+  return clean
 }
 
 function formatDate(iso: string) {

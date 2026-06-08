@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     url: `${SITE_URL}/enroll`,
     title: '클래스 신청 | KD4 액팅 스튜디오',
     description: 'KD4 멤버 클래스 수강 신청',
-    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오' }],
+    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오', type: 'image/jpeg' }],
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
   },
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: '클래스 신청 | KD4 액팅 스튜디오',
     description: 'KD4 멤버 클래스 수강 신청',
-    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오' }],
+    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오', type: 'image/jpeg' }],
   },
 }
 

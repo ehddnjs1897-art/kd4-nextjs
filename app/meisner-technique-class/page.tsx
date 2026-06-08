@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     url: PAGE_URL,
     title: '마이즈너 테크닉 정규 클래스 — KD4 액팅 스튜디오',
     description: '권동원 리더 직강, 4개월 코스, 정원 8명 소수정예. Repetition 훈련으로 억지 감정 없는 살아있는 연기를 만듭니다.',
-    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: '마이즈너 테크닉 정규 클래스 — KD4 액팅 스튜디오' }],
+    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: '마이즈너 테크닉 정규 클래스 — KD4 액팅 스튜디오', type: 'image/jpeg' }],
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
   },
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: '마이즈너 테크닉 정규 클래스 — KD4',
     description: '권동원 리더 직강, 4개월 코스, 정원 8명. Repetition 훈련으로 억지 감정 없는 살아있는 연기.',
-    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: '마이즈너 테크닉 정규 클래스 — KD4 액팅 스튜디오' }],
+    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: '마이즈너 테크닉 정규 클래스 — KD4 액팅 스튜디오', type: 'image/jpeg' }],
   },
 }
 
