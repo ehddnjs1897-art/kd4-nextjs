@@ -31,6 +31,11 @@ const nextConfig: NextConfig = {
     ],
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 86400,
+    // 실제 렌더폭 기준으로 좁혀 변환본 수 최소화 (성능)
+    deviceSizes: [640, 750, 828, 1080, 1200],
+    imageSizes: [200, 300, 360, 720],
+    // quality 65: 썸네일·캐스팅 사진 기준 — 육안 식별 불가, 용량 ~30% 절감
+    qualities: [60, 65, 75],
   },
   experimental: {
     optimizePackageImports: ['lucide-react', 'gsap', 'three'],
