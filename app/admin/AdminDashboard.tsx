@@ -218,6 +218,16 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
         <div style={s.header}>
           <p style={s.eyebrow}><span lang="en">ADMIN</span></p>
           <h1 style={s.pageTitle}>관리자 대시보드</h1>
+          <a
+            href="/admin/character-generator"
+            style={{
+              display: 'inline-block', marginTop: 10, padding: '8px 16px', borderRadius: 8,
+              border: '1px solid #15488A', color: '#15488A', textDecoration: 'none',
+              fontSize: '0.85rem', fontWeight: 700,
+            }}
+          >
+            캐릭터셋 프로필 생성기 →
+          </a>
         </div>
 
         {/* 에러 토스트 — always mounted so AT registers the live region before first announcement */}
