@@ -25,7 +25,8 @@ export default function RichTextEditor({ value, onChange, placeholder = '내용�
     content: value || '',
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
     editorProps: {
-      attributes: { style: 'outline: none; min-height: 280px; padding: 14px; font-family: var(--font-sans); font-size: 0.92rem; line-height: 1.8; color: var(--white);' },
+      // outline:none 제거 — :focus-visible 링은 아래 <style>에서 처리 (WCAG 2.4.7)
+      attributes: { style: 'min-height: 280px; padding: 14px; font-family: var(--font-sans); font-size: 0.92rem; line-height: 1.8; color: var(--white);' },
     },
   })
 
@@ -76,7 +77,7 @@ export default function RichTextEditor({ value, onChange, placeholder = '내용�
             cursor: uploading ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-sans)',
           }}
         >
-          {uploading ? '업로드 중…' : '🖼 이미지'}
+          {uploading ? '업로드 중…' : <><span aria-hidden="true">🖼</span>{' 이미지'}</>}
         </button>
         <input
           ref={fileInputRef}
@@ -113,6 +114,7 @@ export default function RichTextEditor({ value, onChange, placeholder = '내용�
         .ProseMirror hr { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
         .ProseMirror strong { font-weight: 700; }
         .ProseMirror em { font-style: italic; }
+        .ProseMirror:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; border-radius: 0 0 var(--radius) var(--radius); }
       `}</style>
     </div>
   )
@@ -123,6 +125,7 @@ function ToolBtn({ active, onClick, title, children }: { active: boolean; onClic
     <button
       type="button"
       title={title}
+      aria-label={title}
       onClick={onClick}
       style={{
         padding: '4px 8px', minHeight: 30, border: '1px solid var(--border)',

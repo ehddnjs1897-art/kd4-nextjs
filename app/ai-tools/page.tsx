@@ -233,6 +233,7 @@ export default function AIToolsPage() {
                   value={characterName}
                   onChange={(e) => setCharacterName(e.target.value)}
                   placeholder="분석할 캐릭터 이름 (예: 홍길동)"
+                  autoComplete="off"
                   style={s.input}
                   disabled={loading}
                 />

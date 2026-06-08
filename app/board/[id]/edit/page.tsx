@@ -202,6 +202,7 @@ export default function EditPage() {
               placeholder="제목을 입력하세요"
               required
               maxLength={200}
+              autoComplete="off"
               aria-invalid={!!error}
               aria-describedby={error ? 'edit-form-error' : 'edit-title-count'}
               style={inputStyle}
