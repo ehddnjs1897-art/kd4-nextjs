@@ -414,6 +414,7 @@ export default function CharacterGenerator() {
       </div>
 
       <button
+        type="button"
         onClick={exportPNG}
         style={{
           background: '#15488A', color: '#fff', border: 'none', borderRadius: 8,
@@ -431,6 +432,7 @@ export default function CharacterGenerator() {
           <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
             {SLOT_LABELS.map((label, i) => (
               <button
+                type="button"
                 key={label}
                 onClick={() => setActiveSlot(i as SlotKey)}
                 style={{
@@ -446,7 +448,9 @@ export default function CharacterGenerator() {
           </div>
 
           <input
-            type="file" accept="image/*"
+            type="file"
+            accept="image/*"
+            aria-label={`${SLOT_LABELS[activeSlot]} 사진 업로드`}
             onChange={(e) => onUpload(activeSlot, e.target.files?.[0] ?? null)}
             style={{ marginBottom: 16, fontSize: 13 }}
           />
@@ -501,21 +505,23 @@ export default function CharacterGenerator() {
             <div key={i} style={{ border: '1px solid #eee', borderRadius: 8, padding: 12, marginBottom: 10, background: '#faf8f4' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
                 <span style={{ fontSize: 12, color: '#888' }}>#{i + 1}</span>
-                <button onClick={() => removeFilm(i)} style={{ fontSize: 12, color: '#c62828', background: 'none', border: 'none', cursor: 'pointer' }}>삭제</button>
+                <button type="button" onClick={() => removeFilm(i)} aria-label={`출연작 ${i + 1} 삭제`} style={{ fontSize: 12, color: '#c62828', background: 'none', border: 'none', cursor: 'pointer' }}>삭제</button>
               </div>
               <input
                 value={f.network} placeholder="방송사 + 제목 (예: tvN 나의 유죄인간)"
+                aria-label={`출연작 ${i + 1} — 방송사 + 제목`}
                 onChange={(e) => updateFilm(i, { network: e.target.value })}
                 style={inputStyle}
               />
               <input
                 value={f.role} placeholder="배역 (예: 박변호사 (이사모 팬클럽 회장))"
+                aria-label={`출연작 ${i + 1} — 배역`}
                 onChange={(e) => updateFilm(i, { role: e.target.value })}
                 style={{ ...inputStyle, marginTop: 6 }}
               />
             </div>
           ))}
-          <button onClick={addFilm} style={{ fontSize: 13, padding: '8px 14px', borderRadius: 8, border: '1px dashed #999', background: '#fff', cursor: 'pointer', marginBottom: 20 }}>
+          <button type="button" onClick={addFilm} style={{ fontSize: 13, padding: '8px 14px', borderRadius: 8, border: '1px dashed #999', background: '#fff', cursor: 'pointer', marginBottom: 20 }}>
             + 출연작 추가
           </button>
 
