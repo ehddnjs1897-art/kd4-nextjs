@@ -60,6 +60,7 @@ interface ActorVideo {
   youtube_id: string | null
   r2_key: string | null
   title: string | null
+  created_at?: string | null
   video_type?: string | null
 }
 
@@ -110,7 +111,7 @@ function actorSelect(opts: { casting: boolean; videoType: boolean; filmExtra: bo
         opts.casting ? ',\n      casting_tags, casting_summary, profile_pdf_url' : ''
       }${opts.advancedSkills ? ',\n      advanced_skills' : ''},
       actor_photos ( id, drive_photo_id, url, storage_path, caption, sort_order, photo_type, label ),
-      actor_videos ( id, youtube_id, r2_key, title${opts.videoType ? ', video_type' : ''} ),
+      actor_videos ( id, youtube_id, r2_key, title, created_at${opts.videoType ? ', video_type' : ''} ),
       actor_filmography ( id, category, title, role, year, production${
         opts.filmExtra ? ', broadcaster, film_type, award' : ''
       } )
@@ -354,6 +355,7 @@ export default async function ActorDetailPage({
     (actor.actor_videos ?? []).filter((v) => v.youtube_id).map((v) => ({
       youtubeId: v.youtube_id as string,
       title: v.title,
+      uploadDate: v.created_at ?? null, // VideoObject.uploadDate — Google Rich Results 권장
     }))
   )
 
