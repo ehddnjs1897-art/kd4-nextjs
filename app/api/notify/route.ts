@@ -304,7 +304,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    return NextResponse.json({ ok: true })
+    // dbSaved: Supabase 저장 성공 여부 — 클라이언트에서 Lead와 DB 불일치 모니터링 가능
+    return NextResponse.json({ ok: true, dbSaved: savedId !== null })
   } catch (err) {
     console.error('[notify] route 처리 실패:', err instanceof Error ? err.message : String(err))
     return NextResponse.json({ error: '요청 처리 실패' }, { status: 500 })

@@ -186,6 +186,7 @@ export default function JoinForm() {
     // Lead 이벤트는 서버 저장 성공 확인 후에만 발화 (실패·봇 제출 오염 방지)
     // 이전: 발화 → 저장 순서 → 실패 건도 Lead로 집계되어 광고 알고리즘 오염
     let notifyOk = false
+    let dbSaved = false
     try {
       const notifyRes = await fetch('/api/notify', {
         method: 'POST',
@@ -209,6 +210,13 @@ export default function JoinForm() {
         signal: AbortSignal.timeout(15_000),
       })
       notifyOk = notifyRes.ok
+      if (notifyRes.ok) {
+        const json = await notifyRes.json().catch(() => ({}))
+        dbSaved = json?.dbSaved === true
+        // Lead 발화는 아래에서 처리. DB 저장 실패(dbSaved=false)인데 HTTP ok인 경우
+        // 는 SMS/Webhook만 성공한 것이므로 Lead는 발화하되 콘솔 경고만.
+        if (!dbSaved) console.warn('[JoinForm] DB 저장 실패 — SMS/webhook 성공')
+      }
     } catch {
       notifyOk = false
     }
