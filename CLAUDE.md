@@ -293,6 +293,13 @@ push 완료 후 transcript에 아래 메시지만 남기고 대기:
 
 Dispatch(상위 오케스트레이터)가 Vercel MCP `list_deployments` / `get_deployment`로 배포 상태를 확인한다. Code 에이전트가 직접 확인하려 하지 않는다.
 
+## 🚨 Vercel 배포 누락 주의 (2026-06-08 사고 후 확정)
+
+GitHub push 성공 ≠ Vercel 배포 완료. 간헐적으로 웹훅이 누락되어 자동배포가 발화하지 않는다.
+
+**중요 배포(매출 대시보드 등)는 반드시 Vercel MCP `list_deployments`로 READY 상태 확인.**
+배포 목록에 해당 커밋 SHA가 없으면 → 새 더미 커밋으로 재트리거.
+
 ## 자산 관리 원칙 (폴더 구조)
 
 | 폴더 | 용도 | 규칙 |
