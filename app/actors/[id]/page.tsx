@@ -279,7 +279,8 @@ export default async function ActorDetailPage({
   }
 
   // (B) 비공개 배우 안전장치 — 비로그인 포함 전부 차단 (is_public=false + 본인/admin 아님)
-  if (!actor.is_public && !isOwner) notFound()
+  //     단, ACTOR_DB_PUBLIC_PROFILE=true 시 is_public 무관하게 열람 허용 (전체공개 모드)
+  if (!actor.is_public && !isOwner && !ACTOR_DB_PUBLIC_PROFILE) notFound()
 
   // (C) 부분공개 정책: ACTOR_DB_PUBLIC_PROFILE=true → 비로그인도 본문 열람 가능
   //     정책 OFF 시에만 기존 통짜 잠금으로 폴백 (킬스위치)
