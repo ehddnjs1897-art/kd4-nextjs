@@ -222,14 +222,9 @@ export default async function ActorsPage({ searchParams }: PageProps) {
         },
       ]} />
       <style>{`
-        /* 세로 카드: 모바일 2열(한 화면에 더 많이), 초소형만 1열 */
-        @media (max-width: 980px) {
-          .actors-grid { grid-template-columns: repeat(2, 1fr) !important; }
-        }
-        @media (max-width: 380px) {
-          .actors-grid { grid-template-columns: 1fr !important; }
-        }
+        /* 가로형 3/2 카드 — 데스크톱 2열, 모바일 1열 (세로형 금지: 가로 프로필 썸네일) */
         @media (max-width: 640px) {
+          .actors-grid { grid-template-columns: 1fr !important; }
           .actor-card:hover { transform: none !important; }
         }
         .actor-card:hover {
