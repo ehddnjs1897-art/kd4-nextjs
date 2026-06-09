@@ -385,7 +385,8 @@ export default async function ActorDetailPage({
                 borderRadius: 10,
                 overflow: 'hidden',
                 background: 'var(--bg2)',
-                boxShadow: '0 12px 40px rgba(0,0,0,0.5)',
+                boxShadow: '0 4px 18px rgba(21,72,138,0.10)',
+                border: '1px solid var(--border)',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -423,8 +424,8 @@ export default async function ActorDetailPage({
                     <span key={t} style={{
                       fontSize: '0.67rem', fontWeight: 700, letterSpacing: '0.09em',
                       color: 'var(--gold)',
-                      background: 'rgba(200,168,100,0.1)',
-                      border: '1px solid rgba(200,168,100,0.22)',
+                      background: 'rgba(21,72,138,0.08)',
+                      border: '1px solid rgba(21,72,138,0.20)',
                       borderRadius: 3, padding: '3px 10px',
                       fontFamily: 'var(--font-display)',
                     }}>{t}</span>
@@ -450,7 +451,7 @@ export default async function ActorDetailPage({
               {actor.casting_summary && (
                 <p style={{
                   fontFamily: 'var(--font-serif)',
-                  fontSize: '0.97rem', color: 'rgba(255,255,255,0.85)',
+                  fontSize: '0.97rem', color: 'var(--white)',
                   fontWeight: 400, lineHeight: 1.8,
                   marginBottom: 28, paddingBottom: 28,
                   borderBottom: '1px solid var(--border)',
@@ -485,7 +486,7 @@ export default async function ActorDetailPage({
                     return (
                       <span key={sk} style={{
                         padding: '4px 12px',
-                        background: isAdvanced ? 'rgba(199,62,62,0.08)' : 'rgba(255,255,255,0.05)',
+                        background: isAdvanced ? 'rgba(199,62,62,0.08)' : 'rgba(21,72,138,0.06)',
                         border: isAdvanced ? '1px solid rgba(199,62,62,0.3)' : '1px solid var(--border)',
                         borderRadius: 4,
                         fontSize: '0.78rem',

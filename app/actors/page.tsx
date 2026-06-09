@@ -222,12 +222,18 @@ export default async function ActorsPage({ searchParams }: PageProps) {
         },
       ]} />
       <style>{`
-        @media (max-width: 640px) {
+        /* 세로 카드: 모바일 2열(한 화면에 더 많이), 초소형만 1열 */
+        @media (max-width: 980px) {
+          .actors-grid { grid-template-columns: repeat(2, 1fr) !important; }
+        }
+        @media (max-width: 380px) {
           .actors-grid { grid-template-columns: 1fr !important; }
+        }
+        @media (max-width: 640px) {
           .actor-card:hover { transform: none !important; }
         }
         .actor-card:hover {
-          border-color: rgba(196,165,90,0.5) !important;
+          border-color: rgba(21,72,138,0.5) !important;
           transform: translateY(-2px);
         }
       `}</style>

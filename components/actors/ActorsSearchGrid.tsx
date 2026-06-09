@@ -271,7 +271,8 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
         <ul style={{ ...gridStyle, listStyle: 'none', padding: 0, margin: 0 }} className="actors-grid" aria-label="배우 목록">
           {filtered.map((actor, idx) => (
             <li key={actor.id} style={cardStyle}>
-            <Link href={`/actors/${actor.id}`} style={{ display: 'block', position: 'absolute', inset: 0, textDecoration: 'none' }} className="actor-card" aria-label={`${actor.name} 배우 프로필 보기`}>
+            <Link href={`/actors/${actor.id}`} style={{ display: 'block', textDecoration: 'none', height: '100%' }} className="actor-card" aria-label={`${actor.name} 배우 프로필 보기`}>
+              {/* 사진: 세로 3/4 */}
               <div style={imageWrapStyle}>
                 <ActorCardImage
                   src={actor.photoSrc}
@@ -279,19 +280,20 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
                   unoptimized={actor.unoptimized}
                   priority={idx < 2}
                 />
-                <div style={overlayStyle}>
-                  <span style={nameStyle}>{actor.name}</span>
-                  <span style={metaStyle}>
-                    {actor.gender ?? ''}{actor.gender && actor.age_group ? ' · ' : ''}{actor.age_group ?? ''}
-                  </span>
-                  {actor.casting_tags && actor.casting_tags.length > 0 && (
-                    <div style={tagsStyle}>
-                      {actor.casting_tags.slice(0, 3).map((t) => (
-                        <span key={t} style={tagStyle}>{t}</span>
-                      ))}
-                    </div>
-                  )}
-                </div>
+              </div>
+              {/* 캡션: 사진 아래 크림 영역 (오버레이 아님 → 흰글씨/검은그라데 불필요) */}
+              <div style={captionStyle}>
+                <span style={nameStyle}>{actor.name}</span>
+                <span style={metaStyle}>
+                  {actor.gender ?? ''}{actor.gender && actor.age_group ? ' · ' : ''}{actor.age_group ?? ''}
+                </span>
+                {actor.casting_tags && actor.casting_tags.length > 0 && (
+                  <div style={tagsStyle}>
+                    {actor.casting_tags.slice(0, 3).map((t) => (
+                      <span key={t} style={tagStyle}>{t}</span>
+                    ))}
+                  </div>
+                )}
               </div>
             </Link>
             </li>
@@ -304,66 +306,62 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
 
 const gridStyle: React.CSSProperties = {
   display: 'grid',
-  gridTemplateColumns: 'repeat(2, 1fr)',
-  gap: 12,
+  gridTemplateColumns: 'repeat(3, 1fr)',   // 데스크톱 3열 (was 2)
+  gap: 14,
 }
 
 const cardStyle: React.CSSProperties = {
   display: 'block',
-  textDecoration: 'none',
   borderRadius: 8,
   overflow: 'hidden',
   border: '1px solid var(--border)',
   transition: 'border-color 0.2s, transform 0.2s',
-  aspectRatio: '3/2',
-  position: 'relative',
-  background: 'var(--bg3)',
+  background: 'var(--bg2)',                 // 캡션 영역 배경 = 크림
+  // aspectRatio 제거 — 사진(3/4) + 캡션 높이로 자연 결정
 }
 
 const imageWrapStyle: React.CSSProperties = {
-  position: 'absolute',
-  inset: 0,
+  position: 'relative',                     // ActorCardImage(fill)의 기준
+  aspectRatio: '3 / 4',                     // 세로형 (was 카드 전체 3/2)
   background: 'var(--bg3)',
 }
 
-const overlayStyle: React.CSSProperties = {
-  position: 'absolute',
-  bottom: 0, left: 0, right: 0,
-  padding: '40px 18px 16px',
-  background: 'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 60%, transparent 100%)',
+// overlayStyle 삭제 — 사진 아래 캡션으로 대체 (검은 그라데/흰글씨 잔재 원천 제거)
+
+const captionStyle: React.CSSProperties = {
+  padding: '12px 14px 14px',
   display: 'flex',
   flexDirection: 'column',
-  gap: 3,
+  gap: 4,
 }
 
 const nameStyle: React.CSSProperties = {
   fontFamily: 'var(--font-display)',
-  fontSize: '1.1rem',
+  fontSize: '1.02rem',
   fontWeight: 700,
-  color: 'var(--white)',
-  letterSpacing: '0.04em',
+  color: 'var(--white)',                    // --white=#111(잉크). 크림 캡션 위 정상
+  letterSpacing: '0.02em',
 }
 
 const metaStyle: React.CSSProperties = {
-  fontSize: '0.75rem',
-  color: 'rgba(255,255,255,0.65)',
+  fontSize: '0.76rem',
+  color: 'var(--gray)',                     // 흰색 전제 제거 → 웜그레이
 }
 
 const tagsStyle: React.CSSProperties = {
   display: 'flex',
   gap: 4,
   flexWrap: 'wrap',
-  marginTop: 6,
+  marginTop: 4,
 }
 
-const tagStyle: React.CSSProperties = {
-  fontSize: '0.65rem',
+const tagStyle: React.CSSProperties = {       // 흰색 전제 → 네이비 틴트
+  fontSize: '0.64rem',
   fontWeight: 600,
-  color: 'rgba(255,255,255,0.92)',
-  background: 'rgba(255,255,255,0.16)',
-  border: '1px solid rgba(255,255,255,0.25)',
+  color: 'var(--gold)',                     // --gold=네이비
+  background: 'rgba(21,72,138,0.07)',
+  border: '1px solid rgba(21,72,138,0.18)',
   borderRadius: 3,
   padding: '2px 7px',
   letterSpacing: '0.02em',
-  backdropFilter: 'blur(4px)',
 }

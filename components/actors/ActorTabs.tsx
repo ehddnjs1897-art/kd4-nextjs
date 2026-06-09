@@ -406,7 +406,8 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
         <section style={s.section} aria-label="영상 없음">
           <h2 style={s.sectionHeading}>
             <span style={s.sectionNum}>01</span>
-            <span lang="en" style={s.sectionTitle}>REEL</span>
+            <span style={s.sectionTitle}>출연 영상</span>
+            <span lang="en" style={s.sectionEn}>REEL</span>
           </h2>
           <p role="status" style={{ fontSize: '0.85rem', color: 'var(--gray)', textAlign: 'center', padding: '24px 0' }}>
             현재 업로드된 영상이 없습니다.
@@ -419,7 +420,8 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
         <section style={s.section} aria-label={`${actor.name} REEL 영상`}>
           <h2 style={s.sectionHeading}>
             <span style={s.sectionNum}>01</span>
-            <span lang="en" style={s.sectionTitle}>REEL</span>
+            <span style={s.sectionTitle}>출연 영상</span>
+            <span lang="en" style={s.sectionEn}>REEL</span>
           </h2>
           <div style={s.videoGrid}>
             {reelVideos.map((video) =>
@@ -495,8 +497,8 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
         <section aria-label="최근 출연" style={s.section}>
           <h2 style={s.sectionHeading}>
             <span style={s.sectionNum}>02</span>
-            <span lang="en" style={s.sectionTitle}>CURRENT WORKS</span>
-            <span style={s.sectionSub}>최근 출연 &amp; 방영</span>
+            <span style={s.sectionTitle}>최근 출연</span>
+            <span lang="en" style={s.sectionEn}>CURRENT WORKS</span>
           </h2>
           <div style={s.recentGrid}>
             {recentWorks.map((entry) => (
@@ -714,7 +716,8 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
         <section aria-label="수상 이력" style={s.section}>
           <h2 style={{ ...s.sectionHeading, borderBottomColor: 'var(--accent-red)' }}>
             <span aria-hidden="true" style={{ ...s.sectionNum, color: 'var(--accent-red)' }}>🏆</span>
-            <span lang="en" style={{ ...s.sectionTitle, color: 'var(--accent-red)' }}>AWARD</span>
+            <span style={{ ...s.sectionTitle, color: 'var(--accent-red)' }}>수상</span>
+            <span lang="en" style={{ ...s.sectionEn, color: 'var(--accent-red)' }}>AWARD</span>
           </h2>
           <div style={{ overflowX: 'auto' }}>
           <table style={s.table}>
@@ -777,7 +780,7 @@ const s: Record<string, React.CSSProperties> = {
   root: {
     display: 'flex',
     flexDirection: 'column',
-    gap: 56,
+    gap: 44,
   },
 
   /* ---- 섹션 공통 ---- */
@@ -800,12 +803,20 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--gold)',
     letterSpacing: '0.12em',
   },
-  sectionTitle: {
+  sectionTitle: {                              // 한글 주(主) 라벨
     fontFamily: 'var(--font-display), Oswald, sans-serif',
-    fontSize: '1rem',
+    fontSize: '1.05rem',
     fontWeight: 700,
     color: 'var(--white)',
-    letterSpacing: '0.12em',
+    letterSpacing: '0.04em',                   // 한글은 자간 좁게
+  },
+  sectionEn: {                                 // 영어 보조 eyebrow
+    fontFamily: 'var(--font-display), Oswald, sans-serif',
+    fontSize: '0.66rem',
+    fontWeight: 600,
+    color: 'var(--gray)',
+    letterSpacing: '0.18em',
+    textTransform: 'uppercase',
   },
   sectionSub: {
     fontSize: '0.78rem',
