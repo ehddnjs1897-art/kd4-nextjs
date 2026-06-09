@@ -402,9 +402,60 @@ export default function ClassesPage() {
             </div>
           ))}
 
+          {/* QW2 (R292): 수강→배우 DB 등록→캐스팅 연결 3단계 흐름 블록 */}
+          <div style={{
+            marginTop: '64px', marginBottom: '40px',
+            padding: '40px 32px',
+            background: 'var(--bg2)',
+            border: '1px solid var(--border)',
+            borderRadius: '12px',
+          }}>
+            <p className="section-eyebrow" style={{ textAlign: 'center', marginBottom: '8px' }}>
+              <span lang="en">HOW IT WORKS</span>
+            </p>
+            <h2 style={{ textAlign: 'center', fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)', fontWeight: 700, color: 'var(--navy)', marginBottom: '32px' }}>
+              수업 후 캐스팅까지 — KD4 멤버의 여정
+            </h2>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: '24px',
+            }}>
+              {[
+                {
+                  step: '01',
+                  title: '수업 수료',
+                  desc: '클래스를 성실히 수료한 멤버에게 배우 DB 등록 자격이 주어집니다.',
+                },
+                {
+                  step: '02',
+                  title: '배우 DB 등록',
+                  desc: '사진·필모그래피·영상을 포함한 프로필이 KD4 배우 DB에 올라갑니다.',
+                },
+                {
+                  step: '03',
+                  title: '캐스팅 연결',
+                  desc: '캐스팅 디렉터가 배우 DB를 통해 직접 연락합니다. 지금까지 60건 이상의 캐스팅이 이뤄졌습니다.',
+                },
+              ].map((item) => (
+                <div key={item.step} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <span style={{
+                    fontFamily: 'var(--font-display), Oswald, sans-serif',
+                    fontSize: '2rem',
+                    fontWeight: 700,
+                    color: 'rgba(21,72,138,0.18)',
+                    lineHeight: 1,
+                  }}>{item.step}</span>
+                  <p style={{ fontWeight: 700, fontSize: '1rem', color: '#111111', margin: 0 }}>{item.title}</p>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.7, margin: 0 }}>{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* 하단 CTA */}
           <div style={{
-            marginTop: '64px', padding: '48px 32px',
+            marginTop: '0', padding: '48px 32px',
             background: 'linear-gradient(135deg, rgba(21,72,138,0.06) 0%, rgba(0,0,0,0) 100%)',
             border: '1px solid var(--border)', borderRadius: '12px', textAlign: 'center',
           }}>
