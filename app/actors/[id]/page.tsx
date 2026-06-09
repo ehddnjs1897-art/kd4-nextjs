@@ -122,38 +122,63 @@ async function getActor(id: string): Promise<Actor | null> {
   return { ...core, dialects } as Actor
 }
 
-async function getActorCore(id: string): Promise<Actor | null> {
-  const fetchWith = (cols: string) =>
-    supabaseAdmin.from('actors').select(cols).eq('id', id).maybeSingle()
+async function getActorCore(id: string, allowPrivate = false): Promise<Actor | null> {
+  // R298 핵심 수정: 2-step 쿼리로 RLS 우회 문제 해결
+  // — 1단계: is_public=true 조건 추가 → admin/anon 모두 공개 배우 조회 가능
+  // — 2단계: 공개 조회 실패 AND allowPrivate=true(오너/관리자)면 조건 없이 재조회
+  // 배경: 프로덕션에서 SUPABASE_SERVICE_ROLE_KEY 미설정 시 admin client가 anon으로 동작,
+  //       is_public 필터 없는 조회가 RLS에 막혀 null 반환했던 문제 근본 해결.
+  const fetchWith = (cols: string, publicOnly = true) => {
+    const q = supabaseAdmin.from('actors').select(cols).eq('id', id)
+    return (publicOnly ? q.eq('is_public', true) : q).maybeSingle()
+  }
 
+  // 공개 배우 1차 조회 (is_public=true 조건 포함)
+  const result = await _queryActorWithFallbacks(id, fetchWith)
+  if (result) return result
+
+  // 공개 조회 실패 AND allowPrivate=true(오너/관리자) → is_public 조건 없이 재조회
+  if (allowPrivate) {
+    console.warn(`[ActorDetail] 공개 조회 null — allowPrivate 모드로 재시도 (id=${id})`)
+    const fetchWithoutPublicFilter = (cols: string) =>
+      supabaseAdmin.from('actors').select(cols).eq('id', id).maybeSingle()
+    return _queryActorWithFallbacks(id, fetchWithoutPublicFilter)
+  }
+
+  console.error(`[ActorDetail] getActorCore(${id}): 공개 배우 조회 null — DB에 없거나 is_public=false`)
+  return null
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ActorFetcher = (cols: string) => PromiseLike<{ data: any; error: { code?: string; message?: string } | null }>
+
+// 컬럼 호환성 폴백 cascade (공개/비공개 공통)
+async function _queryActorWithFallbacks(
+  id: string,
+  fetchWith: ActorFetcher
+): Promise<Actor | null> {
   // 1차: 전체 스키마 (advanced_skills 포함)
   const full = await fetchWith(actorSelect({ casting: true, videoType: true, filmExtra: true, advancedSkills: true }))
   if (full.data) return full.data as unknown as Actor
-  // maybeSingle: data=null + error=null → not found (행 없음)
-  if (!full.error) {
-    console.error(`[ActorDetail] getActorCore(${id}): 쿼리 성공했으나 data=null (행 없음 또는 is_public 필터 미통과)`)
-    return null
-  }
-  // 실제 DB 오류 로깅
-  console.error(`[ActorDetail] getActorCore(${id}): DB 오류 code=${full.error.code} message=${full.error.message}`)
-  // 컬럼 누락(42703)이 아닌 실제 오류 → not found 처리
+  if (!full.error) return null
+  console.error(`[ActorDetail] _queryActorWithFallbacks(${id}): DB 오류 code=${full.error.code} message=${full.error.message}`)
   if (!isUndefinedColumnError(full.error)) return null
 
-  // 1.5차: advanced_skills만 누락된 경우 (2026-05-29 마이그레이션 미실행)
+  // 1.5차: advanced_skills만 누락된 경우
   console.warn('[ActorDetail] advanced_skills 컬럼 미존재 — 제외하고 재조회')
   const noAdvanced = await fetchWith(actorSelect({ casting: true, videoType: true, filmExtra: true, advancedSkills: false }))
   if (noAdvanced.data) return { ...(noAdvanced.data as unknown as Record<string, unknown>), advanced_skills: null } as unknown as Actor
   if (!noAdvanced.error) return null
   if (!isUndefinedColumnError(noAdvanced.error)) return null
 
-  // 2차: video_type 컬럼 미존재 대응 (운영 DB 마이그레이션 미적용) — 나머지 컬럼은 유지
+  // 2차: video_type 컬럼 미존재 대응
   console.warn('[ActorDetail] 확장 컬럼 미존재 — video_type 제외하고 재조회')
   const noVideoType = await fetchWith(actorSelect({ casting: true, videoType: false, filmExtra: true, advancedSkills: false }))
   if (noVideoType.data) return { ...(noVideoType.data as unknown as Record<string, unknown>), advanced_skills: null } as unknown as Actor
   if (!noVideoType.error) return null
   if (!isUndefinedColumnError(noVideoType.error)) return null
 
-  // 3차: 캐스팅/필모 확장 컬럼까지 누락된 레거시 DB 대응 (기본 스키마)
+  // 3차: 레거시 기본 스키마
   console.warn('[ActorDetail] casting/filmography 확장 컬럼 미존재 — 기본 스키마로 fallback')
   const base = await fetchWith(actorSelect({ casting: false, videoType: false, filmExtra: false, advancedSkills: false }))
   if (!base.data) return null
@@ -273,10 +298,13 @@ export default async function ActorDetailPage({
   const supabase = await createClient()
 
   // getUser() + actor 병렬 조회 — getUser는 서버에서 JWT 검증 (getSession은 조작 쿠키 우회 가능)
-  const [{ data: { user } }, actor] = await Promise.all([
+  // R298: 공개 배우 캐시 조회 → null 시 인증 사용자면 비공개 포함 재조회 (오너/admin용)
+  const [{ data: { user } }, publicActor] = await Promise.all([
     supabase.auth.getUser(),
     getActorCached(id),
   ])
+  // 공개 조회 실패 → 로그인 사용자면 비공개 포함 재시도 (오너/admin이 자기 프로필 보는 케이스)
+  const actor = publicActor ?? (user ? await getActorCore(id, true) : null)
   if (!actor) notFound()
 
   // (A) 역할/소유권 계산 — 로그인 사용자만 (비로그인은 기본값 사용)
