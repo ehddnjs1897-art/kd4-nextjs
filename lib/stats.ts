@@ -19,6 +19,6 @@ export interface StatItem {
 export const KD4_STATS: StatItem[] = [
   { value: '400+', label: '누적 코칭 배우' },
   { value: '100+', label: '출연영상 제작' },
-  { value: '60+', label: '배우 DB 등록' },
+  { value: '52', label: '배우 DB 등록' },
   { value: '60+', label: '캐스팅 연계 사례' },
 ]
