@@ -10,7 +10,7 @@ import ShareButton from '@/components/actors/ShareButton'
 import ActorDownloadButton from '@/components/actors/ActorDownloadButton'
 import ActorDbLocked from '@/components/actors/ActorDbLocked'
 import { UserRole } from '@/lib/types'
-import { canViewActorContact, canViewActorDb } from '@/lib/access'
+import { canViewActorContact, canViewActorDb, ACTOR_DB_PUBLIC_PROFILE } from '@/lib/access'
 import { isR2Configured } from '@/lib/r2'
 import { getActorPersonSchema, getActorVideoSchemas, serializeJsonLd } from '@/lib/seo'
 import { buildBreadcrumb } from '@/lib/seo-schemas'
@@ -265,7 +265,7 @@ export default async function ActorDetailPage({
   const { id } = await params
   if (!UUID_RE_ACTOR.test(id)) notFound()
 
-  /* ---- 개별 프로필은 로그인 회원만 열람 가능 (목록은 누구나 OK) ---- */
+  /* ---- 배우 프로필 접근 제어 ---- */
   const supabase = await createClient()
 
   // getUser() + actor 병렬 조회 — getUser는 서버에서 JWT 검증 (getSession은 조작 쿠키 우회 가능)
@@ -275,33 +275,33 @@ export default async function ActorDetailPage({
   ])
   if (!actor) notFound()
 
-  // 비로그인 → 잠금 화면 (로그인/회원가입 유도, 로그인 후 이 페이지로 복귀)
-  if (!user) {
+  // (A) 역할/소유권 계산 — 로그인 사용자만 (비로그인은 기본값 사용)
+  let role: UserRole = 'user'
+  let isOwner = false
+  if (user) {
+    const { data: profile } = await supabaseAdmin
+      .from('profiles')
+      .select('role, actor_id')
+      .eq('id', user.id)
+      .maybeSingle()
+    role = (profile?.role ?? 'user') as UserRole
+    isOwner = profile?.actor_id === id || role === 'admin'
+  }
+
+  // (B) 비공개 배우 안전장치 — 비로그인 포함 전부 차단 (is_public=false + 본인/admin 아님)
+  if (!actor.is_public && !isOwner) notFound()
+
+  // (C) 부분공개 정책: ACTOR_DB_PUBLIC_PROFILE=true → 비로그인도 본문 열람 가능
+  //     정책 OFF 시에만 기존 통짜 잠금으로 폴백 (킬스위치)
+  if (!ACTOR_DB_PUBLIC_PROFILE && !user) {
     return <ActorDbLocked role={null} nextUrl={`/actors/${id}`} />
   }
 
-  // 역할 조회 (로그인 사용자만)
-  const { data: profile } = await supabaseAdmin
-    .from('profiles')
-    .select('role, actor_id')
-    .eq('id', user.id)
-    .maybeSingle()
-  const role: UserRole = (profile?.role ?? 'user') as UserRole
-  const isOwner = profile?.actor_id === id || role === 'admin'
-
-  // 디렉터 승인 대기 → 잠금 화면 (안내 메시지 다름)
-  if (role === 'director_pending') {
+  // (D) 로그인 사용자 중 비허용 역할 제한 (일반 user/member 등)
+  //     단, 부분공개 정책에서는 비로그인은 이미 (C)에서 통과 → 여기는 로그인 사용자만 적용
+  if (user && !canViewActorDb(role) && !isOwner) {
     return <ActorDbLocked role={role} nextUrl={`/actors/${id}`} />
   }
-
-  // 비허용 역할 → 잠금 화면 (user, member, crew_pending 등 canViewActorDb 미충족)
-  // API 라우트(app/api/actors/route.ts, app/api/actors/[id]/route.ts)와 동일 정책 적용
-  if (!canViewActorDb(role)) {
-    return <ActorDbLocked role={role} nextUrl={`/actors/${id}`} />
-  }
-
-  // 비공개 프로필은 본인(isOwner) 또는 관리자만 접근 가능
-  if (!actor.is_public && !isOwner) notFound()
 
   const photoUrl = profilePhotoUrl(actor)
   const canContact = canViewActorContact(role)
