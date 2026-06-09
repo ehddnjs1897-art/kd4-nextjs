@@ -305,18 +305,27 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     if (file.size > 10 * 1024 * 1024) { setPptMsg('10MB 이하 파일만 가능합니다.'); return }
     setPptUploading(true); setPptMsg('')
     try {
-      const supabase = createClient()
       const ext = file.name.split('.').pop()?.toLowerCase() || 'pptx'
-      const path = `${actorId}/${Date.now()}.${ext}`
-      const { error: upErr } = await supabase.storage.from('actor-docs').upload(path, file, { upsert: true })
-      if (upErr) {
-        // RLS 오류 → 사용자 친화적 메시지
-        const msg = upErr.message.toLowerCase()
-        if (msg.includes('policy') || msg.includes('permission') || msg.includes('not authorized') || msg.includes('violates')) {
-          throw new Error('업로드 권한 확인 중입니다. 잠시 후 다시 시도하거나 관리자에게 문의하세요.')
-        }
-        throw new Error(upErr.message)
-      }
+      const ct = file.type || (ext === 'pdf'
+        ? 'application/pdf'
+        : 'application/vnd.openxmlformats-officedocument.presentationml.presentation')
+      // 서버 발급 서명 URL 방식 — httpOnly 세션 쿠키를 브라우저가 못 읽어(server.ts) 직접 업로드가
+      // RLS에 막히는 문제 우회. 경로는 서버가 intake/{user.id}/ 로 발급 → /api/actors PATCH 검증과 일치.
+      const signRes = await fetch('/api/storage/signed-upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bucket: 'actor-docs', ext, contentType: ct, size: file.size }),
+        signal: AbortSignal.timeout(15_000),
+      })
+      if (signRes.status === 401) { window.location.href = '/auth/login'; return }
+      const signJson = await signRes.json().catch(() => ({}))
+      if (!signRes.ok) throw new Error(signJson.error || '업로드 URL 발급 실패')
+      const supabase = createClient()
+      const { error: upErr } = await supabase.storage
+        .from('actor-docs')
+        .uploadToSignedUrl(signJson.path, signJson.token, file, { contentType: ct })
+      if (upErr) throw new Error(upErr.message)
+      const path = signJson.path as string
       const res = await fetch(`/api/actors/${actorId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },

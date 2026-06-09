@@ -114,16 +114,25 @@ export default function OnboardingForm({
   }
 
   async function uploadToBucket(bucket: string, file: File, contentType?: string): Promise<string> {
-    const supabase = createClient()
     const ext = file.name.split('.').pop()?.toLowerCase() || 'bin'
-    // intake API は intake/${userId}/... 패턴만 허용 — 네임스페이스 일치 필수
-    const path = `intake/${userId}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${ext}`
-    const { error: upErr } = await supabase.storage.from(bucket).upload(path, file, {
-      contentType: contentType || file.type || undefined,
-      upsert: false,
+    const ct = contentType || file.type || undefined
+    // httpOnly 세션 쿠키는 브라우저 JS가 못 읽으므로(lib/supabase/server.ts) 클라이언트 직접 업로드는
+    // anon 취급되어 RLS에 막힌다. → 서버에서 서명된 업로드 URL을 발급받아 업로드(영상 R2 presigned와 동일 방식).
+    // 경로는 서버가 세션 user.id 기준 intake/{user.id}/ 로 결정 — intake API 검증과 일치.
+    const signRes = await fetch('/api/storage/signed-upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ bucket, ext, contentType: ct, size: file.size }),
+      signal: AbortSignal.timeout(15_000),
     })
+    const signJson = await signRes.json().catch(() => ({}))
+    if (!signRes.ok) throw new Error(signJson.error || `${bucket} 업로드 URL 발급 실패`)
+    const supabase = createClient()
+    const { error: upErr } = await supabase.storage
+      .from(bucket)
+      .uploadToSignedUrl(signJson.path, signJson.token, file, { contentType: ct })
     if (upErr) throw new Error(`${bucket} 업로드 실패: ${upErr.message}`)
-    return path
+    return signJson.path as string
   }
 
   async function uploadVideo(file: File): Promise<{ key: string; size: number; filename: string }> {
