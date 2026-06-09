@@ -41,6 +41,7 @@ interface Actor {
   age_group: string | null
   drive_photo_id: string | null
   storage_photo_path: string | null
+  profile_photo: string | null
   casting_tags: string[] | null
   casting_summary: string | null
 }
@@ -83,7 +84,7 @@ async function fetchActors(gender: string, ageGroup: string, tag: string): Promi
   let actors: Actor[] = []
   let castingSchemaAvailable = true
   {
-    let query = buildQuery('id, name, gender, age_group, drive_photo_id, storage_photo_path, casting_tags, casting_summary')
+    let query = buildQuery('id, name, gender, age_group, drive_photo_id, storage_photo_path, profile_photo, casting_tags, casting_summary')
     if (tag && tag !== 'all') query = query.contains('casting_tags', [tag])
     const { data, error } = await query
     if (error && isUndefinedColumnError(error)) {
@@ -102,7 +103,7 @@ async function fetchActors(gender: string, ageGroup: string, tag: string): Promi
 
   // 2차: fallback (구 스키마, casting 컬럼 없이)
   if (!castingSchemaAvailable) {
-    const { data, error } = await buildQuery('id, name, gender, age_group, drive_photo_id, storage_photo_path')
+    const { data, error } = await buildQuery('id, name, gender, age_group, drive_photo_id, storage_photo_path, profile_photo')
     if (error) {
       console.error('[ActorsPage] Fallback Supabase 오류:', error.message)
       return { actors: [], dbError: true, allTags: [], videoActorIds: [] }

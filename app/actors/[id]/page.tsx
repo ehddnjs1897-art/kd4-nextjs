@@ -129,8 +129,13 @@ async function getActorCore(id: string): Promise<Actor | null> {
   // 1차: 전체 스키마 (advanced_skills 포함)
   const full = await fetchWith(actorSelect({ casting: true, videoType: true, filmExtra: true, advancedSkills: true }))
   if (full.data) return full.data as unknown as Actor
-  // maybeSingle: data=null + error=null → not found
-  if (!full.error) return null
+  // maybeSingle: data=null + error=null → not found (행 없음)
+  if (!full.error) {
+    console.error(`[ActorDetail] getActorCore(${id}): 쿼리 성공했으나 data=null (행 없음 또는 is_public 필터 미통과)`)
+    return null
+  }
+  // 실제 DB 오류 로깅
+  console.error(`[ActorDetail] getActorCore(${id}): DB 오류 code=${full.error.code} message=${full.error.message}`)
   // 컬럼 누락(42703)이 아닌 실제 오류 → not found 처리
   if (!isUndefinedColumnError(full.error)) return null
 
@@ -161,13 +166,22 @@ async function getActorCore(id: string): Promise<Actor | null> {
   }
 }
 
-// 배우 상세는 공유 데이터 → 120초 캐시 (id별).
+// 배우 상세는 공유 데이터 → 30초 캐시 (id별).
 // 'actors' 태그: 전체 무효화. `actor-${id}` 태그: 해당 배우만 무효화 (cache stampede 방지).
+// v3: R296 긴급 수정 — 구캐시 강제 무효화 + revalidate 30초 단축 + 쿼리 디버그 로깅
 function getActorCached(id: string) {
   return unstable_cache(
-    () => getActor(id),
-    ['actor-detail-v2', id],
-    { revalidate: 120, tags: ['actors', `actor-${id}`] }
+    async () => {
+      const result = await getActor(id)
+      if (!result) {
+        console.error(`[ActorDetail] getActor(${id}) returned null — DB query failed or actor not found`)
+      } else {
+        console.log(`[ActorDetail] getActor(${id}) OK — name=${result.name}, is_public=${result.is_public}`)
+      }
+      return result
+    },
+    ['actor-detail-v3', id],
+    { revalidate: 30, tags: ['actors', `actor-${id}`] }
   )()
 }
 
