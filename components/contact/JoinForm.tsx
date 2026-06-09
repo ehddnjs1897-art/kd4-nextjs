@@ -68,6 +68,10 @@ const SOURCE_OPTIONS = [
 ]
 
 const OPEN_CLASSES = CLASSES.filter((c) => c.isNewMemberOpen && c.nameKo !== '베이직 클래스')
+const CLASS_OPTIONS = [
+  ...OPEN_CLASSES.map((c) => ({ nameKo: c.nameKo })),
+  { nameKo: '기타 / 상담 후 결정' },
+]
 
 export default function JoinForm() {
   const uid = useId()
@@ -710,7 +714,7 @@ export default function JoinForm() {
             required
           >
             <option value="" disabled hidden>희망 클래스</option>
-            {OPEN_CLASSES.map((c) => (
+            {CLASS_OPTIONS.map((c) => (
               <option key={c.nameKo} value={c.nameKo}>
                 {c.nameKo}
               </option>
