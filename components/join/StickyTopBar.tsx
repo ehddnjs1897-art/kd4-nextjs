@@ -31,9 +31,9 @@ export default function StickyTopBar({
         display: 'flex',
         alignItems: 'center',
         gap: '8px',
+        rowGap: '5px',
+        flexWrap: 'wrap',
         fontFamily: 'var(--font-sans)',
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
       }}
     >
       {/* 첫 달 라벨 */}
@@ -43,7 +43,7 @@ export default function StickyTopBar({
 
       {/* 클래스별 가격 + HOT 뱃지 */}
       {cohorts && cohorts.length > 0 ? (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', overflow: 'hidden', flex: 1, minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', rowGap: '4px', gap: '6px', flex: 1, minWidth: 0 }}>
           {cohorts.map((c, i) => (
             <span key={c.name} style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
               {i > 0 && (

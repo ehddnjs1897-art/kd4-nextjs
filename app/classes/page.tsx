@@ -356,7 +356,7 @@ export default function ClassesPage() {
           <div style={{ marginBottom: '48px' }}>
             <div style={{
               display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center',
-              marginBottom: '32px', gap: '10px', padding: '28px 32px',
+              marginBottom: '32px', gap: '10px', padding: 'clamp(20px, 5vw, 28px) clamp(20px, 5vw, 32px)',
               border: '1px solid rgba(21,72,138,0.35)', borderRadius: '12px',
               background: 'rgba(21,72,138,0.04)',
             }}>
@@ -405,7 +405,7 @@ export default function ClassesPage() {
           {/* QW2 (R292): 수강→배우 DB 등록→캐스팅 연결 3단계 흐름 블록 */}
           <div style={{
             marginTop: '64px', marginBottom: '40px',
-            padding: '40px 32px',
+            padding: 'clamp(28px, 6vw, 40px) clamp(20px, 5vw, 32px)',
             background: 'var(--bg2)',
             border: '1px solid var(--border)',
             borderRadius: '12px',
@@ -418,7 +418,7 @@ export default function ClassesPage() {
             </h2>
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))',
               gap: '24px',
             }}>
               {[
@@ -455,7 +455,7 @@ export default function ClassesPage() {
 
           {/* 하단 CTA */}
           <div style={{
-            marginTop: '0', padding: '48px 32px',
+            marginTop: '0', padding: 'clamp(32px, 7vw, 48px) clamp(20px, 5vw, 32px)',
             background: 'linear-gradient(135deg, rgba(21,72,138,0.06) 0%, rgba(0,0,0,0) 100%)',
             border: '1px solid var(--border)', borderRadius: '12px', textAlign: 'center',
           }}>

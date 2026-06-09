@@ -134,8 +134,8 @@ export default function EnrollmentsPanel({
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {items.map((e) => (
-            <div key={e.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', background: 'var(--bg3, rgba(255,255,255,0.03))', border: '1px solid var(--border)', borderRadius: 6 }}>
-              <div style={{ flex: 1, minWidth: 0 }}>
+            <div key={e.id} style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', rowGap: 8, gap: 10, padding: '10px 12px', background: 'var(--bg3, rgba(255,255,255,0.03))', border: '1px solid var(--border)', borderRadius: 6 }}>
+              <div style={{ flex: 1, minWidth: 130 }}>
                 <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--white)' }}>{e.class_name}</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--gray)' }}>
                   {ymLabel(e.year_month)} · {e.amount.toLocaleString()}원

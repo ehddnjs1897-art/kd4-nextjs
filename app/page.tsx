@@ -73,7 +73,7 @@ const PARTNERS = [
 
 const reviewCardStyle: React.CSSProperties = {
   flex: "0 0 auto",
-  width: "360px",
+  width: "clamp(260px, 80vw, 360px)",
   padding: "24px 28px",
   background: "var(--bg2)",
   border: "1px solid var(--border)",
@@ -1114,8 +1114,8 @@ export default function HomePage() {
           {/* 내부 교차 링크 — SEO: Googlebot 1-hop 연결 */}
           <nav aria-label="강사 및 위치 안내" style={{ marginTop: 28, textAlign: "center", borderTop: "1px solid var(--border)", paddingTop: 20 }}>
             <div style={{ display: "flex", gap: 24, justifyContent: "center", flexWrap: "wrap" }}>
-              <Link href="/acting-coach-dongwon-kwon" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none" }}>권동원 액팅코치 <span aria-hidden="true">→</span></Link>
-              <Link href="/sinchon-acting-academy" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none" }}>신촌 연기학원 오시는 길 <span aria-hidden="true">→</span></Link>
+              <Link href="/acting-coach-dongwon-kwon" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>권동원 액팅코치 <span aria-hidden="true">→</span></Link>
+              <Link href="/sinchon-acting-academy" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>신촌 연기학원 오시는 길 <span aria-hidden="true">→</span></Link>
             </div>
           </nav>
         </div>

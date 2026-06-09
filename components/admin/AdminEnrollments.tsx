@@ -126,9 +126,9 @@ export default function AdminEnrollments({ enrollments }: { enrollments: Enrollm
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {filtered.map((e) => (
-              <div key={e.id} style={{ display: 'flex', alignItems: 'center', gap: 12, background: '#fff', border: '1px solid #e4ddd3', borderRadius: 8, padding: '12px 16px' }}>
+              <div key={e.id} style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', rowGap: 8, gap: 12, background: '#fff', border: '1px solid #e4ddd3', borderRadius: 8, padding: '12px 16px' }}>
                 <div style={{ width: 80, fontSize: '0.78rem', color: '#6b6560' }}>{ymLabel(e.year_month)}</div>
-                <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ flex: 1, minWidth: 130 }}>
                   <div style={{ fontSize: '0.9rem', fontWeight: 700 }}>{e.name || '(이름없음)'} · {e.class_name}</div>
                   <div style={{ fontSize: '0.76rem', color: '#4A4A4A' }}>{e.phone || '-'} · {e.amount.toLocaleString()}원</div>
                 </div>

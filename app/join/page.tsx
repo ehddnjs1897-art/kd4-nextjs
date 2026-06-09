@@ -1267,7 +1267,7 @@ export default function JoinPage() {
           <div className="review-marquee" aria-hidden="true">
             <div className="review-marquee-track">
               {[...REVIEW_MARQUEE_ROW1, ...REVIEW_MARQUEE_ROW1].map((r, i) => (
-                <div key={`${r.author}-${i}`} style={{ flex: '0 0 auto', width: '320px', padding: '20px 24px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', marginRight: '14px' }}>
+                <div key={`${r.author}-${i}`} style={{ flex: '0 0 auto', width: 'clamp(240px, 78vw, 320px)', padding: '20px 24px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', marginRight: '14px' }}>
                   <p style={{ fontSize: '0.86rem', color: 'var(--white)', lineHeight: 1.7, marginBottom: '10px' }}>&ldquo;{r.text}&rdquo;</p>
                   <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>— {r.author}</span>
                 </div>

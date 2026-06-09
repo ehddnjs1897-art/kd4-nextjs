@@ -299,6 +299,10 @@ export default function MeisnerPage() {
             text-align: center;
           }
         }
+        /* 모바일: 비교표 셀 좌우 여백 축소 — 좁은 칸 글자 세로깨짐 완화 (데스크톱 무영향) */
+        @media (max-width: 480px) {
+          [role="table"] [role="row"] > div { padding: 12px 8px !important; }
+        }
       `}</style>
     </div>
   )

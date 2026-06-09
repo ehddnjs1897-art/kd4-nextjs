@@ -213,9 +213,10 @@ export default function InsightsPage() {
 
           {tab === 'url' ? (
             <>
-              <div style={{ display: 'flex', gap: 8, marginBottom: showMemo ? 10 : 0 }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: showMemo ? 10 : 0 }}>
                 <input
                   className="ins-input"
+                  style={{ flex: '1 1 240px', minWidth: 0 }}
                   aria-label="링크 URL"
                   placeholder="링크 붙여넣기 (https://...)"
                   value={url}
