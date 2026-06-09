@@ -110,11 +110,17 @@ export default async function AdminSalesPage() {
 
   // 수강현황 (월별 기수별 명단) — 노션 토큰 있으면 실시간, 없으면 정적 JSON fallback
   const liveSchedule = await fetchScheduleFromNotion()
-  const rawSchedule: Record<string, unknown> = liveSchedule ?? (scheduleByMonth as Record<string, unknown>)
+  // 노션 실시간이 비어있으면(토큰 없음/0건) 정적 JSON으로 폴백
+  const rawSchedule: Record<string, unknown> =
+    liveSchedule && Object.keys(liveSchedule).length > 0
+      ? liveSchedule
+      : (scheduleByMonth as Record<string, unknown>)
   const schedule: ScheduleMap = {}
   for (const [k, v] of Object.entries(rawSchedule)) {
     if (k.startsWith('_')) continue
-    schedule[k] = v as Record<string, string[]>
+    // 월 키 형식 통일: 노션 '2026-06' / JSON '26.6' → 모두 '26.6' (MONTH_KEYS 매칭)
+    const nk = normalizeYM(k) ?? k
+    schedule[nk] = v as Record<string, string[]>
   }
 
   return (
