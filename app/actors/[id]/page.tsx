@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import ActorTabs from '@/components/actors/ActorTabs'
+import CastingInquiry from '@/components/actors/CastingInquiry'
 import ShareButton from '@/components/actors/ShareButton'
 import ActorDownloadButton from '@/components/actors/ActorDownloadButton'
 import ActorDbLocked from '@/components/actors/ActorDbLocked'
@@ -558,6 +559,14 @@ export default async function ActorDetailPage({
                   </a>
                 )}
               </div>
+
+              {/* 캐스팅 문의 폼 — 연락처 블록 바로 아래 */}
+              <CastingInquiry
+                actorId={actor.id}
+                actorName={actor.name}
+                actorAgeGroup={actor.age_group}
+                actorGender={actor.gender}
+              />
             </div>
           </div>
         </div>

@@ -125,12 +125,19 @@ export async function POST(request: NextRequest) {
     if (!/^01[0-9][\-\s]?\d{3,4}[\-\s]?\d{4}$/.test(phone.replace(/\s/g, ''))) {
       return NextResponse.json({ error: '연락처 형식이 올바르지 않습니다. (예: 010-1234-5678)' }, { status: 400 })
     }
-    // 이메일 필수 (JoinForm에서 필수 필드 — 서버도 동일하게 강제)
+    // 이메일: JoinForm 등 기본 상담은 필수. 캐스팅 문의(inquiry_type='casting_inquiry')는 면제.
+    // casting_inquiry는 전화 + 작품/역할 정보로 충분 — 마찰 최소화 목적.
+    const isCastingInquiry = typeof record?.inquiry_type === 'string' && record.inquiry_type === 'casting_inquiry'
     const emailRaw = typeof record?.email === 'string' ? record.email.trim() : null
-    if (!emailRaw) {
-      return NextResponse.json({ error: '이메일은 필수입니다.' }, { status: 400 })
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailRaw)) {
+    if (!isCastingInquiry) {
+      if (!emailRaw) {
+        return NextResponse.json({ error: '이메일은 필수입니다.' }, { status: 400 })
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailRaw)) {
+        return NextResponse.json({ error: '이메일 형식이 올바르지 않습니다.' }, { status: 400 })
+      }
+    } else if (emailRaw && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailRaw)) {
+      // 캐스팅 문의에서도 이메일을 제공했다면 형식 검증
       return NextResponse.json({ error: '이메일 형식이 올바르지 않습니다.' }, { status: 400 })
     }
 
@@ -297,7 +304,15 @@ export async function POST(request: NextRequest) {
       const safeClass = typeof record.class_name === 'string'
         ? record.class_name.replace(/[\r\n\t]/g, ' ').slice(0, 50)
         : null
-      const msg = `[KD4 신규상담] ${safeName} / ${safePhone}${safeClass ? ` / ${safeClass}` : ''}`
+      // 캐스팅 문의는 꼬리표 + 배우 source 포함 (일반 상담과 구분)
+      const safeSource = isCastingInquiry && typeof record?.source === 'string'
+        ? record.source.replace(/[\r\n\t]/g, ' ').slice(0, 50)
+        : null
+      const tag = isCastingInquiry ? '[KD4 캐스팅문의]' : '[KD4 신규상담]'
+      const detail = isCastingInquiry && safeSource
+        ? ` / ${safeSource}`
+        : safeClass ? ` / ${safeClass}` : ''
+      const msg = `${tag} ${safeName} / ${safePhone}${detail}`
       await sendSMS(adminPhone, msg).catch((err) =>
         // PII 제거: String(err)은 에러 메시지에 전화번호 포함 가능 → err.message만 사용
         console.error('[notify] 관리자 SMS 실패:', err instanceof Error ? err.message : '알 수 없는 오류')
