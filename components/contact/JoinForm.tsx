@@ -67,9 +67,21 @@ const SOURCE_OPTIONS = [
   ...SOURCE_VALUES.map((v) => ({ value: v, label: v })),
 ]
 
-const OPEN_CLASSES = CLASSES.filter((c) => c.isNewMemberOpen && c.nameKo !== '베이직 클래스')
+// QW1 (R291): 전체 클래스 선택지 노출 — 베이직 포함, 순서 고정
+// 순서: 베이직 → 마이즈너 정규 → 오디션 테크닉 → 출연영상 → 움직임 → 개인 레슨 → 기타
+const CLASS_ORDER = [
+  '베이직 클래스',
+  '마이즈너 테크닉 정규 클래스',
+  '오디션 테크닉 클래스',
+  '출연영상 클래스',
+  '움직임 클래스',
+  '개인 레슨',
+]
 const CLASS_OPTIONS = [
-  ...OPEN_CLASSES.map((c) => ({ nameKo: c.nameKo })),
+  ...CLASS_ORDER
+    .map((name) => CLASSES.find((c) => c.nameKo === name))
+    .filter((c): c is NonNullable<typeof c> => Boolean(c))
+    .map((c) => ({ nameKo: c.nameKo })),
   { nameKo: '기타 / 상담 후 결정' },
 ]
 
@@ -678,7 +690,7 @@ export default function JoinForm() {
       />
 
       {/* 희망 클래스 (필수) */}
-      {OPEN_CLASSES.length === 0 ? (
+      {CLASS_OPTIONS.length === 0 ? (
         <div style={{
           padding: '14px 16px',
           background: 'rgba(196,165,90,0.06)',
