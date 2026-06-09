@@ -21,6 +21,22 @@ interface Props {
   totalBeforeSearch: number
 }
 
+// 연령대 세부 필터 옵션 (서버 age_group 값 기반)
+const AGE_DETAIL_OPTIONS = [
+  { value: 'all', label: '전체 연령' },
+  { value: '20대', label: '20대' },
+  { value: '30대', label: '30대' },
+  { value: '40대', label: '40대' },
+  { value: '50대 이상', label: '50대+' },
+]
+
+// 성별 필터 옵션 (클라이언트 추가 필터용)
+const GENDER_DETAIL_OPTIONS = [
+  { value: 'all', label: '전체' },
+  { value: '남', label: '남' },
+  { value: '여', label: '여' },
+]
+
 // ── 한국어 초성검색 (외부 라이브러리 없이) ──
 const CHO = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ']
 function toChoseong(str: string): string {
@@ -38,7 +54,21 @@ const CHOSEONG_ONLY = /^[ㄱ-ㅎ\s]+$/
 export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
   const [query, setQuery] = useState('')
   const [videoOnly, setVideoOnly] = useState(false)
+  const [ageFilter, setAgeFilter] = useState<string>('all')
+  const [genderFilter, setGenderFilter] = useState<string>('all')
   const anyVideo = useMemo(() => actors.some((a) => a.hasVideo), [actors])
+
+  // 현재 목록에 실제 존재하는 연령대만 필터 버튼 표시
+  const availableAges = useMemo(() => {
+    const seen = new Set(actors.map((a) => a.age_group).filter(Boolean))
+    return AGE_DETAIL_OPTIONS.filter((o) => o.value === 'all' || seen.has(o.value))
+  }, [actors])
+
+  // 현재 목록에 실제 존재하는 성별만 필터 버튼 표시
+  const availableGenders = useMemo(() => {
+    const seen = new Set<string>(actors.map((a) => a.gender).filter((g): g is '남' | '여' => g !== null))
+    return GENDER_DETAIL_OPTIONS.filter((o) => o.value === 'all' || seen.has(o.value))
+  }, [actors])
 
   const filtered = useMemo(() => {
     const raw = query.trim()
@@ -56,13 +86,18 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
         list = actors.filter((a) =>
           a.name.toLowerCase().includes(q) ||
           (a.casting_summary ?? '').toLowerCase().includes(q) ||
-          (a.casting_tags ?? []).some((t) => t.toLowerCase().includes(q))
+          (a.casting_tags ?? []).some((t) => t.toLowerCase().includes(q)) ||
+          (a.age_group ?? '').toLowerCase().includes(q)
         )
       }
     }
+    // 연령대 클라이언트 세부 필터
+    if (ageFilter !== 'all') list = list.filter((a) => a.age_group === ageFilter)
+    // 성별 클라이언트 세부 필터
+    if (genderFilter !== 'all') list = list.filter((a) => a.gender === genderFilter)
     if (videoOnly) list = list.filter((a) => a.hasVideo)
     return list
-  }, [actors, query, videoOnly])
+  }, [actors, query, videoOnly, ageFilter, genderFilter])
 
   return (
     <>
@@ -106,27 +141,87 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
         )}
       </form>
 
-      {/* 출연영상 보유 배우 필터 토글 (영상 보유 배우가 있을 때만) */}
-      {anyVideo && (
-        <div style={{ marginBottom: 16 }}>
+      {/* 클라이언트 세부 필터 — 성별 + 연령대 + 영상 */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16, alignItems: 'center' }}>
+        {/* 성별 필터 (서버 필터와 중복되지 않을 때만 표시) */}
+        {availableGenders.length > 2 && (
+          <div role="group" aria-label="성별 필터" style={{ display: 'flex', gap: 4 }}>
+            {availableGenders.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => setGenderFilter(opt.value)}
+                aria-pressed={genderFilter === opt.value}
+                style={{
+                  padding: '6px 12px', borderRadius: 999, cursor: 'pointer',
+                  fontSize: '0.78rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
+                  background: genderFilter === opt.value ? 'var(--navy)' : 'var(--bg2)',
+                  color: genderFilter === opt.value ? '#fff' : 'var(--gray)',
+                  border: `1px solid ${genderFilter === opt.value ? 'var(--navy)' : 'var(--border)'}`,
+                  transition: 'all 0.15s',
+                }}
+              >{opt.label}</button>
+            ))}
+          </div>
+        )}
+
+        {/* 연령대 세부 필터 */}
+        {availableAges.length > 2 && (
+          <div role="group" aria-label="연령대 필터" style={{ display: 'flex', gap: 4 }}>
+            {availableAges.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => setAgeFilter(opt.value)}
+                aria-pressed={ageFilter === opt.value}
+                style={{
+                  padding: '6px 12px', borderRadius: 999, cursor: 'pointer',
+                  fontSize: '0.78rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
+                  background: ageFilter === opt.value ? 'rgba(200,168,100,0.15)' : 'var(--bg2)',
+                  color: ageFilter === opt.value ? 'var(--gold)' : 'var(--gray)',
+                  border: `1px solid ${ageFilter === opt.value ? 'rgba(200,168,100,0.4)' : 'var(--border)'}`,
+                  transition: 'all 0.15s',
+                }}
+              >{opt.label}</button>
+            ))}
+          </div>
+        )}
+
+        {/* 출연영상 보유 배우 필터 토글 (영상 보유 배우가 있을 때만) */}
+        {anyVideo && (
           <button
             type="button"
             onClick={() => setVideoOnly((v) => !v)}
             aria-pressed={videoOnly}
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 6,
-              padding: '7px 14px', borderRadius: 999, cursor: 'pointer',
-              fontSize: '0.8rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
+              padding: '6px 12px', borderRadius: 999, cursor: 'pointer',
+              fontSize: '0.78rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
               background: videoOnly ? 'var(--navy)' : 'var(--bg2)',
               color: videoOnly ? '#fff' : 'var(--gray)',
               border: `1px solid ${videoOnly ? 'var(--navy)' : 'var(--border)'}`,
               transition: 'all 0.15s',
             }}
           >
-            <span aria-hidden="true">🎬</span> 출연영상 있는 배우만
+            <span aria-hidden="true">🎬</span> 영상 있는 배우만
           </button>
-        </div>
-      )}
+        )}
+
+        {/* 클라이언트 필터 초기화 */}
+        {(ageFilter !== 'all' || genderFilter !== 'all') && (
+          <button
+            type="button"
+            onClick={() => { setAgeFilter('all'); setGenderFilter('all') }}
+            aria-label="연령대·성별 필터 초기화"
+            style={{
+              padding: '6px 10px', borderRadius: 999, cursor: 'pointer',
+              fontSize: '0.72rem', fontFamily: 'var(--font-sans)',
+              background: 'none', color: 'var(--gray)',
+              border: '1px solid var(--border)',
+            }}
+          >✕ 필터 초기화</button>
+        )}
+      </div>
 
       {/* 결과 수 */}
       <p role="status" aria-live="polite" aria-atomic="true" style={{ fontSize: '0.8rem', color: 'var(--gray)', marginBottom: 20 }}>
