@@ -111,8 +111,8 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="이름·초성(ㄱㄷㅇ)·캐스팅 타입으로 검색..."
-          aria-label="배우 검색"
+          placeholder="이름·초성(ㄱㄷㅇ)·캐스팅 타입·연령대로 검색..."
+          aria-label="배우 이름 또는 캐스팅 타입 검색"
           style={{
             width: '100%',
             paddingLeft: 40,
