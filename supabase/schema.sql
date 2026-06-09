@@ -297,7 +297,7 @@ CREATE POLICY "applications_admin_update" ON applications
 -- ============================================
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 VALUES
-  ('actor-photos', 'actor-photos', TRUE, 5242880,  -- 5MB
+  ('actor-photos', 'actor-photos', TRUE, 15728640,  -- 15MB
    ARRAY['image/jpeg', 'image/png', 'image/webp']),
   ('actor-videos', 'actor-videos', TRUE, 104857600, -- 100MB
    ARRAY['video/mp4', 'video/webm'])

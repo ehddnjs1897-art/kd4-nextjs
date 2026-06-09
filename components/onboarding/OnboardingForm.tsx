@@ -3,7 +3,7 @@
 /**
  * 배우 온보딩 업로드 폼
  *  - PPT(≤10MB) → Supabase Storage actor-docs
- *  - 사진 (장당 ≤5MB) → Supabase Storage actor-photos
+ *  - 사진 (장당 ≤15MB) → Supabase Storage actor-photos
  *  - 영상(≤300MB) → R2 presigned PUT (브라우저 직접 업로드)
  * 업로드 완료 후 /api/profile/intake 로 경로만 기록.
  */
@@ -80,7 +80,7 @@ export default function OnboardingForm({
     if (!list) return
     const arr = Array.from(list).slice(0, 4)
     for (const f of arr) {
-      if (f.size > 5 * MB) { setError(`사진은 5MB 이하여야 합니다: ${f.name}`); return }
+      if (f.size > 15 * MB) { setError(`사진은 15MB 이하여야 합니다: ${f.name}`); return }
     }
     const checks = await Promise.all(arr.map(checkLandscape))
     const idx = checks.findIndex(Boolean)
@@ -96,7 +96,7 @@ export default function OnboardingForm({
   }
 
   function pickCurrentPhoto(idx: number, f: File | null) {
-    if (f && f.size > 5 * MB) { setError(`현재사진은 5MB 이하여야 합니다.`); return }
+    if (f && f.size > 15 * MB) { setError(`현재사진은 15MB 이하여야 합니다.`); return }
     setError('')
     setCurrentPhotos(prev => prev.map((p, i) => i === idx ? f : p))
   }
@@ -228,7 +228,7 @@ export default function OnboardingForm({
           autoComplete="off"
         />
         <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginTop: 18, marginBottom: 8 }}>
-          <span aria-hidden="true">⭐</span> <strong style={{ color: 'rgba(255,255,255,0.85)' }}>고급 숙련도</strong> — 전문가급/네이티브 수준만. 위에 입력한 특기 중 콤마로 구분해 다시 적어주세요.
+          <span aria-hidden="true">⭐</span> <strong style={{ color: 'var(--navy)' }}>고급 숙련도</strong> — 전문가급/네이티브 수준만. 위에 입력한 특기 중 콤마로 구분해 다시 적어주세요.
         </p>
         <input
           id="onb-advanced-skills-input"
@@ -281,7 +281,7 @@ export default function OnboardingForm({
         <h2 id="onb-casting-summary" style={secTitle}>한줄소개</h2>
         <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 12 }}>
           캐스팅 디렉터에게 보이는 짧은 자기소개입니다.
-          <em style={{ color: 'rgba(255,255,255,0.45)', marginLeft: 6 }}>"장르를 넘나드는 탄탄한 기본기의 배우"</em>
+          <em style={{ color: 'var(--gray)', marginLeft: 6 }}>"장르를 넘나드는 탄탄한 기본기의 배우"</em>
         </p>
         <textarea
           id="casting-summary"
@@ -316,7 +316,7 @@ export default function OnboardingForm({
       <section style={sec} aria-labelledby="onb-photos">
         <h2 id="onb-photos" style={secTitle}>프로필 사진</h2>
         <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 14 }}>
-          최대 4장, 가로·세로 무관, 장당 5MB 이하.
+          최대 4장, 가로·세로 무관, 장당 15MB 이하.
           프로필에 <strong>세로형 헤드샷 3~4장</strong>을 올리면 가장 보기 좋습니다.
         </p>
         <input ref={photosRef} type="file" accept="image/*" multiple disabled={loading} onChange={e => pickPhotos(e.target.files)} style={{ display: 'none' }} aria-hidden="true" />
@@ -333,7 +333,7 @@ export default function OnboardingForm({
             현재사진 <span style={{ fontSize: '0.74rem', fontWeight: 400, color: 'var(--gray)' }}>(선택)</span>
           </p>
           <p style={{ fontSize: '0.78rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 14 }}>
-            앞·좌·우·뒤 각도로 촬영한 현재 모습 사진. 각 5MB 이하.
+            앞·좌·우·뒤 각도로 촬영한 현재 모습 사진. 각 15MB 이하.
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             {CURRENT_PHOTO_LABELS.map((label, idx) => (

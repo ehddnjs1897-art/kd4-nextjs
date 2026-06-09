@@ -393,8 +393,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   async function uploadPhoto(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
-    if (file.size > 5 * 1024 * 1024) {
-      setPhotoMsg('파일 크기는 5MB 이하이어야 합니다.')
+    if (file.size > 15 * 1024 * 1024) {
+      setPhotoMsg('파일 크기는 15MB 이하이어야 합니다.')
       return
     }
     setUploading(true)
@@ -781,7 +781,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} aria-busy={uploading} style={{ ...s.btn, ...s.btnPrimary, opacity: uploading ? 0.6 : 1 }}>
             {uploading ? '업로드 중…' : '+ 사진 추가'}
           </button>
-          <span style={{ fontSize: '0.78rem', color: 'var(--gray)' }}>JPG·PNG, 최대 5MB · 9:16 비율 권장</span>
+          <span style={{ fontSize: '0.78rem', color: 'var(--gray)' }}>JPG·PNG, 최대 15MB · 9:16 비율 권장</span>
         </div>
         <p role="status" aria-live="polite" aria-atomic="true" style={{ ...s.msg, color: photoMsg && !photoMsg.includes('완료') ? '#ef4444' : 'var(--gold)', marginTop: 8 }}>{photoMsg}</p>
       </section>

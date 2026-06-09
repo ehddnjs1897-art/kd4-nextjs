@@ -12,7 +12,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 import { uploadFile } from '@/lib/storage'
 import { revalidateTag } from '@/lib/revalidate'
 
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5 MB
+const MAX_IMAGE_SIZE = 15 * 1024 * 1024 // 15 MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const DEFAULT_BUCKET = 'actor-media'
@@ -162,7 +162,7 @@ export async function POST(request: NextRequest) {
       const sizeMB = (file.size / 1024 / 1024).toFixed(1)
       return NextResponse.json(
         {
-          error: `파일 크기가 너무 큽니다. (현재: ${sizeMB}MB, 최대: 5MB)`,
+          error: `파일 크기가 너무 큽니다. (현재: ${sizeMB}MB, 최대: 15MB)`,
         },
         { status: 400 }
       )
