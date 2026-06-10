@@ -74,6 +74,156 @@ async function sendMetaCAPI(record: { name?: string | null; phone?: string | nul
   }
 }
 
+/* ── 노션 상담자 DB 자동 row 생성 ─────────────────────────────────────
+ * KD4 상담자 현황 DB(e4f5f376-3214-4e18-8deb-b2ab1e5dd9da)에 상담 신청을
+ * 자동 동기화. 본문엔 통화 메모 + 등록 확정 메시지 템플릿 미리 주입.
+ * env(NOTION_TOKEN) 없으면 silent skip — 다른 기능에 영향 0.
+ * 노션 API 실패해도 throw X — 로깅만 (Supabase 데이터는 이미 보존됨).
+ * ──────────────────────────────────────────────────────────────────── */
+const NOTION_DATABASE_ID = 'e4f5f376-3214-4e18-8deb-b2ab1e5dd9da'
+
+// "/join 랜딩", "인스타그램" 등 다양한 source 값 → 노션 Select 옵션으로 휴리스틱 매핑
+function mapSourceToNotion(source: string | null): string | null {
+  if (!source) return null
+  const s = source.toLowerCase()
+  if (s.includes('인스타') || s.includes('instagram') || s.includes('/join')) return '인스타광고'
+  if (s.includes('네이버') || s.includes('blog') || s.includes('블로그')) return '네이버블로그'
+  if (s.includes('카카오') || s.includes('kakao')) return '카카오채널'
+  if (s.includes('유튜브') || s.includes('youtube')) return '유튜브'
+  if (s.includes('지인') || s.includes('소개')) return '지인소개'
+  return source.slice(0, 100)  // 매칭 안 되면 raw 값 그대로 (노션이 옵션 자동 생성)
+}
+
+async function sendNotionConsultation(payload: {
+  name: string
+  phone: string
+  email: string
+  class_name: string | null
+  source: string | null
+  utm_source: string | null
+  utm_medium: string | null
+  utm_campaign: string | null
+}) {
+  const token = process.env.NOTION_TOKEN?.trim()
+  if (!token) return  // env 없으면 silent skip — 사용자가 토큰 만들면 바로 작동
+
+  // UTM 합본 (있는 것만 조합)
+  const utmParts = [
+    payload.utm_source ? `source=${payload.utm_source}` : null,
+    payload.utm_medium ? `medium=${payload.utm_medium}` : null,
+    payload.utm_campaign ? `campaign=${payload.utm_campaign}` : null,
+  ].filter(Boolean)
+  const utmCombined = utmParts.join(' / ')
+
+  const notionSource = mapSourceToNotion(payload.source)
+
+  // 노션 properties — 작업 지시서 컬럼 매핑대로
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const properties: Record<string, any> = {
+    '이름': {
+      title: [{ type: 'text', text: { content: payload.name } }],
+    },
+    '연락처': { phone_number: payload.phone },
+    '이메일': { email: payload.email },
+    '상태': { select: { name: '🆕 상담 신청' } },
+    '신청일': { date: { start: new Date().toISOString() } },
+  }
+  if (payload.class_name) {
+    properties['희망 클래스'] = { select: { name: payload.class_name.slice(0, 100) } }
+  }
+  if (notionSource) {
+    properties['신청경로'] = { select: { name: notionSource } }
+  }
+  if (utmCombined) {
+    properties['UTM 출처'] = {
+      rich_text: [{ type: 'text', text: { content: utmCombined.slice(0, 2000) } }],
+    }
+  }
+
+  // 페이지 본문 children — 통화 메모 + 등록 확정 메시지 템플릿
+  const children = [
+    {
+      object: 'block',
+      type: 'heading_2',
+      heading_2: { rich_text: [{ type: 'text', text: { content: '📞 통화 후 작성' } }] },
+    },
+    {
+      object: 'block',
+      type: 'bulleted_list_item',
+      bulleted_list_item: {
+        rich_text: [
+          { type: 'text', text: { content: '등록 클래스: ' }, annotations: { bold: true } },
+          { type: 'text', text: { content: '(컬럼에 Select)' } },
+        ],
+      },
+    },
+    {
+      object: 'block',
+      type: 'bulleted_list_item',
+      bulleted_list_item: {
+        rich_text: [
+          { type: 'text', text: { content: '특이사항: ' }, annotations: { bold: true } },
+          { type: 'text', text: { content: '(컬럼에 Text)' } },
+        ],
+      },
+    },
+    { object: 'block', type: 'divider', divider: {} },
+    {
+      object: 'block',
+      type: 'heading_3',
+      heading_3: { rich_text: [{ type: 'text', text: { content: '📩 등록 확정 메시지 (복붙용)' } }] },
+    },
+    {
+      object: 'block',
+      type: 'code',
+      code: {
+        language: 'plain text',
+        rich_text: [
+          {
+            type: 'text',
+            text: {
+              content:
+                `안녕하세요 배우님\n환영합니다!\n\n` +
+                `성함: ${payload.name} 배우님\n` +
+                `클래스: ${payload.class_name ?? '{클래스명}'} {기수}기 / {수업요일} {시간대} ({시작월} 시작)\n` +
+                `{첫 수업일} {요일} {시간}\n\n` +
+                `입금계좌 :  274-910338-13807 ㅣ하나은행 권동원(유익액터스)\n\n` +
+                `*첫달 10만원 할인 적용하여, {할인적용가}원 입금후 확인메시지 주세요, 단톡방 초대드리겠습니다.\n` +
+                `*3개월분 일시납시 추가할인 5만원적용 됩니다.\n` +
+                `*카드결제를 원하시면 수업당일 결제 가능합니다.\n\n` +
+                `추가적인 문의는 카카오채널을 통해 남겨주시면 빠르게 답변드리겠습니다.`,
+            },
+          },
+        ],
+      },
+    },
+  ]
+
+  try {
+    const res = await fetch('https://api.notion.com/v1/pages', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Notion-Version': '2022-06-28',
+      },
+      signal: AbortSignal.timeout(10000),
+      body: JSON.stringify({
+        parent: { database_id: NOTION_DATABASE_ID },
+        properties,
+        children,
+      }),
+    })
+    if (!res.ok) {
+      const body = await res.text().catch(() => '')
+      // 노션 API 에러는 throw 하지 않음 — Supabase/Make는 이미 완료된 상태
+      console.error('[notify] 노션 row 생성 실패:', res.status, body.slice(0, 500))
+    }
+  } catch (err) {
+    console.error('[notify] 노션 row 생성 실패:', err instanceof Error ? err.message : String(err))
+  }
+}
+
 // 인메모리 디바운스 — DB count는 비원자적이라 동시 요청 경쟁 조건 발생 가능
 // Vercel Serverless: 인스턴스 재시작 시 초기화되나 단일 인스턴스 내 동시성은 차단
 const notifyPhoneMap = new Map<string, number>()
@@ -325,6 +475,21 @@ export async function POST(request: NextRequest) {
         console.error('[notify] Meta CAPI 실패:', err instanceof Error ? err.message : String(err))
       )
     }
+
+    // 5. 노션 KD4 상담자 현황 DB 자동 row 생성 — 본문 미니멀 템플릿 주입
+    //    NOTION_TOKEN 없으면 silent skip. 실패해도 응답에 영향 없음 (Supabase는 이미 보존).
+    await sendNotionConsultation({
+      name,
+      phone,
+      email: emailRaw,
+      class_name: baseRecord.class_name,
+      source: baseRecord.source,
+      utm_source: utmFields.utm_source,
+      utm_medium: utmFields.utm_medium,
+      utm_campaign: utmFields.utm_campaign,
+    }).catch((err) =>
+      console.error('[notify] 노션 row 생성 실패:', err instanceof Error ? err.message : String(err))
+    )
 
     // dbSaved: Supabase 저장 성공 여부 — 클라이언트에서 Lead와 DB 불일치 모니터링 가능
     return NextResponse.json({ ok: true, dbSaved: savedId !== null })
