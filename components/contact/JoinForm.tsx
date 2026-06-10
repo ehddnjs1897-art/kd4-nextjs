@@ -414,6 +414,7 @@ export default function JoinForm() {
             <a
               href="/#director"
               aria-label="권동원 대표 소개 자세히 보기"
+              className="kd4-card-hover"
               style={{
                 display: 'block',
                 background: '#ffffff',
@@ -460,6 +461,7 @@ export default function JoinForm() {
             <a
               href="/#casting"
               aria-label="KD4 캐스팅 결과 자세히 보기"
+              className="kd4-card-hover"
               style={{
                 display: 'block',
                 background: '#ffffff',
@@ -511,6 +513,7 @@ export default function JoinForm() {
             <a
               href="/about#meisner"
               aria-label="마이즈너 테크닉 자세히 보기"
+              className="kd4-card-hover"
               style={{
                 display: 'block',
                 background: '#ffffff',
@@ -562,6 +565,7 @@ export default function JoinForm() {
             <a
               href="/about#reviews"
               aria-label="KD4 멤버 이야기 자세히 보기"
+              className="kd4-card-hover"
               style={{
                 display: 'block',
                 background: '#ffffff',

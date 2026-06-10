@@ -737,7 +737,7 @@ export default function HomePage() {
                     <p
                       style={{
                         fontSize: "0.82rem",
-                        color: "#5A5550",
+                        color: "var(--text-warm)",
                         lineHeight: 1.7,
                       }}
                     >
@@ -834,7 +834,7 @@ export default function HomePage() {
                 <span style={{
                   position: "absolute", inset: 0,
                   display: "flex", alignItems: "flex-end", justifyContent: "center",
-                  paddingBottom: "14px", fontSize: "0.82rem", color: "#5A5550",
+                  paddingBottom: "14px", fontSize: "0.82rem", color: "var(--text-warm)",
                   zIndex: 0,
                 }}>
                   {i < CASTING_PHOTOS.length ? photo.name : ""}
@@ -960,7 +960,7 @@ export default function HomePage() {
                 <p
                   style={{
                     fontSize: "0.82rem",
-                    color: "#5A5550",
+                    color: "var(--text-warm)",
                     lineHeight: 1.7,
                   }}
                 >

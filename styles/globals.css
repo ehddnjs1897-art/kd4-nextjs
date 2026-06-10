@@ -83,6 +83,7 @@
   --secondary: rgba(17,17,17,0.85);
   --gray: #6B6660;
   --gray-light: #4A4A4A;
+  --text-warm: #5A5550;          /* 따뜻한 갈색톤 본문 — 메인 페이지 서브텍스트용 */
   --border: #D2D2C8;
   --border-strong: #B8B8AC;
   --font-serif: 'KoPubWorld Batang', var(--font-noto-serif-kr), 'Noto Serif KR', Georgia, serif;
@@ -544,7 +545,7 @@ ul, ol { list-style: none; }
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  transition: border-color var(--transition), transform 0.2s;
+  transition: border-color var(--transition), transform 0.2s, box-shadow 0.2s;
   display: flex;
   flex-direction: column;
 }
@@ -552,6 +553,7 @@ ul, ol { list-style: none; }
 .class-card:hover {
   border-color: var(--gold);
   transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(21, 72, 138, 0.12);
 }
 
 .class-card.highlight {
@@ -1019,13 +1021,14 @@ ul, ol { list-style: none; }
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  transition: border-color var(--transition), transform 0.2s;
+  transition: border-color var(--transition), transform 0.2s, box-shadow 0.2s;
   cursor: pointer;
 }
 
 .actor-card:hover {
   border-color: rgba(21,72,138,0.4);
   transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(21, 72, 138, 0.12);
 }
 
 .actor-photo {
@@ -1823,11 +1826,12 @@ main {
 
 /* === KD4 표준 카드 hover (서버 컴포넌트용 utility) === */
 .kd4-card-hover {
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 .kd4-card-hover:hover {
   border-color: var(--gold) !important;
   transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(21, 72, 138, 0.12);
 }
 @media (prefers-reduced-motion: reduce) {
   .kd4-card-hover {
