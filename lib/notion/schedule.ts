@@ -154,10 +154,11 @@ export async function fetchUnpaidFromNotion(): Promise<{
       const pay = pr['결제상태']?.select?.name || ''
       const status = pr['상태']?.select?.name || ''
       if (!(pay === '미납' || pay === '분납' || status === '휴면')) continue
-      // 반 표기: '반' select가 있으면 사용, 없으면 기존 스케줄과 동일하게 수업+기수 조합
-      const subject = pr['반']?.select?.name || pr['수업']?.select?.name || ''
+      // 반 표기: '반' select가 있으면 그대로 사용 (이미 기수 포함된 이름), 없을 때만 수업+기수 조합
+      const banSelect = pr['반']?.select?.name || ''
+      const subject = pr['수업']?.select?.name || ''
       const cohort = plain(pr['기수']?.rich_text)
-      const ban = cohort ? `${subject} ${cohort}`.trim() : subject
+      const ban = banSelect || (cohort ? `${subject} ${cohort}`.trim() : subject)
       items.push({ name, ban, pay, status, memo: plain(pr['메모']?.rich_text) })
     }
     return { month, items }
