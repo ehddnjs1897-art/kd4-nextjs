@@ -184,7 +184,7 @@ export default function MeisnerPage() {
           </div>
           <div className="meisner-director-grid" style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '32px', alignItems: 'start', maxWidth: '780px', margin: '0 auto' }}>
             <div style={{ position: 'relative', width: '200px', height: '266px', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--border)' }}>
-              <Image src={DIRECTOR.photo} alt={`${DIRECTOR.name} 대표`} fill priority sizes="200px" style={{ objectFit: 'cover' }} />
+              <Image src={DIRECTOR.photo} alt={`${DIRECTOR.name} 대표`} fill loading="lazy" sizes="200px" style={{ objectFit: 'cover' }} />
             </div>
             <div>
               <p style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--navy)', fontSize: '0.95rem', marginBottom: '16px', lineHeight: 1.7, wordBreak: 'keep-all' }}>
