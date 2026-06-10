@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useDeferredValue } from 'react'
 import Link from 'next/link'
 import ActorCardImage from './ActorCardImage'
 
@@ -56,7 +56,44 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
   const [videoOnly, setVideoOnly] = useState(false)
   const [ageFilter, setAgeFilter] = useState<string>('all')
   const [genderFilter, setGenderFilter] = useState<string>('all')
+  // 타이핑 즉시성 유지 + 초성 변환 필터링은 한 박자 뒤에 (디바운스 효과)
+  const deferredQuery = useDeferredValue(query)
+  // URL 복원이 끝나기 전에는 URL을 덮어쓰지 않기 위한 플래그
+  const [urlReady, setUrlReady] = useState(false)
   const anyVideo = useMemo(() => actors.some((a) => a.hasVideo), [actors])
+
+  // 마운트 시 URL에서 클라이언트 필터 복원 — 새로고침·뒤로가기·URL 공유 시 상태 유지
+  // (서버 필터 파라미터 gender/ageGroup/tag와 충돌하지 않도록 별도 키 q/g/age/video 사용)
+  // URL은 SSR에서 읽을 수 없는 외부 시스템 → 마운트 후 1회 동기화가 hydration-safe한 유일한 방법
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    const sp = new URLSearchParams(window.location.search)
+    const q = sp.get('q')
+    if (q) setQuery(q)
+    if (sp.get('video') === '1') setVideoOnly(true)
+    const age = sp.get('age')
+    if (age && AGE_DETAIL_OPTIONS.some((o) => o.value === age)) setAgeFilter(age)
+    const g = sp.get('g')
+    if (g === '남' || g === '여') setGenderFilter(g)
+    setUrlReady(true)
+  }, [])
+  /* eslint-enable react-hooks/set-state-in-effect */
+
+  // 필터 상태 → URL 동기화 (replaceState — 히스토리 스택 오염 없음)
+  useEffect(() => {
+    if (!urlReady) return
+    const sp = new URLSearchParams(window.location.search)
+    const sync = (key: string, value: string, isDefault: boolean) => {
+      if (isDefault) sp.delete(key)
+      else sp.set(key, value)
+    }
+    sync('q', query.trim(), !query.trim())
+    sync('video', '1', !videoOnly)
+    sync('age', ageFilter, ageFilter === 'all')
+    sync('g', genderFilter, genderFilter === 'all')
+    const qs = sp.toString()
+    window.history.replaceState(window.history.state, '', qs ? `${window.location.pathname}?${qs}` : window.location.pathname)
+  }, [urlReady, query, videoOnly, ageFilter, genderFilter])
 
   // 현재 목록에 실제 존재하는 연령대만 필터 버튼 표시
   const availableAges = useMemo(() => {
@@ -71,7 +108,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
   }, [actors])
 
   const filtered = useMemo(() => {
-    const raw = query.trim()
+    const raw = deferredQuery.trim()
     let list = actors
     if (raw) {
       // 초성만 입력한 경우 (ㄱㄷㅇ → 권동원): 이름·태그의 초성으로 매칭
@@ -97,7 +134,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
     if (genderFilter !== 'all') list = list.filter((a) => a.gender === genderFilter)
     if (videoOnly) list = list.filter((a) => a.hasVideo)
     return list
-  }, [actors, query, videoOnly, ageFilter, genderFilter])
+  }, [actors, deferredQuery, videoOnly, ageFilter, genderFilter])
 
   return (
     <>
@@ -177,9 +214,9 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
                 style={{
                   padding: '6px 12px', borderRadius: 999, cursor: 'pointer',
                   fontSize: '0.78rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
-                  background: ageFilter === opt.value ? 'rgba(200,168,100,0.15)' : 'var(--bg2)',
-                  color: ageFilter === opt.value ? 'var(--gold)' : 'var(--gray)',
-                  border: `1px solid ${ageFilter === opt.value ? 'rgba(200,168,100,0.4)' : 'var(--border)'}`,
+                  background: ageFilter === opt.value ? 'var(--navy-tint-2)' : 'var(--bg2)',
+                  color: ageFilter === opt.value ? 'var(--navy)' : 'var(--gray)',
+                  border: `1px solid ${ageFilter === opt.value ? 'var(--navy-tint-3)' : 'var(--border)'}`,
                   transition: 'all 0.15s',
                 }}
               >{opt.label}</button>
@@ -225,8 +262,8 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
 
       {/* 결과 수 */}
       <p role="status" aria-live="polite" aria-atomic="true" style={{ fontSize: '0.8rem', color: 'var(--gray)', marginBottom: 20 }}>
-        {query
-          ? `"${query}" — ${filtered.length}명`
+        {deferredQuery
+          ? `"${deferredQuery}" — ${filtered.length}명`
           : `총 ${totalBeforeSearch}명`}
       </p>
 
@@ -237,7 +274,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
         style={filtered.length === 0 ? { textAlign: 'center', padding: '80px 0' } : { display: 'none' }}
       >
         <p style={{ fontSize: '0.95rem', color: 'var(--gray)', marginBottom: 16 }}>
-          {query ? `"${query}" 에 해당하는 배우가 없습니다.` : '등록된 배우가 없습니다.'}
+          {deferredQuery ? `"${deferredQuery}" 에 해당하는 배우가 없습니다.` : '등록된 배우가 없습니다.'}
         </p>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
           {query && (

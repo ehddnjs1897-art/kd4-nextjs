@@ -67,6 +67,20 @@ function isUndefinedColumnError(err: { code?: string; message?: string } | null)
 }
 
 async function fetchActors(gender: string, ageGroup: string, tag: string): Promise<{ actors: Actor[]; dbError: boolean; allTags: string[]; videoActorIds: string[] }> {
+  // 출연영상 보유 배우 id — 배우 목록 쿼리와 독립이므로 병렬 시작 (waterfall 제거)
+  // 테이블/컬럼 없으면 빈 배열 폴백 (페이지 안 깨지게)
+  const videoIdsPromise: Promise<string[]> = (async () => {
+    try {
+      const { data: vids, error: vErr } = await supabaseAdmin.from('actor_videos').select('actor_id')
+      if (vErr || !vids) return []
+      return Array.from(
+        new Set((vids as Array<{ actor_id: string | null }>).map((v) => v.actor_id).filter((x): x is string => !!x))
+      )
+    } catch {
+      return [] // actor_videos 미존재 등 — 필터 비활성
+    }
+  })()
+
   // 새 컬럼(casting_tags/summary) 포함 쿼리 — 마이그레이션 미실행 시 fallback
   const buildQuery = (cols: string) => {
     let q = supabaseAdmin
@@ -142,16 +156,8 @@ async function fetchActors(gender: string, ageGroup: string, tag: string): Promi
     }
   }
 
-  // 출연영상 보유 배우 id (필터용) — 테이블/컬럼 없으면 빈 배열 폴백 (페이지 안 깨지게)
-  let videoActorIds: string[] = []
-  try {
-    const { data: vids, error: vErr } = await supabaseAdmin.from('actor_videos').select('actor_id')
-    if (!vErr && vids) {
-      videoActorIds = Array.from(
-        new Set((vids as Array<{ actor_id: string | null }>).map((v) => v.actor_id).filter((x): x is string => !!x))
-      )
-    }
-  } catch { /* actor_videos 미존재 등 — 필터 비활성 */ }
+  // 병렬 시작해둔 영상 보유 배우 id 회수 (실패 시 빈 배열 — 필터 비활성)
+  const videoActorIds = await videoIdsPromise
 
   return { actors, dbError: false, allTags, videoActorIds }
 }
@@ -332,9 +338,9 @@ export default async function ActorsPage({ searchParams }: PageProps) {
               display: 'inline-flex', alignItems: 'center', gap: 6,
               padding: '8px 16px', borderRadius: 6,
               fontSize: '0.8rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
-              background: 'rgba(200,168,100,0.1)',
-              color: 'var(--gold)',
-              border: '1px solid rgba(200,168,100,0.35)',
+              background: 'var(--navy-tint-1)',
+              color: 'var(--navy)',
+              border: '1px solid var(--navy-tint-3)',
               textDecoration: 'none',
               letterSpacing: '0.02em',
               whiteSpace: 'nowrap',
@@ -352,7 +358,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
               padding: '8px 16px', borderRadius: 6,
               fontSize: '0.8rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
               background: 'var(--bg2)',
-              color: 'rgba(255,255,255,0.7)',
+              color: 'var(--secondary)',
               border: '1px solid var(--border)',
               textDecoration: 'none',
               letterSpacing: '0.02em',
