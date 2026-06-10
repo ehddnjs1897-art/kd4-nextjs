@@ -79,3 +79,89 @@ export async function fetchScheduleFromNotion(): Promise<ScheduleByMonth | null>
     return null
   }
 }
+
+/** 노션 실시간 미납 체크 행 (매출 대시보드 「미납 체크」 카드용) */
+export type NotionUnpaidItem = {
+  name: string
+  ban: string
+  pay: string
+  status: string
+  memo: string
+}
+
+/** Asia/Seoul 기준 현재 월 키 'YYYY-MM' (노션 월 select 값과 동일 형식, 예: '2026-06') */
+function seoulMonthKey(): string {
+  const parts = new Intl.DateTimeFormat('en', {
+    timeZone: 'Asia/Seoul',
+    year: 'numeric',
+    month: '2-digit',
+  }).formatToParts(new Date())
+  const y = parts.find((p) => p.type === 'year')?.value || ''
+  const m = parts.find((p) => p.type === 'month')?.value || ''
+  return `${y}-${m}`
+}
+
+/**
+ * 노션 수강현황 DB에서 현재 월(Asia/Seoul)의 미납 체크 명단을 반환.
+ * - 결제상태가 '미납'·'분납' 이거나 상태가 '휴면'인 행만 추림
+ * - 토큰이 없거나 어떤 에러든 발생하면 null (호출측에서 카드 숨김)
+ */
+export async function fetchUnpaidFromNotion(): Promise<{
+  month: string
+  items: NotionUnpaidItem[]
+} | null> {
+  const token = process.env.NOTION_TOKEN
+  if (!token) return null
+
+  const month = seoulMonthKey()
+
+  try {
+    const pages: NotionPage[] = []
+    let cursor: string | undefined
+    let guard = 0
+
+    do {
+      const body: Record<string, unknown> = {
+        page_size: 100,
+        filter: { property: '월', select: { equals: month } },
+      }
+      if (cursor) body.start_cursor = cursor
+      const res = await fetch(`https://api.notion.com/v1/databases/${SCHEDULE_DB_ID}/query`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Notion-Version': NOTION_VERSION,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+        next: { revalidate: 300 },
+      })
+      if (!res.ok) return null
+      const data = (await res.json()) as {
+        results?: NotionPage[]
+        has_more?: boolean
+        next_cursor?: string
+      }
+      pages.push(...(data.results || []))
+      cursor = data.has_more ? data.next_cursor : undefined
+    } while (cursor && ++guard < 50)
+
+    const items: NotionUnpaidItem[] = []
+    for (const p of pages) {
+      const pr = p.properties || {}
+      const name = plain(pr['이름']?.title)
+      if (!name) continue
+      const pay = pr['결제상태']?.select?.name || ''
+      const status = pr['상태']?.select?.name || ''
+      if (!(pay === '미납' || pay === '분납' || status === '휴면')) continue
+      // 반 표기: '반' select가 있으면 사용, 없으면 기존 스케줄과 동일하게 수업+기수 조합
+      const subject = pr['반']?.select?.name || pr['수업']?.select?.name || ''
+      const cohort = plain(pr['기수']?.rich_text)
+      const ban = cohort ? `${subject} ${cohort}`.trim() : subject
+      items.push({ name, ban, pay, status, memo: plain(pr['메모']?.rich_text) })
+    }
+    return { month, items }
+  } catch {
+    return null
+  }
+}
