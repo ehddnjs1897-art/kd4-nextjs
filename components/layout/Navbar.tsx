@@ -13,7 +13,7 @@ const publicLinks = [
 ]
 
 const crewLinks = [
-  { label: '클래스 신청', href: '/enroll', public: true },
+  { label: '무료 상담 신청', href: '/join', public: true },
   { label: '배우 DB', href: '/actors', public: true },
   { label: '커뮤니티', href: '/board', public: false },
   { label: '대본 분석', href: '/ai-tools', public: false },
@@ -439,7 +439,7 @@ export default function Navbar() {
             )}
 
             <Link
-              href="/enroll"
+              href="/join"
               className="desktop-cta"
               style={{
                 display: 'inline-flex',
@@ -461,7 +461,7 @@ export default function Navbar() {
               onMouseEnter={e => (e.currentTarget.style.background = 'var(--gold-light)')}
               onMouseLeave={e => (e.currentTarget.style.background = 'var(--gold)')}
             >
-              클래스 신청
+              무료 상담 신청
             </Link>
 
             {/* 햄버거 */}
@@ -666,7 +666,7 @@ export default function Navbar() {
                 </Link>
               )}
               <Link
-                href="/enroll"
+                href="/join"
                 onClick={closeMobile}
                 style={{
                   display: 'block',
@@ -682,7 +682,7 @@ export default function Navbar() {
                   textDecoration: 'none',
                 }}
               >
-                클래스 신청하기
+                무료 상담 신청
               </Link>
               <a
                 href="https://pf.kakao.com/_ximxdqn"

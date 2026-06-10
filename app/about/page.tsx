@@ -371,7 +371,7 @@ export default function AboutPage() {
               {[
                 '누적 캐스팅 연계 100건+',
                 '누적 코칭 배우 400명+',
-                '커뮤니티 배우 70명',
+                '현직 배우 멤버들과 함께하는 커뮤니티',
                 '디즈니+ · 넷플릭스 · tvN · MBC · KBS · 상업영화 100여편 출연',
               ].map(item => (
                 <div key={item} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
@@ -605,9 +605,8 @@ export default function AboutPage() {
         </p>
         <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
           <a
-            href="https://forms.gle/68E7yFFFoDiPCRwD9"
-            target="_blank" rel="noopener noreferrer"
-            aria-label="클래스 신청 (새 탭에서 열림)"
+            href="/join"
+            aria-label="무료 상담 신청"
             style={{
               display: 'inline-block',
               padding: '14px 32px',
@@ -620,7 +619,7 @@ export default function AboutPage() {
               letterSpacing: '0.04em',
             }}
           >
-            클래스 신청
+            무료 상담 신청
           </a>
           <Link
             href="/classes"

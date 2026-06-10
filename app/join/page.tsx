@@ -254,7 +254,7 @@ export default function JoinPage() {
               wordBreak: 'keep-all',
             }}
           >
-            현직 배우 100여명이 참여한 인증된 시그니처 클래스
+            현직 배우들이 참여한 인증된 시그니처 클래스
           </p>
 
           {/* 숫자 임팩트 — 첫 화면 후킹 */}
@@ -268,7 +268,7 @@ export default function JoinPage() {
             }}
           >
             {[
-              { num: '100+', label: '현직 배우 수료' },
+              { num: '현직 배우', label: '수료' },
               { num: '3년', label: '캐스팅 연계 운영' },
               { num: '6~8명', label: '소수정예 정원' },
             ].map((s) => (
@@ -431,7 +431,7 @@ export default function JoinPage() {
               {
                 Icon: Film,
                 title: '전문 영화팀 출연영상',
-                desc: '현직 배우 100여 명이 거쳐간 시그니처 클래스. 완성된 출연영상 한 편이 실제 캐스팅으로 연결됩니다.',
+                desc: '현직 배우들이 거쳐간 시그니처 클래스. 완성된 출연영상 한 편이 실제 캐스팅으로 연결됩니다.',
               },
               {
                 Icon: Users,

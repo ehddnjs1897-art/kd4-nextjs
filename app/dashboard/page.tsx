@@ -165,6 +165,8 @@ export default async function DashboardPage() {
         <div style={{ marginBottom: 8 }}>
           <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.68rem', letterSpacing: '0.35em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 8 }}><span lang="en">MY PAGE</span></p>
           <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.6rem, 4vw, 2rem)', fontWeight: 700, color: 'var(--white)' }}>마이페이지</h1>
+          {/* 공개 네비에서 /enroll 제거(무료 상담으로 교체)됨 — 멤버 수강신청은 여기서만 진입 */}
+          <a href="/enroll" style={{ display: 'inline-block', marginTop: 12, padding: '10px 18px', background: 'var(--gold)', color: '#fff', fontFamily: 'var(--font-sans)', fontSize: '0.9rem', fontWeight: 700, borderRadius: 'var(--radius)', textDecoration: 'none' }}>멤버 수강신청 →</a>
         </div>
 
         {/* 내 계정 카드 */}
