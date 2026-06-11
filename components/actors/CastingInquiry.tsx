@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 interface CastingInquiryProps {
   actorId: string
@@ -36,6 +36,32 @@ export default function CastingInquiry({ actorId, actorName, actorAgeGroup, acto
 
   // 허니팟 (봇 차단 — 사람은 채우지 않는 숨김 필드)
   const honeyRef = useRef<HTMLInputElement>(null)
+  const closeBtnRef = useRef<HTMLButtonElement>(null)
+  const triggerBtnRef = useRef<HTMLButtonElement>(null)
+  // done의 최신 값을 ESC 핸들러에서 읽기 위한 ref (stale closure 방지)
+  const doneRef = useRef(done)
+  useEffect(() => { doneRef.current = done }, [done])
+
+  // 포커스 관리: 열릴 때 닫기 버튼에 포커스, 닫힐 때 트리거로 복원 (WCAG 2.4.3)
+  // hasOpenedRef: 초기 마운트 시 else 분기 실행 방지 (페이지 로드 시 포커스 탈취 방지)
+  const hasOpenedRef = useRef(false)
+  useEffect(() => {
+    if (open) {
+      hasOpenedRef.current = true
+      closeBtnRef.current?.focus()
+    } else if (hasOpenedRef.current) {
+      triggerBtnRef.current?.focus()
+    }
+  }, [open])
+
+  // ESC 키로 모달 닫기 — handleClose를 직접 호출하되 done은 doneRef로 읽음
+  useEffect(() => {
+    if (!open) return
+    const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { e.preventDefault(); handleClose() } }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open])
 
   // 필드 에러 상태
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
@@ -119,8 +145,8 @@ export default function CastingInquiry({ actorId, actorName, actorAgeGroup, acto
 
   function handleClose() {
     setOpen(false)
-    // 성공 후 닫을 때만 상태 초기화
-    if (done) {
+    // 성공 후 닫을 때만 상태 초기화 (doneRef로 읽어 stale closure에서도 최신 값 보장)
+    if (doneRef.current) {
       setTimeout(() => {
         setDone(false)
         setReceiptNo('')
@@ -136,6 +162,7 @@ export default function CastingInquiry({ actorId, actorName, actorAgeGroup, acto
       {/* 캐스팅 문의 트리거 버튼 */}
       <div style={{ marginTop: 24 }}>
         <button
+          ref={triggerBtnRef}
           type="button"
           onClick={() => setOpen(true)}
           style={{
@@ -187,6 +214,7 @@ export default function CastingInquiry({ actorId, actorName, actorAgeGroup, acto
           >
             {/* 닫기 버튼 */}
             <button
+              ref={closeBtnRef}
               type="button"
               onClick={handleClose}
               aria-label="문의 창 닫기"

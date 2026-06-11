@@ -12,6 +12,9 @@ import { analytics } from "@/lib/analytics";
 import { STAT_ICONS } from "@/lib/stat-icons";
 import DirectorFilmography from "@/components/director/DirectorFilmography";
 import { CASTING_PHOTOS } from "@/lib/casting-photos"
+import PageJsonLd from '@/components/seo/PageJsonLd'
+import { buildBreadcrumb, buildWebPage } from '@/lib/seo-schemas'
+import { SITE_URL } from '@/lib/constants'
 const HeroScene = dynamic(() => import("@/components/hero/HeroScene"), {
   ssr: false,
   // 로딩 중 또는 WebGL 미지원 환경: 단색 대신 director.jpg 정지 포스터 (스펙 3-9A)
@@ -329,6 +332,10 @@ export default function HomePage() {
 
   return (
     <>
+      <PageJsonLd schemas={[
+        buildBreadcrumb([{ name: '홈', url: SITE_URL }]),
+        buildWebPage({ idPath: '#webpage', url: SITE_URL, name: 'KD4 액팅 스튜디오 | 서울 신촌 마이즈너 테크닉 연기학원', description: '서울 신촌 마이즈너 테크닉 기반 연기학원. 연기 훈련부터 출연영상 포트폴리오 제작, 캐스팅 연계까지. 배우를 성장시키는 KD4 액팅 스튜디오.', about: { '@id': `${SITE_URL}#org` } }),
+      ]} />
       {/* ── 1. HERO (Dennis Snellenberg style) ───────────────────────────────── */}
       <section
         id="hero"

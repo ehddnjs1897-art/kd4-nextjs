@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { buildBreadcrumb, buildWebPage } from '@/lib/seo-schemas'
+import YouTubeFacade from '@/components/youtube/YouTubeFacade'
 
 export const metadata: Metadata = {
   title: '스튜디오 소개',
@@ -247,7 +248,7 @@ export default function AboutPage() {
           ))}
         </div>
 
-        {/* YouTube 임베드 — 자동재생, 음소거, 루프 */}
+        {/* YouTube 영상 — 클릭 시 재생 (YouTubeFacade: 지연 로드) */}
         <div style={{
           marginTop: '48px',
           borderRadius: '4px',
@@ -258,15 +259,11 @@ export default function AboutPage() {
           marginLeft: 'calc(-50vw + 50%)',
           background: '#000',
         }}>
-          <iframe
-            src="https://www.youtube.com/embed/tB7f4VnC6rM?autoplay=0&mute=1&loop=1&playlist=tB7f4VnC6rM&controls=1&rel=0&modestbranding=1"
+          <YouTubeFacade
+            videoId="tB7f4VnC6rM"
             title="KD4 연기하지 않는 연기"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            sandbox="allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox"
-            style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
+            containerStyle={{ paddingBottom: 0, height: '100%' }}
           />
-          <p className="sr-only">자막이 있는 경우 영상 플레이어의 CC 버튼을 이용하세요.</p>
         </div>
       </section>
 

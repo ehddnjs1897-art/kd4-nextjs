@@ -49,6 +49,7 @@ const playButtonStyle: CSSProperties = {
 
 export default function YouTubeFacade({ videoId, title, allow, containerStyle }: Props) {
   const [loaded, setLoaded] = useState(false)
+  const [thumbSrc, setThumbSrc] = useState(`https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`)
   const [thumbError, setThumbError] = useState(false)
   const mergedWrapperStyle = { ...wrapperStyle, ...containerStyle }
 
@@ -72,13 +73,19 @@ export default function YouTubeFacade({ videoId, title, allow, containerStyle }:
     <div style={mergedWrapperStyle}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`}
+        src={thumbSrc}
         alt={title}
         loading="lazy"
-        width={480}
-        height={270}
+        width={thumbSrc.includes('maxresdefault') ? 1280 : 480}
+        height={thumbSrc.includes('maxresdefault') ? 720 : 270}
         style={{ ...fillStyle, objectFit: 'cover', display: thumbError ? 'none' : undefined }}
-        onError={() => setThumbError(true)}
+        onError={() => {
+          if (thumbSrc.includes('maxresdefault')) {
+            setThumbSrc(`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`)
+          } else {
+            setThumbError(true)
+          }
+        }}
       />
       {thumbError && (
         <div style={{ ...fillStyle, background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

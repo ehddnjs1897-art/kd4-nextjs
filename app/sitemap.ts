@@ -12,8 +12,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 정적 페이지 lastModified: 실제 마지막 수정일 상수
   // (NOW 일괄 사용 시 검색엔진에 매일 "변경됨" 거짓 신호 → 신뢰도 하락)
   const staticPages: MetadataRoute.Sitemap = [
-    { url: BASE,                                   lastModified: new Date('2026-06-09'), changeFrequency: 'weekly',  priority: 1.0 },
-    { url: `${BASE}/about`,                        lastModified: new Date('2026-05-30'), changeFrequency: 'monthly', priority: 0.9 },
+    { url: BASE,                                   lastModified: new Date('2026-06-11'), changeFrequency: 'weekly',  priority: 1.0 },
+    { url: `${BASE}/about`,                        lastModified: new Date('2026-06-11'), changeFrequency: 'monthly', priority: 0.9 },
     { url: `${BASE}/classes`,                      lastModified: new Date('2026-06-01'), changeFrequency: 'weekly',  priority: 0.9 },
     { url: `${BASE}/meisner-technique-class`,      lastModified: new Date('2026-05-20'), changeFrequency: 'monthly', priority: 0.85 },
     { url: `${BASE}/reel-production-class`,        lastModified: new Date('2026-05-20'), changeFrequency: 'monthly', priority: 0.85 },
