@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { SITE_URL as BASE } from '@/lib/constants'
+import { CASTING_TAG_OPTIONS } from '@/lib/actor-tags'
 
 // 배우 프로필 ID 캐시 (60초) — 배포마다 새로 생성되므로 짧은 TTL 불필요
 export const revalidate = 86400 // 24시간
@@ -49,8 +50,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // 캐스팅 태그별 필터 페이지 — 형사 배우·의사 배우 등 키워드 검색 유입
-  const CASTING_TAGS = ['회사원','학생','주부','의사','변호사','경찰','형사','악역','코믹','진지','카리스마','순수','엄마','아빠','딸','아들','생활연기','감정연기','액션','로맨스']
-  const tagPages: MetadataRoute.Sitemap = CASTING_TAGS.map((tag) => ({
+  const tagPages: MetadataRoute.Sitemap = [...CASTING_TAG_OPTIONS].map((tag) => ({
     url: `${BASE}/actors?tag=${encodeURIComponent(tag)}`,
     lastModified: NOW,
     changeFrequency: 'weekly' as const,

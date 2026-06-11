@@ -7,11 +7,12 @@ import ActorsSearchGrid from '@/components/actors/ActorsSearchGrid'
 import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { buildBreadcrumb } from '@/lib/seo-schemas'
+import { CASTING_TAG_OPTIONS } from '@/lib/actor-tags'
 
 // 배우 목록 데이터 캐시는 getActorsCached(120s, 'actors' tag)에서 관리
 // 페이지 컴포넌트는 searchParams 사용으로 dynamic rendering — revalidate ISR은 무효
 
-const VALID_TAGS = new Set(['회사원','학생','주부','의사','변호사','경찰','형사','악역','코믹','진지','카리스마','순수','엄마','아빠','딸','아들','생활연기','감정연기','액션','로맨스'])
+const VALID_TAGS = new Set<string>(CASTING_TAG_OPTIONS)
 
 type FilterParams = { gender?: string | string[]; ageGroup?: string | string[]; tag?: string | string[] }
 
