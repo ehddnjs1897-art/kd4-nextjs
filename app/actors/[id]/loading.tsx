@@ -57,16 +57,16 @@ export default function ActorDetailLoading() {
         </div>
 
         {/* 탭 */}
-        <div style={{ maxWidth: 680, margin: '0 auto', display: 'flex', gap: 8, marginBottom: 24 }}>
+        <div style={{ maxWidth: 960, margin: '0 auto', display: 'flex', gap: 8, marginBottom: 24 }}>
           {[64, 64, 64].map((w, i) => (
             <div key={i} style={{ ...pulse, height: 34, width: w, borderRadius: 20 }} />
           ))}
         </div>
 
         {/* 사진 그리드 */}
-        <div style={{ maxWidth: 680, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+        <div style={{ maxWidth: 960, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} style={{ ...pulse, aspectRatio: '3/4', borderRadius: 8 }} />
+            <div key={i} style={{ ...pulse, aspectRatio: '2/3', borderRadius: 8 }} />
           ))}
         </div>
       </div>

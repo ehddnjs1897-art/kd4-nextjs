@@ -13,7 +13,7 @@ import ActorDbLocked from '@/components/actors/ActorDbLocked'
 import { UserRole } from '@/lib/types'
 import { canViewActorContact, canViewActorDb, ACTOR_DB_PUBLIC_PROFILE } from '@/lib/access'
 import { isR2Configured } from '@/lib/r2'
-import { getActorPersonSchema, getActorVideoSchemas, serializeJsonLd } from '@/lib/seo'
+import { getActorPersonSchema, getActorVideoSchemas, serializeJsonLd, normalizeInstagramHandle } from '@/lib/seo'
 import { buildBreadcrumb } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
 
@@ -304,17 +304,7 @@ export async function generateMetadata({
       type: 'profile',
       locale: 'ko_KR',
       // og:profile 추가 속성 — 인스타그램 handle + 성별 (OG 리치 카드 강화)
-      ...((() => {
-        if (!actor.instagram) return {}
-        const handle = actor.instagram
-          .replace(/^@/, '')                              // @handle
-          .replace(/^https?:\/\//i, '')                   // https://instagram.com/...
-          .replace(/^(?:www\.)?instagram\.com\//i, '')    // instagram.com/handle (프로토콜 없는 URL)
-          .replace(/[?#].*/, '')                          // ?igsh=... 쿼리 제거
-          .replace(/\/$/, '')                             // 트레일링 슬래시
-          .replace(/^@/, '')                              // @https:// 패턴 잔여 @
-        return handle ? { username: handle } : {}
-      })()),
+      ...(normalizeInstagramHandle(actor.instagram) ? { username: normalizeInstagramHandle(actor.instagram)! } : {}),
       ...(actor.gender === '남' ? { gender: 'male' } : actor.gender === '여' ? { gender: 'female' } : {}),
       images: [
         {
@@ -666,11 +656,11 @@ export default async function ActorDetailPage({
                     }
                   </p>
                 )}
-                {actor.instagram && (
-                  <a href={actor.instagram.startsWith('http') ? actor.instagram : `https://instagram.com/${actor.instagram.replace('@','')}`} target="_blank" rel="noopener noreferrer"
-                    aria-label={`인스타그램 @${actor.instagram.replace('@', '')} (새 탭에서 열림)`}
+                {normalizeInstagramHandle(actor.instagram) && (
+                  <a href={`https://www.instagram.com/${normalizeInstagramHandle(actor.instagram)}/`} target="_blank" rel="noopener noreferrer"
+                    aria-label={`인스타그램 @${normalizeInstagramHandle(actor.instagram)} (새 탭에서 열림)`}
                     style={{ fontSize: '0.85rem', color: 'var(--gray)', textDecoration: 'none' }}>
-                    @ {actor.instagram.startsWith('@') ? actor.instagram.slice(1) : actor.instagram}
+                    @ {normalizeInstagramHandle(actor.instagram)}
                   </a>
                 )}
               </div>

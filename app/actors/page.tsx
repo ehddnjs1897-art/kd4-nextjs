@@ -231,8 +231,10 @@ export default async function ActorsPage({ searchParams }: PageProps) {
   // 캐시 슬롯 폭발 방지 (PERF-1): 허용 값 이외는 'all'로 정규화 + tag 길이 제한
   const VALID_GENDERS = new Set(['all', '남', '여'])
   const VALID_AGE_GROUPS = new Set(['all', '20대', '30대', '40대', '50대 이상'])
-  const gender = VALID_GENDERS.has(params.gender ?? '') ? (params.gender ?? 'all') : 'all'
-  const ageGroup = VALID_AGE_GROUPS.has(params.ageGroup ?? '') ? (params.ageGroup ?? 'all') : 'all'
+  const rawGender = Array.isArray(params.gender) ? params.gender[0] : (params.gender ?? '')
+  const gender = VALID_GENDERS.has(rawGender) ? rawGender : 'all'
+  const rawAge = Array.isArray(params.ageGroup) ? params.ageGroup[0] : (params.ageGroup ?? '')
+  const ageGroup = VALID_AGE_GROUPS.has(rawAge) ? rawAge : 'all'
   const rawTag = Array.isArray(params.tag) ? params.tag[0] : (params.tag ?? 'all')
   const cleanedTag = rawTag.replace(/[{}\\"]/g, '').slice(0, 200)  // 콤마는 태그 구분자 — 제거 금지
   // 화이트리스트 필터 + 공백 trim + 중복제거 + 가나다순 정렬 → 캐시 슬롯 일관성 + 임의값 차단

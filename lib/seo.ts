@@ -6,6 +6,27 @@
  */
 import { SITE_URL } from './constants'
 
+/**
+ * 인스타그램 핸들 정규화 — 다양한 입력 형식을 정규 핸들로 변환.
+ * @handle / https://www.instagram.com/handle / m.instagram.com/handle / ?igsh= 등 처리.
+ * 유효하지 않은 핸들(경로 포함, 형식 불일치)이면 null 반환.
+ */
+export function normalizeInstagramHandle(raw: string | null | undefined): string | null {
+  if (!raw) return null
+  const cleaned = raw
+    .trim()
+    .replace(/^@/, '')
+    .replace(/^https?:\/\//i, '')
+    .replace(/^(?:www\.|m\.)?instagram\.com\//i, '')
+    .replace(/[?#].*/, '')
+    .replace(/\/$/, '')
+    .replace(/^@/, '')
+    .trim()
+  // 인스타그램 아이디: 영문·숫자·점·밑줄, 1~30자
+  if (!/^[A-Za-z0-9._]{1,30}$/.test(cleaned)) return null
+  return cleaned
+}
+
 interface ActorPersonInput {
   id: string
   name: string
@@ -81,17 +102,8 @@ export function getActorPersonSchema(actor: ActorPersonInput) {
   }
 
   // sameAs — 외부 플랫폼만 (자기 url은 url 필드로 이미 있음 — 자기참조 중복 금지)
-  // Instagram: 다양한 입력 형식(@handle, URL, 프로토콜 없는 URL, ?igsh= 쿼리) → 정규 URL로 통일
-  if (actor.instagram) {
-    const handle = actor.instagram
-      .replace(/^@/, '')
-      .replace(/^https?:\/\//i, '')
-      .replace(/^(?:www\.)?instagram\.com\//i, '')
-      .replace(/[?#].*/, '')
-      .replace(/\/$/, '')
-      .replace(/^@/, '')
-    if (handle) personSchema.sameAs = [`https://www.instagram.com/${handle}/`]
-  }
+  const igHandle = normalizeInstagramHandle(actor.instagram)
+  if (igHandle) personSchema.sameAs = [`https://www.instagram.com/${igHandle}/`]
 
   // 필모그래피 → performerIn (creativeWork)
   if (actor.filmography && actor.filmography.length > 0) {
