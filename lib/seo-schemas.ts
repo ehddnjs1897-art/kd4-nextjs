@@ -216,7 +216,7 @@ export function buildWebPage(opts: {
 }
 
 /** Course — ClassItem을 상세 Course 라벨로 변환 */
-export function buildCourseFromClass(cls: ClassItem, opts: { url: string }) {
+export function buildCourseFromClass(cls: ClassItem, opts: { url: string; image?: string }) {
   const desc = [cls.quote, ...cls.bullets].join(' · ')
   return {
     '@context': 'https://schema.org',
@@ -224,6 +224,7 @@ export function buildCourseFromClass(cls: ClassItem, opts: { url: string }) {
     name: `${cls.nameKo} (${cls.nameEn})`,
     description: desc,
     url: opts.url,
+    ...(opts.image ? { image: opts.image } : {}),
     provider: { '@id': `${SITE_URL}#school` },
     offers: {
       '@type': 'Offer',

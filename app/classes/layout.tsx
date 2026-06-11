@@ -73,7 +73,7 @@ export default function ClassesLayout({ children }: { children: React.ReactNode 
           description: '베이직·마이즈너 정규·출연영상·심화·오디션·움직임·개인 레슨. 마이즈너 테크닉 기반 9개 클래스.',
         }),
         classItemListSchema,
-        ...CLASSES.map((cls) => buildCourseFromClass(cls, { url: PAGE_URL })),
+        ...CLASSES.map((cls) => buildCourseFromClass(cls, { url: PAGE_URL, image: `${SITE_URL}/og-image.jpg` })),
       ]} />
       {children}
     </>
