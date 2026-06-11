@@ -275,7 +275,6 @@ export function buildCourseFromClass(cls: ClassItem, opts: { url: string; image?
     potentialAction: {
       '@type': 'RegisterAction',
       target: `${SITE_URL}/join`,
-      agent: { '@id': `${SITE_URL}#school` },
     },
     courseMode: 'Onsite',
     inLanguage: 'ko',

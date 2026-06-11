@@ -115,6 +115,7 @@ export default function AboutPage() {
         {
           '@context': 'https://schema.org',
           '@type': 'VideoObject',
+          '@id': `${SITE_URL}/about#video-kd4-intro`,
           name: 'KD4 연기하지 않는 연기',
           description: 'KD4 액팅 스튜디오의 마이즈너 테크닉 기반 연기 훈련 소개 영상. 연기하지 않는 연기, 진짜 반응을 훈련하는 KD4의 방식을 담았습니다.',
           thumbnailUrl: 'https://i.ytimg.com/vi/tB7f4VnC6rM/hqdefault.jpg',

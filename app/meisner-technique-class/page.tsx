@@ -99,6 +99,7 @@ export default function MeisnerPage() {
           {
             '@context': 'https://schema.org',
             '@type': 'VideoObject',
+            '@id': `${PAGE_URL}#video-meisner-intro`,
             name: '마이즈너 테크닉 — KD4 액팅 스튜디오',
             description: 'KD4 액팅 스튜디오 마이즈너 테크닉 정규 클래스 소개 영상. 연기하지 않는 연기, 진짜 반응 훈련 방식을 담았습니다.',
             thumbnailUrl: 'https://i.ytimg.com/vi/6crvxRnBerk/hqdefault.jpg',
