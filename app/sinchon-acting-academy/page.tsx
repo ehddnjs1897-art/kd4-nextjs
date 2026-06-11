@@ -6,7 +6,7 @@ import { MapPin, Train, Clock, Navigation, Map as MapIcon } from 'lucide-react'
 import { SINCHON_FAQ } from '@/lib/landing-faqs'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import JoinCTALink from '@/components/join/JoinCTALink'
-import { buildBreadcrumb, buildFaqPage, buildEducationalOrganization, buildWebPage } from '@/lib/seo-schemas'
+import { buildBreadcrumb, buildFaqPage, buildWebPage } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
@@ -56,7 +56,6 @@ export default function SinchonPage() {
     <div style={{ paddingTop: '64px', background: 'var(--bg)', minHeight: '100vh', color: '#111111' }}>
       <PageJsonLd
         schemas={[
-          buildEducationalOrganization(), // 로컬 SEO — "신촌 연기학원" 검색에서 지도팩 노출 강화
           buildBreadcrumb([
             { name: '홈', url: SITE_URL },
             { name: '신촌 연기학원', url: PAGE_URL },

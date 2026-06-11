@@ -17,8 +17,8 @@ import { SITE_URL } from './constants'
 const ADDRESS = {
   '@type': 'PostalAddress',
   streetAddress: '이화여대1안길 12 아리움3차 1층 101호',
-  addressLocality: '서울특별시',
-  addressRegion: '서대문구',
+  addressLocality: '서대문구',
+  addressRegion: '서울특별시',
   postalCode: '03760',
   addressCountry: 'KR',
 } as const
