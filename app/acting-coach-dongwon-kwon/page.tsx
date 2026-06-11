@@ -90,6 +90,7 @@ export default function CoachPage() {
             description: 'KD4 대표. 마이즈너 테크닉 액팅 코치이자 현역 배우. Disney+ 무빙2, Netflix 중증외상센터 출연 중.',
             mainEntity: { '@id': `${SITE_URL}#dongwon` },
             dateModified: '2026-06-11',
+            speakableCssSelectors: ['h1', '.section-desc', '.faq-answer'],
           }),
           buildPersonDongwonDetailed(), // 권동원 Person 정본 (필모·수상·학력 포함)
           buildFaqPage(COACH_FAQ, PAGE_URL),

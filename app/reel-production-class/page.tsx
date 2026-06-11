@@ -104,6 +104,7 @@ export default function ReelPage() {
             name: '출연영상 클래스 — 배우 포트폴리오 제작 | KD4 액팅 스튜디오',
             description: '전문 영화팀과 제작하는 배우 출연영상 포트폴리오 클래스. KD4 액팅 스튜디오.',
             dateModified: '2026-06-11',
+            speakableCssSelectors: ['h1', '.section-desc', '.faq-answer'],
           }),
           buildCourseFromClass(FILM_CLASS, { url: PAGE_URL, image: `${SITE_URL}/og-image.jpg` }),
           buildFaqPage(REEL_FAQ, PAGE_URL),
