@@ -128,6 +128,19 @@ export default function AboutPage() {
             url: SITE_URL,
           },
         },
+        {
+          '@context': 'https://schema.org',
+          '@type': 'HowTo',
+          '@id': `${SITE_URL}/about#howto`,
+          name: 'KD4 액팅 스튜디오로 배우 커리어를 만드는 방법',
+          description: '마이즈너 테크닉 훈련부터 출연영상 포트폴리오 제작, 캐스팅 연계까지 — KD4 배우 액셀러레이팅 3단계 시스템.',
+          step: STEPS.map((s, i) => ({
+            '@type': 'HowToStep',
+            position: i + 1,
+            name: s.title,
+            text: s.desc,
+          })),
+        },
       ]} />
 
       {/* ── HERO ── */}

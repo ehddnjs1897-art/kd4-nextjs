@@ -112,6 +112,19 @@ export default function MeisnerPage() {
               url: SITE_URL,
             },
           },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'HowTo',
+            '@id': `${PAGE_URL}#howto`,
+            name: '마이즈너 테크닉으로 연기하는 방법',
+            description: 'KD4 액팅 스튜디오의 마이즈너 테크닉 3가지 핵심 훈련 방법 — Repetition, Activity & Door, Emotional Preparation.',
+            step: PILLARS.map((p, i) => ({
+              '@type': 'HowToStep',
+              position: i + 1,
+              name: p.title,
+              text: p.desc,
+            })),
+          },
         ]}
       />
 
