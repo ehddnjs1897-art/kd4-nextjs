@@ -174,6 +174,29 @@ export default function Navbar() {
 
   return (
     <>
+      {/* 건너뛰기 링크 — 키보드 사용자가 반복 내비게이션을 건너뛸 수 있도록 (WCAG 2.4.1) */}
+      <a
+        href="#main-content"
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          zIndex: 9999,
+          padding: '8px 16px',
+          background: 'var(--navy)',
+          color: '#fff',
+          fontWeight: 700,
+          fontSize: '0.875rem',
+          textDecoration: 'none',
+          borderRadius: '0 0 6px 0',
+          transform: 'translateY(-100%)',
+          transition: 'transform 0.15s',
+        }}
+        onFocus={(e) => { e.currentTarget.style.transform = 'translateY(0)' }}
+        onBlur={(e) => { e.currentTarget.style.transform = 'translateY(-100%)' }}
+      >
+        본문 바로가기
+      </a>
       <nav
         aria-label="주 내비게이션"
         style={{
