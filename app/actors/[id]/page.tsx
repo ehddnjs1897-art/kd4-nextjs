@@ -307,6 +307,27 @@ export default async function ActorDetailPage({
   const actor = publicActor ?? (user ? await getActorCore(id, true) : null)
   if (!actor) notFound()
 
+  // 비슷한 배우: casting_tags overlap 기준, 현재 배우 제외, 최대 4명
+  let relatedActors: Array<{ id: string; name: string; gender: string | null; age_group: string | null; casting_tags: string[] | null }> = []
+  if (actor.casting_tags && actor.casting_tags.length > 0) {
+    const { data: relData } = await supabaseAdmin
+      .from('actors')
+      .select('id,name,gender,age_group,casting_tags')
+      .eq('is_public', true)
+      .neq('id', actor.id)
+      .overlaps('casting_tags', actor.casting_tags)
+      .limit(20)
+    if (relData) {
+      const tagSet = new Set(actor.casting_tags)
+      const scored = (relData as typeof relatedActors).map((a) => ({
+        ...a,
+        _score: (a.casting_tags ?? []).filter((t) => tagSet.has(t)).length,
+      }))
+      scored.sort((a, b) => b._score - a._score)
+      relatedActors = scored.slice(0, 4).map(({ _score: _, ...rest }) => rest)
+    }
+  }
+
   // (A) 역할/소유권 계산 — 로그인 사용자만 (비로그인은 기본값 사용)
   let role: UserRole = 'user'
   let isOwner = false
@@ -702,6 +723,60 @@ export default async function ActorDetailPage({
       <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 clamp(20px,4vw,32px)', paddingTop: 44 }}>
         <ActorTabs actor={actorForClient} canViewContact={canContact} imageProtected={!canContact} canEdit={isOwner} />
       </div>
+
+      {/* 비슷한 배우 — 같은 캐스팅 타입 배우 탐색 (tag overlap 기준) */}
+      {relatedActors.length > 0 && (
+        <section
+          aria-label="비슷한 배우"
+          style={{ maxWidth: 960, margin: '0 auto', padding: '40px clamp(20px,4vw,32px) 48px' }}
+        >
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.65rem', letterSpacing: '0.2em', color: 'var(--gold)', marginBottom: 20 }}>
+            <span lang="en">SIMILAR ACTORS</span>
+            <span style={{ marginLeft: 10, fontFamily: 'var(--font-body)', letterSpacing: 'normal', textTransform: 'none', color: 'var(--gray)' }}>비슷한 배우</span>
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
+            {relatedActors.map((a) => (
+              <Link
+                key={a.id}
+                href={`/actors/${a.id}`}
+                style={{
+                  display: 'block',
+                  padding: '14px 16px',
+                  background: 'var(--bg2)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 8,
+                  textDecoration: 'none',
+                  transition: 'border-color 0.2s, transform 0.2s',
+                }}
+                className="kd4-card-hover"
+              >
+                <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.95rem', fontWeight: 700, color: 'var(--white)', marginBottom: 4 }}>
+                  {a.name}
+                </p>
+                <p style={{ fontSize: '0.72rem', color: 'var(--gray)', marginBottom: 8 }}>
+                  {[a.gender, a.age_group].filter(Boolean).join(' · ')}
+                </p>
+                {a.casting_tags && a.casting_tags.length > 0 && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                    {a.casting_tags.slice(0, 3).map((t) => (
+                      <span key={t} style={{
+                        fontSize: '0.7rem',
+                        background: 'rgba(21,72,138,0.08)',
+                        border: '1px solid rgba(21,72,138,0.18)',
+                        color: 'var(--gold)',
+                        padding: '2px 8px',
+                        borderRadius: 4,
+                      }}>
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   )
 }
