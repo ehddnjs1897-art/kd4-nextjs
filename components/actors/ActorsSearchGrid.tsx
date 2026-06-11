@@ -25,7 +25,12 @@ function CopyLinkButton({ actorId, actorName }: { actorId: string; actorName: st
     })
   }, [actorId])
   return (
+    <>
+    <span role="status" aria-live="polite" className="sr-only">
+      {state === 'copied' ? `${actorName} 배우 링크가 복사되었습니다` : state === 'error' ? '링크 복사 실패' : ''}
+    </span>
     <button
+      type="button"
       onClick={handleCopy}
       aria-label={`${actorName} 배우 링크 복사`}
       title={state === 'copied' ? '복사됨!' : state === 'error' ? '복사 실패' : '링크 복사'}
@@ -51,6 +56,7 @@ function CopyLinkButton({ actorId, actorName }: { actorId: string; actorName: st
     >
       {state === 'copied' ? '✓ 복사됨' : state === 'error' ? '복사 실패' : '링크'}
     </button>
+    </>
   )
 }
 
