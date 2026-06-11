@@ -243,6 +243,17 @@ export default async function ActorsPage({ searchParams }: PageProps) {
   const { actors, dbError, allTags, videoActorIds } = await getActorsCached(gender, ageGroup, tag)
   const videoIdSet = new Set(videoActorIds)
 
+  // 동적 H1 — 필터 활성 시 "여자 형사 30대 배우 DB", 기본 "배우 DB"
+  const h1Segments: string[] = []
+  if (gender === '남') h1Segments.push('남자')
+  else if (gender === '여') h1Segments.push('여자')
+  if (activeTags.length > 0) h1Segments.push(activeTags.join('·'))
+  if (ageGroup !== 'all') h1Segments.push(ageGroup)
+  const dynamicH1 = h1Segments.length > 0 ? `${h1Segments.join(' ')} 배우 DB` : '배우 DB'
+  const dynamicSubtitle = h1Segments.length > 0
+    ? `KD4 액팅 스튜디오의 ${h1Segments.join(' ')} 배우들을 만나보세요.`
+    : 'KD4 액팅 스튜디오 배우들을 만나보세요.'
+
   function filterHref(key: string, value: string) {
     const next = new URLSearchParams()
     const g = key === 'gender' ? value : gender
@@ -310,11 +321,20 @@ export default async function ActorsPage({ searchParams }: PageProps) {
         }
       `}</style>
       <div className="container">
+        {/* 브레드크럼 */}
+        <nav aria-label="위치" style={{ marginBottom: 20 }}>
+          <ol style={{ display: 'flex', alignItems: 'center', gap: 6, listStyle: 'none', margin: 0, padding: 0 }}>
+            <li><Link href="/" style={styles.breadcrumb}>홈</Link></li>
+            <li aria-hidden="true" style={styles.breadcrumbSep}>›</li>
+            <li aria-current="page"><span style={styles.breadcrumbActive}>배우 DB</span></li>
+          </ol>
+        </nav>
+
         {/* 페이지 헤더 */}
         <div style={styles.header}>
           <p style={styles.eyebrow}><span lang="en">ACTOR ROSTER</span></p>
-          <h1 style={styles.pageTitle}>배우 DB</h1>
-          <p style={styles.subtitle}>KD4 액팅 스튜디오 배우들을 만나보세요.</p>
+          <h1 style={styles.pageTitle}>{dynamicH1}</h1>
+          <p style={styles.subtitle}>{dynamicSubtitle}</p>
         </div>
 
         {/* 필터바 */}
@@ -599,5 +619,18 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '0.85rem',
     textDecoration: 'none',
     minHeight: 44,
+  },
+  breadcrumb: {
+    fontSize: '0.78rem',
+    color: 'var(--gray)',
+    textDecoration: 'none',
+  },
+  breadcrumbSep: {
+    fontSize: '0.78rem',
+    color: 'var(--border)',
+  },
+  breadcrumbActive: {
+    fontSize: '0.78rem',
+    color: 'var(--secondary)',
   },
 }

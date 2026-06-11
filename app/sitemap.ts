@@ -57,5 +57,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.65,
   }))
 
-  return [...staticPages, ...actorPages, ...tagPages]
+  // 성별·연령대 필터 페이지 — "남자 배우 DB", "30대 배우 DB" 등 키워드 유입
+  const genderPages: MetadataRoute.Sitemap = [
+    { url: `${BASE}/actors?gender=%EB%82%A8`, lastModified: NOW, changeFrequency: 'weekly' as const, priority: 0.68 }, // 남
+    { url: `${BASE}/actors?gender=%EC%97%AC`, lastModified: NOW, changeFrequency: 'weekly' as const, priority: 0.68 }, // 여
+  ]
+  const AGE_GROUPS = ['20대', '30대', '40대', '50대 이상']
+  const agePages: MetadataRoute.Sitemap = AGE_GROUPS.map((ag) => ({
+    url: `${BASE}/actors?ageGroup=${encodeURIComponent(ag)}`,
+    lastModified: NOW,
+    changeFrequency: 'weekly' as const,
+    priority: 0.63,
+  }))
+
+  return [...staticPages, ...actorPages, ...tagPages, ...genderPages, ...agePages]
 }

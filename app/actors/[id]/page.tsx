@@ -489,7 +489,17 @@ export default async function ActorDetailPage({
 
       {/* 배우 프로필 헤더 */}
       <div style={{ paddingTop: 80 }}>
-        <div style={{ maxWidth: 960, margin: '0 auto', padding: '48px clamp(20px,4vw,32px) 40px' }}>
+        <div style={{ maxWidth: 960, margin: '0 auto', padding: '32px clamp(20px,4vw,32px) 40px' }}>
+          {/* 시각적 브레드크럼 */}
+          <nav aria-label="위치" style={{ marginBottom: 24 }}>
+            <ol style={{ display: 'flex', alignItems: 'center', gap: 6, listStyle: 'none', margin: 0, padding: 0, flexWrap: 'wrap' }}>
+              <li><Link href="/" style={{ color: 'var(--gray)', fontSize: '0.78rem', textDecoration: 'none' }}>홈</Link></li>
+              <li aria-hidden="true" style={{ color: 'var(--border)', fontSize: '0.78rem' }}>›</li>
+              <li><Link href="/actors" style={{ color: 'var(--gray)', fontSize: '0.78rem', textDecoration: 'none' }}>배우 DB</Link></li>
+              <li aria-hidden="true" style={{ color: 'var(--border)', fontSize: '0.78rem' }}>›</li>
+              <li aria-current="page"><span style={{ color: 'var(--secondary)', fontSize: '0.78rem' }}>{actor.name}</span></li>
+            </ol>
+          </nav>
           <div className="actor-profile-wrap">
 
             {/* 상단: 프로필/이력서 이미지 — 가로형 전체 표시 (자르지 않음) */}
