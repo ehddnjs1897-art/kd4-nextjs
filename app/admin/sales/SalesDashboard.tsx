@@ -18,6 +18,12 @@ export type UnpaidRow = {
   status: string
 }
 
+/** 노션 수강현황 DB 실시간 미납 체크 데이터 (lib/notion/schedule.fetchUnpaidFromNotion 결과와 동일 구조) */
+export type NotionUnpaidData = {
+  month: string
+  items: { name: string; ban: string; pay: string; status: string; memo: string }[]
+}
+
 const ICON: Record<string, string> = {
   '출연영상 18기': '🎬',
   '출연영상 19기': '🎬',
@@ -44,11 +50,13 @@ export default function SalesDashboard({
   revenue,
   schedule,
   unpaid,
+  notionUnpaid,
 }: {
   monthKeys: string[]
   revenue: MonthRevenue[]
   schedule: ScheduleMap
   unpaid: UnpaidRow[]
+  notionUnpaid?: NotionUnpaidData | null
 }) {
   const revByKey = useMemo(() => {
     const m: Record<string, MonthRevenue> = {}
@@ -92,6 +100,17 @@ export default function SalesDashboard({
   const schOrder = Object.entries(sch).sort((a, b) => b[1].length - a[1].length)
 
   const unpaidTotal = unpaid.reduce((a, b) => a + b.amount, 0)
+
+  // 노션 실시간 미납 체크 — 반별 그룹핑 (인원 많은 순)
+  const notionGroups = useMemo(() => {
+    const g: Record<string, NotionUnpaidData['items']> = {}
+    for (const it of notionUnpaid?.items ?? []) {
+      const k = it.ban || '반 미지정'
+      g[k] = g[k] || []
+      g[k].push(it)
+    }
+    return Object.entries(g).sort((a, b) => b[1].length - a[1].length)
+  }, [notionUnpaid])
 
   return (
     <div className="sales-dash">
@@ -329,6 +348,26 @@ export default function SalesDashboard({
         .urow:last-child {
           border-bottom: none;
         }
+        .nbadge {
+          display: inline-block;
+          font-size: 10px;
+          font-weight: 700;
+          line-height: 1;
+          padding: 3px 7px;
+          border-radius: 10px;
+          margin-left: 5px;
+          vertical-align: 1px;
+        }
+        .nbadge.gray {
+          background: var(--bg2);
+          color: var(--sub);
+          border: 1px solid var(--line2);
+        }
+        .nbadge.yellow {
+          background: rgba(184, 134, 11, 0.12);
+          color: var(--amber);
+          border: 1px solid rgba(184, 134, 11, 0.45);
+        }
         .btn {
           background: var(--navy);
           color: #fff;
@@ -467,8 +506,41 @@ export default function SalesDashboard({
       </div>
 
       <div className="sect"><span aria-hidden="true">💳</span> 결제 관리</div>
+
+      {notionUnpaid && notionUnpaid.items.length > 0 && (
+        <div className="unpaid-box" style={{ marginBottom: 14 }}>
+          <h3>
+            <span aria-hidden="true">📋</span> 미납 체크 — 노션 실시간 ({notionUnpaid.month}) · 총{' '}
+            {notionUnpaid.items.length}건
+          </h3>
+          <div className="cls" style={{ marginTop: 10 }}>
+            {notionGroups.map(([ban, items]) => (
+              <div className="clsrow" key={ban}>
+                <div className="clshd">
+                  <span className="clsname">{ban}</span>
+                  <span className="clscnt">{items.length}명</span>
+                </div>
+                <div className="clsmem">
+                  {items.map((it, i) => (
+                    <span key={`${it.name}-${i}`}>
+                      {i > 0 && ' · '}
+                      <b>{it.name}</b>
+                      {it.pay === '분납' && <span className="nbadge yellow">분납</span>}
+                      {it.status === '휴면' && <span className="nbadge gray">휴면</span>}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="note">
+            * 노션 수강현황 DB 실시간 연동 — 결제상태 미납·분납 + 휴면 멤버 자동 추출.
+          </div>
+        </div>
+      )}
+
       <div className="unpaid-box">
-        <h3><span aria-hidden="true">⚠️</span> 미납 현황</h3>
+        <h3><span aria-hidden="true">⚠️</span> 결제대기 (시스템 입력분)</h3>
         {unpaid.length === 0 ? (
           <div className="note" style={{ marginTop: 0 }}>
             현재 미납 건이 없습니다.

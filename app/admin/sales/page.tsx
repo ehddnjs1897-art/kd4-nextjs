@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
-import { fetchScheduleFromNotion } from '@/lib/notion/schedule'
+import { fetchScheduleFromNotion, fetchUnpaidFromNotion } from '@/lib/notion/schedule'
 import scheduleByMonth from '@/data/schedule-by-month.json'
 import SalesDashboard, {
   type MonthRevenue,
@@ -109,7 +109,11 @@ export default async function AdminSalesPage() {
   }))
 
   // 수강현황 (월별 기수별 명단) — 노션 토큰 있으면 실시간, 없으면 정적 JSON fallback
-  const liveSchedule = await fetchScheduleFromNotion()
+  // + 노션 실시간 미납 체크 명단 (토큰 없거나 실패 시 null → 카드 숨김)
+  const [liveSchedule, notionUnpaid] = await Promise.all([
+    fetchScheduleFromNotion(),
+    fetchUnpaidFromNotion(),
+  ])
   // 노션 실시간이 비어있으면(토큰 없음/0건) 정적 JSON으로 폴백
   const rawSchedule: Record<string, unknown> =
     liveSchedule && Object.keys(liveSchedule).length > 0
@@ -129,6 +133,7 @@ export default async function AdminSalesPage() {
       revenue={revenue}
       schedule={schedule}
       unpaid={unpaid}
+      notionUnpaid={notionUnpaid}
     />
   )
 }
