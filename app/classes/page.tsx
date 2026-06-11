@@ -509,6 +509,9 @@ export default function ClassesPage() {
           <Link href="/about" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
             KD4 소개 <span aria-hidden="true">→</span>
           </Link>
+          <Link href="/benefits" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
+            멤버 혜택 <span aria-hidden="true">→</span>
+          </Link>
         </div>
       </nav>
     </div>
