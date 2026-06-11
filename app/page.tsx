@@ -1157,8 +1157,10 @@ export default function HomePage() {
           </div>
 
           {/* 내부 교차 링크 — SEO: Googlebot 1-hop 연결 */}
-          <nav aria-label="강사 및 위치 안내" style={{ marginTop: 28, textAlign: "center", borderTop: "1px solid var(--border)", paddingTop: 20 }}>
+          <nav aria-label="주요 클래스 및 정보" style={{ marginTop: 28, textAlign: "center", borderTop: "1px solid var(--border)", paddingTop: 20 }}>
             <div style={{ display: "flex", gap: 24, justifyContent: "center", flexWrap: "wrap" }}>
+              <Link href="/meisner-technique-class" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>마이즈너 테크닉 클래스 <span aria-hidden="true">→</span></Link>
+              <Link href="/reel-production-class" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>출연영상 클래스 <span aria-hidden="true">→</span></Link>
               <Link href="/acting-coach-dongwon-kwon" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>권동원 액팅코치 <span aria-hidden="true">→</span></Link>
               <Link href="/sinchon-acting-academy" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>신촌 연기학원 오시는 길 <span aria-hidden="true">→</span></Link>
             </div>
