@@ -6,7 +6,7 @@ import { MapPin, Train, Clock, Navigation, Map as MapIcon } from 'lucide-react'
 import { SINCHON_FAQ } from '@/lib/landing-faqs'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import JoinCTALink from '@/components/join/JoinCTALink'
-import { buildBreadcrumb, buildFaqPage, buildEducationalOrganization } from '@/lib/seo-schemas'
+import { buildBreadcrumb, buildFaqPage, buildEducationalOrganization, buildWebPage } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
@@ -61,6 +61,13 @@ export default function SinchonPage() {
             { name: '홈', url: SITE_URL },
             { name: '신촌 연기학원', url: PAGE_URL },
           ]),
+          buildWebPage({
+            idPath: '/sinchon-acting-academy#webpage',
+            url: PAGE_URL,
+            name: '신촌 연기학원 — KD4 액팅 스튜디오',
+            description: '이대역 도보 3분. 마이즈너 테크닉 정규반·출연영상·오디션 클래스. 소수정예 연기 훈련.',
+            about: { '@id': `${SITE_URL}#school` },
+          }),
           buildFaqPage(SINCHON_FAQ),
         ]}
       />

@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
-import { buildBreadcrumb } from '@/lib/seo-schemas'
+import { buildBreadcrumb, buildWebPage } from '@/lib/seo-schemas'
 
 export const metadata: Metadata = {
   title: '스튜디오 소개',
@@ -101,14 +101,14 @@ export default function AboutPage() {
           { name: '홈', url: SITE_URL },
           { name: '스튜디오 소개', url: `${SITE_URL}/about` },
         ]),
-        {
-          '@context': 'https://schema.org',
-          '@type': 'AboutPage',
-          '@id': `${SITE_URL}/about#webpage`,
-          name: '스튜디오 소개 — KD4 액팅 스튜디오',
+        buildWebPage({
+          type: 'AboutPage',
+          idPath: '/about#webpage',
           url: `${SITE_URL}/about`,
+          name: '스튜디오 소개 — KD4 액팅 스튜디오',
+          description: '마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 현장에서 통하는 배우를 키웁니다.',
           about: { '@id': `${SITE_URL}#org` },
-        },
+        }),
       ]} />
 
       {/* ── HERO ── */}

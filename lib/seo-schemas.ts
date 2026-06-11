@@ -187,6 +187,34 @@ export function buildFaqPage(items: { q: string; a: string }[]) {
   }
 }
 
+/** WebPage — inLanguage + isPartOf 포함 표준 웹페이지 스키마 빌더 */
+export function buildWebPage(opts: {
+  type?: 'WebPage' | 'AboutPage' | 'CollectionPage' | 'ItemPage' | 'ProfilePage'
+  /** 전체 @id (fragments 포함), 예: '/about#webpage' */
+  idPath: string
+  url: string
+  name: string
+  description?: string
+  /** AboutPage용 subject entity */
+  about?: { '@id': string }
+  /** ProfilePage용 mainEntity */
+  mainEntity?: { '@id': string }
+}) {
+  const schema: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': opts.type ?? 'WebPage',
+    '@id': `${SITE_URL}${opts.idPath}`,
+    url: opts.url,
+    name: opts.name,
+    inLanguage: 'ko',
+    isPartOf: { '@id': `${SITE_URL}#website` },
+  }
+  if (opts.description) schema.description = opts.description
+  if (opts.about) schema.about = opts.about
+  if (opts.mainEntity) schema.mainEntity = opts.mainEntity
+  return schema
+}
+
 /** Course — ClassItem을 상세 Course 라벨로 변환 */
 export function buildCourseFromClass(cls: ClassItem, opts: { url: string }) {
   const desc = [cls.quote, ...cls.bullets].join(' · ')

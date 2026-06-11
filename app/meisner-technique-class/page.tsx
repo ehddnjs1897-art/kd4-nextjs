@@ -7,7 +7,7 @@ import { CLASSES, DIRECTOR } from '@/lib/classes'
 import { MEISNER_FAQ } from '@/lib/landing-faqs'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import JoinCTALink from '@/components/join/JoinCTALink'
-import { buildBreadcrumb, buildFaqPage, buildCourseFromClass } from '@/lib/seo-schemas'
+import { buildBreadcrumb, buildFaqPage, buildCourseFromClass, buildWebPage } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
@@ -86,6 +86,12 @@ export default function MeisnerPage() {
             { name: '클래스', url: `${SITE_URL}/classes` },
             { name: '마이즈너 테크닉 정규 클래스', url: PAGE_URL },
           ]),
+          buildWebPage({
+            idPath: '/meisner-technique-class#webpage',
+            url: PAGE_URL,
+            name: '마이즈너 테크닉 정규 클래스 — KD4 액팅 스튜디오',
+            description: '마이즈너 테크닉으로 훈련하는 소수정예 연기 클래스. 권동원 대표 직강.',
+          }),
           buildCourseFromClass(MAIN_CLASS, { url: PAGE_URL }),
           buildFaqPage(MEISNER_FAQ),
         ]}

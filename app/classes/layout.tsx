@@ -5,7 +5,7 @@
 import type { Metadata } from 'next'
 import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
-import { buildBreadcrumb, buildCourseFromClass } from '@/lib/seo-schemas'
+import { buildBreadcrumb, buildCourseFromClass, buildWebPage } from '@/lib/seo-schemas'
 import { CLASSES } from '@/lib/classes'
 
 const PAGE_URL = `${SITE_URL}/classes`
@@ -65,6 +65,13 @@ export default function ClassesLayout({ children }: { children: React.ReactNode 
           { name: '홈', url: SITE_URL },
           { name: '연기 클래스', url: PAGE_URL },
         ]),
+        buildWebPage({
+          type: 'CollectionPage',
+          idPath: '/classes#webpage',
+          url: PAGE_URL,
+          name: '연기 클래스 전체 보기 — KD4 액팅 스튜디오',
+          description: '베이직·마이즈너 정규·출연영상·심화·오디션·움직임·개인 레슨. 마이즈너 테크닉 기반 9개 클래스.',
+        }),
         classItemListSchema,
         ...CLASSES.map((cls) => buildCourseFromClass(cls, { url: PAGE_URL })),
       ]} />

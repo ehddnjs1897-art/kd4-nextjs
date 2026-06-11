@@ -6,7 +6,7 @@ import { CLASSES } from '@/lib/classes'
 import { REEL_FAQ } from '@/lib/landing-faqs'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import JoinCTALink from '@/components/join/JoinCTALink'
-import { buildBreadcrumb, buildFaqPage, buildCourseFromClass } from '@/lib/seo-schemas'
+import { buildBreadcrumb, buildFaqPage, buildCourseFromClass, buildWebPage } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
@@ -98,6 +98,12 @@ export default function ReelPage() {
             { name: '클래스', url: `${SITE_URL}/classes` },
             { name: '출연영상 클래스', url: PAGE_URL },
           ]),
+          buildWebPage({
+            idPath: '/reel-production-class#webpage',
+            url: PAGE_URL,
+            name: '출연영상 클래스 — 배우 포트폴리오 제작 | KD4 액팅 스튜디오',
+            description: '전문 영화팀과 제작하는 배우 출연영상 포트폴리오 클래스. KD4 액팅 스튜디오.',
+          }),
           buildCourseFromClass(FILM_CLASS, { url: PAGE_URL }),
           buildFaqPage(REEL_FAQ),
         ]}

@@ -6,7 +6,7 @@ import { CLASSES, DIRECTOR } from '@/lib/classes'
 import { COACH_FAQ } from '@/lib/landing-faqs'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import JoinCTALink from '@/components/join/JoinCTALink'
-import { buildBreadcrumb, buildFaqPage, buildPersonDongwonDetailed } from '@/lib/seo-schemas'
+import { buildBreadcrumb, buildFaqPage, buildPersonDongwonDetailed, buildWebPage } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
@@ -82,6 +82,14 @@ export default function CoachPage() {
             { name: '홈', url: SITE_URL },
             { name: '액팅 코치', url: PAGE_URL },
           ]),
+          buildWebPage({
+            type: 'ProfilePage',
+            idPath: '/acting-coach-dongwon-kwon#webpage',
+            url: PAGE_URL,
+            name: '권동원 — 액팅 코치 (리더) · 현역 배우 | KD4 액팅 스튜디오',
+            description: 'KD4 대표. 마이즈너 테크닉 액팅 코치이자 현역 배우. Disney+ 무빙2, Netflix 중증외상센터 출연 중.',
+            mainEntity: { '@id': `${SITE_URL}#dongwon` },
+          }),
           buildPersonDongwonDetailed(), // 권동원 Person 정본 (필모·수상·학력 포함)
           buildFaqPage(COACH_FAQ),
         ]}
