@@ -19,7 +19,7 @@ import { STAT_ICONS } from '@/lib/stat-icons'
 import DirectorFilmography from '@/components/director/DirectorFilmography'
 import { FAQ_ITEMS } from '@/lib/faq-items'
 import PageJsonLd from '@/components/seo/PageJsonLd'
-import { buildBreadcrumb } from '@/lib/seo-schemas'
+import { buildBreadcrumb, buildFaqPage, buildWebPage } from '@/lib/seo-schemas'
 import StickyTopBar from '@/components/join/StickyTopBar'
 import JoinCTALink from '@/components/join/JoinCTALink'
 import { SITE_URL } from '@/lib/constants'
@@ -169,13 +169,20 @@ export default function JoinPage() {
           paddingBottom: '90px',
         }}
       >
-      {/* Organization + FAQPage는 글로벌 JsonLd(layout.tsx)에서 이미 출력.
-          @id 참조 그래프로 연결 유지. 페이지 고유 브레드크럼만 추가. */}
       <PageJsonLd schemas={[
         buildBreadcrumb([
           { name: '홈', url: SITE_URL },
           { name: '무료 상담 신청', url: `${SITE_URL}/join` },
         ]),
+        buildWebPage({
+          type: 'WebPage',
+          idPath: '/join#webpage',
+          url: `${SITE_URL}/join`,
+          name: '무료 상담 신청 — KD4 액팅 스튜디오',
+          description: '마이즈너 테크닉 연기 훈련 무료 상담 신청. KD4 액팅 스튜디오 클래스 안내 및 Q&A.',
+          dateModified: '2026-06-11',
+        }),
+        buildFaqPage(FAQ_ITEMS),
       ]} />
 
       <StickyTopBar cohorts={OPEN_COHORTS} />

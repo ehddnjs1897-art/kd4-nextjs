@@ -14,14 +14,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
     { url: BASE,                                   lastModified: new Date('2026-06-11'), changeFrequency: 'weekly',  priority: 1.0 },
     { url: `${BASE}/about`,                        lastModified: new Date('2026-06-11'), changeFrequency: 'monthly', priority: 0.9 },
-    { url: `${BASE}/classes`,                      lastModified: new Date('2026-06-01'), changeFrequency: 'weekly',  priority: 0.9 },
+    { url: `${BASE}/classes`,                      lastModified: new Date('2026-06-11'), changeFrequency: 'weekly',  priority: 0.9 },
     { url: `${BASE}/meisner-technique-class`,      lastModified: new Date('2026-06-11'), changeFrequency: 'monthly', priority: 0.85 },
     { url: `${BASE}/reel-production-class`,        lastModified: new Date('2026-06-11'), changeFrequency: 'monthly', priority: 0.85 },
     { url: `${BASE}/sinchon-acting-academy`,       lastModified: new Date('2026-06-11'), changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/acting-coach-dongwon-kwon`,    lastModified: new Date('2026-06-11'), changeFrequency: 'monthly', priority: 0.75 },
     { url: `${BASE}/actors`,                       lastModified: NOW,                   changeFrequency: 'weekly',  priority: 0.8 },
     { url: `${BASE}/benefits`,                     lastModified: new Date('2026-06-11'), changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${BASE}/benefits/seowoo-studio`,       lastModified: new Date('2026-05-20'), changeFrequency: 'monthly', priority: 0.65 },
+    { url: `${BASE}/benefits/seowoo-studio`,       lastModified: new Date('2026-06-11'), changeFrequency: 'monthly', priority: 0.65 },
     { url: `${BASE}/board`,                        lastModified: NOW,                   changeFrequency: 'daily',   priority: 0.6 },
     // /benefits/replay 는 robots:noindex + robots.txt Disallow → 사이트맵 제외
   ]

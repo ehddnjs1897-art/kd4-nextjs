@@ -666,6 +666,12 @@ export default function AboutPage() {
             <Link href="/sinchon-acting-academy" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
               신촌 연기학원 오시는 길 <span aria-hidden="true">→</span>
             </Link>
+            <Link href="/classes" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
+              클래스 안내 <span aria-hidden="true">→</span>
+            </Link>
+            <Link href="/benefits" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
+              멤버 혜택 <span aria-hidden="true">→</span>
+            </Link>
           </div>
         </nav>
       </section>
