@@ -202,7 +202,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
   const ageGroup = VALID_AGE_GROUPS.has(params.ageGroup ?? '') ? (params.ageGroup ?? 'all') : 'all'
   const rawTag = Array.isArray(params.tag) ? params.tag[0] : (params.tag ?? 'all')
   // 콤마 구분 다중 태그 지원: PostgREST 메타문자 제거 + 200자 상한 + 최대 3개
-  const cleanedTag = rawTag.replace(/[{},\\"]/g, '').slice(0, 200)
+  const cleanedTag = rawTag.replace(/[{}\\"]/g, '').slice(0, 200)  // 콤마는 태그 구분자 — 제거 금지
   const tag = cleanedTag  // 캐시 키용 — 하위 호환 유지 ('all' 또는 'tag1,tag2' 형태)
   // activeTags: 실제로 활성화된 태그 목록 (UI 렌더·쿼리 공용)
   const activeTags: string[] = tag === 'all' || !tag
