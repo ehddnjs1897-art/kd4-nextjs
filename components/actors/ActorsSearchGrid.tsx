@@ -5,30 +5,41 @@ import Link from 'next/link'
 import ActorCardImage from './ActorCardImage'
 
 function CopyLinkButton({ actorId, actorName }: { actorId: string; actorName: string }) {
-  const [copied, setCopied] = useState(false)
+  const [state, setState] = useState<'idle' | 'copied' | 'error'>('idle')
   const handleCopy = useCallback((e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
     const url = `${window.location.origin}/actors/${actorId}`
+    if (!navigator.clipboard?.writeText) {
+      // 카카오톡 인앱 브라우저 등 clipboard API 미지원 환경
+      setState('error')
+      setTimeout(() => setState('idle'), 1500)
+      return
+    }
     navigator.clipboard.writeText(url).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
-    }).catch(() => {})
+      setState('copied')
+      setTimeout(() => setState('idle'), 1500)
+    }).catch(() => {
+      setState('error')
+      setTimeout(() => setState('idle'), 1500)
+    })
   }, [actorId])
   return (
     <button
       onClick={handleCopy}
       aria-label={`${actorName} 배우 링크 복사`}
-      title={copied ? '복사됨!' : '링크 복사'}
+      title={state === 'copied' ? '복사됨!' : state === 'error' ? '복사 실패' : '링크 복사'}
       style={{
         position: 'absolute',
-        bottom: 7, right: 7,
+        bottom: 0, right: 0,
         zIndex: 2,
-        background: copied ? 'var(--gold)' : 'rgba(15,15,15,0.55)',
+        minWidth: 44, minHeight: 44,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: state === 'copied' ? 'var(--gold)' : state === 'error' ? 'rgba(180,40,40,0.7)' : 'rgba(0,0,0,0.5)',
         color: '#fff',
         border: 'none',
-        borderRadius: 4,
-        padding: '3px 7px',
+        borderRadius: '0 0 8px 0',
+        padding: '0 8px',
         fontSize: '0.68rem',
         cursor: 'pointer',
         lineHeight: 1.4,
@@ -38,7 +49,7 @@ function CopyLinkButton({ actorId, actorName }: { actorId: string; actorName: st
         userSelect: 'none',
       }}
     >
-      {copied ? '✓ 복사됨' : '링크'}
+      {state === 'copied' ? '✓ 복사됨' : state === 'error' ? '복사 실패' : '링크'}
     </button>
   )
 }
@@ -94,10 +105,10 @@ const CHOSEONG_ONLY = /^[ㄱ-ㅎ\s]+$/
 const SYNONYM_MAP: Record<string, string[]> = {
   '경찰': ['형사'], '수사관': ['형사'], '탐정': ['형사'],
   '검사': ['변호사'], '판사': ['변호사'], '법조인': ['변호사'],
-  '의원': ['의사'], '간호사': ['의사'], '환자': ['의사'],
+  '간호사': ['의사'],
   '직장인': ['회사원'], '사원': ['회사원'], '직원': ['회사원'], '팀장': ['회사원'], '회계사': ['회사원'],
   '여고생': ['학생'], '여학생': ['학생'], '남학생': ['학생'], '고등학생': ['학생'], '중학생': ['학생'],
-  '주인공엄마': ['엄마'], '선생님': ['엄마', '회사원'],
+  '주인공엄마': ['엄마'], '선생님': ['회사원'],
   '어머니': ['엄마'], '모친': ['엄마'],
   '아버지': ['아빠'], '부친': ['아빠'],
   '클라이밍': ['액션'], '격투': ['액션'], '무술': ['액션'],

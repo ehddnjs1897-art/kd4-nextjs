@@ -753,6 +753,7 @@ export default async function ActorDetailPage({
               <Link
                 key={a.id}
                 href={`/actors/${a.id}`}
+                aria-label={[a.name, a.gender, a.age_group, '배우 프로필 보기'].filter(Boolean).join(' · ')}
                 style={{
                   display: 'block',
                   padding: '14px 16px',
