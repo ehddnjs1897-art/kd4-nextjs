@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
     // 레이트 리밋 + 사진 총량 제한 — 두 COUNT를 병렬 조회 (순차 2 round-trip → 1)
     const MAX_PHOTOS_PER_ACTOR = 200
     const fiveMinAgo = new Date(Date.now() - 5 * 60_000).toISOString()
-    const [{ count: recentUploads }, { count: photoCount }, { data: maxSortRow }] = await Promise.all([
+    const [{ count: recentUploads }, { count: photoCount }, { data: maxSortRow }, { data: actorRow }] = await Promise.all([
       supabaseAdmin
         .from('actor_photos')
         .select('id', { count: 'exact', head: true })
@@ -117,6 +117,12 @@ export async function POST(request: NextRequest) {
         .eq('actor_id', actorId)
         .order('sort_order', { ascending: false })
         .limit(1)
+        .maybeSingle(),
+      // 대표사진 유무 — 비어있으면 새 업로드를 자동 대표 승격 (아래)
+      supabaseAdmin
+        .from('actors')
+        .select('profile_photo')
+        .eq('id', actorId)
         .maybeSingle(),
     ])
     if ((recentUploads ?? 0) >= 20) {
@@ -200,9 +206,26 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'DB 삽입 실패' }, { status: 500 })
     }
 
+    // ── 메인사진 자동 승격 (2026-06-12 대표 지시) ──
+    // actors.profile_photo가 비어있으면(목록 카드·상세 헤더가 PII 포함 이력서 이미지에 의존 중)
+    // 이번 업로드를 자동 대표 지정 → 가입 후 사진만 올리면 첫 화면 사진이 즉시 교체된다.
+    // 이미 대표사진이 있으면 건드리지 않음 (배우가 '대표 지정' 버튼으로 직접 변경).
+    let isProfile = false
+    if (!actorRow?.profile_photo?.trim()) {
+      const [{ error: promoteErr }, { error: photoFlagErr }] = await Promise.all([
+        supabaseAdmin.from('actors').update({ profile_photo: result.url }).eq('id', actorId),
+        supabaseAdmin.from('actor_photos').update({ is_profile: true }).eq('id', photoRow.id),
+      ])
+      if (promoteErr || photoFlagErr) {
+        console.error('[POST /api/upload] 자동 대표 승격 실패:', promoteErr?.message ?? photoFlagErr?.message)
+      } else {
+        isProfile = true
+      }
+    }
+
     revalidateTag('actors')
     revalidateTag(`actor-${actorId}`)
-    return NextResponse.json({ url: result.url, id: photoRow.id, path: result.path, provider: result.provider }, { status: 200 })
+    return NextResponse.json({ url: result.url, id: photoRow.id, path: result.path, provider: result.provider, isProfile }, { status: 200 })
   } catch (err: unknown) {
     console.error('[POST /api/upload] 오류:', err instanceof Error ? err.message : err)
     return NextResponse.json(

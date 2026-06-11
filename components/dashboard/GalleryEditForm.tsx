@@ -417,9 +417,10 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       const res = await fetch('/api/upload', { method: 'POST', body: fd })
       if (res.status === 401) { window.location.href = '/auth/login'; return }
       if (!res.ok) throw new Error((await res.json()).error || '업로드 실패')
-      const { url, id } = await res.json()
-      setPhotos(prev => [...prev, { id, url, is_profile: prev.length === 0 }])
-      setPhotoMsg('업로드 완료.')
+      const { url, id, isProfile } = await res.json()
+      // isProfile: 서버가 대표사진 비어있을 때 자동 승격한 결과 (단일 진실 소스)
+      setPhotos(prev => [...prev, { id, url, is_profile: !!isProfile }])
+      setPhotoMsg(isProfile ? '업로드 완료 — 대표 사진으로 지정되었습니다.' : '업로드 완료.')
     } catch (e) {
       setPhotoMsg((e as Error).message)
     } finally {
