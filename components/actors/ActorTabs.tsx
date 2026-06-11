@@ -4,6 +4,7 @@ import { useState, useMemo, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import R2Video from '@/components/actors/R2Video'
 import PhotoLightbox from '@/components/actors/PhotoLightbox'
+import YouTubeFacade from '@/components/youtube/YouTubeFacade'
 
 /* ---- 타입 ---- */
 interface ActorPhoto {
@@ -427,18 +428,11 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
             {reelVideos.map((video) =>
               video.youtube_id ? (
                 <div key={video.id} style={s.videoItem}>
-                  <div style={s.videoWrapper}>
-                    <iframe
-                      src={`https://www.youtube.com/embed/${video.youtube_id}`}
-                      title={video.title || `${actor.name} 출연영상`}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
-                      allowFullScreen
-                      loading="lazy"
-                      style={s.iframe}
-                    />
-                  </div>
-                  <p className="sr-only">자막이 있는 경우 영상 플레이어의 CC 버튼을 이용하세요.</p>
+                  <YouTubeFacade
+                    videoId={video.youtube_id}
+                    title={video.title || `${actor.name} 출연영상`}
+                    containerStyle={{ borderRadius: 6, background: '#000' }}
+                  />
                   {video.title && <p style={s.videoTitle}>{video.title}</p>}
                 </div>
               ) : video.r2_key ? (
@@ -465,18 +459,11 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
             {monologueVideos.map((video) =>
               video.youtube_id ? (
                 <div key={video.id} style={s.videoItem}>
-                  <div style={s.videoWrapper}>
-                    <iframe
-                      src={`https://www.youtube.com/embed/${video.youtube_id}`}
-                      title={video.title || '전략적 독백'}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
-                      allowFullScreen
-                      loading="lazy"
-                      style={s.iframe}
-                    />
-                  </div>
-                  <p className="sr-only">자막이 있는 경우 영상 플레이어의 CC 버튼을 이용하세요.</p>
+                  <YouTubeFacade
+                    videoId={video.youtube_id}
+                    title={video.title || '전략적 독백'}
+                    containerStyle={{ borderRadius: 6, background: '#000' }}
+                  />
                 </div>
               ) : video.r2_key ? (
                 <R2Video
@@ -865,22 +852,6 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex',
     flexDirection: 'column',
     gap: 8,
-  },
-  videoWrapper: {
-    position: 'relative',
-    paddingBottom: '56.25%',
-    height: 0,
-    overflow: 'hidden',
-    borderRadius: 6,
-    background: '#000',
-  },
-  iframe: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    border: 'none',
   },
   videoTitle: {
     fontSize: '0.85rem',

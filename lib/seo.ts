@@ -90,6 +90,17 @@ export function getActorPersonSchema(actor: ActorPersonInput) {
   if (actor.height) personSchema.height = { '@type': 'QuantitativeValue', value: actor.height, unitCode: 'CMT' }
   if (actor.weight) personSchema.weight = { '@type': 'QuantitativeValue', value: actor.weight, unitCode: 'KGM' }
 
+  // 직업 명시 — Google 지식 그래프 "배우" 직업 인식 강화
+  personSchema.hasOccupation = {
+    '@type': 'Occupation',
+    name: '배우',
+    alternateName: 'Actor',
+    occupationLocation: { '@type': 'Country', name: '대한민국' },
+  }
+
+  // 국적 — 한국 배우임을 명시 (다국어 검색 유입 + 지식 그래프)
+  personSchema.nationality = { '@type': 'Country', name: '대한민국' }
+
   // knowsAbout — skills + casting_tags 합쳐 SEO 강화 (중복 제거)
   const knowsAbout = new Set<string>()
   if (actor.skills) for (const s of actor.skills) knowsAbout.add(s)
