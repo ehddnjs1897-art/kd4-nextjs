@@ -29,6 +29,30 @@ function dispositionHeader(filename: string): string {
   return `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`
 }
 
+// 확장자 → MIME 매핑 — R2/외부 소스가 octet-stream으로 응답하면 OS·브라우저 미리보기가
+// 파일 형식을 인식 못 해 깨져 보임 (2026-06-12 미리보기 깨짐 수정). 정확한 타입으로 교정.
+const EXT_MIME: Record<string, string> = {
+  pdf: 'application/pdf',
+  ppt: 'application/vnd.ms-powerpoint',
+  pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  doc: 'application/msword',
+  docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  hwp: 'application/x-hwp',
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+  png: 'image/png',
+  webp: 'image/webp',
+  zip: 'application/zip',
+}
+
+/** upstream Content-Type이 없거나 octet-stream이면 확장자 기반으로 교정 */
+function resolveContentType(upstreamType: string | null | undefined, ext: string): string {
+  if (upstreamType && upstreamType !== 'application/octet-stream' && upstreamType !== 'binary/octet-stream') {
+    return upstreamType
+  }
+  return EXT_MIME[ext.toLowerCase()] ?? 'application/octet-stream'
+}
+
 // SSRF 방어: 허용된 호스트만 프록시 대상으로 (내부 주소·IPv6 매핑 IPv4 차단)
 // R2 URL은 profile_doc_path 경로(아래)에서 별도 처리 — SSRF 허용 목록에 포함 불요
 const ALLOWED_PROFILE_HOSTS = new Set([
@@ -115,7 +139,7 @@ export async function GET(
       }
       const obj = await getObjectStream(actor.profile_doc_path)
       const headers: Record<string, string> = {
-        'Content-Type': obj.contentType || 'application/octet-stream',
+        'Content-Type': resolveContentType(obj.contentType, ext),
         'Content-Disposition': dispositionHeader(`${safeName} 프로필.${ext}`),
         'Cache-Control': 'private, no-store',
       }
@@ -169,7 +193,7 @@ export async function GET(
       const rawExt = target.pathname.split('?')[0].split('.').pop() ?? 'pdf'
       const ext = rawExt.replace(/[^a-z0-9]/gi, '').slice(0, 8) || 'pdf'
       const headers: Record<string, string> = {
-        'Content-Type': upstream.headers.get('content-type') || 'application/octet-stream',
+        'Content-Type': resolveContentType(upstream.headers.get('content-type'), ext),
         'Content-Disposition': dispositionHeader(`${safeName} 프로필.${ext}`),
         'Cache-Control': 'private, no-store',
       }
