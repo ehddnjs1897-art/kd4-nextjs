@@ -40,7 +40,7 @@ interface ActorPersonInput {
   /** 대표 사진 URL (절대경로 권장) */
   imageUrl?: string
   /** 필모그래피 — actor_filmography 테이블 row */
-  filmography?: { category?: string | null; title: string; role?: string | null; year?: number | null; production?: string | null }[]
+  filmography?: { category?: string | null; title: string; role?: string | null; year?: number | null; production?: string | null; award?: string | null }[]
   /** 출연영상 youtube_id 배열 */
   videoYoutubeIds?: string[]
   /** Gemini 자동 분류 캐스팅 태그 (knowsAbout 매핑) */
@@ -106,6 +106,14 @@ export function getActorPersonSchema(actor: ActorPersonInput) {
   // sameAs — 외부 플랫폼만 (자기 url은 url 필드로 이미 있음 — 자기참조 중복 금지)
   const igHandle = normalizeInstagramHandle(actor.instagram)
   if (igHandle) personSchema.sameAs = [`https://www.instagram.com/${igHandle}/`]
+
+  // 수상 이력 → award (수상만, 후보·노미네이션 제외)
+  if (actor.filmography && actor.filmography.length > 0) {
+    const awardStrings = actor.filmography
+      .map((f) => f.award?.trim())
+      .filter((a): a is string => !!a && /(수상|대상|그랑프리|최우수|우수상|신인상|연기상|작품상|남우|여우|특별상|심사위원|감독상|인기상)/.test(a) && !/(후보|노미네이트|노미네이션|nominee|nominat)/i.test(a))
+    if (awardStrings.length > 0) personSchema.award = awardStrings
+  }
 
   // 필모그래피 → performerIn (카테고리별 세부 타입)
   // schema.org 권장 매핑: drama→TVSeries, film→Movie, musical/theater→VisualArtwork, cf/etc→CreativeWork
