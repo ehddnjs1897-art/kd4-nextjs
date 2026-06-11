@@ -64,8 +64,8 @@ export function getActorPersonSchema(actor: ActorPersonInput) {
 
   // placeholder SVG는 Google rich result에 사용 불가 — 실제 이미지만 포함
   if (actor.imageUrl && !actor.imageUrl.endsWith('.svg')) personSchema.image = actor.imageUrl
-  if (actor.height) personSchema.height = `${actor.height} cm`
-  if (actor.weight) personSchema.weight = `${actor.weight} kg`
+  if (actor.height) personSchema.height = { '@type': 'QuantitativeValue', value: actor.height, unitCode: 'CMT' }
+  if (actor.weight) personSchema.weight = { '@type': 'QuantitativeValue', value: actor.weight, unitCode: 'KGM' }
 
   // knowsAbout — skills + casting_tags 합쳐 SEO 강화 (중복 제거)
   const knowsAbout = new Set<string>()
@@ -81,11 +81,16 @@ export function getActorPersonSchema(actor: ActorPersonInput) {
   }
 
   // sameAs — 외부 플랫폼만 (자기 url은 url 필드로 이미 있음 — 자기참조 중복 금지)
+  // Instagram: 다양한 입력 형식(@handle, URL, 프로토콜 없는 URL, ?igsh= 쿼리) → 정규 URL로 통일
   if (actor.instagram) {
-    const ig = actor.instagram.startsWith('http')
-      ? actor.instagram
-      : `https://instagram.com/${actor.instagram.replace(/^@/, '')}`
-    personSchema.sameAs = [ig]
+    const handle = actor.instagram
+      .replace(/^@/, '')
+      .replace(/^https?:\/\//i, '')
+      .replace(/^(?:www\.)?instagram\.com\//i, '')
+      .replace(/[?#].*/, '')
+      .replace(/\/$/, '')
+      .replace(/^@/, '')
+    if (handle) personSchema.sameAs = [`https://www.instagram.com/${handle}/`]
   }
 
   // 필모그래피 → performerIn (creativeWork)

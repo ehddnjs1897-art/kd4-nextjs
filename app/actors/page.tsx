@@ -252,7 +252,9 @@ export default async function ActorsPage({ searchParams }: PageProps) {
   const dynamicH1 = h1Segments.length > 0 ? `${h1Segments.join(' ')} 배우 DB` : '배우 DB'
   const dynamicSubtitle = h1Segments.length > 0
     ? `KD4 액팅 스튜디오의 ${h1Segments.join(' ')} 배우들을 만나보세요.`
-    : 'KD4 액팅 스튜디오 배우들을 만나보세요.'
+    : !dbError && actors.length > 0
+      ? `KD4 액팅 스튜디오의 배우 ${actors.length}명을 만나보세요.`
+      : 'KD4 액팅 스튜디오 배우들을 만나보세요.'
 
   function filterHref(key: string, value: string) {
     const next = new URLSearchParams()
