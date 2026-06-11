@@ -312,6 +312,9 @@ export default function MeisnerPage() {
           <Link href="/sinchon-acting-academy" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
             신촌 스튜디오 오시는 길
           </Link>
+          <Link href="/about" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+            KD4 소개
+          </Link>
         </div>
       </section>
 

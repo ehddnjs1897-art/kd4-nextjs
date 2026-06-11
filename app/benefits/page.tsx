@@ -740,6 +740,23 @@ export default function BenefitsPage() {
             클래스 살펴보기
           </Link>
         </div>
+        {/* 내부 교차 링크 — 주요 SEO 페이지 연결 */}
+        <nav aria-label="관련 페이지" style={{ marginTop: '32px', paddingTop: '20px', borderTop: '1px solid rgba(255,255,255,0.1)', textAlign: 'center' }}>
+          <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link href="/about" style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.55)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
+              KD4 소개 <span aria-hidden="true">→</span>
+            </Link>
+            <Link href="/acting-coach-dongwon-kwon" style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.55)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
+              권동원 액팅 코치 <span aria-hidden="true">→</span>
+            </Link>
+            <Link href="/meisner-technique-class" style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.55)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
+              마이즈너 테크닉 클래스 <span aria-hidden="true">→</span>
+            </Link>
+            <Link href="/sinchon-acting-academy" style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.55)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
+              신촌 연기학원 오시는 길 <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+        </nav>
       </section>
     </div>
   )

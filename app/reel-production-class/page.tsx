@@ -322,6 +322,9 @@ export default function ReelPage() {
         <Link href="/classes" style={{ fontSize: '0.9rem', color: 'var(--navy)' }}>
           전체 클래스 보기 <span aria-hidden="true">→</span>
         </Link>
+        <Link href="/about" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginLeft: '20px' }}>
+          KD4 소개
+        </Link>
       </section>
     </div>
   )

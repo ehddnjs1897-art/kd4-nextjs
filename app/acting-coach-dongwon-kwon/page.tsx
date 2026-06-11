@@ -297,6 +297,9 @@ export default function CoachPage() {
             <Link href="/sinchon-acting-academy" style={{ fontSize: '0.9rem', color: 'var(--navy)', padding: '8px 16px', border: '1px solid var(--border)', borderRadius: '6px', textDecoration: 'none' }}>
               신촌 스튜디오 오시는 길
             </Link>
+            <Link href="/about" style={{ fontSize: '0.9rem', color: 'var(--navy)', padding: '8px 16px', border: '1px solid var(--border)', borderRadius: '6px', textDecoration: 'none' }}>
+              KD4 소개
+            </Link>
           </nav>
         </div>
       </section>
