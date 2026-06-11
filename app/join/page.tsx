@@ -365,15 +365,15 @@ export default function JoinPage() {
         <div className="container">
           <div style={{ maxWidth: '520px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-              <p className="section-eyebrow">무료 상담 · 30초 신청</p>
+              <p className="section-eyebrow">무료 상담 · 3단계 간편 신청</p>
               <h2
                 className="section-title-serif"
                 style={{ fontSize: 'clamp(1.4rem, 3.6vw, 1.9rem)', marginBottom: '10px' }}
               >
-                지금 바로 상담 신청
+                배우의 여정, 여기서 시작
               </h2>
               <p style={{ fontSize: '0.88rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-                이름·연락처만 남기시면 24시간 이내 SMS로 연락드립니다.
+                클래스를 고르고 연락처만 남기면 끝 — 24시간 이내 SMS로 연락드립니다.
               </p>
             </div>
             <JoinForm />
@@ -1433,7 +1433,7 @@ export default function JoinPage() {
                 무료 상담 신청
               </h2>
               <p style={{ fontSize: '0.9rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-                24시간 이내 SMS로 연락드립니다.
+                클래스 선택부터 확인까지 3단계 — 24시간 이내 SMS로 연락드립니다.
               </p>
             </div>
             <JoinForm />

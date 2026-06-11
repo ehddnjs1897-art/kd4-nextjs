@@ -1,11 +1,13 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { useEffect, useId, useRef, useState } from 'react'
-import { MessageCircle, CheckCircle, ArrowRight } from 'lucide-react'
+import { MessageCircle, CheckCircle, Check, ArrowRight, ArrowLeft } from 'lucide-react'
 import { CLASSES, DIRECTOR } from '@/lib/classes'
 import { analytics } from '@/lib/analytics'
 import { SOURCE_VALUES, MEISNER_OPTIONS } from '@/lib/form-options'
+import styles from './JoinForm.module.css'
 
 /** UTM 파라미터 추적 (2026-05-14) — 광고 채널별 ROI 분석용
  * 광고 URL에 ?utm_source=meta&utm_campaign=lead_5월 등을 붙이면
@@ -21,9 +23,7 @@ interface UTMData {
 }
 
 /** UTM 영속 키 — 사이트 탐색 중에도 광고 진입 UTM 유지 (2026-05-19 버그 수정)
- * 문제: 사용자가 /join?utm=… 진입 후 /classes 등 둘러보고 돌아오면
- * URL에서 UTM 증발 → 폼 제출 시 전부 NULL 기록되던 버그.
- * 해결: 첫 진입 시 sessionStorage에 저장, 이후 URL에 없으면 복원해서 사용.
+ * 첫 진입 시 sessionStorage에 저장, 이후 URL에 없으면 복원해서 사용.
  */
 const UTM_STORAGE_KEY = 'kd4_utm'
 
@@ -41,7 +41,6 @@ function readUTMFromURL(): UTMData {
     referrer: document.referrer || null,
   }
 
-  // URL에 UTM이 하나라도 있으면 = 광고 첫 진입 → sessionStorage 저장 후 사용
   const hasURLUTM = Boolean(
     fromURL.utm_source || fromURL.utm_medium || fromURL.utm_campaign || fromURL.utm_content || fromURL.utm_term
   )
@@ -50,7 +49,6 @@ function readUTMFromURL(): UTMData {
       sessionStorage.setItem(UTM_STORAGE_KEY, JSON.stringify(fromURL))
       return fromURL
     }
-    // URL에 UTM 없음 = 사이트 둘러보다 돌아온 경우 → 저장된 첫 진입 UTM 복원
     const stored = sessionStorage.getItem(UTM_STORAGE_KEY)
     if (stored) {
       const parsed = JSON.parse(stored) as Partial<UTMData>
@@ -67,28 +65,57 @@ const SOURCE_OPTIONS = [
   ...SOURCE_VALUES.map((v) => ({ value: v, label: v })),
 ]
 
-// QW1 (R291): 전체 클래스 선택지 노출 — 베이직 포함, 순서 고정
-// 순서: 베이직 → 마이즈너 정규 → 오디션 테크닉 → 출연영상 → 움직임 → 개인 레슨 → 기타
-const CLASS_ORDER = [
-  '베이직 클래스',
-  '마이즈너 테크닉 정규 클래스',
-  '오디션 테크닉 클래스',
-  '출연영상 클래스',
-  '움직임 클래스',
-  '개인 레슨',
-]
-const CLASS_OPTIONS = [
-  ...CLASS_ORDER
-    .map((name) => CLASSES.find((c) => c.nameKo === name))
-    .filter((c): c is NonNullable<typeof c> => Boolean(c))
-    .map((c) => ({ nameKo: c.nameKo })),
-  { nameKo: '기타 / 상담 후 결정' },
-]
+/* ── 클래스 선택지 — lib/classes.ts 단일 소스 (명칭 임의 변경 금지) ──
+ * 카드형 3종: 신규 신청 가능(isNewMemberOpen) 메인 클래스
+ * 칩형: 나머지 클래스 + 기타/상담 후 결정 — 기존 select 선택지와 동일 값 유지 (DB 분석 연속성) */
+const FEATURED_CLASS_NAMES = ['베이직 클래스', '마이즈너 테크닉 정규 클래스', '출연영상 클래스']
+const FEATURED_CLASSES = FEATURED_CLASS_NAMES
+  .map((name) => CLASSES.find((c) => c.nameKo === name))
+  .filter((c): c is NonNullable<typeof c> => Boolean(c))
+
+const MORE_CLASS_NAMES = ['오디션 테크닉 클래스', '움직임 클래스', '개인 레슨']
+const ETC_OPTION = '기타 / 상담 후 결정'
+const MORE_OPTIONS = [...MORE_CLASS_NAMES, ETC_OPTION]
+
+/* 클래스별 카드 태그 — 취미/정규 구분 */
+function classTag(cls: (typeof CLASSES)[number]): string {
+  if (cls.isHobby) return '취미 · 입문'
+  if (cls.nameKo === '출연영상 클래스') return '정규 · 포트폴리오'
+  return '정규 클래스'
+}
+
+const STEPS = ['클래스 선택', '신청 정보', '확인'] as const
+
+/* ── 실시간 유효성 검사 ── */
+function validateName(v: string): string {
+  return v.trim() ? '' : '이름을 입력해 주세요.'
+}
+function validatePhone(v: string): string {
+  if (!v.trim()) return '연락처를 입력해 주세요.'
+  return /^01[0-9][-\s]?\d{3,4}[-\s]?\d{4}$/.test(v.replace(/\s/g, ''))
+    ? ''
+    : '올바른 연락처를 입력해 주세요. (예: 010-1234-5678)'
+}
+function validateEmail(v: string): string {
+  if (!v.trim()) return '이메일을 입력해 주세요.'
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? '' : '올바른 이메일 형식이 아니에요.'
+}
+
+/** 연락처 자동 하이픈 — 010-1234-5678 형태로 정리 (모바일 숫자 키보드 대응) */
+function formatPhone(raw: string): string {
+  const d = raw.replace(/\D/g, '').slice(0, 11)
+  if (d.length < 4) return d
+  if (d.length < 8) return `${d.slice(0, 3)}-${d.slice(3)}`
+  return `${d.slice(0, 3)}-${d.slice(3, d.length - 4)}-${d.slice(-4)}`
+}
 
 export default function JoinForm() {
   const uid = useId()
   const consentId = `join-consent-${uid}`
   const errorId = `join-form-error-${uid}`
+
+  /* 멀티스텝: 0 클래스 선택 → 1 신청 정보 → 2 확인 */
+  const [step, setStep] = useState(0)
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
@@ -96,25 +123,33 @@ export default function JoinForm() {
   const [selectedClass, setSelectedClass] = useState('')
   const [meisnerExp, setMeisnerExp] = useState('')
   const [consent, setConsent] = useState(false)
+  const [moreOpen, setMoreOpen] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
-  const [invalidFields, setInvalidFields] = useState(new Set<string>())
   const [ticketNo, setTicketNo] = useState('')
-  const [focused, setFocused] = useState<string | null>(null)
   const [formStarted, setFormStarted] = useState(false)
   // 허니팟 — 봇이 채우면 조용히 성공 처리 (DB 저장 안 함, 광고 전환 오염 방지)
   const [honeypot, setHoneypot] = useState('')
   const successRef = useRef<HTMLDivElement>(null)
   const errorRef = useRef<HTMLParagraphElement>(null)
+  const stepTitleRef = useRef<HTMLHeadingElement>(null)
+  const mountedRef = useRef(false)
 
   // 성공 화면 전환 시 포커스 이동 (WCAG 2.4.3 Focus Order)
   useEffect(() => {
     if (done) successRef.current?.focus()
   }, [done])
 
-  // 유효성 오류 발생 시 포커스 이동 (WCAG 2.4.3)
+  // 서버 오류 발생 시 포커스 이동 (WCAG 2.4.3)
   useEffect(() => { if (error) errorRef.current?.focus() }, [error])
+
+  // 스텝 전환 시 스텝 제목으로 포커스 이동 (첫 마운트 제외)
+  useEffect(() => {
+    if (!mountedRef.current) { mountedRef.current = true; return }
+    stepTitleRef.current?.focus({ preventScroll: false })
+  }, [step])
 
   /** UTM 파라미터 — 마운트 시 1회 캡처해 ref 에 보관 (재렌더 영향 X) */
   const utmRef = useRef<UTMData>({
@@ -129,62 +164,75 @@ export default function JoinForm() {
     utmRef.current = readUTMFromURL()
   }, [])
 
-  /** 첫 필드 포커스 시 form_start 이벤트 1회 발화 */
-  function handleFieldFocus(field: string) {
-    setFocused(field)
+  /** 첫 상호작용(클래스 선택·필드 포커스) 시 form_start 이벤트 1회 발화 */
+  function fireFormStart() {
     if (!formStarted) {
       analytics.formStart('join_form')
       setFormStarted(true)
     }
   }
 
-  const inputStyle = (field: string): React.CSSProperties => ({
-    width: '100%',
-    background: '#ffffff',
-    border: `1px solid ${focused === field ? 'var(--navy)' : 'var(--border)'}`,
-    borderRadius: '12px',
-    padding: '14px 18px',
-    color: '#111111',
-    fontSize: '1rem',
-    fontFamily: 'inherit',
-    transition: 'border-color 0.2s',
-    boxSizing: 'border-box',
-    appearance: 'none',
-  })
+  function selectClass(nameKo: string) {
+    fireFormStart()
+    setSelectedClass(nameKo)
+    setFieldErrors((prev) => ({ ...prev, className: '' }))
+  }
+
+  /** 실시간 검증 — blur 시 검증, 오류 상태에서 입력 중 즉시 해제 */
+  function setFieldError(field: string, message: string) {
+    setFieldErrors((prev) => ({ ...prev, [field]: message }))
+  }
+  function liveValidate(field: 'name' | 'phone' | 'email', value: string) {
+    if (!fieldErrors[field]) return // 오류 없으면 입력 중 검증 안 함 (타이핑 방해 X)
+    const validator = field === 'name' ? validateName : field === 'phone' ? validatePhone : validateEmail
+    setFieldError(field, validator(value))
+  }
+
+  function goNextFromClass() {
+    if (!selectedClass) {
+      setFieldError('className', '클래스를 선택해 주세요. 아직 못 정하셨으면 "기타 / 상담 후 결정"도 괜찮아요.')
+      return
+    }
+    analytics.custom('form_step', { step: 2, step_name: 'info' })
+    setStep(1)
+  }
+
+  function goNextFromInfo() {
+    const errors: Record<string, string> = {
+      name: validateName(name),
+      phone: validatePhone(phone),
+      email: validateEmail(email),
+      meisnerExp: meisnerExp ? '' : '경험 여부를 선택해 주세요.',
+      source: source ? '' : '유입 경로를 선택해 주세요.',
+      consent: consent ? '' : '개인정보 수집·이용에 동의해 주세요.',
+    }
+    setFieldErrors(errors)
+    const firstInvalid = Object.keys(errors).find((k) => errors[k])
+    if (firstInvalid) {
+      const idMap: Record<string, string> = {
+        name: `join-name-${uid}`,
+        phone: `join-phone-${uid}`,
+        email: `join-email-${uid}`,
+        meisnerExp: `join-meisner-${uid}-0`,
+        source: `join-source-${uid}`,
+        consent: consentId,
+      }
+      document.getElementById(idMap[firstInvalid])?.focus()
+      return
+    }
+    analytics.custom('form_step', { step: 3, step_name: 'confirm' })
+    setStep(2)
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (loading) return  // 더블 클릭 방지
+    if (step !== 2) return // 마지막 단계에서만 제출 (모바일 엔터키 오발사 방지)
     // 허니팟 체크 — 봇 제출 조용히 막기
     if (honeypot) { setDone(true); return }
-    // 2026-05-20: 전 항목 필수로 — 대표 지시
-    // per-field 유효성: aria-invalid가 실제 오류 필드에만 표시되도록 추적
-    const emptyFields = new Set<string>()
-    if (!name) emptyFields.add('name')
-    if (!phone) emptyFields.add('phone')
-    if (!email) emptyFields.add('email')
-    if (!selectedClass) emptyFields.add('className')
-    if (!meisnerExp) emptyFields.add('meisnerExp')
-    if (!source) emptyFields.add('source')
-    if (emptyFields.size > 0) {
-      setInvalidFields(emptyFields)
-      setError('모든 항목을 입력해 주세요.')
-      return
-    }
-    if (!consent) {
-      setInvalidFields(new Set(['consent']))
-      setError('개인정보 수집·이용에 동의해 주세요.')
-      return
-    }
-    // 전화번호 형식 검증 (010-xxxx-xxxx 또는 숫자만)
-    if (!/^01[0-9][-\s]?\d{3,4}[-\s]?\d{4}$/.test(phone.replace(/\s/g, ''))) {
-      setInvalidFields(new Set(['phone']))
-      setError('올바른 연락처를 입력해 주세요. (예: 010-1234-5678)')
-      return
-    }
+
     setLoading(true)
     setError('')
-    setInvalidFields(new Set())
 
     const motivationParts = [
       source ? `유입경로: ${source}` : '유입경로: /join 랜딩',
@@ -200,7 +248,6 @@ export default function JoinForm() {
         : `lead_${Date.now()}_${Math.random().toString(36).slice(2)}`
 
     // Lead 이벤트는 서버 저장 성공 확인 후에만 발화 (실패·봇 제출 오염 방지)
-    // 이전: 발화 → 저장 순서 → 실패 건도 Lead로 집계되어 광고 알고리즘 오염
     let notifyOk = false
     let dbSaved = false
     try {
@@ -229,8 +276,6 @@ export default function JoinForm() {
       if (notifyRes.ok) {
         const json = await notifyRes.json().catch(() => ({}))
         dbSaved = json?.dbSaved === true
-        // Lead 발화는 아래에서 처리. DB 저장 실패(dbSaved=false)인데 HTTP ok인 경우
-        // 는 SMS/Webhook만 성공한 것이므로 Lead는 발화하되 콘솔 경고만.
         if (!dbSaved) console.warn('[JoinForm] DB 저장 실패 — SMS/webhook 성공')
       }
     } catch {
@@ -325,6 +370,19 @@ export default function JoinForm() {
           접수번호 <strong style={{ color: 'var(--navy)' }}>{ticketNo}</strong>
         </p>
 
+        {/* 신청 내용 요약 — 신뢰감 (내가 뭘 신청했는지 즉시 확인) */}
+        {selectedClass && (
+          <p
+            style={{
+              fontSize: '0.84rem',
+              color: 'var(--gray-light)',
+              marginBottom: '20px',
+            }}
+          >
+            신청 클래스 — <strong style={{ color: 'var(--navy)' }}>{selectedClass}</strong>
+          </p>
+        )}
+
         {/* 다음 안내 */}
         <div
           style={{
@@ -411,7 +469,7 @@ export default function JoinForm() {
             }}
           >
             {/* 카드 1: 권동원 대표 */}
-            <a
+            <Link
               href="/#director"
               aria-label="권동원 대표 소개 자세히 보기"
               className="kd4-card-hover"
@@ -455,10 +513,10 @@ export default function JoinForm() {
                   자세히 보기 <ArrowRight aria-hidden={true} size={11} strokeWidth={2.2} />
                 </p>
               </div>
-            </a>
+            </Link>
 
             {/* 카드 2: 캐스팅 결과 */}
-            <a
+            <Link
               href="/#casting"
               aria-label="KD4 캐스팅 결과 자세히 보기"
               className="kd4-card-hover"
@@ -507,7 +565,7 @@ export default function JoinForm() {
                   자세히 보기 <ArrowRight aria-hidden={true} size={11} strokeWidth={2.2} />
                 </p>
               </div>
-            </a>
+            </Link>
 
             {/* 카드 3: 마이즈너 테크닉 */}
             <a
@@ -618,8 +676,10 @@ export default function JoinForm() {
     )
   }
 
+  const meisnerChoices = MEISNER_OPTIONS.filter((o) => o.value !== '')
+
   return (
-    <form onSubmit={handleSubmit} aria-label="무료 상담 신청" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+    <form onSubmit={handleSubmit} aria-label="무료 상담 신청" noValidate>
       {/* 허니팟 — 봇 방지: 화면 밖, 스크린리더 숨김, 탭 불가 */}
       <input
         type="text"
@@ -631,285 +691,386 @@ export default function JoinForm() {
         autoComplete="off"
         style={{ position: 'absolute', left: '-9999px', opacity: 0, pointerEvents: 'none', height: 0 }}
       />
-      {/* 이름 */}
-      <label htmlFor={`join-name-${uid}`} className="sr-only">이름</label>
-      <input
-        id={`join-name-${uid}`}
-        aria-label="이름"
-        aria-invalid={invalidFields.has('name')}
-        aria-describedby={invalidFields.has('name') ? errorId : undefined}
-        type="text"
-        placeholder="이름 *"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        onFocus={() => handleFieldFocus('name')}
-        onBlur={() => setFocused(null)}
-        autoComplete="name"
-        maxLength={50}
-        spellCheck={false}
-        style={inputStyle('name')}
-        required
-        aria-required="true"
-      />
 
-      {/* 연락처 */}
-      <label htmlFor={`join-phone-${uid}`} className="sr-only">연락처</label>
-      <input
-        id={`join-phone-${uid}`}
-        aria-label="연락처"
-        aria-invalid={invalidFields.has('phone')}
-        aria-describedby={invalidFields.has('phone') ? errorId : undefined}
-        type="tel"
-        inputMode="numeric"
-        placeholder="연락처 * 010-0000-0000"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-        onFocus={() => handleFieldFocus('phone')}
-        onBlur={() => setFocused(null)}
-        autoComplete="tel"
-        maxLength={20}
-        style={inputStyle('phone')}
-        required
-        aria-required="true"
-      />
+      {/* ── 진행 표시 ── */}
+      <ol className={styles.progress} aria-label={`신청 진행 단계 — ${step + 1}/3 ${STEPS[step]}`}>
+        {STEPS.map((label, i) => (
+          <li
+            key={label}
+            className={`${styles.progressStep} ${i === step ? styles.current : ''} ${i < step ? styles.done : ''}`}
+            aria-current={i === step ? 'step' : undefined}
+          >
+            <span className={styles.progressDot} aria-hidden="true">
+              {i < step ? <Check size={14} strokeWidth={3} /> : i + 1}
+            </span>
+            <span className={styles.progressLabel}>{label}</span>
+          </li>
+        ))}
+      </ol>
 
-      {/* 이메일 — 필수 (2026-05-20: 대표 지시로 필수 복귀) */}
-      <label htmlFor={`join-email-${uid}`} className="sr-only">이메일</label>
-      <input
-        id={`join-email-${uid}`}
-        aria-label="이메일"
-        aria-invalid={invalidFields.has('email')}
-        aria-describedby={invalidFields.has('email') ? errorId : undefined}
-        type="email"
-        placeholder="이메일 *"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        onFocus={() => handleFieldFocus('email')}
-        onBlur={() => setFocused(null)}
-        autoComplete="email"
-        maxLength={254}
-        style={inputStyle('email')}
-        required
-        aria-required="true"
-      />
+      {/* ━━━ STEP 1 — 클래스 선택 ━━━ */}
+      {step === 0 && (
+        <div className={styles.stepPane} role="group" aria-label="1단계 — 클래스 선택">
+          <h3 ref={stepTitleRef} tabIndex={-1} className={styles.stepTitle}>
+            어떤 클래스로 시작할까요?
+          </h3>
+          <p className={styles.stepHint}>
+            카드를 누르면 커리큘럼·가격·일정이 펼쳐져요. 연기 경험 없어도 OK.
+          </p>
 
-      {/* 희망 클래스 (필수) */}
-      {CLASS_OPTIONS.length === 0 ? (
-        <div style={{
-          padding: '14px 16px',
-          background: 'rgba(196,165,90,0.06)',
-          border: '1px solid rgba(196,165,90,0.25)',
-          borderRadius: 'var(--radius)',
-          fontSize: '0.85rem',
-          color: 'var(--secondary)',
-          lineHeight: 1.6,
-        }}>
-          현재 신청 가능한 클래스가 없습니다.{' '}
-          <a
-            href="https://pf.kakao.com/_ximxdqn"
-            target="_blank" rel="noopener noreferrer"
-            style={{ color: 'var(--gold)', textDecoration: 'underline' }}
+          {FEATURED_CLASSES.map((cls) => {
+            const selected = selectedClass === cls.nameKo
+            return (
+              <button
+                key={cls.nameKo}
+                type="button"
+                className={`${styles.classCard} ${selected ? styles.classCardSelected : ''}`}
+                onClick={() => selectClass(cls.nameKo)}
+                aria-pressed={selected}
+              >
+                <span className={styles.checkBadge} aria-hidden="true">
+                  <Check size={14} strokeWidth={3} />
+                </span>
+                <span className={styles.cardTag}>
+                  {classTag(cls)}
+                  {cls.hot && <span className={styles.cardHot}>🔥 HOT</span>}
+                </span>
+                <span className={styles.cardName}>{cls.nameKo}</span>
+                <span className={styles.cardQuote}>{cls.quote}</span>
+
+                {/* 선택 시 상세 expand — 커리큘럼 요약 + 가격 + 일정 */}
+                <span className={`${styles.detail} ${selected ? styles.detailOpen : ''}`} aria-hidden={!selected}>
+                  <span className={styles.detailInner}>
+                    <span className={styles.detailBox} style={{ display: 'block' }}>
+                      {cls.bullets.slice(0, 3).map((b) => (
+                        <span key={b} className={styles.detailBullet} style={{ display: 'block' }}>{b}</span>
+                      ))}
+                      <span className={styles.detailPrice} style={{ display: 'block' }}>
+                        월 {cls.price}원
+                        {cls.course && <span>{cls.course}</span>}
+                      </span>
+                      <span className={styles.detailMeta} style={{ display: 'block' }}>
+                        {cls.schedule} · {cls.duration} · 정원 {cls.capacity}
+                      </span>
+                    </span>
+                  </span>
+                </span>
+              </button>
+            )
+          })}
+
+          {/* 다른 클래스 / 미정 */}
+          <button
+            type="button"
+            className={styles.moreToggle}
+            onClick={() => setMoreOpen((v) => !v)}
+            aria-expanded={moreOpen}
           >
-            카카오 채널
-          </a>
-          로 문의해 주세요.
-        </div>
-      ) : (
-        <div style={{ position: 'relative' }}>
-          <label htmlFor={`join-class-${uid}`} className="sr-only">희망 클래스</label>
-          <select
-            id={`join-class-${uid}`}
-            aria-label="희망 클래스"
-            aria-invalid={invalidFields.has('className')}
-            aria-describedby={invalidFields.has('className') ? errorId : undefined}
-            value={selectedClass}
-            onChange={(e) => setSelectedClass(e.target.value)}
-            onFocus={() => handleFieldFocus('class')}
-            onBlur={() => setFocused(null)}
-            style={{ ...inputStyle('class'), cursor: 'pointer' }}
-            required
-          >
-            <option value="" disabled hidden>희망 클래스</option>
-            {CLASS_OPTIONS.map((c) => (
-              <option key={c.nameKo} value={c.nameKo}>
-                {c.nameKo}
-              </option>
-            ))}
-          </select>
-          <span
-            aria-hidden="true"
-            style={{
-              position: 'absolute',
-              right: '16px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              pointerEvents: 'none',
-              color: 'var(--gray)',
-              fontSize: '0.8rem',
-            }}
-          >
-            ▼
-          </span>
+            다른 클래스를 찾으세요? {moreOpen ? '접기 ▲' : '펼치기 ▼'}
+          </button>
+          {(moreOpen || MORE_OPTIONS.includes(selectedClass)) && (
+            <div className={styles.chipRow} role="group" aria-label="다른 클래스 선택">
+              {MORE_OPTIONS.map((nameKo) => (
+                <button
+                  key={nameKo}
+                  type="button"
+                  className={`${styles.chip} ${selectedClass === nameKo ? styles.chipSelected : ''}`}
+                  onClick={() => selectClass(nameKo)}
+                  aria-pressed={selectedClass === nameKo}
+                >
+                  {nameKo}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {fieldErrors.className && (
+            <p className={styles.fieldError} role="alert">{fieldErrors.className}</p>
+          )}
+
+          <div className={styles.navRow}>
+            <button
+              type="button"
+              className={styles.btnPrimary}
+              onClick={goNextFromClass}
+              disabled={!selectedClass}
+            >
+              다음 — 신청 정보 입력
+              <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} />
+            </button>
+          </div>
         </div>
       )}
 
-      {/* 마이즈너 경험 (필수) */}
-      <div style={{ position: 'relative' }}>
-        <label htmlFor={`join-meisner-${uid}`} className="sr-only">마이즈너 경험</label>
-        <select
-          id={`join-meisner-${uid}`}
-          aria-label="마이즈너 경험"
-          aria-invalid={invalidFields.has('meisnerExp')}
-          aria-describedby={invalidFields.has('meisnerExp') ? errorId : undefined}
-          value={meisnerExp}
-          onChange={(e) => setMeisnerExp(e.target.value)}
-          onFocus={() => handleFieldFocus('meisner')}
-          onBlur={() => setFocused(null)}
-          style={{ ...inputStyle('meisner'), cursor: 'pointer' }}
-          required
-        >
-          {MEISNER_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value} disabled={o.value === ''} hidden={o.value === ''}>
-              {o.label === '마이즈너 경험 선택' ? '마이즈너 경험' : o.label}
-            </option>
-          ))}
-        </select>
-        <span
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            right: '16px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            pointerEvents: 'none',
-            color: 'var(--gray)',
-            fontSize: '0.8rem',
-          }}
-        >
-          ▼
-        </span>
-      </div>
+      {/* ━━━ STEP 2 — 신청 정보 ━━━ */}
+      {step === 1 && (
+        <div className={styles.stepPane} role="group" aria-label="2단계 — 신청 정보 입력">
+          <h3 ref={stepTitleRef} tabIndex={-1} className={styles.stepTitle}>
+            연락받을 정보를 알려주세요
+          </h3>
+          <p className={styles.stepHint}>
+            선택한 클래스 — <strong style={{ color: 'var(--navy)' }}>{selectedClass}</strong>
+          </p>
 
-      {/* 유입 경로 (필수) */}
-      <div style={{ position: 'relative' }}>
-        <label htmlFor={`join-source-${uid}`} className="sr-only">KD4를 어떻게 알게 되셨나요</label>
-        <select
-          id={`join-source-${uid}`}
-          aria-label="KD4를 어떻게 알게 되셨나요"
-          aria-invalid={invalidFields.has('source')}
-          aria-describedby={invalidFields.has('source') ? errorId : undefined}
-          value={source}
-          onChange={(e) => setSource(e.target.value)}
-          onFocus={() => handleFieldFocus('source')}
-          onBlur={() => setFocused(null)}
-          style={{ ...inputStyle('source'), cursor: 'pointer' }}
-          required
-        >
-          {SOURCE_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value} disabled={o.value === ''} hidden={o.value === ''}>
-              {o.value === '' ? 'KD4를 어떻게 알게 되셨나요?' : o.label}
-            </option>
-          ))}
-        </select>
-        <span
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            right: '16px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            pointerEvents: 'none',
-            color: 'var(--gray)',
-            fontSize: '0.8rem',
-          }}
-        >
-          ▼
-        </span>
-      </div>
+          {/* 이름 */}
+          <div className={styles.field}>
+            <label htmlFor={`join-name-${uid}`} className={styles.fieldLabel}>이름</label>
+            <input
+              id={`join-name-${uid}`}
+              className={`${styles.input} ${fieldErrors.name ? styles.inputInvalid : name.trim() ? styles.inputValid : ''}`}
+              aria-invalid={Boolean(fieldErrors.name)}
+              aria-describedby={fieldErrors.name ? `join-name-err-${uid}` : undefined}
+              type="text"
+              placeholder="홍길동"
+              value={name}
+              onChange={(e) => { setName(e.target.value); liveValidate('name', e.target.value) }}
+              onFocus={fireFormStart}
+              onBlur={() => setFieldError('name', validateName(name))}
+              autoComplete="name"
+              enterKeyHint="next"
+              maxLength={50}
+              spellCheck={false}
+              required
+              aria-required="true"
+            />
+            {fieldErrors.name && <p id={`join-name-err-${uid}`} className={styles.fieldError}>{fieldErrors.name}</p>}
+          </div>
 
-      {/* 개인정보 수집·이용 동의 (필수) */}
-      <label
-        htmlFor={consentId}
-        style={{
-          display: 'flex',
-          alignItems: 'flex-start',
-          gap: '10px',
-          padding: '12px 14px',
-          background: consent ? 'rgba(21,72,138,0.04)' : '#ffffff',
-          border: `1px solid ${consent ? 'var(--navy)' : 'var(--border)'}`,
-          borderRadius: '12px',
-          cursor: 'pointer',
-          transition: 'background 0.15s, border-color 0.15s',
-        }}
-      >
-        <input
-          id={consentId}
-          type="checkbox"
-          checked={consent}
-          onChange={(e) => setConsent(e.target.checked)}
-          required
-          aria-invalid={invalidFields.has('consent')}
-          aria-describedby={invalidFields.has('consent') ? errorId : undefined}
-          style={{
-            width: '24px',
-            height: '24px',
-            marginTop: '2px',
-            accentColor: 'var(--navy)',
-            cursor: 'pointer',
-            flexShrink: 0,
-          }}
-        />
-        <span
-          style={{
-            fontSize: '0.85rem',
-            color: '#111111',
-            lineHeight: 1.6,
-          }}
-        >
-          <strong style={{ color: 'var(--navy)' }}>[필수]</strong> 개인정보 수집·이용에 동의합니다.
-          <br />
-          <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>
-            상담 연락 목적으로만 사용됩니다 · 언제든 삭제 요청 가능
-          </span>
-        </span>
-      </label>
+          {/* 연락처 — 자동 하이픈 + 숫자 키보드 */}
+          <div className={styles.field}>
+            <label htmlFor={`join-phone-${uid}`} className={styles.fieldLabel}>연락처</label>
+            <input
+              id={`join-phone-${uid}`}
+              className={`${styles.input} ${fieldErrors.phone ? styles.inputInvalid : phone && !validatePhone(phone) ? styles.inputValid : ''}`}
+              aria-invalid={Boolean(fieldErrors.phone)}
+              aria-describedby={fieldErrors.phone ? `join-phone-err-${uid}` : undefined}
+              type="tel"
+              inputMode="numeric"
+              placeholder="010-0000-0000"
+              value={phone}
+              onChange={(e) => { const v = formatPhone(e.target.value); setPhone(v); liveValidate('phone', v) }}
+              onFocus={fireFormStart}
+              onBlur={() => setFieldError('phone', validatePhone(phone))}
+              autoComplete="tel"
+              enterKeyHint="next"
+              maxLength={13}
+              required
+              aria-required="true"
+            />
+            {fieldErrors.phone && <p id={`join-phone-err-${uid}`} className={styles.fieldError}>{fieldErrors.phone}</p>}
+          </div>
 
-      {/* 에러 — 항상 DOM에 존재 (aria-describedby 참조 깨짐 방지), 비어있을 때는 sr-only로 시각 은닉 */}
-      <p
-        ref={errorRef}
-        tabIndex={-1}
-        id={errorId}
-        role="alert"
-        aria-atomic="true"
-        className={error ? undefined : 'sr-only'}
-        style={{ color: '#b91c1c', fontSize: '0.85rem', margin: 0, outline: 'none' }}
-      >
-        {error || ''}
-      </p>
+          {/* 이메일 — 필수 (2026-05-20: 대표 지시로 필수 복귀) */}
+          <div className={styles.field}>
+            <label htmlFor={`join-email-${uid}`} className={styles.fieldLabel}>이메일</label>
+            <input
+              id={`join-email-${uid}`}
+              className={`${styles.input} ${fieldErrors.email ? styles.inputInvalid : email && !validateEmail(email) ? styles.inputValid : ''}`}
+              aria-invalid={Boolean(fieldErrors.email)}
+              aria-describedby={fieldErrors.email ? `join-email-err-${uid}` : undefined}
+              type="email"
+              inputMode="email"
+              placeholder="actor@example.com"
+              value={email}
+              onChange={(e) => { setEmail(e.target.value); liveValidate('email', e.target.value) }}
+              onFocus={fireFormStart}
+              onBlur={() => setFieldError('email', validateEmail(email))}
+              autoComplete="email"
+              enterKeyHint="done"
+              autoCapitalize="none"
+              maxLength={254}
+              spellCheck={false}
+              required
+              aria-required="true"
+            />
+            {fieldErrors.email && <p id={`join-email-err-${uid}`} className={styles.fieldError}>{fieldErrors.email}</p>}
+          </div>
 
-      {/* 제출 버튼 */}
-      <button
-        type="submit"
-        disabled={loading}
-        aria-busy={loading}
-        style={{
-          width: '100%',
-          padding: '16px',
-          background: loading ? 'rgba(21,72,138,0.5)' : 'var(--navy)',
-          color: '#ffffff',
-          fontWeight: 800,
-          fontSize: '1.05rem',
-          letterSpacing: '0.04em',
-          borderRadius: '12px',
-          border: 'none',
-          cursor: loading ? 'not-allowed' : 'pointer',
-          transition: 'background 0.2s, transform 0.15s',
-          marginTop: '4px',
-          fontFamily: 'inherit',
-        }}
-      >
-        {loading ? '신청 중...' : <>무료 상담 신청 <span aria-hidden="true">→</span></>}
-      </button>
+          {/* 마이즈너 경험 — 세그먼트 라디오 (select 대비 탭 1번 절약) */}
+          <div className={styles.field}>
+            <span className={styles.fieldLabel} id={`join-meisner-label-${uid}`}>마이즈너 테크닉 경험</span>
+            <div className={styles.segGroup} role="radiogroup" aria-labelledby={`join-meisner-label-${uid}`} aria-required="true">
+              {meisnerChoices.map((o, i) => (
+                <label
+                  key={o.value}
+                  className={`${styles.segOption} ${meisnerExp === o.value ? styles.segSelected : ''}`}
+                >
+                  <input
+                    id={`join-meisner-${uid}-${i}`}
+                    type="radio"
+                    name={`join-meisner-${uid}`}
+                    className="sr-only"
+                    value={o.value}
+                    checked={meisnerExp === o.value}
+                    onChange={() => { setMeisnerExp(o.value); setFieldError('meisnerExp', '') }}
+                    onFocus={fireFormStart}
+                  />
+                  {o.label}
+                </label>
+              ))}
+            </div>
+            {fieldErrors.meisnerExp && <p className={styles.fieldError}>{fieldErrors.meisnerExp}</p>}
+          </div>
+
+          {/* 유입 경로 */}
+          <div className={styles.field}>
+            <label htmlFor={`join-source-${uid}`} className={styles.fieldLabel}>KD4를 어떻게 알게 되셨나요?</label>
+            <div className={styles.selectWrap}>
+              <select
+                id={`join-source-${uid}`}
+                className={`${styles.input} ${fieldErrors.source ? styles.inputInvalid : ''}`}
+                aria-invalid={Boolean(fieldErrors.source)}
+                value={source}
+                onChange={(e) => { setSource(e.target.value); setFieldError('source', '') }}
+                onFocus={fireFormStart}
+                style={{ cursor: 'pointer' }}
+                required
+              >
+                {SOURCE_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value} disabled={o.value === ''} hidden={o.value === ''}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+              <span aria-hidden="true" className={styles.selectArrow}>▼</span>
+            </div>
+            {fieldErrors.source && <p className={styles.fieldError}>{fieldErrors.source}</p>}
+          </div>
+
+          {/* 개인정보 수집·이용 동의 (필수) */}
+          <label
+            htmlFor={consentId}
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '10px',
+              padding: '12px 14px',
+              background: consent ? 'rgba(21,72,138,0.04)' : '#ffffff',
+              border: `1px solid ${fieldErrors.consent ? '#b91c1c' : consent ? 'var(--navy)' : 'var(--border)'}`,
+              borderRadius: '12px',
+              cursor: 'pointer',
+              transition: 'background 0.15s, border-color 0.15s',
+            }}
+          >
+            <input
+              id={consentId}
+              type="checkbox"
+              checked={consent}
+              onChange={(e) => { setConsent(e.target.checked); if (e.target.checked) setFieldError('consent', '') }}
+              required
+              aria-invalid={Boolean(fieldErrors.consent)}
+              style={{
+                width: '24px',
+                height: '24px',
+                marginTop: '2px',
+                accentColor: 'var(--navy)',
+                cursor: 'pointer',
+                flexShrink: 0,
+              }}
+            />
+            <span
+              style={{
+                fontSize: '0.85rem',
+                color: '#111111',
+                lineHeight: 1.6,
+              }}
+            >
+              <strong style={{ color: 'var(--navy)' }}>[필수]</strong> 개인정보 수집·이용에 동의합니다.
+              <br />
+              <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>
+                상담 연락 목적으로만 사용됩니다 · 언제든 삭제 요청 가능
+              </span>
+            </span>
+          </label>
+          {fieldErrors.consent && <p className={styles.fieldError} role="alert">{fieldErrors.consent}</p>}
+
+          <div className={styles.navRow}>
+            <button type="button" className={styles.btnGhost} onClick={() => setStep(0)}>
+              <ArrowLeft aria-hidden={true} size={15} strokeWidth={2.2} />
+              이전
+            </button>
+            <button type="button" className={styles.btnPrimary} onClick={goNextFromInfo}>
+              다음 — 신청 내용 확인
+              <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ━━━ STEP 3 — 확인 + 제출 ━━━ */}
+      {step === 2 && (
+        <div className={styles.stepPane} role="group" aria-label="3단계 — 신청 내용 확인">
+          <h3 ref={stepTitleRef} tabIndex={-1} className={styles.stepTitle}>
+            이 내용으로 신청할게요
+          </h3>
+          <p className={styles.stepHint}>제출 전 마지막으로 확인해 주세요.</p>
+
+          <div className={styles.summary}>
+            <div className={styles.summaryRow}>
+              <span className={styles.summaryKey}>희망 클래스</span>
+              <span className={styles.summaryVal}>{selectedClass}</span>
+              <button type="button" className={styles.summaryEdit} onClick={() => setStep(0)} aria-label="희망 클래스 수정">수정</button>
+            </div>
+            <div className={styles.summaryRow}>
+              <span className={styles.summaryKey}>이름</span>
+              <span className={styles.summaryVal}>{name}</span>
+              <button type="button" className={styles.summaryEdit} onClick={() => setStep(1)} aria-label="이름 수정">수정</button>
+            </div>
+            <div className={styles.summaryRow}>
+              <span className={styles.summaryKey}>연락처</span>
+              <span className={styles.summaryVal}>{phone}</span>
+              <button type="button" className={styles.summaryEdit} onClick={() => setStep(1)} aria-label="연락처 수정">수정</button>
+            </div>
+            <div className={styles.summaryRow}>
+              <span className={styles.summaryKey}>이메일</span>
+              <span className={styles.summaryVal}>{email}</span>
+              <button type="button" className={styles.summaryEdit} onClick={() => setStep(1)} aria-label="이메일 수정">수정</button>
+            </div>
+            <div className={styles.summaryRow}>
+              <span className={styles.summaryKey}>마이즈너 경험</span>
+              <span className={styles.summaryVal}>{meisnerExp}</span>
+            </div>
+            <div className={styles.summaryRow}>
+              <span className={styles.summaryKey}>알게 된 경로</span>
+              <span className={styles.summaryVal}>{source}</span>
+            </div>
+          </div>
+
+          <p style={{ fontSize: '0.78rem', color: 'var(--gray)', lineHeight: 1.6, margin: '2px 2px 0', wordBreak: 'keep-all' }}>
+            제출하시면 <strong style={{ color: 'var(--navy)' }}>24시간 이내 SMS</strong>로 연락드려요.
+            상담은 무료이고, 상담 후 바로 가셔도 괜찮아요.
+          </p>
+
+          {/* 서버 오류 — 항상 DOM에 존재 (aria 참조 깨짐 방지), 비어있을 때 sr-only */}
+          <p
+            ref={errorRef}
+            tabIndex={-1}
+            id={errorId}
+            role="alert"
+            aria-atomic="true"
+            className={error ? styles.fieldError : 'sr-only'}
+            style={{ outline: 'none' }}
+          >
+            {error || ''}
+          </p>
+
+          <div className={styles.navRow}>
+            <button type="button" className={styles.btnGhost} onClick={() => setStep(1)} disabled={loading}>
+              <ArrowLeft aria-hidden={true} size={15} strokeWidth={2.2} />
+              이전
+            </button>
+            <button
+              type="submit"
+              className={styles.btnPrimary}
+              disabled={loading}
+              aria-busy={loading}
+              aria-describedby={errorId}
+            >
+              {loading ? '신청 중...' : <>무료 상담 신청 완료 <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} /></>}
+            </button>
+          </div>
+        </div>
+      )}
     </form>
   )
 }
