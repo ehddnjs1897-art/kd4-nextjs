@@ -99,7 +99,9 @@ async function fetchActors(gender: string, ageGroup: string, tag: string): Promi
   let castingSchemaAvailable = true
   {
     let query = buildQuery('id, name, gender, age_group, drive_photo_id, storage_photo_path, profile_photo, casting_tags, casting_summary')
-    if (tag && tag !== 'all') query = query.contains('casting_tags', [tag])
+    // tag는 콤마 구분 여러 태그 가능 (예: "형사,카리스마") — AND 조건
+    const tagArr = tag && tag !== 'all' ? tag.split(',').filter(Boolean) : []
+    if (tagArr.length > 0) query = query.contains('casting_tags', tagArr)
     const { data, error } = await query
     if (error && isUndefinedColumnError(error)) {
       if (!_castingTagsWarnedOnce) {
@@ -199,17 +201,39 @@ export default async function ActorsPage({ searchParams }: PageProps) {
   const gender = VALID_GENDERS.has(params.gender ?? '') ? (params.gender ?? 'all') : 'all'
   const ageGroup = VALID_AGE_GROUPS.has(params.ageGroup ?? '') ? (params.ageGroup ?? 'all') : 'all'
   const rawTag = Array.isArray(params.tag) ? params.tag[0] : (params.tag ?? 'all')
-  const tag = rawTag.replace(/[{},\\"]/g, '').slice(0, 50)  // PostgREST 메타문자({},\") 제거 + 50자 상한
+  // 콤마 구분 다중 태그 지원: PostgREST 메타문자 제거 + 200자 상한 + 최대 3개
+  const cleanedTag = rawTag.replace(/[{},\\"]/g, '').slice(0, 200)
+  const tag = cleanedTag  // 캐시 키용 — 하위 호환 유지 ('all' 또는 'tag1,tag2' 형태)
+  // activeTags: 실제로 활성화된 태그 목록 (UI 렌더·쿼리 공용)
+  const activeTags: string[] = tag === 'all' || !tag
+    ? []
+    : tag.split(',').filter(Boolean).slice(0, 3)  // 캐시 슬롯 폭발 방지: 최대 3개
 
-  const { actors, dbError, allTags, videoActorIds } = await getActorsCached(gender, ageGroup, tag)
+  const { actors, dbError, allTags, videoActorIds } = await getActorsCached(gender, ageGroup,
+    activeTags.length > 0 ? activeTags.join(',') : 'all'
+  )
   const videoIdSet = new Set(videoActorIds)
 
   function filterHref(key: string, value: string) {
     const next = new URLSearchParams()
-    if (key !== 'gender') next.set('gender', gender)
-    if (key !== 'ageGroup') next.set('ageGroup', ageGroup)
-    if (key !== 'tag') next.set('tag', tag)
-    next.set(key, value)
+    const g = key === 'gender' ? value : gender
+    const ag = key === 'ageGroup' ? value : ageGroup
+    const t = key === 'tag' ? value : (activeTags.length > 0 ? activeTags.join(',') : 'all')
+    if (g !== 'all') next.set('gender', g)
+    if (ag !== 'all') next.set('ageGroup', ag)
+    if (t !== 'all') next.set('tag', t)
+    return `/actors?${next.toString()}`
+  }
+
+  // 태그 토글: 이미 선택된 태그면 제거, 없으면 추가 (최대 3개 AND 조합)
+  function tagToggleHref(t: string) {
+    const next = new URLSearchParams()
+    if (gender !== 'all') next.set('gender', gender)
+    if (ageGroup !== 'all') next.set('ageGroup', ageGroup)
+    const newTags = activeTags.includes(t)
+      ? activeTags.filter((x) => x !== t)
+      : [...activeTags, t].slice(0, 3)
+    if (newTags.length > 0) next.set('tag', newTags.join(','))
     return `/actors?${next.toString()}`
   }
 
@@ -296,18 +320,20 @@ export default async function ActorsPage({ searchParams }: PageProps) {
             </div>
           </div>
 
-          {/* 캐스팅 타입 — 자동 분류된 태그 (회사원/형사/엄마 등) */}
-          {(allTags.length > 0 || tag !== 'all') && (
+          {/* 캐스팅 타입 — 자동 분류된 태그 (회사원/형사/엄마 등), 다중 선택(AND 조합) 가능 */}
+          {(allTags.length > 0 || activeTags.length > 0) && (
             <div style={styles.filterGroup}>
-              <span id="filter-label-tag" style={styles.filterLabel}>캐스팅 타입</span>
+              <span id="filter-label-tag" style={styles.filterLabel}>
+                캐스팅 타입{activeTags.length > 1 ? ` (${activeTags.length}개 AND)` : ''}
+              </span>
               <div role="group" aria-labelledby="filter-label-tag" style={styles.filterBtnGroup}>
                 <Link
                   href={filterHref('tag', 'all')}
-                  aria-current={tag === 'all' ? "true" : undefined}
-                  aria-label={tag === 'all' ? '전체 (선택됨)' : '전체'}
+                  aria-current={activeTags.length === 0 ? "true" : undefined}
+                  aria-label={activeTags.length === 0 ? '전체 (선택됨)' : '전체'}
                   style={{
                     ...styles.filterBtn,
-                    ...(tag === 'all' ? styles.filterBtnActive : {}),
+                    ...(activeTags.length === 0 ? styles.filterBtnActive : {}),
                   }}
                 >
                   전체
@@ -315,12 +341,12 @@ export default async function ActorsPage({ searchParams }: PageProps) {
                 {allTags.map((t) => (
                   <Link
                     key={t}
-                    href={filterHref('tag', t)}
-                    aria-current={tag === t ? "true" : undefined}
-                    aria-label={tag === t ? `${t} (선택됨)` : t}
+                    href={tagToggleHref(t)}
+                    aria-current={activeTags.includes(t) ? "true" : undefined}
+                    aria-label={activeTags.includes(t) ? `${t} (선택됨)` : t}
                     style={{
                       ...styles.filterBtn,
-                      ...(tag === t ? styles.filterBtnActive : {}),
+                      ...(activeTags.includes(t) ? styles.filterBtnActive : {}),
                     }}
                   >
                     {t}
