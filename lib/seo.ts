@@ -189,6 +189,9 @@ export function getActorVideoSchemas(
         thumbnailUrl: `https://i.ytimg.com/vi/${v.youtubeId}/hqdefault.jpg`,
         contentUrl: `https://www.youtube.com/watch?v=${v.youtubeId}`,
         embedUrl: `https://www.youtube.com/embed/${v.youtubeId}`,
+        inLanguage: 'ko',
+        // 배우 역참조 — VideoObject ↔ Person 양방향 연결 (Knowledge Graph 강화)
+        actor: { '@type': 'Person', '@id': `${SITE_URL}/actors/${actor.id}#person` },
         publisher: {
           '@type': 'Organization',
           name: 'KD4 액팅 스튜디오',
