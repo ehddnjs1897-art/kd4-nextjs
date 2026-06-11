@@ -435,6 +435,18 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
               </div>
             </Link>
             <CopyLinkButton actorId={actor.id} actorName={actor.name} />
+            {actor.hasVideo && (
+              <div aria-hidden="true" style={{
+                position: 'absolute', top: 8, left: 10,
+                zIndex: 2, pointerEvents: 'none',
+                fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.06em',
+                color: 'rgba(255,255,255,0.92)',
+                background: 'rgba(0,0,0,0.55)',
+                border: '1px solid rgba(255,255,255,0.18)',
+                borderRadius: 3, padding: '2px 7px',
+                backdropFilter: 'blur(4px)',
+              }}>영상</div>
+            )}
             </li>
           ))}
         </ul>
