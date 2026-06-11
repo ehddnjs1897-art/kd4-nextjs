@@ -869,6 +869,21 @@ export default async function ActorDetailPage({
               )
             })}
           </div>
+          {/* 태그 기반 더보기 링크 — 배우 DB 필터 페이지로 */}
+          {actor.casting_tags && actor.casting_tags.length > 0 && (
+            <div style={{ marginTop: 24, textAlign: 'center' }}>
+              <Link
+                href={`/actors?tag=${encodeURIComponent(actor.casting_tags[0])}`}
+                style={{
+                  fontSize: '0.8rem', color: 'var(--gray)',
+                  textDecoration: 'none', borderBottom: '1px solid var(--border)',
+                  paddingBottom: 2,
+                }}
+              >
+                {actor.casting_tags[0]} 배우 더보기 →
+              </Link>
+            </div>
+          )}
         </section>
       )}
     </div>
