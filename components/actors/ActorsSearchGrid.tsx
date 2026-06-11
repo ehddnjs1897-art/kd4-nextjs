@@ -420,7 +420,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
                   priority={idx < 2}
                 />
                 <div style={overlayStyle}>
-                  <span style={nameStyle}>{actor.name}</span>
+                  <h2 style={{ ...nameStyle, margin: 0, padding: 0 }}>{actor.name}</h2>
                   <span style={metaStyle}>
                     {actor.gender ?? ''}{actor.gender && actor.age_group ? ' · ' : ''}{actor.age_group ?? ''}
                   </span>

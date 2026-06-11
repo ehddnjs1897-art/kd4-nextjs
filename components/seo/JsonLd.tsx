@@ -12,6 +12,7 @@
 import {
   buildOrganization,
   buildEducationalOrganization,
+  buildPersonDongwon,
 } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
 import { serializeJsonLd } from '@/lib/seo'
@@ -108,6 +109,9 @@ export default function JsonLd({ faqItems }: JsonLdProps) {
   const organization = buildOrganization()
   const school = buildEducationalOrganization()
   const localBusiness = getLocalBusinessSchema()
+  // 기본 Person — #dongwon @id를 모든 페이지에서 확정 (Organization.founder 참조 해소).
+  // 상세 이력(필모·수상·학력)은 acting-coach 페이지의 buildPersonDongwonDetailed()에서만 출력.
+  const person = buildPersonDongwon()
 
   return (
     <>
@@ -123,8 +127,10 @@ export default function JsonLd({ faqItems }: JsonLdProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(school) }}
       />
-      {/* Person(권동원)은 acting-coach-dongwon-kwon 페이지에서 상세 정의.
-          Organization.founder = { @id: #dongwon } 참조로 그래프 연결 유지. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(person) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(localBusiness) }}
