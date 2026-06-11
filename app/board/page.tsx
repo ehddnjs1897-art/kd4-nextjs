@@ -4,7 +4,7 @@ import BoardClient from '@/components/board/BoardClient'
 import PublicLanding from '@/components/board/PublicLanding'
 import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
-import { buildBreadcrumb } from '@/lib/seo-schemas'
+import { buildBreadcrumb, buildWebPage } from '@/lib/seo-schemas'
 
 export const dynamic = 'force-dynamic'
 
@@ -71,10 +71,20 @@ export default async function BoardPage({ searchParams }: { searchParams: Search
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '80px 0 120px' }}>
-      <PageJsonLd schemas={[buildBreadcrumb([
-        { name: '홈', url: SITE_URL },
-        { name: '커뮤니티', url: `${SITE_URL}/board` },
-      ])]} />
+      <PageJsonLd schemas={[
+        buildBreadcrumb([
+          { name: '홈', url: SITE_URL },
+          { name: '커뮤니티', url: `${SITE_URL}/board` },
+        ]),
+        buildWebPage({
+          idPath: '/board#webpage',
+          url: BOARD_URL,
+          name: '멤버 커뮤니티 게시판 — KD4 액팅 스튜디오',
+          description: 'KD4 멤버들이 연기·오디션·커리어 이야기를 나누는 커뮤니티 게시판.',
+          about: { '@id': `${SITE_URL}#org` },
+          speakableCssSelectors: ['h1', 'h2'],
+        }),
+      ]} />
       <div className="container">
         {/* 헤더 */}
         <div style={{ marginBottom: '48px' }}>
