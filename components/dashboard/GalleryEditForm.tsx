@@ -68,7 +68,8 @@ interface Props {
 // ─── 유튜브 ID 추출 ───────────────────────────────────────────────────────────
 function extractYoutubeId(url: string): string | null {
   const patterns = [
-    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+    // watch / 단축 / embed / shorts / live URL 모두 지원 (멤버들이 shorts 링크를 많이 씀)
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
     /^([a-zA-Z0-9_-]{11})$/,
   ]
   for (const p of patterns) {
@@ -188,7 +189,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   filmRow: {
     display: 'grid',
-    gridTemplateColumns: '100px 70px 1fr 1fr auto',
+    gridTemplateColumns: '100px 70px 1.2fr 1fr 1fr auto',
     gap: 8,
     alignItems: 'center',
     marginBottom: 8,
@@ -740,14 +741,14 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           </div>
           <div>
             <p style={{ fontSize: '0.85rem', color: 'var(--white)', fontWeight: 600, marginBottom: 2 }}>
-              {hasPpt ? '프로필 PPTX 등록됨' : '프로필 PPTX 미등록'}
+              {hasPpt ? '프로필 문서 등록됨' : '프로필 문서 미등록'}
             </p>
             <p style={{ fontSize: '0.75rem', color: 'var(--gray)' }}>
-              {hasPpt ? '새 파일을 올리면 기존 파일이 교체됩니다.' : '.pptx 형식, 10MB 이하'}
+              {hasPpt ? '새 파일을 올리면 기존 파일이 교체됩니다.' : '.pptx 또는 .pdf, 10MB 이하'}
             </p>
           </div>
         </div>
-        <input ref={pptRef} type="file" accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation" onChange={uploadPpt} style={{ display: 'none' }} aria-hidden="true" />
+        <input ref={pptRef} type="file" accept=".pptx,.pdf,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation" onChange={uploadPpt} style={{ display: 'none' }} aria-hidden="true" />
         <button type="button" onClick={() => pptRef.current?.click()} disabled={pptUploading} aria-busy={pptUploading} style={{ ...s.btn, ...s.btnGhost, opacity: pptUploading ? 0.6 : 1 }}>
           {pptUploading ? '업로드 중…' : <><span aria-hidden="true">📄</span>{hasPpt ? ' 파일 교체' : ' 파일 올리기'}</>}
         </button>
@@ -882,9 +883,9 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         {/* tabIndex={0}: 키보드로 가로 스크롤 가능 (WCAG 2.1.1) */}
         {filmography.length > 0 && (
           <div role="region" aria-label="필모그래피 목록" tabIndex={0} style={{ marginBottom: 20, overflowX: 'auto' }}>
-            <div style={{ minWidth: 460 }}>
+            <div style={{ minWidth: 600 }}>
             <div style={{ ...s.filmRow, marginBottom: 4 }}>
-              {['구분', '연도', '작품명', '배역', ''].map(h => (
+              {['구분', '연도', '작품명', '배역', '방송사·제작사', ''].map(h => (
                 <span key={h} style={{ fontSize: '0.72rem', color: 'var(--gray)', fontWeight: 600 }}>{h}</span>
               ))}
             </div>
@@ -901,6 +902,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                 <input aria-label={`필모그래피 ${i + 1}번 연도`} type="number" value={f.year} onChange={e => updateFilm(i, 'year', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} min={1990} max={2099} autoComplete="off" />
                 <input aria-label={`필모그래피 ${i + 1}번 작품명`} value={f.title} onChange={e => updateFilm(i, 'title', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} placeholder="작품명" />
                 <input aria-label={`필모그래피 ${i + 1}번 배역`} value={f.role} onChange={e => updateFilm(i, 'role', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} placeholder="배역" />
+                <input aria-label={`필모그래피 ${i + 1}번 방송사 또는 제작사`} value={f.broadcaster ?? ''} onChange={e => updateFilm(i, 'broadcaster', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} placeholder="확실한 것만" />
                 {confirmingFilmIdx === i ? (
                   <div style={{ display: 'flex', gap: 5 }}>
                     <button type="button" autoFocus onClick={() => { setConfirmingFilmIdx(null); deleteFilmRefs.current.get(i)?.focus() }} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 44 }}>취소</button>

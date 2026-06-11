@@ -60,6 +60,8 @@ interface FilmRow {
   year: number | null
   title: string
   role: string | null
+  broadcaster: string | null
+  film_type: string | null
 }
 
 export default async function GalleryEditPage() {
@@ -152,10 +154,12 @@ export default async function GalleryEditPage() {
       .select('id, youtube_id, title')
       .eq('actor_id', actor_id)
       .not('youtube_id', 'is', null)
-      .order('created_at', { ascending: false }),
+      // actor_videos에 created_at 컬럼 없음(42703) → 쿼리 전체 실패로 영상이 빈 목록으로 보이던 버그
+      .order('sort_order', { ascending: true }),
     supabaseAdmin
       .from('actor_filmography')
-      .select('id, category, year, title, role')
+      // broadcaster/film_type 미조회 시 저장할 때 null로 덮어써져 기존 방송사 데이터 소실
+      .select('id, category, year, title, role, broadcaster, film_type')
       .eq('actor_id', actor_id)
       .order('year', { ascending: false }),
     supabaseAdmin
@@ -163,7 +167,7 @@ export default async function GalleryEditPage() {
       .select('id, r2_key, title, video_type')
       .eq('actor_id', actor_id)
       .not('r2_key', 'is', null)
-      .order('created_at', { ascending: false }),
+      .order('sort_order', { ascending: true }),
   ])
 
   // actorRes.data가 null이면 orphaned actor_id — 빈 초기값으로 폼 표시 (덮어쓰기 방지)
@@ -205,10 +209,12 @@ export default async function GalleryEditPage() {
     })),
     filmography: filmography.map((f) => ({
       id: f.id,
-      category: f.category ?? '드라마',
+      category: f.category ?? 'drama', // select option value는 영문 — '드라마' fallback은 불일치
       year: f.year ?? new Date().getFullYear(),
       title: f.title,
       role: f.role ?? '',
+      broadcaster: f.broadcaster ?? undefined,
+      film_type: f.film_type ?? undefined,
     })),
   }
 
