@@ -804,10 +804,10 @@ export default async function ActorDetailPage({
           aria-label="비슷한 배우"
           style={{ maxWidth: 960, margin: '0 auto', padding: '40px clamp(20px,4vw,32px) 48px' }}
         >
-          <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.65rem', letterSpacing: '0.2em', color: 'var(--gold)', marginBottom: 20 }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '0.65rem', letterSpacing: '0.2em', color: 'var(--gold)', marginBottom: 20, fontWeight: 700, padding: 0 }}>
             <span lang="en">SIMILAR ACTORS</span>
             <span style={{ marginLeft: 10, fontFamily: 'var(--font-body)', letterSpacing: 'normal', textTransform: 'none', color: 'var(--gray)' }}>비슷한 배우</span>
-          </p>
+          </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
             {relatedActors.map((a) => {
               const relPhoto = relatedPhotoUrl(a)
@@ -844,9 +844,9 @@ export default async function ActorDetailPage({
                     )}
                   </div>
                   <div style={{ padding: '12px 14px' }}>
-                    <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.95rem', fontWeight: 700, color: 'var(--white)', marginBottom: 4 }}>
+                    <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '0.95rem', fontWeight: 700, color: 'var(--white)', marginBottom: 4, margin: '0 0 4px', padding: 0 }}>
                       {a.name}
-                    </p>
+                    </h3>
                     <p style={{ fontSize: '0.72rem', color: 'var(--gray)', marginBottom: 8 }}>
                       {[a.gender, a.age_group].filter(Boolean).join(' · ')}
                     </p>
