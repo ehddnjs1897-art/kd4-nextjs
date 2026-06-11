@@ -230,6 +230,9 @@ export default function SinchonPage() {
               <Link href="/about" style={{ display: 'inline-block', padding: '11px 22px', background: 'var(--bg2)', border: '1px solid var(--border-strong)', borderRadius: '8px', fontSize: '0.88rem', fontWeight: 600, color: 'var(--navy)', textDecoration: 'none' }}>
                 KD4 소개 →
               </Link>
+              <Link href="/benefits" style={{ display: 'inline-block', padding: '11px 22px', background: 'var(--bg2)', border: '1px solid var(--border-strong)', borderRadius: '8px', fontSize: '0.88rem', fontWeight: 600, color: 'var(--navy)', textDecoration: 'none' }}>
+                멤버 혜택 →
+              </Link>
             </nav>
           </div>
         </div>

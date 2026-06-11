@@ -300,6 +300,9 @@ export default function CoachPage() {
             <Link href="/about" style={{ fontSize: '0.9rem', color: 'var(--navy)', padding: '8px 16px', border: '1px solid var(--border)', borderRadius: '6px', textDecoration: 'none' }}>
               KD4 소개
             </Link>
+            <Link href="/benefits" style={{ fontSize: '0.9rem', color: 'var(--navy)', padding: '8px 16px', border: '1px solid var(--border)', borderRadius: '6px', textDecoration: 'none' }}>
+              멤버 혜택
+            </Link>
           </nav>
         </div>
       </section>

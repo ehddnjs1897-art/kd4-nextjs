@@ -315,6 +315,9 @@ export default function MeisnerPage() {
           <Link href="/about" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
             KD4 소개
           </Link>
+          <Link href="/benefits" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+            멤버 혜택
+          </Link>
         </div>
       </section>
 

@@ -325,6 +325,9 @@ export default function ReelPage() {
         <Link href="/about" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginLeft: '20px' }}>
           KD4 소개
         </Link>
+        <Link href="/benefits" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginLeft: '20px' }}>
+          멤버 혜택
+        </Link>
       </section>
     </div>
   )
