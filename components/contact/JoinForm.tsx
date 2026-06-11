@@ -250,6 +250,7 @@ export default function JoinForm() {
     // Lead 이벤트는 서버 저장 성공 확인 후에만 발화 (실패·봇 제출 오염 방지)
     let notifyOk = false
     let dbSaved = false
+    let apiErrorMsg = ''
     try {
       const notifyRes = await fetch('/api/notify', {
         method: 'POST',
@@ -273,17 +274,20 @@ export default function JoinForm() {
         signal: AbortSignal.timeout(15_000),
       })
       notifyOk = notifyRes.ok
+      const json = await notifyRes.json().catch(() => ({}))
       if (notifyRes.ok) {
-        const json = await notifyRes.json().catch(() => ({}))
         dbSaved = json?.dbSaved === true
         if (!dbSaved) console.warn('[JoinForm] DB 저장 실패 — SMS/webhook 성공')
+      } else {
+        // API가 반환하는 구체적 에러 메시지 (입력 형식 오류, 재시도 요청 등) 추출
+        apiErrorMsg = typeof json?.error === 'string' ? json.error : ''
       }
     } catch {
       notifyOk = false
     }
 
     if (!notifyOk) {
-      setError('접수 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.')
+      setError(apiErrorMsg || '접수 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.')
       setLoading(false)
       return
     }
