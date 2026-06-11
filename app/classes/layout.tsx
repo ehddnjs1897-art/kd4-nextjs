@@ -10,6 +10,12 @@ import { CLASSES } from '@/lib/classes'
 
 const PAGE_URL = `${SITE_URL}/classes`
 
+// 전용 랜딩 페이지가 있는 클래스는 해당 URL 사용 (나머지는 /classes 기본)
+const CLASS_PAGE_URLS: Record<string, string> = {
+  '마이즈너 테크닉 정규 클래스': `${SITE_URL}/meisner-technique-class`,
+  '출연영상 클래스': `${SITE_URL}/reel-production-class`,
+}
+
 export const metadata: Metadata = {
   title: '연기 클래스 전체 보기',
   description:
@@ -52,8 +58,11 @@ const classItemListSchema = {
   itemListElement: CLASSES.map((cls, i) => ({
     '@type': 'ListItem',
     position: i + 1,
-    name: cls.nameKo,
-    url: PAGE_URL,
+    item: {
+      '@type': 'Course',
+      name: `${cls.nameKo} (${cls.nameEn})`,
+      url: CLASS_PAGE_URLS[cls.nameKo] ?? PAGE_URL,
+    },
   })),
 }
 
@@ -73,7 +82,7 @@ export default function ClassesLayout({ children }: { children: React.ReactNode 
           description: '베이직·마이즈너 정규·출연영상·심화·오디션·움직임·개인 레슨. 마이즈너 테크닉 기반 9개 클래스.',
         }),
         classItemListSchema,
-        ...CLASSES.map((cls) => buildCourseFromClass(cls, { url: PAGE_URL, image: `${SITE_URL}/og-image.jpg` })),
+        ...CLASSES.map((cls) => buildCourseFromClass(cls, { url: CLASS_PAGE_URLS[cls.nameKo] ?? PAGE_URL, image: `${SITE_URL}/og-image.jpg` })),
       ]} />
       {children}
     </>
