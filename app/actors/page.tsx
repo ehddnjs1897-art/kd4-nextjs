@@ -321,7 +321,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
           url: canonicalUrl,
           name: listName,
           inLanguage: 'ko',
-          isPartOf: { '@id': `${SITE_URL}#org` },
+          isPartOf: { '@id': `${SITE_URL}#website` },
           mainEntity: { '@id': `${canonicalUrl}#list` },
         },
         {

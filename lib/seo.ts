@@ -184,7 +184,7 @@ export function getActorProfilePageSchema(actor: {
     name: `${actor.name} 배우 프로필 — KD4 액팅 스튜디오`,
     ...(actor.description ? { description: actor.description } : {}),
     inLanguage: 'ko',
-    isPartOf: { '@id': `${SITE_URL}#org` },
+    isPartOf: { '@id': `${SITE_URL}#website` },
     mainEntity: { '@id': `${SITE_URL}/actors/${actor.id}#person` },
   }
 }
