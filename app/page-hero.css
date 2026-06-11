@@ -97,6 +97,8 @@
   text-align: center;
   display: inline-block;
   width: max-content;
+  /* 3D 등장(rotateX)용 원근 — 자식 .hero-title-wall에 적용됨 */
+  perspective: 900px;
 }
 .hero-title-wall {
   /* 초기 상태: 비가시 (letter-spacing 계산 전에는 등장하지 않음) */
@@ -121,6 +123,11 @@
   line-height: 1;
   letter-spacing: 0.01em;
   white-space: nowrap;
+  /* 텍스트가 벽에서 앞으로 떠오르는 깊이감 — 상단 하이라이트 + 네이비 소프트 섀도 */
+  text-shadow:
+    0 1px 0 rgba(255, 252, 240, 0.45),
+    0 10px 26px rgba(21, 45, 80, 0.22),
+    0 22px 52px rgba(21, 45, 80, 0.12);
 }
 .hero-title-wall-sub {
   /* 영문 서브타이틀 — Helvetica 유지 */
@@ -134,13 +141,26 @@
   display: block;
   white-space: nowrap;
   /* JS가 letter-spacing 동적 계산해서 h1 가로폭에 맞춤 */
+  text-shadow: 0 6px 18px rgba(21, 45, 80, 0.16);
+}
+
+/* 서브타이틀 stagger — 타이틀보다 0.35s 늦게 아래에서 떠오름 (backwards: 딜레이 중 비가시) */
+.hero-title-wall-pos.is-ready .hero-title-wall-sub {
+  animation: heroSubRise 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.35s backwards;
+}
+
+@keyframes heroSubRise {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes heroTitleWallFade {
-  /* 최초에 또렷하게 보이다가 달리줌 진행에 맞춰 서서히 사라짐
+  /* 3D 등장: 살짝 누운 상태(rotateX)에서 블러가 걷히며 앞으로 떠오름 (0~8% ≈ 0.9s)
+     이후 달리줌 진행에 맞춰 서서히 페이드아웃
      — 스케일 1 → 1.18: 카메라가 다가오며 타이틀도 커지는 원근감 유지
      — 35~80% 구간에서 실제 페이드 발생, 앞뒤는 유지 */
-  0%    { opacity: 1; transform: scale(1); }
+  0%    { opacity: 0; transform: rotateX(16deg) translateZ(-80px) scale(0.97); filter: blur(7px); }
+  8%    { opacity: 1; transform: rotateX(0deg) translateZ(0) scale(1); filter: blur(0); }
   35%   { opacity: 1; transform: scale(1.04); }
   80%   { opacity: 0; transform: scale(1.16); }
   100%  { opacity: 0; transform: scale(1.18); }
@@ -148,6 +168,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hero-title-wall { animation: none; opacity: 1; }
+  .hero-title-wall-pos.is-ready .hero-title-wall-sub { animation: none; opacity: 1; }
 }
 
 /* 가로 모드에서 타이틀이 하단으로 밀리는 현상 방지 — 뒷벽 중앙(40%) 고정 */
@@ -171,6 +192,69 @@
   background: linear-gradient(to top, rgba(232,228,216,0.72) 0%, rgba(232,228,216,0.28) 45%, transparent 100%);
   pointer-events: none;
   z-index: 1;
+}
+
+/* ═══ 방향성 조명 + 시네마틱 비네트 — 우상단에서 웜 라이트가 비껴 들어오고
+   화면 가장자리는 은은하게 어두워져 중앙으로 시선 집중 (브랜드 웜베이지 톤 유지) ═══ */
+#hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background:
+    radial-gradient(120% 85% at 78% -5%, rgba(255, 243, 210, 0.55) 0%, rgba(255, 243, 210, 0.14) 34%, transparent 62%),
+    radial-gradient(135% 115% at 50% 48%, transparent 56%, rgba(54, 44, 28, 0.10) 82%, rgba(40, 32, 20, 0.20) 100%);
+}
+
+/* ═══ 필름 그레인 — SVG feTurbulence 타일, transform 점프만 사용 (compositor 전용) ═══ */
+.hero-grain {
+  position: absolute;
+  inset: -50%;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='280'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='280' height='280' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  animation: heroGrainShift 0.9s steps(4) infinite;
+  will-change: transform;
+}
+
+@keyframes heroGrainShift {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(-2.2%, 1.6%); }
+  50%  { transform: translate(1.8%, -2.4%); }
+  75%  { transform: translate(-1.4%, -1.2%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* 모바일·모션 최소화: 그레인 정지 (정적 텍스처만 아주 옅게 유지) */
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  .hero-grain { animation: none; opacity: 0.03; }
+}
+
+/* ═══ CTA pulse glow — ::after 오파시티만 애니메이션 (리페인트 없음) ═══ */
+.hero-intro-section .btn-primary {
+  position: relative;
+}
+.hero-intro-section .btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  box-shadow: 0 0 26px 6px rgba(21, 72, 138, 0.38), 0 4px 18px rgba(21, 72, 138, 0.3);
+  opacity: 0;
+  pointer-events: none;
+  animation: heroCtaGlow 2.8s ease-in-out infinite;
+}
+
+@keyframes heroCtaGlow {
+  0%, 100% { opacity: 0; }
+  50%      { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-intro-section .btn-primary::after { animation: none; opacity: 0; }
 }
 
 /* ═══ HERO INTRO SECTION (카피 + CTA, Stats 위) ═══ */

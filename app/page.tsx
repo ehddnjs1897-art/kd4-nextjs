@@ -222,13 +222,42 @@ export default function HomePage() {
 
       /* === GSAP 애니메이션 — gsap.context로 언마운트 시 자동 정리 === */
       gsapCtx = gsap.context(() => {
-        /* === HERO 요소 입장 (달리줌 중반에 맞춰 등장) === */
-        gsap.from('.hero-subtitle', {
-          y: 30, opacity: 0, duration: 0.8, ease: "power2.out", delay: 3.5,
+        /* === HERO 요소 입장 (달리줌 중반에 맞춰 등장) ===
+           인라인 opacity:0 가드가 있으므로 from(opacity:0)이 아닌 to(opacity:1)로 페이드인
+           (from은 시작=끝=0이 되어 영영 안 보이는 GSAP footgun) */
+        gsap.to('.hero-subtitle', {
+          opacity: 1, duration: 0.8, ease: "power2.out", delay: 3.5,
         })
-        gsap.from('.hero-scroll-indicator', {
-          opacity: 0, duration: 0.4, delay: 4.0,
+        // 자식(화살표→텍스트)은 3D rotateX + stagger로 앞으로 떠오름
+        gsap.from('.hero-subtitle > *', {
+          y: 28, rotateX: 35, transformPerspective: 600, opacity: 0,
+          duration: 0.9, ease: "power3.out", delay: 3.5, stagger: 0.18,
         })
+        gsap.to('.hero-scroll-indicator', {
+          opacity: 1, duration: 0.4, delay: 4.0,
+        })
+
+        /* === HERO 패럴랙스 — 배경/타이틀/서브타이틀 레이어별 스크롤 속도 분리 ===
+           배경 씬은 느리게 내려가며 살짝 확대(깊이 유지), 타이틀은 빠르게 위로,
+           서브타이틀(전경)은 가장 빠르게 — z축 레이어가 분리된 공간감.
+           터치 디바이스는 스킵 (스크롤 중 transform 비용 + 효과 체감 낮음) */
+        if (!isTouchDevice) {
+          const heroScrub = () => ({
+            trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true,
+          })
+          gsap.to('.hero-scene-layer', {
+            yPercent: 12, scale: 1.06, transformOrigin: 'center bottom', ease: 'none',
+            scrollTrigger: heroScrub(),
+          })
+          gsap.to('.hero-title-wall-pos', {
+            yPercent: -45, ease: 'none',
+            scrollTrigger: heroScrub(),
+          })
+          gsap.to('.hero-subtitle', {
+            yPercent: -130, ease: 'none',
+            scrollTrigger: heroScrub(),
+          })
+        }
 
         /* === MARQUEE: CSS animation 단독 처리 (GSAP 충돌 방지) === */
 
@@ -316,8 +345,14 @@ export default function HomePage() {
           justifyContent: "flex-end",
         }}
       >
-        {/* Hero 배경: Three.js 3D scene (모바일도 동일 — 모바일에서는 더 가볍게 렌더) */}
-        <HeroScene />
+        {/* Hero 배경: Three.js 3D scene (모바일도 동일 — 모바일에서는 더 가볍게 렌더)
+             .hero-scene-layer: 패럴랙스 배경 레이어 — 스크롤 시 타이틀보다 느리게 이동 */}
+        <div className="hero-scene-layer" style={{ position: "absolute", inset: 0, zIndex: 0 }}>
+          <HeroScene />
+        </div>
+
+        {/* 필름 그레인 오버레이 — 시네마틱 질감 (모바일/reduced-motion은 정지) */}
+        <div className="hero-grain" aria-hidden="true" />
 
         {/* 상단 페이드 — 네비바 영역이 3D 천장/스포트라이트와 겹치지 않도록 자연스럽게 마스킹
              네비바 뒤로 beige 톤이 은은하게 내려와서 공간감을 유지하면서 어두운 오브젝트 가려줌 */}
@@ -346,6 +381,8 @@ export default function HomePage() {
             zIndex: 10,
             textAlign: "right",
             opacity: 0,
+            // globals.css 레거시 transition(opacity 1s ease 2s)이 GSAP 트윈을 지연시키므로 차단
+            transition: "none",
           }}
         >
           <div className="hero-arrow" style={{ marginBottom: "16px", textAlign: "right" }}>
@@ -361,6 +398,8 @@ export default function HomePage() {
               color: "#111111",
               lineHeight: 1.5,
               letterSpacing: "0.05em",
+              // 전경 레이어 — 배경에서 살짝 떠 있는 깊이감
+              textShadow: "0 6px 18px rgba(17,17,17,0.14)",
             }}
           >
             <span style={{ display: "block", color: "#111111", fontSize: "0.85em", opacity: 0.75 }} lang="en">Actor Accelerating System</span>
