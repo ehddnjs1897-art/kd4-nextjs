@@ -233,6 +233,36 @@
   .hero-grain { animation: none; opacity: 0.03; }
 }
 
+/* ═══ SCROLL INDICATOR — The Row 슬라이딩 라인 ═══ */
+.hero-scroll-line {
+  width: 1px;
+  height: 52px;
+  background: rgba(17,17,17,0.13);
+  position: relative;
+  overflow: hidden;
+}
+.hero-scroll-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 40%;
+  background: rgba(17,17,17,0.5);
+  animation: scrollBeadDrop 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+@keyframes scrollBeadDrop {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(350%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll-line::after {
+    animation: none;
+    transform: translateY(130%);
+    opacity: 0.4;
+  }
+}
+
 /* ═══ CTA pulse glow — ::after 오파시티만 애니메이션 (리페인트 없음) ═══ */
 .hero-intro-section .btn-primary {
   position: relative;

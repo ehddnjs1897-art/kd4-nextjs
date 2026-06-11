@@ -438,26 +438,19 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* 스크롤 인디케이터 */}
+        {/* 스크롤 인디케이터 — The Row 슬라이딩 라인 */}
         <div
           className="hero-scroll-indicator"
           aria-hidden="true"
           style={{
             position: "absolute",
-            bottom: "12px",
+            bottom: "28px",
             left: "50%",
             transform: "translateX(-50%)",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "4px",
             opacity: 0,
           }}
         >
-          <span aria-hidden="true" style={{ fontSize: "0.6rem", letterSpacing: "0.2em", color: "rgba(17,17,17,0.5)" }}>SCROLL</span>
-          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="rgba(17,17,17,0.5)" strokeWidth="1.5">
-            <path d="M8 3v10M3 9l5 5 5-5" />
-          </svg>
+          <div className="hero-scroll-line" />
         </div>
       </section>
 
