@@ -40,7 +40,7 @@ interface ActorPersonInput {
   /** 대표 사진 URL (절대경로 권장) */
   imageUrl?: string
   /** 필모그래피 — actor_filmography 테이블 row */
-  filmography?: { title: string; role?: string | null; year?: number | null; production?: string | null }[]
+  filmography?: { category?: string | null; title: string; role?: string | null; year?: number | null; production?: string | null }[]
   /** 출연영상 youtube_id 배열 */
   videoYoutubeIds?: string[]
   /** Gemini 자동 분류 캐스팅 태그 (knowsAbout 매핑) */
@@ -107,10 +107,17 @@ export function getActorPersonSchema(actor: ActorPersonInput) {
   const igHandle = normalizeInstagramHandle(actor.instagram)
   if (igHandle) personSchema.sameAs = [`https://www.instagram.com/${igHandle}/`]
 
-  // 필모그래피 → performerIn (creativeWork)
+  // 필모그래피 → performerIn (카테고리별 세부 타입)
+  // schema.org 권장 매핑: drama→TVSeries, film→Movie, musical/theater→VisualArtwork, cf/etc→CreativeWork
+  const categoryTypeMap: Record<string, string> = {
+    drama: 'TVSeries',
+    film: 'Movie',
+    musical: 'MusicEvent',
+    theater: 'TheaterEvent',
+  }
   if (actor.filmography && actor.filmography.length > 0) {
     personSchema.performerIn = actor.filmography.slice(0, 10).map((f) => ({
-      '@type': 'CreativeWork',
+      '@type': categoryTypeMap[f.category as string] ?? 'CreativeWork',
       name: f.title,
       ...(f.year ? { datePublished: String(f.year) } : {}),
       ...(f.production ? { producer: { '@type': 'Organization', name: f.production } } : {}),
