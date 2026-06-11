@@ -13,7 +13,7 @@ export default function robots(): MetadataRoute.Robots {
           '/auth/',
           '/dashboard/',
           '/insights/',
-          '/benefits/replay',
+          // /benefits/replay: noindex meta로만 제외 (Disallow+noindex 동시 사용 시 크롤 차단으로 noindex 미인식 → 외부링크 경유 인덱싱 가능)
         ],
       },
     ],

@@ -251,6 +251,7 @@ export function buildCourseFromClass(cls: ClassItem, opts: { url: string; image?
       price: Number(cls.price.replace(/,/g, '')),
       priceCurrency: 'KRW',
       availability: 'https://schema.org/InStock',
+      category: 'Paid',
       url: opts.url,
       ...(cls.originalPrice ? { priceValidUntil: PROMO_DEADLINE } : {}),
     },
@@ -269,6 +270,7 @@ export function buildCourseFromClass(cls: ClassItem, opts: { url: string; image?
         courseMode: 'Onsite',
         ...(cls.instructor ? { instructor: { '@id': `${SITE_URL}#dongwon` } } : {}),
         inLanguage: 'ko',
+        courseWorkload: `${cls.schedule} · 회당 ${cls.duration}`,
         location: {
           '@type': 'Place',
           name: 'KD4 액팅 스튜디오',
