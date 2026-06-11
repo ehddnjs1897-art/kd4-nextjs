@@ -62,7 +62,7 @@ function getLocalBusinessSchema() {
     priceRange: '₩150,000 ~ ₩450,000',
     image: `${SITE_URL}/og-image.jpg`,
     founder: { '@id': `${SITE_URL}#dongwon` },
-    hasMap: 'https://maps.google.com/maps?q=서울시+서대문구+이화여대1안길+12',
+    hasMap: 'https://maps.google.com/maps?q=37.5577,126.9465',
   }
 }
 
