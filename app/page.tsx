@@ -908,7 +908,7 @@ export default function HomePage() {
           </p>
           <Link
             href="/about"
-            onClick={() => analytics.contact('kakao')}
+            onClick={() => analytics.ctaClick('casting_handoff', '마이즈너 테크닉 알아보기')}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -1137,7 +1137,7 @@ export default function HomePage() {
             </Link>
             <Link
               href="/join#form-hero"
-              onClick={() => analytics.contact('kakao')}
+              onClick={() => analytics.ctaClick('classes_section', '무료 상담 신청')}
               style={{
                 display: "inline-block",
                 padding: "14px 32px",
@@ -1312,7 +1312,7 @@ export default function HomePage() {
           >
             <Link
               href="/join#form"
-              onClick={() => analytics.contact('kakao')}
+              onClick={() => analytics.ctaClick('homepage_final_cta', '무료 상담 신청')}
               className="btn-primary"
               style={{
                 background: "var(--navy)",

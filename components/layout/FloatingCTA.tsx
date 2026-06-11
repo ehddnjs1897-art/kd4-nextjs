@@ -63,7 +63,7 @@ export default function FloatingCTA() {
       >
         <Link
           href="/join"
-          onClick={() => analytics.contact('kakao')}
+          onClick={() => analytics.ctaClick('floating_bar', '상담 신청')}
           style={{
             display: 'flex',
             alignItems: 'center',
