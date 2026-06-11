@@ -151,7 +151,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
         <a
           href="/join"
           aria-label={`${cls.nameKo} 무료 상담 신청`}
-          onClick={() => { analytics.viewContent(cls.nameKo); analytics.contact('kakao') }}
+          onClick={() => { analytics.viewContent(cls.nameKo); analytics.ctaClick('class_card', cls.nameKo) }}
           style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '12px 0', minHeight: 44,
             background: 'var(--gold)', color: '#fff', fontWeight: 700,
@@ -200,7 +200,7 @@ export default function ClassesPage() {
           </p>
           <Link
             href="/join"
-            onClick={() => analytics.contact('kakao')}
+            onClick={() => analytics.ctaClick('classes_mid_cta', '무료 상담 신청')}
             className="btn-primary"
             style={{ background: 'var(--navy)', color: '#fff', textDecoration: 'none' }}
           >
@@ -469,7 +469,7 @@ export default function ClassesPage() {
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
               <Link
                 href="/join"
-                onClick={() => analytics.contact('kakao')}
+                onClick={() => analytics.ctaClick('classes_final_cta', '무료 상담 신청')}
                 className="btn-primary"
                 style={{ background: 'var(--navy)', color: '#fff', textDecoration: 'none', boxShadow: '0 4px 20px rgba(21,72,138,0.3)' }}
               >
@@ -493,6 +493,24 @@ export default function ClassesPage() {
           </div>
         </div>
       </section>
+
+      {/* 내부 교차 링크 */}
+      <nav aria-label="관련 페이지" style={{ padding: '24px', background: 'var(--bg2)', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
+        <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <Link href="/meisner-technique-class" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
+            마이즈너 테크닉 클래스 <span aria-hidden="true">→</span>
+          </Link>
+          <Link href="/reel-production-class" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
+            출연영상 클래스 <span aria-hidden="true">→</span>
+          </Link>
+          <Link href="/acting-coach-dongwon-kwon" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
+            권동원 액팅 코치 <span aria-hidden="true">→</span>
+          </Link>
+          <Link href="/about" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
+            KD4 소개 <span aria-hidden="true">→</span>
+          </Link>
+        </div>
+      </nav>
     </div>
   )
 }
