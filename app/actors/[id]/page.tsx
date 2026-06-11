@@ -536,18 +536,19 @@ export default async function ActorDetailPage({
             {/* 정보 */}
             <div className="actor-profile-info" style={{ paddingTop: 8 }}>
 
-              {/* 캐스팅 태그 */}
+              {/* 캐스팅 태그 — 클릭 시 해당 태그 필터 목록으로 이동 (내부 링크 + UX) */}
               {actor.casting_tags && actor.casting_tags.length > 0 && (
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 18 }}>
                   {actor.casting_tags.map(t => (
-                    <span key={t} style={{
+                    <Link key={t} href={`/actors?tag=${encodeURIComponent(t)}`} style={{
                       fontSize: '0.67rem', fontWeight: 700, letterSpacing: '0.09em',
                       color: 'var(--gold)',
                       background: 'rgba(21,72,138,0.08)',
                       border: '1px solid rgba(21,72,138,0.20)',
                       borderRadius: 3, padding: '3px 10px',
                       fontFamily: 'var(--font-display)',
-                    }}>{t}</span>
+                      textDecoration: 'none',
+                    }}>{t}</Link>
                   ))}
                 </div>
               )}
