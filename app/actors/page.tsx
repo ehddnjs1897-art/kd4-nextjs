@@ -42,11 +42,25 @@ export async function generateMetadata(
   const qsStr = qs.toString()
   const canonicalUrl = qsStr ? `${SITE_URL}/actors?${qsStr}` : `${SITE_URL}/actors`
 
-  const desc = 'KD4 액팅 스튜디오 배우 데이터베이스. 마이즈너 테크닉으로 훈련한 배우들의 프로필·필모그래피·출연영상을 확인하세요. 캐스팅 디렉터 전용 연락처 열람 가능.'
+  // 필터 특화 설명 — 중복 콘텐츠 방지, 각 필터 페이지가 고유한 meta description 보유
+  const descPrefix = segments.length > 0 ? `${segments.join(' ')} 배우 DB — KD4 액팅 스튜디오` : 'KD4 액팅 스튜디오 배우 데이터베이스'
+  const descBody = segments.length > 0
+    ? `마이즈너 테크닉으로 훈련한 ${segments.join(' ')} 배우들의 프로필·필모그래피·출연영상`
+    : '마이즈너 테크닉으로 훈련한 배우들의 프로필·필모그래피·출연영상을 확인하세요'
+  const desc = `${descPrefix}. ${descBody}. 캐스팅 디렉터 전용 연락처 열람 가능.`
+
+  // 필터 특화 키워드 — 상위 필터 키워드를 앞에 배치
+  const filterKeywords: string[] = []
+  if (gender === '남') filterKeywords.push('남자 배우', '남자 배우 DB', '남자 배우 캐스팅')
+  else if (gender === '여') filterKeywords.push('여자 배우', '여자 배우 DB', '여자 배우 캐스팅')
+  if (ageGroup !== 'all') filterKeywords.push(`${ageGroup} 배우`, `${ageGroup} 배우 DB`)
+  for (const t of activeTags) filterKeywords.push(`${t} 배우`, `${t} 역할 배우`)
+  const keywords = [...filterKeywords, '배우 DB', 'KD4 배우 DB', '마이즈너 배우', '캐스팅 디렉터', '신촌 연기학원 배우']
+
   return {
     title: titlePrefix,
     description: desc,
-    keywords: ['배우 DB', 'KD4 배우 DB', '마이즈너 배우', '캐스팅 디렉터', '배우 프로필', '신촌 연기학원 배우', 'KD4 액팅 스튜디오 배우'],
+    keywords,
     robots: { index: true, follow: true },
     alternates: { canonical: canonicalUrl },
     openGraph: {
@@ -302,12 +316,22 @@ export default async function ActorsPage({ searchParams }: PageProps) {
         ]),
         {
           '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          '@id': `${canonicalUrl}#page`,
+          url: canonicalUrl,
+          name: listName,
+          inLanguage: 'ko',
+          isPartOf: { '@id': `${SITE_URL}#org` },
+          mainEntity: { '@id': `${canonicalUrl}#list` },
+        },
+        {
+          '@context': 'https://schema.org',
           '@type': 'ItemList',
           '@id': `${canonicalUrl}#list`,
           name: listName,
           url: canonicalUrl,
           numberOfItems: actors.length,
-          itemListElement: actors.slice(0, 15).map((a, i) => ({
+          itemListElement: actors.slice(0, 20).map((a, i) => ({
             '@type': 'ListItem',
             position: i + 1,
             url: `${SITE_URL}/actors/${a.id}`,

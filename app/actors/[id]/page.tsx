@@ -13,7 +13,7 @@ import ActorDbLocked from '@/components/actors/ActorDbLocked'
 import { UserRole } from '@/lib/types'
 import { canViewActorContact, canViewActorDb, ACTOR_DB_PUBLIC_PROFILE } from '@/lib/access'
 import { isR2Configured } from '@/lib/r2'
-import { getActorPersonSchema, getActorVideoSchemas, serializeJsonLd, normalizeInstagramHandle } from '@/lib/seo'
+import { getActorPersonSchema, getActorVideoSchemas, getActorProfilePageSchema, serializeJsonLd, normalizeInstagramHandle } from '@/lib/seo'
 import { buildBreadcrumb } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
 
@@ -410,7 +410,7 @@ export default async function ActorDetailPage({
 
   const pageUrl = `${SITE_URL}/actors/${actor.id}`
 
-  /* ── SEO: Person + VideoObject JSON-LD ── */
+  /* ── SEO: Person + VideoObject + ProfilePage JSON-LD ── */
   const personSchema = getActorPersonSchema({
     id: actor.id,
     name: actor.name.slice(0, 100),
@@ -430,6 +430,10 @@ export default async function ActorDetailPage({
     castingTags: actor.casting_tags,
     castingSummary: actor.casting_summary?.slice(0, 200),
   })
+  const profilePageDescription = actor.casting_summary?.trim()
+    ? `${actor.name} — ${actor.casting_summary}`.slice(0, 200)
+    : undefined
+  const profilePageSchema = getActorProfilePageSchema({ id: actor.id, name: actor.name, description: profilePageDescription })
   const videoSchemas = getActorVideoSchemas(
     { id: actor.id, name: actor.name },
     (actor.actor_videos ?? []).filter((v) => v.youtube_id).map((v) => ({
@@ -445,6 +449,7 @@ export default async function ActorDetailPage({
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingBottom: 100 }}>
       {/* JSON-LD */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(profilePageSchema) }} />
       {personSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(personSchema) }} />}
       {videoSchemas.map((v, i) => (
         <script key={`vid-${i}`} type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(v) }} />

@@ -71,6 +71,7 @@ export function getActorPersonSchema(actor: ActorPersonInput) {
   const personSchema: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'Person',
+    '@id': `${SITE_URL}/actors/${actor.id}#person`,
     name: actor.name,
     url: `${SITE_URL}/actors/${actor.id}`,
     jobTitle: ['배우', 'Actor'],
@@ -78,6 +79,7 @@ export function getActorPersonSchema(actor: ActorPersonInput) {
     gender: actor.gender === '남' ? 'Male' : actor.gender === '여' ? 'Female' : undefined,
     affiliation: {
       '@type': 'Organization',
+      '@id': `${SITE_URL}#org`,
       name: 'KD4 액팅 스튜디오',
       url: SITE_URL,
     },
@@ -163,6 +165,28 @@ export function getActorVideoSchemas(
 
       return schema
     })
+}
+
+/**
+ * ProfilePage — 배우 상세 페이지 래퍼 (Google People 검색 결과 노출 강화)
+ * Person 엔티티를 mainEntity로 참조. @id는 Person의 #person과 쌍을 이룸.
+ */
+export function getActorProfilePageSchema(actor: {
+  id: string
+  name: string
+  description?: string
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    '@id': `${SITE_URL}/actors/${actor.id}#page`,
+    url: `${SITE_URL}/actors/${actor.id}`,
+    name: `${actor.name} 배우 프로필 — KD4 액팅 스튜디오`,
+    ...(actor.description ? { description: actor.description } : {}),
+    inLanguage: 'ko',
+    isPartOf: { '@id': `${SITE_URL}#org` },
+    mainEntity: { '@id': `${SITE_URL}/actors/${actor.id}#person` },
+  }
 }
 
 /**
