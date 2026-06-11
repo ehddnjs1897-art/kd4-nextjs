@@ -70,7 +70,7 @@ const COMMUNITIES: CommunityItem[] = [
     pricing: [
       { label: '대표 직강 수강 중', price: '무료', note: '출연영상 클래스·마이즈너 정규·출연영상 1달·출연영상 심화·리더 클래스' },
       { label: '강사 수업 수강 중', price: '50,000원', note: '오디션 테크닉·베이직 클래스 (50% 할인)' },
-      { label: '비수강생', price: '100,000원' },
+      { label: '일반', price: '100,000원' },
     ],
   },
   {
