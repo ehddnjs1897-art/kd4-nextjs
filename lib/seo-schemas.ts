@@ -230,9 +230,11 @@ export function buildWebPage(opts: {
 /** Course — ClassItem을 상세 Course 라벨로 변환 */
 export function buildCourseFromClass(cls: ClassItem, opts: { url: string; image?: string }) {
   const desc = [cls.quote, ...cls.bullets].join(' · ')
+  const courseSlug = cls.nameEn.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-$/, '')
   return {
     '@context': 'https://schema.org',
     '@type': 'Course',
+    '@id': `${opts.url}#course-${courseSlug}`,
     name: `${cls.nameKo} (${cls.nameEn})`,
     description: desc,
     url: opts.url,
@@ -247,7 +249,7 @@ export function buildCourseFromClass(cls: ClassItem, opts: { url: string; image?
       ...(cls.originalPrice ? { priceValidUntil: PROMO_DEADLINE } : {}),
     },
     ...(cls.instructor ? { instructor: { '@id': `${SITE_URL}#dongwon` } } : {}),
-    courseMode: 'Offline',
+    courseMode: 'Onsite',
     inLanguage: 'ko',
     educationalLevel: cls.isHobby ? 'Beginner' : 'Intermediate',
     locationCreated: {
@@ -258,7 +260,7 @@ export function buildCourseFromClass(cls: ClassItem, opts: { url: string; image?
     hasCourseInstance: [
       {
         '@type': 'CourseInstance',
-        courseMode: 'Offline',
+        courseMode: 'Onsite',
         ...(cls.instructor ? { instructor: { '@id': `${SITE_URL}#dongwon` } } : {}),
         inLanguage: 'ko',
         location: {

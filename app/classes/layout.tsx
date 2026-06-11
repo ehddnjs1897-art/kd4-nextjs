@@ -55,15 +55,20 @@ const classItemListSchema = {
   name: '연기 클래스 전체 목록',
   url: PAGE_URL,
   numberOfItems: CLASSES.length,
-  itemListElement: CLASSES.map((cls, i) => ({
-    '@type': 'ListItem',
-    position: i + 1,
-    item: {
-      '@type': 'Course',
-      name: `${cls.nameKo} (${cls.nameEn})`,
-      url: CLASS_PAGE_URLS[cls.nameKo] ?? PAGE_URL,
-    },
-  })),
+  itemListElement: CLASSES.map((cls, i) => {
+    const courseUrl = CLASS_PAGE_URLS[cls.nameKo] ?? PAGE_URL
+    const courseSlug = cls.nameEn.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-$/, '')
+    return {
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': 'Course',
+        '@id': `${courseUrl}#course-${courseSlug}`,
+        name: `${cls.nameKo} (${cls.nameEn})`,
+        url: courseUrl,
+      },
+    }
+  }),
 }
 
 export default function ClassesLayout({ children }: { children: React.ReactNode }) {
@@ -80,7 +85,7 @@ export default function ClassesLayout({ children }: { children: React.ReactNode 
           url: PAGE_URL,
           name: '연기 클래스 전체 보기 — KD4 액팅 스튜디오',
           description: '베이직·마이즈너 정규·출연영상·심화·오디션·움직임·개인 레슨. 마이즈너 테크닉 기반 9개 클래스.',
-          dateModified: '2026-06-01',
+          dateModified: '2026-06-11',
         }),
         classItemListSchema,
         ...CLASSES.map((cls) => buildCourseFromClass(cls, { url: CLASS_PAGE_URLS[cls.nameKo] ?? PAGE_URL, image: `${SITE_URL}/og-image.jpg` })),
