@@ -430,6 +430,7 @@ export default async function ActorDetailPage({
   const personSchema = getActorPersonSchema({
     id: actor.id,
     name: actor.name.slice(0, 100),
+    name_en: actor.name_en ?? null,
     gender: actor.gender,
     age_group: actor.age_group ?? null,
     height: actor.height,
