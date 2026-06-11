@@ -143,6 +143,16 @@ export default function AboutPage() {
             text: s.desc,
           })),
         },
+        {
+          '@context': 'https://schema.org',
+          '@type': 'DefinedTerm',
+          '@id': `${SITE_URL}/about#term-ivana-chubbuck`,
+          name: '이바나 처벅 테크닉',
+          alternateName: 'Ivana Chubbuck Technique',
+          description: '이바나 처벅이 개발한 목표 지향적 연기 방법론. 캐릭터의 슈퍼 오브젝티브(최상위 목표)를 중심에 놓고 감정을 욕망 달성의 동력으로 삼는다. 마이즈너 테크닉과 함께 KD4 심화 과정에서 활용된다.',
+          url: `${SITE_URL}/about`,
+          sameAs: 'https://en.wikipedia.org/wiki/Ivana_Chubbuck',
+        },
       ]} />
 
       {/* ── HERO ── */}
