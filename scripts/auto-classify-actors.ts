@@ -23,6 +23,11 @@ import { classifyActor } from '../lib/actor-tags'
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
 const FORCE = process.argv.includes('--force')
+// --limit N: 처음 N명만 처리 (테스트 검증용)
+const LIMIT = (() => {
+  const i = process.argv.indexOf('--limit')
+  return i > -1 ? parseInt(process.argv[i + 1], 10) || Infinity : Infinity
+})()
 const DELAY_MS = 300
 
 if (!SUPABASE_URL || !SERVICE_KEY) {
@@ -45,7 +50,7 @@ async function main() {
     .from('actors')
     .select(
       `
-      id, name, gender, age_group, height, skills, last_classified_at,
+      id, name, gender, age_group, height, skills, last_classified_at, casting_summary,
       actor_filmography ( title, role, year, production )
     `
     )
@@ -63,11 +68,12 @@ async function main() {
   }
 
   // 멱등: last_classified_at 있는 배우 스킵 (--force 제외)
-  const targets = FORCE
+  const targets = (FORCE
     ? actors
     : actors.filter((a: { last_classified_at: string | null }) => !a.last_classified_at)
+  ).slice(0, LIMIT)
 
-  console.log(`📊 전체 ${actors.length}명 / 분류 대상 ${targets.length}명`)
+  console.log(`📊 전체 ${actors.length}명 / 분류 대상 ${targets.length}명${LIMIT !== Infinity ? ` (--limit ${LIMIT})` : ''}`)
   if (targets.length === 0) {
     console.log('✅ 모두 이미 분류됨 (--force 로 재분류 가능)')
     return
@@ -84,6 +90,7 @@ async function main() {
     age_group: string | null
     height: number | null
     skills: string[] | null
+    casting_summary: string | null
     actor_filmography: Array<{ title: string; role: string | null; year: number | null; production: string | null }>
   }>) {
     try {
@@ -104,11 +111,14 @@ async function main() {
         continue
       }
 
+      // 수동 입력 한줄소개 보존 — 사람이 쓴 소개를 AI 생성물로 덮어쓰지 않음
+      const keepManualSummary = !!actor.casting_summary?.trim()
+
       const { error: updateError } = await supabase
         .from('actors')
         .update({
           casting_tags: result.tags.length > 0 ? result.tags : null,
-          casting_summary: result.summary || null,
+          casting_summary: keepManualSummary ? actor.casting_summary : (result.summary || null),
           last_classified_at: new Date().toISOString(),
         })
         .eq('id', actor.id)
@@ -116,7 +126,7 @@ async function main() {
       if (updateError) throw updateError
 
       const tagStr = result.tags.length > 0 ? result.tags.join(',') : '(태그 없음)'
-      console.log(`✅ ${actor.name.padEnd(8)} → [${tagStr}] "${result.summary}"`)
+      console.log(`✅ ${actor.name.padEnd(8)} → [${tagStr}] "${keepManualSummary ? `(기존 소개 보존) ${actor.casting_summary}` : result.summary}"`)
       if (samples.length < 5) samples.push({ name: actor.name, ...result })
       success++
     } catch (err) {

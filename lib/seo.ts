@@ -62,7 +62,8 @@ export function getActorPersonSchema(actor: ActorPersonInput) {
     },
   }
 
-  if (actor.imageUrl) personSchema.image = actor.imageUrl
+  // placeholder SVG는 Google rich result에 사용 불가 — 실제 이미지만 포함
+  if (actor.imageUrl && !actor.imageUrl.endsWith('.svg')) personSchema.image = actor.imageUrl
   if (actor.height) personSchema.height = `${actor.height} cm`
   if (actor.weight) personSchema.weight = `${actor.weight} kg`
 
@@ -79,11 +80,13 @@ export function getActorPersonSchema(actor: ActorPersonInput) {
     ]
   }
 
-  // SNS — KD4 프로필이 기본 sameAs 앵커, 인스타그램 있으면 추가 (이메일/전화는 PII 제외)
-  const actorProfileUrl = `${SITE_URL}/actors/${actor.id}`
-  personSchema.sameAs = actor.instagram
-    ? [actorProfileUrl, actor.instagram.startsWith('http') ? actor.instagram : `https://instagram.com/${actor.instagram.replace(/^@/, '')}`]
-    : [actorProfileUrl]
+  // sameAs — 외부 플랫폼만 (자기 url은 url 필드로 이미 있음 — 자기참조 중복 금지)
+  if (actor.instagram) {
+    const ig = actor.instagram.startsWith('http')
+      ? actor.instagram
+      : `https://instagram.com/${actor.instagram.replace(/^@/, '')}`
+    personSchema.sameAs = [ig]
+  }
 
   // 필모그래피 → performerIn (creativeWork)
   if (actor.filmography && actor.filmography.length > 0) {

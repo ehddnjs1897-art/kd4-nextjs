@@ -197,15 +197,32 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
           (a.casting_tags ?? []).some((t) => toChoseong(t).includes(qCho))
         )
       } else {
-        const q = raw.toLowerCase()
-        const extraTags = expandQuery(raw)
-        list = actors.filter((a) =>
-          a.name.toLowerCase().includes(q) ||
-          (a.casting_summary ?? '').toLowerCase().includes(q) ||
-          (a.casting_tags ?? []).some((t) => t.toLowerCase().includes(q)) ||
-          (a.age_group ?? '').toLowerCase().includes(q) ||
-          (extraTags.length > 0 && (a.casting_tags ?? []).some((t) => extraTags.includes(t)))
-        )
+        const words = raw.toLowerCase().split(/\s+/).filter(Boolean)
+        if (words.length > 1) {
+          // 다중 단어 AND 검색: "주부 40대", "형사 남자" 등 복합 조건 — 모든 단어가 어느 한 필드에 매칭
+          list = actors.filter((a) =>
+            words.every((word) => {
+              const et = expandQuery(word)
+              return (
+                a.name.toLowerCase().includes(word) ||
+                (a.casting_summary ?? '').toLowerCase().includes(word) ||
+                (a.casting_tags ?? []).some((t) => t.toLowerCase().includes(word)) ||
+                (a.age_group ?? '').toLowerCase().includes(word) ||
+                (et.length > 0 && (a.casting_tags ?? []).some((t) => et.includes(t)))
+              )
+            })
+          )
+        } else {
+          const q = words[0]
+          const extraTags = expandQuery(q)
+          list = actors.filter((a) =>
+            a.name.toLowerCase().includes(q) ||
+            (a.casting_summary ?? '').toLowerCase().includes(q) ||
+            (a.casting_tags ?? []).some((t) => t.toLowerCase().includes(q)) ||
+            (a.age_group ?? '').toLowerCase().includes(q) ||
+            (extraTags.length > 0 && (a.casting_tags ?? []).some((t) => extraTags.includes(t)))
+          )
+        }
       }
     }
     // 연령대 클라이언트 세부 필터
@@ -228,7 +245,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="이름·초성(ㄱㄷㅇ)·캐스팅 타입·연령대로 검색..."
+          placeholder="이름·초성·캐스팅·연령대 검색 (예: 형사 30대)"
           aria-label="배우 이름 또는 캐스팅 타입 검색"
           style={{
             width: '100%',
@@ -356,7 +373,11 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
         style={filtered.length === 0 ? { textAlign: 'center', padding: '80px 0' } : { display: 'none' }}
       >
         <p style={{ fontSize: '0.95rem', color: 'var(--gray)', marginBottom: 16 }}>
-          {deferredQuery ? `"${deferredQuery}" 에 해당하는 배우가 없습니다.` : '등록된 배우가 없습니다.'}
+          {deferredQuery
+            ? `"${deferredQuery}" 에 해당하는 배우가 없습니다.`
+            : videoOnly
+              ? '출연영상 보유 배우가 없습니다.'
+              : '등록된 배우가 없습니다.'}
         </p>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
           {query && (
