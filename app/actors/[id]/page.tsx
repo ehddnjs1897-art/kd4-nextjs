@@ -210,7 +210,22 @@ function getActorCached(id: string) {
   )()
 }
 
-type RelatedActor = { id: string; name: string; gender: string | null; age_group: string | null; casting_tags: string[] | null }
+type RelatedActor = {
+  id: string; name: string; gender: string | null; age_group: string | null
+  casting_tags: string[] | null
+  storage_photo_path: string | null; drive_photo_id: string | null; profile_photo: string | null
+}
+
+function relatedPhotoUrl(a: RelatedActor): string | null {
+  if (a.profile_photo) return a.profile_photo
+  if (a.storage_photo_path) {
+    if (a.storage_photo_path.split('/').some((seg) => seg === '..' || seg === '.')) return null
+    const base = process.env.NEXT_PUBLIC_SUPABASE_URL
+    if (base) return `${base}/storage/v1/object/public/actor-photos/${a.storage_photo_path}`
+  }
+  if (a.drive_photo_id) return `https://drive.google.com/thumbnail?id=${encodeURIComponent(a.drive_photo_id)}&sz=w400`
+  return null
+}
 
 function getRelatedActorsCached(actorId: string, castingTags: string[]) {
   const sortedTags = [...castingTags].sort().join(',')
@@ -218,7 +233,7 @@ function getRelatedActorsCached(actorId: string, castingTags: string[]) {
     async (): Promise<RelatedActor[]> => {
       const { data: relData } = await supabaseAdmin
         .from('actors')
-        .select('id,name,gender,age_group,casting_tags')
+        .select('id,name,gender,age_group,casting_tags,storage_photo_path,drive_photo_id,profile_photo')
         .eq('is_public', true)
         .neq('id', actorId)
         .overlaps('casting_tags', castingTags)
@@ -226,14 +241,14 @@ function getRelatedActorsCached(actorId: string, castingTags: string[]) {
         .limit(50)
       if (!relData) return []
       const tagSet = new Set(castingTags)
-      const scored = (relData as RelatedActor[]).map((a) => ({
+      const scored = (relData as (RelatedActor & { _score: number })[]).map((a) => ({
         ...a,
         _score: (a.casting_tags ?? []).filter((t) => tagSet.has(t)).length,
       }))
       scored.sort((a, b) => b._score - a._score)
       return scored.slice(0, 4).map(({ _score: _, ...rest }) => rest)
     },
-    ['actor-related-v1', actorId, sortedTags],
+    ['actor-related-v2', actorId, sortedTags],
     { revalidate: 30, tags: ['actors', `actor-${actorId}`] }
   )()
 }
@@ -792,46 +807,67 @@ export default async function ActorDetailPage({
             <span style={{ marginLeft: 10, fontFamily: 'var(--font-body)', letterSpacing: 'normal', textTransform: 'none', color: 'var(--gray)' }}>비슷한 배우</span>
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
-            {relatedActors.map((a) => (
-              <Link
-                key={a.id}
-                href={`/actors/${a.id}`}
-                aria-label={[a.name, a.gender, a.age_group, '배우 프로필 보기'].filter(Boolean).join(' · ')}
-                style={{
-                  display: 'block',
-                  padding: '14px 16px',
-                  background: 'var(--bg2)',
-                  border: '1px solid var(--border)',
-                  borderRadius: 8,
-                  textDecoration: 'none',
-                  transition: 'border-color 0.2s, transform 0.2s',
-                }}
-                className="kd4-card-hover"
-              >
-                <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.95rem', fontWeight: 700, color: 'var(--white)', marginBottom: 4 }}>
-                  {a.name}
-                </p>
-                <p style={{ fontSize: '0.72rem', color: 'var(--gray)', marginBottom: 8 }}>
-                  {[a.gender, a.age_group].filter(Boolean).join(' · ')}
-                </p>
-                {a.casting_tags && a.casting_tags.length > 0 && (
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-                    {a.casting_tags.slice(0, 3).map((t) => (
-                      <span key={t} style={{
-                        fontSize: '0.7rem',
-                        background: 'rgba(21,72,138,0.08)',
-                        border: '1px solid rgba(21,72,138,0.18)',
-                        color: 'var(--gold)',
-                        padding: '2px 8px',
-                        borderRadius: 4,
-                      }}>
-                        {t}
-                      </span>
-                    ))}
+            {relatedActors.map((a) => {
+              const relPhoto = relatedPhotoUrl(a)
+              return (
+                <Link
+                  key={a.id}
+                  href={`/actors/${a.id}`}
+                  aria-label={[a.name, a.gender, a.age_group, '배우 프로필 보기'].filter(Boolean).join(' · ')}
+                  style={{
+                    display: 'block',
+                    background: 'var(--bg2)',
+                    border: '1px solid var(--border)',
+                    borderRadius: 8,
+                    textDecoration: 'none',
+                    transition: 'border-color 0.2s, transform 0.2s',
+                    overflow: 'hidden',
+                  }}
+                  className="kd4-card-hover"
+                >
+                  {/* 썸네일 — 가로형(3/2) */}
+                  <div style={{ aspectRatio: '3/2', background: 'var(--bg3)', overflow: 'hidden' }}>
+                    {relPhoto ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={relPhoto}
+                        alt={`${a.name} 배우`}
+                        loading="lazy"
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }}
+                      />
+                    ) : (
+                      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--border)', fontSize: '1.5rem' }}>
+                        <span aria-hidden="true">👤</span>
+                      </div>
+                    )}
                   </div>
-                )}
-              </Link>
-            ))}
+                  <div style={{ padding: '12px 14px' }}>
+                    <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.95rem', fontWeight: 700, color: 'var(--white)', marginBottom: 4 }}>
+                      {a.name}
+                    </p>
+                    <p style={{ fontSize: '0.72rem', color: 'var(--gray)', marginBottom: 8 }}>
+                      {[a.gender, a.age_group].filter(Boolean).join(' · ')}
+                    </p>
+                    {a.casting_tags && a.casting_tags.length > 0 && (
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                        {a.casting_tags.slice(0, 3).map((t) => (
+                          <span key={t} style={{
+                            fontSize: '0.7rem',
+                            background: 'rgba(21,72,138,0.08)',
+                            border: '1px solid rgba(21,72,138,0.18)',
+                            color: 'var(--gold)',
+                            padding: '2px 8px',
+                            borderRadius: 4,
+                          }}>
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </Link>
+              )
+            })}
           </div>
         </section>
       )}
