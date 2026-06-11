@@ -127,6 +127,16 @@ export default function MeisnerPage() {
               text: p.desc,
             })),
           },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'DefinedTerm',
+            '@id': `${PAGE_URL}#term-meisner`,
+            name: '마이즈너 테크닉',
+            alternateName: 'Meisner Technique',
+            description: 'Sandy Meisner가 개발한 배우 훈련 방법론. "상대방이 하는 것 위에서 살아있는 것"을 핵심 원리로 하며, Repetition·Activity & Door·Emotional Preparation 세 가지 훈련으로 억지 감정 없이 진짜 반응하는 연기를 만든다.',
+            url: PAGE_URL,
+            sameAs: 'https://en.wikipedia.org/wiki/Meisner_technique',
+          },
         ]}
       />
 

@@ -166,7 +166,43 @@ export default function BenefitsPage() {
           description: 'KD4 멤버가 누리는 혜택과 커뮤니티 — 보강제도, 출연영상·프로필 편집 서비스, 레피티션 스터디.',
           about: { '@id': `${SITE_URL}#org` },
           dateModified: '2026-06-11',
+          speakableCssSelectors: ['h1', 'h2'],
         }),
+        {
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          '@id': `${SITE_URL}/benefits#career-services`,
+          name: 'KD4 커리어 지원 서비스',
+          itemListElement: CAREER_SERVICES.map((svc, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            item: {
+              '@type': 'Service',
+              name: svc.title,
+              description: svc.desc,
+              provider: { '@id': `${SITE_URL}#org` },
+              offers: {
+                '@type': 'Offer',
+                price: Number(svc.price.replace(/,/g, '').replace('원', '')),
+                priceCurrency: 'KRW',
+                url: `${SITE_URL}/benefits`,
+              },
+            },
+          })),
+        },
+        {
+          '@context': 'https://schema.org',
+          '@type': 'HowTo',
+          '@id': `${SITE_URL}/benefits#howto`,
+          name: 'KD4 연기 클래스 보강 신청하는 방법',
+          description: '결석 시 KD4의 보강제도를 통해 다른 클래스에서 보강 받는 4단계 방법.',
+          step: RESCHEDULE_STEPS.map((text, i) => ({
+            '@type': 'HowToStep',
+            position: i + 1,
+            name: ['보강 자격 확인', '보강 클래스 선택', '3일 전 사전 신청', '카카오채널 접수'][i],
+            text,
+          })),
+        },
       ]} />
       {/* HERO */}
       <section
