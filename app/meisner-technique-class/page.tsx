@@ -87,10 +87,12 @@ export default function MeisnerPage() {
             { name: '마이즈너 테크닉 정규 클래스', url: PAGE_URL },
           ]),
           buildWebPage({
+            type: 'ItemPage',
             idPath: '/meisner-technique-class#webpage',
             url: PAGE_URL,
             name: '마이즈너 테크닉 정규 클래스 — KD4 액팅 스튜디오',
             description: '마이즈너 테크닉으로 훈련하는 소수정예 연기 클래스. 권동원 대표 직강.',
+            mainEntity: { '@id': `${PAGE_URL}#course-meisner-technique-class` },
             dateModified: '2026-06-11',
             speakableCssSelectors: ['h1', '.section-desc', '.faq-answer'],
           }),

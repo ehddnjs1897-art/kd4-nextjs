@@ -132,6 +132,7 @@ export function buildPersonDongwon() {
       '캐스팅',
       '연기 훈련',
     ],
+    knowsLanguage: ['Korean', 'English'],
     subjectOf: { '@type': 'WebPage', '@id': `${SITE_URL}/acting-coach-dongwon-kwon#webpage` },
     sameAs: [...SAMEAS],
   }
@@ -181,6 +182,7 @@ export function buildPersonDongwonDetailed() {
         name: title,
       })),
     ],
+    knowsLanguage: ['Korean', 'English'],
     subjectOf: { '@type': 'WebPage', '@id': `${SITE_URL}/acting-coach-dongwon-kwon#webpage` },
     sameAs: [...SAMEAS],
   }
