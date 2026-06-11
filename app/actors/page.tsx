@@ -11,27 +11,60 @@ import { buildBreadcrumb } from '@/lib/seo-schemas'
 // revalidateTag('actors') 호출 시 즉시 갱신, 실패 시 최대 1시간 후 자동 재렌더
 export const revalidate = 3600
 
-export const metadata: Metadata = {
-  title: '배우 DB',
-  description: 'KD4 액팅 스튜디오 배우 데이터베이스. 마이즈너 테크닉으로 훈련한 배우들의 프로필·필모그래피·출연영상을 확인하세요. 캐스팅 디렉터 전용 연락처 열람 가능.',
-  keywords: ['배우 DB', 'KD4 배우 DB', '마이즈너 배우', '캐스팅 디렉터', '배우 프로필', '신촌 연기학원 배우', 'KD4 액팅 스튜디오 배우'],
-  robots: { index: true, follow: true },
-  alternates: { canonical: `${SITE_URL}/actors` },
-  openGraph: {
-    type: 'website',
-    url: `${SITE_URL}/actors`,
-    title: '배우 DB | KD4 액팅 스튜디오',
-    description: 'KD4 액팅 스튜디오 배우 데이터베이스. 마이즈너 테크닉으로 훈련한 배우들의 프로필·필모그래피·출연영상을 확인하세요. 캐스팅 디렉터 전용 연락처 열람 가능.',
-    locale: 'ko_KR',
-    siteName: 'KD4 액팅 스튜디오',
-    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 배우 DB' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: '배우 DB | KD4 액팅 스튜디오',
-    description: 'KD4 액팅 스튜디오 배우 데이터베이스. 마이즈너 테크닉으로 훈련한 배우들의 프로필·필모그래피·출연영상을 확인하세요. 캐스팅 디렉터 전용 연락처 열람 가능.',
-    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 배우 DB' }],
-  },
+const VALID_TAGS = new Set(['회사원','학생','주부','의사','변호사','경찰','형사','악역','코믹','진지','카리스마','순수','엄마','아빠','딸','아들','생활연기','감정연기','액션','로맨스'])
+
+type FilterParams = { gender?: string | string[]; ageGroup?: string | string[]; tag?: string | string[] }
+
+export async function generateMetadata(
+  { searchParams }: { searchParams: Promise<FilterParams> }
+): Promise<Metadata> {
+  const params = await searchParams
+  const rawGender = Array.isArray(params.gender) ? params.gender[0] : (params.gender ?? '')
+  const gender = ['남', '여'].includes(rawGender) ? rawGender : 'all'
+  const rawAge = Array.isArray(params.ageGroup) ? params.ageGroup[0] : (params.ageGroup ?? '')
+  const ageGroup = ['20대', '30대', '40대', '50대 이상'].includes(rawAge) ? rawAge : 'all'
+  const rawTag = Array.isArray(params.tag) ? params.tag[0] : (params.tag ?? '')
+  const cleaned = rawTag.replace(/[{}\\"]/g, '').slice(0, 200)
+  const tagParts: string[] = cleaned && cleaned !== 'all' ? cleaned.split(',') : []
+  const activeTags = Array.from(new Set(tagParts.map((s) => s.trim()).filter((s) => VALID_TAGS.has(s)))).sort().slice(0, 3)
+
+  const segments: string[] = []
+  if (gender === '남') segments.push('남자')
+  else if (gender === '여') segments.push('여자')
+  if (activeTags.length > 0) segments.push(activeTags.join('·'))
+  if (ageGroup !== 'all') segments.push(ageGroup)
+  const titlePrefix = segments.length > 0 ? `${segments.join(' ')} 배우 DB` : '배우 DB'
+
+  const qs = new URLSearchParams()
+  if (gender !== 'all') qs.set('gender', gender)
+  if (ageGroup !== 'all') qs.set('ageGroup', ageGroup)
+  if (activeTags.length > 0) qs.set('tag', activeTags.join(','))
+  const qsStr = qs.toString()
+  const canonicalUrl = qsStr ? `${SITE_URL}/actors?${qsStr}` : `${SITE_URL}/actors`
+
+  const desc = 'KD4 액팅 스튜디오 배우 데이터베이스. 마이즈너 테크닉으로 훈련한 배우들의 프로필·필모그래피·출연영상을 확인하세요. 캐스팅 디렉터 전용 연락처 열람 가능.'
+  return {
+    title: titlePrefix,
+    description: desc,
+    keywords: ['배우 DB', 'KD4 배우 DB', '마이즈너 배우', '캐스팅 디렉터', '배우 프로필', '신촌 연기학원 배우', 'KD4 액팅 스튜디오 배우'],
+    robots: { index: true, follow: true },
+    alternates: { canonical: canonicalUrl },
+    openGraph: {
+      type: 'website',
+      url: canonicalUrl,
+      title: `${titlePrefix} | KD4 액팅 스튜디오`,
+      description: desc,
+      locale: 'ko_KR',
+      siteName: 'KD4 액팅 스튜디오',
+      images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 배우 DB' }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${titlePrefix} | KD4 액팅 스튜디오`,
+      description: desc,
+      images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 배우 DB' }],
+    },
+  }
 }
 
 interface Actor {
@@ -177,9 +210,6 @@ function getActorsCached(gender: string, ageGroup: string, tag: string) {
 }
 
 // 사진 URL은 lib/actor-photo의 getActorPhotoUrl 사용 (Storage 우선, Drive 폴백)
-
-// casting_tags 허용 목록 20개 — 화이트리스트 외 값 제거 (캐시 슬롯 폭발 방지)
-const VALID_TAGS = new Set(['회사원','학생','주부','의사','변호사','경찰','형사','악역','코믹','진지','카리스마','순수','엄마','아빠','딸','아들','생활연기','감정연기','액션','로맨스'])
 
 const GENDER_OPTIONS: { value: GenderFilter; label: string }[] = [
   { value: 'all', label: '전체' },
