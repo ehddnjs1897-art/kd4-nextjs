@@ -4,6 +4,7 @@ import { useState, useMemo, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import R2Video from '@/components/actors/R2Video'
 import PhotoLightbox from '@/components/actors/PhotoLightbox'
+import SignupPromptModal from '@/components/actors/SignupPromptModal'
 import YouTubeFacade from '@/components/youtube/YouTubeFacade'
 
 /* ---- 타입 ---- */
@@ -59,6 +60,47 @@ interface Props {
   imageProtected: boolean
   /** 본인 or admin: true → 필모그래피 인라인 편집 가능 */
   canEdit?: boolean
+  /** true: 비로그인 — 영상 재생 잠금, 클릭 시 회원가입 안내 (2026-06-12 부분공개 정책) */
+  videoLocked?: boolean
+}
+
+/** 비로그인용 영상 잠금 카드 — 썸네일 위 잠금 오버레이, 클릭 시 회원가입 안내 */
+function LockedVideoCard({ thumbUrl, title, onClick }: { thumbUrl: string | null; title: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={`${title} — 회원 전용 영상, 회원가입 안내 보기`}
+      style={{
+        position: 'relative',
+        width: '100%',
+        aspectRatio: '16/9',
+        borderRadius: 6,
+        overflow: 'hidden',
+        border: '1px solid var(--border)',
+        background: thumbUrl ? `#000 url("${thumbUrl}") center/cover no-repeat` : 'var(--bg3)',
+        cursor: 'pointer',
+        padding: 0,
+        display: 'block',
+      }}
+    >
+      <span style={{
+        position: 'absolute', inset: 0,
+        background: 'rgba(17,17,17,0.55)',
+        backdropFilter: 'blur(3px)',
+        display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center', gap: 8,
+      }}>
+        <span aria-hidden="true" style={{ fontSize: '1.6rem' }}>🔒</span>
+        <span style={{ color: '#fff', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.02em' }}>
+          회원 전용 영상
+        </span>
+        <span style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.72rem' }}>
+          무료 회원가입 후 시청 가능
+        </span>
+      </span>
+    </button>
+  )
 }
 
 type FilmoCategory = 'drama' | 'film' | 'cf' | 'musical' | 'theater' | 'etc'
@@ -106,7 +148,9 @@ function photoSrc(p: ActorPhoto): string {
   return '/placeholder-actor.svg'
 }
 
-export default function ActorTabs({ actor, canViewContact, imageProtected, canEdit = false }: Props) {
+export default function ActorTabs({ actor, canViewContact, imageProtected, canEdit = false, videoLocked = false }: Props) {
+  // 비로그인 영상 클릭 → 회원가입 안내 모달
+  const [signupPromptOpen, setSignupPromptOpen] = useState(false)
   // ── 편집 상태 ──
   const [filmo, setFilmo] = useState<FilmoEntry[]>(actor.actor_filmography)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -426,7 +470,18 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
           </h2>
           <div style={s.videoGrid}>
             {reelVideos.map((video) =>
-              video.youtube_id ? (
+              videoLocked ? (
+                (video.youtube_id || video.r2_key) && (
+                  <div key={video.id} style={s.videoItem}>
+                    <LockedVideoCard
+                      thumbUrl={video.youtube_id ? `https://i.ytimg.com/vi/${video.youtube_id}/hqdefault.jpg` : actor.profile_photo}
+                      title={video.title || `${actor.name} 출연영상`}
+                      onClick={() => setSignupPromptOpen(true)}
+                    />
+                    {video.title && <p style={s.videoTitle}>{video.title}</p>}
+                  </div>
+                )
+              ) : video.youtube_id ? (
                 <div key={video.id} style={s.videoItem}>
                   <YouTubeFacade
                     videoId={video.youtube_id}
@@ -457,7 +512,17 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
           </h2>
           <div style={s.videoGrid}>
             {monologueVideos.map((video) =>
-              video.youtube_id ? (
+              videoLocked ? (
+                (video.youtube_id || video.r2_key) && (
+                  <div key={video.id} style={s.videoItem}>
+                    <LockedVideoCard
+                      thumbUrl={video.youtube_id ? `https://i.ytimg.com/vi/${video.youtube_id}/hqdefault.jpg` : actor.profile_photo}
+                      title={video.title || '전략적 독백'}
+                      onClick={() => setSignupPromptOpen(true)}
+                    />
+                  </div>
+                )
+              ) : video.youtube_id ? (
                 <div key={video.id} style={s.videoItem}>
                   <YouTubeFacade
                     videoId={video.youtube_id}
@@ -759,6 +824,14 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
           />
         )
       })()}
+
+      {/* 비로그인 영상 클릭 → 회원가입 안내 */}
+      <SignupPromptModal
+        open={signupPromptOpen}
+        onClose={() => setSignupPromptOpen(false)}
+        message="출연 영상은 KD4 회원 전용입니다. 무료 회원가입 후 모든 배우의 영상을 바로 보실 수 있어요."
+        nextUrl={`/actors/${actor.id}`}
+      />
     </div>
   )
 }

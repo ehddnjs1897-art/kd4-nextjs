@@ -388,8 +388,10 @@ export default async function ActorDetailPage({
   }
 
   // (D) 로그인 사용자 중 비허용 역할 제한 (일반 user/member 등)
-  //     단, 부분공개 정책에서는 비로그인은 이미 (C)에서 통과 → 여기는 로그인 사용자만 적용
-  if (user && !canViewActorDb(role) && !isOwner) {
+  //     2026-06-12 대표 지시: 부분공개 정책에서는 로그인 사용자도 비로그인과 동일하게 본문 열람 허용
+  //     (배우·신규가입자가 로그인했는데 "권한없음" 뜨던 모순 해소 — 영상·다운로드만 잠금)
+  //     정책 OFF(킬스위치) 시에만 기존 역할 게이트로 폴백
+  if (!ACTOR_DB_PUBLIC_PROFILE && user && !canViewActorDb(role) && !isOwner) {
     return <ActorDbLocked role={role} nextUrl={`/actors/${id}`} />
   }
 
@@ -411,11 +413,12 @@ export default async function ActorDetailPage({
   // 다운로드용 URL/ID (디렉터/관리자만)
   // 프로필 문서는 same-origin 프록시(/api/actors/[id]/profile)로 받는다.
   // R2 presigned 직링크는 브라우저가 inline 렌더해 강제 다운로드가 안 되기 때문.
+  const hasProfileDoc =
+    (!!actor.profile_doc_path && isR2Configured()) || !!actor.profile_pdf_url
+  const r2VideoCount = (actor.actor_videos ?? []).filter((v) => v.r2_key).length
   let profileDocUrl: string | null = null
   const downloadVideoIds: string[] = []
   if (canContact) {
-    const hasProfileDoc =
-      (!!actor.profile_doc_path && isR2Configured()) || !!actor.profile_pdf_url
     if (hasProfileDoc) {
       profileDocUrl = `/api/actors/${actor.id}/profile`
     }
@@ -543,10 +546,19 @@ export default async function ActorDetailPage({
                   </div>
                 )}
               </div>
-              {/* 공유/다운로드 — 이미지 아래 */}
+              {/* 공유/다운로드 — 이미지 아래 (링크 복사는 전원, 다운로드는 디렉터/관리자 — 비권한자 클릭 시 안내) */}
               <div style={{ marginTop: 16, display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
                 <ShareButton webUrl={pageUrl} />
-                {canContact && <ActorDownloadButton profileUrl={profileDocUrl} videoIds={downloadVideoIds} />}
+                {canContact ? (
+                  <ActorDownloadButton profileUrl={profileDocUrl} videoIds={downloadVideoIds} />
+                ) : (hasProfileDoc || r2VideoCount > 0) ? (
+                  <ActorDownloadButton
+                    profileUrl={null}
+                    videoIds={[]}
+                    locked={user ? 'member' : 'guest'}
+                    nextUrl={`/actors/${actor.id}`}
+                  />
+                ) : null}
               </div>
             </div>
 
@@ -795,7 +807,7 @@ export default async function ActorDetailPage({
 
       {/* ActorTabs — 전체 폭 */}
       <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 clamp(20px,4vw,32px)', paddingTop: 44 }}>
-        <ActorTabs actor={actorForClient} canViewContact={canContact} imageProtected={!canContact} canEdit={isOwner} />
+        <ActorTabs actor={actorForClient} canViewContact={canContact} imageProtected={!canContact} canEdit={isOwner} videoLocked={!user} />
       </div>
 
       {/* 비슷한 배우 — 같은 캐스팅 타입 배우 탐색 (tag overlap 기준) */}

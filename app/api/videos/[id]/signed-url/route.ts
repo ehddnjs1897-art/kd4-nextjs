@@ -70,16 +70,15 @@ export async function GET(
   const requestedExpiry = parseInt(url.searchParams.get('expiry') ?? '86400', 10)
   const expirySec = Math.min(Math.max(Math.floor(requestedExpiry || 86400), 60), MAX_EXPIRY_SEC)
 
-  // role 확인 + 영상 row 병렬 조회 (admin/crew/editor/director는 모든 영상, actor는 본인 영상만)
+  // role 확인 + 영상 row(+배우 공개 여부) 병렬 조회
   const [{ data: profile }, { data: video, error: videoError }] = await Promise.all([
     supabaseAdmin.from('profiles').select('role, actor_id').eq('id', user.id).maybeSingle(),
-    supabaseAdmin.from('actor_videos').select('id, r2_key, actor_id, title').eq('id', id).maybeSingle(),
+    supabaseAdmin.from('actor_videos').select('id, r2_key, actor_id, title, actors ( is_public )').eq('id', id).maybeSingle(),
   ])
 
   const role = profile?.role
-  // member = 미승인 디렉터 — 로그인된 멤버는 영상 시청 허용
+  // 운영 역할: 모든 영상(비공개 배우 포함) 시청 가능
   const elevated = role === 'admin' || role === 'crew' || role === 'editor' || role === 'director' || role === 'member'
-  const isActorRole = role === 'actor'
 
   if (videoError || !video) {
     return NextResponse.json({ error: '영상을 찾을 수 없습니다.' }, { status: 404 })
@@ -92,18 +91,16 @@ export async function GET(
     )
   }
 
-  // 권한: 최소 actor 역할 이상이어야 접근 가능
-  if (!elevated && !isActorRole) {
+  // 시청 권한 (2026-06-12 부분공개 정책 — 회원가입 퍼널과 일치):
+  //   - 공개 배우(is_public)의 영상: 로그인 사용자 누구나 시청 가능 (user/actor 포함)
+  //   - 비공개 배우의 영상: 운영 역할(elevated) 또는 본인만
+  //   - 다운로드는 여전히 디렉터/관리자만 (아래 별도 게이트)
+  const actorsRel = (video as unknown as { actors?: { is_public?: boolean | null } | Array<{ is_public?: boolean | null }> }).actors
+  const actorIsPublic = Array.isArray(actorsRel) ? actorsRel[0]?.is_public === true : actorsRel?.is_public === true
+  const isOwnVideo = !!profile?.actor_id && video.actor_id === profile.actor_id
+  if (!actorIsPublic && !elevated && !isOwnVideo) {
     return NextResponse.json(
       { error: '이 영상은 권한이 있는 사용자만 접근 가능합니다.' },
-      { status: 403 }
-    )
-  }
-
-  // actor 역할: 본인 영상만 열람 가능 (다른 배우 리일 무단 열람 방지)
-  if (isActorRole && video.actor_id !== profile?.actor_id) {
-    return NextResponse.json(
-      { error: '본인 영상만 열람할 수 있습니다.' },
       { status: 403 }
     )
   }
