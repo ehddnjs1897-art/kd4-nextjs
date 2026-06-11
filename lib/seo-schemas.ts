@@ -108,6 +108,7 @@ export function buildPersonDongwon() {
     name: DIRECTOR.name,
     alternateName: 'Kwon Dongwon',
     jobTitle: ['액팅 코치', '연기 강사', '배우', 'KD4 대표'],
+    url: `${SITE_URL}/acting-coach-dongwon-kwon`,
     image: `${SITE_URL}${DIRECTOR.photo}`,
     worksFor: { '@id': `${SITE_URL}#org` },
     knowsAbout: [
