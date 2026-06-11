@@ -92,7 +92,7 @@ export default function CoachPage() {
             dateModified: '2026-06-11',
           }),
           buildPersonDongwonDetailed(), // 권동원 Person 정본 (필모·수상·학력 포함)
-          buildFaqPage(COACH_FAQ),
+          buildFaqPage(COACH_FAQ, PAGE_URL),
         ]}
       />
 

@@ -94,7 +94,7 @@ export default function MeisnerPage() {
             dateModified: '2026-06-11',
           }),
           buildCourseFromClass(MAIN_CLASS, { url: PAGE_URL, image: `${SITE_URL}/og-image.jpg` }),
-          buildFaqPage(MEISNER_FAQ),
+          buildFaqPage(MEISNER_FAQ, PAGE_URL),
           {
             '@context': 'https://schema.org',
             '@type': 'VideoObject',

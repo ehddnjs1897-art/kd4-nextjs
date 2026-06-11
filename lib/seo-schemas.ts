@@ -190,10 +190,11 @@ export function buildBreadcrumb(items: { name: string; url: string }[]) {
 }
 
 /** FAQPage — 페이지 FAQ 데이터를 검색엔진용 라벨로 */
-export function buildFaqPage(items: { q: string; a: string }[]) {
+export function buildFaqPage(items: { q: string; a: string }[], pageUrl?: string) {
   return {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
+    ...(pageUrl ? { '@id': `${pageUrl}#faq` } : {}),
     mainEntity: items.map((item) => ({
       '@type': 'Question',
       name: item.q,
@@ -237,6 +238,7 @@ export function buildWebPage(opts: {
 export function buildCourseFromClass(cls: ClassItem, opts: { url: string; image?: string }) {
   const desc = [cls.quote, ...cls.bullets].join(' · ')
   const courseSlug = cls.nameEn.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-$/, '')
+  const capacityNum = parseInt(cls.capacity)
   return {
     '@context': 'https://schema.org',
     '@type': 'Course',
@@ -246,6 +248,12 @@ export function buildCourseFromClass(cls: ClassItem, opts: { url: string; image?
     url: opts.url,
     ...(opts.image ? { image: opts.image } : {}),
     provider: { '@id': `${SITE_URL}#school` },
+    teaches: cls.bullets,
+    audience: {
+      '@type': 'Audience',
+      audienceType: cls.isHobby ? '취미 연기 입문자' : '배우 지망생·현역 배우',
+      geographicArea: { '@type': 'Country', name: '대한민국' },
+    },
     offers: {
       '@type': 'Offer',
       price: Number(cls.price.replace(/,/g, '')),
@@ -271,6 +279,7 @@ export function buildCourseFromClass(cls: ClassItem, opts: { url: string; image?
         ...(cls.instructor ? { instructor: { '@id': `${SITE_URL}#dongwon` } } : {}),
         inLanguage: 'ko',
         courseWorkload: `${cls.schedule} · 회당 ${cls.duration}`,
+        ...(Number.isFinite(capacityNum) ? { maximumAttendeeCapacity: capacityNum } : {}),
         location: {
           '@type': 'Place',
           name: 'KD4 액팅 스튜디오',

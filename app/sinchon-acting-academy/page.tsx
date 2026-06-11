@@ -69,7 +69,7 @@ export default function SinchonPage() {
             about: { '@id': `${SITE_URL}#school` },
             dateModified: '2026-06-11',
           }),
-          buildFaqPage(SINCHON_FAQ),
+          buildFaqPage(SINCHON_FAQ, PAGE_URL),
         ]}
       />
 

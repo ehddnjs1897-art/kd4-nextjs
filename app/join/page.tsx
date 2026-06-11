@@ -182,7 +182,7 @@ export default function JoinPage() {
           description: '마이즈너 테크닉 연기 훈련 무료 상담 신청. KD4 액팅 스튜디오 클래스 안내 및 Q&A.',
           dateModified: '2026-06-11',
         }),
-        buildFaqPage(FAQ_ITEMS),
+        buildFaqPage(FAQ_ITEMS, `${SITE_URL}/join`),
       ]} />
 
       <StickyTopBar cohorts={OPEN_COHORTS} />

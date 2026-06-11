@@ -106,7 +106,7 @@ export default function ReelPage() {
             dateModified: '2026-06-11',
           }),
           buildCourseFromClass(FILM_CLASS, { url: PAGE_URL, image: `${SITE_URL}/og-image.jpg` }),
-          buildFaqPage(REEL_FAQ),
+          buildFaqPage(REEL_FAQ, PAGE_URL),
           ...PORTFOLIO_VIDEOS.map((v) => ({
             '@context': 'https://schema.org',
             '@type': 'VideoObject',
