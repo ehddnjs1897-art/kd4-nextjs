@@ -101,6 +101,12 @@ function toChoseong(str: string): string {
 // 입력이 초성(자음)만으로 이뤄졌는지 (예: "ㄱㄷㅇ")
 const CHOSEONG_ONLY = /^[ㄱ-ㅎ\s]+$/
 
+// 성별 키워드 → gender 값 (멀티워드 AND 검색에서 "형사 여자", "30대 남자" 지원)
+const GENDER_KEYWORD_MAP: Record<string, '남' | '여'> = {
+  '여자': '여', '여성': '여', '여배우': '여',
+  '남자': '남', '남성': '남', '남배우': '남',
+}
+
 // 검색 동의어 — 캐스팅 디렉터가 쓰는 일상 표현을 whitelist 태그로 매핑
 const SYNONYM_MAP: Record<string, string[]> = {
   '경찰': ['형사'], '수사관': ['형사'], '탐정': ['형사'],
@@ -198,30 +204,24 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
         )
       } else {
         const words = raw.toLowerCase().split(/\s+/).filter(Boolean)
+        // 단어 하나가 매칭되는지 — 성별 키워드 우선 체크, 이후 필드/태그 검색
+        const wordMatches = (a: Actor, word: string): boolean => {
+          const genderMatch = GENDER_KEYWORD_MAP[word]
+          if (genderMatch) return a.gender === genderMatch
+          const et = expandQuery(word)
+          return (
+            a.name.toLowerCase().includes(word) ||
+            (a.casting_summary ?? '').toLowerCase().includes(word) ||
+            (a.casting_tags ?? []).some((t) => t.toLowerCase().includes(word)) ||
+            (a.age_group ?? '').toLowerCase().includes(word) ||
+            (et.length > 0 && (a.casting_tags ?? []).some((t) => et.includes(t)))
+          )
+        }
         if (words.length > 1) {
-          // 다중 단어 AND 검색: "주부 40대", "형사 남자" 등 복합 조건 — 모든 단어가 어느 한 필드에 매칭
-          list = actors.filter((a) =>
-            words.every((word) => {
-              const et = expandQuery(word)
-              return (
-                a.name.toLowerCase().includes(word) ||
-                (a.casting_summary ?? '').toLowerCase().includes(word) ||
-                (a.casting_tags ?? []).some((t) => t.toLowerCase().includes(word)) ||
-                (a.age_group ?? '').toLowerCase().includes(word) ||
-                (et.length > 0 && (a.casting_tags ?? []).some((t) => et.includes(t)))
-              )
-            })
-          )
+          // 다중 단어 AND 검색: "주부 40대", "형사 여자", "30대 남자" 등 복합 조건
+          list = actors.filter((a) => words.every((word) => wordMatches(a, word)))
         } else {
-          const q = words[0]
-          const extraTags = expandQuery(q)
-          list = actors.filter((a) =>
-            a.name.toLowerCase().includes(q) ||
-            (a.casting_summary ?? '').toLowerCase().includes(q) ||
-            (a.casting_tags ?? []).some((t) => t.toLowerCase().includes(q)) ||
-            (a.age_group ?? '').toLowerCase().includes(q) ||
-            (extraTags.length > 0 && (a.casting_tags ?? []).some((t) => extraTags.includes(t)))
-          )
+          list = actors.filter((a) => wordMatches(a, words[0]))
         }
       }
     }

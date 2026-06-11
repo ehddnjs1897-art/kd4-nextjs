@@ -48,5 +48,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.warn('[sitemap] Supabase 접근 실패 — 정적 페이지만 반환', e instanceof Error ? e.message : e)
   }
 
-  return [...staticPages, ...actorPages]
+  // 캐스팅 태그별 필터 페이지 — 형사 배우·의사 배우 등 키워드 검색 유입
+  const CASTING_TAGS = ['회사원','학생','주부','의사','변호사','경찰','형사','악역','코믹','진지','카리스마','순수','엄마','아빠','딸','아들','생활연기','감정연기','액션','로맨스']
+  const tagPages: MetadataRoute.Sitemap = CASTING_TAGS.map((tag) => ({
+    url: `${BASE}/actors?tag=${encodeURIComponent(tag)}`,
+    lastModified: NOW,
+    changeFrequency: 'weekly' as const,
+    priority: 0.65,
+  }))
+
+  return [...staticPages, ...actorPages, ...tagPages]
 }
