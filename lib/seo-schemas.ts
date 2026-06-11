@@ -217,6 +217,8 @@ export function buildWebPage(opts: {
   mainEntity?: { '@id': string }
   /** 마지막 콘텐츠 수정일 (ISO 8601 날짜 문자열, 예: '2026-06-11') */
   dateModified?: string
+  /** AEO/음성검색용 — 페이지에서 읽어줄 핵심 CSS 셀렉터 목록 */
+  speakableCssSelectors?: string[]
 }) {
   const schema: Record<string, unknown> = {
     '@context': 'https://schema.org',
@@ -231,6 +233,12 @@ export function buildWebPage(opts: {
   if (opts.about) schema.about = opts.about
   if (opts.mainEntity) schema.mainEntity = opts.mainEntity
   if (opts.dateModified) schema.dateModified = opts.dateModified
+  if (opts.speakableCssSelectors?.length) {
+    schema.speakable = {
+      '@type': 'SpeakableSpecification',
+      cssSelector: opts.speakableCssSelectors,
+    }
+  }
   return schema
 }
 
@@ -264,6 +272,11 @@ export function buildCourseFromClass(cls: ClassItem, opts: { url: string; image?
       ...(cls.originalPrice ? { priceValidUntil: PROMO_DEADLINE } : {}),
     },
     ...(cls.instructor ? { instructor: { '@id': `${SITE_URL}#dongwon` } } : {}),
+    potentialAction: {
+      '@type': 'RegisterAction',
+      target: `${SITE_URL}/join`,
+      agent: { '@id': `${SITE_URL}#school` },
+    },
     courseMode: 'Onsite',
     inLanguage: 'ko',
     educationalLevel: cls.isHobby ? 'Beginner' : 'Intermediate',
