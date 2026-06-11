@@ -461,6 +461,7 @@ export default async function ActorDetailPage({
                   <img
                     src={photoUrl}
                     alt={`${actor.name} 배우 프로필`}
+                    fetchPriority="high"
                     style={{ width: '100%', height: 'auto', maxHeight: '82vh', objectFit: 'contain', display: 'block' }}
                   />
                 ) : (
