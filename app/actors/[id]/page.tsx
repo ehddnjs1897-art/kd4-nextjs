@@ -464,6 +464,20 @@ export default async function ActorDetailPage({
         { name: '배우 DB', url: `${SITE_URL}/actors` },
         { name: actor.name, url: pageUrl },
       ])) }} />
+      {relatedActors.length > 0 && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd({
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          '@id': `${pageUrl}#related`,
+          name: `${actor.name}${(actor.name.charCodeAt(actor.name.length - 1) - 0xAC00) % 28 ? '과' : '와'} 비슷한 KD4 배우`,
+          numberOfItems: relatedActors.length,
+          itemListElement: relatedActors.map((a, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            item: { '@type': 'Person', name: a.name, url: `${SITE_URL}/actors/${a.id}` },
+          })),
+        }) }} />
+      )}
 
       {/* 반응형 헬퍼 */}
       <style>{`
