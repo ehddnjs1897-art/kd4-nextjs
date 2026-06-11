@@ -110,6 +110,23 @@ export default function AboutPage() {
           description: '마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 현장에서 통하는 배우를 키웁니다.',
           about: { '@id': `${SITE_URL}#org` },
         }),
+        {
+          '@context': 'https://schema.org',
+          '@type': 'VideoObject',
+          name: 'KD4 연기하지 않는 연기',
+          description: 'KD4 액팅 스튜디오의 마이즈너 테크닉 기반 연기 훈련 소개 영상. 연기하지 않는 연기, 진짜 반응을 훈련하는 KD4의 방식을 담았습니다.',
+          thumbnailUrl: 'https://i.ytimg.com/vi/tB7f4VnC6rM/hqdefault.jpg',
+          uploadDate: '2024-01-01',
+          contentUrl: 'https://www.youtube.com/watch?v=tB7f4VnC6rM',
+          embedUrl: 'https://www.youtube.com/embed/tB7f4VnC6rM',
+          inLanguage: 'ko',
+          publisher: {
+            '@type': 'Organization',
+            '@id': `${SITE_URL}#org`,
+            name: 'KD4 액팅 스튜디오',
+            url: SITE_URL,
+          },
+        },
       ]} />
 
       {/* ── HERO ── */}

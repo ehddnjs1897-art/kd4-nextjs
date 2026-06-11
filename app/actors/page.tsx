@@ -336,8 +336,12 @@ export default async function ActorsPage({ searchParams }: PageProps) {
           itemListElement: actors.slice(0, 20).map((a, i) => ({
             '@type': 'ListItem',
             position: i + 1,
-            url: `${SITE_URL}/actors/${a.id}`,
-            name: a.name,
+            item: {
+              '@type': 'Person',
+              '@id': `${SITE_URL}/actors/${a.id}#person`,
+              name: a.name,
+              url: `${SITE_URL}/actors/${a.id}`,
+            },
           })),
         },
       ]} />

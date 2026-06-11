@@ -21,10 +21,6 @@ export default function ConditionalShell({
 
   return (
     <>
-      {/* Skip navigation link — keyboard/AT accessibility (CSS .skip-nav handles show/hide via :focus-visible) */}
-      <a href="#main-content" className="skip-nav">
-        본문 바로가기
-      </a>
       <Navbar />
       <main id="main-content" style={{ paddingBottom: '88px' }}>{children}</main>
       <Footer />

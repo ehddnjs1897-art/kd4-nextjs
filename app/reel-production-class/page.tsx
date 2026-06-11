@@ -106,6 +106,23 @@ export default function ReelPage() {
           }),
           buildCourseFromClass(FILM_CLASS, { url: PAGE_URL, image: `${SITE_URL}/og-image.jpg` }),
           buildFaqPage(REEL_FAQ),
+          ...PORTFOLIO_VIDEOS.map((v) => ({
+            '@context': 'https://schema.org',
+            '@type': 'VideoObject',
+            name: `KD4 출연영상 포트폴리오 — ${v.title}`,
+            description: `KD4 액팅 스튜디오 멤버가 제작한 출연영상 포트폴리오. 전문 영화팀이 촬영·편집한 배우 캐스팅용 영상입니다.`,
+            thumbnailUrl: `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`,
+            uploadDate: '2024-01-01',
+            contentUrl: `https://www.youtube.com/watch?v=${v.id}`,
+            embedUrl: `https://www.youtube.com/embed/${v.id}`,
+            inLanguage: 'ko',
+            publisher: {
+              '@type': 'Organization',
+              '@id': `${SITE_URL}#org`,
+              name: 'KD4 액팅 스튜디오',
+              url: SITE_URL,
+            },
+          })),
         ]}
       />
 

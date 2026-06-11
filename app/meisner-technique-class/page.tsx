@@ -94,6 +94,23 @@ export default function MeisnerPage() {
           }),
           buildCourseFromClass(MAIN_CLASS, { url: PAGE_URL, image: `${SITE_URL}/og-image.jpg` }),
           buildFaqPage(MEISNER_FAQ),
+          {
+            '@context': 'https://schema.org',
+            '@type': 'VideoObject',
+            name: '마이즈너 테크닉 — KD4 액팅 스튜디오',
+            description: 'KD4 액팅 스튜디오 마이즈너 테크닉 정규 클래스 소개 영상. 연기하지 않는 연기, 진짜 반응 훈련 방식을 담았습니다.',
+            thumbnailUrl: 'https://i.ytimg.com/vi/6crvxRnBerk/hqdefault.jpg',
+            uploadDate: '2024-01-01',
+            contentUrl: 'https://www.youtube.com/watch?v=6crvxRnBerk',
+            embedUrl: 'https://www.youtube.com/embed/6crvxRnBerk',
+            inLanguage: 'ko',
+            publisher: {
+              '@type': 'Organization',
+              '@id': `${SITE_URL}#org`,
+              name: 'KD4 액팅 스튜디오',
+              url: SITE_URL,
+            },
+          },
         ]}
       />
 
