@@ -136,6 +136,8 @@ export function buildPersonDongwonDetailed() {
     name: DIRECTOR.name,
     alternateName: 'Kwon Dongwon',
     jobTitle: ['액팅 코치', '연기 강사', '배우', 'KD4 대표'],
+    gender: 'Male',
+    nationality: { '@type': 'Country', name: '대한민국' },
     description:
       'KD4 액팅 스튜디오 대표. 마이즈너 테크닉 액팅 코치이자 현역 배우로 Disney+ 무빙2, Netflix 중증외상센터 등에 출연 중.',
     url: `${SITE_URL}/acting-coach-dongwon-kwon`,
@@ -147,6 +149,10 @@ export function buildPersonDongwonDetailed() {
       '연기 코칭',
       '캐스팅',
       '오디션 독백',
+    ],
+    hasOccupation: [
+      { '@type': 'Occupation', name: '배우', alternateName: 'Actor', occupationLocation: { '@type': 'Country', name: '대한민국' } },
+      { '@type': 'Occupation', name: '액팅 코치', alternateName: 'Acting Coach', occupationLocation: { '@type': 'Country', name: '대한민국' } },
     ],
     alumniOf: [
       { '@type': 'EducationalOrganization', name: 'LA Meisner Workshop' },
