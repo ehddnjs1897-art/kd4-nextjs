@@ -23,7 +23,9 @@ export interface ClassItem {
   category?: "step2" | "step3" | "extra"; // 이후 클래스 분류
 }
 
-/** 프로모션 마감일 — 다음 프로모션 시작 시 미래 시각으로 갱신 (2026-05-30 봄맞이 종료) */
+/** 프로모션 마감일 — 다음 프로모션 시작 시 미래 시각으로 갱신 (2026-05-30 봄맞이 종료)
+ * ⚠️ 현재 과거 날짜(2026-05-31) — 사용 클래스 없음(originalPrice 모두 미설정)이므로 무해.
+ *    다음 프로모션 시 미래 날짜로 반드시 업데이트할 것 (과거 priceValidUntil → Google 경고) */
 export const PROMO_DEADLINE = '2026-05-31T23:59:59'
 
 export const CLASSES: ClassItem[] = [
