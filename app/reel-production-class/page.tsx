@@ -107,6 +107,19 @@ export default function ReelPage() {
           }),
           buildCourseFromClass(FILM_CLASS, { url: PAGE_URL, image: `${SITE_URL}/og-image.jpg` }),
           buildFaqPage(REEL_FAQ, PAGE_URL),
+          {
+            '@context': 'https://schema.org',
+            '@type': 'HowTo',
+            '@id': `${PAGE_URL}#howto`,
+            name: '출연영상(배우 포트폴리오 영상) 만드는 방법',
+            description: '전문 영화팀이 제작하는 KD4 출연영상 4단계 프로세스 — 레퍼런스 큐레이션부터 편집 납품까지.',
+            step: PROCESS.map((p, i) => ({
+              '@type': 'HowToStep',
+              position: i + 1,
+              name: p.title,
+              text: p.desc,
+            })),
+          },
           ...PORTFOLIO_VIDEOS.map((v) => ({
             '@context': 'https://schema.org',
             '@type': 'VideoObject',

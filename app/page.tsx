@@ -335,6 +335,18 @@ export default function HomePage() {
       <PageJsonLd schemas={[
         buildBreadcrumb([{ name: '홈', url: SITE_URL }]),
         buildWebPage({ idPath: '#webpage', url: SITE_URL, name: 'KD4 액팅 스튜디오 | 서울 신촌 마이즈너 테크닉 연기학원', description: '서울 신촌 마이즈너 테크닉 기반 연기학원. 연기 훈련부터 출연영상 포트폴리오 제작, 캐스팅 연계까지. 배우를 성장시키는 KD4 액팅 스튜디오.', about: { '@id': `${SITE_URL}#org` }, dateModified: '2026-06-11' }),
+        {
+          '@context': 'https://schema.org',
+          '@type': 'HowTo',
+          '@id': `${SITE_URL}#howto`,
+          name: 'KD4 액팅 스튜디오로 배우 커리어를 만드는 방법',
+          description: '마이즈너 테크닉 훈련부터 출연영상 포트폴리오, 캐스팅 연계까지 — 3단계 배우 액셀러레이팅 시스템.',
+          step: [
+            { '@type': 'HowToStep', position: 1, name: '아메리칸 액팅 메소드 트레이닝', text: '마이즈너 테크닉 · 이바나 처벅 테크닉 기반의 심층 연기 훈련' },
+            { '@type': 'HowToStep', position: 2, name: '포트폴리오 제작', text: '전문 영화팀과 함께 제작하는 출연영상으로 실전 포트폴리오 완성' },
+            { '@type': 'HowToStep', position: 3, name: '캐스팅 연계', text: '캐스팅 디렉터·조감독과 직접 연결되는 실전 캐스팅 지원' },
+          ],
+        },
       ]} />
       {/* ── 1. HERO (Dennis Snellenberg style) ───────────────────────────────── */}
       <section
