@@ -1,13 +1,16 @@
 /**
  * JSON-LD 구조화 데이터 — AEO/GEO 최적화
- * Organization + EducationalOrganization + Person(권동원) + LocalBusiness + FAQPage + Course
+ * WebSite + Organization + EducationalOrganization + Person(권동원) + LocalBusiness
  * AI 검색(ChatGPT, Perplexity, Google AI Overview)에서 KD4를 노출시키기 위함
  *
  * @id 체계 (그래프 연결):
+ *   - kd4.club#website  → WebSite (SearchAction)
  *   - kd4.club#org      → Organization
  *   - kd4.club#school   → EducationalOrganization
  *   - kd4.club#local    → LocalBusiness
  *   - kd4.club#dongwon  → Person (권동원)
+ *
+ * FAQPage·Course는 각 페이지 PageJsonLd에서만 출력 (Google 가이드: 보이는 콘텐츠와 일치 필요)
  */
 import {
   buildOrganization,
@@ -63,24 +66,7 @@ function getLocalBusinessSchema() {
   }
 }
 
-/** FAQPage — 메인 페이지 FAQ를 구조화 */
-function getFaqSchema(faqItems: { q: string; a: string }[]) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faqItems.map((item) => ({
-      '@type': 'Question',
-      name: item.q,
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: item.a,
-      },
-    })),
-  }
-}
-
-// Course 스키마는 각 클래스 페이지(classes/layout.tsx, meisner, reel 등)에서 정의됨.
-// 글로벌 JsonLd에서 Course 제거 → 중복 선언 방지 (SEO 엔티티 신호 오염 차단)
+// Course·FAQPage는 각 페이지(PageJsonLd)에서만 출력 — 글로벌 중복 선언 방지
 
 /** WebSite schema — SearchAction for site search (AEO / Google Sitelinks Searchbox) */
 function getWebSiteSchema() {
@@ -101,11 +87,7 @@ function getWebSiteSchema() {
   }
 }
 
-interface JsonLdProps {
-  faqItems?: { q: string; a: string }[]
-}
-
-export default function JsonLd({ faqItems }: JsonLdProps) {
+export default function JsonLd() {
   const website = getWebSiteSchema()
   const organization = buildOrganization()
   const school = buildEducationalOrganization()
@@ -136,12 +118,6 @@ export default function JsonLd({ faqItems }: JsonLdProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(localBusiness) }}
       />
-      {faqItems && faqItems.length > 0 && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: serializeJsonLd(getFaqSchema(faqItems)) }}
-        />
-      )}
     </>
   )
 }
