@@ -198,7 +198,8 @@ export default async function ActorsPage({ searchParams }: PageProps) {
   const VALID_AGE_GROUPS = new Set(['all', '20대', '30대', '40대', '50대 이상'])
   const gender = VALID_GENDERS.has(params.gender ?? '') ? (params.gender ?? 'all') : 'all'
   const ageGroup = VALID_AGE_GROUPS.has(params.ageGroup ?? '') ? (params.ageGroup ?? 'all') : 'all'
-  const tag = (params.tag ?? 'all').replace(/[{},\\"]/g, '').slice(0, 50)  // PostgREST 메타문자({},\") 제거 + 50자 상한
+  const rawTag = Array.isArray(params.tag) ? params.tag[0] : (params.tag ?? 'all')
+  const tag = rawTag.replace(/[{},\\"]/g, '').slice(0, 50)  // PostgREST 메타문자({},\") 제거 + 50자 상한
 
   const { actors, dbError, allTags, videoActorIds } = await getActorsCached(gender, ageGroup, tag)
   const videoIdSet = new Set(videoActorIds)
@@ -226,6 +227,12 @@ export default async function ActorsPage({ searchParams }: PageProps) {
           name: 'KD4 배우 DB',
           url: `${SITE_URL}/actors`,
           numberOfItems: actors.length,
+          itemListElement: actors.slice(0, 15).map((a, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            url: `${SITE_URL}/actors/${a.id}`,
+            name: a.name,
+          })),
         },
       ]} />
       <style>{`

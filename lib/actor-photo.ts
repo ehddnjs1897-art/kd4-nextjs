@@ -35,7 +35,7 @@ export function getActorPhotoUrl(actor: ActorPhotoSource): string {
   if (actor.storage_photo_path && SUPABASE_URL) {
     // 경로 순회 공격 방지
     if (actor.storage_photo_path.split('/').some((seg: string) => seg === '..' || seg === '.')) {
-      return '/placeholder-actor.svg'
+      return ''
     }
     return `${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKET}/${actor.storage_photo_path}`
   }
@@ -43,8 +43,8 @@ export function getActorPhotoUrl(actor: ActorPhotoSource): string {
   // drive_photo_id는 이력서 이미지 — 비로그인 목록에서 차단 (PII 보호)
   // 배우 상세 페이지에서는 profilePhotoUrl() 함수가 Drive 폴백 처리
 
-  // 3순위: 플레이스홀더
-  return '/placeholder-actor.svg'
+  // 3순위: 빈 문자열 → ActorCardImage가 초성 이니셜 폴백 표시 (다크 placeholder-actor.svg 대신)
+  return ''
 }
 
 /**

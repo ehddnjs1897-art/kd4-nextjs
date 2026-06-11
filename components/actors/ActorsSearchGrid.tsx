@@ -51,6 +51,29 @@ function toChoseong(str: string): string {
 // 입력이 초성(자음)만으로 이뤄졌는지 (예: "ㄱㄷㅇ")
 const CHOSEONG_ONLY = /^[ㄱ-ㅎ\s]+$/
 
+// 검색 동의어 — 캐스팅 디렉터가 쓰는 일상 표현을 whitelist 태그로 매핑
+const SYNONYM_MAP: Record<string, string[]> = {
+  '경찰': ['형사'], '수사관': ['형사'], '탐정': ['형사'],
+  '검사': ['변호사'], '판사': ['변호사'], '법조인': ['변호사'],
+  '의원': ['의사'], '간호사': ['의사'], '환자': ['의사'],
+  '직장인': ['회사원'], '사원': ['회사원'], '직원': ['회사원'], '팀장': ['회사원'],
+  '여고생': ['학생'], '여학생': ['학생'], '남학생': ['학생'],
+  '주인공엄마': ['엄마'], '선생님': ['엄마', '회사원'],
+  '클라이밍': ['액션'], '격투': ['액션'], '무술': ['액션'],
+  '멜로': ['로맨스'], '연애': ['로맨스'],
+  '개그': ['코믹'], '유머': ['코믹'],
+  '악당': ['악역'], '빌런': ['악역'],
+}
+// 검색어에 동의어를 태그 검색에 확장 (UI 불변)
+function expandQuery(q: string): string[] {
+  const lq = q.toLowerCase()
+  const extra: string[] = []
+  for (const [k, vs] of Object.entries(SYNONYM_MAP)) {
+    if (lq.includes(k.toLowerCase())) extra.push(...vs)
+  }
+  return extra
+}
+
 export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
   const [query, setQuery] = useState('')
   const [videoOnly, setVideoOnly] = useState(false)
@@ -120,11 +143,13 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
         )
       } else {
         const q = raw.toLowerCase()
+        const extraTags = expandQuery(raw)
         list = actors.filter((a) =>
           a.name.toLowerCase().includes(q) ||
           (a.casting_summary ?? '').toLowerCase().includes(q) ||
           (a.casting_tags ?? []).some((t) => t.toLowerCase().includes(q)) ||
-          (a.age_group ?? '').toLowerCase().includes(q)
+          (a.age_group ?? '').toLowerCase().includes(q) ||
+          (extraTags.length > 0 && (a.casting_tags ?? []).some((t) => extraTags.includes(t)))
         )
       }
     }
@@ -245,11 +270,11 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
         )}
 
         {/* 클라이언트 필터 초기화 */}
-        {(ageFilter !== 'all' || genderFilter !== 'all') && (
+        {(ageFilter !== 'all' || genderFilter !== 'all' || videoOnly) && (
           <button
             type="button"
-            onClick={() => { setAgeFilter('all'); setGenderFilter('all') }}
-            aria-label="연령대·성별 필터 초기화"
+            onClick={() => { setAgeFilter('all'); setGenderFilter('all'); setVideoOnly(false) }}
+            aria-label="연령대·성별·영상 필터 초기화"
             style={{
               padding: '6px 10px', borderRadius: 999, cursor: 'pointer',
               fontSize: '0.72rem', fontFamily: 'var(--font-sans)',
@@ -264,7 +289,9 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
       <p role="status" aria-live="polite" aria-atomic="true" style={{ fontSize: '0.8rem', color: 'var(--gray)', marginBottom: 20 }}>
         {deferredQuery
           ? `"${deferredQuery}" — ${filtered.length}명`
-          : `총 ${totalBeforeSearch}명`}
+          : (ageFilter !== 'all' || genderFilter !== 'all' || videoOnly)
+            ? `${filtered.length}명`
+            : `총 ${totalBeforeSearch}명`}
       </p>
 
       {/* 배우 그리드 — 빈 결과 status 영역은 항상 마운트(aria-live 사전마운트 WCAG 요건) */}
