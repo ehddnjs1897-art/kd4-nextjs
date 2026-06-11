@@ -201,6 +201,8 @@ export function getActorProfilePageSchema(actor: {
   id: string
   name: string
   description?: string
+  /** ISO8601 timestamp — actors.updated_at (신선도 신호) */
+  updatedAt?: string | null
 }) {
   return {
     '@context': 'https://schema.org',
@@ -210,6 +212,7 @@ export function getActorProfilePageSchema(actor: {
     name: `${actor.name} 배우 프로필 — KD4 액팅 스튜디오`,
     ...(actor.description ? { description: actor.description } : {}),
     inLanguage: 'ko',
+    ...(actor.updatedAt ? { dateModified: actor.updatedAt } : {}),
     isPartOf: { '@id': `${SITE_URL}#website` },
     mainEntity: { '@id': `${SITE_URL}/actors/${actor.id}#person` },
   }

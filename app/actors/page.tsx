@@ -314,6 +314,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
         buildBreadcrumb([
           { name: '홈', url: SITE_URL },
           { name: '배우 DB', url: `${SITE_URL}/actors` },
+          ...(h1Segments.length > 0 ? [{ name: dynamicH1, url: canonicalUrl }] : []),
         ]),
         {
           '@context': 'https://schema.org',
@@ -354,10 +355,18 @@ export default async function ActorsPage({ searchParams }: PageProps) {
       <div className="container">
         {/* 브레드크럼 */}
         <nav aria-label="위치" style={{ marginBottom: 20 }}>
-          <ol style={{ display: 'flex', alignItems: 'center', gap: 6, listStyle: 'none', margin: 0, padding: 0 }}>
+          <ol style={{ display: 'flex', alignItems: 'center', gap: 6, listStyle: 'none', margin: 0, padding: 0, flexWrap: 'wrap' }}>
             <li><Link href="/" style={styles.breadcrumb}>홈</Link></li>
             <li aria-hidden="true" style={styles.breadcrumbSep}>›</li>
-            <li aria-current="page"><span style={styles.breadcrumbActive}>배우 DB</span></li>
+            {h1Segments.length > 0 ? (
+              <>
+                <li><Link href="/actors" style={styles.breadcrumb}>배우 DB</Link></li>
+                <li aria-hidden="true" style={styles.breadcrumbSep}>›</li>
+                <li aria-current="page"><span style={styles.breadcrumbActive}>{dynamicH1}</span></li>
+              </>
+            ) : (
+              <li aria-current="page"><span style={styles.breadcrumbActive}>배우 DB</span></li>
+            )}
           </ol>
         </nav>
 

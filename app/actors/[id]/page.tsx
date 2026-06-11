@@ -32,6 +32,7 @@ interface Actor {
   drive_photo_id: string | null
   storage_photo_path: string | null
   profile_photo: string | null
+  updated_at?: string | null
   email: string | null
   phone: string | null
   instagram: string | null
@@ -96,7 +97,7 @@ function isUndefinedColumnError(err: { code?: string; message?: string } | null)
 // 단계적으로 select 컬럼을 줄여가며 재조회한다. (42703 → 다음 단계)
 function actorSelect(opts: { casting: boolean; videoType: boolean; filmExtra: boolean; advancedSkills: boolean }): string {
   return `
-      id, name, name_en, gender, age_group, height, weight, skills, is_public,
+      id, name, name_en, gender, age_group, height, weight, skills, is_public, updated_at,
       drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram, profile_doc_path${
         opts.casting ? ',\n      casting_tags, casting_summary, profile_pdf_url' : ''
       }${opts.advancedSkills ? ',\n      advanced_skills' : ''},
@@ -448,7 +449,7 @@ export default async function ActorDetailPage({
   const profilePageDescription = actor.casting_summary?.trim()
     ? `${actor.name} — ${actor.casting_summary}`.slice(0, 200)
     : undefined
-  const profilePageSchema = getActorProfilePageSchema({ id: actor.id, name: actor.name, description: profilePageDescription })
+  const profilePageSchema = getActorProfilePageSchema({ id: actor.id, name: actor.name, description: profilePageDescription, updatedAt: actor.updated_at })
   const videoSchemas = getActorVideoSchemas(
     { id: actor.id, name: actor.name },
     (actor.actor_videos ?? []).filter((v) => v.youtube_id).map((v) => ({
