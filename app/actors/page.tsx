@@ -178,6 +178,9 @@ function getActorsCached(gender: string, ageGroup: string, tag: string) {
 
 // 사진 URL은 lib/actor-photo의 getActorPhotoUrl 사용 (Storage 우선, Drive 폴백)
 
+// casting_tags 허용 목록 20개 — 화이트리스트 외 값 제거 (캐시 슬롯 폭발 방지)
+const VALID_TAGS = new Set(['회사원','학생','주부','의사','변호사','경찰','형사','악역','코믹','진지','카리스마','순수','엄마','아빠','딸','아들','생활연기','감정연기','액션','로맨스'])
+
 const GENDER_OPTIONS: { value: GenderFilter; label: string }[] = [
   { value: 'all', label: '전체' },
   { value: '남', label: '남' },
@@ -201,13 +204,11 @@ export default async function ActorsPage({ searchParams }: PageProps) {
   const gender = VALID_GENDERS.has(params.gender ?? '') ? (params.gender ?? 'all') : 'all'
   const ageGroup = VALID_AGE_GROUPS.has(params.ageGroup ?? '') ? (params.ageGroup ?? 'all') : 'all'
   const rawTag = Array.isArray(params.tag) ? params.tag[0] : (params.tag ?? 'all')
-  // 콤마 구분 다중 태그 지원: PostgREST 메타문자 제거 + 200자 상한 + 최대 3개
   const cleanedTag = rawTag.replace(/[{}\\"]/g, '').slice(0, 200)  // 콤마는 태그 구분자 — 제거 금지
-  const tag = cleanedTag  // 캐시 키용 — 하위 호환 유지 ('all' 또는 'tag1,tag2' 형태)
-  // activeTags: 실제로 활성화된 태그 목록 (UI 렌더·쿼리 공용)
-  const activeTags: string[] = tag === 'all' || !tag
-    ? []
-    : tag.split(',').filter(Boolean).slice(0, 3)  // 캐시 슬롯 폭발 방지: 최대 3개
+  // 화이트리스트 필터 + 공백 trim + 중복제거 + 가나다순 정렬 → 캐시 슬롯 일관성 + 임의값 차단
+  const rawParts: string[] = cleanedTag === 'all' || !cleanedTag ? [] : cleanedTag.split(',')
+  const activeTags: string[] = Array.from(new Set(rawParts.map((s) => s.trim()).filter((s) => VALID_TAGS.has(s)))).sort().slice(0, 3)
+  const tag = activeTags.length > 0 ? activeTags.join(',') : 'all'  // 정렬된 키 → 캐시 슬롯 최소화
 
   const { actors, dbError, allTags, videoActorIds } = await getActorsCached(gender, ageGroup,
     activeTags.length > 0 ? activeTags.join(',') : 'all'
@@ -338,20 +339,26 @@ export default async function ActorsPage({ searchParams }: PageProps) {
                 >
                   전체
                 </Link>
-                {allTags.map((t) => (
-                  <Link
-                    key={t}
-                    href={tagToggleHref(t)}
-                    aria-current={activeTags.includes(t) ? "true" : undefined}
-                    aria-label={activeTags.includes(t) ? `${t} (선택됨)` : t}
-                    style={{
-                      ...styles.filterBtn,
-                      ...(activeTags.includes(t) ? styles.filterBtnActive : {}),
-                    }}
-                  >
-                    {t}
-                  </Link>
-                ))}
+                {allTags.map((t) => {
+                  const isActive = activeTags.includes(t)
+                  const isDisabled = !isActive && activeTags.length >= 3
+                  return (
+                    <Link
+                      key={t}
+                      href={tagToggleHref(t)}
+                      aria-current={isActive ? "true" : undefined}
+                      aria-label={isActive ? `${t} (선택됨)` : isDisabled ? `${t} (최대 3개 선택됨)` : t}
+                      aria-disabled={isDisabled ? "true" : undefined}
+                      style={{
+                        ...styles.filterBtn,
+                        ...(isActive ? styles.filterBtnActive : {}),
+                        ...(isDisabled ? { opacity: 0.4, cursor: 'not-allowed', pointerEvents: 'none' as const } : {}),
+                      }}
+                    >
+                      {t}
+                    </Link>
+                  )
+                })}
               </div>
             </div>
           )}
