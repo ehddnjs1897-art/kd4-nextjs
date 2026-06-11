@@ -89,7 +89,7 @@ export default function CoachPage() {
             name: '권동원 — 액팅 코치 (리더) · 현역 배우 | KD4 액팅 스튜디오',
             description: 'KD4 대표. 마이즈너 테크닉 액팅 코치이자 현역 배우. Disney+ 무빙2, Netflix 중증외상센터 출연 중.',
             mainEntity: { '@id': `${SITE_URL}#dongwon` },
-            dateModified: '2026-06-01',
+            dateModified: '2026-06-11',
           }),
           buildPersonDongwonDetailed(), // 권동원 Person 정본 (필모·수상·학력 포함)
           buildFaqPage(COACH_FAQ),
