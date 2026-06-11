@@ -5,7 +5,6 @@ import '../styles/globals.css'
 import ConditionalShell from '@/components/layout/ConditionalShell'
 import { RouteAnnouncer } from '@/components/layout/RouteAnnouncer'
 import JsonLd from '@/components/seo/JsonLd'
-import { FAQ_ITEMS } from '@/lib/faq-items'
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
 import GAPageTracker from '@/components/analytics/GAPageTracker'
 import MetaPixel from '@/components/analytics/MetaPixel'
@@ -95,7 +94,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
-        <JsonLd faqItems={FAQ_ITEMS} />
+        <JsonLd />
         {/* KoPubWorld 서브셋 폰트 preload — Vercel edge에서 직서빙, 64~122KB */}
         <link rel="preload" href="/fonts/KoPubWorldDotum-Medium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/KoPubWorldBatang-Medium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
