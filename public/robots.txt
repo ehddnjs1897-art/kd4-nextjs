@@ -4,6 +4,7 @@ Allow: /
 Disallow: /admin
 Disallow: /auth/
 Disallow: /dashboard
+Allow: /api/og/
 Disallow: /api/
 Disallow: /board
 Disallow: /enroll
@@ -20,6 +21,7 @@ Allow: /
 Disallow: /admin
 Disallow: /auth/
 Disallow: /dashboard
+Allow: /api/og/
 Disallow: /api/
 Disallow: /board
 Disallow: /enroll
@@ -36,6 +38,7 @@ Allow: /
 Disallow: /admin
 Disallow: /auth/
 Disallow: /dashboard
+Allow: /api/og/
 Disallow: /api/
 Disallow: /board
 Disallow: /enroll
@@ -51,6 +54,7 @@ Allow: /
 Disallow: /admin
 Disallow: /auth/
 Disallow: /dashboard
+Allow: /api/og/
 Disallow: /api/
 Disallow: /board
 Disallow: /enroll
@@ -66,6 +70,7 @@ Allow: /
 Disallow: /admin
 Disallow: /auth/
 Disallow: /dashboard
+Allow: /api/og/
 Disallow: /api/
 Disallow: /board
 Disallow: /enroll
@@ -81,6 +86,7 @@ Allow: /
 Disallow: /admin
 Disallow: /auth/
 Disallow: /dashboard
+Allow: /api/og/
 Disallow: /api/
 Disallow: /board
 Disallow: /enroll
