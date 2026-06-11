@@ -58,6 +58,8 @@ export function buildOrganization() {
       areaServed: 'KR',
       availableLanguage: 'Korean',
     },
+    location: { '@id': `${SITE_URL}#local` },
+    subOrganization: [{ '@id': `${SITE_URL}#school` }],
   }
 }
 
@@ -93,6 +95,7 @@ export function buildEducationalOrganization() {
       },
     ],
     priceRange: '₩150,000 ~ ₩450,000',
+    parentOrganization: { '@id': `${SITE_URL}#org` },
   }
 }
 
@@ -199,6 +202,8 @@ export function buildWebPage(opts: {
   about?: { '@id': string }
   /** ProfilePage용 mainEntity */
   mainEntity?: { '@id': string }
+  /** 마지막 콘텐츠 수정일 (ISO 8601 날짜 문자열, 예: '2026-06-11') */
+  dateModified?: string
 }) {
   const schema: Record<string, unknown> = {
     '@context': 'https://schema.org',
@@ -212,6 +217,7 @@ export function buildWebPage(opts: {
   if (opts.description) schema.description = opts.description
   if (opts.about) schema.about = opts.about
   if (opts.mainEntity) schema.mainEntity = opts.mainEntity
+  if (opts.dateModified) schema.dateModified = opts.dateModified
   return schema
 }
 

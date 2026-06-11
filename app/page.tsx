@@ -334,7 +334,7 @@ export default function HomePage() {
     <>
       <PageJsonLd schemas={[
         buildBreadcrumb([{ name: '홈', url: SITE_URL }]),
-        buildWebPage({ idPath: '#webpage', url: SITE_URL, name: 'KD4 액팅 스튜디오 | 서울 신촌 마이즈너 테크닉 연기학원', description: '서울 신촌 마이즈너 테크닉 기반 연기학원. 연기 훈련부터 출연영상 포트폴리오 제작, 캐스팅 연계까지. 배우를 성장시키는 KD4 액팅 스튜디오.', about: { '@id': `${SITE_URL}#org` } }),
+        buildWebPage({ idPath: '#webpage', url: SITE_URL, name: 'KD4 액팅 스튜디오 | 서울 신촌 마이즈너 테크닉 연기학원', description: '서울 신촌 마이즈너 테크닉 기반 연기학원. 연기 훈련부터 출연영상 포트폴리오 제작, 캐스팅 연계까지. 배우를 성장시키는 KD4 액팅 스튜디오.', about: { '@id': `${SITE_URL}#org` }, dateModified: '2026-06-11' }),
       ]} />
       {/* ── 1. HERO (Dennis Snellenberg style) ───────────────────────────────── */}
       <section

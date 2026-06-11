@@ -145,6 +145,7 @@ export default function SeowooPartnershipPage() {
           url: `${SITE_URL}/benefits/seowoo-studio`,
           name: '서우스튜디오 프로필 촬영 제휴 — KD4 액팅 스튜디오',
           description: 'KD4 멤버 전용 배우 프로필·포트레이트 촬영 할인 — 헤어·메이크업 포함 15%, 미포함 10%.',
+          dateModified: '2026-05-20',
         }),
       ]} />
       {/* HERO */}

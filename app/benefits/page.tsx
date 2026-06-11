@@ -165,6 +165,7 @@ export default function BenefitsPage() {
           name: '멤버 혜택 — KD4 액팅 스튜디오',
           description: 'KD4 멤버가 누리는 혜택과 커뮤니티 — 보강제도, 출연영상·프로필 편집 서비스, 레피티션 스터디.',
           about: { '@id': `${SITE_URL}#org` },
+          dateModified: '2026-05-10',
         }),
       ]} />
       {/* HERO */}

@@ -109,6 +109,7 @@ export default function AboutPage() {
           name: '스튜디오 소개 — KD4 액팅 스튜디오',
           description: '마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 현장에서 통하는 배우를 키웁니다.',
           about: { '@id': `${SITE_URL}#org` },
+          dateModified: '2026-06-11',
         }),
         {
           '@context': 'https://schema.org',
