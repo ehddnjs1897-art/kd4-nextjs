@@ -63,6 +63,7 @@ function getLocalBusinessSchema() {
     image: `${SITE_URL}/og-image.jpg`,
     founder: { '@id': `${SITE_URL}#dongwon` },
     hasMap: 'https://maps.google.com/maps?q=37.5577,126.9465',
+    subjectOf: { '@type': 'WebPage', '@id': `${SITE_URL}/sinchon-acting-academy#webpage` },
   }
 }
 
