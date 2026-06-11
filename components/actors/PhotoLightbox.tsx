@@ -69,13 +69,17 @@ export default function PhotoLightbox({
     return () => window.removeEventListener('keydown', handleKey)
   }, [open, activeIndex, photos.length, onClose, onChange])
 
-  // 열렸을 때 닫기 버튼에 포커스 + body 스크롤 잠금
+  // 열렸을 때 닫기 버튼에 포커스 + body 스크롤 잠금 + 닫힐 때 포커스 복원 (WCAG 2.4.3)
   useEffect(() => {
     if (!open) return
     const prevOverflow = document.body.style.overflow
+    const prevFocus = document.activeElement as HTMLElement | null
     document.body.style.overflow = 'hidden'
     closeBtnRef.current?.focus()
-    return () => { document.body.style.overflow = prevOverflow }
+    return () => {
+      document.body.style.overflow = prevOverflow
+      prevFocus?.focus()
+    }
   }, [open])
 
   const handleBackdropClick = useCallback((e: React.MouseEvent) => {
