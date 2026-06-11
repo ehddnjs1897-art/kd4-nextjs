@@ -1,8 +1,47 @@
 'use client'
 
-import { useState, useMemo, useEffect, useDeferredValue } from 'react'
+import { useState, useMemo, useEffect, useDeferredValue, useCallback } from 'react'
 import Link from 'next/link'
 import ActorCardImage from './ActorCardImage'
+
+function CopyLinkButton({ actorId, actorName }: { actorId: string; actorName: string }) {
+  const [copied, setCopied] = useState(false)
+  const handleCopy = useCallback((e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const url = `${window.location.origin}/actors/${actorId}`
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    }).catch(() => {})
+  }, [actorId])
+  return (
+    <button
+      onClick={handleCopy}
+      aria-label={`${actorName} 배우 링크 복사`}
+      title={copied ? '복사됨!' : '링크 복사'}
+      style={{
+        position: 'absolute',
+        bottom: 7, right: 7,
+        zIndex: 2,
+        background: copied ? 'var(--gold)' : 'rgba(15,15,15,0.55)',
+        color: '#fff',
+        border: 'none',
+        borderRadius: 4,
+        padding: '3px 7px',
+        fontSize: '0.68rem',
+        cursor: 'pointer',
+        lineHeight: 1.4,
+        letterSpacing: '-0.01em',
+        backdropFilter: 'blur(4px)',
+        transition: 'background 0.18s',
+        userSelect: 'none',
+      }}
+    >
+      {copied ? '✓ 복사됨' : '링크'}
+    </button>
+  )
+}
 
 interface Actor {
   id: string
@@ -358,6 +397,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
                 </div>
               </div>
             </Link>
+            <CopyLinkButton actorId={actor.id} actorName={actor.name} />
             </li>
           ))}
         </ul>
