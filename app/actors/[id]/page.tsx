@@ -210,6 +210,34 @@ function getActorCached(id: string) {
   )()
 }
 
+type RelatedActor = { id: string; name: string; gender: string | null; age_group: string | null; casting_tags: string[] | null }
+
+function getRelatedActorsCached(actorId: string, castingTags: string[]) {
+  const sortedTags = [...castingTags].sort().join(',')
+  return unstable_cache(
+    async (): Promise<RelatedActor[]> => {
+      const { data: relData } = await supabaseAdmin
+        .from('actors')
+        .select('id,name,gender,age_group,casting_tags')
+        .eq('is_public', true)
+        .neq('id', actorId)
+        .overlaps('casting_tags', castingTags)
+        .order('created_at', { ascending: true })
+        .limit(50)
+      if (!relData) return []
+      const tagSet = new Set(castingTags)
+      const scored = (relData as RelatedActor[]).map((a) => ({
+        ...a,
+        _score: (a.casting_tags ?? []).filter((t) => tagSet.has(t)).length,
+      }))
+      scored.sort((a, b) => b._score - a._score)
+      return scored.slice(0, 4).map(({ _score: _, ...rest }) => rest)
+    },
+    ['actor-related-v1', actorId, sortedTags],
+    { revalidate: 30, tags: ['actors', `actor-${actorId}`] }
+  )()
+}
+
 function profilePhotoUrl(actor: Actor): string {
   // 우선순위: profile_photo (수동 업로드) → Storage → Drive → 플레이스홀더
   if (actor.profile_photo) return actor.profile_photo
@@ -336,28 +364,11 @@ export default async function ActorDetailPage({
     return <ActorDbLocked role={role} nextUrl={`/actors/${id}`} />
   }
 
-  // 비슷한 배우: 접근 허용 확정 후 쿼리 (A~D 통과 이후)
-  // limit(50): 현재 공개 배우 수 범위를 커버해 동점 시 비결정적 문제 방지
-  let relatedActors: Array<{ id: string; name: string; gender: string | null; age_group: string | null; casting_tags: string[] | null }> = []
-  if (actor.casting_tags && actor.casting_tags.length > 0) {
-    const { data: relData } = await supabaseAdmin
-      .from('actors')
-      .select('id,name,gender,age_group,casting_tags')
-      .eq('is_public', true)
-      .neq('id', actor.id)
-      .overlaps('casting_tags', actor.casting_tags)
-      .order('created_at', { ascending: true })
-      .limit(50)
-    if (relData) {
-      const tagSet = new Set(actor.casting_tags)
-      const scored = (relData as typeof relatedActors).map((a) => ({
-        ...a,
-        _score: (a.casting_tags ?? []).filter((t) => tagSet.has(t)).length,
-      }))
-      scored.sort((a, b) => b._score - a._score)
-      relatedActors = scored.slice(0, 4).map(({ _score: _, ...rest }) => rest)
-    }
-  }
+  // 비슷한 배우: 접근 허용 확정 후 쿼리 (A~D 통과 이후) — 30s unstable_cache
+  const relatedActors: RelatedActor[] =
+    actor.casting_tags && actor.casting_tags.length > 0
+      ? await getRelatedActorsCached(actor.id, actor.casting_tags)
+      : []
 
   const photoUrl = profilePhotoUrl(actor)
   const canContact = canViewActorContact(role)
