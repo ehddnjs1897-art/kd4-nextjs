@@ -116,7 +116,7 @@ export function getActorPersonSchema(actor: ActorPersonInput) {
   }
 
   // 필모그래피 → performerIn (카테고리별 세부 타입)
-  // schema.org 권장 매핑: drama→TVSeries, film→Movie, musical/theater→VisualArtwork, cf/etc→CreativeWork
+  // schema.org 권장 매핑: drama→TVSeries, film→Movie, musical→MusicEvent, theater→TheaterEvent, cf/etc→CreativeWork
   const categoryTypeMap: Record<string, string> = {
     drama: 'TVSeries',
     film: 'Movie',
