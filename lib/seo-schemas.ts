@@ -58,6 +58,8 @@ export function buildOrganization() {
       areaServed: 'KR',
       availableLanguage: 'Korean',
     },
+    email: 'uikactors@gmail.com',
+    knowsAbout: ['마이즈너 테크닉', '연기 훈련', '출연영상 제작', '캐스팅', '배우 액셀러레이팅'],
     location: { '@id': `${SITE_URL}#local` },
     subOrganization: [{ '@id': `${SITE_URL}#school` }],
   }
@@ -85,7 +87,9 @@ export function buildEducationalOrganization() {
     founder: { '@id': `${SITE_URL}#dongwon` },
     sameAs: [...SAMEAS],
     areaServed: ['서울특별시', '서대문구', '신촌', '이화여대', '아현', '충정로'],
+    knowsAbout: ['마이즈너 테크닉', '연기 훈련', '출연영상 포트폴리오', '오디션 준비', '캐스팅 연계'],
     telephone: '+82-10-8564-0244',
+    email: 'uikactors@gmail.com',
     openingHoursSpecification: [
       {
         '@type': 'OpeningHoursSpecification',
@@ -94,7 +98,6 @@ export function buildEducationalOrganization() {
         closes: '22:00',
       },
     ],
-    priceRange: '₩150,000 ~ ₩450,000',
     parentOrganization: { '@id': `${SITE_URL}#org` },
   }
 }
@@ -108,6 +111,8 @@ export function buildPersonDongwon() {
     name: DIRECTOR.name,
     alternateName: 'Kwon Dongwon',
     jobTitle: ['액팅 코치', '연기 강사', '배우', 'KD4 대표'],
+    gender: 'Male',
+    nationality: { '@type': 'Country', name: '대한민국' },
     url: `${SITE_URL}/acting-coach-dongwon-kwon`,
     image: `${SITE_URL}${DIRECTOR.photo}`,
     worksFor: { '@id': `${SITE_URL}#org` },
