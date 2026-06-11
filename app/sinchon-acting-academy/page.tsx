@@ -62,11 +62,13 @@ export default function SinchonPage() {
             { name: '신촌 연기학원', url: PAGE_URL },
           ]),
           buildWebPage({
+            type: 'AboutPage',
             idPath: '/sinchon-acting-academy#webpage',
             url: PAGE_URL,
             name: '신촌 연기학원 — KD4 액팅 스튜디오',
             description: '이대역 도보 3분. 마이즈너 테크닉 정규반·출연영상·오디션 클래스. 소수정예 연기 훈련.',
             about: { '@id': `${SITE_URL}#school` },
+            mainEntity: { '@id': `${SITE_URL}#local` },
             speakableCssSelectors: ['h1', '.section-desc', '.faq-answer'],
             dateModified: '2026-06-11',
           }),
