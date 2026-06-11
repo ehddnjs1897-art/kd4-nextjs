@@ -266,6 +266,16 @@ export default async function ActorsPage({ searchParams }: PageProps) {
     return `/actors?${next.toString()}`
   }
 
+  // 필터 상태에 맞는 정규화된 canonical URL 구성 (generateMetadata와 동일 로직)
+  const canonicalQs = new URLSearchParams()
+  if (gender !== 'all') canonicalQs.set('gender', gender)
+  if (ageGroup !== 'all') canonicalQs.set('ageGroup', ageGroup)
+  if (activeTags.length > 0) canonicalQs.set('tag', activeTags.join(','))
+  const canonicalUrl = canonicalQs.toString() ? `${SITE_URL}/actors?${canonicalQs.toString()}` : `${SITE_URL}/actors`
+  const listName = activeTags.length > 0
+    ? `KD4 배우 DB — ${activeTags.join('·')}`
+    : 'KD4 배우 DB'
+
   return (
     <div style={styles.page}>
       <PageJsonLd schemas={[
@@ -276,9 +286,9 @@ export default async function ActorsPage({ searchParams }: PageProps) {
         {
           '@context': 'https://schema.org',
           '@type': 'ItemList',
-          '@id': `${SITE_URL}/actors#list`,
-          name: 'KD4 배우 DB',
-          url: `${SITE_URL}/actors`,
+          '@id': `${canonicalUrl}#list`,
+          name: listName,
+          url: canonicalUrl,
           numberOfItems: actors.length,
           itemListElement: actors.slice(0, 15).map((a, i) => ({
             '@type': 'ListItem',

@@ -281,9 +281,19 @@ export async function generateMetadata({
     ? `${actor.name} · ${actor.age_group} 배우`
     : `${actor.name} · 배우`
 
+  // keywords: 이름 + 캐스팅 태그 + 연령대/성별 + 브랜드
+  const keywords = [
+    actor.name,
+    ...(actor.casting_tags ?? []),
+    actor.age_group ? `${actor.age_group} 배우` : null,
+    actor.gender === '남' ? '남자 배우' : actor.gender === '여' ? '여자 배우' : null,
+    'KD4 배우', 'KD4 액팅 스튜디오',
+  ].filter((v): v is string => !!v)
+
   return {
     title,
     description,
+    keywords,
     alternates: { canonical: pageUrl },
     robots: { index: true, follow: true },
     openGraph: {
@@ -293,6 +303,19 @@ export async function generateMetadata({
       siteName: 'KD4 액팅 스튜디오',
       type: 'profile',
       locale: 'ko_KR',
+      // og:profile 추가 속성 — 인스타그램 handle + 성별 (OG 리치 카드 강화)
+      ...((() => {
+        if (!actor.instagram) return {}
+        const handle = actor.instagram
+          .replace(/^@/, '')                              // @handle
+          .replace(/^https?:\/\//i, '')                   // https://instagram.com/...
+          .replace(/^(?:www\.)?instagram\.com\//i, '')    // instagram.com/handle (프로토콜 없는 URL)
+          .replace(/[?#].*/, '')                          // ?igsh=... 쿼리 제거
+          .replace(/\/$/, '')                             // 트레일링 슬래시
+          .replace(/^@/, '')                              // @https:// 패턴 잔여 @
+        return handle ? { username: handle } : {}
+      })()),
+      ...(actor.gender === '남' ? { gender: 'male' } : actor.gender === '여' ? { gender: 'female' } : {}),
       images: [
         {
           url: ogImage,
