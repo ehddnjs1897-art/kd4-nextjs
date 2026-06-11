@@ -390,7 +390,8 @@ export default function HomePage() {
           }}
         />
 
-        {/* 오른쪽 하단 서브타이틀 */}
+        {/* 오른쪽 하단 에디토리얼 캡션 — Lemaire 3요소 패턴(캡션·선언·DISCOVER 링크)
+             벽면 타이틀과 중복되던 'Actor Accelerating System' 제거 (2026-06-12) */}
         <div
           className="hero-subtitle"
           style={{
@@ -404,26 +405,58 @@ export default function HomePage() {
             transition: "none",
           }}
         >
-          <div className="hero-arrow" style={{ marginBottom: "16px", textAlign: "right" }}>
-            <svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(17,17,17,0.45)" strokeWidth="1">
-              <path d="M7 7l10 10M17 7v10H7" />
-            </svg>
-          </div>
           <p
             style={{
               fontFamily: "var(--font-display)",
-              fontSize: "clamp(1rem, 2vw, 1.5rem)",
+              fontSize: "clamp(0.62rem, 1.2vw, 0.72rem)",
+              fontWeight: 400,
+              letterSpacing: "0.28em",
+              textTransform: "uppercase",
+              color: "#111111",
+              opacity: 0.6,
+              marginBottom: "14px",
+            }}
+            lang="en"
+          >
+            Meisner Technique — Sinchon, Seoul
+          </p>
+          <p
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: "clamp(1.05rem, 2.2vw, 1.6rem)",
               fontWeight: 300,
               color: "#111111",
-              lineHeight: 1.5,
-              letterSpacing: "0.05em",
+              lineHeight: 1.55,
+              letterSpacing: "0.02em",
               // 전경 레이어 — 배경에서 살짝 떠 있는 깊이감
               textShadow: "0 6px 18px rgba(17,17,17,0.14)",
             }}
           >
-            <span style={{ display: "block", color: "#111111", fontSize: "0.85em", opacity: 0.75 }} lang="en">Actor Accelerating System</span>
-            연기하지 않는 연기
+            상상의 상황 속에서,
+            <br />
+            진실하게 살아내는 것
           </p>
+          <Link
+            href="#classes"
+            aria-label="클래스 알아보기"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "10px",
+              marginTop: "8px",
+              padding: "12px 0",
+              fontFamily: "var(--font-display)",
+              fontSize: "0.72rem",
+              fontWeight: 500,
+              letterSpacing: "0.3em",
+              textTransform: "uppercase",
+              color: "#111111",
+              textDecoration: "none",
+            }}
+          >
+            <span style={{ borderBottom: "1px solid rgba(17,17,17,0.4)", paddingBottom: "3px" }} lang="en">Discover</span>
+            <span aria-hidden="true">→</span>
+          </Link>
         </div>
 
         {/* sr-only h1 — JS 렌더 전에도 스크린리더에 즉시 노출 */}
