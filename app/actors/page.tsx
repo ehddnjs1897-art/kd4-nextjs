@@ -210,9 +210,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
   const activeTags: string[] = Array.from(new Set(rawParts.map((s) => s.trim()).filter((s) => VALID_TAGS.has(s)))).sort().slice(0, 3)
   const tag = activeTags.length > 0 ? activeTags.join(',') : 'all'  // 정렬된 키 → 캐시 슬롯 최소화
 
-  const { actors, dbError, allTags, videoActorIds } = await getActorsCached(gender, ageGroup,
-    activeTags.length > 0 ? activeTags.join(',') : 'all'
-  )
+  const { actors, dbError, allTags, videoActorIds } = await getActorsCached(gender, ageGroup, tag)
   const videoIdSet = new Set(videoActorIds)
 
   function filterHref(key: string, value: string) {
@@ -349,6 +347,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
                       aria-current={isActive ? "true" : undefined}
                       aria-label={isActive ? `${t} (선택됨)` : isDisabled ? `${t} (최대 3개 선택됨)` : t}
                       aria-disabled={isDisabled ? "true" : undefined}
+                      tabIndex={isDisabled ? -1 : undefined}
                       style={{
                         ...styles.filterBtn,
                         ...(isActive ? styles.filterBtnActive : {}),

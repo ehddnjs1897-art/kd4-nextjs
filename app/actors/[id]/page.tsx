@@ -307,27 +307,6 @@ export default async function ActorDetailPage({
   const actor = publicActor ?? (user ? await getActorCore(id, true) : null)
   if (!actor) notFound()
 
-  // 비슷한 배우: casting_tags overlap 기준, 현재 배우 제외, 최대 4명
-  let relatedActors: Array<{ id: string; name: string; gender: string | null; age_group: string | null; casting_tags: string[] | null }> = []
-  if (actor.casting_tags && actor.casting_tags.length > 0) {
-    const { data: relData } = await supabaseAdmin
-      .from('actors')
-      .select('id,name,gender,age_group,casting_tags')
-      .eq('is_public', true)
-      .neq('id', actor.id)
-      .overlaps('casting_tags', actor.casting_tags)
-      .limit(20)
-    if (relData) {
-      const tagSet = new Set(actor.casting_tags)
-      const scored = (relData as typeof relatedActors).map((a) => ({
-        ...a,
-        _score: (a.casting_tags ?? []).filter((t) => tagSet.has(t)).length,
-      }))
-      scored.sort((a, b) => b._score - a._score)
-      relatedActors = scored.slice(0, 4).map(({ _score: _, ...rest }) => rest)
-    }
-  }
-
   // (A) 역할/소유권 계산 — 로그인 사용자만 (비로그인은 기본값 사용)
   let role: UserRole = 'user'
   let isOwner = false
@@ -355,6 +334,29 @@ export default async function ActorDetailPage({
   //     단, 부분공개 정책에서는 비로그인은 이미 (C)에서 통과 → 여기는 로그인 사용자만 적용
   if (user && !canViewActorDb(role) && !isOwner) {
     return <ActorDbLocked role={role} nextUrl={`/actors/${id}`} />
+  }
+
+  // 비슷한 배우: 접근 허용 확정 후 쿼리 (A~D 통과 이후)
+  // limit(50): 현재 공개 배우 수 범위를 커버해 동점 시 비결정적 문제 방지
+  let relatedActors: Array<{ id: string; name: string; gender: string | null; age_group: string | null; casting_tags: string[] | null }> = []
+  if (actor.casting_tags && actor.casting_tags.length > 0) {
+    const { data: relData } = await supabaseAdmin
+      .from('actors')
+      .select('id,name,gender,age_group,casting_tags')
+      .eq('is_public', true)
+      .neq('id', actor.id)
+      .overlaps('casting_tags', actor.casting_tags)
+      .order('created_at', { ascending: true })
+      .limit(50)
+    if (relData) {
+      const tagSet = new Set(actor.casting_tags)
+      const scored = (relData as typeof relatedActors).map((a) => ({
+        ...a,
+        _score: (a.casting_tags ?? []).filter((t) => tagSet.has(t)).length,
+      }))
+      scored.sort((a, b) => b._score - a._score)
+      relatedActors = scored.slice(0, 4).map(({ _score: _, ...rest }) => rest)
+    }
   }
 
   const photoUrl = profilePhotoUrl(actor)
