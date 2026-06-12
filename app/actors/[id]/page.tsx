@@ -80,6 +80,11 @@ interface FilmoEntry {
 
 const UUID_RE_ACTOR = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
+/* HERO 최근 출연 표기용 카테고리 라벨 — 방송사/구분 값이 없을 때 폴백 */
+const HERO_CAT_LABEL: Record<FilmoEntry['category'], string> = {
+  drama: '드라마', film: '영화', cf: 'CF', musical: '공연', theater: '공연', etc: '기타',
+}
+
 /* ---- 강제 동적 렌더링 — cookies() 사용으로 정적 사전 렌더 불가 ----
    generateStaticParams + createClient(cookies()) 조합은 빌드 시 cookies() 호출로
    Next.js가 오류를 throw하고 정적 404 페이지로 저장됨.
@@ -466,8 +471,15 @@ export default async function ActorDetailPage({
   const genderLabel =
     actor.gender === '남' ? '남자 배우' : actor.gender === '여' ? '여자 배우' : '배우'
 
+  // HERO 우측 최근 출연 — 최근 2년 내 작품 최대 3편 (방송사·구분 + 작품명 compact 표기)
+  const currentYear = new Date().getFullYear()
+  const heroRecent = (actor.actor_filmography ?? [])
+    .filter((f) => f.title && (f.year ?? 0) >= currentYear - 1)
+    .sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
+    .slice(0, 3)
+
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingBottom: 100 }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingBottom: 72 }}>
       {/* JSON-LD */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(profilePageSchema) }} />
       {personSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(personSchema) }} />}
@@ -494,19 +506,21 @@ export default async function ActorDetailPage({
         }) }} />
       )}
 
-      {/* 반응형 헬퍼 */}
+      {/* 반응형 헬퍼 — HERO 2컬럼 (사진 좌 / 정보 우), 680px 이하 세로 스택 (2026-06-12 대표 지시 리디자인) */}
       <style>{`
-        .actor-profile-wrap { display:flex; flex-direction:column; gap:36px; align-items:center; }
-        .actor-profile-top { max-width:680px; margin:0 auto; width:100%; }
-        /* 정보 영역도 이미지와 동일 폭 가운데 정렬 — 좌측 쏠림 방지 */
-        .actor-profile-info { max-width:680px; margin:0 auto; width:100%; }
+        .actor-hero { display:grid; grid-template-columns:minmax(260px,400px) minmax(0,1fr); gap:clamp(24px,4vw,44px); align-items:start; }
+        /* 세로형 증명사진 프레임 — 2/3 비율 고정, 최대높이 70vh (max-width로 비율 유지한 채 제한) */
+        .actor-hero-photo { position:relative; width:100%; max-width:calc(70vh * 2 / 3); aspect-ratio:2/3; margin:0 auto; }
+        @media (max-width:680px) {
+          .actor-hero { grid-template-columns:1fr; gap:20px; }
+        }
       `}</style>
 
-      {/* 배우 프로필 헤더 */}
+      {/* 배우 프로필 HERO — 좌 사진 / 우 핵심 정보 (스크롤 없이 한 화면) */}
       <div style={{ paddingTop: 80 }}>
-        <div style={{ maxWidth: 960, margin: '0 auto', padding: '32px clamp(20px,4vw,32px) 40px' }}>
+        <div style={{ maxWidth: 960, margin: '0 auto', padding: '24px clamp(20px,4vw,32px) 32px' }}>
           {/* 시각적 브레드크럼 */}
-          <nav aria-label="위치" style={{ marginBottom: 24 }}>
+          <nav aria-label="위치" style={{ marginBottom: 18 }}>
             <ol style={{ display: 'flex', alignItems: 'center', gap: 6, listStyle: 'none', margin: 0, padding: 0, flexWrap: 'wrap' }}>
               <li><Link href="/" style={{ color: 'var(--gray)', fontSize: '0.78rem', textDecoration: 'none' }}>홈</Link></li>
               <li aria-hidden="true" style={{ color: 'var(--border)', fontSize: '0.78rem' }}>›</li>
@@ -515,59 +529,39 @@ export default async function ActorDetailPage({
               <li aria-current="page"><span style={{ color: 'var(--secondary)', fontSize: '0.78rem' }}>{actor.name}</span></li>
             </ol>
           </nav>
-          <div className="actor-profile-wrap">
+          <div className="actor-hero">
 
-            {/* 상단: 프로필/이력서 이미지 — 가로형 전체 표시 (자르지 않음) */}
-            <div className="actor-profile-top">
-              <div style={{
-                borderRadius: 10,
-                overflow: 'hidden',
-                background: 'var(--bg2)',
-                boxShadow: '0 4px 18px rgba(21,72,138,0.10)',
-                border: '1px solid var(--border)',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-                {photoUrl !== '/placeholder-actor.svg' ? (
-                  // 이력서/프로필 이미지는 가로·세로 비율이 제각각 → 자연 비율 그대로 노출(잘림 방지).
-                  // 알 수 없는 비율이라 next/image fill·고정크기 대신 일반 img가 정확. (eslint 경고는 빌드 차단 아님)
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={photoUrl}
-                    alt={`${actor.name} 배우 프로필`}
-                    fetchPriority="high"
-                    style={{ width: '100%', height: 'auto', maxHeight: '82vh', objectFit: 'contain', display: 'block' }}
-                  />
-                ) : (
-                  <div style={{ aspectRatio: '3/2', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray)', fontSize: '3rem' }}>
-                    <span className="sr-only">{actor.name} 프로필 사진 없음</span>
-                    <span aria-hidden="true">👤</span>
-                  </div>
-                )}
-              </div>
-              {/* 공유/다운로드 — 이미지 아래 (링크 복사는 전원, 다운로드는 디렉터/관리자 — 비권한자 클릭 시 안내) */}
-              <div style={{ marginTop: 16, display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
-                <ShareButton webUrl={pageUrl} />
-                {canContact ? (
-                  <ActorDownloadButton profileUrl={profileDocUrl} videoIds={downloadVideoIds} />
-                ) : (hasProfileDoc || r2VideoCount > 0) ? (
-                  <ActorDownloadButton
-                    profileUrl={null}
-                    videoIds={[]}
-                    locked={user ? 'member' : 'guest'}
-                    nextUrl={`/actors/${actor.id}`}
-                  />
-                ) : null}
-              </div>
+            {/* 좌: 세로형 증명사진 — 2/3 고정 프레임, cover 크롭 (얼굴 상단 기준) */}
+            <div className="actor-hero-photo" style={{
+              borderRadius: 10,
+              overflow: 'hidden',
+              background: 'var(--bg2)',
+              boxShadow: '0 4px 18px rgba(21,72,138,0.10)',
+              border: '1px solid var(--border)',
+            }}>
+              {photoUrl !== '/placeholder-actor.svg' ? (
+                // 증명사진 프레임(2/3) 고정 크롭 — 원본 비율을 알 수 없어 next/image 고정크기 대신 일반 img 사용. (eslint 경고는 빌드 차단 아님)
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={photoUrl}
+                  alt={`${actor.name} 배우 프로필`}
+                  fetchPriority="high"
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }}
+                />
+              ) : (
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray)', fontSize: '3rem' }}>
+                  <span className="sr-only">{actor.name} 프로필 사진 없음</span>
+                  <span aria-hidden="true">👤</span>
+                </div>
+              )}
             </div>
 
-            {/* 정보 */}
-            <div className="actor-profile-info" style={{ paddingTop: 8 }}>
+            {/* 우: 핵심 정보 — 세로 스크롤 없이 한 화면에 compact */}
+            <div className="actor-hero-info">
 
               {/* 캐스팅 태그 — 클릭 시 해당 태그 필터 목록으로 이동 (내부 링크 + UX) */}
               {actor.casting_tags && actor.casting_tags.length > 0 && (
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 18 }}>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
                   {actor.casting_tags.map(t => (
                     <Link key={t} href={`/actors?tag=${encodeURIComponent(t)}`} style={{
                       fontSize: '0.67rem', fontWeight: 700, letterSpacing: '0.09em',
@@ -585,51 +579,56 @@ export default async function ActorDetailPage({
               {/* 이름 */}
               <h1 style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(2rem, 5vw, 3rem)',
+                fontSize: 'clamp(1.9rem, 4vw, 2.7rem)',
                 fontWeight: 800, color: 'var(--white)',
-                letterSpacing: '0.01em', lineHeight: 1.05,
-                margin: '0 0 10px',
+                letterSpacing: '0.01em', lineHeight: 1.08,
+                margin: '0 0 8px',
               }}>{actor.name}</h1>
 
-              {/* 서브라인 */}
-              <p style={{ fontSize: '0.86rem', color: 'var(--gray-light)', letterSpacing: '0.04em', marginBottom: 28 }}>
-                {genderLabel}{actor.age_group ? ` · ${actor.age_group}` : ''}{actor.name_en ? <> · <span lang="en">{actor.name_en}</span></> : ''}
+              {/* 서브라인 — 성별 · 나이대 · 신장/체중 한 줄 compact */}
+              <p style={{ fontSize: '0.85rem', color: 'var(--gray-light)', letterSpacing: '0.03em', marginBottom: 14 }}>
+                {genderLabel}
+                {actor.age_group ? ` · ${actor.age_group}` : ''}
+                {actor.height ? ` · ${actor.height}cm` : ''}
+                {actor.weight ? ` · ${actor.weight}kg` : ''}
+                {actor.name_en ? <> · <span lang="en">{actor.name_en}</span></> : ''}
               </p>
 
               {/* 한줄소개 */}
               {actor.casting_summary && (
                 <p style={{
                   fontFamily: 'var(--font-serif)',
-                  fontSize: '0.97rem', color: 'var(--white)',
-                  fontWeight: 400, lineHeight: 1.8,
-                  marginBottom: 28, paddingBottom: 28,
+                  fontSize: '0.95rem', color: 'var(--white)',
+                  fontWeight: 400, lineHeight: 1.7,
+                  marginBottom: 16, paddingBottom: 16,
                   borderBottom: '1px solid var(--border)',
                 }}>
                   &ldquo;{actor.casting_summary}&rdquo;
                 </p>
               )}
 
-              {/* 스펙 */}
-              {(actor.height || actor.weight) && (
-                <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', marginBottom: 14 }}>
-                  {actor.height && (
-                    <span style={{ fontSize: '0.88rem' }}>
-                      <span style={{ color: 'var(--gray)', marginRight: 7, fontSize: '0.72rem', letterSpacing: '0.05em', textTransform: 'uppercase' }}>신장</span>
-                      <strong style={{ color: 'var(--white)', fontWeight: 600 }}>{actor.height} cm</strong>
-                    </span>
-                  )}
-                  {actor.weight && (
-                    <span style={{ fontSize: '0.88rem' }}>
-                      <span style={{ color: 'var(--gray)', marginRight: 7, fontSize: '0.72rem', letterSpacing: '0.05em', textTransform: 'uppercase' }}>체중</span>
-                      <strong style={{ color: 'var(--white)', fontWeight: 600 }}>{actor.weight} kg</strong>
-                    </span>
-                  )}
+              {/* 최근 출연 — 방송사+작품명 간단 표기 (최근 2년, 최대 3편) */}
+              {heroRecent.length > 0 && (
+                <div style={{ marginBottom: 16 }}>
+                  <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', color: 'var(--gold)', marginBottom: 7 }}>최근 출연</p>
+                  <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    {heroRecent.map((f) => {
+                      const prefix = (f.category === 'drama' ? f.broadcaster : f.category === 'film' ? f.film_type : null) || HERO_CAT_LABEL[f.category]
+                      return (
+                        <li key={f.id} style={{ fontSize: '0.85rem', color: 'var(--white)', lineHeight: 1.5 }}>
+                          <span style={{ color: 'var(--gray)', marginRight: 6 }}>{prefix}</span>
+                          <strong style={{ fontWeight: 600 }}>{f.title}</strong>
+                          {f.year ? <span style={{ color: 'var(--gray)', fontSize: '0.78rem' }}> · {f.year}</span> : null}
+                        </li>
+                      )
+                    })}
+                  </ul>
                 </div>
               )}
 
               {/* 특기 */}
               {actor.skills && actor.skills.length > 0 && (
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 28 }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
                   {actor.skills.map((sk) => {
                     const isAdvanced = (actor.advanced_skills ?? []).includes(sk)
                     return (
@@ -652,7 +651,7 @@ export default async function ActorDetailPage({
 
               {/* 사투리 */}
               {actor.dialects && actor.dialects.length > 0 && (
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center', marginBottom: 28 }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center', marginBottom: 14 }}>
                   <span style={{ fontSize: '0.72rem', color: 'var(--gray)', letterSpacing: '0.05em', marginRight: 2 }}>사투리</span>
                   {actor.dialects.map((d) => (
                     <span key={d} style={{
@@ -670,11 +669,11 @@ export default async function ActorDetailPage({
               )}
 
               {/* 구분선 */}
-              <div style={{ borderTop: '1px solid var(--border)', marginBottom: 22 }} />
+              <div style={{ borderTop: '1px solid var(--border)', marginBottom: 14 }} />
 
-              {/* 연락처 — 라벨+값 행 구조 (신장·체중과 동일 패턴, 전화·이메일·인스타 구분.
+              {/* 연락처 — 라벨+값 행 구조 (전화·이메일·인스타 구분.
                   2026-06-12 대표 지시: 한 줄 뭉침 ☎✉@ 가 구분이 안 가 재디자인) */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'max-content 1fr', rowGap: 10, columnGap: 18, alignItems: 'baseline' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'max-content 1fr', rowGap: 8, columnGap: 18, alignItems: 'baseline', marginBottom: 18 }}>
                 {canContact ? (
                   <>
                     {actor.phone && (
@@ -714,7 +713,26 @@ export default async function ActorDetailPage({
                 )}
               </div>
 
-              {/* 캐스팅 문의 폼 — 연락처 블록 바로 아래 */}
+              {/* 공유 / 다운로드 — 나란히 (링크 복사는 전원, 다운로드는 디렉터/관리자 — 비권한자 클릭 시 안내) */}
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+                <ShareButton webUrl={pageUrl} />
+                {canContact ? (
+                  <div style={{ flex: '1 1 200px' }}>
+                    <ActorDownloadButton profileUrl={profileDocUrl} videoIds={downloadVideoIds} />
+                  </div>
+                ) : (hasProfileDoc || r2VideoCount > 0) ? (
+                  <div style={{ flex: '1 1 200px' }}>
+                    <ActorDownloadButton
+                      profileUrl={null}
+                      videoIds={[]}
+                      locked={user ? 'member' : 'guest'}
+                      nextUrl={`/actors/${actor.id}`}
+                    />
+                  </div>
+                ) : null}
+              </div>
+
+              {/* 캐스팅 문의 폼 — 버튼 줄 바로 아래 */}
               <CastingInquiry
                 actorId={actor.id}
                 actorName={actor.name}
@@ -729,66 +747,24 @@ export default async function ActorDetailPage({
       {/* 메인 구분선 */}
       <div style={{ borderTop: '2px solid var(--border)' }} />
 
-      {/* 하이라이트 strip — 수상·최근출연·특이 스킬 (있을 때만 노출) */}
-      {(() => {
-        // 진짜 수상만 하이라이트 (영화제 출품·선정·후보는 제외 — 필모 표에서 작품 옆 빨강 표기)
-        const awards = (actor.actor_filmography ?? []).filter(f =>
-          f.award && f.award.trim()
-          && /(수상|대상|그랑프리|최우수|우수상|신인상|연기상|작품상|남우|여우|특별상|심사위원|감독상|인기상)/.test(f.award)
-          && !/(후보|노미네이트|노미네이션|nominee|nominat)/i.test(f.award))
-        const currentYear = new Date().getFullYear()
-        const recent = (actor.actor_filmography ?? [])
-          .filter(f => (f.year ?? 0) >= currentYear - 1 && f.title)
-          .sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
-          .slice(0, 2)
-        const featuredSkills = (actor.skills ?? []).slice(0, 4)
-        const hasHighlight = awards.length > 0 || recent.length > 0 || featuredSkills.length > 0 || (actor.casting_tags && actor.casting_tags.length > 0)
-        if (!hasHighlight) return null
-
-        return (
-          <section
-            aria-label={`${actor.name} 하이라이트`}
-            style={{
-              maxWidth: 960,
-              margin: '0 auto',
-              padding: '32px clamp(20px,4vw,32px) 0',
-            }}
-          >
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-              gap: 14,
-            }}>
-              {awards.length > 0 && (
-                <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 8, padding: '14px 18px' }}>
-                  <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.65rem', letterSpacing: '0.2em', color: 'var(--gold)', marginBottom: 8 }}>
-                    <span lang="en">AWARDS</span>
-                  </p>
-                  <ul role="list" style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                    {awards.slice(0, 3).map((f) => (
-                      <li key={f.id} style={{ fontSize: '0.85rem', color: 'var(--white)', lineHeight: 1.4 }}>
-                        {f.award}
-                        {f.title && <span style={{ color: 'var(--gray)', fontSize: '0.78rem' }}> · {f.title}</span>}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          </section>
-        )
-      })()}
-
-      {/* ActorTabs — 전체 폭 */}
-      <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 clamp(20px,4vw,32px)', paddingTop: 44 }}>
-        <ActorTabs actor={actorForClient} canViewContact={canContact} imageProtected={!canContact} canEdit={isOwner} videoLocked={!user} />
+      {/* ActorTabs — 전체 폭 (갤러리 → 영상 → AWARDS → 최근출연 → 필모그래피)
+          mainPhotoUrl: HERO 메인사진과 동일 URL은 갤러리에서 중복 제거 */}
+      <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 clamp(20px,4vw,32px)', paddingTop: 28 }}>
+        <ActorTabs
+          actor={actorForClient}
+          canViewContact={canContact}
+          imageProtected={!canContact}
+          canEdit={isOwner}
+          videoLocked={!user}
+          mainPhotoUrl={photoUrl !== '/placeholder-actor.svg' ? photoUrl : undefined}
+        />
       </div>
 
       {/* 비슷한 배우 — 같은 캐스팅 타입 배우 탐색 (tag overlap 기준) */}
       {relatedActors.length > 0 && (
         <section
           aria-label="비슷한 배우"
-          style={{ maxWidth: 960, margin: '0 auto', padding: '40px clamp(20px,4vw,32px) 48px' }}
+          style={{ maxWidth: 960, margin: '0 auto', padding: '32px clamp(20px,4vw,32px) 40px' }}
         >
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '0.65rem', letterSpacing: '0.2em', color: 'var(--gold)', marginBottom: 20, fontWeight: 700, padding: 0 }}>
             <span lang="en">SIMILAR ACTORS</span>

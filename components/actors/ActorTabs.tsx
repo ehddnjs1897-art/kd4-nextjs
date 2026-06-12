@@ -62,6 +62,8 @@ interface Props {
   canEdit?: boolean
   /** true: 비로그인 — 영상 재생 잠금, 클릭 시 회원가입 안내 (2026-06-12 부분공개 정책) */
   videoLocked?: boolean
+  /** HERO 메인 프로필 사진 URL — 갤러리에서 동일 URL 중복 노출 방지 (2026-06-12 리디자인) */
+  mainPhotoUrl?: string
 }
 
 /** 비로그인용 영상 잠금 카드 — 썸네일 위 잠금 오버레이, 클릭 시 회원가입 안내 */
@@ -148,7 +150,7 @@ function photoSrc(p: ActorPhoto): string {
   return '/placeholder-actor.svg'
 }
 
-export default function ActorTabs({ actor, canViewContact, imageProtected, canEdit = false, videoLocked = false }: Props) {
+export default function ActorTabs({ actor, canViewContact, imageProtected, canEdit = false, videoLocked = false, mainPhotoUrl }: Props) {
   // 비로그인 영상 클릭 → 회원가입 안내 모달
   const [signupPromptOpen, setSignupPromptOpen] = useState(false)
   // ── 편집 상태 ──
@@ -269,11 +271,12 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
   const sortedPhotos = [...actor.actor_photos].sort((a, b) => a.sort_order - b.sort_order)
 
   // 프로필사진: photo_type='profile' 또는 null/undefined
+  // mainPhotoUrl과 동일한 URL은 skip — HERO 메인사진이 갤러리에 또 나오는 중복 방지 (2026-06-12 대표 지시)
   const profilePhotos = sortedPhotos.filter(p => !p.photo_type || p.photo_type === 'profile')
   const stripPhotos: string[] = []
   for (const p of profilePhotos) {
     const src = photoSrc(p)
-    if (src && !stripPhotos.includes(src)) stripPhotos.push(src)
+    if (src && src !== mainPhotoUrl && !stripPhotos.includes(src)) stripPhotos.push(src)
     if (stripPhotos.length >= 4) break
   }
 
@@ -544,6 +547,45 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
         </section>
       )}
 
+      {/* ============ 수상이력 — 영상 아래·최근출연 위 (2026-06-12 리디자인 순서) ============ */}
+      {awardEntries.length > 0 && (
+        <section aria-label="수상 이력" style={s.section}>
+          <h2 style={{ ...s.sectionHeading, borderBottomColor: 'var(--accent-red)' }}>
+            <span aria-hidden="true" style={{ ...s.sectionNum, color: 'var(--accent-red)' }}>🏆</span>
+            <span style={{ ...s.sectionTitle, color: 'var(--accent-red)' }}>수상</span>
+            <span lang="en" style={{ ...s.sectionEn, color: 'var(--accent-red)' }}>AWARD</span>
+          </h2>
+          <div style={{ overflowX: 'auto' }}>
+          <table style={s.table}>
+            <caption className="sr-only">수상 이력</caption>
+            <thead>
+              <tr>
+                <th scope="col" style={{ ...s.th, width: 56 }}>연도</th>
+                <th scope="col" style={s.th}>작품명</th>
+                <th scope="col" style={s.th}>수상내역</th>
+              </tr>
+            </thead>
+            <tbody>
+              {awardEntries.map((entry) => (
+                <tr key={`award-${entry.id}`} style={{ ...s.tr, borderLeft: '3px solid var(--accent-red)' }}>
+                  <td style={{ ...s.td, color: 'var(--gray)', fontSize: '0.82rem' }}>
+                    {entry.year ?? '—'}
+                  </td>
+                  <td style={{ ...s.td, fontWeight: 600, color: 'var(--white)' }}>
+                    {/* 작품명 비표기 수상(대표 지시로 title 없이 입력된 row)은 — 처리 */}
+                    {entry.title || '—'}
+                  </td>
+                  <td style={{ ...s.td, color: 'var(--accent-red)', fontWeight: 600 }}>
+                    {entry.award}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          </div>
+        </section>
+      )}
+
       {/* ============ 02 · CURRENT WORKS ============ */}
       {recentWorks.length > 0 && (
         <section aria-label="최근 출연" style={s.section}>
@@ -773,45 +815,6 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
         style={{ outline: 'none', ...(editErr ? { color: '#f87171', fontSize: '0.82rem', marginTop: 8, padding: '6px 12px', background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)', borderRadius: 6 } : {}) }}
       >{editErr}</div>
 
-      {/* ============ 수상이력 ============ */}
-      {awardEntries.length > 0 && (
-        <section aria-label="수상 이력" style={s.section}>
-          <h2 style={{ ...s.sectionHeading, borderBottomColor: 'var(--accent-red)' }}>
-            <span aria-hidden="true" style={{ ...s.sectionNum, color: 'var(--accent-red)' }}>🏆</span>
-            <span style={{ ...s.sectionTitle, color: 'var(--accent-red)' }}>수상</span>
-            <span lang="en" style={{ ...s.sectionEn, color: 'var(--accent-red)' }}>AWARD</span>
-          </h2>
-          <div style={{ overflowX: 'auto' }}>
-          <table style={s.table}>
-            <caption className="sr-only">수상 이력</caption>
-            <thead>
-              <tr>
-                <th scope="col" style={{ ...s.th, width: 56 }}>연도</th>
-                <th scope="col" style={s.th}>작품명</th>
-                <th scope="col" style={s.th}>수상내역</th>
-              </tr>
-            </thead>
-            <tbody>
-              {awardEntries.map((entry) => (
-                <tr key={`award-${entry.id}`} style={{ ...s.tr, borderLeft: '3px solid var(--accent-red)' }}>
-                  <td style={{ ...s.td, color: 'var(--gray)', fontSize: '0.82rem' }}>
-                    {entry.year ?? '—'}
-                  </td>
-                  <td style={{ ...s.td, fontWeight: 600, color: 'var(--white)' }}>
-                    {/* 작품명 비표기 수상(대표 지시로 title 없이 입력된 row)은 — 처리 */}
-                    {entry.title || '—'}
-                  </td>
-                  <td style={{ ...s.td, color: 'var(--accent-red)', fontWeight: 600 }}>
-                    {entry.award}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          </div>
-        </section>
-      )}
-
       {/* 사진 라이트박스 — 프로필 + 현재사진 통합 */}
       {lightbox && (() => {
         const sourcePhotos = lightbox.source === 'profile'
@@ -851,21 +854,21 @@ const s: Record<string, React.CSSProperties> = {
   root: {
     display: 'flex',
     flexDirection: 'column',
-    gap: 44,
+    gap: 28,   // 2026-06-12 대표 지시 — 섹션 간 여백 축소 (44 → 28)
   },
 
   /* ---- 섹션 공통 ---- */
   section: {
     display: 'flex',
     flexDirection: 'column',
-    gap: 20,
+    gap: 14,
   },
   sectionHeading: {
     display: 'flex',
     alignItems: 'baseline',
     gap: 10,
     borderBottom: '1px solid var(--border)',
-    paddingBottom: 12,
+    paddingBottom: 10,
   },
   sectionNum: {
     fontFamily: 'var(--font-display), Oswald, sans-serif',
