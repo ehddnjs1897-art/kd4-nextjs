@@ -155,8 +155,18 @@ export default function Navbar() {
   const isCrewApproved = true  // 드롭다운은 항상 표시
   const closeMobile = () => setMobileOpen(false)
 
-  /* ── 크루 링크 클릭: 비로그인 시 로그인 페이지로 ── */
   const router = useRouter()
+
+  const handleLogout = async () => {
+    const { createClient } = await import('@/lib/supabase/client')
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    setUserRole(null)
+    setMyActorId(null)
+    router.push('/')
+  }
+
+  /* ── 크루 링크 클릭: 비로그인 시 로그인 페이지로 ── */
   const handleCrewLinkClick = (e: React.MouseEvent, href: string) => {
     if (!isLoggedIn) {
       e.preventDefault()
@@ -484,6 +494,31 @@ export default function Navbar() {
                 마이페이지
               </Link>
             )}
+            {authLoaded && isLoggedIn && (
+              <button
+                type="button"
+                className="desktop-auth"
+                onClick={handleLogout}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  minHeight: 44,
+                  padding: '8px 12px',
+                  color: '#888',
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '0.825rem',
+                  fontWeight: 500,
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.color = 'var(--navy)')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#888')}
+              >
+                로그아웃
+              </button>
+            )}
 
             <Link
               href="/join"
@@ -711,6 +746,29 @@ export default function Navbar() {
                 >
                   {isLoggedIn ? '마이페이지' : '로그인'}
                 </Link>
+              )}
+              {authLoaded && isLoggedIn && (
+                <button
+                  type="button"
+                  onClick={() => { closeMobile(); handleLogout() }}
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    padding: '15px',
+                    background: 'transparent',
+                    border: '1px solid var(--border)',
+                    color: '#888',
+                    fontFamily: 'var(--font-sans)',
+                    fontSize: '1rem',
+                    fontWeight: 700,
+                    borderRadius: 'var(--radius)',
+                    textAlign: 'center',
+                    letterSpacing: '0.06em',
+                    cursor: 'pointer',
+                  }}
+                >
+                  로그아웃
+                </button>
               )}
               <Link
                 href="/join"
