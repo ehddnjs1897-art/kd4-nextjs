@@ -459,7 +459,7 @@ export default async function ActorDetailPage({
     // 타이틀·제작사 길이 제한 — 과도한 DB 문자열이 inline JSON-LD 스크립트를 비대하게 만드는 것 방지
     filmography: (actor.actor_filmography ?? []).map((f) => ({
       ...f,
-      title: f.title.slice(0, 100),
+      title: (f.title ?? '').slice(0, 100),
       production: f.production?.slice(0, 100) ?? null,
     })),
     castingTags: actor.casting_tags,
