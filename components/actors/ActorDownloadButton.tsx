@@ -1,14 +1,26 @@
 'use client'
 
 /**
- * 배우 자료(프로필 + 출연영상) 통합 다운로드 버튼.
- * - 디렉터/관리자: 한 번 누르면 있는 자료를 전부 다운로드 (프로필만 / 영상만 / 둘 다 자동).
+ * 배우 자료 다운로드 버튼 — [프로필 다운로드] / [영상 다운로드] 2개 분리 (2026-06-12).
+ * - 디렉터/관리자: 프로필·영상 각각 따로 다운로드 (있는 자료만 버튼 노출).
+ * - 영상은 순차 다운로드 (500ms 간격 — 다중 다운로드 차단 방지).
  * - locked 모드(2026-06-12 부분공개 정책): 비권한자에게도 버튼은 노출하되
  *   클릭 시 회원가입('guest') 또는 디렉터 신청('member') 안내 모달 표시.
  */
 
 import { useState } from 'react'
 import SignupPromptModal from '@/components/actors/SignupPromptModal'
+
+function DownloadIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }} aria-hidden="true">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
+    </svg>
+  )
+}
 
 export default function ActorDownloadButton({
   profileUrl,
@@ -23,7 +35,8 @@ export default function ActorDownloadButton({
   /** locked 모드에서 가입·로그인 후 돌아올 경로 */
   nextUrl?: string
 }) {
-  const [loading, setLoading] = useState(false)
+  const [profileLoading, setProfileLoading] = useState(false)
+  const [videosLoading, setVideosLoading] = useState(false)
   const [promptOpen, setPromptOpen] = useState(false)
 
   function trigger(url: string) {
@@ -38,16 +51,24 @@ export default function ActorDownloadButton({
     a.remove()
   }
 
-  async function downloadAll() {
-    setLoading(true)
+  async function downloadProfile() {
+    if (!profileUrl) return
+    setProfileLoading(true)
     try {
-      if (profileUrl) {
-        trigger(profileUrl)
-        await new Promise((r) => setTimeout(r, 500))
-      }
-      for (const id of videoIds) {
+      trigger(profileUrl)
+      await new Promise((r) => setTimeout(r, 500))
+    } finally {
+      setProfileLoading(false)
+    }
+  }
+
+  async function downloadVideos() {
+    setVideosLoading(true)
+    try {
+      for (const [index, id] of videoIds.entries()) {
         try {
-          const res = await fetch(`/api/videos/${id}/signed-url?download=1`, { signal: AbortSignal.timeout(10_000) })
+          // idx(1-base): 서버가 "{나이대} {성별} {이름} 출연영상{idx}" 파일명 생성에 사용
+          const res = await fetch(`/api/videos/${id}/signed-url?download=1&idx=${index + 1}`, { signal: AbortSignal.timeout(10_000) })
           const j = await res.json()
           if (res.ok && j.url) {
             trigger(j.url)
@@ -58,7 +79,7 @@ export default function ActorDownloadButton({
         }
       }
     } finally {
-      setLoading(false)
+      setVideosLoading(false)
     }
   }
 
@@ -66,13 +87,8 @@ export default function ActorDownloadButton({
   if (locked) {
     return (
       <>
-        <button type="button" onClick={() => setPromptOpen(true)} style={styles.btn}>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }} aria-hidden="true">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="7 10 12 15 17 10" />
-            <line x1="12" y1="15" x2="12" y2="3" />
-          </svg>
+        <button type="button" onClick={() => setPromptOpen(true)} style={{ ...styles.btn, width: '100%' }}>
+          <DownloadIcon />
           자료 다운로드 (프로필·영상) <span aria-hidden="true">🔒</span>
         </button>
         <SignupPromptModal
@@ -88,26 +104,40 @@ export default function ActorDownloadButton({
     )
   }
 
-  const count = (profileUrl ? 1 : 0) + videoIds.length
-  if (count === 0) return null
+  const hasProfile = !!profileUrl
+  const hasVideos = videoIds.length > 0
+  if (!hasProfile && !hasVideos) return null
+
+  const anyLoading = profileLoading || videosLoading
 
   return (
     <>
-      <button type="button" onClick={downloadAll} disabled={loading} aria-busy={loading} style={styles.btn}>
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }} aria-hidden="true">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-          <polyline points="7 10 12 15 17 10" />
-          <line x1="12" y1="15" x2="12" y2="3" />
-        </svg>
-        {loading ? '다운로드 중...' : '자료 다운로드 (프로필·영상)'}
-      </button>
-      <span role="status" aria-live="polite" className="sr-only">{loading ? '자료를 다운로드하는 중입니다.' : ''}</span>
+      <div style={styles.row}>
+        {hasProfile && (
+          <button type="button" onClick={downloadProfile} disabled={profileLoading} aria-busy={profileLoading} style={styles.btn}>
+            <DownloadIcon />
+            {profileLoading ? '다운로드 중...' : '프로필 다운로드'}
+          </button>
+        )}
+        {hasVideos && (
+          <button type="button" onClick={downloadVideos} disabled={videosLoading} aria-busy={videosLoading} style={styles.btn}>
+            <DownloadIcon />
+            {videosLoading ? '다운로드 중...' : '영상 다운로드'}
+          </button>
+        )}
+      </div>
+      <span role="status" aria-live="polite" className="sr-only">{anyLoading ? '자료를 다운로드하는 중입니다.' : ''}</span>
     </>
   )
 }
 
 const styles: Record<string, React.CSSProperties> = {
+  row: {
+    display: 'flex',
+    gap: 8,
+    width: '100%',
+    flexWrap: 'wrap',
+  },
   btn: {
     display: 'inline-flex',
     alignItems: 'center',
@@ -124,6 +154,6 @@ const styles: Record<string, React.CSSProperties> = {
     fontFamily: 'var(--font-display)',
     letterSpacing: '0.02em',
     cursor: 'pointer',
-    width: '100%',
+    flex: '1 1 140px',
   },
 }

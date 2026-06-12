@@ -749,6 +749,9 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
             <p style={{ fontSize: '0.75rem', color: 'var(--gray)' }}>
               PPTX는 가로형 슬라이드로 올려주세요 (세로형은 사진이 잘릴 수 있어요).
             </p>
+            <p style={{ fontSize: '0.75rem', color: 'var(--gray)' }}>
+              파일명 예: 30대 남 홍길동 프로필.pptx<br />(다운로드 시 자동 변환됩니다)
+            </p>
           </div>
         </div>
         <input ref={pptRef} type="file" accept=".pptx,.pdf,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation" onChange={uploadPpt} style={{ display: 'none' }} aria-hidden="true" />
@@ -836,6 +839,9 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
             </button>
             <span style={{ fontSize: '0.74rem', color: 'var(--gray)', marginLeft: 12 }}>mp4 권장, 최대 300MB</span>
           </div>
+          <p style={{ fontSize: '0.74rem', color: 'var(--gray)', marginTop: 8 }}>
+            파일명 예: 30대 남 홍길동 출연영상1.mp4<br />(다운로드 시 자동 변환됩니다)
+          </p>
           <p role="status" aria-live="polite" aria-atomic="true" style={{ ...s.msg, color: r2VideoMsg && !r2VideoMsg.includes('완료') ? '#ef4444' : 'var(--gold)', marginTop: 8 }}>{r2VideoMsg}</p>
         </div>
 

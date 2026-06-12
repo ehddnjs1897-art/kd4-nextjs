@@ -111,7 +111,7 @@ export async function GET(
 
   const { data: actor } = await supabaseAdmin
     .from('actors')
-    .select('name, profile_doc_path, profile_pdf_url, is_public')
+    .select('name, gender, age_group, profile_doc_path, profile_pdf_url, is_public')
     .eq('id', id)
     .maybeSingle()
   if (!actor) {
@@ -123,6 +123,13 @@ export async function GET(
   }
 
   const safeName = (actor.name || 'profile').replace(/[\r\n"\\]/g, '').trim() || 'profile'
+  // 다운로드 파일명: "{나이대} {성별} {이름} 프로필" (예: 30대 남 박성만 프로필)
+  // 배우 메타(age_group/gender/name) 없으면 기존 "{이름} 프로필" 폴백
+  const safeAgeGroup = (actor.age_group || '').replace(/[\r\n"\\]/g, '').trim()
+  const safeGender = (actor.gender || '').replace(/[\r\n"\\]/g, '').trim()
+  const downloadBase = actor.name && safeAgeGroup && safeGender
+    ? `${safeAgeGroup} ${safeGender} ${safeName} 프로필`
+    : `${safeName} 프로필`
 
   // path 1: R2 비공개 버킷 (profile_doc_path)
   if (actor.profile_doc_path && isR2Configured()) {
@@ -140,7 +147,7 @@ export async function GET(
       const obj = await getObjectStream(actor.profile_doc_path)
       const headers: Record<string, string> = {
         'Content-Type': resolveContentType(obj.contentType, ext),
-        'Content-Disposition': dispositionHeader(`${safeName} 프로필.${ext}`),
+        'Content-Disposition': dispositionHeader(`${downloadBase}.${ext}`),
         'Cache-Control': 'private, no-store',
       }
       if (obj.contentLength) headers['Content-Length'] = String(obj.contentLength)
@@ -194,7 +201,7 @@ export async function GET(
       const ext = rawExt.replace(/[^a-z0-9]/gi, '').slice(0, 8) || 'pdf'
       const headers: Record<string, string> = {
         'Content-Type': resolveContentType(upstream.headers.get('content-type'), ext),
-        'Content-Disposition': dispositionHeader(`${safeName} 프로필.${ext}`),
+        'Content-Disposition': dispositionHeader(`${downloadBase}.${ext}`),
         'Cache-Control': 'private, no-store',
       }
       // Content-Length 미전달 — 파일 존재 여부 추론 방지 (사이즈 오라클 방어)

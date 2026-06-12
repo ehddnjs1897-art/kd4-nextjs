@@ -73,7 +73,7 @@ export async function GET(
   // role 확인 + 영상 row(+배우 공개 여부) 병렬 조회
   const [{ data: profile }, { data: video, error: videoError }] = await Promise.all([
     supabaseAdmin.from('profiles').select('role, actor_id').eq('id', user.id).maybeSingle(),
-    supabaseAdmin.from('actor_videos').select('id, r2_key, actor_id, title, actors ( is_public )').eq('id', id).maybeSingle(),
+    supabaseAdmin.from('actor_videos').select('id, r2_key, actor_id, title, actors ( is_public, name, gender, age_group )').eq('id', id).maybeSingle(),
   ])
 
   const role = profile?.role
@@ -95,8 +95,10 @@ export async function GET(
   //   - 공개 배우(is_public)의 영상: 로그인 사용자 누구나 시청 가능 (user/actor 포함)
   //   - 비공개 배우의 영상: 운영 역할(elevated) 또는 본인만
   //   - 다운로드는 여전히 디렉터/관리자만 (아래 별도 게이트)
-  const actorsRel = (video as unknown as { actors?: { is_public?: boolean | null } | Array<{ is_public?: boolean | null }> }).actors
-  const actorIsPublic = Array.isArray(actorsRel) ? actorsRel[0]?.is_public === true : actorsRel?.is_public === true
+  type ActorRel = { is_public?: boolean | null; name?: string | null; gender?: string | null; age_group?: string | null }
+  const actorsRel = (video as unknown as { actors?: ActorRel | ActorRel[] }).actors
+  const actorRow = Array.isArray(actorsRel) ? actorsRel[0] : actorsRel
+  const actorIsPublic = actorRow?.is_public === true
   const isOwnVideo = !!profile?.actor_id && video.actor_id === profile.actor_id
   if (!actorIsPublic && !elevated && !isOwnVideo) {
     return NextResponse.json(
@@ -116,8 +118,15 @@ export async function GET(
 
   try {
     const ext = video.r2_key.split('.').pop() || 'mp4'
+    // 다운로드 파일명: "{나이대} {성별} {이름} 출연영상{idx}" (예: 30대 남 박성만 출연영상1)
+    // 배우 메타(age_group/gender/name) 없으면 기존 title 폴백
+    const idxRaw = parseInt(url.searchParams.get('idx') ?? '', 10)
+    const idx = Number.isFinite(idxRaw) && idxRaw >= 1 && idxRaw <= 999 ? idxRaw : 1
+    const base = actorRow?.age_group && actorRow?.gender && actorRow?.name
+      ? `${actorRow.age_group} ${actorRow.gender} ${actorRow.name} 출연영상${idx}`
+      : (video.title || 'video')
     const filename = download
-      ? `${(video.title || 'video').replace(/[\\/:*?"<>|]/g, '_')}.${ext}`
+      ? `${base.replace(/[\\/:*?"<>|]/g, '_')}.${ext}`
       : undefined
     const signedUrl = await getVideoSignedUrl(video.r2_key, expirySec, filename)
     const expiresAt = new Date(Date.now() + expirySec * 1000).toISOString()
