@@ -23,6 +23,7 @@ import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { revalidateTag } from '@/lib/revalidate'
 import { sanitizeDialects } from '@/lib/dialects'
+import { matchActorOnSignup } from '@/lib/actor-matching'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 
@@ -200,27 +201,35 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // 1. 대상 배우 row 결정 — 없으면 비공개로 신규 생성
+  // 1. 대상 배우 row 결정 — 없으면 이름 매칭 재시도 후 그래도 없으면 비공개로 신규 생성
   let actorId = profile.actor_id as string | null
   if (!actorId) {
-    const { data: created, error: createErr } = await supabaseAdmin
-      .from('actors')
-      .insert({
-        name: profile.name ?? '(이름 미입력)',
-        phone: profile.phone ?? null,
-        is_public: false, // 관리자 검토 후 공개
-        self_managed: true,
-        source: 'manual',
-        intake_submitted_at: nowIso,
-      })
-      .select('id')
-      .maybeSingle()
+    // 온보딩 직전 마지막 매칭 시도 — 서린 케이스 재발 방지
+    // (on-signup 시점에 phone 없어서 실패했을 수 있음 → 이름 단독 폴백으로 재시도)
+    const matchResult = await matchActorOnSignup(user.id, profile.name ?? '', profile.phone ?? '')
+    if (matchResult.matched && matchResult.actorId) {
+      actorId = matchResult.actorId
+      console.log('[profile/intake] 기존 배우 row 매칭 성공:', actorId)
+    } else {
+      const { data: created, error: createErr } = await supabaseAdmin
+        .from('actors')
+        .insert({
+          name: profile.name ?? '(이름 미입력)',
+          phone: profile.phone ?? null,
+          is_public: false, // 관리자 검토 후 공개
+          self_managed: true,
+          source: 'manual',
+          intake_submitted_at: nowIso,
+        })
+        .select('id')
+        .maybeSingle()
 
-    if (createErr || !created) {
-      console.error('[profile/intake] 배우 생성 실패:', createErr?.message)
-      return NextResponse.json({ error: '프로필 생성에 실패했습니다.' }, { status: 500 })
+      if (createErr || !created) {
+        console.error('[profile/intake] 배우 생성 실패:', createErr?.message)
+        return NextResponse.json({ error: '프로필 생성에 실패했습니다.' }, { status: 500 })
+      }
+      actorId = created.id
     }
-    actorId = created.id
 
     // 프로필에 actor_id 연결 + rows-affected 확인 (user row 消失 시 silent no-op 방지)
     // '일반 회원'(user) 잔재면 '배우 멤버'(actor)로 함께 정리 — 온보딩 완료 = 배우 멤버 (2026-06-12 대표 지시)
