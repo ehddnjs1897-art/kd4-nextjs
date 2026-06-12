@@ -79,9 +79,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '프로필 설정 실패' }, { status: 500 })
   }
 
-  // 배우 매칭 (이름 + 전화번호 기준) — actor_id 이미 연결된 경우 스킵 (중복 매칭 방지)
+  // 배우 매칭 (이름+전화 우선, 이름 단독 폴백은 matchActorOnSignup 내부 가드 처리)
+  // — actor_id 이미 연결된 경우 스킵 (중복 매칭 방지)
   let actorId: string | undefined
-  if (name && memberType !== 'director' && phone && !alreadyLinked) {
+  if (name && memberType !== 'director' && !alreadyLinked) {
     try {
       const res = await matchActorOnSignup(user.id, name, phone)
       actorId = res.actorId

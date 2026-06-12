@@ -54,31 +54,55 @@ export async function matchActorOnSignup(
   const inputName = normalizeName(name)
   const inputPhone = normalizePhone(phone)
 
-  // 빈 값으로 인한 false-positive 방지 (blank name/phone → 매칭 스킵)
-  if (!inputName || !inputPhone) {
+  // 빈 이름으로 인한 false-positive 방지
+  if (!inputName) {
     return { matched: false }
   }
 
-  // 2. 정규화 매칭
-  const matched = actors.find(
-    (actor) =>
-      normalizeName(actor.name ?? '') === inputName &&
-      normalizePhone(actor.phone ?? '') === inputPhone
-  )
+  // 2-①. 이름 + 전화 완전 일치 (가장 강한 신호)
+  let matched = inputPhone
+    ? actors.find(
+        (actor) =>
+          normalizeName(actor.name ?? '') === inputName &&
+          normalizePhone(actor.phone ?? '') === inputPhone
+      )
+    : undefined
+
+  // 2-②. 이름 단독 매칭 폴백 (2026-06-12 대표 지시: 이름 일치 멤버는 배우 멤버로)
+  //    actors.phone 공란이 많아 전화 매칭만으로는 대부분 실패 →
+  //    동명 actor가 정확히 1명이고 아직 어떤 계정과도 연결되지 않은 row만 허용 (기존 연결 탈취 방지)
+  if (!matched) {
+    const sameName = actors.filter((a) => normalizeName(a.name ?? '') === inputName)
+    if (sameName.length === 1) {
+      const { data: claimedBy } = await supabaseAdmin
+        .from('profiles')
+        .select('id')
+        .eq('actor_id', sameName[0].id)
+        .neq('id', profileId)
+        .limit(1)
+      if (!claimedBy || claimedBy.length === 0) {
+        matched = sameName[0]
+      }
+    }
+  }
 
   if (!matched) {
     return { matched: false }
   }
 
-  // 3. profiles 테이블 업데이트 — actor_id만 연결, role은 변경 X
-  //    (이전: role을 'editor'로 자동 승급 → 사칭 가입 시 갤러리 편집 권한 획득 위험)
-  //    이제: actor_id 연결만, editor 권한은 관리자 수동 승인 필요
+  // 3. profiles 업데이트 — actor_id 연결 + '일반 회원'(user) 잔재면 '배우 멤버'(actor)로 정리.
+  //    editor 같은 편집 권한 승급은 여전히 관리자 수동 승인만 (사칭 가입 방어 유지)
+  const { data: prof } = await supabaseAdmin
+    .from('profiles').select('role').eq('id', profileId).maybeSingle()
+  const patch: { actor_id: string; matched_at: string; role?: string } = {
+    actor_id: matched.id,
+    matched_at: new Date().toISOString(),
+  }
+  if ((prof?.role ?? 'user') === 'user') patch.role = 'actor'
+
   const { data: linked, error: updateError } = await supabaseAdmin
     .from('profiles')
-    .update({
-      actor_id: matched.id,
-      matched_at: new Date().toISOString(),
-    })
+    .update(patch)
     .eq('id', profileId)
     .select('id').maybeSingle()
 

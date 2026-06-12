@@ -90,15 +90,17 @@ export async function PATCH(request: NextRequest) {
     }
 
     // ── 자동 재매칭: actor_id 없는 사용자가 이름/전화번호 변경 시 ──────────────
+    // (전화 없이도 이름 단독 폴백이 matchActorOnSignup 내부 가드로 처리됨)
     let matched = false
     let actorId: string | undefined
-    if (phone && name) {
+    if (name) {
       const { data: profile } = await supabaseAdmin
         .from('profiles').select('actor_id, role').eq('id', user.id).maybeSingle()
-      const needsMatch = !profile?.actor_id && (profile?.role === 'actor' || profile?.role === 'member')
+      const needsMatch = !profile?.actor_id &&
+        (profile?.role === 'actor' || profile?.role === 'member' || profile?.role === 'user')
       if (needsMatch) {
         try {
-          const result = await matchActorOnSignup(user.id, name.trim(), phone.trim())
+          const result = await matchActorOnSignup(user.id, name.trim(), (phone ?? '').trim())
           matched = result.matched
           actorId = result.actorId
         } catch (e) {

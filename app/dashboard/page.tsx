@@ -29,6 +29,7 @@ import ProfileCompletenessCard from '@/components/dashboard/ProfileCompletenessC
 import EnrollmentsPanel from '@/components/dashboard/EnrollmentsPanel'
 import { UserRole } from '@/lib/types'
 import { canViewActorDb as canViewActorDbFn } from '@/lib/access'
+import { matchActorOnSignup } from '@/lib/actor-matching'
 
 const ROLE_LABEL: Record<string, string> = {
   admin: '관리자',
@@ -80,11 +81,37 @@ export default async function DashboardPage() {
   if (profileErr) throw new Error(`프로필 조회 실패: ${profileErr.message}`)
   if (enrErr) console.error('[dashboard] 수강 내역 조회 오류:', enrErr.message)
 
+  // ── 자가 복구 (2026-06-12 대표 지시) ────────────────────────────────────
+  // 가입 마지막 단계(on-signup) 호출이 끊겨 '일반 회원'으로 남았거나, actors 전화번호
+  // 공란으로 자동 연결이 실패한 멤버 → 대시보드 방문만 해도 이름 매칭으로 재연결.
+  let healedRole: string | null = null
+  let healedActorId: string | null = null
+  if (profile) {
+    const r0 = (profile.role as string | null) ?? 'user'
+    if (!profile.actor_id && ['user', 'actor', 'member'].includes(r0)) {
+      try {
+        const r = await matchActorOnSignup(user.id, profile.name ?? '', profile.phone ?? '')
+        if (r.matched && r.actorId) {
+          healedActorId = r.actorId
+          if (r0 === 'user') healedRole = 'actor' // matchActorOnSignup이 DB에서 승급한 것을 화면에도 반영
+        }
+      } catch (e) {
+        console.error('[dashboard] 자가 복구 매칭 오류:', e instanceof Error ? e.message : String(e))
+      }
+    } else if (profile.actor_id && r0 === 'user') {
+      // 연결은 됐는데 등급만 '일반 회원' 잔재로 남은 경우
+      const { error: promoteErr } = await supabaseAdmin
+        .from('profiles').update({ role: 'actor' }).eq('id', user.id)
+      if (!promoteErr) healedRole = 'actor'
+      else console.error('[dashboard] 등급 정리 실패:', promoteErr.message)
+    }
+  }
+
   const name = profile?.name || user.user_metadata?.name || user.email?.split('@')[0] || '이름 없음'
   const email = profile?.email || user.email || '—'
-  const role: UserRole = (profile?.role as UserRole) || 'user'
+  const role: UserRole = (healedRole ?? profile?.role ?? 'user') as UserRole
   const createdAt = profile?.created_at || user.created_at
-  const actorId: string | null = profile?.actor_id ?? null
+  const actorId: string | null = healedActorId ?? profile?.actor_id ?? null
   const enrollments = enrData ?? []
 
   // actor_id가 있어도 실제 DB row가 없으면 404 → 미리 확인

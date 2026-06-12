@@ -223,8 +223,11 @@ export async function POST(request: NextRequest) {
     actorId = created.id
 
     // 프로필에 actor_id 연결 + rows-affected 확인 (user row 消失 시 silent no-op 방지)
+    // '일반 회원'(user) 잔재면 '배우 멤버'(actor)로 함께 정리 — 온보딩 완료 = 배우 멤버 (2026-06-12 대표 지시)
     const { data: linked, error: linkErr } = await supabaseAdmin
-      .from('profiles').update({ actor_id: actorId }).eq('id', user.id)
+      .from('profiles')
+      .update(profile.role === 'user' ? { actor_id: actorId, role: 'actor' } : { actor_id: actorId })
+      .eq('id', user.id)
       .select('id').maybeSingle()
     if (linkErr) {
       console.error('[profile/intake] actor_id 연결 실패 — 생성된 actor row 정리:', linkErr.message)
