@@ -303,7 +303,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   async function uploadPpt(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
-    if (file.size > 10 * 1024 * 1024) { setPptMsg('10MB 이하 파일만 가능합니다.'); return }
+    if (file.size > 15 * 1024 * 1024) { setPptMsg('15MB 이하 파일만 가능합니다.'); return }
     const ext = file.name.split('.').pop()?.toLowerCase() || ''
     if (!['pptx', 'pdf'].includes(ext)) { setPptMsg('.pptx 또는 .pdf 파일만 올릴 수 있어요.'); return }
     setPptUploading(true); setPptMsg('')
@@ -744,7 +744,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
               {hasPpt ? '프로필 PPTX 등록됨' : '프로필 PPTX 미등록'}
             </p>
             <p style={{ fontSize: '0.75rem', color: 'var(--gray)' }}>
-              {hasPpt ? '새 파일을 올리면 기존 파일이 교체됩니다.' : '.pptx 또는 .pdf, 10MB 이하'}
+              {hasPpt ? '새 파일을 올리면 기존 파일이 교체됩니다.' : '.pptx 또는 .pdf, 15MB 이하'}
             </p>
             <p style={{ fontSize: '0.75rem', color: 'var(--gray)' }}>
               PPTX는 가로형 슬라이드로 올려주세요 (세로형은 사진이 잘릴 수 있어요).
