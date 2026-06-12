@@ -102,7 +102,7 @@ export default function OnboardingForm({
   }
 
   function pickPpt(f: File | null) {
-    if (f && f.size > 15 * MB) { setError('프로필 파일은 15MB 이하여야 합니다.'); return }
+    if (f && f.size > 20 * MB) { setError('프로필 파일은 20MB 이하여야 합니다.'); return }
     if (f && !f.name.toLowerCase().match(/\.(pptx|pdf)$/)) { setError('.pptx 또는 .pdf 파일만 올릴 수 있어요.'); return }
     setError('')
     setPpt(f)
@@ -313,7 +313,7 @@ export default function OnboardingForm({
       <section style={sec} aria-labelledby="onb-pptx">
         <h2 id="onb-pptx" style={secTitle}>프로필 문서</h2>
         <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 14 }}>
-          <strong>.pptx 또는 .pdf</strong> 형식, 15MB 이하.
+          <strong>.pptx 또는 .pdf</strong> 형식, 최대 20MB.
           PPTX는 가로형 슬라이드로 올려주세요 (세로형은 사진이 잘릴 수 있어요).
         </p>
         <input ref={pptRef} type="file" accept=".pptx,.pdf,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation" disabled={loading} onChange={e => pickPpt(e.target.files?.[0] ?? null)} style={{ display: 'none' }} aria-hidden="true" />

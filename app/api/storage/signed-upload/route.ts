@@ -21,7 +21,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 // 버킷별 허용 용량 (UI/클라이언트 사전체크와 동일 기준; 실제 강제는 버킷 file_size_limit)
 const BUCKET_LIMITS: Record<string, number> = {
   'actor-photos': 15 * 1024 * 1024, // 15MB
-  'actor-docs': 10 * 1024 * 1024, //  10MB (PPT/PDF)
+  'actor-docs': 20 * 1024 * 1024, //  20MB (PPT/PDF)
 }
 
 export async function POST(request: NextRequest) {
