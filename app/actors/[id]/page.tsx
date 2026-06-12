@@ -914,6 +914,26 @@ export default async function ActorDetailPage({
           )}
         </section>
       )}
+
+      {/* 본인 프로필 플로팅 편집 버튼 */}
+      {isOwner && (
+        <Link
+          href="/dashboard"
+          style={{
+            position: 'fixed', bottom: 28, right: 20, zIndex: 80,
+            display: 'flex', alignItems: 'center', gap: 7,
+            background: 'var(--navy)', color: 'var(--cream)',
+            border: '1px solid var(--gold)',
+            borderRadius: 999, padding: '10px 18px',
+            fontSize: '0.82rem', fontFamily: 'var(--font-body)',
+            fontWeight: 600, textDecoration: 'none',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
+          }}
+          aria-label="내 프로필 편집하기"
+        >
+          ✏️ 내 프로필 편집
+        </Link>
+      )}
     </div>
   )
 }
