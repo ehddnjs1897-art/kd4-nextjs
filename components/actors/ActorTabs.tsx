@@ -553,14 +553,24 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
             <span lang="en" style={s.sectionEn}>CURRENT WORKS</span>
           </h2>
           <div style={s.recentGrid}>
-            {recentWorks.map((entry) => (
-              <div key={entry.id} style={s.recentCard}>
-                <span style={s.recentCat}>{CATEGORY_LABEL[entry.category]}</span>
-                <p style={s.recentTitle}>{entry.title}</p>
-                {entry.role && <p style={s.recentRole}>{entry.role}</p>}
-                <p style={s.recentYear}>{entry.year}</p>
-              </div>
-            ))}
+            {recentWorks.map((entry) => {
+              const prefix = entry.category === 'drama'
+                ? (entry.broadcaster ?? null)
+                : entry.category === 'film'
+                  ? (entry.film_type ?? null)
+                  : null
+              return (
+                <div key={entry.id} style={s.recentCard}>
+                  <span style={s.recentCat}>{CATEGORY_LABEL[entry.category]}</span>
+                  <p style={s.recentTitle}>
+                    {prefix && <span style={{ fontWeight: 400, color: 'var(--gray)', marginRight: 5 }}>{prefix}</span>}
+                    {entry.title}
+                  </p>
+                  {entry.role && <p style={s.recentRole}>{entry.role}</p>}
+                  <p style={s.recentYear}>{entry.year}</p>
+                </div>
+              )
+            })}
           </div>
         </section>
       )}

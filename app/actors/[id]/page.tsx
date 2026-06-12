@@ -759,21 +759,6 @@ export default async function ActorDetailPage({
               gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
               gap: 14,
             }}>
-              {recent.length > 0 && (
-                <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 8, padding: '14px 18px' }}>
-                  <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.65rem', letterSpacing: '0.2em', color: 'var(--gold)', marginBottom: 8 }}>
-                    <span lang="en">NOW PLAYING</span>
-                  </p>
-                  <ul role="list" style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                    {recent.map((f) => (
-                      <li key={f.id} style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--white)', lineHeight: 1.4 }}>
-                        {f.title}
-                        {f.role && <span style={{ color: 'var(--gray)', fontWeight: 400, fontSize: '0.78rem' }}> · {f.role}</span>}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
               {awards.length > 0 && (
                 <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 8, padding: '14px 18px' }}>
                   <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.65rem', letterSpacing: '0.2em', color: 'var(--gold)', marginBottom: 8 }}>
@@ -787,31 +772,6 @@ export default async function ActorDetailPage({
                       </li>
                     ))}
                   </ul>
-                </div>
-              )}
-              {featuredSkills.length > 0 && (
-                <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 8, padding: '14px 18px' }}>
-                  <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.65rem', letterSpacing: '0.2em', color: 'var(--gold)', marginBottom: 8 }}>
-                    <span lang="en">SPECIAL SKILLS</span>
-                  </p>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                    {featuredSkills.map((sk) => {
-                      const isAdvanced = (actor.advanced_skills ?? []).includes(sk)
-                      return (
-                        <span key={sk} style={{
-                          fontSize: '0.78rem',
-                          background: isAdvanced ? 'rgba(199,62,62,0.08)' : 'rgba(21,72,138,0.08)',
-                          border: isAdvanced ? '1px solid rgba(199,62,62,0.3)' : '1px solid rgba(21,72,138,0.18)',
-                          color: isAdvanced ? 'var(--accent-red)' : 'var(--gold)',
-                          padding: '4px 10px',
-                          borderRadius: 4,
-                          fontWeight: isAdvanced ? 700 : 400,
-                        }}>
-                          {isAdvanced && <span role="img" aria-label="고급 숙련도">⭐ </span>}{sk}
-                        </span>
-                      )
-                    })}
-                  </div>
                 </div>
               )}
             </div>
