@@ -305,8 +305,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     if (!file) return
     if (file.size > 10 * 1024 * 1024) { setPptMsg('10MB 이하 파일만 가능합니다.'); return }
     const ext = file.name.split('.').pop()?.toLowerCase() || ''
-    // 다운스트림 파싱·캐스팅카드 파이프라인이 가로형 PPTX 기준 — PDF가 들어오면 사진이 잘림
-    if (ext !== 'pptx') { setPptMsg('.pptx 파일만 올릴 수 있어요. PDF는 PowerPoint에서 .pptx로 변환 후 업로드해 주세요.'); return }
+    if (!['pptx', 'pdf'].includes(ext)) { setPptMsg('.pptx 또는 .pdf 파일만 올릴 수 있어요.'); return }
     setPptUploading(true); setPptMsg('')
     try {
       const ct = file.type || 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
@@ -745,14 +744,14 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
               {hasPpt ? '프로필 PPTX 등록됨' : '프로필 PPTX 미등록'}
             </p>
             <p style={{ fontSize: '0.75rem', color: 'var(--gray)' }}>
-              {hasPpt ? '새 파일을 올리면 기존 파일이 교체됩니다.' : '.pptx 파일만, 10MB 이하'}
+              {hasPpt ? '새 파일을 올리면 기존 파일이 교체됩니다.' : '.pptx 또는 .pdf, 10MB 이하'}
             </p>
             <p style={{ fontSize: '0.75rem', color: 'var(--gray)' }}>
-              ⚠️ 가로형 슬라이드만 — 세로형은 사진이 잘립니다.
+              PPTX는 가로형 슬라이드로 올려주세요 (세로형은 사진이 잘릴 수 있어요).
             </p>
           </div>
         </div>
-        <input ref={pptRef} type="file" accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation" onChange={uploadPpt} style={{ display: 'none' }} aria-hidden="true" />
+        <input ref={pptRef} type="file" accept=".pptx,.pdf,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation" onChange={uploadPpt} style={{ display: 'none' }} aria-hidden="true" />
         <button type="button" onClick={() => pptRef.current?.click()} disabled={pptUploading} aria-busy={pptUploading} style={{ ...s.btn, ...s.btnGhost, opacity: pptUploading ? 0.6 : 1 }}>
           {pptUploading ? '업로드 중…' : <><span aria-hidden="true">📄</span>{hasPpt ? ' 파일 교체' : ' 파일 올리기'}</>}
         </button>

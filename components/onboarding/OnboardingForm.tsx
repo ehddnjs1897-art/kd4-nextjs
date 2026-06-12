@@ -103,8 +103,7 @@ export default function OnboardingForm({
 
   function pickPpt(f: File | null) {
     if (f && f.size > 10 * MB) { setError('프로필 파일은 10MB 이하여야 합니다.'); return }
-    // 다운스트림 파싱·캐스팅카드 파이프라인이 가로형 PPTX 기준 — PDF가 들어오면 사진이 잘림
-    if (f && !f.name.toLowerCase().endsWith('.pptx')) { setError('.pptx 파일만 올릴 수 있어요. PDF는 PowerPoint에서 .pptx로 변환 후 올려주세요.'); return }
+    if (f && !f.name.toLowerCase().match(/\.(pptx|pdf)$/)) { setError('.pptx 또는 .pdf 파일만 올릴 수 있어요.'); return }
     setError('')
     setPpt(f)
   }
@@ -312,13 +311,12 @@ export default function OnboardingForm({
 
       {/* PPTX */}
       <section style={sec} aria-labelledby="onb-pptx">
-        <h2 id="onb-pptx" style={secTitle}>프로필 PPTX</h2>
+        <h2 id="onb-pptx" style={secTitle}>프로필 문서</h2>
         <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 14 }}>
-          <strong>.pptx 형식 · 가로형 슬라이드</strong>만 가능, 10MB 이하.
-          세로형 슬라이드는 사진이 잘리니 꼭 가로형으로 올려주세요.
-          PDF는 PowerPoint에서 .pptx로 변환 후 올려주세요.
+          <strong>.pptx 또는 .pdf</strong> 형식, 10MB 이하.
+          PPTX는 가로형 슬라이드로 올려주세요 (세로형은 사진이 잘릴 수 있어요).
         </p>
-        <input ref={pptRef} type="file" accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation" disabled={loading} onChange={e => pickPpt(e.target.files?.[0] ?? null)} style={{ display: 'none' }} aria-hidden="true" />
+        <input ref={pptRef} type="file" accept=".pptx,.pdf,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation" disabled={loading} onChange={e => pickPpt(e.target.files?.[0] ?? null)} style={{ display: 'none' }} aria-hidden="true" />
         <button type="button" onClick={() => pptRef.current?.click()} disabled={loading} style={fileBtn}>
           {ppt ? <><span aria-hidden="true">📄</span>{` ${ppt.name} (${(ppt.size / MB).toFixed(1)}MB) — 변경`}</> : <><span aria-hidden="true">📄</span>{' 파일 선택'}</>}
         </button>
