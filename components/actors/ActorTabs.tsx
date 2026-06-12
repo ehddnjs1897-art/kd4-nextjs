@@ -594,7 +594,8 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
             <span style={s.sectionTitle}>최근 출연</span>
             <span lang="en" style={s.sectionEn}>CURRENT WORKS</span>
           </h2>
-          <div style={s.recentGrid}>
+          {/* 박스 카드 → 에디토리얼 행 리스트 (2026-06-12 대표 피드백 "더 잘보이게") */}
+          <div>
             {recentWorks.map((entry) => {
               const prefix = entry.category === 'drama'
                 ? (entry.broadcaster ?? null)
@@ -602,14 +603,14 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                   ? (entry.film_type ?? null)
                   : null
               return (
-                <div key={entry.id} style={s.recentCard}>
+                <div key={entry.id} className="recent-work-row">
+                  <span style={s.recentYear}>{entry.year}</span>
                   <span style={s.recentCat}>{CATEGORY_LABEL[entry.category]}</span>
-                  <p style={s.recentTitle}>
-                    {prefix && <span style={{ fontWeight: 400, color: 'var(--gray)', marginRight: 5 }}>{prefix}</span>}
+                  <p className="recent-work-title" style={s.recentTitle}>
+                    {prefix && <span style={s.recentPrefix}>{prefix}</span>}
                     {entry.title}
                   </p>
-                  {entry.role && <p style={s.recentRole}>{entry.role}</p>}
-                  <p style={s.recentYear}>{entry.year}</p>
+                  {entry.role && <p className="recent-work-role" style={s.recentRole}>{entry.role}</p>}
                 </div>
               )
             })}
@@ -945,44 +946,43 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--gray)',
   },
 
-  /* ---- CURRENT WORKS ---- */
-  recentGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-    gap: 12,
-  },
-  recentCard: {
-    background: 'var(--bg2)',
-    border: '1px solid var(--border)',
-    borderRadius: 6,
-    padding: '14px 16px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 4,
+  /* ---- CURRENT WORKS — 에디토리얼 행 리스트 (2026-06-12 박스 카드 제거)
+     행 레이아웃·모바일(680px)은 globals.css .recent-work-row 참고 ---- */
+  recentYear: {
+    fontFamily: 'var(--font-display), Oswald, sans-serif',
+    fontSize: '0.78rem',
+    fontWeight: 600,
+    color: 'var(--gray)',
+    letterSpacing: '0.08em',
+    fontVariantNumeric: 'tabular-nums',
   },
   recentCat: {
     fontFamily: 'var(--font-display), Oswald, sans-serif',
-    fontSize: '0.68rem',
+    fontSize: '0.66rem',
     fontWeight: 700,
     color: 'var(--gold)',
-    letterSpacing: '0.1em',
-    marginBottom: 4,
+    letterSpacing: '0.14em',
   },
   recentTitle: {
-    fontSize: '0.92rem',
+    fontFamily: 'var(--font-serif)',
+    fontSize: '1.02rem',
     fontWeight: 700,
     color: 'var(--white)',
-    lineHeight: 1.4,
+    lineHeight: 1.45,
+  },
+  recentPrefix: {
+    fontFamily: 'var(--font-display), Oswald, sans-serif',
+    fontSize: '0.74rem',
+    fontWeight: 500,
+    color: 'var(--gray)',
+    letterSpacing: '0.05em',
+    marginRight: 8,
   },
   recentRole: {
     fontSize: '0.8rem',
+    fontWeight: 400,
     color: 'var(--gray)',
-  },
-  recentYear: {
-    fontSize: '0.75rem',
-    color: 'var(--gray)',
-    marginTop: 2,
-    opacity: 0.7,
+    textAlign: 'right' as const,
   },
 
   /* ---- 필모 테이블 공통 ---- */
