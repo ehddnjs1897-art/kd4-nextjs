@@ -788,7 +788,8 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                     {entry.year ?? '—'}
                   </td>
                   <td style={{ ...s.td, fontWeight: 600, color: 'var(--white)' }}>
-                    {entry.title}
+                    {/* 작품명 비표기 수상(대표 지시로 title 없이 입력된 row)은 — 처리 */}
+                    {entry.title || '—'}
                   </td>
                   <td style={{ ...s.td, color: 'var(--accent-red)', fontWeight: 600 }}>
                     {entry.award}
