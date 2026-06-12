@@ -19,7 +19,7 @@ const crewLinks = [
   { label: '대본 분석', href: '/ai-tools', public: false },
 ]
 
-type UserRole = 'user' | 'crew_pending' | 'crew' | 'editor' | 'admin' | null
+type UserRole = 'user' | 'actor' | 'director_pending' | 'director' | 'crew_pending' | 'crew' | 'editor' | 'admin' | null
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -27,6 +27,7 @@ export default function Navbar() {
   const [crewDropOpen, setCrewDropOpen] = useState(false)
   const [mobileCrewOpen, setMobileCrewOpen] = useState(false)
   const [userRole, setUserRole] = useState<UserRole>(null)
+  const [myActorId, setMyActorId] = useState<string | null>(null)
   const [authLoaded, setAuthLoaded] = useState(false)
   const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
   const hamburgerRef = useRef<HTMLButtonElement>(null)
@@ -127,10 +128,11 @@ export default function Navbar() {
         }
         const { data } = await supabase
           .from('profiles')
-          .select('role')
+          .select('role, actor_id')
           .eq('id', user.id)
           .maybeSingle()
         setUserRole((data?.role as UserRole) || 'user')
+        setMyActorId(data?.actor_id ?? null)
         setAuthLoaded(true)
       }
 
@@ -436,6 +438,28 @@ export default function Navbar() {
                 onMouseLeave={e => (e.currentTarget.style.color = '#111111')}
               >
                 로그인
+              </Link>
+            )}
+            {authLoaded && isLoggedIn && myActorId && (
+              <Link
+                href={`/actors/${myActorId}`}
+                className="desktop-auth"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  minHeight: 44,
+                  padding: '8px 12px',
+                  color: '#111111',
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '0.825rem',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  whiteSpace: 'nowrap',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.color = 'var(--navy)')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#111111')}
+              >
+                내 배우 DB
               </Link>
             )}
             {authLoaded && isLoggedIn && (

@@ -811,8 +811,8 @@ export default function JoinPage() {
                             background: 'var(--bg2)',
                             border: '1.5px solid var(--accent-red)',
                             borderRadius: '12px',
-                            padding: '10px 12px',
-                            marginBottom: '8px',
+                            padding: '16px 14px 14px',
+                            marginBottom: '10px',
                             position: 'relative',
                           }}
                         >
@@ -820,14 +820,14 @@ export default function JoinPage() {
                             aria-hidden="true"
                             style={{
                               position: 'absolute',
-                              top: '-9px',
-                              left: '10px',
+                              top: '-10px',
+                              left: '12px',
                               background: 'var(--accent-red)',
                               color: '#fff',
                               fontSize: '0.66rem',
                               fontWeight: 800,
                               letterSpacing: '0.04em',
-                              padding: '2px 8px',
+                              padding: '3px 10px',
                               borderRadius: '999px',
                               whiteSpace: 'nowrap',
                             }}
@@ -836,27 +836,28 @@ export default function JoinPage() {
                           </span>
                           <p
                             style={{
-                              fontSize: '0.78rem',
+                              fontSize: '0.8rem',
                               color: 'var(--accent-red)',
                               fontWeight: 700,
-                              marginBottom: '2px',
-                              lineHeight: 1.4,
+                              marginBottom: '8px',
+                              lineHeight: 1.5,
                             }}
                           >
                             한번에 결제 시 {lumpSumManwon}만원 할인
                           </p>
                           <p
                             style={{
-                              fontSize: '0.82rem',
+                              fontSize: '0.88rem',
                               color: 'var(--navy)',
                               fontWeight: 700,
-                              marginBottom: '2px',
+                              marginBottom: '8px',
+                              lineHeight: 1.4,
                             }}
                           >
                             <strong>{lumpSumPrice.toLocaleString()}원</strong>
                             <span
                               style={{
-                                fontSize: '0.7rem',
+                                fontSize: '0.72rem',
                                 color: 'var(--gray-light)',
                                 fontWeight: 500,
                                 marginLeft: '6px',
@@ -865,7 +866,7 @@ export default function JoinPage() {
                               ({cls.course} 일시납가)
                             </span>
                           </p>
-                          <p style={{ fontSize: '0.7rem', color: 'var(--gray-light)', lineHeight: 1.5 }}>
+                          <p style={{ fontSize: '0.72rem', color: 'var(--gray-light)', lineHeight: 1.6, margin: 0 }}>
                             자리 확정 + 캐시 부담 한번에 정리
                           </p>
                         </div>
