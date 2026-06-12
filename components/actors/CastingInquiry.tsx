@@ -124,6 +124,10 @@ export default function CastingInquiry({ actorId, actorName, actorAgeGroup, acto
             motivation,
             status: '대기',
             event_id: eventId,
+            // 배우 직통 SMS 라우팅용 (2026-06-12 대표 지시) — 서버가 actors.phone 조회에 사용
+            actor_id: actorId,
+            production: production.trim().slice(0, 100),
+            role: role.trim().slice(0, 100),
           },
         }),
       })

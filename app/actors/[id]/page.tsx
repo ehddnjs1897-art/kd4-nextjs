@@ -672,15 +672,26 @@ export default async function ActorDetailPage({
               {/* 구분선 */}
               <div style={{ borderTop: '1px solid var(--border)', marginBottom: 22 }} />
 
-              {/* 연락처 */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'center' }}>
+              {/* 연락처 — 라벨+값 행 구조 (신장·체중과 동일 패턴, 전화·이메일·인스타 구분.
+                  2026-06-12 대표 지시: 한 줄 뭉침 ☎✉@ 가 구분이 안 가 재디자인) */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'max-content 1fr', rowGap: 10, columnGap: 18, alignItems: 'baseline' }}>
                 {canContact ? (
                   <>
-                    {actor.phone && <a href={`tel:${actor.phone}`} aria-label={`전화하기 ${actor.phone}`} style={{ fontSize: '0.9rem', color: 'var(--gold)', textDecoration: 'none', fontWeight: 600 }}><span aria-hidden="true">☎ </span>{actor.phone}</a>}
-                    {actor.email && <a href={`mailto:${actor.email}`} aria-label={`이메일 보내기 ${actor.email}`} style={{ fontSize: '0.9rem', color: 'var(--gold)', textDecoration: 'none', fontWeight: 600 }}><span aria-hidden="true">✉ </span>{actor.email}</a>}
+                    {actor.phone && (
+                      <>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--gray)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>전화</span>
+                        <a href={`tel:${actor.phone}`} aria-label={`전화하기 ${actor.phone}`} style={{ fontSize: '0.9rem', color: 'var(--gold)', textDecoration: 'none', fontWeight: 600 }}>{actor.phone}</a>
+                      </>
+                    )}
+                    {actor.email && (
+                      <>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--gray)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>이메일</span>
+                        <a href={`mailto:${actor.email}`} aria-label={`이메일 보내기 ${actor.email}`} style={{ fontSize: '0.9rem', color: 'var(--gold)', textDecoration: 'none', fontWeight: 600, wordBreak: 'break-all' }}>{actor.email}</a>
+                      </>
+                    )}
                   </>
                 ) : (
-                  <p style={{ fontSize: '0.82rem', color: 'var(--gray)' }}>
+                  <p style={{ gridColumn: '1 / -1', fontSize: '0.82rem', color: 'var(--gray)', margin: 0 }}>
                     {user
                       ? <>연락처 열람은 디렉터 회원 전용입니다.{' '}
                           <Link href="/dashboard" aria-label="디렉터 권한 신청하기 (마이페이지로 이동)" style={{ color: 'var(--gold)' }}>마이페이지에서 신청 <span aria-hidden="true">→</span></Link>
@@ -692,11 +703,14 @@ export default async function ActorDetailPage({
                   </p>
                 )}
                 {normalizeInstagramHandle(actor.instagram) && (
-                  <a href={`https://www.instagram.com/${normalizeInstagramHandle(actor.instagram)}/`} target="_blank" rel="noopener noreferrer"
-                    aria-label={`인스타그램 @${normalizeInstagramHandle(actor.instagram)} (새 탭에서 열림)`}
-                    style={{ fontSize: '0.85rem', color: 'var(--gray)', textDecoration: 'none' }}>
-                    @ {normalizeInstagramHandle(actor.instagram)}
-                  </a>
+                  <>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--gray)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>인스타그램</span>
+                    <a href={`https://www.instagram.com/${normalizeInstagramHandle(actor.instagram)}/`} target="_blank" rel="noopener noreferrer"
+                      aria-label={`인스타그램 @${normalizeInstagramHandle(actor.instagram)} (새 탭에서 열림)`}
+                      style={{ fontSize: '0.9rem', color: 'var(--gold)', textDecoration: 'none', fontWeight: 600 }}>
+                      @{normalizeInstagramHandle(actor.instagram)}
+                    </a>
+                  </>
                 )}
               </div>
 

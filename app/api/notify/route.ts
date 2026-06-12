@@ -469,6 +469,33 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // 3-b. 캐스팅 문의 → 해당 배우 본인에게도 직통 SMS (2026-06-12 대표 지시: 배우 전화번호 동기화)
+    //      actors.phone 비어 있으면 자동 스킵. 관리자 SMS(위)는 항상 별도 발송 — 대표도 같이 인지.
+    if (isCastingInquiry && record && typeof record.actor_id === 'string'
+      && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(record.actor_id)) {
+      try {
+        const { data: inquiredActor } = await getSupabaseAdmin()
+          .from('actors')
+          .select('name, phone')
+          .eq('id', record.actor_id)
+          .maybeSingle()
+        const actorPhone = (inquiredActor?.phone ?? '').replace(/[^\d]/g, '')
+        if (actorPhone.length >= 9) {
+          const safeName2 = name.replace(/[\r\n\t]/g, ' ')
+          const safePhone2 = phone.replace(/[\r\n\t]/g, '')
+          const safeProduction = typeof record.production === 'string' ? record.production.replace(/[\r\n\t]/g, ' ').slice(0, 40) : ''
+          const safeRole = typeof record.role === 'string' ? record.role.replace(/[\r\n\t]/g, ' ').slice(0, 30) : ''
+          const detail2 = [safeProduction, safeRole].filter(Boolean).join(' · ')
+          const actorMsg = `[KD4 캐스팅문의] ${inquiredActor?.name ?? ''}님께 문의 도착 — ${safeName2} ${safePhone2}${detail2 ? ` / ${detail2}` : ''}`
+          await sendSMS(actorPhone, actorMsg).catch((err) =>
+            console.error('[notify] 배우 직통 SMS 실패:', err instanceof Error ? err.message : '알 수 없는 오류')
+          )
+        }
+      } catch (e) {
+        console.error('[notify] 배우 직통 SMS용 배우 조회 실패:', e instanceof Error ? e.message : String(e))
+      }
+    }
+
     // 4. Meta CAPI (서버사이드 Lead 이벤트) — iOS14 ATT 추적 누락 회복
     if (record) {
       await sendMetaCAPI({ name, phone, email: emailRaw, event_id: typeof record?.event_id === 'string' ? record.event_id : null }).catch((err) =>

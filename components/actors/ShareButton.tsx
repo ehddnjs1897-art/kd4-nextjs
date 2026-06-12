@@ -54,28 +54,28 @@ export default function ShareButton({ webUrl }: Props) {
   const mailtoHref = `mailto:?subject=${encodeURIComponent('KD4 배우 프로필 공유')}&body=${encodeURIComponent(`아래 KD4 배우 프로필을 확인해 보세요:\n\n${webUrl}`)}`
 
   return (
-    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <button type="button" onClick={share} style={styles.btn} aria-label="카카오톡 공유">
-        <Image src="/icons/kakao.png" alt="" width={18} height={18} style={{ flexShrink: 0 }} />
+    // 2026-06-12 대표 지시 재디자인: 노란 블록 제거 → 크림+네이비 톤의 동일 아웃라인 버튼 한 줄
+    // (에디토리얼 레퍼런스 — 카카오는 공식 심볼 아이콘으로만 식별, 브랜드 노랑 면적 미사용)
+    <div style={{ position: 'relative', display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'center' }}>
+      <button type="button" onClick={share} style={styles.btnPrimary} aria-label="카카오톡 공유">
+        <Image src="/icons/kakao.png" alt="" width={16} height={16} style={{ flexShrink: 0 }} />
         카카오톡 공유
       </button>
-      <div style={{ display: 'flex', gap: 6 }}>
-        <button
-          type="button"
-          onClick={copyLink}
-          aria-label="프로필 링크 복사"
-          style={styles.btnSecondary}
-        >
-          <span aria-hidden="true">🔗</span> 링크 복사
-        </button>
-        <a
-          href={mailtoHref}
-          aria-label="이메일로 프로필 공유"
-          style={{ ...styles.btnSecondary, textDecoration: 'none' }}
-        >
-          <span aria-hidden="true">✉</span> 이메일
-        </a>
-      </div>
+      <button
+        type="button"
+        onClick={copyLink}
+        aria-label="프로필 링크 복사"
+        style={styles.btnSecondary}
+      >
+        링크 복사
+      </button>
+      <a
+        href={mailtoHref}
+        aria-label="이메일로 프로필 공유"
+        style={{ ...styles.btnSecondary, textDecoration: 'none' }}
+      >
+        이메일
+      </a>
       {(copied || shared) && (
         <div role="status" aria-live="polite" style={{
           position: 'absolute', bottom: 'calc(100% + 8px)', left: '50%', transform: 'translateX(-50%)',
@@ -91,22 +91,23 @@ export default function ShareButton({ webUrl }: Props) {
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  btn: {
+  // 1순위 액션 — 같은 아웃라인 구조에 브랜드 악센트 색만 (면적 색 채움 금지)
+  btnPrimary: {
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
-    background: '#FEE500', // 카카오 공식 노랑
-    color: '#191600',
-    border: 'none',
-    borderRadius: 8,
-    padding: '12px 16px',
-    minHeight: 44,
-    fontSize: '0.9rem',
-    fontWeight: 700,
+    gap: 6,
+    background: 'transparent',
+    color: 'var(--gold)',
+    border: '1px solid var(--gold)',
+    borderRadius: 6,
+    padding: '9px 14px',
+    minHeight: 40,
+    fontSize: '0.8rem',
+    fontWeight: 600,
     fontFamily: 'var(--font-sans)',
+    letterSpacing: '0.02em',
     cursor: 'pointer',
-    width: '100%',
     transition: 'opacity 0.15s',
   },
   btnSecondary: {
@@ -114,15 +115,15 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    flex: 1,
     background: 'transparent',
     color: 'var(--gray)',
     border: '1px solid var(--border)',
     borderRadius: 6,
-    padding: '8px 10px',
+    padding: '9px 14px',
     minHeight: 40,
-    fontSize: '0.78rem',
+    fontSize: '0.8rem',
     fontFamily: 'var(--font-sans)',
+    letterSpacing: '0.02em',
     cursor: 'pointer',
     transition: 'border-color 0.15s, color 0.15s',
   },

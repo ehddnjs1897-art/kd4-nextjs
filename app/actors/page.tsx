@@ -14,7 +14,22 @@ import { CASTING_TAG_OPTIONS } from '@/lib/actor-tags'
 
 const VALID_TAGS = new Set<string>(CASTING_TAG_OPTIONS)
 
-type FilterParams = { gender?: string | string[]; ageGroup?: string | string[]; tag?: string | string[] }
+// ── 장르 필터 (2026-06-12 대표 지시) ─────────────────────────────────────────
+// 직업·감정이 뒤섞인 개별 태그 19개 노출 대신 장르 묶음만 노출.
+// 배우별 casting_tags 데이터는 그대로 두고, 장르 → 태그 OR 매핑(.overlaps)으로만 조회.
+// 기존 ?tag= URL은 SEO 사이트맵에 등록돼 있어 동작 유지 (UI 비노출).
+const GENRE_OPTIONS: { value: string; label: string; tags: string[] }[] = [
+  { value: 'romance', label: '멜로·로맨스', tags: ['로맨스', '순수'] },
+  { value: 'human', label: '휴먼·일상', tags: ['생활연기', '감정연기', '진지', '엄마', '아빠', '아들', '딸', '주부', '학생', '회사원'] },
+  { value: 'comedy', label: '코미디', tags: ['코믹'] },
+  { value: 'thriller', label: '스릴러·범죄', tags: ['형사', '악역', '카리스마', '경찰'] },
+  { value: 'action', label: '액션', tags: ['액션'] },
+  { value: 'medical', label: '메디컬', tags: ['의사'] },
+  { value: 'legal', label: '법정', tags: ['변호사'] },
+]
+const GENRE_BY_VALUE = new Map(GENRE_OPTIONS.map((g) => [g.value, g]))
+
+type FilterParams = { gender?: string | string[]; ageGroup?: string | string[]; tag?: string | string[]; genre?: string | string[] }
 
 export async function generateMetadata(
   { searchParams }: { searchParams: Promise<FilterParams> }
@@ -28,10 +43,13 @@ export async function generateMetadata(
   const cleaned = rawTag.replace(/[{}\\"]/g, '').slice(0, 200)
   const tagParts: string[] = cleaned && cleaned !== 'all' ? cleaned.split(',') : []
   const activeTags = Array.from(new Set(tagParts.map((s) => s.trim()).filter((s) => VALID_TAGS.has(s)))).sort().slice(0, 3)
+  const rawGenre = Array.isArray(params.genre) ? params.genre[0] : (params.genre ?? '')
+  const genreOpt = GENRE_BY_VALUE.get(rawGenre)
 
   const segments: string[] = []
   if (gender === '남') segments.push('남자')
   else if (gender === '여') segments.push('여자')
+  if (genreOpt) segments.push(genreOpt.label)
   if (activeTags.length > 0) segments.push(activeTags.join('·'))
   if (ageGroup !== 'all') segments.push(ageGroup)
   const titlePrefix = segments.length > 0 ? `${segments.join(' ')} 배우 DB` : '배우 DB'
@@ -39,6 +57,7 @@ export async function generateMetadata(
   const qs = new URLSearchParams()
   if (gender !== 'all') qs.set('gender', gender)
   if (ageGroup !== 'all') qs.set('ageGroup', ageGroup)
+  if (genreOpt) qs.set('genre', genreOpt.value)
   if (activeTags.length > 0) qs.set('tag', activeTags.join(','))
   const qsStr = qs.toString()
   const canonicalUrl = qsStr ? `${SITE_URL}/actors?${qsStr}` : `${SITE_URL}/actors`
@@ -55,6 +74,7 @@ export async function generateMetadata(
   if (gender === '남') filterKeywords.push('남자 배우', '남자 배우 DB', '남자 배우 캐스팅')
   else if (gender === '여') filterKeywords.push('여자 배우', '여자 배우 DB', '여자 배우 캐스팅')
   if (ageGroup !== 'all') filterKeywords.push(`${ageGroup} 배우`, `${ageGroup} 배우 DB`)
+  if (genreOpt) filterKeywords.push(`${genreOpt.label} 배우`, `${genreOpt.label} 장르 배우`)
   for (const t of activeTags) filterKeywords.push(`${t} 배우`, `${t} 역할 배우`)
   const keywords = [...filterKeywords, '배우 DB', 'KD4 배우 DB', '마이즈너 배우', '캐스팅 디렉터', '신촌 연기학원 배우']
 
@@ -102,6 +122,7 @@ interface PageProps {
     gender?: string
     ageGroup?: string
     tag?: string
+    genre?: string
   }>
 }
 
@@ -114,7 +135,7 @@ function isUndefinedColumnError(err: { code?: string; message?: string } | null)
   return err.code === '42703' || /column .* does not exist/i.test(err.message ?? '')
 }
 
-async function fetchActors(gender: string, ageGroup: string, tag: string): Promise<{ actors: Actor[]; dbError: boolean; allTags: string[]; videoActorIds: string[] }> {
+async function fetchActors(gender: string, ageGroup: string, tag: string, genre: string): Promise<{ actors: Actor[]; dbError: boolean; allTags: string[]; videoActorIds: string[] }> {
   // 출연영상 보유 배우 id — 배우 목록 쿼리와 독립이므로 병렬 시작 (waterfall 제거)
   // 테이블/컬럼 없으면 빈 배열 폴백 (페이지 안 깨지게)
   const videoIdsPromise: Promise<string[]> = (async () => {
@@ -147,9 +168,12 @@ async function fetchActors(gender: string, ageGroup: string, tag: string): Promi
   let castingSchemaAvailable = true
   {
     let query = buildQuery('id, name, gender, age_group, drive_photo_id, storage_photo_path, profile_photo, casting_tags, casting_summary')
-    // tag는 콤마 구분 여러 태그 가능 (예: "형사,카리스마") — AND 조건
+    // tag는 콤마 구분 여러 태그 가능 (예: "형사,카리스마") — AND 조건 (레거시 ?tag= URL용)
     const tagArr = tag && tag !== 'all' ? tag.split(',').filter(Boolean) : []
     if (tagArr.length > 0) query = query.contains('casting_tags', tagArr)
+    // 장르 필터 — 장르에 속한 태그 중 하나라도 보유하면 매칭 (OR, .overlaps)
+    const genreTags = GENRE_BY_VALUE.get(genre)?.tags ?? []
+    if (genreTags.length > 0) query = query.overlaps('casting_tags', genreTags)
     const { data, error } = await query
     if (error && isUndefinedColumnError(error)) {
       if (!_castingTagsWarnedOnce) {
@@ -216,12 +240,12 @@ async function fetchActors(gender: string, ageGroup: string, tag: string): Promi
 // 매 요청마다 DB 조회 X → 캐시 1회 + 메모리 반환 (속도 대폭 개선).
 // 배우 추가/수정 시 revalidateTag('actors')로 즉시 갱신 가능.
 // keyParts에 필터 조합 포함 → gender/ageGroup/tag 조합별로 독립 캐시 슬롯 보장.
-function getActorsCached(gender: string, ageGroup: string, tag: string) {
+function getActorsCached(gender: string, ageGroup: string, tag: string, genre: string) {
   return unstable_cache(
     fetchActors,
-    ['actors-list-v1', gender, ageGroup, tag],
+    ['actors-list-v2', gender, ageGroup, tag, genre],
     { revalidate: 120, tags: ['actors'] }
-  )(gender, ageGroup, tag)
+  )(gender, ageGroup, tag, genre)
 }
 
 // 사진 URL은 lib/actor-photo의 getActorPhotoUrl 사용 (Storage 우선, Drive 폴백)
@@ -256,14 +280,19 @@ export default async function ActorsPage({ searchParams }: PageProps) {
   const rawParts: string[] = cleanedTag === 'all' || !cleanedTag ? [] : cleanedTag.split(',')
   const activeTags: string[] = Array.from(new Set(rawParts.map((s) => s.trim()).filter((s) => VALID_TAGS.has(s)))).sort().slice(0, 3)
   const tag = activeTags.length > 0 ? activeTags.join(',') : 'all'  // 정렬된 키 → 캐시 슬롯 최소화
+  // 장르 — 단일 선택 (화이트리스트 외 값은 'all')
+  const rawGenre = Array.isArray(params.genre) ? params.genre[0] : (params.genre ?? '')
+  const genre = GENRE_BY_VALUE.has(rawGenre) ? rawGenre : 'all'
+  const activeGenre = genre !== 'all' ? GENRE_BY_VALUE.get(genre) : undefined
 
-  const { actors, dbError, allTags, videoActorIds } = await getActorsCached(gender, ageGroup, tag)
+  const { actors, dbError, videoActorIds } = await getActorsCached(gender, ageGroup, tag, genre)
   const videoIdSet = new Set(videoActorIds)
 
-  // 동적 H1 — 필터 활성 시 "여자 형사 30대 배우 DB", 기본 "배우 DB"
+  // 동적 H1 — 필터 활성 시 "여자 멜로·로맨스 30대 배우 DB", 기본 "배우 DB"
   const h1Segments: string[] = []
   if (gender === '남') h1Segments.push('남자')
   else if (gender === '여') h1Segments.push('여자')
+  if (activeGenre) h1Segments.push(activeGenre.label)
   if (activeTags.length > 0) h1Segments.push(activeTags.join('·'))
   if (ageGroup !== 'all') h1Segments.push(ageGroup)
   const dynamicH1 = h1Segments.length > 0 ? `${h1Segments.join(' ')} 배우 DB` : '배우 DB'
@@ -279,34 +308,32 @@ export default async function ActorsPage({ searchParams }: PageProps) {
     const next = new URLSearchParams()
     const g = key === 'gender' ? value : gender
     const ag = key === 'ageGroup' ? value : ageGroup
+    const gen = key === 'genre' ? value : genre
     const t = key === 'tag' ? value : (activeTags.length > 0 ? activeTags.join(',') : 'all')
     if (g !== 'all') next.set('gender', g)
     if (ag !== 'all') next.set('ageGroup', ag)
+    if (gen !== 'all') next.set('genre', gen)
     if (t !== 'all') next.set('tag', t)
     return `/actors?${next.toString()}`
   }
 
-  // 태그 토글: 이미 선택된 태그면 제거, 없으면 추가 (최대 3개 AND 조합)
-  function tagToggleHref(t: string) {
-    const next = new URLSearchParams()
-    if (gender !== 'all') next.set('gender', gender)
-    if (ageGroup !== 'all') next.set('ageGroup', ageGroup)
-    const newTags = activeTags.includes(t)
-      ? activeTags.filter((x) => x !== t)
-      : [...activeTags, t].slice(0, 3)
-    if (newTags.length > 0) next.set('tag', newTags.join(','))
-    return `/actors?${next.toString()}`
+  // 장르 토글: 이미 선택된 장르를 다시 누르면 전체로
+  function genreToggleHref(value: string) {
+    return filterHref('genre', genre === value ? 'all' : value)
   }
 
   // 필터 상태에 맞는 정규화된 canonical URL 구성 (generateMetadata와 동일 로직)
   const canonicalQs = new URLSearchParams()
   if (gender !== 'all') canonicalQs.set('gender', gender)
   if (ageGroup !== 'all') canonicalQs.set('ageGroup', ageGroup)
+  if (activeGenre) canonicalQs.set('genre', activeGenre.value)
   if (activeTags.length > 0) canonicalQs.set('tag', activeTags.join(','))
   const canonicalUrl = canonicalQs.toString() ? `${SITE_URL}/actors?${canonicalQs.toString()}` : `${SITE_URL}/actors`
-  const listName = activeTags.length > 0
-    ? `KD4 배우 DB — ${activeTags.join('·')}`
-    : 'KD4 배우 DB'
+  const listName = activeGenre
+    ? `KD4 배우 DB — ${activeGenre.label}`
+    : activeTags.length > 0
+      ? `KD4 배우 DB — ${activeTags.join('·')}`
+      : 'KD4 배우 DB'
 
   return (
     <div style={styles.page}>
@@ -423,48 +450,41 @@ export default async function ActorsPage({ searchParams }: PageProps) {
             </div>
           </div>
 
-          {/* 캐스팅 타입 — 자동 분류된 태그 (회사원/형사/엄마 등), 다중 선택(AND 조합) 가능 */}
-          {(allTags.length > 0 || activeTags.length > 0) && (
-            <div style={styles.filterGroup}>
-              <span id="filter-label-tag" style={styles.filterLabel}>
-                캐스팅 타입{activeTags.length > 1 ? ` (${activeTags.length}개 AND)` : ''}
-              </span>
-              <div role="group" aria-labelledby="filter-label-tag" style={styles.filterBtnGroup}>
-                <Link
-                  href={filterHref('tag', 'all')}
-                  aria-current={activeTags.length === 0 ? "true" : undefined}
-                  aria-label={activeTags.length === 0 ? '전체 (선택됨)' : '전체'}
-                  style={{
-                    ...styles.filterBtn,
-                    ...(activeTags.length === 0 ? styles.filterBtnActive : {}),
-                  }}
-                >
-                  전체
-                </Link>
-                {allTags.map((t) => {
-                  const isActive = activeTags.includes(t)
-                  const isDisabled = !isActive && activeTags.length >= 3
-                  return (
-                    <Link
-                      key={t}
-                      href={tagToggleHref(t)}
-                      aria-current={isActive ? "true" : undefined}
-                      aria-label={isActive ? `${t} (선택됨)` : isDisabled ? `${t} (최대 3개 선택됨)` : t}
-                      aria-disabled={isDisabled ? "true" : undefined}
-                      tabIndex={isDisabled ? -1 : undefined}
-                      style={{
-                        ...styles.filterBtn,
-                        ...(isActive ? styles.filterBtnActive : {}),
-                        ...(isDisabled ? { opacity: 0.4, cursor: 'not-allowed', pointerEvents: 'none' as const } : {}),
-                      }}
-                    >
-                      {t}
-                    </Link>
-                  )
-                })}
-              </div>
+          {/* 장르 — 단일 선택 (2026-06-12 대표 지시: 개별 태그 19개 노출 대신 장르 묶음만)
+              세부 키워드(형사·의사 등)는 아래 검색창에서 검색 가능. 레거시 ?tag= URL은 계속 동작 */}
+          <div style={styles.filterGroup}>
+            <span id="filter-label-genre" style={styles.filterLabel}>장르</span>
+            <div role="group" aria-labelledby="filter-label-genre" style={styles.filterBtnGroup}>
+              <Link
+                href={filterHref('genre', 'all')}
+                aria-current={!activeGenre ? "true" : undefined}
+                aria-label={!activeGenre ? '전체 (선택됨)' : '전체'}
+                style={{
+                  ...styles.filterBtn,
+                  ...(!activeGenre ? styles.filterBtnActive : {}),
+                }}
+              >
+                전체
+              </Link>
+              {GENRE_OPTIONS.map((g) => {
+                const isActive = genre === g.value
+                return (
+                  <Link
+                    key={g.value}
+                    href={genreToggleHref(g.value)}
+                    aria-current={isActive ? "true" : undefined}
+                    aria-label={isActive ? `${g.label} (선택됨)` : g.label}
+                    style={{
+                      ...styles.filterBtn,
+                      ...(isActive ? styles.filterBtnActive : {}),
+                    }}
+                  >
+                    {g.label}
+                  </Link>
+                )
+              })}
             </div>
-          )}
+          </div>
         </div>
 
         {/* 온보딩 CTA — 배우 등록 신청 + 캐스팅 문의 진입경로 */}
