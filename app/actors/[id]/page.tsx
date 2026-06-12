@@ -6,7 +6,6 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import ActorTabs from '@/components/actors/ActorTabs'
-import CastingInquiry from '@/components/actors/CastingInquiry'
 import ShareButton from '@/components/actors/ShareButton'
 import ActorDownloadButton from '@/components/actors/ActorDownloadButton'
 import ActorDbLocked from '@/components/actors/ActorDbLocked'
@@ -233,7 +232,12 @@ function relatedPhotoUrl(a: RelatedActor): string | null {
   return null
 }
 
-function getRelatedActorsCached(actorId: string, castingTags: string[]) {
+function getRelatedActorsCached(
+  actorId: string,
+  castingTags: string[],
+  actorGender: string | null,
+  actorAgeGroup: string | null
+) {
   const sortedTags = [...castingTags].sort().join(',')
   return unstable_cache(
     async (): Promise<RelatedActor[]> => {
@@ -247,14 +251,20 @@ function getRelatedActorsCached(actorId: string, castingTags: string[]) {
         .limit(50)
       if (!relData) return []
       const tagSet = new Set(castingTags)
-      const scored = (relData as (RelatedActor & { _score: number })[]).map((a) => ({
-        ...a,
-        _score: (a.casting_tags ?? []).filter((t) => tagSet.has(t)).length,
-      }))
+      const scored = (relData as RelatedActor[]).map((a) => {
+        let score = 0
+        // 나이대 일치: +3점 (가장 높은 가중치)
+        if (a.age_group && a.age_group === actorAgeGroup) score += 3
+        // 성별 일치: +2점
+        if (a.gender && a.gender === actorGender) score += 2
+        // casting_tags 공통 수: +1점/개
+        score += (a.casting_tags ?? []).filter((t) => tagSet.has(t)).length
+        return { ...a, _score: score }
+      })
       scored.sort((a, b) => b._score - a._score)
       return scored.slice(0, 4).map(({ _score: _, ...rest }) => rest)
     },
-    ['actor-related-v2', actorId, sortedTags],
+    ['actor-related-v3', actorId, sortedTags],
     { revalidate: 30, tags: ['actors', `actor-${actorId}`] }
   )()
 }
@@ -403,7 +413,7 @@ export default async function ActorDetailPage({
   // 비슷한 배우: 접근 허용 확정 후 쿼리 (A~D 통과 이후) — 30s unstable_cache
   const relatedActors: RelatedActor[] =
     actor.casting_tags && actor.casting_tags.length > 0
-      ? await getRelatedActorsCached(actor.id, actor.casting_tags)
+      ? await getRelatedActorsCached(actor.id, actor.casting_tags, actor.gender, actor.age_group)
       : []
 
   const photoUrl = profilePhotoUrl(actor)
@@ -732,13 +742,25 @@ export default async function ActorDetailPage({
                 ) : null}
               </div>
 
-              {/* 캐스팅 문의 폼 — 버튼 줄 바로 아래 */}
-              <CastingInquiry
-                actorId={actor.id}
-                actorName={actor.name}
-                actorAgeGroup={actor.age_group}
-                actorGender={actor.gender}
-              />
+              {/* 캐스팅 문의 — 디렉터/관리자만 노출, 배우 전화 직통 연결 */}
+              {canContact && actor.phone && (
+                <a href={`tel:${actor.phone}`} style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 8,
+                  background: 'var(--navy)', color: 'var(--gold)',
+                  border: '1px solid var(--gold)', borderRadius: 8,
+                  padding: '12px 20px', fontFamily: 'var(--font-display)',
+                  fontSize: '0.9rem', fontWeight: 700, letterSpacing: '0.05em',
+                  textDecoration: 'none', width: '100%', justifyContent: 'center',
+                  minHeight: 44,
+                }}>
+                  📞 캐스팅 문의 (직통 전화)
+                </a>
+              )}
+              {canContact && !actor.phone && (
+                <p style={{ fontSize: '0.8rem', color: 'var(--gray)', marginTop: 8 }}>
+                  배우 전화번호가 등록되지 않았습니다.
+                </p>
+              )}
             </div>
           </div>
         </div>
