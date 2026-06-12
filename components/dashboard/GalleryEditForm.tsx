@@ -304,12 +304,12 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     const file = e.target.files?.[0]
     if (!file) return
     if (file.size > 10 * 1024 * 1024) { setPptMsg('10MB 이하 파일만 가능합니다.'); return }
+    const ext = file.name.split('.').pop()?.toLowerCase() || ''
+    // 다운스트림 파싱·캐스팅카드 파이프라인이 가로형 PPTX 기준 — PDF가 들어오면 사진이 잘림
+    if (ext !== 'pptx') { setPptMsg('.pptx 파일만 올릴 수 있어요. PDF는 PowerPoint에서 .pptx로 변환 후 업로드해 주세요.'); return }
     setPptUploading(true); setPptMsg('')
     try {
-      const ext = file.name.split('.').pop()?.toLowerCase() || 'pptx'
-      const ct = file.type || (ext === 'pdf'
-        ? 'application/pdf'
-        : 'application/vnd.openxmlformats-officedocument.presentationml.presentation')
+      const ct = file.type || 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
       // 서버 발급 서명 URL 방식 — httpOnly 세션 쿠키를 브라우저가 못 읽어(server.ts) 직접 업로드가
       // RLS에 막히는 문제 우회. 경로는 서버가 intake/{user.id}/ 로 발급 → /api/actors PATCH 검증과 일치.
       const signRes = await fetch('/api/storage/signed-upload', {
@@ -731,7 +731,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
 
       {/* ── 프로필 자료 (PPTX) ── */}
       <section style={s.section} aria-labelledby="gallery-section-ppt">
-        <h2 id="gallery-section-ppt" style={s.sectionTitle}>프로필 문서</h2>
+        <h2 id="gallery-section-ppt" style={s.sectionTitle}>프로필 PPTX</h2>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
           <div style={{
             width: 40, height: 40, borderRadius: 6, background: 'rgba(196,165,90,0.12)',
@@ -742,14 +742,17 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           </div>
           <div>
             <p style={{ fontSize: '0.85rem', color: 'var(--white)', fontWeight: 600, marginBottom: 2 }}>
-              {hasPpt ? '프로필 문서 등록됨' : '프로필 문서 미등록'}
+              {hasPpt ? '프로필 PPTX 등록됨' : '프로필 PPTX 미등록'}
             </p>
             <p style={{ fontSize: '0.75rem', color: 'var(--gray)' }}>
-              {hasPpt ? '새 파일을 올리면 기존 파일이 교체됩니다.' : '.pptx 또는 .pdf, 10MB 이하'}
+              {hasPpt ? '새 파일을 올리면 기존 파일이 교체됩니다.' : '.pptx 파일만, 10MB 이하'}
+            </p>
+            <p style={{ fontSize: '0.75rem', color: 'var(--gray)' }}>
+              ⚠️ 가로형 슬라이드만 — 세로형은 사진이 잘립니다.
             </p>
           </div>
         </div>
-        <input ref={pptRef} type="file" accept=".pptx,.pdf,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation" onChange={uploadPpt} style={{ display: 'none' }} aria-hidden="true" />
+        <input ref={pptRef} type="file" accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation" onChange={uploadPpt} style={{ display: 'none' }} aria-hidden="true" />
         <button type="button" onClick={() => pptRef.current?.click()} disabled={pptUploading} aria-busy={pptUploading} style={{ ...s.btn, ...s.btnGhost, opacity: pptUploading ? 0.6 : 1 }}>
           {pptUploading ? '업로드 중…' : <><span aria-hidden="true">📄</span>{hasPpt ? ' 파일 교체' : ' 파일 올리기'}</>}
         </button>
