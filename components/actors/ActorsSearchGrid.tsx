@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect, useDeferredValue, useCallback } from 'react'
 import Link from 'next/link'
 import ActorCardImage from './ActorCardImage'
+import FavoriteButton from './FavoriteButton'
 
 function CopyLinkButton({ actorId, actorName }: { actorId: string; actorName: string }) {
   const [state, setState] = useState<'idle' | 'copied' | 'error'>('idle')
@@ -441,6 +442,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
               </div>
             </Link>
             <CopyLinkButton actorId={actor.id} actorName={actor.name} />
+            <FavoriteButton actorId={actor.id} actorName={actor.name} />
             {actor.hasVideo && (
               <div aria-hidden="true" style={{
                 position: 'absolute', top: 8, left: 10,
