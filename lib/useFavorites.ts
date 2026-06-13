@@ -9,6 +9,8 @@ export function useFavorites() {
   const [loaded, setLoaded] = useState(false)
 
   // 마운트 시 localStorage에서 복원
+  // localStorage는 SSR에서 읽을 수 없는 외부 시스템 → 마운트 후 1회 복원이 hydration-safe한 유일한 방법
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
@@ -23,6 +25,7 @@ export function useFavorites() {
     }
     setLoaded(true)
   }, [])
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   // favorites 변경 시 localStorage 동기화
   useEffect(() => {
