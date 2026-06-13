@@ -42,16 +42,12 @@ export async function POST(request: Request) {
     }
 
     // 인메모리 디바운스: 60초 내 재제출 차단 (DB count 쿼리 최소화)
+    // ⚠️ 타임스탬프 기록은 '성공 처리 후'에만 (아래) — 검증/서버 오류로 실패한 요청이
+    //    재시도 슬롯을 소모해 60초 락아웃되는 것 방지 (2026-06-13)
     const nowED = Date.now()
     const lastED = enrollDebounceMap.get(user.id) ?? 0
     if (nowED - lastED < ENROLL_DEBOUNCE_MS) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 429 })
-    }
-    enrollDebounceMap.set(user.id, nowED)
-    if (enrollDebounceMap.size > 2000) {
-      for (const [k, v] of enrollDebounceMap) {
-        if (nowED - v > ENROLL_DEBOUNCE_MS) enrollDebounceMap.delete(k)
-      }
     }
 
     let body: {
@@ -161,12 +157,22 @@ export async function POST(request: Request) {
       .select('id')
 
     if (error) {
-      console.error('[POST /api/enrollments]', error.message)
+      // error.code 포함 — CHECK/제약 위반(23514) 등 PostgrestError 종류를 즉시 구분
+      console.error('[POST /api/enrollments]', error.code, error.message, error.details)
       return NextResponse.json({ error: '신청 처리 중 오류가 발생했습니다.' }, { status: 500 })
     }
     const inserted = (upserted ?? []).length
     if (inserted < rows.length) {
       console.warn(`[POST /api/enrollments] ${rows.length - inserted}/${rows.length}개 이미 신청됨 (ignoreDuplicates)`)
+    }
+
+    // 디바운스 타임스탬프 — 정상 처리된 요청에 대해서만 기록 (실패는 즉시 재시도 허용)
+    const setED = Date.now()
+    enrollDebounceMap.set(user.id, setED)
+    if (enrollDebounceMap.size > 2000) {
+      for (const [k, v] of enrollDebounceMap) {
+        if (setED - v > ENROLL_DEBOUNCE_MS) enrollDebounceMap.delete(k)
+      }
     }
 
     revalidatePath('/dashboard')

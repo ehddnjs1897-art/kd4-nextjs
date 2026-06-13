@@ -141,6 +141,9 @@ export default async function PostDetailPage({ params }: { params: Params }) {
   const canEdit = isAuthor || isAdmin
 
   const typedPost = post as Post
+  // content는 DB nullable(posts는 title만 NOT NULL) — NULL이면 .split()에서 TypeError 크래시.
+  // RLS posts_public_read=USING(TRUE)라 NULL content 행도 읽힘. (2026-06-13 방어)
+  const safeContent = typedPost.content ?? ''
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '80px 0 120px' }}>
@@ -240,15 +243,15 @@ export default async function PostDetailPage({ params }: { params: Params }) {
         </div>
 
         {/* 본문 — HTML이면 dangerouslySetInnerHTML, 아니면 줄바꿈 렌더 */}
-        {isHtmlContent(typedPost.content) ? (
+        {isHtmlContent(safeContent) ? (
           <div
             className="post-html-content"
-            dangerouslySetInnerHTML={{ __html: sanitizeHtml(typedPost.content) }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(safeContent) }}
             style={{ fontSize: '0.95rem', color: 'var(--white)', lineHeight: 1.9, minHeight: '200px', marginBottom: '16px' }}
           />
         ) : (
           <div style={{ fontSize: '0.95rem', color: 'var(--white)', lineHeight: 1.9, minHeight: '200px', marginBottom: '16px' }}>
-            {typedPost.content.split('\n').map((line, i) => (
+            {safeContent.split('\n').map((line, i) => (
               <p key={i} style={{ margin: 0 }}>{line || <>&nbsp;</>}</p>
             ))}
           </div>

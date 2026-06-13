@@ -73,11 +73,17 @@ async function requireUploadAccess(
 // ─── POST ────────────────────────────────────────────────────────────────────
 
 export async function POST(request: NextRequest) {
-  // Content-Length 사전 확인 (헤더만 읽음 — 본문 파싱 전 large-request 조기 차단)
+  // Content-Length 헤더 캡처 (실제 검사는 권한확인 후 — 미인증에 413 정책 노출 방지).
+  // ⚠️ 아래 formData()가 본문을 먼저 버퍼링하므로 '본문 파싱 전 조기 차단'은 아님 — 선언 크기 거부용.
   const clActorUpload = parseInt(request.headers.get('content-length') ?? '0', 10) || 0
 
-  // actorId를 먼저 읽어서 권한 체크에 사용
-  const formData = await request.formData()
+  // actorId를 먼저 읽어서 권한 체크에 사용 (본문 파싱 실패 시 프레임워크 500 대신 400 JSON)
+  let formData: FormData
+  try {
+    formData = await request.formData()
+  } catch {
+    return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })
+  }
   const actorIdRaw = formData.get('actorId')
   const targetActorId = typeof actorIdRaw === 'string' ? actorIdRaw : null
 
@@ -89,7 +95,9 @@ export async function POST(request: NextRequest) {
   if (check instanceof NextResponse) return check
 
   // CL guard after auth — 미인증 클라이언트에 413 대신 401 노출 (정책 정보 유출 방지)
-  if (clActorUpload > 6 * 1024 * 1024) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
+  // 실제 파일 상한 MAX_IMAGE_SIZE(15MB) + multipart 오버헤드 여유 1MB.
+  // (2026-06-13 수정: 6MB→16MB — 폰 원본 사진 6~15MB가 클라 통과 후 서버 413으로 막히던 버그)
+  if (clActorUpload > MAX_IMAGE_SIZE + 1024 * 1024) return NextResponse.json({ error: '요청 크기가 너무 큽니다.' }, { status: 413 })
 
   try {
     const file = formData.get('file')

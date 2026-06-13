@@ -116,8 +116,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '유효하지 않은 게임 시간입니다.' }, { status: 400 })
   }
 
-  // Basic anti-cheat: max ~50 points per second (Math.floor — float 경계 우회 방어)
-  const maxPossibleScore = Math.floor((duration_ms / 1000) * 50)
+  // Anti-cheat: 게임 실제 최대 점수율(완주 perfect 약 3,650/s, 후반 스테이지 국소 수천/s)에 맞춘 상한.
+  // score는 위에서 99999로 이미 하드캡됨 — 여기선 '즉시 위조'(최소시간 5초에 99999 등)만 차단.
+  // (2026-06-13: 50/s → 6000/s — 정상 고득점이 거의 전원 false-positive 거부되던 버그 수정)
+  const maxPossibleScore = Math.floor((duration_ms / 1000) * 6000)
   if (score > maxPossibleScore) {
     return NextResponse.json({ error: '점수가 비정상적으로 높습니다.' }, { status: 400 })
   }

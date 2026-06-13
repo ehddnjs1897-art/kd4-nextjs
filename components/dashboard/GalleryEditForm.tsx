@@ -43,6 +43,7 @@ interface FilmItem {
   role: string
   broadcaster?: string
   film_type?: string
+  isNew?: boolean  // 클라이언트에서 새로 추가한 행 — 저장 시 클라 UUID를 서버에 보내지 않음(신규 삽입 처리)
 }
 
 interface InitialData {
@@ -82,11 +83,12 @@ function extractYoutubeId(url: string): string | null {
 // 컴포넌트 외부 순수 함수 — 렌더마다 재생성되지 않도록
 function newFilm(): FilmItem {
   return {
-    id: crypto.randomUUID(),
+    id: crypto.randomUUID(),  // React key 안정성용 — 서버 전송 시엔 제외(isNew)
     category: 'drama',
     year: new Date().getFullYear(),
     title: '',
     role: '',
+    isNew: true,
   }
 }
 
@@ -523,7 +525,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       const items = filmography
         .filter(f => f.title.trim())
         .map(f => ({
-          id: f.id || undefined,
+          id: f.isNew ? undefined : f.id,  // 신규 행은 클라 UUID 제외 → 서버가 INSERT 처리(저장 소실 방지)
           category: f.category,
           year: f.year ? Number(f.year) : undefined,
           title: f.title.trim(),
@@ -542,15 +544,19 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       if (!res.ok) {
         setFilmMsg(data.error || '저장 중 오류가 발생했습니다.')
       } else {
-        // 새로 삽입된 항목에 DB id 반영
-        const insertResults = (data.results ?? []).filter((r: { id: string; ok: boolean; originalIdx?: number }) => r.originalIdx !== undefined)
-        if (insertResults.length > 0) {
+        // 신규 삽입 행에 DB가 생성한 실제 id 반영 (재저장 시 중복 삽입 방지)
+        // bulk 응답 results = [기존행(전송 id) · 거부 · 신규삽입(새 DB id — 전송 순서 보존)]
+        const sentExistingIds = new Set(filmography.filter(f => !f.isNew && f.title.trim()).map(f => f.id))
+        const newDbIds = (data.results ?? [])
+          .filter((r: { id: string; ok: boolean; reason?: string }) => r.ok && !r.reason && !sentExistingIds.has(r.id))
+          .map((r: { id: string }) => r.id)
+        if (newDbIds.length > 0) {
           const updated = [...filmography]
-          let insertIdx = 0
+          let k = 0
           for (let i = 0; i < updated.length; i++) {
-            if (!updated[i].id && updated[i].title.trim() && insertResults[insertIdx]) {
-              updated[i] = { ...updated[i], id: insertResults[insertIdx].id }
-              insertIdx++
+            if (updated[i].isNew && updated[i].title.trim() && newDbIds[k]) {
+              updated[i] = { ...updated[i], id: newDbIds[k], isNew: false }
+              k++
             }
           }
           setFilmography(updated)

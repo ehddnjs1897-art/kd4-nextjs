@@ -68,7 +68,7 @@ export default function EditPage() {
       const typedPost = data as PostData
       setPost(typedPost)
       setTitle(typedPost.title)
-      setContent(typedPost.content)
+      setContent(typedPost.content ?? '')  // content nullable — null이면 controlled input React 경고 방지
       setCategory(typedPost.category as Category)
       setLoading(false)
     } catch {
