@@ -74,14 +74,22 @@ export async function matchActorOnSignup(
   if (!matched) {
     const sameName = actors.filter((a) => normalizeName(a.name ?? '') === inputName)
     if (sameName.length === 1) {
-      const { data: claimedBy } = await supabaseAdmin
-        .from('profiles')
-        .select('id')
-        .eq('actor_id', sameName[0].id)
-        .neq('id', profileId)
-        .limit(1)
-      if (!claimedBy || claimedBy.length === 0) {
-        matched = sameName[0]
+      const candidate = sameName[0]
+      const candidatePhone = normalizePhone(candidate.phone ?? '')
+      // 🔒 보안(2026-06-13): 후보 배우에 전화가 등록돼 있으면 입력 전화와 일치할 때만 연결.
+      //    동명만으로 전화 등록된 배우 계정을 탈취(연락처 열람·프로필 편집권)하는 것 차단.
+      //    전화 미등록 배우는 기존대로 이름 단독 허용 (2026-06-12 대표 지시 — 데이터 미비 멤버 자동연결)
+      const phoneOk = !candidatePhone || (!!inputPhone && candidatePhone === inputPhone)
+      if (phoneOk) {
+        const { data: claimedBy } = await supabaseAdmin
+          .from('profiles')
+          .select('id')
+          .eq('actor_id', candidate.id)
+          .neq('id', profileId)
+          .limit(1)
+        if (!claimedBy || claimedBy.length === 0) {
+          matched = candidate
+        }
       }
     }
   }
@@ -133,6 +141,10 @@ export async function linkEnrollmentsOnSignup(
 ): Promise<number> {
   const trimmed = (name ?? '').trim()
   if (!trimmed) return 0
+  // 🔒 보안(2026-06-13): actorId(이름+전화 검증된 강한 매칭)가 없으면 수강기록 연결 금지.
+  //    이름만으로 운영자가 미리 심어둔 타인 enrollments(결제금액·수강이력)를 탈취·변조하는 IDOR 방지.
+  //    전화 미등록 배우라도 matchActorOnSignup이 이름단독으로 actorId를 부여하면 그 경로로 정상 연결됨.
+  if (!actorId) return 0
 
   const patch: { user_id: string; actor_id?: string } = { user_id: profileId }
   if (actorId) patch.actor_id = actorId
