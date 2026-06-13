@@ -107,9 +107,9 @@ export async function POST(request: NextRequest, { params }: Ctx) {
         category: (item.category && VALID_FILM_CATEGORIES.has(item.category)) ? item.category : 'drama',
         year: rawYear,
         title: String(item.title).trim().slice(0, 200),
-        role: item.role?.trim().slice(0, 100) || undefined,
-        broadcaster: item.broadcaster?.trim().slice(0, 100) || undefined,
-        film_type: item.film_type?.trim().slice(0, 50) || undefined,
+        role: String(item.role ?? '').trim().slice(0, 100) || undefined,
+        broadcaster: String(item.broadcaster ?? '').trim().slice(0, 100) || undefined,
+        film_type: String(item.film_type ?? '').trim().slice(0, 50) || undefined,
       }
       if (item.id) {
         // UUID 형식 아닌 id는 UPDATE 대신 INSERT로 처리 (오염된 id 방어)

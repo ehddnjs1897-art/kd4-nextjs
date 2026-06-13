@@ -173,7 +173,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
     setEditingId(entry.id)
     setEditFields({
       year: entry.year?.toString() ?? '',
-      title: entry.title,
+      title: entry.title ?? '',
       role: entry.role ?? '',
       broadcaster: entry.broadcaster ?? '',
       film_type: entry.film_type ?? '',
