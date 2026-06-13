@@ -82,16 +82,39 @@ async function sendMetaCAPI(record: { name?: string | null; phone?: string | nul
  * ──────────────────────────────────────────────────────────────────── */
 const NOTION_DATABASE_ID = 'e4f5f376-3214-4e18-8deb-b2ab1e5dd9da'
 
-// "/join 랜딩", "인스타그램" 등 다양한 source 값 → 노션 Select 옵션으로 휴리스틱 매핑
+// source 값 → 노션 상담자 DB(🧭 KD4 상담자 현황) '유입경로' 고정 Select 옵션으로 매핑.
+// ⚠️ 실제 노션 옵션과 정확히 일치시켜야 함 — 불일치 시 옵션 난립(자동 생성).
+// 옵션: 📸 인스타그램 / 🤖 AI 추천 / 🔗 /join 랜딩 / 📣 메타광고 / 💛 카카오 / 👥 지인소개 / 🥕 당근 / 🎪 오픈클래스 / 📌 기타
 function mapSourceToNotion(source: string | null): string | null {
   if (!source) return null
   const s = source.toLowerCase()
-  if (s.includes('인스타') || s.includes('instagram') || s.includes('/join')) return '인스타광고'
-  if (s.includes('네이버') || s.includes('blog') || s.includes('블로그')) return '네이버블로그'
-  if (s.includes('카카오') || s.includes('kakao')) return '카카오채널'
-  if (s.includes('유튜브') || s.includes('youtube')) return '유튜브'
-  if (s.includes('지인') || s.includes('소개')) return '지인소개'
-  return source.slice(0, 100)  // 매칭 안 되면 raw 값 그대로 (노션이 옵션 자동 생성)
+  if (s.includes('인스타') || s.includes('instagram')) return '📸 인스타그램'
+  if (s.includes('메타') || s.includes('meta') || s.includes('facebook') || s.includes('fb') || s.includes('광고')) return '📣 메타광고'
+  if (s.includes('/join') || s.includes('랜딩') || s.includes('landing')) return '🔗 /join 랜딩'
+  if (s.includes('카카오') || s.includes('kakao')) return '💛 카카오'
+  if (s.includes('당근')) return '🥕 당근'
+  if (s.includes('지인') || s.includes('소개')) return '👥 지인소개'
+  if (s.includes('오픈') || s.includes('open')) return '🎪 오픈클래스'
+  if (s.includes('ai') || s.includes('추천')) return '🤖 AI 추천'
+  return '📌 기타'  // 매칭 안 되면 기타 (옵션 난립 방지)
+}
+
+// 희망 클래스명 → 노션 상담자 DB '희망클래스' 고정 Select 옵션 매핑.
+// 옵션: 🎬 출연영상 클래스 / 🎭 마이즈너 테크닉 정규 클래스 / 📘 베이직 / 🎯 오디션 테크닉 클래스 /
+//       🌙 출연영상 클래스 저녁 / ☀️ 출연영상 클래스 낮 / 출연영상 1달 / 리더클래스 / 취미반 / ❓ 미정
+function mapClassToNotion(cls: string | null): string | null {
+  if (!cls) return null
+  const c = cls.toLowerCase()
+  if (c.includes('마이즈너')) return '🎭 마이즈너 테크닉 정규 클래스'
+  if (c.includes('오디션')) return '🎯 오디션 테크닉 클래스'
+  if (c.includes('베이직') || c.includes('basic')) return '📘 베이직'
+  if (c.includes('1달') || c.includes('한달')) return '출연영상 1달'
+  if (c.includes('저녁')) return '🌙 출연영상 클래스 저녁'
+  if (c.includes('낮')) return '☀️ 출연영상 클래스 낮'
+  if (c.includes('출연영상') || c.includes('영상')) return '🎬 출연영상 클래스'
+  if (c.includes('리더')) return '리더클래스'
+  if (c.includes('취미')) return '취미반'
+  return '❓ 미정'
 }
 
 async function sendNotionConsultation(payload: {
@@ -117,7 +140,9 @@ async function sendNotionConsultation(payload: {
 
   const notionSource = mapSourceToNotion(payload.source)
 
-  // 노션 properties — 작업 지시서 컬럼 매핑대로
+  // 노션 properties — 실제 노션 DB(🧭 KD4 상담자 현황) 스키마에 정확히 일치시킴.
+  // ⚠️ property 이름이 DB에 없으면 노션 API가 400 반환 → 동기화 전체 실패(2026-06-13 수정).
+  //    실제 컬럼: 이름(title)/연락처(phone)/이메일(email)/상태(select)/접수일(date)/희망클래스(select)/유입경로(select)/유입링크(text)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const properties: Record<string, any> = {
     '이름': {
@@ -126,16 +151,21 @@ async function sendNotionConsultation(payload: {
     '연락처': { phone_number: payload.phone },
     '이메일': { email: payload.email },
     '상태': { select: { name: '🆕 상담 신청' } },
-    '신청일': { date: { start: new Date().toISOString() } },
+    '접수일': { date: { start: new Date().toISOString() } },
   }
+  const notionClass = mapClassToNotion(payload.class_name)
+  if (notionClass) {
+    properties['희망클래스'] = { select: { name: notionClass } }
+  }
+  // 원본 클래스명도 '신청클래스'(text)에 보존 — 매핑이 '❓ 미정'으로 떨어져도 원본 확인 가능
   if (payload.class_name) {
-    properties['희망 클래스'] = { select: { name: payload.class_name.slice(0, 100) } }
+    properties['신청클래스'] = { rich_text: [{ type: 'text', text: { content: payload.class_name.slice(0, 200) } }] }
   }
   if (notionSource) {
-    properties['신청경로'] = { select: { name: notionSource } }
+    properties['유입경로'] = { select: { name: notionSource } }
   }
   if (utmCombined) {
-    properties['UTM 출처'] = {
+    properties['유입링크'] = {
       rich_text: [{ type: 'text', text: { content: utmCombined.slice(0, 2000) } }],
     }
   }
