@@ -85,7 +85,8 @@ async function main() {
   for (const b of buckets ?? []) {
     const lim = (b as { file_size_limit?: number | null }).file_size_limit
     const mb = lim ? (lim / 1024 / 1024).toFixed(1) + 'MB' : '무제한'
-    console.log(`  - ${b.id}: file_size_limit=${mb} public=${(b as { public?: boolean }).public}`)
+    const mime = (b as { allowed_mime_types?: string[] | null }).allowed_mime_types
+    console.log(`  - ${b.id}: ${mb} / mime=${mime ? JSON.stringify(mime) : '제한없음(전체허용)'}`)
   }
 
   // 5. 대상자 Storage 업로드 파일 — 어느 단계까지 갔는지 (파일 업로드 성공 여부)
