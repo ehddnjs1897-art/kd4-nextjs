@@ -153,45 +153,66 @@ export default function OnboardingForm({
   async function submit() {
     setError('')
     const videoFiles = videos.filter(Boolean) as File[]
-    if (!ppt && photos.length === 0 && videoFiles.length === 0 && !castingSummary.trim()) {
+    if (!ppt && photos.length === 0 && videoFiles.length === 0 && !castingSummary.trim() && !skills.trim()) {
       setError('한줄소개 또는 파일을 하나 이상 입력해 주세요.')
       return
     }
     setLoading(true)
+    // 🔒 2026-06-15: 파일 업로드를 항목별로 격리. 파일 하나(예: PPT)가 실패해도
+    //    전체 제출(actor row 생성)을 막지 않고, 성공한 파일 + 텍스트 정보로 등록 진행.
+    //    (박이아 케이스: PPT가 버킷 제한으로 실패 → throw → 전체 등록 무산되던 결함 교정)
+    const uploadWarnings: string[] = []
     try {
       let docPath: string | undefined
       if (ppt) {
         setStatus('프로필(PPT) 업로드 중...')
-        const ext = ppt.name.split('.').pop()?.toLowerCase()
-        const ct = ppt.type || (ext === 'pdf' ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.presentationml.presentation')
-        docPath = await uploadToBucket('actor-docs', ppt, ct)
+        try {
+          const ext = ppt.name.split('.').pop()?.toLowerCase()
+          const ct = ppt.type || (ext === 'pdf' ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.presentationml.presentation')
+          docPath = await uploadToBucket('actor-docs', ppt, ct)
+        } catch { uploadWarnings.push(`프로필 문서(${ppt.name})`) }
       }
 
       const photoPaths: { path: string }[] = []
       for (let i = 0; i < photos.length; i++) {
         setStatus(`사진 업로드 중... (${i + 1}/${photos.length})`)
-        photoPaths.push({ path: await uploadToBucket('actor-photos', photos[i]) })
+        try { photoPaths.push({ path: await uploadToBucket('actor-photos', photos[i]) }) }
+        catch { uploadWarnings.push(`사진(${photos[i].name})`) }
       }
 
       const currentPhotoPaths: { path: string; label: string }[] = []
       const cpFiles = CURRENT_PHOTO_LABELS.map((label, i) => ({ file: currentPhotos[i], label })).filter(x => x.file)
       for (let i = 0; i < cpFiles.length; i++) {
         setStatus(`현재사진 업로드 중... (${i + 1}/${cpFiles.length})`)
-        currentPhotoPaths.push({ path: await uploadToBucket('actor-photos', cpFiles[i].file!), label: cpFiles[i].label })
+        try { currentPhotoPaths.push({ path: await uploadToBucket('actor-photos', cpFiles[i].file!), label: cpFiles[i].label }) }
+        catch { uploadWarnings.push(`현재사진(${cpFiles[i].label})`) }
       }
 
       const videoMetas: { key: string; size: number; filename: string; video_type: string }[] = []
       for (let i = 0; i < videoFiles.length; i++) {
         setStatus(`영상 업로드 중... (${i + 1}/${videoFiles.length}) 용량이 크면 시간이 걸려요`)
-        const meta = await uploadVideo(videoFiles[i])
-        videoMetas.push({ ...meta, video_type: i === 2 ? 'monologue' : 'reel' })
+        try {
+          const meta = await uploadVideo(videoFiles[i])
+          videoMetas.push({ ...meta, video_type: i === 2 ? 'monologue' : 'reel' })
+        } catch { uploadWarnings.push(`영상(${videoFiles[i].name})`) }
       }
 
       setStatus('등록 마무리 중...')
-      const ogPhotoPath = landscapeIdx >= 0 && photoPaths[landscapeIdx] ? photoPaths[landscapeIdx].path : undefined
+      // OG(카카오 썸네일)용 가로사진 — 전부 성공했을 때만 landscapeIdx 매핑 신뢰(일부 실패 시 인덱스 어긋남 → 첫 사진 폴백)
+      const ogPhotoPath = (landscapeIdx >= 0 && photoPaths.length === photos.length && photoPaths[landscapeIdx])
+        ? photoPaths[landscapeIdx].path
+        : photoPaths[0]?.path
       // 콤마 구분 → 배열 + 트림 + 빈값 제거
       const skillsArr = skills.split(',').map(s => s.trim()).filter(Boolean).slice(0, 30)
       const advArr = advancedSkills.split(',').map(s => s.trim()).filter(Boolean).slice(0, 30)
+
+      // 업로드가 전부 실패하고 텍스트 정보도 없으면 — 등록할 내용이 없음
+      const hasPayload = !!docPath || photoPaths.length > 0 || currentPhotoPaths.length > 0
+        || videoMetas.length > 0 || !!castingSummary.trim() || skillsArr.length > 0
+      if (!hasPayload) {
+        throw new Error('파일 업로드에 모두 실패했습니다. 잠시 후 다시 시도해 주세요.')
+      }
+
       const res = await fetch('/api/profile/intake', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -207,7 +228,12 @@ export default function OnboardingForm({
       const j = await res.json()
       if (!res.ok) throw new Error(j.error || '등록에 실패했습니다.')
       setLoading(false)
-      router.push('/dashboard?intake=done')
+      // 일부 파일만 실패 — 등록은 완료, 실패 파일은 마이페이지에서 다시 올리도록 안내
+      if (uploadWarnings.length > 0) {
+        router.push(`/dashboard?intake=done&partial=${encodeURIComponent(uploadWarnings.length)}`)
+      } else {
+        router.push('/dashboard?intake=done')
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : '오류가 발생했습니다.')
       setLoading(false)
