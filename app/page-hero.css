@@ -167,8 +167,62 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-title-wall { animation: none; opacity: 1; }
-  .hero-title-wall-pos.is-ready .hero-title-wall-sub { animation: none; opacity: 1; }
+  /* 모션 최소화: 시퀀스의 '끝 상태'(KD4 타이틀은 사라지고 문구가 자리한 상태)를 정적 표시.
+     스튜디오명은 sr-only h1·하단 인트로에 그대로 존재하므로 시각적으로만 생략. */
+  .hero-title-wall { animation: none; opacity: 0; }
+  .hero-title-wall-pos.is-ready .hero-title-wall-sub { animation: none; opacity: 0; }
+}
+
+/* ═══ HERO WALL STATEMENT — KD4 타이틀이 사라진 '그 자리'에 떠오르는 마이즈너 문구 ═══
+   사이드 캡션 대신 중앙(타이틀 위치)에서 KD4 페이드아웃과 크로스페이드로 교체 (2026-06-16) */
+.hero-wall-statement {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: max-content;
+  max-width: min(88vw, 620px);
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+}
+.hero-wall-statement-eyebrow {
+  display: block;
+  font-family: var(--font-display), 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: clamp(0.6rem, 1.1vw, 0.72rem);
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #15488A;
+  opacity: 0.6;
+  margin-bottom: clamp(14px, 2vw, 20px);
+}
+.hero-wall-statement-line {
+  font-family: 'KoPubWorldBatang', 'KoPub World Batang', var(--font-serif), serif;
+  font-weight: 300;
+  font-size: clamp(1.3rem, 3.4vw, 2.5rem);
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  color: #15488A;
+  margin: 0;
+  text-shadow: 0 8px 22px rgba(21, 45, 80, 0.14);
+}
+/* KD4 타이틀(heroTitleWallFade)이 35~80%에서 사라지는 동안 45~80%에 걸쳐 떠오름 */
+.hero-title-wall-pos.is-ready .hero-wall-statement {
+  animation: heroStatementFade 11s cubic-bezier(.4, 0, .2, 1) forwards;
+}
+@keyframes heroStatementFade {
+  0%   { opacity: 0; transform: translate(-50%, -47%); filter: blur(5px); }
+  45%  { opacity: 0; transform: translate(-50%, -47%); filter: blur(5px); }
+  80%  { opacity: 1; transform: translate(-50%, -50%); filter: blur(0); }
+  100% { opacity: 1; transform: translate(-50%, -50%); filter: blur(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-title-wall-pos.is-ready .hero-wall-statement {
+    animation: none;
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
 }
 
 /* 가로 모드에서 타이틀이 하단으로 밀리는 현상 방지 — 뒷벽 중앙(40%) 고정 */

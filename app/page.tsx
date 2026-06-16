@@ -228,14 +228,8 @@ export default function HomePage() {
         /* === HERO 요소 입장 (달리줌 중반에 맞춰 등장) ===
            인라인 opacity:0 가드가 있으므로 from(opacity:0)이 아닌 to(opacity:1)로 페이드인
            (from은 시작=끝=0이 되어 영영 안 보이는 GSAP footgun) */
-        gsap.to('.hero-subtitle', {
-          opacity: 1, duration: 0.8, ease: "power2.out", delay: 3.5,
-        })
-        // 자식(화살표→텍스트)은 3D rotateX + stagger로 앞으로 떠오름
-        gsap.from('.hero-subtitle > *', {
-          y: 28, rotateX: 35, transformPerspective: 600, opacity: 0,
-          duration: 0.9, ease: "power3.out", delay: 3.5, stagger: 0.18,
-        })
+        // 마이즈너 문구는 .hero-wall-statement 의 CSS 애니메이션으로 중앙에서 페이드인
+        // (KD4 타이틀 페이드아웃과 동기 — page-hero.css heroStatementFade)
         gsap.to('.hero-scroll-indicator', {
           opacity: 1, duration: 0.4, delay: 4.0,
         })
@@ -254,10 +248,6 @@ export default function HomePage() {
           })
           gsap.to('.hero-title-wall-pos', {
             yPercent: -45, ease: 'none',
-            scrollTrigger: heroScrub(),
-          })
-          gsap.to('.hero-subtitle', {
-            yPercent: -130, ease: 'none',
             scrollTrigger: heroScrub(),
           })
         }
@@ -390,74 +380,8 @@ export default function HomePage() {
           }}
         />
 
-        {/* 오른쪽 하단 에디토리얼 캡션 — Lemaire 3요소 패턴(캡션·선언·DISCOVER 링크)
-             벽면 타이틀과 중복되던 'Actor Accelerating System' 제거 (2026-06-12) */}
-        <div
-          className="hero-subtitle"
-          style={{
-            position: "absolute",
-            right: "clamp(24px, 4vw, 60px)",
-            bottom: "clamp(100px, 18vh, 180px)",
-            zIndex: 10,
-            textAlign: "right",
-            opacity: 0,
-            // globals.css 레거시 transition(opacity 1s ease 2s)이 GSAP 트윈을 지연시키므로 차단
-            transition: "none",
-          }}
-        >
-          <p
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "clamp(0.62rem, 1.2vw, 0.72rem)",
-              fontWeight: 400,
-              letterSpacing: "0.28em",
-              textTransform: "uppercase",
-              color: "#111111",
-              opacity: 0.6,
-              marginBottom: "14px",
-            }}
-            lang="en"
-          >
-            Meisner Technique — Sinchon, Seoul
-          </p>
-          <p
-            style={{
-              fontFamily: "var(--font-serif)",
-              fontSize: "clamp(1.05rem, 2.2vw, 1.6rem)",
-              fontWeight: 300,
-              color: "#111111",
-              lineHeight: 1.55,
-              letterSpacing: "0.02em",
-              // 전경 레이어 — 배경에서 살짝 떠 있는 깊이감
-              textShadow: "0 6px 18px rgba(17,17,17,0.14)",
-            }}
-          >
-            상상의 상황 속에서,
-            <br />
-            진실하게 살아내는 것
-          </p>
-          <Link
-            href="#classes"
-            aria-label="클래스 알아보기"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "10px",
-              marginTop: "8px",
-              padding: "12px 0",
-              fontFamily: "var(--font-display)",
-              fontSize: "0.72rem",
-              fontWeight: 500,
-              letterSpacing: "0.3em",
-              textTransform: "uppercase",
-              color: "#111111",
-              textDecoration: "none",
-            }}
-          >
-            <span style={{ borderBottom: "1px solid rgba(17,17,17,0.4)", paddingBottom: "3px" }} lang="en">Discover</span>
-            <span aria-hidden="true">→</span>
-          </Link>
-        </div>
+        {/* 마이즈너 문구는 사이드 캡션이 아니라 타이틀 자리(중앙)에서 페이드인
+             — .hero-wall-statement 로 이동 (2026-06-16, 대표 디렉션) */}
 
         {/* sr-only h1 — JS 렌더 전에도 스크린리더에 즉시 노출 */}
         <h1 className="sr-only">KD4 액팅 스튜디오 — <span lang="en">ACTOR ACCELERATING SYSTEM</span></h1>
@@ -468,6 +392,11 @@ export default function HomePage() {
           <div className="hero-title-wall" ref={heroTitleRef}>
             <h1 aria-hidden="true">KD4 액팅 스튜디오</h1>
             <p className="hero-title-wall-sub"><span lang="en">ACTOR ACCELERATING SYSTEM</span></p>
+          </div>
+          {/* 달리줌으로 KD4 타이틀이 사라지면 같은 자리에 마이즈너 문구가 떠오름 */}
+          <div className="hero-wall-statement">
+            <span className="hero-wall-statement-eyebrow" lang="en">Meisner Technique · Sinchon, Seoul</span>
+            <p className="hero-wall-statement-line">상상의 상황 속에서,<br />진실하게 살아내는 것</p>
           </div>
         </div>
 
