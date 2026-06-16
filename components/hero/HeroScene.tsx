@@ -361,6 +361,11 @@ export default function HeroScene() {
       // dolly는 60fps (첫 인상 부드러움 중요), idle은 30fps (거의 안 움직여 차이 안 보임)
       const IDLE_INTERVAL = isMobile ? 1000 / 30 : 0;
 
+      // 포인터 패럴랙스 — 커서를 따라 카메라가 미세하게 이동(룩타깃 고정 → 입체감).
+      // 타깃은 pointermove에서 갱신, 매 프레임 부드럽게 lerp. 모바일·reduced-motion 제외.
+      let parallaxX = 0, parallaxY = 0;
+      let parallaxTargetX = 0, parallaxTargetY = 0;
+
       const animate = (ts: number) => {
         if (!startTime) startTime = ts;
         const elapsed = ts - startTime;
@@ -380,8 +385,11 @@ export default function HeroScene() {
           if (ts - lastIdleFrame >= IDLE_INTERVAL) {
             lastIdleFrame = ts;
             const t2 = (elapsed - TOTAL) / 1000;
-            camera.position.x = Math.sin(t2 * 0.15) * 0.035;
-            camera.position.y = 1.6 + Math.sin(t2 * 0.22) * 0.012;
+            // 포인터 패럴랙스 부드럽게 추종 (타깃은 비활성 시 0 → 효과 없음)
+            parallaxX += (parallaxTargetX - parallaxX) * 0.05;
+            parallaxY += (parallaxTargetY - parallaxY) * 0.05;
+            camera.position.x = Math.sin(t2 * 0.15) * 0.035 + parallaxX;
+            camera.position.y = 1.6 + Math.sin(t2 * 0.22) * 0.012 + parallaxY;
             camera.position.z = 3.8;
             camera.fov = 55 + Math.sin(t2 * 0.18) * 0.15;
             camera.updateProjectionMatrix();
@@ -402,6 +410,18 @@ export default function HeroScene() {
         renderer.render(scene, camera);
       } else {
         animFrameId = requestAnimationFrame(animate);
+      }
+
+      // 포인터 패럴랙스 리스너 — 데스크톱 + 모션허용 환경만
+      const enableParallax = !isMobile && !prefersReduced;
+      const onPointer = (ev: PointerEvent) => {
+        const nx = (ev.clientX / window.innerWidth) * 2 - 1;  // -1..1
+        const ny = (ev.clientY / window.innerHeight) * 2 - 1; // -1..1
+        parallaxTargetX = nx * 0.20;   // 좌우 ±0.20 (미세)
+        parallaxTargetY = -ny * 0.12;  // 상하 ±0.12
+      };
+      if (enableParallax) {
+        window.addEventListener("pointermove", onPointer, { passive: true });
       }
 
       const observer = new IntersectionObserver(
@@ -429,6 +449,7 @@ export default function HeroScene() {
       cleanupFn = () => {
         cancelAnimationFrame(animFrameId);
         window.removeEventListener("resize", onResize);
+        if (enableParallax) window.removeEventListener("pointermove", onPointer);
         observer.disconnect();
         // 지오메트리·머테리얼·텍스처 GPU 메모리 해제
         scene.traverse((obj) => {
