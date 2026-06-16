@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 type Category = '전체' | '공지' | '질문' | '자유' | '수업' | '내 게시글'
 const BASE_CATEGORIES: Category[] = ['전체', '질문', '자유', '수업', '공지']
@@ -249,8 +250,13 @@ export default function BoardClient({
               {notices.map(post => (
                 <Link key={post.id} href={`/board/${post.id}`} className="notice-card" aria-label={post.title}>
                   <div className="notice-card-img">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={post.thumbnail_url!} alt={post.title} loading="lazy" />
+                    <Image
+                      src={post.thumbnail_url!}
+                      alt={post.title}
+                      fill
+                      sizes="(max-width: 640px) 50vw, 33vw"
+                      style={{ objectFit: 'cover' }}
+                    />
                   </div>
                   <div className="notice-card-body">
                     <span className="notice-card-badge">공지</span>
@@ -430,6 +436,7 @@ export default function BoardClient({
         }
         .notice-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
         .notice-card-img {
+          position: relative;
           aspect-ratio: 16/9;
           overflow: hidden;
           background: var(--bg3);
