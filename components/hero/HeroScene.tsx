@@ -23,6 +23,11 @@ import {
   DirectionalLight,
   DoubleSide,
   Material,
+  BufferGeometry,
+  BufferAttribute,
+  Points,
+  PointsMaterial,
+  AdditiveBlending,
 } from "three";
 import { useEffect, useRef } from "react";
 
@@ -347,6 +352,47 @@ export default function HeroScene() {
       fill.position.set(3, 5, 8);
       scene.add(fill);
 
+      // ── 부유 먼지 (스포트라이트 빔 속 미세 먼지) — 데스크톱만 ────────────────
+      // 빔 안에 떠다니는 따뜻한 먼지 입자로 공간 깊이감·조명 입체감을 강화.
+      // 모바일은 비용 대비 효과 낮아 생략(라이트도 1개라 빔이 적음).
+      const DUST_COUNT = isMobile ? 0 : 150;
+      let dustPosAttr: BufferAttribute | null = null;
+      const dustBase = new Float32Array(DUST_COUNT * 3); // 기준 위치
+      const dustPhase = new Float32Array(DUST_COUNT);    // 입자별 위상(드리프트 오프셋)
+      if (DUST_COUNT > 0) {
+        // 스포트라이트가 모인 통로(x≈0, z: 3→-12, y: 0.2→5) 볼륨에 분포
+        const dustZ = [1, -4, -10];
+        const positions = new Float32Array(DUST_COUNT * 3);
+        for (let i = 0; i < DUST_COUNT; i++) {
+          const zc = dustZ[i % dustZ.length];
+          const bx = (Math.random() - 0.5) * 3.2;            // 빔 반경(±1.6) 근처
+          const by = 0.2 + Math.random() * 4.8;
+          const bz = zc + (Math.random() - 0.5) * 3.0;
+          dustBase[i * 3] = bx;
+          dustBase[i * 3 + 1] = by;
+          dustBase[i * 3 + 2] = bz;
+          dustPhase[i] = Math.random() * Math.PI * 2;
+          positions[i * 3] = bx;
+          positions[i * 3 + 1] = by;
+          positions[i * 3 + 2] = bz;
+        }
+        const dustGeo = new BufferGeometry();
+        dustPosAttr = new BufferAttribute(positions, 3);
+        dustGeo.setAttribute("position", dustPosAttr);
+        const dustMat = new PointsMaterial({
+          color: 0xFFF1CC,           // 빔과 같은 웜톤
+          size: 0.045,
+          sizeAttenuation: true,
+          transparent: true,
+          opacity: 0.5,
+          depthWrite: false,
+          blending: AdditiveBlending, // 빛 위에 얹히는 글로우
+        });
+        const dust = new Points(dustGeo, dustMat);
+        dust.frustumCulled = false;
+        scene.add(dust);
+      }
+
       // ── CAMERA ANIMATION — 슬로우 달리 줌 ──────────────────────────────
       // 달리 줌 = 카메라는 앞으로 이동하면서 FOV 살짝 넓어짐 (히치콕 Vertigo 효과의 서브틀한 버전)
       let startTime: number | null = null;
@@ -361,10 +407,29 @@ export default function HeroScene() {
       // dolly는 60fps (첫 인상 부드러움 중요), idle은 30fps (거의 안 움직여 차이 안 보임)
       const IDLE_INTERVAL = isMobile ? 1000 / 30 : 0;
 
+      // 포인터 패럴랙스 — 커서를 따라 카메라가 미세하게 이동(룩타깃 고정 → 입체감).
+      // 타깃은 pointermove에서 갱신, 매 프레임 부드럽게 lerp. 모바일·reduced-motion 제외.
+      let parallaxX = 0, parallaxY = 0;
+      let parallaxTargetX = 0, parallaxTargetY = 0;
+
       const animate = (ts: number) => {
         if (!startTime) startTime = ts;
         const elapsed = ts - startTime;
         const t = Math.min(elapsed / TOTAL, 1);
+
+        // 먼지 드리프트 — 느린 상승 + 좌우 스웨이 (y 0.2~5 구간 순환)
+        if (dustPosAttr) {
+          const arr = dustPosAttr.array as Float32Array;
+          const tSec = elapsed / 1000;
+          for (let i = 0; i < DUST_COUNT; i++) {
+            const ph = dustPhase[i];
+            const rise = (tSec * 0.06 + ph * 0.8) % 4.8;
+            arr[i * 3] = dustBase[i * 3] + Math.sin(tSec * 0.25 + ph) * 0.22;
+            arr[i * 3 + 1] = 0.2 + ((dustBase[i * 3 + 1] - 0.2 + rise) % 4.8);
+            arr[i * 3 + 2] = dustBase[i * 3 + 2] + Math.cos(tSec * 0.2 + ph) * 0.22;
+          }
+          dustPosAttr.needsUpdate = true;
+        }
 
         if (t < 1) {
           const e = easeInOutCubic(t);
@@ -380,8 +445,11 @@ export default function HeroScene() {
           if (ts - lastIdleFrame >= IDLE_INTERVAL) {
             lastIdleFrame = ts;
             const t2 = (elapsed - TOTAL) / 1000;
-            camera.position.x = Math.sin(t2 * 0.15) * 0.035;
-            camera.position.y = 1.6 + Math.sin(t2 * 0.22) * 0.012;
+            // 포인터 패럴랙스 부드럽게 추종 (타깃은 비활성 시 0 → 효과 없음)
+            parallaxX += (parallaxTargetX - parallaxX) * 0.05;
+            parallaxY += (parallaxTargetY - parallaxY) * 0.05;
+            camera.position.x = Math.sin(t2 * 0.15) * 0.035 + parallaxX;
+            camera.position.y = 1.6 + Math.sin(t2 * 0.22) * 0.012 + parallaxY;
             camera.position.z = 3.8;
             camera.fov = 55 + Math.sin(t2 * 0.18) * 0.15;
             camera.updateProjectionMatrix();
@@ -402,6 +470,18 @@ export default function HeroScene() {
         renderer.render(scene, camera);
       } else {
         animFrameId = requestAnimationFrame(animate);
+      }
+
+      // 포인터 패럴랙스 리스너 — 데스크톱 + 모션허용 환경만
+      const enableParallax = !isMobile && !prefersReduced;
+      const onPointer = (ev: PointerEvent) => {
+        const nx = (ev.clientX / window.innerWidth) * 2 - 1;  // -1..1
+        const ny = (ev.clientY / window.innerHeight) * 2 - 1; // -1..1
+        parallaxTargetX = nx * 0.20;   // 좌우 ±0.20 (미세)
+        parallaxTargetY = -ny * 0.12;  // 상하 ±0.12
+      };
+      if (enableParallax) {
+        window.addEventListener("pointermove", onPointer, { passive: true });
       }
 
       const observer = new IntersectionObserver(
@@ -429,6 +509,7 @@ export default function HeroScene() {
       cleanupFn = () => {
         cancelAnimationFrame(animFrameId);
         window.removeEventListener("resize", onResize);
+        if (enableParallax) window.removeEventListener("pointermove", onPointer);
         observer.disconnect();
         // 지오메트리·머테리얼·텍스처 GPU 메모리 해제
         scene.traverse((obj) => {
