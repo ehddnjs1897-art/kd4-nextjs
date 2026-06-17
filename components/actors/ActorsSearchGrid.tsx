@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect, useDeferredValue, useCallback } from 'rea
 import Link from 'next/link'
 import ActorCardImage from './ActorCardImage'
 import FavoriteButton from './FavoriteButton'
+import { useUserRole } from '@/lib/useUserRole'
 
 function CopyLinkButton({ actorId, actorName }: { actorId: string; actorName: string }) {
   const [state, setState] = useState<'idle' | 'copied' | 'error'>('idle')
@@ -143,6 +144,7 @@ function expandQuery(q: string): string[] {
 }
 
 export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
+  const { isDirector } = useUserRole()  // 숏리스트(♡)는 캐스팅 디렉터/관리자 전용
   const [query, setQuery] = useState('')
   const [videoOnly, setVideoOnly] = useState(false)
   const [ageFilter, setAgeFilter] = useState<string>('all')
@@ -442,7 +444,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
               </div>
             </Link>
             <CopyLinkButton actorId={actor.id} actorName={actor.name} />
-            <FavoriteButton actorId={actor.id} actorName={actor.name} />
+            {isDirector && <FavoriteButton actorId={actor.id} actorName={actor.name} />}
             {actor.hasVideo && (
               <div aria-hidden="true" style={{
                 position: 'absolute', top: 8, left: 10,

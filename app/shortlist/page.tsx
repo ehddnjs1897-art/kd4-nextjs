@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useFavorites } from '@/lib/useFavorites'
+import { useUserRole } from '@/lib/useUserRole'
 import { getActorPhotoUrl, shouldOptimize } from '@/lib/actor-photo'
 import ActorCardImage from '@/components/actors/ActorCardImage'
 import FavoriteButton from '@/components/actors/FavoriteButton'
@@ -20,6 +21,7 @@ interface Actor {
 }
 
 export default function ShortlistPage() {
+  const { isDirector, loaded: roleLoaded } = useUserRole()
   const { favorites, loaded, clearFavorites } = useFavorites()
   const [actors, setActors] = useState<Actor[]>([])
   const [fetching, setFetching] = useState(false)
@@ -60,6 +62,32 @@ export default function ShortlistPage() {
       }
     })()
   }, [loaded, favorites])
+
+  // 🔒 숏리스트는 캐스팅 디렉터/관리자 전용 (2026-06-17 대표 지시)
+  if (!roleLoaded) {
+    return (
+      <main id="main-content" style={{ maxWidth: 'var(--container)', margin: '0 auto', padding: '120px 24px', textAlign: 'center' }}>
+        <p style={{ color: 'var(--gray)', fontFamily: 'var(--font-sans)', fontSize: '0.9rem' }}>불러오는 중...</p>
+      </main>
+    )
+  }
+  if (!isDirector) {
+    return (
+      <main id="main-content" style={{ maxWidth: 560, margin: '0 auto', padding: '120px 24px', textAlign: 'center' }}>
+        <p style={{ fontSize: '2rem', marginBottom: 16 }}>🔒</p>
+        <h1 style={{ fontFamily: 'var(--font-sans)', fontSize: '1.3rem', fontWeight: 700, color: 'var(--white)', marginBottom: 12 }}>
+          캐스팅 디렉터 전용
+        </h1>
+        <p style={{ color: 'var(--gray)', fontFamily: 'var(--font-sans)', fontSize: '0.92rem', lineHeight: 1.7, marginBottom: 24 }}>
+          숏리스트는 캐스팅 디렉터 회원만 이용할 수 있는 기능입니다.<br />
+          디렉터 권한이 필요하면 마이페이지에서 신청해주세요.
+        </p>
+        <Link href="/dashboard" style={{ display: 'inline-flex', alignItems: 'center', padding: '10px 24px', border: '1px solid var(--gold)', borderRadius: 4, color: 'var(--gold)', fontFamily: 'var(--font-sans)', fontSize: '0.9rem', textDecoration: 'none' }}>
+          마이페이지로
+        </Link>
+      </main>
+    )
+  }
 
   return (
     <main id="main-content" style={{ maxWidth: 'var(--container)', margin: '0 auto', padding: '100px 24px 80px' }}>

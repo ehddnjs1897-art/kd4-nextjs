@@ -320,6 +320,20 @@ export default async function DashboardPage() {
           </section>
         )}
 
+        {/* 캐스팅 숏리스트 — 디렉터/관리자 전용 (2026-06-17: 메인 헤더에서 이리로 이동) */}
+        {(isDirector || isAdmin) && (
+          <section aria-label="캐스팅 숏리스트" style={card}>
+            <h2 style={sectionTitle}>캐스팅 숏리스트</h2>
+            <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 12 }}>
+              배우 DB에서 ♡로 담아둔 관심 배우를 한눈에 모아봅니다. (이 기기에 저장)
+            </p>
+            <Link href="/shortlist" style={tileBtn}>
+              <span style={tileIcon} aria-hidden="true">♥</span>
+              <span>내 숏리스트 보기</span>
+            </Link>
+          </section>
+        )}
+
         {/* 디렉터 권한 신청 */}
         {canRequestDirector && (
           <section aria-label="디렉터 권한 신청" style={{ ...card, borderColor: 'rgba(196,165,90,0.2)' }}>

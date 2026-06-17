@@ -727,7 +727,7 @@ export default async function ActorDetailPage({
               {/* 공유 / 다운로드 — 나란히 (링크 복사는 전원, 다운로드는 디렉터/관리자 — 비권한자 클릭 시 안내) */}
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
                 <ShareButton webUrl={pageUrl} />
-                <FavoriteButton actorId={actor.id} actorName={actor.name} variant="inline" />
+                {canContact && <FavoriteButton actorId={actor.id} actorName={actor.name} variant="inline" />}
                 {canContact ? (
                   <div style={{ flex: '1 1 200px' }}>
                     <ActorDownloadButton profileUrl={profileDocUrl} videoIds={downloadVideoIds} />
