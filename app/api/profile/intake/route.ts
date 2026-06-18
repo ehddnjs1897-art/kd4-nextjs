@@ -23,7 +23,7 @@ import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { revalidateTag } from '@/lib/revalidate'
 import { sanitizeDialects } from '@/lib/dialects'
-import { matchActorOnSignup } from '@/lib/actor-matching'
+import { matchActorOnSignup, matchActorForIntake } from '@/lib/actor-matching'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 
@@ -211,24 +211,37 @@ export async function POST(request: NextRequest) {
       actorId = matchResult.actorId
       console.log('[profile/intake] 기존 배우 row 매칭 성공:', actorId)
     } else {
-      const { data: created, error: createErr } = await supabaseAdmin
-        .from('actors')
-        .insert({
-          name: profile.name ?? '(이름 미입력)',
-          phone: profile.phone ?? null,
-          is_public: false, // 관리자 검토 후 공개
-          self_managed: true,
-          source: 'manual',
-          intake_submitted_at: nowIso,
-        })
-        .select('id')
-        .maybeSingle()
+      // 🆕 최신 업로드 우선 — 동일인(이름 일치·전화 비충돌) 자동 병합.
+      //    matchActorOnSignup이 "기존행 전화 있음 + 입력 전화 없음"으로 막혔던 케이스
+      //    (박우진·김이영)를 본인 업로드 의도로 보고 기존 공개행에 합친다 → 새 중복행 방지.
+      const intakeMatch = await matchActorForIntake(user.id, profile.name ?? '', profile.phone ?? '')
+      if (intakeMatch.matched && intakeMatch.actorId) {
+        actorId = intakeMatch.actorId
+        console.log('[profile/intake] 동일인 자동병합(최신 업로드 우선):', actorId, '|', intakeMatch.reason)
+      } else {
+        if (intakeMatch.reason === 'ambiguous' || intakeMatch.reason === 'phone_conflict' || intakeMatch.reason === 'claimed') {
+          // 동일인 의심되나 자동병합 보류 — 비공개 신규행으로 두고 관리자 검토 필요.
+          console.warn(`[profile/intake] 동일인 의심·자동병합 보류(${intakeMatch.reason}) → 비공개 신규행. name=${profile.name ?? ''}`)
+        }
+        const { data: created, error: createErr } = await supabaseAdmin
+          .from('actors')
+          .insert({
+            name: profile.name ?? '(이름 미입력)',
+            phone: profile.phone ?? null,
+            is_public: false, // 관리자 검토 후 공개
+            self_managed: true,
+            source: 'manual',
+            intake_submitted_at: nowIso,
+          })
+          .select('id')
+          .maybeSingle()
 
-      if (createErr || !created) {
-        console.error('[profile/intake] 배우 생성 실패:', createErr?.message)
-        return NextResponse.json({ error: '프로필 생성에 실패했습니다.' }, { status: 500 })
+        if (createErr || !created) {
+          console.error('[profile/intake] 배우 생성 실패:', createErr?.message)
+          return NextResponse.json({ error: '프로필 생성에 실패했습니다.' }, { status: 500 })
+        }
+        actorId = created.id
       }
-      actorId = created.id
     }
 
     // 프로필에 actor_id 연결 + rows-affected 확인 (user row 消失 시 silent no-op 방지)

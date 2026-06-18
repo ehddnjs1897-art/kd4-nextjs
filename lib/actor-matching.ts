@@ -127,6 +127,96 @@ export async function matchActorOnSignup(
 }
 
 /**
+ * 배우 본인 온보딩(프로필 파일 업로드) 시점의 동일인 매칭.
+ *
+ * matchActorOnSignup보다 한 단계 더 적극적이다. 본인이 로그인해 **자기 사진·PPT·영상을
+ * 직접 업로드**하는 강한 의도 신호이므로, "기존 배우행에 전화가 등록돼 있는데 업로드자가
+ * 전화를 입력하지 않은" 케이스(박우진·김이영 사고)도 동일인으로 보고 병합한다.
+ *
+ * 🔒 사칭 방어는 유지: 전화가 **둘 다 있는데 서로 다르면**(phone_conflict) 자동연결 거부,
+ *    동명 배우가 **2명 이상이면**(ambiguous) 누구인지 단정 불가하여 거부 → 관리자 검토용 신규행.
+ *    이미 다른 계정이 점유한 배우(claimed)도 거부(연결 탈취 방지).
+ *
+ * 매칭 성공 시 profiles.actor_id를 연결하고 { matched, actorId, reason:'linked' } 반환.
+ * 호출부(intake)는 이후 그 배우행에 최신 업로드를 덮어써 "최신 우선 반영"을 완성한다.
+ *
+ * @returns reason: 'linked' | 'none' | 'ambiguous' | 'phone_conflict' | 'claimed' | 'link_failed'
+ */
+export async function matchActorForIntake(
+  profileId: string,
+  name: string,
+  phone: string
+): Promise<{ matched: boolean; actorId?: string; reason: string }> {
+  const inputName = normalizeName(name)
+  if (!inputName) return { matched: false, reason: 'none' } // 빈 이름 false-positive 방지
+
+  const inputPhone = normalizePhone(phone)
+
+  const { data: actors, error } = await supabaseAdmin
+    .from('actors')
+    .select('id, name, phone')
+    .limit(5000)
+  if (error) {
+    console.error('[actor-matching:intake] actors 조회 실패:', error.message)
+    return { matched: false, reason: 'none' }
+  }
+  if (!actors || actors.length === 0) return { matched: false, reason: 'none' }
+
+  // 1. 이름+전화 완전 일치 (가장 강한 신호)
+  let candidate = inputPhone
+    ? actors.find(
+        (a) =>
+          normalizeName(a.name ?? '') === inputName &&
+          normalizePhone(a.phone ?? '') === inputPhone
+      )
+    : undefined
+
+  // 2. 이름 일치 — 정확히 1명일 때만. 동명 2명+ 는 모호 → 자동병합 금지.
+  if (!candidate) {
+    const sameName = actors.filter((a) => normalizeName(a.name ?? '') === inputName)
+    if (sameName.length > 1) return { matched: false, reason: 'ambiguous' }
+    if (sameName.length === 1) {
+      const c = sameName[0]
+      const cPhone = normalizePhone(c.phone ?? '')
+      // 🔒 전화가 둘 다 있는데 서로 다르면 사칭 위험 → 자동병합 거부(관리자 검토).
+      //    한쪽이라도 전화가 없으면(입력 누락 등) 본인 업로드로 보고 허용 — 박우진/김이영 케이스.
+      if (cPhone && inputPhone && cPhone !== inputPhone) {
+        return { matched: false, reason: 'phone_conflict' }
+      }
+      candidate = c
+    }
+  }
+  if (!candidate) return { matched: false, reason: 'none' }
+
+  // 3. 다른 계정이 이미 점유한 배우면 연결 금지 (계정 탈취 방지)
+  const { data: claimedBy } = await supabaseAdmin
+    .from('profiles')
+    .select('id')
+    .eq('actor_id', candidate.id)
+    .neq('id', profileId)
+    .limit(1)
+  if (claimedBy && claimedBy.length > 0) return { matched: false, reason: 'claimed' }
+
+  // 4. profiles 연결 ('일반 회원' 잔재면 '배우 멤버'로 정리 — editor 승급은 여전히 수동만)
+  const { data: prof } = await supabaseAdmin
+    .from('profiles').select('role').eq('id', profileId).maybeSingle()
+  const patch: { actor_id: string; matched_at: string; role?: string } = {
+    actor_id: candidate.id,
+    matched_at: new Date().toISOString(),
+  }
+  if ((prof?.role ?? 'user') === 'user') patch.role = 'actor'
+
+  const { data: linked, error: upErr } = await supabaseAdmin
+    .from('profiles').update(patch).eq('id', profileId).select('id').maybeSingle()
+  if (upErr || !linked) {
+    console.error('[actor-matching:intake] profiles 연결 실패:', upErr?.message ?? 'row 소실')
+    return { matched: false, reason: 'link_failed' }
+  }
+
+  return { matched: true, actorId: candidate.id, reason: 'linked' }
+}
+
+/**
  * 회원가입 직후 호출.
  * 운영 시트에서 미리 넣어둔 수강 기록(enrollments) 중
  * user_id가 비어있고 이름이 일치하는 것을 가입 계정과 연결한다.
