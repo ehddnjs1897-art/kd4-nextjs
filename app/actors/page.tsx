@@ -408,6 +408,51 @@ export default async function ActorsPage({ searchParams }: PageProps) {
           <p style={styles.subtitle}>{dynamicSubtitle}</p>
         </div>
 
+        {/* 진입 CTA — 배우 등록 신청 + 캐스팅 문의 (필터·검색 위로 이동: 필터바↔검색창 근접 배치, 2026-06-18 UX) */}
+        <div style={{
+          display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'flex-end',
+          marginBottom: 16,
+        }}>
+          <a
+            href="https://pf.kakao.com/_ximxdqn"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="배우 DB 등록 신청 (카카오 채널로 이동)"
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              padding: '8px 16px', borderRadius: 6,
+              fontSize: '0.8rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
+              background: 'var(--navy-tint-1)',
+              color: 'var(--navy)',
+              border: '1px solid var(--navy-tint-3)',
+              textDecoration: 'none',
+              letterSpacing: '0.02em',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            배우 등록 신청 →
+          </a>
+          <a
+            href="https://pf.kakao.com/_ximxdqn"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="캐스팅 문의 (카카오 채널로 이동)"
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              padding: '8px 16px', borderRadius: 6,
+              fontSize: '0.8rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
+              background: 'var(--bg2)',
+              color: 'var(--secondary)',
+              border: '1px solid var(--border)',
+              textDecoration: 'none',
+              letterSpacing: '0.02em',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            캐스팅 문의 →
+          </a>
+        </div>
+
         {/* 필터바 */}
         <div style={styles.filterSection}>
           <div style={styles.filterGroup}>
@@ -485,51 +530,6 @@ export default async function ActorsPage({ searchParams }: PageProps) {
               })}
             </div>
           </div>
-        </div>
-
-        {/* 온보딩 CTA — 배우 등록 신청 + 캐스팅 문의 진입경로 */}
-        <div style={{
-          display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'flex-end',
-          marginBottom: 20,
-        }}>
-          <a
-            href="https://pf.kakao.com/_ximxdqn"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="배우 DB 등록 신청 (카카오 채널로 이동)"
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-              padding: '8px 16px', borderRadius: 6,
-              fontSize: '0.8rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
-              background: 'var(--navy-tint-1)',
-              color: 'var(--navy)',
-              border: '1px solid var(--navy-tint-3)',
-              textDecoration: 'none',
-              letterSpacing: '0.02em',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            배우 등록 신청 →
-          </a>
-          <a
-            href="https://pf.kakao.com/_ximxdqn"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="캐스팅 문의 (카카오 채널로 이동)"
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-              padding: '8px 16px', borderRadius: 6,
-              fontSize: '0.8rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
-              background: 'var(--bg2)',
-              color: 'var(--secondary)',
-              border: '1px solid var(--border)',
-              textDecoration: 'none',
-              letterSpacing: '0.02em',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            캐스팅 문의 →
-          </a>
         </div>
 
         {/* 배우 그리드 + 검색 (클라이언트 컴포넌트) */}

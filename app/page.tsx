@@ -446,6 +446,19 @@ export default function HomePage() {
         </div>
         <div className="cta-buttons">
           <Link
+            href="/join#form"
+            onClick={() => analytics.ctaClick('hero', '무료 상담 신청')}
+            className="btn-primary"
+            style={{
+              background: "var(--gold)",
+              color: "#ffffff",
+              textDecoration: "none",
+              boxShadow: "0 4px 14px rgba(0,0,0,0.12)",
+            }}
+          >
+            무료 상담 신청 <span aria-hidden="true">→</span>
+          </Link>
+          <Link
             href="#classes"
             className="btn-primary"
             style={{

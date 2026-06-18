@@ -776,7 +776,7 @@ export default function Navbar() {
                 style={{
                   display: 'block',
                   padding: '16px',
-                  background: 'var(--navy)',
+                  background: 'var(--gold)',
                   color: '#ffffff',
                   fontFamily: 'var(--font-sans)',
                   fontSize: '1rem',
