@@ -149,6 +149,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
   const [videoOnly, setVideoOnly] = useState(false)
   const [ageFilter, setAgeFilter] = useState<string>('all')
   const [genderFilter, setGenderFilter] = useState<string>('all')
+  const [sortBy, setSortBy] = useState<'recommended' | 'name'>('recommended')  // REPLAY 참고 — 정렬 옵션
   // 타이핑 즉시성 유지 + 초성 변환 필터링은 한 박자 뒤에 (디바운스 효과)
   const deferredQuery = useDeferredValue(query)
   // URL 복원이 끝나기 전에는 URL을 덮어쓰지 않기 위한 플래그
@@ -239,8 +240,10 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
     // 성별 클라이언트 세부 필터
     if (genderFilter !== 'all') list = list.filter((a) => a.gender === genderFilter)
     if (videoOnly) list = list.filter((a) => a.hasVideo)
+    // 정렬 (REPLAY 참고) — 추천순=서버 순서 유지 / 이름순=가나다
+    if (sortBy === 'name') list = [...list].sort((a, b) => a.name.localeCompare(b.name, 'ko'))
     return list
-  }, [actors, deferredQuery, videoOnly, ageFilter, genderFilter])
+  }, [actors, deferredQuery, videoOnly, ageFilter, genderFilter, sortBy])
 
   return (
     <>
@@ -364,6 +367,24 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
             }}
           >✕ 필터 초기화</button>
         )}
+
+        {/* 정렬 (REPLAY 참고 — 정렬 옵션) */}
+        <label style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.78rem', color: 'var(--gray)', fontFamily: 'var(--font-sans)' }}>
+          정렬
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as 'recommended' | 'name')}
+            aria-label="배우 정렬 기준"
+            style={{
+              padding: '6px 10px', borderRadius: 8, cursor: 'pointer',
+              fontSize: '0.78rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
+              background: 'var(--bg2)', color: 'var(--white)', border: '1px solid var(--border)',
+            }}
+          >
+            <option value="recommended">추천순</option>
+            <option value="name">이름순 (가나다)</option>
+          </select>
+        </label>
       </div>
 
       {/* 결과 수 */}
