@@ -40,6 +40,8 @@ export default function OnboardingForm({
   const [height, setHeight] = useState('')      // 키(cm) — 숫자만
   const [weight, setWeight] = useState('')      // 몸무게(kg) — 숫자만 (선택)
   const [instagram, setInstagram] = useState('')
+  const [step, setStep] = useState(0)  // REPLAY 참고 — 3단계 STEP (0:기본 1:사진·문서 2:영상)
+  const STEP_LABELS = ['기본 정보', '사진·문서', '영상'] as const
 
   // 업로드 중 탭 닫기/새로고침 방지
   useEffect(() => {
@@ -247,6 +249,13 @@ export default function OnboardingForm({
     }
   }
 
+  // 완성도 — 채운 항목 수 기반 (REPLAY 진행률 참고)
+  const completionChecks = [
+    !!height, !!castingSummary.trim(), !!skills.trim(), dialects.length > 0,
+    !!ppt, photos.length > 0, videos.some(Boolean),
+  ]
+  const pct = Math.round((completionChecks.filter(Boolean).length / completionChecks.length) * 100)
+
   // ─── 렌더 ────────────────────────────────────────────────────────────────────
   return (
     <div style={{ maxWidth: 680 }}>
@@ -261,6 +270,22 @@ export default function OnboardingForm({
         </p>
       </div>
 
+      {/* STEP 인디케이터 + 완성도 (REPLAY 참고) */}
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+          {STEP_LABELS.map((label, i) => (
+            <div key={label} style={{ flex: 1, textAlign: 'center' }}>
+              <div style={{ height: 6, borderRadius: 999, background: i <= step ? 'var(--gold)' : 'var(--border)', transition: 'background 0.2s' }} />
+              <span style={{ display: 'block', marginTop: 6, fontSize: '0.72rem', fontWeight: i === step ? 700 : 400, color: i === step ? 'var(--white)' : 'var(--gray)' }}>
+                {i + 1}. {label}
+              </span>
+            </div>
+          ))}
+        </div>
+        <p style={{ fontSize: '0.72rem', color: 'var(--gray)', textAlign: 'right', margin: 0 }}>완성도 {pct}%</p>
+      </div>
+
+      {step === 0 && (<>
       {/* 기본 정보 — 키·몸무게·인스타 (캐스팅 검색·필터 핵심) */}
       <section style={sec} aria-labelledby="onb-basic">
         <h2 id="onb-basic" style={secTitle}>기본 정보<span style={optTag}>선택</span></h2>
@@ -385,7 +410,9 @@ export default function OnboardingForm({
         />
         <p id="onb-casting-count" aria-live="off" aria-atomic="true" style={{ fontSize: '0.72rem', color: 'var(--gray)', textAlign: 'right', marginTop: 4 }}>{castingSummary.length}/120</p>
       </section>
+      </>)}
 
+      {step === 1 && (<>
       {/* PPTX */}
       <section style={sec} aria-labelledby="onb-pptx">
         <h2 id="onb-pptx" style={secTitle}>프로필 문서</h2>
@@ -438,7 +465,9 @@ export default function OnboardingForm({
           </div>
         </div>
       </section>
+      </>)}
 
+      {step === 2 && (<>
       {/* 영상 */}
       <section style={sec} aria-labelledby="onb-videos">
         <h2 id="onb-videos" style={secTitle}>출연영상</h2>
@@ -458,6 +487,7 @@ export default function OnboardingForm({
           ))}
         </div>
       </section>
+      </>)}
 
       {/* 항상 DOM에 존재 — 스크린 리더 즉시 알림 보장 (WCAG 4.1.3) */}
       <p role="status" aria-live="polite" aria-atomic="true" style={warning ? warnStyle : {}}>{warning}</p>
@@ -475,15 +505,24 @@ export default function OnboardingForm({
         </div>
       )}
 
-      <button type="button" onClick={submit} disabled={loading} aria-busy={loading} style={{
-        width: '100%', padding: '14px 0', background: 'var(--navy)', color: '#fff',
-        fontWeight: 700, fontSize: '0.95rem', borderRadius: 8, border: 'none',
-        cursor: loading ? 'not-allowed' : 'pointer',
-        fontFamily: 'var(--font-display)', letterSpacing: '0.04em',
-        opacity: loading ? 0.6 : 1,
-      }}>
-        {loading ? '업로드 중...' : '제출하기'}
-      </button>
+      {/* STEP 네비게이션 (REPLAY 참고) — 이전/다음, 마지막 단계만 제출 */}
+      <div style={{ display: 'flex', gap: 10 }}>
+        {step > 0 && (
+          <button type="button" onClick={() => setStep(s => Math.max(0, s - 1))} disabled={loading} style={navSecondary}>
+            ← 이전
+          </button>
+        )}
+        {step < 2 ? (
+          <button type="button" onClick={() => setStep(s => Math.min(2, s + 1))} disabled={loading} style={navPrimary}>
+            다음 →
+          </button>
+        ) : (
+          <button type="button" onClick={submit} disabled={loading} aria-busy={loading}
+            style={{ ...navPrimary, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1 }}>
+            {loading ? '업로드 중...' : '제출하기'}
+          </button>
+        )}
+      </div>
 
       <button type="button" onClick={() => router.push('/dashboard')} disabled={loading} style={{
         width: '100%', padding: 12, marginTop: 10, background: 'transparent',
@@ -565,6 +604,18 @@ const picked: React.CSSProperties = {
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
+}
+
+const navPrimary: React.CSSProperties = {
+  flex: 1, padding: '14px 0', background: 'var(--navy)', color: '#fff',
+  fontWeight: 700, fontSize: '0.95rem', borderRadius: 8, border: 'none', cursor: 'pointer',
+  fontFamily: 'var(--font-display)', letterSpacing: '0.04em',
+}
+
+const navSecondary: React.CSSProperties = {
+  flex: 1, padding: '14px 0', background: 'transparent', color: 'var(--white)',
+  fontWeight: 600, fontSize: '0.92rem', borderRadius: 8, border: '1px solid var(--border)', cursor: 'pointer',
+  fontFamily: 'var(--font-display)', letterSpacing: '0.04em',
 }
 
 const errStyle: React.CSSProperties = {
