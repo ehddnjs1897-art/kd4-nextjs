@@ -37,6 +37,9 @@ export default function OnboardingForm({
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
   const [warning, setWarning] = useState('')
+  const [height, setHeight] = useState('')      // 키(cm) — 숫자만
+  const [weight, setWeight] = useState('')      // 몸무게(kg) — 숫자만 (선택)
+  const [instagram, setInstagram] = useState('')
 
   // 업로드 중 탭 닫기/새로고침 방지
   useEffect(() => {
@@ -222,6 +225,9 @@ export default function OnboardingForm({
           skills: skillsArr.length > 0 ? skillsArr : undefined,
           advancedSkills: advArr.length > 0 ? advArr : undefined,
           dialects: dialects.length > 0 ? dialects : undefined,
+          height: height || undefined,
+          weight: weight || undefined,
+          instagram: instagram.trim() || undefined,
         }),
         signal: AbortSignal.timeout(15_000),
       })
@@ -244,6 +250,51 @@ export default function OnboardingForm({
   // ─── 렌더 ────────────────────────────────────────────────────────────────────
   return (
     <div style={{ maxWidth: 680 }}>
+
+      {/* 준비 안내 — 부담 낮추기 + 필수 최소 안내 */}
+      <div style={{ marginBottom: 24, padding: '16px 18px', background: 'rgba(196,165,90,0.08)', border: '1px solid rgba(196,165,90,0.25)', borderRadius: 10 }}>
+        <p style={{ fontSize: '0.86rem', color: 'var(--white)', lineHeight: 1.7, fontWeight: 700, marginBottom: 6 }}>
+          📋 한 번에 다 채우지 않으셔도 돼요.
+        </p>
+        <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.7 }}>
+          <strong style={{ color: 'var(--gold)' }}>사진·영상·프로필 문서 중 하나만</strong> 올려도 등록됩니다. 나머지는 제출 후 <strong>마이페이지</strong>에서 천천히 채우셔도 돼요. 정보가 많을수록 캐스팅 노출에 유리합니다.
+        </p>
+      </div>
+
+      {/* 기본 정보 — 키·몸무게·인스타 (캐스팅 검색·필터 핵심) */}
+      <section style={sec} aria-labelledby="onb-basic">
+        <h2 id="onb-basic" style={secTitle}>기본 정보<span style={optTag}>선택</span></h2>
+        <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 14 }}>
+          캐스팅 디렉터가 키·체형으로 배우를 찾을 때 쓰여요. 아는 만큼만 적어주세요.
+        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
+          <div>
+            <label htmlFor="onb-height" style={fieldLabel}>키 (cm)</label>
+            <input
+              id="onb-height" name="height" type="text" inputMode="numeric"
+              value={height}
+              onChange={(e) => setHeight(e.target.value.replace(/[^0-9]/g, '').slice(0, 3))}
+              disabled={loading} placeholder="예: 172" aria-label="키 (센티미터)" style={inp} autoComplete="off"
+            />
+          </div>
+          <div>
+            <label htmlFor="onb-weight" style={fieldLabel}>몸무게 (kg)<span style={{ fontWeight: 400, color: 'var(--gray)', marginLeft: 6 }}>· 선택</span></label>
+            <input
+              id="onb-weight" name="weight" type="text" inputMode="numeric"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value.replace(/[^0-9]/g, '').slice(0, 3))}
+              disabled={loading} placeholder="예: 58" aria-label="몸무게 (킬로그램)" style={inp} autoComplete="off"
+            />
+          </div>
+        </div>
+        <label htmlFor="onb-instagram" style={fieldLabel}>인스타그램<span style={{ fontWeight: 400, color: 'var(--gray)', marginLeft: 6 }}>· 선택</span></label>
+        <input
+          id="onb-instagram" name="instagram" type="text"
+          value={instagram}
+          onChange={(e) => setInstagram(e.target.value)}
+          disabled={loading} placeholder="@아이디 또는 instagram.com/아이디" aria-label="인스타그램 주소" style={inp} autoComplete="off"
+        />
+      </section>
 
       {/* 특기 + 고급 숙련도 */}
       <section style={sec} aria-labelledby="onb-skills">
@@ -353,8 +404,8 @@ export default function OnboardingForm({
       <section style={sec} aria-labelledby="onb-photos">
         <h2 id="onb-photos" style={secTitle}>프로필 사진</h2>
         <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 14 }}>
-          최대 4장, 가로·세로 무관, 장당 15MB 이하.
-          프로필에 <strong>세로형 헤드샷 3~4장</strong>을 올리면 가장 보기 좋습니다.
+          <strong>세로형 헤드샷 3~4장</strong>이 가장 보기 좋아요 (장당 15MB 이하).
+          여기에 <strong>가로 사진 1장</strong>을 함께 올리면 카카오톡으로 공유할 때 썸네일로 쓰입니다.
         </p>
         <input ref={photosRef} type="file" accept="image/*" multiple disabled={loading} onChange={e => pickPhotos(e.target.files)} style={{ display: 'none' }} aria-hidden="true" />
         <button type="button" onClick={() => photosRef.current?.click()} disabled={loading} style={fileBtn}>
@@ -370,7 +421,7 @@ export default function OnboardingForm({
             현재사진 <span style={{ fontSize: '0.74rem', fontWeight: 400, color: 'var(--gray)' }}>(선택)</span>
           </p>
           <p style={{ fontSize: '0.78rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 14 }}>
-            앞·좌·우·뒤 각도로 촬영한 현재 모습 사진. 각 15MB 이하.
+            앞·좌·우·뒤 각도의 현재 모습 사진. <strong>체형·전신</strong>을 보여줘 캐스팅 판단에 도움이 됩니다. 각 15MB 이하.
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             {CURRENT_PHOTO_LABELS.map((label, idx) => (
@@ -392,7 +443,7 @@ export default function OnboardingForm({
       <section style={sec} aria-labelledby="onb-videos">
         <h2 id="onb-videos" style={secTitle}>출연영상</h2>
         <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 14 }}>
-          mp4 권장, 최대 300MB. 용량이 크면 업로드에 시간이 걸릴 수 있습니다.
+          mp4 권장, 최대 300MB. 출연영상 2개 + <strong>독백 영상</strong> 1개(혼자 연기하는 독백 — 감정·발성을 보여주는 용도)까지 올릴 수 있어요. 용량이 크면 업로드에 시간이 걸릴 수 있습니다.
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {[0, 1, 2].map(idx => (
@@ -461,6 +512,23 @@ const secTitle: React.CSSProperties = {
   color: 'var(--gold)',
   textTransform: 'uppercase',
   marginBottom: 12,
+}
+
+const fieldLabel: React.CSSProperties = {
+  display: 'block',
+  fontSize: '0.78rem',
+  fontWeight: 600,
+  color: 'var(--white)',
+  marginBottom: 6,
+}
+
+const optTag: React.CSSProperties = {
+  fontSize: '0.62rem',
+  fontWeight: 400,
+  color: 'var(--gray)',
+  letterSpacing: 0,
+  marginLeft: 8,
+  verticalAlign: 'middle',
 }
 
 const inp: React.CSSProperties = {

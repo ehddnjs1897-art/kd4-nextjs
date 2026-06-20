@@ -144,6 +144,17 @@ export async function POST(request: NextRequest) {
   // 사투리 가능 지역 (허용 옵션만 화이트리스트)
   const dialects = sanitizeDialects(body?.dialects)
 
+  // 신장(cm)·체중(kg) — 숫자만 추출 후 상식 범위 클램프(범위 밖이면 무시). 인스타 — 제어문자 제거+길이제한
+  const parseMetric = (v: unknown, min: number, max: number): number | null => {
+    const n = parseInt(String(v ?? '').replace(/[^0-9]/g, ''), 10)
+    return Number.isFinite(n) && n >= min && n <= max ? n : null
+  }
+  const height = parseMetric(body?.height, 100, 250)
+  const weight = parseMetric(body?.weight, 30, 200)
+  const instagram = typeof body?.instagram === 'string'
+    ? (body.instagram.replace(/[\x00-\x1f\x7f]/g, '').trim().slice(0, 200) || null)
+    : null
+
   if (!docPath && photos.length === 0 && videos.length === 0 && !castingSummary && skills.length === 0) {
     return NextResponse.json({ error: '제출할 파일이 없습니다.' }, { status: 400 })
   }
@@ -273,6 +284,9 @@ export async function POST(request: NextRequest) {
   if (skills.length > 0) actorPatch.skills = skills
   if (advancedSkills.length > 0) actorPatch.advanced_skills = advancedSkills
   if (dialects.length > 0) actorPatch.dialects = dialects
+  if (height !== null) actorPatch.height = height
+  if (weight !== null) actorPatch.weight = weight
+  if (instagram) actorPatch.instagram = instagram
 
   // 마이그레이션 미실행 가능 컬럼(42703) 대응 — 누락된 컬럼만 빼고 재시도해 안전 처리
   const OPTIONAL_COLS = ['advanced_skills', 'dialects']
