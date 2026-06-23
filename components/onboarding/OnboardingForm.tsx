@@ -236,13 +236,20 @@ export default function OnboardingForm({
         catch { uploadWarnings.push(`현재사진(${cpFiles[i].label})`) }
       }
 
+      // 원본 슬롯 인덱스로 video_type 결정 — 3번째 슬롯(slot 2)이 '전략적 독백'(monologue).
+      // ⚠️ filter(Boolean)된 videoFiles의 인덱스로 판정하면(이전 버그) 슬롯1을 비우고 0·2만
+      //    올릴 때 독백이 reel로 잘못 기록됨(나민정 케이스). 원본 videos 배열로 순회한다.
       const videoMetas: { key: string; size: number; filename: string; video_type: string }[] = []
-      for (let i = 0; i < videoFiles.length; i++) {
-        setStatus(`영상 업로드 중... (${i + 1}/${videoFiles.length}) 용량이 크면 시간이 걸려요`)
+      let vDone = 0
+      for (let slot = 0; slot < videos.length; slot++) {
+        const file = videos[slot]
+        if (!file) continue
+        vDone++
+        setStatus(`영상 업로드 중... (${vDone}/${videoFiles.length}) 용량이 크면 시간이 걸려요`)
         try {
-          const meta = await uploadVideo(videoFiles[i])
-          videoMetas.push({ ...meta, video_type: i === 2 ? 'monologue' : 'reel' })
-        } catch { uploadWarnings.push(`영상(${videoFiles[i].name})`) }
+          const meta = await uploadVideo(file)
+          videoMetas.push({ ...meta, video_type: slot === 2 ? 'monologue' : 'reel' })
+        } catch { uploadWarnings.push(`영상(${file.name})`) }
       }
 
       setStatus('등록 마무리 중...')
