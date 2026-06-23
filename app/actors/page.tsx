@@ -298,11 +298,11 @@ export default async function ActorsPage({ searchParams }: PageProps) {
   const dynamicH1 = h1Segments.length > 0 ? `${h1Segments.join(' ')} 배우 DB` : '배우 DB'
   const dynamicSubtitle = !dbError && actors.length > 0
     ? h1Segments.length > 0
-      ? `KD4 액팅 스튜디오의 ${h1Segments.join(' ')} 배우 ${actors.length}명을 만나보세요.`
-      : `KD4 액팅 스튜디오의 배우 ${actors.length}명을 만나보세요.`
+      ? `KD4 액팅 스튜디오의 ${h1Segments.join(' ')} 훈련된 배우를 캐스팅해보세요.`
+      : `KD4 액팅 스튜디오의 훈련된 배우를 캐스팅해보세요.`
     : h1Segments.length > 0
-      ? `KD4 액팅 스튜디오의 ${h1Segments.join(' ')} 배우들을 만나보세요.`
-      : 'KD4 액팅 스튜디오 배우들을 만나보세요.'
+      ? `KD4 액팅 스튜디오의 ${h1Segments.join(' ')} 훈련된 배우를 캐스팅해보세요.`
+      : 'KD4 액팅 스튜디오의 훈련된 배우를 캐스팅해보세요.'
 
   function filterHref(key: string, value: string) {
     const next = new URLSearchParams()
