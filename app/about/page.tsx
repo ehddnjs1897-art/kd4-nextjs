@@ -33,7 +33,6 @@ export const metadata: Metadata = {
 const PARTNERS = [
   'CGV 신촌아트레온 아트하우스',
   '액터길드 (Actor Guild)',
-  '리플레이',
   '방진원 캐스팅 디렉터',
   '이상원 캐스팅 디렉터',
   '박안드레 조감독',

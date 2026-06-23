@@ -71,7 +71,6 @@ const PARTNERS = [
   { name: 'Needs.N', logo: '/partners/neezn-logo.jpeg' },
   { name: '컴플렉시온', logo: '/partners/complexion-logo.jpeg' },
   { name: '서우스튜디오', logo: '/partners/seowoo-logo.webp' },
-  { name: '리플레이', logo: '/partners/replay-logo.webp' },
 ]
 
 const reviewCardStyle: React.CSSProperties = {

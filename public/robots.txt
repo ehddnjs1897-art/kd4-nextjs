@@ -9,7 +9,6 @@ Disallow: /api/
 Disallow: /board
 Disallow: /enroll
 Disallow: /onboarding
-Disallow: /benefits/replay
 Disallow: /join
 Disallow: /ai-tools
 Disallow: /game
@@ -26,7 +25,6 @@ Disallow: /api/
 Disallow: /board
 Disallow: /enroll
 Disallow: /onboarding
-Disallow: /benefits/replay
 Disallow: /join
 Disallow: /ai-tools
 Disallow: /game
@@ -43,7 +41,6 @@ Disallow: /api/
 Disallow: /board
 Disallow: /enroll
 Disallow: /onboarding
-Disallow: /benefits/replay
 Disallow: /join
 Disallow: /ai-tools
 Disallow: /game
@@ -59,7 +56,6 @@ Disallow: /api/
 Disallow: /board
 Disallow: /enroll
 Disallow: /onboarding
-Disallow: /benefits/replay
 Disallow: /join
 Disallow: /ai-tools
 Disallow: /game
@@ -75,7 +71,6 @@ Disallow: /api/
 Disallow: /board
 Disallow: /enroll
 Disallow: /onboarding
-Disallow: /benefits/replay
 Disallow: /join
 Disallow: /ai-tools
 Disallow: /game
@@ -91,7 +86,6 @@ Disallow: /api/
 Disallow: /board
 Disallow: /enroll
 Disallow: /onboarding
-Disallow: /benefits/replay
 Disallow: /join
 Disallow: /ai-tools
 Disallow: /game

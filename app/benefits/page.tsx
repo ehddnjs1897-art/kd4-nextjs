@@ -463,23 +463,6 @@ export default function BenefitsPage() {
             <span aria-hidden style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 700, color: 'var(--gold)', whiteSpace: 'nowrap' }}>자세히 보기 →</span>
           </Link>
 
-          {/* 리플레이 */}
-          <Link
-            href="/benefits/replay"
-            aria-label="배우 커뮤니티 리플레이 혜택 자세히 보기"
-            className="kd4-card-hover"
-            style={{ display: 'flex', alignItems: 'center', gap: 'clamp(16px, 4vw, 24px)', background: '#ffffff', border: '1.5px solid rgba(21,72,138,0.18)', borderRadius: 12, padding: 'clamp(18px, 3vw, 24px)', textDecoration: 'none', position: 'relative', overflow: 'hidden', flexWrap: 'wrap' }}
-          >
-            <span aria-hidden style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 3, background: 'var(--gold)' }} />
-            <Image src="/partners/replay-logo.webp" alt="REPLAY" width={72} height={72} style={{ flexShrink: 0, borderRadius: 6, objectFit: 'contain' }} />
-            <span style={{ display: 'flex', flexDirection: 'column', gap: 5, minWidth: 160, flex: 1 }}>
-              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', fontWeight: 700, color: 'var(--white)' }}>배우 커뮤니티 리플레이</span>
-              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 600, color: 'var(--gold)' }}>KD4 멤버 3만원 (<span lang="en">VAT</span> 별도) / 40장</span>
-              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: 'var(--secondary)' }}>일반 4만원 / 40장 · 프로필 투어 · 캐스팅 배포</span>
-            </span>
-            <span aria-hidden style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 700, color: 'var(--gold)', whiteSpace: 'nowrap' }}>자세히 보기 →</span>
-          </Link>
-
           {/* CGV 신촌아트레온 아트하우스 */}
           <div
             style={{ display: 'flex', alignItems: 'center', gap: 'clamp(16px, 4vw, 24px)', background: '#ffffff', border: '1.5px solid rgba(21,72,138,0.18)', borderRadius: 12, padding: 'clamp(18px, 3vw, 24px)', position: 'relative', overflow: 'hidden', flexWrap: 'wrap' }}

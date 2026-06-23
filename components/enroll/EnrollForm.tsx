@@ -22,16 +22,6 @@ interface ClassOption {
 // 퍼스널 브랜딩 서비스 목록
 const BRANDING_SERVICES: ClassOption[] = [
   {
-    nameKo: '프로필 투어 서비스',
-    nameEn: 'Profile Tour Service (Replay)',
-    step: '서비스',
-    price: '30,000',
-    course: '부가세 별도 · 부가세 포함 33,000원',
-    capacity: '-',
-    schedule: '40장 기준',
-    duration: '캐스팅 에이전시 배포',
-  },
-  {
     nameKo: '출연영상 편집 서비스',
     nameEn: 'Film Editing Service',
     step: '서비스',

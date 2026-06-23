@@ -9,7 +9,6 @@ export const SOURCE_VALUES = [
   '네이버·구글 검색',
   'AI 추천',
   '지인소개',
-  '리플레이 단톡방',
   '기타',
 ] as const
 
