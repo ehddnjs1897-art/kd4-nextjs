@@ -17,9 +17,6 @@ const MB = 1024 * 1024
 
 const CURRENT_PHOTO_LABELS = ['앞면', '좌측면', '우측면', '뒷면'] as const
 
-// 거주 지역 (REPLAY 참고 — 드롭다운 선택으로 표기 통일)
-const REGION_OPTIONS = ['서울', '경기', '인천', '강원', '대전', '세종', '충북', '충남', '대구', '경북', '부산', '울산', '경남', '광주', '전북', '전남', '제주'] as const
-
 export default function OnboardingForm({
   userId,
   userName,
@@ -44,7 +41,6 @@ export default function OnboardingForm({
   const [weight, setWeight] = useState('')      // 몸무게(kg) — 숫자만 (선택)
   const [instagram, setInstagram] = useState('')
   const [birthYear, setBirthYear] = useState('')  // 출생연도(4자리) → 나이 자동
-  const [region, setRegion] = useState('')        // 거주지 (드롭다운)
   const [skillInput, setSkillInput] = useState('') // 특기 칩 입력 필드 (skills 콤마 문자열은 유지)
   const [step, setStep] = useState(0)  // REPLAY 참고 — 3단계 STEP (0:기본 1:사진·문서 2:영상)
   const STEP_LABELS = ['기본 정보', '사진·문서', '영상'] as const
@@ -91,7 +87,6 @@ export default function OnboardingForm({
         if (typeof d.weight === 'string') setWeight(d.weight)
         if (typeof d.instagram === 'string') setInstagram(d.instagram)
         if (typeof d.birthYear === 'string') setBirthYear(d.birthYear)
-        if (typeof d.region === 'string') setRegion(d.region)
         if (typeof d.skills === 'string') setSkills(d.skills)
         if (typeof d.advancedSkills === 'string') setAdvancedSkills(d.advancedSkills)
         if (typeof d.castingSummary === 'string') setCastingSummary(d.castingSummary)
@@ -106,9 +101,9 @@ export default function OnboardingForm({
   useEffect(() => {
     if (!draftRestored) return
     try {
-      localStorage.setItem(DRAFT_KEY, JSON.stringify({ height, weight, instagram, birthYear, region, skills, advancedSkills, castingSummary, dialects }))
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ height, weight, instagram, birthYear, skills, advancedSkills, castingSummary, dialects }))
     } catch { /* 용량 초과 등 무시 */ }
-  }, [draftRestored, DRAFT_KEY, height, weight, instagram, birthYear, region, skills, advancedSkills, castingSummary, dialects])
+  }, [draftRestored, DRAFT_KEY, height, weight, instagram, birthYear, skills, advancedSkills, castingSummary, dialects])
 
   // 사진 미리보기 — 선택한 사진 썸네일(업로드 전 결과 확인). objectURL 누수 방지 revoke
   /* eslint-disable react-hooks/set-state-in-effect */
@@ -279,7 +274,6 @@ export default function OnboardingForm({
           weight: weight || undefined,
           instagram: instagram.trim() || undefined,
           birthYear: birthYear || undefined,
-          region: region || undefined,
         }),
         signal: AbortSignal.timeout(15_000),
       })
@@ -344,32 +338,19 @@ export default function OnboardingForm({
       <section style={sec} aria-labelledby="onb-basic">
         <h2 id="onb-basic" style={secTitle}>기본 정보<span style={optTag}>선택</span></h2>
         <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 14 }}>
-          캐스팅 디렉터가 나이·거주지·키·체형으로 배우를 찾을 때 쓰여요. 아는 만큼만 적어주세요.
+          캐스팅 디렉터가 나이·키·체형으로 배우를 찾을 때 쓰여요. 아는 만큼만 적어주세요.
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
-          <div>
-            <label htmlFor="onb-birth" style={fieldLabel}>출생연도</label>
-            <input
-              id="onb-birth" name="birth_year" type="text" inputMode="numeric"
-              value={birthYear}
-              onChange={(e) => setBirthYear(e.target.value.replace(/[^0-9]/g, '').slice(0, 4))}
-              disabled={loading} placeholder="예: 1995" aria-label="출생연도 (4자리)" style={inp} autoComplete="off"
-            />
-            {birthYear.length === 4 && Number(birthYear) >= 1930 && Number(birthYear) <= 2020 && (
-              <p style={{ fontSize: '0.72rem', color: 'var(--gold)', marginTop: 4 }}>만 {new Date().getFullYear() - Number(birthYear)}세 — 나이는 자동 계산돼요</p>
-            )}
-          </div>
-          <div>
-            <label htmlFor="onb-region" style={fieldLabel}>거주지<span style={{ fontWeight: 400, color: 'var(--gray)', marginLeft: 6 }}>· 선택</span></label>
-            <select
-              id="onb-region" name="region" value={region}
-              onChange={(e) => setRegion(e.target.value)}
-              disabled={loading} aria-label="거주 지역" style={{ ...inp, cursor: loading ? 'default' : 'pointer' }}
-            >
-              <option value="">선택 안 함</option>
-              {REGION_OPTIONS.map((r) => <option key={r} value={r}>{r}</option>)}
-            </select>
-          </div>
+        <div style={{ marginBottom: 14 }}>
+          <label htmlFor="onb-birth" style={fieldLabel}>출생연도</label>
+          <input
+            id="onb-birth" name="birth_year" type="text" inputMode="numeric"
+            value={birthYear}
+            onChange={(e) => setBirthYear(e.target.value.replace(/[^0-9]/g, '').slice(0, 4))}
+            disabled={loading} placeholder="예: 1995" aria-label="출생연도 (4자리)" style={inp} autoComplete="off"
+          />
+          {birthYear.length === 4 && Number(birthYear) >= 1930 && Number(birthYear) <= 2020 && (
+            <p style={{ fontSize: '0.72rem', color: 'var(--gold)', marginTop: 4 }}>만 {new Date().getFullYear() - Number(birthYear)}세 — 나이는 자동 계산돼요</p>
+          )}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
           <div>

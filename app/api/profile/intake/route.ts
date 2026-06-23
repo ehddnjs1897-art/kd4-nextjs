@@ -154,10 +154,8 @@ export async function POST(request: NextRequest) {
   const instagram = typeof body?.instagram === 'string'
     ? (body.instagram.replace(/[\x00-\x1f\x7f]/g, '').trim().slice(0, 200) || null)
     : null
-  // 출생연도(4자리) → 나이대 자동 도출. 거주지 — 허용 목록만(표기 통일)
+  // 출생연도(4자리) → 나이대 자동 도출
   const birthYear = parseMetric(body?.birthYear, 1930, new Date().getFullYear())
-  const ALLOWED_REGIONS = new Set(['서울', '경기', '인천', '강원', '대전', '세종', '충북', '충남', '대구', '경북', '부산', '울산', '경남', '광주', '전북', '전남', '제주'])
-  const region = typeof body?.region === 'string' && ALLOWED_REGIONS.has(body.region) ? body.region : null
   const ageGroupFromBirth = ((): string | null => {
     if (birthYear === null) return null
     const age = new Date().getFullYear() - birthYear
@@ -301,11 +299,10 @@ export async function POST(request: NextRequest) {
   if (weight !== null) actorPatch.weight = weight
   if (instagram) actorPatch.instagram = instagram
   if (birthYear !== null) actorPatch.birth_year = birthYear
-  if (region) actorPatch.region = region
   if (ageGroupFromBirth) actorPatch.age_group = ageGroupFromBirth  // 생년 → 나이대 자동
 
   // 마이그레이션 미실행 가능 컬럼(42703) 대응 — 누락된 컬럼만 빼고 재시도해 안전 처리
-  const OPTIONAL_COLS = ['advanced_skills', 'dialects', 'region', 'birth_year']
+  const OPTIONAL_COLS = ['advanced_skills', 'dialects', 'birth_year']
   const patchAttempt = async (dropCols: Set<string>) => {
     const finalPatch: Record<string, unknown> = { ...actorPatch }
     for (const c of dropCols) delete finalPatch[c]
