@@ -123,6 +123,7 @@ export default function Navbar() {
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) {
           setUserRole(null)
+          setMyActorId(null)   // 비로그인/로그아웃 → '내 배우 DB' 링크 즉시 숨김 (이전 로그인 값 잔류 방지)
           setAuthLoaded(true)
           return
         }
