@@ -24,6 +24,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 import { revalidateTag } from '@/lib/revalidate'
 import { sanitizeDialects } from '@/lib/dialects'
 import { matchActorOnSignup, matchActorForIntake } from '@/lib/actor-matching'
+import { isMissingColumnError, findMissingOptionalCol } from '@/lib/db-missing-column'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 
@@ -301,7 +302,9 @@ export async function POST(request: NextRequest) {
   if (birthYear !== null) actorPatch.birth_year = birthYear
   if (ageGroupFromBirth) actorPatch.age_group = ageGroupFromBirth  // 생년 → 나이대 자동
 
-  // 마이그레이션 미실행 가능 컬럼(42703) 대응 — 누락된 컬럼만 빼고 재시도해 안전 처리
+  // 마이그레이션 미실행 가능 컬럼 대응 — 누락된 컬럼만 빼고 재시도해 안전 처리.
+  // ⚠️ UPDATE는 누락 컬럼 시 42703이 아닌 PGRST204를 냄 → isMissingColumnError로 둘 다 잡는다.
+  //    (birth_year는 여기서 빠져도 age_group은 유지 → 나이대 검색/필터는 정상 동작)
   const OPTIONAL_COLS = ['advanced_skills', 'dialects', 'birth_year']
   const patchAttempt = async (dropCols: Set<string>) => {
     const finalPatch: Record<string, unknown> = { ...actorPatch }
@@ -312,12 +315,12 @@ export async function POST(request: NextRequest) {
   const dropped = new Set<string>()
   let { data: patched, error: patchErr } = await patchAttempt(dropped)
   let guard = 0
-  while (patchErr && patchErr.code === '42703' && guard < OPTIONAL_COLS.length) {
+  while (isMissingColumnError(patchErr) && guard < OPTIONAL_COLS.length) {
     guard++
-    const missing = OPTIONAL_COLS.find((c) => !dropped.has(c) && new RegExp(`column .*${c}.* does not exist`, 'i').test(patchErr?.message ?? ''))
+    const missing = findMissingOptionalCol(patchErr, OPTIONAL_COLS, dropped)
     if (missing) dropped.add(missing)
     else OPTIONAL_COLS.forEach((c) => dropped.add(c)) // 컬럼 특정 불가 시 옵션 컬럼 모두 제외
-    console.warn(`[profile/intake] 컬럼 미존재(42703) — 제외 후 재시도: ${[...dropped].join(', ')}`)
+    console.warn(`[profile/intake] 컬럼 미존재 — 제외 후 재시도: ${[...dropped].join(', ')}`)
     const retry = await patchAttempt(dropped)
     patched = retry.data
     patchErr = retry.error

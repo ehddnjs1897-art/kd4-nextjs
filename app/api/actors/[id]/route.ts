@@ -8,6 +8,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 import { revalidateTag } from '@/lib/revalidate'
 import { canViewActorDb } from '@/lib/access'
 import { DIALECT_OPTIONS } from '@/lib/dialects'
+import { isMissingColumnError, findMissingOptionalCol } from '@/lib/db-missing-column'
 import type { Actor, ActorDetail, UserRole } from '@/lib/types'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -245,7 +246,8 @@ export async function PATCH(
       if (k in body) patch[k] = body[k]
     }
 
-    // 신규 컬럼(advanced_skills/dialects) 미존재(42703) fallback — 마이그레이션 미실행 안전
+    // 신규 컬럼(advanced_skills/dialects) 미존재 fallback — 마이그레이션 미실행 안전.
+    // ⚠️ UPDATE는 누락 컬럼 시 PGRST204를 냄(42703 아님) → isMissingColumnError로 둘 다 잡는다.
     const OPTIONAL_COLS = ['advanced_skills', 'dialects']
     const doUpdate = async (dropCols: Set<string>) => {
       const finalPatch: Record<string, unknown> = { ...patch, updated_at: new Date().toISOString() }
@@ -255,12 +257,12 @@ export async function PATCH(
     const dropped = new Set<string>()
     let { data: updated, error } = await doUpdate(dropped)
     let guard = 0
-    while (error && error.code === '42703' && guard < OPTIONAL_COLS.length) {
+    while (isMissingColumnError(error) && guard < OPTIONAL_COLS.length) {
       guard++
-      const missing = OPTIONAL_COLS.find((c) => !dropped.has(c) && new RegExp(`column .*${c}.* does not exist`, 'i').test(error?.message ?? ''))
+      const missing = findMissingOptionalCol(error, OPTIONAL_COLS, dropped)
       if (missing) dropped.add(missing)
       else OPTIONAL_COLS.forEach((c) => dropped.add(c))
-      console.warn(`[PATCH /api/actors/[id]] 컬럼 미존재(42703) — 제외 후 재시도: ${[...dropped].join(', ')}`)
+      console.warn(`[PATCH /api/actors/[id]] 컬럼 미존재 — 제외 후 재시도: ${[...dropped].join(', ')}`)
       const retry = await doUpdate(dropped)
       updated = retry.data
       error = retry.error
