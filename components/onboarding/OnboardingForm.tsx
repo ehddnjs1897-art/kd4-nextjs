@@ -45,6 +45,7 @@ export default function OnboardingForm({
   const [instagram, setInstagram] = useState('')
   const [birthYear, setBirthYear] = useState('')  // 출생연도(4자리) → 나이 자동
   const [region, setRegion] = useState('')        // 거주지 (드롭다운)
+  const [skillInput, setSkillInput] = useState('') // 특기 칩 입력 필드 (skills 콤마 문자열은 유지)
   const [step, setStep] = useState(0)  // REPLAY 참고 — 3단계 STEP (0:기본 1:사진·문서 2:영상)
   const STEP_LABELS = ['기본 정보', '사진·문서', '영상'] as const
   const DRAFT_KEY = `kd4-onboarding-draft-${userId}`  // REPLAY 참고 — 자동 임시저장(텍스트 항목만)
@@ -399,39 +400,74 @@ export default function OnboardingForm({
         />
       </section>
 
-      {/* 특기 + 고급 숙련도 */}
+      {/* 특기 (칩) + 고급 숙련도 (⭐ 토글) — REPLAY 참고. skills/advancedSkills 콤마문자열은 유지 */}
       <section style={sec} aria-labelledby="onb-skills">
         <h2 id="onb-skills" style={secTitle}>특기</h2>
         <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 12 }}>
-          캐스팅에 도움 되는 기술·스킬을 콤마로 구분해 입력하세요. (수영, 검도, 피아노, 사투리, 영어 등)
+          기술을 입력하고 <strong>Enter</strong>를 누르면 태그로 추가돼요 (수영·검도·피아노·영어 등). 전문가급은 칩의 <span aria-hidden="true">⭐</span>를 눌러 강조하세요.
         </p>
         <input
           id="onb-skills-input"
           name="skills"
           type="text"
-          value={skills}
-          onChange={(e) => setSkills(e.target.value)}
+          value={skillInput}
+          onChange={(e) => setSkillInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ',') {
+              e.preventDefault()
+              const v = skillInput.trim().replace(/,+$/, '').trim()
+              const cur = skills.split(',').map(s => s.trim()).filter(Boolean)
+              if (v && !cur.includes(v) && cur.length < 30) setSkills([...cur, v].join(', '))
+              setSkillInput('')
+            }
+          }}
           disabled={loading}
-          placeholder="수영, 검도, 피아노, 영어, 사투리(경상도)"
-          aria-label="특기"
+          placeholder="예: 수영 (입력 후 Enter)"
+          aria-label="특기 입력 (Enter로 추가)"
           style={inp}
           autoComplete="off"
         />
-        <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginTop: 18, marginBottom: 8 }}>
-          <span aria-hidden="true">⭐</span> <strong style={{ color: 'var(--navy)' }}>고급 숙련도</strong> — 전문가급/네이티브 수준만. 위에 입력한 특기 중 콤마로 구분해 다시 적어주세요.
+        {skills.split(',').map(s => s.trim()).filter(Boolean).length > 0 && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>
+            {skills.split(',').map(s => s.trim()).filter(Boolean).map((sk) => {
+              const isAdv = advancedSkills.split(',').map(s => s.trim()).filter(Boolean).includes(sk)
+              return (
+                <span key={sk} style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  padding: '6px 8px 6px 12px', borderRadius: 999,
+                  background: isAdv ? 'var(--navy)' : 'var(--bg3)',
+                  color: isAdv ? '#fff' : 'var(--white)',
+                  border: `1px solid ${isAdv ? 'var(--navy)' : 'var(--border)'}`,
+                  fontSize: '0.82rem', fontFamily: 'var(--font-sans)',
+                }}>
+                  <button
+                    type="button" disabled={loading} aria-pressed={isAdv}
+                    aria-label={`${sk} 고급 숙련도 ${isAdv ? '해제' : '표시'}`}
+                    onClick={() => {
+                      const adv = advancedSkills.split(',').map(s => s.trim()).filter(Boolean)
+                      setAdvancedSkills((isAdv ? adv.filter(x => x !== sk) : [...adv, sk]).join(', '))
+                    }}
+                    style={{ background: 'none', border: 'none', cursor: loading ? 'default' : 'pointer', padding: 0, fontSize: '0.82rem', lineHeight: 1, color: 'inherit' }}
+                  >{isAdv ? '⭐' : '☆'}</button>
+                  {sk}
+                  <button
+                    type="button" disabled={loading} aria-label={`${sk} 삭제`}
+                    onClick={() => {
+                      const cur = skills.split(',').map(s => s.trim()).filter(Boolean).filter(x => x !== sk)
+                      const adv = advancedSkills.split(',').map(s => s.trim()).filter(Boolean).filter(x => x !== sk)
+                      setSkills(cur.join(', '))
+                      setAdvancedSkills(adv.join(', '))
+                    }}
+                    style={{ background: 'none', border: 'none', cursor: loading ? 'default' : 'pointer', padding: '0 2px', fontSize: '0.9rem', lineHeight: 1, color: 'inherit', opacity: 0.7 }}
+                  >×</button>
+                </span>
+              )
+            })}
+          </div>
+        )}
+        <p style={{ fontSize: '0.74rem', color: 'var(--gray)', marginTop: 10 }}>
+          <span aria-hidden="true">⭐</span> 표시 = 전문가급/네이티브 수준
         </p>
-        <input
-          id="onb-advanced-skills-input"
-          name="advanced_skills"
-          type="text"
-          value={advancedSkills}
-          onChange={(e) => setAdvancedSkills(e.target.value)}
-          disabled={loading}
-          placeholder="검도, 영어"
-          aria-label="고급 숙련도 (전문가급 스킬만)"
-          style={inp}
-          autoComplete="off"
-        />
       </section>
 
       {/* 사투리 (가능 지역) */}
