@@ -44,6 +44,7 @@ export default function OnboardingForm({
   const STEP_LABELS = ['기본 정보', '사진·문서', '영상'] as const
   const DRAFT_KEY = `kd4-onboarding-draft-${userId}`  // REPLAY 참고 — 자동 임시저장(텍스트 항목만)
   const [draftRestored, setDraftRestored] = useState(false)
+  const [photoPreviews, setPhotoPreviews] = useState<string[]>([])  // REPLAY 참고 — 사진 업로드 전 미리보기
 
   // 업로드 중 탭 닫기/새로고침 방지
   useEffect(() => {
@@ -100,6 +101,15 @@ export default function OnboardingForm({
       localStorage.setItem(DRAFT_KEY, JSON.stringify({ height, weight, instagram, skills, advancedSkills, castingSummary, dialects }))
     } catch { /* 용량 초과 등 무시 */ }
   }, [draftRestored, DRAFT_KEY, height, weight, instagram, skills, advancedSkills, castingSummary, dialects])
+
+  // 사진 미리보기 — 선택한 사진 썸네일(업로드 전 결과 확인). objectURL 누수 방지 revoke
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    const urls = photos.map((f) => URL.createObjectURL(f))
+    setPhotoPreviews(urls)
+    return () => urls.forEach((u) => URL.revokeObjectURL(u))
+  }, [photos])
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   function checkLandscape(file: File): Promise<boolean> {
     return new Promise((resolve) => {
@@ -473,7 +483,23 @@ export default function OnboardingForm({
           {photos.length > 0 ? <><span aria-hidden="true">🖼</span>{` ${photos.length}장 선택됨 — 변경`}</> : <><span aria-hidden="true">🖼</span>{' 사진 선택'}</>}
         </button>
         {photos.length > 0 && (
-          <p style={picked}><span aria-hidden="true">✓</span> {photos.map(p => p.name).join(', ')}</p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>
+            {photos.map((p, i) => (
+              <div key={i} style={{ position: 'relative' }}>
+                {photoPreviews[i] && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={photoPreviews[i]}
+                    alt={`선택한 사진 ${i + 1} 미리보기`}
+                    style={{ width: 72, height: 96, objectFit: 'cover', borderRadius: 6, display: 'block', border: i === landscapeIdx ? '2px solid var(--gold)' : '1px solid var(--border)' }}
+                  />
+                )}
+                {i === landscapeIdx && (
+                  <span style={{ position: 'absolute', bottom: 0, left: 0, right: 0, fontSize: '0.6rem', textAlign: 'center', background: 'var(--gold)', color: '#fff', padding: '1px 0', borderRadius: '0 0 6px 6px' }}>썸네일</span>
+                )}
+              </div>
+            ))}
+          </div>
         )}
 
         {/* 현재사진 */}
