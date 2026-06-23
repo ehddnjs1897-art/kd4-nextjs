@@ -42,6 +42,8 @@ export default function OnboardingForm({
   const [instagram, setInstagram] = useState('')
   const [step, setStep] = useState(0)  // REPLAY 참고 — 3단계 STEP (0:기본 1:사진·문서 2:영상)
   const STEP_LABELS = ['기본 정보', '사진·문서', '영상'] as const
+  const DRAFT_KEY = `kd4-onboarding-draft-${userId}`  // REPLAY 참고 — 자동 임시저장(텍스트 항목만)
+  const [draftRestored, setDraftRestored] = useState(false)
 
   // 업로드 중 탭 닫기/새로고침 방지
   useEffect(() => {
@@ -70,6 +72,34 @@ export default function OnboardingForm({
 
   // 에러 발생 시 포커스 이동 (WCAG 2.4.3)
   useEffect(() => { if (error) errorRef.current?.focus() }, [error])
+
+  // 자동 임시저장 — 마운트 시 복원 (텍스트 항목만, 파일은 보안상 저장 불가)
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY)
+      if (raw) {
+        const d = JSON.parse(raw)
+        if (typeof d.height === 'string') setHeight(d.height)
+        if (typeof d.weight === 'string') setWeight(d.weight)
+        if (typeof d.instagram === 'string') setInstagram(d.instagram)
+        if (typeof d.skills === 'string') setSkills(d.skills)
+        if (typeof d.advancedSkills === 'string') setAdvancedSkills(d.advancedSkills)
+        if (typeof d.castingSummary === 'string') setCastingSummary(d.castingSummary)
+        if (Array.isArray(d.dialects)) setDialects(d.dialects.filter((x: unknown): x is string => typeof x === 'string'))
+      }
+    } catch { /* 손상된 draft 무시 */ }
+    setDraftRestored(true)
+  }, [DRAFT_KEY])
+  /* eslint-enable react-hooks/set-state-in-effect */
+
+  // 자동 임시저장 — 텍스트 항목 변경 시 저장 (복원 끝난 뒤에만)
+  useEffect(() => {
+    if (!draftRestored) return
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ height, weight, instagram, skills, advancedSkills, castingSummary, dialects }))
+    } catch { /* 용량 초과 등 무시 */ }
+  }, [draftRestored, DRAFT_KEY, height, weight, instagram, skills, advancedSkills, castingSummary, dialects])
 
   function checkLandscape(file: File): Promise<boolean> {
     return new Promise((resolve) => {
@@ -235,6 +265,7 @@ export default function OnboardingForm({
       })
       const j = await res.json()
       if (!res.ok) throw new Error(j.error || '등록에 실패했습니다.')
+      try { localStorage.removeItem(DRAFT_KEY) } catch { /* noop */ }  // 제출 완료 → 임시저장 삭제
       setLoading(false)
       // 일부 파일만 실패 — 등록은 완료, 실패 파일은 마이페이지에서 다시 올리도록 안내
       if (uploadWarnings.length > 0) {
@@ -282,7 +313,10 @@ export default function OnboardingForm({
             </div>
           ))}
         </div>
-        <p style={{ fontSize: '0.72rem', color: 'var(--gray)', textAlign: 'right', margin: 0 }}>완성도 {pct}%</p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--gray)' }}>
+          <span>{draftRestored ? '✓ 자동 임시저장 중' : ''}</span>
+          <span>완성도 {pct}%</span>
+        </div>
       </div>
 
       {step === 0 && (<>
