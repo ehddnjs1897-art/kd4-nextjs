@@ -383,6 +383,7 @@ export default async function ActorDetailPage({
   // (A) 역할/소유권 계산 — 로그인 사용자만 (비로그인은 기본값 사용)
   let role: UserRole = 'user'
   let isOwner = false
+  let isSelfMember = false  // 본인 멤버(admin 아닌 자기 배우) — 편집은 마이페이지로 일원화(2026-06-23)
   if (user) {
     const { data: profile } = await supabaseAdmin
       .from('profiles')
@@ -390,7 +391,8 @@ export default async function ActorDetailPage({
       .eq('id', user.id)
       .maybeSingle()
     role = (profile?.role ?? 'user') as UserRole
-    isOwner = profile?.actor_id === id || role === 'admin'
+    isSelfMember = profile?.actor_id === id
+    isOwner = isSelfMember || role === 'admin'
   }
 
   // (B) 비공개 배우 안전장치 — 비로그인 포함 전부 차단 (is_public=false + 본인/admin 아님)
@@ -777,11 +779,20 @@ export default async function ActorDetailPage({
       {/* ActorTabs — 전체 폭 (갤러리 → 영상 → AWARDS → 최근출연 → 필모그래피)
           mainPhotoUrl: HERO 메인사진과 동일 URL은 갤러리에서 중복 제거 */}
       <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 clamp(20px,4vw,32px)', paddingTop: 28 }}>
+        {/* ① 편집 경로 통합(2026-06-23) — 일반 멤버 본인은 배우페이지 인라인 편집 대신
+            마이페이지(/dashboard/edit)에서 사진·소개·작품을 한 곳에서 편집하도록 유도.
+            admin은 배우페이지 직접 편집 유지(관리용). */}
+        {isSelfMember && role !== 'admin' && (
+          <div style={{ marginBottom: 24, padding: '14px 18px', background: 'rgba(21,72,138,0.05)', border: '1px solid rgba(21,72,138,0.18)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '0.86rem', color: 'var(--gray)', fontFamily: 'var(--font-sans)' }}>내 프로필 수정은 마이페이지에서 한 번에 — 사진·소개·작품 전부 여기서 편집해요.</span>
+            <Link href="/dashboard/edit" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 20px', background: 'var(--navy)', color: '#fff', borderRadius: 8, fontSize: '0.85rem', fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap', fontFamily: 'var(--font-display)' }}>✏️ 마이페이지에서 편집</Link>
+          </div>
+        )}
         <ActorTabs
           actor={actorForClient}
           canViewContact={canContact}
           imageProtected={!canContact}
-          canEdit={isOwner}
+          canEdit={role === 'admin'}
           videoLocked={!user}
           mainPhotoUrl={photoUrl !== '/placeholder-actor.svg' ? photoUrl : undefined}
         />
