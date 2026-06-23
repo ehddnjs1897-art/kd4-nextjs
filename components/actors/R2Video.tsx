@@ -7,17 +7,15 @@
  */
 
 import { useState, useEffect, useRef } from 'react'
-import Image from 'next/image'
 
 export default function R2Video({
   videoId,
   title,
-  poster,
   allowDownload,
 }: {
   videoId: string
   title?: string | null
-  poster?: string | null
+  poster?: string | null  // 미사용(영상 첫 프레임을 썸네일로 사용) — 호출부 호환 위해 type만 유지
   allowDownload?: boolean
 }) {
   const [url, setUrl] = useState<string | null>(null)
@@ -80,36 +78,26 @@ export default function R2Video({
           <>
             <video
               ref={videoRef}
-              src={url}
+              src={`${url}#t=0.5`}
               title={title || '배우 출연영상'}
-              controls
-              preload="none"
+              controls={playing}
+              preload="metadata"
+              playsInline
               controlsList="nodownload"
               onContextMenu={(e) => e.preventDefault()}
               tabIndex={playing ? 0 : -1}
-              style={{ ...s.video, opacity: playing ? 1 : 0, pointerEvents: playing ? 'auto' : 'none' }}
+              style={{ ...s.video, opacity: 1 }}
             />
             {/* WCAG 1.2.2: 자막 미제공 안내 — 배우 오디션 영상은 자막 미제공 */}
             <p className="sr-only">이 영상은 자막을 제공하지 않습니다.</p>
           </>
         )}
 
-        {/* 썸네일 + 재생 오버레이 (playing 전) */}
+        {/* 재생 오버레이 (playing 전) — 배경은 video 첫 프레임(#t=0.5)이 썸네일 역할 */}
         {!playing && (
           <div style={s.overlay}>
-            {/* 썸네일 배경 */}
-            {poster ? (
-              <Image
-                src={poster}
-                alt={title || '영상 썸네일'}
-                fill
-                sizes="(max-width: 768px) 100vw, 50vw"
-                style={{ objectFit: 'cover', opacity: 0.7 }}
-                unoptimized
-              />
-            ) : (
-              <div style={s.darkBg} />
-            )}
+            {/* 영상 첫 프레임 위 살짝 어둡게 — 재생버튼 대비 */}
+            <div style={s.scrim} />
 
             {/* 재생 버튼 — 에러 텍스트는 버튼 바깥에 별도 배치 (버튼 accessible name 오염 방지) */}
             <button
@@ -172,9 +160,9 @@ const s: Record<string, React.CSSProperties> = {
     position: 'absolute', inset: 0,
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
-  darkBg: {
+  scrim: {
     position: 'absolute', inset: 0,
-    background: 'linear-gradient(135deg, #1a1a2e, #0d0d0d)',
+    background: 'rgba(0,0,0,0.28)',
   },
   playBtn: {
     position: 'relative', zIndex: 2,
@@ -199,16 +187,18 @@ const s: Record<string, React.CSSProperties> = {
     alignSelf: 'flex-start',
     display: 'inline-flex',
     alignItems: 'center',
+    gap: 6,
     minHeight: 44,
     minWidth: 44,
-    padding: '6px 14px',
-    fontSize: '0.78rem',
+    padding: '8px 16px',
+    fontSize: '0.8rem',
+    fontWeight: 700,
     color: 'var(--gold)',
-    background: 'rgba(196,165,90,0.06)',
-    border: '1px solid rgba(196,165,90,0.3)',
-    borderRadius: 4,
+    background: 'rgba(196,165,90,0.12)',
+    border: '1.5px solid var(--gold)',
+    borderRadius: 6,
     cursor: 'pointer',
-    fontFamily: 'inherit',
+    fontFamily: 'var(--font-display), inherit',
     letterSpacing: '0.03em',
   },
 }

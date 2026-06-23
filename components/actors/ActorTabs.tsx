@@ -182,6 +182,15 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
     setEditErr('')
   }
 
+  // 최근출연 행에서 편집 진입 — 해당 작품을 편집모드로 열고 아래 카테고리 표로 스크롤 (2026-06-23)
+  function editFromRecent(entry: FilmoEntry) {
+    startEdit(entry)
+    setTimeout(() => {
+      const catId = entry.category === 'musical' ? 'theater' : entry.category
+      document.getElementById(`filmo-${catId}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 60)
+  }
+
   async function saveEdit(entry: FilmoEntry) {
     if (!editFields.title.trim()) return
     setSaving(true); setEditErr('')
@@ -593,6 +602,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
             <span style={s.sectionNum}>02</span>
             <span style={s.sectionTitle}>최근 출연</span>
             <span lang="en" style={s.sectionEn}>CURRENT WORKS</span>
+            {canEdit && <span style={{ marginLeft: 'auto', fontSize: '0.7rem', color: 'var(--gold)', fontWeight: 600, alignSelf: 'center' }}>작품 클릭 → 편집 ✎</span>}
           </h2>
           {/* 박스 카드 → 에디토리얼 행 리스트 (2026-06-12 대표 피드백 "더 잘보이게") */}
           <div>
@@ -603,7 +613,18 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                   ? (entry.film_type ?? null)
                   : null
               return (
-                <div key={entry.id} className="recent-work-row">
+                <div
+                  key={entry.id}
+                  className="recent-work-row"
+                  {...(canEdit ? {
+                    role: 'button' as const,
+                    tabIndex: 0,
+                    onClick: () => editFromRecent(entry),
+                    onKeyDown: (e: React.KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); editFromRecent(entry) } },
+                    style: { cursor: 'pointer' },
+                    title: '클릭하면 아래 작품 표에서 편집할 수 있어요',
+                  } : {})}
+                >
                   <span style={s.recentYear}>{entry.year}</span>
                   <span style={s.recentCat}>{CATEGORY_LABEL[entry.category]}</span>
                   <p className="recent-work-title" style={s.recentTitle}>
@@ -630,7 +651,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
         const isAdding = addingCat === cat
 
         return (
-          <section key={cat} aria-label={CATEGORY_LABEL[cat]} style={s.section}>
+          <section key={cat} id={`filmo-${cat}`} aria-label={CATEGORY_LABEL[cat]} style={s.section}>
             <h2 style={s.sectionHeading}>
               <span style={s.sectionNum}>{num}</span>
               <span lang={cat === 'cf' ? 'en' : undefined} style={s.sectionTitle}>{CATEGORY_LABEL[cat].toUpperCase()}</span>
@@ -649,7 +670,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
               <caption className="sr-only">{CATEGORY_LABEL[cat]} 필모그래피</caption>
               <thead>
                 <tr>
-                  <th scope="col" style={{ ...s.th, width: 52 }}>연도</th>
+                  <th scope="col" style={{ ...s.th, width: 72 }}>연도</th>
                   {isDrama && <th scope="col" style={{ ...s.th, width: 76 }}>방송사</th>}
                   {isFilm && <th scope="col" style={{ ...s.th, width: 68 }}>구분</th>}
                   <th scope="col" style={s.th}>작품명</th>
@@ -665,7 +686,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                       <tr key={entry.id} style={{ ...s.tr, background: 'rgba(255,215,0,0.04)' }}>
                         <td style={s.td}>
                           <input value={editFields.year} onChange={e => setEditFields(p => ({ ...p, year: e.target.value }))}
-                            style={s.inlineInput} placeholder="연도" type="number" min={1990} max={2099} aria-label="연도" />
+                            style={{ ...s.inlineInput, minWidth: 56 }} placeholder="연도" type="number" inputMode="numeric" min={1990} max={2099} aria-label="연도" />
                         </td>
                         {isDrama && (
                           <td style={s.td}>
@@ -767,7 +788,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                   <tr style={{ ...s.tr, background: 'rgba(255,215,0,0.06)' }}>
                     <td style={s.td}>
                       <input value={newEntry.year} onChange={e => setNewEntry(p => ({ ...p, year: e.target.value }))}
-                        style={s.inlineInput} placeholder="연도" type="number" min={1990} max={2099} aria-label="연도" />
+                        style={{ ...s.inlineInput, minWidth: 56 }} placeholder="연도" type="number" inputMode="numeric" min={1990} max={2099} aria-label="연도" />
                     </td>
                     {isDrama && (
                       <td style={s.td}>

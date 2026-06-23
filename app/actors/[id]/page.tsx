@@ -522,6 +522,9 @@ export default async function ActorDetailPage({
         .actor-hero { display:grid; grid-template-columns:minmax(260px,400px) minmax(0,1fr); gap:clamp(24px,4vw,44px); align-items:start; }
         /* 세로형 증명사진 프레임 — 2/3 비율 고정, 최대높이 70vh (max-width로 비율 유지한 채 제한) */
         .actor-hero-photo { position:relative; width:100%; max-width:calc(70vh * 2 / 3); aspect-ratio:2/3; margin:0 auto; }
+        /* 우측 정보 열 — 자식(연락처·공유/다운로드·캐스팅문의)이 세로로 일정 간격 쌓이게.
+           이 정의가 없어 버튼들이 서로 겹쳐 보이던 버그 수정 (2026-06-23) */
+        .actor-hero-info { display:flex; flex-direction:column; gap:16px; align-items:stretch; }
         @media (max-width:680px) {
           .actor-hero { grid-template-columns:1fr; gap:20px; }
         }
