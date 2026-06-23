@@ -729,8 +729,8 @@ export default async function ActorDetailPage({
 
               {/* 공유 / 다운로드 — 나란히 (링크 복사는 전원, 다운로드는 디렉터/관리자 — 비권한자 클릭 시 안내) */}
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-                <ShareButton webUrl={pageUrl} />
                 {canContact && <FavoriteButton actorId={actor.id} actorName={actor.name} variant="inline" />}
+                <ShareButton webUrl={pageUrl} />
                 {canContact ? (
                   <div style={{ flex: '1 1 200px' }}>
                     <ActorDownloadButton profileUrl={profileDocUrl} videoIds={downloadVideoIds} />
@@ -751,8 +751,8 @@ export default async function ActorDetailPage({
               {canContact && actor.phone && (
                 <a href={`tel:${actor.phone}`} style={{
                   display: 'inline-flex', alignItems: 'center', gap: 8,
-                  background: 'var(--navy)', color: 'var(--gold)',
-                  border: '1px solid var(--gold)', borderRadius: 8,
+                  background: 'var(--navy)', color: '#ffffff',
+                  border: '1px solid rgba(255,255,255,0.35)', borderRadius: 8,
                   padding: '12px 20px', fontFamily: 'var(--font-display)',
                   fontSize: '0.9rem', fontWeight: 700, letterSpacing: '0.05em',
                   textDecoration: 'none', width: '100%', justifyContent: 'center',

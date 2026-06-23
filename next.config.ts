@@ -30,7 +30,7 @@ const nextConfig: NextConfig = {
       },
     ],
     formats: ['image/avif', 'image/webp'],
-    minimumCacheTTL: 86400,
+    minimumCacheTTL: 60,  // 대표사진 편집 후 빠른 반영 (24h→1분). 배우 52명 규모라 재최적화 비용 무시 가능
     // 실제 렌더폭 기준으로 좁혀 변환본 수 최소화 (성능)
     deviceSizes: [640, 750, 828, 1080, 1200],
     imageSizes: [200, 300, 360, 720],
