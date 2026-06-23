@@ -86,7 +86,7 @@ export const CLASSES: ClassItem[] = [
     ],
     schedule: "월 4회",
     duration: "4시간",
-    capacity: "6명",
+    capacity: "8명",
     course: "3개월 코스",
     price: "400,000",
     instructor: "권동원 대표",
