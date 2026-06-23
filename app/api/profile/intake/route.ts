@@ -154,6 +154,19 @@ export async function POST(request: NextRequest) {
   const instagram = typeof body?.instagram === 'string'
     ? (body.instagram.replace(/[\x00-\x1f\x7f]/g, '').trim().slice(0, 200) || null)
     : null
+  // 출생연도(4자리) → 나이대 자동 도출. 거주지 — 허용 목록만(표기 통일)
+  const birthYear = parseMetric(body?.birthYear, 1930, new Date().getFullYear())
+  const ALLOWED_REGIONS = new Set(['서울', '경기', '인천', '강원', '대전', '세종', '충북', '충남', '대구', '경북', '부산', '울산', '경남', '광주', '전북', '전남', '제주'])
+  const region = typeof body?.region === 'string' && ALLOWED_REGIONS.has(body.region) ? body.region : null
+  const ageGroupFromBirth = ((): string | null => {
+    if (birthYear === null) return null
+    const age = new Date().getFullYear() - birthYear
+    if (age >= 20 && age < 30) return '20대'
+    if (age >= 30 && age < 40) return '30대'
+    if (age >= 40 && age < 50) return '40대'
+    if (age >= 50) return '50대 이상'
+    return null  // 10대 등은 age_group CHECK 안전 위해 미설정
+  })()
 
   if (!docPath && photos.length === 0 && videos.length === 0 && !castingSummary && skills.length === 0) {
     return NextResponse.json({ error: '제출할 파일이 없습니다.' }, { status: 400 })
@@ -287,9 +300,12 @@ export async function POST(request: NextRequest) {
   if (height !== null) actorPatch.height = height
   if (weight !== null) actorPatch.weight = weight
   if (instagram) actorPatch.instagram = instagram
+  if (birthYear !== null) actorPatch.birth_year = birthYear
+  if (region) actorPatch.region = region
+  if (ageGroupFromBirth) actorPatch.age_group = ageGroupFromBirth  // 생년 → 나이대 자동
 
   // 마이그레이션 미실행 가능 컬럼(42703) 대응 — 누락된 컬럼만 빼고 재시도해 안전 처리
-  const OPTIONAL_COLS = ['advanced_skills', 'dialects']
+  const OPTIONAL_COLS = ['advanced_skills', 'dialects', 'region', 'birth_year']
   const patchAttempt = async (dropCols: Set<string>) => {
     const finalPatch: Record<string, unknown> = { ...actorPatch }
     for (const c of dropCols) delete finalPatch[c]
