@@ -70,9 +70,10 @@ export async function middleware(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
-      // server.ts와 동일한 쿠키 보안 옵션 — httpOnly + Secure 누락 방지
+      // 쿠키 보안: secure + sameSite 유지. httpOnly는 제외 —
+      // 매 요청 세션 갱신 시 httpOnly:true로 쿠키를 덮으면 createBrowserClient(클라이언트)가
+      // document.cookie로 세션을 못 읽어 로그인 상태가 유지되지 않음 (2026-06-18 수정).
       cookieOptions: {
-        httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax' as const,
       },

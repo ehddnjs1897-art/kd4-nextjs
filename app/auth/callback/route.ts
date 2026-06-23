@@ -40,9 +40,10 @@ export async function GET(request: Request) {
     supabaseUrl,
     supabaseAnonKey,
     {
-      // httpOnly: true — 세션 쿠키를 JS에서 읽지 못하게 보호 (XSS 세션 탈취 방어)
+      // 쿠키 보안: secure + sameSite 유지. httpOnly는 설정 안 함(기본 false) —
+      // OAuth/이메일 로그인 직후 세션 쿠키를 httpOnly로 구우면 createBrowserClient(클라이언트)가
+      // document.cookie로 세션을 못 읽어 "로그인했는데 로그인 버튼 유지" 증상 발생 (2026-06-18 수정).
       cookieOptions: {
-        httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax' as const,
       },

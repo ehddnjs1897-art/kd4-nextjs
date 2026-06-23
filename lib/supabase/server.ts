@@ -13,9 +13,11 @@ export async function createClient() {
     url,
     key,
     {
-      // @supabase/ssr 0.10.x defaults httpOnly:false — override to prevent XSS session theft
+      // 쿠키 보안: secure + sameSite 유지. httpOnly는 설정하지 않음(기본 false) —
+      // createBrowserClient(브라우저)가 document.cookie로 세션을 읽어야 로그인이 유지됨.
+      // httpOnly:true면 서버만 인식하고 클라이언트(Navbar 등)는 영구 비로그인 처리되어
+      // "로그인했는데 로그인 버튼이 계속 뜨는" 증상 발생 (2026-06-18 수정).
       cookieOptions: {
-        httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax' as const,
       },
