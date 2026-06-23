@@ -12,6 +12,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 import GalleryEditForm from '@/components/dashboard/GalleryEditForm'
 import OnboardingForm from '@/components/onboarding/OnboardingForm'
 import { UserRole } from '@/lib/types'
+import { matchActorOnSignup } from '@/lib/actor-matching'
 
 export const metadata: Metadata = {
   title: '프로필 편집',
@@ -21,6 +22,8 @@ export const metadata: Metadata = {
 interface Profile {
   role: UserRole
   actor_id: string | null
+  name: string | null
+  phone: string | null
 }
 
 interface ActorRow {
@@ -80,7 +83,7 @@ export default async function GalleryEditPage() {
   // ── 프로필 · 역할 확인 ─────────────────────────────────────────────────────
   const { data: profile, error: profileErr } = await supabase
     .from('profiles')
-    .select('role, actor_id')
+    .select('role, actor_id, name, phone')
     .eq('id', user.id)
     .maybeSingle()
 
@@ -88,17 +91,28 @@ export default async function GalleryEditPage() {
     redirect('/dashboard')
   }
 
-  const { role, actor_id } = profile as Profile
+  const { role } = profile as Profile
+  let actor_id = (profile as Profile).actor_id
 
   if (role !== 'editor' && role !== 'admin' && role !== 'member' && role !== 'actor') {
     redirect('/dashboard')
   }
 
-  // ── actor_id 없으면 온보딩 폼 표시 ────────────────────────────────────────
+  // ── actor_id 없으면, 기존 배우 레코드(이름·전화 일치) 자동 재연결 시도 ──────────
+  //    /dashboard 와 동일한 자가복구. 링크만 끊긴 멤버를 새 레코드로 '중복 생성'하지
+  //    않도록, 온보딩 폼을 띄우기 전에 먼저 기존 레코드를 찾아 연결한다.
   if (!actor_id) {
-    const { data: profileData } = await supabaseAdmin
-      .from('profiles').select('name').eq('id', user.id).maybeSingle()
-    const userName = profileData?.name || user.user_metadata?.name || ''
+    try {
+      const healed = await matchActorOnSignup(user.id, (profile as Profile).name ?? '', (profile as Profile).phone ?? '')
+      if (healed.matched && healed.actorId) actor_id = healed.actorId
+    } catch (e) {
+      console.error('[dashboard/edit] 자가 복구 매칭 오류:', e instanceof Error ? e.message : String(e))
+    }
+  }
+
+  // ── 그래도 actor_id 없으면 온보딩 폼 표시 (자료 올리기) ───────────────────────
+  if (!actor_id) {
+    const userName = (profile as Profile).name || user.user_metadata?.name || ''
 
     return (
       <div style={styles.page}>

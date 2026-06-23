@@ -451,9 +451,9 @@ export default function Navbar() {
                 로그인
               </Link>
             )}
-            {authLoaded && isLoggedIn && myActorId && (
+            {authLoaded && isLoggedIn && (
               <Link
-                href={`/actors/${myActorId}`}
+                href={myActorId ? `/actors/${myActorId}` : '/dashboard/edit'}
                 className="desktop-auth"
                 style={{
                   display: 'inline-flex',
