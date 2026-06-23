@@ -74,8 +74,10 @@ function LoginContent() {
     // 오픈 리다이렉트 방지: 동일 출처(/) 경로만 허용
     const rawNext = searchParams.get('next')
     const safeDest = rawNext && rawNext.startsWith('/') && !rawNext.startsWith('//') && !rawNext.startsWith('/\\') ? rawNext : '/dashboard'
-    router.push(safeDest)
-    router.refresh()
+    // 모바일에서 router.push(클라 라우팅)는 갓 설정된 세션 쿠키가 다음 서버 요청에 즉시
+    // 안 실려 "한 번에 로그인 안 됨"(첫 시도 실패 → 재시도해야 됨)이 발생한다.
+    // full-page 이동으로 브라우저가 쿠키를 확실히 포함한 요청을 보내게 한다 (2026-06-23).
+    window.location.href = safeDest
   }
 
   async function handleGoogleLogin() {

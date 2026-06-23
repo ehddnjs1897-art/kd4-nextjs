@@ -131,8 +131,10 @@ export default function SignupPage() {
     setLoading(false)
 
     if (hasSession) {
-      // 이미 로그인됨 — 곧바로 대시보드로
-      router.push('/dashboard')
+      // 이미 로그인됨 — 곧바로 대시보드로.
+      // 로그인과 동일 이유: 모바일에서 router.push는 갓 설정된 세션쿠키가 서버 요청에
+      // 즉시 안 실려 회원가입 직후 비로그인 처리될 수 있음 → full-page 이동 (2026-06-23)
+      window.location.href = '/dashboard'
     } else {
       // 메일 인증 대기 화면
       setStep('success')
