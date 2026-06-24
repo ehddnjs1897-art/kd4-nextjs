@@ -23,9 +23,9 @@ async function supaDocExists(path: string): Promise<boolean> {
 }
 
 export async function GET(request: NextRequest) {
-  const auth = request.headers.get('authorization') || ''
-  const token = auth.replace(/^Bearer\s+/i, '')
-  if (!process.env.SUPABASE_SERVICE_ROLE_KEY || token !== process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  // 임시 1회용 토큰 게이트 (점검 직후 이 라우트 전체 제거 → 토큰 무의미해짐)
+  const token = (request.headers.get('authorization') || '').replace(/^Bearer\s+/i, '')
+  if (token !== 'kd4-dl-audit-7f3a9c21e8b4') {
     return NextResponse.json({ error: 'forbidden' }, { status: 403 })
   }
 
