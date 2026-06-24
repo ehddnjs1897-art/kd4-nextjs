@@ -131,31 +131,54 @@ export async function GET(
     ? `${safeAgeGroup} ${safeGender} ${safeName} 프로필`
     : `${safeName} 프로필`
 
-  // path 1: R2 비공개 버킷 (profile_doc_path)
-  if (actor.profile_doc_path && isR2Configured()) {
+  // path 1: profile_doc_path — 저장 위치가 둘로 갈린다(2026-06-24 다운로드 깨짐 수정):
+  //   · 셀프제출(intake/{uid}/...) → Supabase Storage actor-docs 버킷
+  //   · 마이그레이션(migrated/...) → R2 비공개 버킷
+  // 기존엔 R2에서만 찾아 셀프제출 19명 다운로드가 전부 502였다. Supabase 우선 → R2 폴백으로 양쪽 처리.
+  if (actor.profile_doc_path) {
     // 경로 탐색 공격 방지 — DB 값이어도 오염 가능 (admin 실수·직접 수정)
     if (actor.profile_doc_path.split('/').some((seg: string) => seg === '..' || seg === '.')) {
       return NextResponse.json({ error: '잘못된 프로필 경로입니다.' }, { status: 400 })
     }
-    try {
-      const ext = (actor.profile_doc_path.split('?')[0].split('.').pop() || 'pdf').slice(0, 8)
-      // 50MB 상한 — 스트림 열기 전에 HeadObject로 확인 (null contentLength bypass 방지)
-      const meta = await getObjectMeta(actor.profile_doc_path)
-      if (meta.contentLength && meta.contentLength > 50 * 1024 * 1024) {
+    const ext = (actor.profile_doc_path.split('?')[0].split('.').pop() || 'pdf').slice(0, 8)
+
+    // 1a. Supabase Storage actor-docs (셀프제출 업로드분) — service_role 직접 다운로드
+    const dl = await supabaseAdmin.storage.from('actor-docs').download(actor.profile_doc_path)
+    if (dl.data && !dl.error) {
+      if (dl.data.size > 50 * 1024 * 1024) {
         return NextResponse.json({ error: '프로필 파일이 너무 큽니다.' }, { status: 413 })
       }
-      const obj = await getObjectStream(actor.profile_doc_path)
-      const headers: Record<string, string> = {
-        'Content-Type': resolveContentType(obj.contentType, ext),
-        'Content-Disposition': dispositionHeader(`${downloadBase}.${ext}`),
-        'Cache-Control': 'private, no-store',
-      }
-      if (obj.contentLength) headers['Content-Length'] = String(obj.contentLength)
-      return new Response(obj.body, { headers })
-    } catch (e) {
-      console.error('[actor profile] R2 스트림 실패:', e instanceof Error ? e.message : String(e))
-      return NextResponse.json({ error: '프로필 파일을 가져오지 못했습니다.' }, { status: 502 })
+      return new Response(dl.data, {
+        headers: {
+          'Content-Type': resolveContentType(dl.data.type || null, ext),
+          'Content-Disposition': dispositionHeader(`${downloadBase}.${ext}`),
+          'Cache-Control': 'private, no-store',
+        },
+      })
     }
+
+    // 1b. R2 비공개 버킷 폴백 (migrated/... 등 R2 저장분)
+    if (isR2Configured()) {
+      try {
+        // 50MB 상한 — 스트림 열기 전에 HeadObject로 확인 (null contentLength bypass 방지)
+        const meta = await getObjectMeta(actor.profile_doc_path)
+        if (meta.contentLength && meta.contentLength > 50 * 1024 * 1024) {
+          return NextResponse.json({ error: '프로필 파일이 너무 큽니다.' }, { status: 413 })
+        }
+        const obj = await getObjectStream(actor.profile_doc_path)
+        const headers: Record<string, string> = {
+          'Content-Type': resolveContentType(obj.contentType, ext),
+          'Content-Disposition': dispositionHeader(`${downloadBase}.${ext}`),
+          'Cache-Control': 'private, no-store',
+        }
+        if (obj.contentLength) headers['Content-Length'] = String(obj.contentLength)
+        return new Response(obj.body, { headers })
+      } catch (e) {
+        console.error('[actor profile] R2 스트림 실패:', e instanceof Error ? e.message : String(e))
+        return NextResponse.json({ error: '프로필 파일을 가져오지 못했습니다.' }, { status: 502 })
+      }
+    }
+    // Supabase·R2 둘 다 미해당 → 아래 외부 URL 또는 404로 폴스루
   }
 
   // path 2: 외부 URL (profile_pdf_url) — 관리자가 직접 등록한 신뢰된 값

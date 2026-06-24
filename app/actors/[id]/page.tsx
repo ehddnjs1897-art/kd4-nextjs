@@ -12,7 +12,6 @@ import FavoriteButton from '@/components/actors/FavoriteButton'
 import ActorDbLocked from '@/components/actors/ActorDbLocked'
 import { UserRole } from '@/lib/types'
 import { canViewActorContact, canViewActorDb, ACTOR_DB_PUBLIC_PROFILE } from '@/lib/access'
-import { isR2Configured } from '@/lib/r2'
 import { getActorPersonSchema, getActorVideoSchemas, getActorProfilePageSchema, serializeJsonLd, normalizeInstagramHandle } from '@/lib/seo'
 import { buildBreadcrumb } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
@@ -431,8 +430,9 @@ export default async function ActorDetailPage({
   // 다운로드용 URL/ID (디렉터/관리자만)
   // 프로필 문서는 same-origin 프록시(/api/actors/[id]/profile)로 받는다.
   // R2 presigned 직링크는 브라우저가 inline 렌더해 강제 다운로드가 안 되기 때문.
-  const hasProfileDoc =
-    (!!actor.profile_doc_path && isR2Configured()) || !!actor.profile_pdf_url
+  // 문서는 Supabase Storage(셀프제출) 또는 R2(마이그레이션)에 있고, 프록시 라우트가 위치를 알아서 해석.
+  // (R2 설정 여부로 게이트하면 셀프제출 Supabase 문서의 버튼이 잘못 숨겨짐 — 2026-06-24 수정)
+  const hasProfileDoc = !!actor.profile_doc_path || !!actor.profile_pdf_url
   const r2VideoCount = (actor.actor_videos ?? []).filter((v) => v.r2_key).length
   let profileDocUrl: string | null = null
   const downloadVideoIds: string[] = []
