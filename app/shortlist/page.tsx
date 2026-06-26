@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useFavorites } from '@/lib/useFavorites'
 import { useUserRole } from '@/lib/useUserRole'
+import { SHOW_CASTING_TAGS } from '@/lib/access'
 import { getActorPhotoUrl, shouldOptimize } from '@/lib/actor-photo'
 import ActorCardImage from '@/components/actors/ActorCardImage'
 import FavoriteButton from '@/components/actors/FavoriteButton'
@@ -222,7 +223,7 @@ export default function ShortlistPage() {
                       <span style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.75)', fontFamily: 'var(--font-sans)' }}>
                         {actor.gender ?? ''}{actor.gender && actor.age_group ? ' · ' : ''}{actor.age_group ?? ''}
                       </span>
-                      {actor.casting_tags && actor.casting_tags.length > 0 && (
+                      {SHOW_CASTING_TAGS && actor.casting_tags && actor.casting_tags.length > 0 && (
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 4 }}>
                           {actor.casting_tags.slice(0, 3).map((t) => (
                             <span key={t} style={{

@@ -15,6 +15,7 @@
 
 import { ImageResponse } from 'next/og'
 import { type NextRequest } from 'next/server'
+import { SHOW_CASTING_TAGS } from '@/lib/access'
 
 export const runtime = 'nodejs'
 export const revalidate = 3600 // 1h — 배우가 프로필 수정해도 최대 1시간 내 OG 이미지 갱신
@@ -165,7 +166,7 @@ export async function GET(
   const subline = [actor.age_group, genderLabel, actor.height ? `${actor.height}cm` : null]
     .filter(Boolean)
     .join(' · ')
-  const tags = actor.casting_tags?.slice(0, 4) ?? []
+  const tags = SHOW_CASTING_TAGS ? (actor.casting_tags?.slice(0, 4) ?? []) : []
 
   return new ImageResponse(
     (

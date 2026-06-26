@@ -11,7 +11,7 @@ import ActorDownloadButton from '@/components/actors/ActorDownloadButton'
 import FavoriteButton from '@/components/actors/FavoriteButton'
 import ActorDbLocked from '@/components/actors/ActorDbLocked'
 import { UserRole } from '@/lib/types'
-import { canViewActorContact, canViewActorDb, ACTOR_DB_PUBLIC_PROFILE } from '@/lib/access'
+import { canViewActorContact, canViewActorDb, ACTOR_DB_PUBLIC_PROFILE, SHOW_CASTING_TAGS } from '@/lib/access'
 import { getActorPersonSchema, getActorVideoSchemas, getActorProfilePageSchema, serializeJsonLd, normalizeInstagramHandle } from '@/lib/seo'
 import { buildBreadcrumb } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
@@ -576,7 +576,7 @@ export default async function ActorDetailPage({
             <div className="actor-hero-info">
 
               {/* 캐스팅 태그 — 클릭 시 해당 태그 필터 목록으로 이동 (내부 링크 + UX) */}
-              {actor.casting_tags && actor.casting_tags.length > 0 && (
+              {SHOW_CASTING_TAGS && actor.casting_tags && actor.casting_tags.length > 0 && (
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
                   {actor.casting_tags.map(t => (
                     <Link key={t} href={`/actors?tag=${encodeURIComponent(t)}`} style={{
@@ -850,7 +850,7 @@ export default async function ActorDetailPage({
                     <p style={{ fontSize: '0.72rem', color: 'var(--gray)', marginBottom: 8 }}>
                       {[a.gender, a.age_group].filter(Boolean).join(' · ')}
                     </p>
-                    {a.casting_tags && a.casting_tags.length > 0 && (
+                    {SHOW_CASTING_TAGS && a.casting_tags && a.casting_tags.length > 0 && (
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                         {a.casting_tags.slice(0, 3).map((t) => (
                           <span key={t} style={{
@@ -872,7 +872,7 @@ export default async function ActorDetailPage({
             })}
           </div>
           {/* 태그 기반 더보기 링크 — 배우 DB 필터 페이지로 */}
-          {actor.casting_tags && actor.casting_tags.length > 0 && (
+          {SHOW_CASTING_TAGS && actor.casting_tags && actor.casting_tags.length > 0 && (
             <div style={{ marginTop: 24, textAlign: 'center' }}>
               <Link
                 href={`/actors?tag=${encodeURIComponent(actor.casting_tags[0])}`}

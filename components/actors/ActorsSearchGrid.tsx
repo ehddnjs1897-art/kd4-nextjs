@@ -5,6 +5,7 @@ import Link from 'next/link'
 import ActorCardImage from './ActorCardImage'
 import FavoriteButton from './FavoriteButton'
 import { useUserRole } from '@/lib/useUserRole'
+import { SHOW_CASTING_TAGS } from '@/lib/access'
 
 function CopyLinkButton({ actorId, actorName }: { actorId: string; actorName: string }) {
   const [state, setState] = useState<'idle' | 'copied' | 'error'>('idle')
@@ -454,7 +455,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
                   <span style={metaStyle}>
                     {actor.gender ?? ''}{actor.gender && actor.age_group ? ' · ' : ''}{actor.age_group ?? ''}
                   </span>
-                  {actor.casting_tags && actor.casting_tags.length > 0 && (
+                  {SHOW_CASTING_TAGS && actor.casting_tags && actor.casting_tags.length > 0 && (
                     <div style={tagsStyle}>
                       {actor.casting_tags.slice(0, 3).map((t) => (
                         <span key={t} style={tagStyle}>{t}</span>

@@ -18,6 +18,11 @@ import type { UserRole } from '@/lib/types'
  *  false 로 변경 시 즉시 비로그인 통짜 잠금으로 복귀 (킬스위치). */
 export const ACTOR_DB_PUBLIC_PROFILE = true
 
+/** 장르(캐스팅) 태그 표시 스위치 — 2026-06-24 대표 지시로 일단 숨김(나중에 정비).
+ *  casting_tags 데이터는 보존하고 화면 배지만 가린다(카드·상세·숏리스트·연관배우).
+ *  true 로 되돌리면 즉시 복구. (장르 필터 기능은 별개로 유지) */
+export const SHOW_CASTING_TAGS = false
+
 /** 배우 목록·프로필을 열람할 수 있는 역할 */
 export const ACTOR_DB_VIEW_ROLES: UserRole[] = [
   'actor', 'crew', 'editor', 'director', 'admin',
