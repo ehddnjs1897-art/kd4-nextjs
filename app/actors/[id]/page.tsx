@@ -665,11 +665,11 @@ export default async function ActorDetailPage({
                 </div>
               )}
 
-              {/* 사투리 */}
-              {actor.dialects && actor.dialects.length > 0 && (
+              {/* 사투리 — '없음'(표준어)은 입력 전용, 공개 표시는 실제 지역만 (2026-06 피드백) */}
+              {actor.dialects && actor.dialects.some((d) => d !== '없음') && (
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center', marginBottom: 14 }}>
                   <span style={{ fontSize: '0.72rem', color: 'var(--gray)', letterSpacing: '0.05em', marginRight: 2 }}>사투리</span>
-                  {actor.dialects.map((d) => (
+                  {actor.dialects.filter((d) => d !== '없음').map((d) => (
                     <span key={d} style={{
                       padding: '4px 12px',
                       background: 'rgba(21,72,138,0.08)',

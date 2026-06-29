@@ -11,7 +11,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { DIALECT_OPTIONS } from '@/lib/dialects'
+import { DIALECT_OPTIONS, DIALECT_NONE } from '@/lib/dialects'
 
 const MB = 1024 * 1024
 
@@ -462,18 +462,23 @@ export default function OnboardingForm({
       <section style={sec} aria-labelledby="onb-dialects">
         <h2 id="onb-dialects" style={secTitle}>사투리 (가능 지역)</h2>
         <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 12 }}>
-          네이티브 수준으로 구사 가능한 사투리 지역을 선택하세요. (해당 없으면 비워두세요)
+          네이티브 수준으로 구사 가능한 사투리 지역을 선택하세요. (사투리가 없으면 <strong style={{ color: 'var(--white)' }}>없음</strong>을 선택)
         </p>
         <div role="group" aria-label="사투리 가능 지역" style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-          {DIALECT_OPTIONS.map((d) => {
+          {[...DIALECT_OPTIONS, DIALECT_NONE].map((d) => {
             const on = dialects.includes(d)
+            const isNone = d === DIALECT_NONE
             return (
               <button
                 key={d}
                 type="button"
                 disabled={loading}
                 aria-pressed={on}
-                onClick={() => setDialects((prev) => prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d])}
+                onClick={() => setDialects((prev) => {
+                  if (isNone) return prev.includes(DIALECT_NONE) ? [] : [DIALECT_NONE]
+                  const r = prev.filter((x) => x !== DIALECT_NONE)
+                  return r.includes(d) ? r.filter((x) => x !== d) : [...r, d]
+                })}
                 style={{
                   padding: '8px 16px', borderRadius: 999, cursor: loading ? 'default' : 'pointer',
                   fontSize: '0.85rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
@@ -483,7 +488,7 @@ export default function OnboardingForm({
                   transition: 'all 0.15s',
                 }}
               >
-                {on ? '✓ ' : ''}{d}
+                {on ? '✓ ' : ''}{isNone ? '없음 (표준어)' : d}
               </button>
             )
           })}

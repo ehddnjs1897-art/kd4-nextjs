@@ -11,7 +11,7 @@
  */
 
 import { useState, useRef, useMemo, useEffect } from 'react'
-import { DIALECT_OPTIONS } from '@/lib/dialects'
+import { DIALECT_OPTIONS, DIALECT_NONE } from '@/lib/dialects'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 
@@ -685,16 +685,21 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           <input id="actor-advanced-skills" value={advancedSkills} onChange={e => setAdvancedSkills(e.target.value)} style={s.input} placeholder="검도, 영어" />
         </div>
         <div style={{ ...s.field, marginBottom: 20 }}>
-          <label style={s.label}>사투리 <span style={{ fontWeight: 400, fontSize: '0.75rem', color: 'var(--gray)' }}>(네이티브 수준 가능 지역만 선택)</span></label>
+          <label style={s.label}>사투리 <span style={{ fontWeight: 400, fontSize: '0.75rem', color: 'var(--gray)' }}>(네이티브 수준 가능 지역만 선택 · 없으면 ‘없음’)</span></label>
           <div role="group" aria-label="사투리 가능 지역" style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 4 }}>
-            {DIALECT_OPTIONS.map((d) => {
+            {[...DIALECT_OPTIONS, DIALECT_NONE].map((d) => {
               const on = dialects.includes(d)
+              const isNone = d === DIALECT_NONE
               return (
                 <button
                   key={d}
                   type="button"
                   aria-pressed={on}
-                  onClick={() => setDialects((prev) => prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d])}
+                  onClick={() => setDialects((prev) => {
+                    if (isNone) return prev.includes(DIALECT_NONE) ? [] : [DIALECT_NONE]
+                    const r = prev.filter((x) => x !== DIALECT_NONE)
+                    return r.includes(d) ? r.filter((x) => x !== d) : [...r, d]
+                  })}
                   style={{
                     padding: '7px 15px', borderRadius: 999, cursor: 'pointer',
                     fontSize: '0.83rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
@@ -704,7 +709,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                     transition: 'all 0.15s',
                   }}
                 >
-                  {on ? '✓ ' : ''}{d}
+                  {on ? '✓ ' : ''}{isNone ? '없음 (표준어)' : d}
                 </button>
               )
             })}
