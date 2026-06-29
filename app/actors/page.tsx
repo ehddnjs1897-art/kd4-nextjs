@@ -413,39 +413,39 @@ export default async function ActorsPage({ searchParams }: PageProps) {
           display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'flex-end',
           marginBottom: 16,
         }}>
+          {/* 배우 등록 신청 → 회원가입 페이지 (보조 CTA: 네이비 아웃라인) */}
           <a
-            href="https://pf.kakao.com/_ximxdqn"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="배우 DB 등록 신청 (카카오 채널로 이동)"
+            href="/auth/signup"
+            aria-label="배우 등록 신청 (회원가입 페이지로 이동)"
             style={{
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-              padding: '8px 16px', borderRadius: 6,
-              fontSize: '0.8rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
-              background: 'var(--navy-tint-1)',
+              display: 'inline-flex', alignItems: 'center', gap: 7,
+              padding: '11px 22px', borderRadius: 8,
+              fontSize: '0.86rem', fontFamily: 'var(--font-display)', fontWeight: 700,
+              background: 'transparent',
               color: 'var(--navy)',
-              border: '1px solid var(--navy-tint-3)',
+              border: '1.5px solid var(--navy)',
               textDecoration: 'none',
-              letterSpacing: '0.02em',
+              letterSpacing: '0.03em',
               whiteSpace: 'nowrap',
             }}
           >
             배우 등록 신청 →
           </a>
+          {/* 캐스팅 문의 → 카카오 채널 (주 CTA: 네이비 채움) */}
           <a
             href="https://pf.kakao.com/_ximxdqn"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="캐스팅 문의 (카카오 채널로 이동)"
             style={{
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-              padding: '8px 16px', borderRadius: 6,
-              fontSize: '0.8rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
-              background: 'var(--bg2)',
-              color: 'var(--secondary)',
-              border: '1px solid var(--border)',
+              display: 'inline-flex', alignItems: 'center', gap: 7,
+              padding: '11px 22px', borderRadius: 8,
+              fontSize: '0.86rem', fontFamily: 'var(--font-display)', fontWeight: 700,
+              background: 'var(--navy)',
+              color: '#ffffff',
+              border: '1.5px solid var(--navy)',
               textDecoration: 'none',
-              letterSpacing: '0.02em',
+              letterSpacing: '0.03em',
               whiteSpace: 'nowrap',
             }}
           >
