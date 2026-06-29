@@ -1,11 +1,11 @@
 import { cache } from 'react'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
-import DOMPurify from 'isomorphic-dompurify'
 import { createClient } from '@/lib/supabase/server'
 import CommentSection from '@/components/board/CommentSection'
 import DeletePostButton from '@/components/board/DeletePostButton'
 import PostViewTracker from '@/components/board/PostViewTracker'
+import PostHtmlContent from '@/components/board/PostHtmlContent'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { buildBreadcrumb } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
@@ -41,22 +41,6 @@ interface Post {
 
 function isHtmlContent(content: string) {
   return /<[a-z][\s\S]*>/i.test(content)
-}
-
-function sanitizeHtml(html: string) {
-  // 외부 링크 reverse-tabnabbing 방어: target=_blank 에 rel=noopener noreferrer 강제 (OWASP)
-  DOMPurify.addHook('afterSanitizeAttributes', (node) => {
-    if (node.tagName === 'A' && node.getAttribute('target') === '_blank') {
-      node.setAttribute('rel', 'noopener noreferrer')
-    }
-  })
-  const clean = DOMPurify.sanitize(html, {
-    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'h2', 'h3', 'ul', 'ol', 'li', 'hr', 'img', 'a'],
-    ALLOWED_ATTR: ['src', 'alt', 'href', 'target', 'rel'],
-    FORCE_BODY: true,
-  })
-  DOMPurify.removeHooks('afterSanitizeAttributes')
-  return clean
 }
 
 function formatDate(iso: string) {
@@ -242,13 +226,9 @@ export default async function PostDetailPage({ params }: { params: Params }) {
           </div>
         </div>
 
-        {/* 본문 — HTML이면 dangerouslySetInnerHTML, 아니면 줄바꿈 렌더 */}
+        {/* 본문 — HTML이면 클라이언트 컴포넌트(DOMPurify), 아니면 줄바꿈 렌더 */}
         {isHtmlContent(safeContent) ? (
-          <div
-            className="post-html-content"
-            dangerouslySetInnerHTML={{ __html: sanitizeHtml(safeContent) }}
-            style={{ fontSize: '0.95rem', color: 'var(--white)', lineHeight: 1.9, minHeight: '200px', marginBottom: '16px' }}
-          />
+          <PostHtmlContent html={safeContent} />
         ) : (
           <div style={{ fontSize: '0.95rem', color: 'var(--white)', lineHeight: 1.9, minHeight: '200px', marginBottom: '16px' }}>
             {safeContent.split('\n').map((line, i) => (
