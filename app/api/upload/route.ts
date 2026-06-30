@@ -214,8 +214,8 @@ export async function POST(request: NextRequest) {
         storage_path: result.path,
         is_profile: false,
         sort_order: nextSortOrder,
-        photo_type: photoType,   // 'current'(전신 각도) 또는 null(일반 프로필)
-        label: photoLabel,       // 현재사진일 때만 정면/좌측/우측/후면/전신
+        photo_type: photoType ?? 'profile',   // 컬럼이 NOT NULL(기본 'profile') — null 명시 금지. 현재사진만 'current'
+        label: photoLabel,                     // 현재사진일 때만 정면/좌측/우측/후면/전신 (그 외 null)
       })
       .select('id')
       .maybeSingle()
