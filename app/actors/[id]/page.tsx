@@ -430,8 +430,8 @@ export default async function ActorDetailPage({
   const genderLabel =
     actor.gender === '남' ? '남자 배우' : actor.gender === '여' ? '여자 배우' : '배우'
 
-  // HERO 우측 최근 출연 — CF·단편 제외, 드라마 전체 + 영화(상업·독립장편 등 장편), 드라마/영화로 분류 (2026-06-30 대표 지시).
-  // 최근 2년 내, 그룹당 최대 3편. 아래 ActorTabs 최근출연과 동일 기준.
+  // HERO 우측 최근 출연 — CF만 제외, 드라마 전체 + 영화 전체(단편·독립장편·상업 모두, 구분 배지로 명확히), 드라마/영화로 분류.
+  // 최근 2년 내, 그룹당 최대 3편. 아래 ActorTabs 최근출연과 동일 기준 (2026-07-01 대표 지시).
   const currentYear = new Date().getFullYear()
   const heroYearMin = currentYear - 1
   const heroDrama = (actor.actor_filmography ?? [])
@@ -439,7 +439,7 @@ export default async function ActorDetailPage({
     .sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
     .slice(0, 3)
   const heroFilm = (actor.actor_filmography ?? [])
-    .filter((f) => f.title && (f.year ?? 0) >= heroYearMin && f.category === 'film' && !(f.film_type ?? '').includes('단편'))
+    .filter((f) => f.title && (f.year ?? 0) >= heroYearMin && f.category === 'film')
     .sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
     .slice(0, 3)
   const heroRecentGroups = [{ label: '드라마', items: heroDrama }, { label: '영화', items: heroFilm }].filter((g) => g.items.length > 0)
@@ -562,7 +562,7 @@ export default async function ActorDetailPage({
                 </p>
               )}
 
-              {/* 최근 출연 — CF 제외·상업영화만 + 드라마/영화 분류 (최근 2년, 그룹당 최대 3편) */}
+              {/* 최근 출연 — CF만 제외 + 드라마/영화 분류. 영화 단편/독립장편/상업·드라마 숏폼을 배지로 명확히 (최근 2년, 그룹당 최대 3편) */}
               {heroRecentGroups.length > 0 && (
                 <div style={{ marginBottom: 16 }}>
                   <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', color: 'var(--gold)', marginBottom: 7 }}>최근 출연</p>
@@ -571,10 +571,14 @@ export default async function ActorDetailPage({
                       <p style={{ fontSize: '0.66rem', fontWeight: 700, letterSpacing: '0.08em', color: 'var(--gray)', margin: '0 0 3px' }}>{group.label}</p>
                       <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 4 }}>
                         {group.items.map((f) => {
-                          const prefix = (f.category === 'drama' ? f.broadcaster : f.category === 'film' ? f.film_type : null) || HERO_CAT_LABEL[f.category]
+                          // 영화: 구분(단편/독립장편/상업) 배지. 드라마: 숏폼 등 구분이 있으면 배지 + 방송사 회색 접두.
+                          const typeTag = f.category === 'film' ? (f.film_type ?? null) : (f.category === 'drama' ? (f.film_type ?? null) : null)
+                          const bcast = f.category === 'drama' ? (f.broadcaster ?? null) : null
+                          const isShort = typeTag === '숏폼'
                           return (
                             <li key={f.id} style={{ fontSize: '0.85rem', color: 'var(--white)', lineHeight: 1.5 }}>
-                              <span style={{ color: 'var(--gray)', marginRight: 6 }}>{prefix}</span>
+                              {typeTag && <span style={{ display: 'inline-block', padding: '0 6px', borderRadius: 3, fontSize: '0.68rem', fontWeight: 700, marginRight: 6, verticalAlign: 'middle', background: isShort ? 'rgba(199,62,62,0.08)' : 'rgba(21,72,138,0.08)', color: isShort ? 'var(--accent-red)' : 'var(--navy)', border: `1px solid ${isShort ? 'rgba(199,62,62,0.25)' : 'rgba(21,72,138,0.2)'}` }}>{typeTag}</span>}
+                              {(bcast || (!typeTag)) && <span style={{ color: 'var(--gray)', marginRight: 6 }}>{bcast || HERO_CAT_LABEL[f.category]}</span>}
                               <strong style={{ fontWeight: 600 }}>{f.title}</strong>
                               {f.year ? <span style={{ color: 'var(--gray)', fontSize: '0.78rem' }}> · {f.year}</span> : null}
                             </li>

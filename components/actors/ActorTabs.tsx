@@ -121,6 +121,7 @@ const FILM_TYPE_STYLE: Record<string, React.CSSProperties> = {
   '상업영화': { background: 'rgba(21,72,138,0.08)', color: 'var(--navy)', border: '1px solid rgba(21,72,138,0.2)' },
   '독립장편': { background: 'rgba(80,80,80,0.08)', color: 'var(--gray-light)', border: '1px solid var(--border)' },
   '단편': { background: 'rgba(80,80,80,0.06)', color: 'var(--gray)', border: '1px solid var(--border)' },
+  '숏폼': { background: 'rgba(199,62,62,0.08)', color: 'var(--accent-red)', border: '1px solid rgba(199,62,62,0.25)' },  // 드라마 숏폼 구분
 }
 
 // 영화제 키워드 — 필모 표의 구분(film_type) 배지 색 판단용 (수상·영화제 텍스트는 award 필드로 일원화)
@@ -292,10 +293,10 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
   const reelVideos = (actor.actor_videos ?? []).filter(v => !v.video_type || v.video_type === 'reel').slice(0, 2)
   const monologueVideos = (actor.actor_videos ?? []).filter(v => v.video_type === 'monologue').slice(0, 1)
 
-  // 최근 출연 — CF·단편 제외, 드라마 전체 + 영화(상업·독립장편 등 장편) (2026-06-30 대표 지시). 드라마/영화로 분류.
+  // 최근 출연 — CF만 제외, 드라마 전체 + 영화 전체(단편·독립장편·상업, 구분 배지로 명확히). 드라마/영화로 분류 (2026-07-01 대표 지시).
   const recentYearMin = new Date().getFullYear() - 1
   const recentDrama = allFilmo.filter((f) => (f.year ?? 0) >= recentYearMin && f.category === 'drama')
-  const recentFilm = allFilmo.filter((f) => (f.year ?? 0) >= recentYearMin && f.category === 'film' && !(f.film_type ?? '').includes('단편'))
+  const recentFilm = allFilmo.filter((f) => (f.year ?? 0) >= recentYearMin && f.category === 'film')  // 단편·독립장편·상업 모두 포함, 구분 배지로 명확히 (2026-07-01 대표 지시)
   const recentGroups = [{ label: '드라마', items: recentDrama }, { label: '영화', items: recentFilm }].filter((g) => g.items.length > 0)
 
   // 카테고리별 필모 (memoized Map — 렌더마다 6번 filter 방지)
@@ -604,7 +605,10 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
             <div key={group.label} style={{ marginBottom: 18 }}>
               <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', color: 'var(--gold)', margin: '2px 0 6px' }}>{group.label}</p>
               {group.items.map((entry) => {
-                const prefix = entry.category === 'drama' ? (entry.broadcaster ?? null) : (entry.film_type ?? null)
+                const isDramaRow = entry.category === 'drama'
+                const bcast = isDramaRow ? (entry.broadcaster ?? null) : null
+                // 영화: 단편/독립장편/상업 구분 배지로 명확히. 드라마: 숏폼 등 구분이 있으면 배지 (2026-07-01 대표 지시)
+                const typeTag = entry.category === 'film' ? (entry.film_type ?? null) : (isDramaRow ? (entry.film_type ?? null) : null)
                 return (
                   <div
                     key={entry.id}
@@ -621,7 +625,8 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                     <span style={s.recentYear}>{entry.year}</span>
                     <span style={s.recentCat}>{CATEGORY_LABEL[entry.category]}</span>
                     <p className="recent-work-title" style={s.recentTitle}>
-                      {prefix && <span style={s.recentPrefix}>{prefix}</span>}
+                      {typeTag && <span style={{ display: 'inline-block', padding: '1px 7px', borderRadius: 3, fontSize: '0.7rem', fontWeight: 600, marginRight: 6, verticalAlign: 'middle', ...(FILM_TYPE_STYLE[typeTag] ?? { background: 'var(--bg3)', color: 'var(--gray)', border: '1px solid var(--border)' }) }}>{typeTag}</span>}
+                      {bcast && <span style={s.recentPrefix}>{bcast}</span>}
                       {entry.title}
                     </p>
                     {entry.role && <p className="recent-work-role" style={s.recentRole}>{entry.role}</p>}
@@ -729,7 +734,11 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                       </td>
                       {isDrama && (
                         <td style={{ ...s.td, color: 'var(--gray)', fontSize: '0.82rem' }}>
-                          {entry.broadcaster ?? '—'}
+                          {/* 드라마 구분(숏폼 등) 배지 + 방송사 (2026-07-01 대표 지시) */}
+                          {entry.film_type && (
+                            <span style={{ display: 'inline-block', padding: '1px 7px', borderRadius: 3, fontSize: '0.72rem', fontWeight: 600, marginRight: 6, ...(FILM_TYPE_STYLE[entry.film_type] ?? { background: 'var(--bg3)', color: 'var(--gray)', border: '1px solid var(--border)' }) }}>{entry.film_type}</span>
+                          )}
+                          {entry.broadcaster ?? (entry.film_type ? '' : '—')}
                         </td>
                       )}
                       {isFilm && (

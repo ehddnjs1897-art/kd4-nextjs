@@ -883,6 +883,21 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                   <input aria-label={`필모그래피 ${i + 1}번 작품명`} value={f.title} onChange={e => updateFilm(i, 'title', e.target.value)} style={a.smallInput} placeholder="작품명" />
                   <input aria-label={`필모그래피 ${i + 1}번 배역`} value={f.role} onChange={e => updateFilm(i, 'role', e.target.value)} style={a.smallInput} placeholder="배역" />
                   <input aria-label={`필모그래피 ${i + 1}번 방송사 또는 제작사`} value={f.broadcaster ?? ''} onChange={e => updateFilm(i, 'broadcaster', e.target.value)} style={a.smallInput} placeholder="확실한 것만" />
+                  {/* 구분 — 영화: 상업/독립장편/단편, 드라마: 정규/숏폼 (2026-07-01 대표 지시) */}
+                  {f.category === 'film' && (
+                    <select aria-label={`필모그래피 ${i + 1}번 영화 구분`} value={f.film_type ?? ''} onChange={e => updateFilm(i, 'film_type', e.target.value)} style={a.smallInput}>
+                      <option value="">구분</option>
+                      <option value="상업">상업</option>
+                      <option value="독립장편">독립장편</option>
+                      <option value="단편">단편</option>
+                    </select>
+                  )}
+                  {f.category === 'drama' && (
+                    <select aria-label={`필모그래피 ${i + 1}번 드라마 구분`} value={f.film_type ?? ''} onChange={e => updateFilm(i, 'film_type', e.target.value)} style={a.smallInput}>
+                      <option value="">정규</option>
+                      <option value="숏폼">숏폼</option>
+                    </select>
+                  )}
                   {confirmingFilmIdx === i ? (
                     <div style={{ display: 'flex', gap: 5 }}>
                       <button type="button" autoFocus onClick={() => { setConfirmingFilmIdx(null); deleteFilmRefs.current.get(i)?.focus() }} style={a.ghost}>취소</button>
