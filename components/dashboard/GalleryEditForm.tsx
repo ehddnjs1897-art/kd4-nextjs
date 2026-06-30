@@ -169,8 +169,9 @@ const a: Record<string, React.CSSProperties> = {
   ghost: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '12px 18px', minHeight: 44, borderRadius: 12, cursor: 'pointer', fontSize: 15, fontWeight: 500, background: 'transparent', color: 'var(--navy)', border: '1px solid var(--border)', fontFamily: 'inherit' },
   danger: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '7px 13px', minHeight: 36, borderRadius: 9, cursor: 'pointer', fontSize: 13, fontWeight: 500, background: 'transparent', color: '#C0392B', border: '1px solid rgba(192,57,43,0.3)', fontFamily: 'inherit' },
   msg: { fontSize: 14, padding: '6px 0', minHeight: 22 },
-  photoGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: 10 },
-  photoCard: { position: 'relative', aspectRatio: '9/16', borderRadius: 10, overflow: 'hidden', border: '1px solid var(--border)', background: 'var(--bg3)' },
+  photoGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 10 },
+  // 미리보기 = 실제 배우 DB 카드와 동일한 가로 3:2 (얼굴은 상단 기준으로 잡아 안 잘리게)
+  photoCard: { position: 'relative', aspectRatio: '3/2', borderRadius: 10, overflow: 'hidden', border: '1px solid var(--border)', background: 'var(--bg3)' },
   profileBadge: { position: 'absolute', top: 8, left: 8, background: 'var(--navy)', color: '#fff', fontSize: 11, fontWeight: 500, padding: '2px 9px', borderRadius: 20 },
   photoActions: { position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(transparent, rgba(0,0,0,0.8))', padding: '24px 7px 7px', display: 'flex', gap: 6, justifyContent: 'center' },
   listRow: { display: 'flex', gap: 12, alignItems: 'center', background: 'var(--bg)', borderRadius: 10, padding: '10px 14px' },
@@ -377,8 +378,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   async function uploadPhoto(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
-    if (file.size > 15 * 1024 * 1024) {
-      setPhotoMsg('파일 크기는 15MB 이하이어야 합니다.')
+    if (file.size > 30 * 1024 * 1024) {
+      setPhotoMsg('사진은 30MB 이하로 올려주세요.')
       return
     }
     setUploading(true)
@@ -682,7 +683,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           <div style={a.photoGrid}>
             {photos.map((p, idx) => (
               <div key={p.id} style={a.photoCard}>
-                <Image src={p.url} alt={p.is_profile ? '대표 프로필 사진' : `배우 사진 ${idx + 1}`} fill style={{ objectFit: 'cover' }} sizes="160px" />
+                <Image src={p.url} alt={p.is_profile ? '대표 프로필 사진' : `배우 사진 ${idx + 1}`} fill style={{ objectFit: 'cover', objectPosition: 'center top' }} sizes="240px" />
                 {p.is_profile && <span style={a.profileBadge}>대표</span>}
                 <div style={a.photoActions}>
                   {confirmingPhotoId === p.id ? (
@@ -706,7 +707,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         <div style={{ marginTop: photos.length > 0 ? 16 : 0, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
           <input ref={fileRef} type="file" accept="image/*" onChange={uploadPhoto} style={{ display: 'none' }} aria-hidden="true" />
           <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} aria-busy={uploading} style={{ ...a.ghost, opacity: uploading ? 0.6 : 1 }}>{uploading ? '업로드 중…' : '＋ 사진 추가'}</button>
-          <span style={{ fontSize: 13, color: 'var(--gray)' }}>JPG·PNG, 최대 15MB · 가로형 권장</span>
+          <span style={{ fontSize: 13, color: 'var(--gray)' }}>JPG·PNG · 가로형 권장 · 큰 사진은 자동으로 줄여 올라가요</span>
         </div>
         <p role="status" aria-live="polite" aria-atomic="true" style={{ ...a.msg, color: isErr(photoMsg, '완료') ? '#C0392B' : 'var(--navy)' }}>{photoMsg}</p>
       </section>
