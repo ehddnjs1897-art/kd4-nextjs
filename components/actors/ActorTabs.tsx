@@ -277,9 +277,9 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
   // 필모 전체 (연도 내림차순) — 렌더마다 재정렬 방지
   const allFilmo = useMemo(() => [...filmo].sort((a, b) => (b.year ?? 0) - (a.year ?? 0)), [filmo])
 
-  // 세로형 헤드샷 갤러리 — 회원이 직접 업로드한 사진(actor_photos)만 (최대 7장, 2026-07-01 대표 지시로 4→7).
+  // 세로형 헤드샷 갤러리 — 회원이 직접 업로드한 사진(actor_photos)만 (최대 10장, 2026-07-01 대표 지시로 4→7→10).
   // 상단 헤더가 메인 프로필/이력서 이미지를 이미 크게 보여주므로, 여기서는 중복 없이 헤드샷만 노출.
-  const MAX_GALLERY_PHOTOS = 7
+  const MAX_GALLERY_PHOTOS = 10
   const sortedPhotos = [...actor.actor_photos].sort((a, b) => a.sort_order - b.sort_order)
 
   // 프로필사진: photo_type='profile' 또는 null/undefined
