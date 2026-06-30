@@ -54,7 +54,6 @@ interface InitialData {
   height?: number
   weight?: number
   skills?: string
-  advancedSkills?: string
   dialects?: string[]
   instagram?: string
   castingSummary?: string
@@ -93,6 +92,51 @@ function newFilm(): FilmItem {
     title: '',
     role: '',
     isNew: true,
+  }
+}
+
+// 큰 사진은 브라우저에서 리사이즈 후 업로드 — Vercel 서버리스 본문 4.5MB 한계 회피.
+// (한계 초과 시 라우트 실행 전 413 "Request Entity Too Large"가 텍스트로 반환돼
+//  res.json()이 "Unexpected token 'R'"로 깨지던 버그. 폰 원본 사진 6~15MB 케이스.)
+const SAFE_UPLOAD_BYTES = 4 * 1024 * 1024
+async function compressIfLarge(file: File): Promise<File> {
+  if (file.size <= SAFE_UPLOAD_BYTES) return file
+  try {
+    const dataUrl = await new Promise<string>((resolve, reject) => {
+      const r = new FileReader()
+      r.onload = () => resolve(r.result as string)
+      r.onerror = () => reject(new Error('read'))
+      r.readAsDataURL(file)
+    })
+    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const im = new window.Image()
+      im.onload = () => resolve(im)
+      im.onerror = () => reject(new Error('decode'))
+      im.src = dataUrl
+    })
+    const maxSide = 2000
+    let width = img.naturalWidth || img.width
+    let height = img.naturalHeight || img.height
+    if (Math.max(width, height) > maxSide) {
+      const scale = maxSide / Math.max(width, height)
+      width = Math.round(width * scale)
+      height = Math.round(height * scale)
+    }
+    const canvas = document.createElement('canvas')
+    canvas.width = width
+    canvas.height = height
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return file
+    ctx.drawImage(img, 0, 0, width, height)
+    for (const q of [0.9, 0.8, 0.7, 0.6]) {
+      const blob = await new Promise<Blob | null>((res) => canvas.toBlob((b) => res(b), 'image/jpeg', q))
+      if (blob && blob.size <= SAFE_UPLOAD_BYTES) {
+        return new File([blob], file.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' })
+      }
+    }
+    return file
+  } catch {
+    return file  // 압축 실패 — 원본으로 진행(작은 사진이면 통과)
   }
 }
 
@@ -139,7 +183,6 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   const [height, setHeight] = useState(initialData.height ?? '')
   const [weight, setWeight] = useState(initialData.weight ?? '')
   const [skills, setSkills] = useState(initialData.skills ?? '')
-  const [advancedSkills, setAdvancedSkills] = useState(initialData.advancedSkills ?? '')
   const [dialects, setDialects] = useState<string[]>(initialData.dialects ?? [])
   const [instagram, setInstagram] = useState(initialData.instagram ?? '')
   const [castingSummary, setCastingSummary] = useState(initialData.castingSummary ?? '')
@@ -205,11 +248,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     setInfoSaving(true)
     setInfoMsg('')
     try {
-      // 콤마 구분 → 배열. advanced는 skills 부분집합으로 필터링.
+      // 콤마 구분 → 배열.
       const skillsArr = skills.split(',').map(s => s.trim()).filter(Boolean).slice(0, 30)
-      const advRaw = advancedSkills.split(',').map(s => s.trim()).filter(Boolean).slice(0, 30)
-      const skillsSet = new Set(skillsArr)
-      const advArr = advRaw.filter(s => skillsSet.has(s))
       const res = await fetch(`/api/actors/${actorId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -217,7 +257,6 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           height: height || null,
           weight: weight || null,
           skills: skillsArr.length > 0 ? skillsArr : null,
-          advanced_skills: advArr.length > 0 ? advArr : null,
           dialects: dialects.length > 0 ? dialects : null,
           instagram: instagram || null,
           casting_summary: castingSummary.trim() || null,
@@ -345,13 +384,18 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     setUploading(true)
     setPhotoMsg('')
     try {
+      const upFile = await compressIfLarge(file)  // 4.5MB 초과분 리사이즈 → 413 회피
       const fd = new FormData()
-      fd.append('file', file)
+      fd.append('file', upFile)
       fd.append('actorId', actorId)
       fd.append('bucket', 'actor-photos')
       const res = await fetch('/api/upload', { method: 'POST', body: fd })
       if (res.status === 401) { window.location.href = '/auth/login'; return }
-      if (!res.ok) throw new Error((await res.json()).error || '업로드 실패')
+      if (res.status === 413) throw new Error('사진 용량이 너무 큽니다. 더 작은 사진으로 올려주세요.')
+      if (!res.ok) {
+        const msg = await res.json().then((j) => j.error).catch(() => null)
+        throw new Error(msg || '업로드에 실패했습니다.')
+      }
       const { url, id, isProfile } = await res.json()
       // isProfile: 서버가 대표사진 비어있을 때 자동 승격한 결과 (단일 진실 소스)
       setPhotos(prev => [...prev, { id, url, is_profile: !!isProfile }])
@@ -583,11 +627,6 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           <input id="actor-skills" value={skills} onChange={e => setSkills(e.target.value)} style={a.boxInput} placeholder="수영, 검도, 피아노, 영어" />
         </div>
         <div style={{ padding: '16px', ...a.sep }}>
-          <label htmlFor="actor-advanced-skills" style={a.blockLabel}>고급 숙련도 <span style={a.opt}>선택</span></label>
-          <p style={a.help}>전문가급/네이티브 수준만. 위 특기 중 콤마로 구분해 다시 입력 — ⭐로 강조됩니다.</p>
-          <input id="actor-advanced-skills" value={advancedSkills} onChange={e => setAdvancedSkills(e.target.value)} style={a.boxInput} placeholder="검도, 영어" />
-        </div>
-        <div style={{ padding: '16px', ...a.sep }}>
           <label style={a.blockLabel}>사투리</label>
           <p style={a.help}>네이티브 수준 가능 지역만 선택. 없으면 ‘없음’.</p>
           <div role="group" aria-label="사투리 가능 지역" style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
@@ -667,7 +706,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         <div style={{ marginTop: photos.length > 0 ? 16 : 0, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
           <input ref={fileRef} type="file" accept="image/*" onChange={uploadPhoto} style={{ display: 'none' }} aria-hidden="true" />
           <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} aria-busy={uploading} style={{ ...a.ghost, opacity: uploading ? 0.6 : 1 }}>{uploading ? '업로드 중…' : '＋ 사진 추가'}</button>
-          <span style={{ fontSize: 13, color: 'var(--gray)' }}>JPG·PNG, 최대 15MB · 세로형 권장</span>
+          <span style={{ fontSize: 13, color: 'var(--gray)' }}>JPG·PNG, 최대 15MB · 가로형 권장</span>
         </div>
         <p role="status" aria-live="polite" aria-atomic="true" style={{ ...a.msg, color: isErr(photoMsg, '완료') ? '#C0392B' : 'var(--navy)' }}>{photoMsg}</p>
       </section>

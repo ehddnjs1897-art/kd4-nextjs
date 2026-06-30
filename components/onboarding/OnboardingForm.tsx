@@ -43,7 +43,6 @@ export default function OnboardingForm({
   const [videos, setVideos] = useState<(File | null)[]>([null, null, null])
   const [castingSummary, setCastingSummary] = useState('')
   const [skills, setSkills] = useState('')             // 콤마 구분 (예: "수영, 검도, 피아노")
-  const [advancedSkills, setAdvancedSkills] = useState('') // 콤마 구분 — skills의 부분집합 (⭐ 표시)
   const [dialects, setDialects] = useState<string[]>([])   // 사투리 가능 지역 (멀티선택)
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState('')
@@ -99,7 +98,6 @@ export default function OnboardingForm({
         if (typeof d.instagram === 'string') setInstagram(d.instagram)
         if (typeof d.birthYear === 'string') setBirthYear(d.birthYear)
         if (typeof d.skills === 'string') setSkills(d.skills)
-        if (typeof d.advancedSkills === 'string') setAdvancedSkills(d.advancedSkills)
         if (typeof d.castingSummary === 'string') setCastingSummary(d.castingSummary)
         if (Array.isArray(d.dialects)) setDialects(d.dialects.filter((x: unknown): x is string => typeof x === 'string'))
       }
@@ -112,9 +110,9 @@ export default function OnboardingForm({
   useEffect(() => {
     if (!draftRestored) return
     try {
-      localStorage.setItem(DRAFT_KEY, JSON.stringify({ height, weight, instagram, birthYear, skills, advancedSkills, castingSummary, dialects }))
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ height, weight, instagram, birthYear, skills, castingSummary, dialects }))
     } catch { /* 용량 초과 등 무시 */ }
-  }, [draftRestored, DRAFT_KEY, height, weight, instagram, birthYear, skills, advancedSkills, castingSummary, dialects])
+  }, [draftRestored, DRAFT_KEY, height, weight, instagram, birthYear, skills, castingSummary, dialects])
 
   // 사진 미리보기 — 선택한 사진 썸네일(업로드 전 결과 확인). objectURL 누수 방지 revoke
   /* eslint-disable react-hooks/set-state-in-effect */
@@ -256,7 +254,6 @@ export default function OnboardingForm({
       const ogPhotoPath = photoPaths[0]?.path
       // 콤마 구분 → 배열 + 트림 + 빈값 제거
       const skillsArr = skills.split(',').map(s => s.trim()).filter(Boolean).slice(0, 30)
-      const advArr = advancedSkills.split(',').map(s => s.trim()).filter(Boolean).slice(0, 30)
 
       // 업로드가 전부 실패하고 텍스트 정보도 없으면 — 등록할 내용이 없음
       const hasPayload = !!docPath || photoPaths.length > 0 || currentPhotoPaths.length > 0
@@ -272,7 +269,6 @@ export default function OnboardingForm({
           docPath, photos: photoPaths, currentPhotos: currentPhotoPaths, videos: videoMetas, ogPhotoPath,
           castingSummary: castingSummary.trim() || undefined,
           skills: skillsArr.length > 0 ? skillsArr : undefined,
-          advancedSkills: advArr.length > 0 ? advArr : undefined,
           dialects: dialects.length > 0 ? dialects : undefined,
           height: height || undefined,
           weight: weight || undefined,
@@ -305,7 +301,6 @@ export default function OnboardingForm({
   ]
   const pct = Math.round((completionChecks.filter(Boolean).length / completionChecks.length) * 100)
   const skillList = skills.split(',').map(s => s.trim()).filter(Boolean)
-  const advList = advancedSkills.split(',').map(s => s.trim()).filter(Boolean)
 
   // 파일 올리기 행 (네이비 아이콘 타일 + 라벨 + 상태값 + ›)
   function fileRow(opts: { icon: React.ReactNode; label: React.ReactNode; sub: string; filled: boolean; onClick: () => void; ariaLabel: string; first?: boolean }) {
@@ -347,7 +342,7 @@ export default function OnboardingForm({
         <input ref={photosRef} type="file" accept="image/*" multiple disabled={loading} onChange={e => pickPhotos(e.target.files)} style={{ display: 'none' }} aria-hidden="true" />
         {fileRow({
           icon: <PhotoIcon />, label: <>프로필 사진 <span style={a.req}>최소 3장</span></>,
-          sub: photos.length > 0 ? `${photos.length}장 선택됨 · 맨 앞이 대표사진` : '세로형 헤드샷 (3~6장)',
+          sub: photos.length > 0 ? `${photos.length}장 선택됨 · 맨 앞이 대표사진` : '가로형 헤드샷 (3~6장)',
           filled: photos.length > 0, onClick: () => photosRef.current?.click(), ariaLabel: '프로필 사진 올리기', first: true,
         })}
         {photos.length > 0 && (
@@ -454,7 +449,7 @@ export default function OnboardingForm({
         {/* 특기 */}
         <div style={{ padding: '16px' }}>
           <label htmlFor="onb-skills-input" style={a.blockLabel}>특기</label>
-          <p style={a.help}>입력 후 <strong>Enter</strong>를 누르면 추가돼요. 전문가급은 ⭐를 눌러 강조.</p>
+          <p style={a.help}>입력 후 <strong>Enter</strong>를 누르면 추가돼요 (수영·검도·피아노 등).</p>
           <input id="onb-skills-input" name="skills" type="text" value={skillInput}
             onChange={(e) => setSkillInput(e.target.value)}
             onKeyDown={(e) => {
@@ -469,20 +464,14 @@ export default function OnboardingForm({
             disabled={loading} placeholder="예: 수영 (입력 후 Enter)" aria-label="특기 입력 (Enter로 추가)" style={a.boxInput} autoComplete="off" />
           {skillList.length > 0 && (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>
-              {skillList.map((sk) => {
-                const isAdv = advList.includes(sk)
-                return (
-                  <span key={sk} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 9px 6px 13px', borderRadius: 999, background: isAdv ? 'var(--navy)' : 'var(--bg3)', color: isAdv ? '#fff' : 'var(--white)', border: `1px solid ${isAdv ? 'var(--navy)' : 'var(--border)'}`, fontSize: 14 }}>
-                    <button type="button" disabled={loading} aria-pressed={isAdv} aria-label={`${sk} 고급 숙련도 ${isAdv ? '해제' : '표시'}`}
-                      onClick={() => { const adv = advancedSkills.split(',').map(s => s.trim()).filter(Boolean); setAdvancedSkills((isAdv ? adv.filter(x => x !== sk) : [...adv, sk]).join(', ')) }}
-                      style={{ background: 'none', border: 'none', cursor: loading ? 'default' : 'pointer', padding: 0, fontSize: 14, lineHeight: 1, color: 'inherit' }}>{isAdv ? '⭐' : '☆'}</button>
-                    {sk}
-                    <button type="button" disabled={loading} aria-label={`${sk} 삭제`}
-                      onClick={() => { const cur = skills.split(',').map(s => s.trim()).filter(Boolean).filter(x => x !== sk); const adv = advancedSkills.split(',').map(s => s.trim()).filter(Boolean).filter(x => x !== sk); setSkills(cur.join(', ')); setAdvancedSkills(adv.join(', ')) }}
-                      style={{ background: 'none', border: 'none', cursor: loading ? 'default' : 'pointer', padding: '0 2px', fontSize: 15, lineHeight: 1, color: 'inherit', opacity: 0.7 }}>×</button>
-                  </span>
-                )
-              })}
+              {skillList.map((sk) => (
+                <span key={sk} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 6px 6px 13px', borderRadius: 999, background: 'var(--bg3)', color: 'var(--white)', border: '1px solid var(--border)', fontSize: 14 }}>
+                  {sk}
+                  <button type="button" disabled={loading} aria-label={`${sk} 삭제`}
+                    onClick={() => { const cur = skills.split(',').map(s => s.trim()).filter(Boolean).filter(x => x !== sk); setSkills(cur.join(', ')) }}
+                    style={{ background: 'none', border: 'none', cursor: loading ? 'default' : 'pointer', padding: '0 2px', fontSize: 15, lineHeight: 1, color: 'inherit', opacity: 0.7 }}>×</button>
+                </span>
+              ))}
             </div>
           )}
         </div>

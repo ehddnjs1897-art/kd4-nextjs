@@ -200,7 +200,6 @@ export default async function GalleryEditPage() {
     height: actor.height ?? undefined,
     weight: actor.weight ?? undefined,
     skills: actor.skills?.join(', ') ?? undefined,  // text[] → 쉼표 구분 문자열 (폼 표시용)
-    advancedSkills: actor.advanced_skills?.join(', ') ?? undefined,
     dialects: actor.dialects ?? undefined,  // text[] 그대로 (멀티선택)
     instagram: actor.instagram ?? undefined,
     castingSummary: actor.casting_summary ?? undefined,

@@ -571,23 +571,20 @@ export default async function ActorDetailPage({
               {/* 특기 */}
               {actor.skills && actor.skills.length > 0 && (
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
-                  {actor.skills.map((sk) => {
-                    const isAdvanced = (actor.advanced_skills ?? []).includes(sk)
-                    return (
-                      <span key={sk} style={{
-                        padding: '4px 12px',
-                        background: isAdvanced ? 'rgba(199,62,62,0.08)' : 'rgba(21,72,138,0.06)',
-                        border: isAdvanced ? '1px solid rgba(199,62,62,0.3)' : '1px solid var(--border)',
-                        borderRadius: 4,
-                        fontSize: '0.78rem',
-                        color: isAdvanced ? 'var(--accent-red)' : 'var(--gray)',
-                        letterSpacing: '0.03em',
-                        fontWeight: isAdvanced ? 700 : 400,
-                      }}>
-                        {isAdvanced && <span role="img" aria-label="고급 숙련도">⭐ </span>}{sk}
-                      </span>
-                    )
-                  })}
+                  {actor.skills.map((sk) => (
+                    <span key={sk} style={{
+                      padding: '4px 12px',
+                      background: 'rgba(21,72,138,0.06)',
+                      border: '1px solid var(--border)',
+                      borderRadius: 4,
+                      fontSize: '0.78rem',
+                      color: 'var(--gray)',
+                      letterSpacing: '0.03em',
+                      fontWeight: 400,
+                    }}>
+                      {sk}
+                    </span>
+                  ))}
                 </div>
               )}
 
