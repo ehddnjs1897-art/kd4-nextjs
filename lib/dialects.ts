@@ -3,7 +3,7 @@
  * 한 곳에서 관리해 폼/저장/표시 간 값 불일치 방지.
  * (대표님 5/8 결정: 언어·억양은 기존 skills로 흡수, 사투리만 별도 / 06-08: 연령대 제외)
  */
-export const DIALECT_OPTIONS = ['경상', '전라', '충청', '강원', '제주', '이북'] as const
+export const DIALECT_OPTIONS = ['경상', '전라', '충청', '강원', '제주', '북한사투리'] as const
 
 /** 사투리 없음(표준어) — 지역과 상호배타. "없을 때 표시할 항목이 없다"는 배우 피드백(2026-06) 반영. */
 export const DIALECT_NONE = '없음'

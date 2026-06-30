@@ -153,6 +153,8 @@ function photoSrc(p: ActorPhoto): string {
 export default function ActorTabs({ actor, canViewContact, imageProtected, canEdit = false, videoLocked = false, mainPhotoUrl }: Props) {
   // 비로그인 영상 클릭 → 회원가입 안내 모달
   const [signupPromptOpen, setSignupPromptOpen] = useState(false)
+  // 갤러리 — 가로사진(landscape) url 집합. onLoad로 감지해 CSS order로 우측에 모음 (2026-06-30 대표 지시)
+  const [landscapeUrls, setLandscapeUrls] = useState<Set<string>>(new Set())
   // ── 편집 상태 ──
   const [filmo, setFilmo] = useState<FilmoEntry[]>(actor.actor_filmography)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -297,8 +299,11 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
   const reelVideos = (actor.actor_videos ?? []).filter(v => !v.video_type || v.video_type === 'reel').slice(0, 2)
   const monologueVideos = (actor.actor_videos ?? []).filter(v => v.video_type === 'monologue').slice(0, 1)
 
-  // 최근 출연 (최근 2년 이내 동적 기준)
-  const recentWorks = allFilmo.filter((f) => (f.year ?? 0) >= new Date().getFullYear() - 1)
+  // 최근 출연 — CF 제외, 드라마 전체 + 상업영화만 (2026-06-30 대표 지시). 드라마/영화로 분류.
+  const recentYearMin = new Date().getFullYear() - 1
+  const recentDrama = allFilmo.filter((f) => (f.year ?? 0) >= recentYearMin && f.category === 'drama')
+  const recentFilm = allFilmo.filter((f) => (f.year ?? 0) >= recentYearMin && f.category === 'film' && (f.film_type ?? '').includes('상업'))
+  const recentGroups = [{ label: '드라마', items: recentDrama }, { label: '영화', items: recentFilm }].filter((g) => g.items.length > 0)
 
   // 카테고리별 필모 (memoized Map — 렌더마다 6번 filter 방지)
   const filmoMap = useMemo(() => {
@@ -337,18 +342,23 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                 type="button"
                 onClick={() => setLightbox({ source: 'profile', index: i })}
                 aria-label={`${actor.name} 프로필 사진 ${i + 1} 확대 보기`}
-                style={{ ...s.photoCard, padding: 0, border: 'none', background: 'transparent', cursor: 'zoom-in' }}
+                style={{ ...s.photoCard, padding: 0, border: 'none', background: 'transparent', cursor: 'zoom-in', order: landscapeUrls.has(url) ? 1 : 0 }}
               >
-                {/* 가로/세로 원본 비율 그대로 — 잘림 없이 반응형 배치 (2026-06-30 대표 지시) */}
-                <Image
+                {/* 가로/세로 원본 비율 그대로 — 고정 높이·자연 너비로 한 줄에 하나씩(2단 쌓기 X).
+                    가로사진은 onLoad로 감지해 우측으로(button order). (2026-06-30 대표 지시) */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   src={url}
                   alt={`${actor.name} 프로필 ${i + 1}`}
-                  width={0}
-                  height={0}
-                  sizes="(max-width:640px) 50vw, 200px"
-                  style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 6 }}
-                  unoptimized={!url.includes('.supabase.co/storage/')}
+                  loading="lazy"
                   draggable={false}
+                  onLoad={(e) => {
+                    const im = e.currentTarget
+                    if (im.naturalWidth > im.naturalHeight * 1.05) {
+                      setLandscapeUrls((prev) => (prev.has(url) ? prev : new Set(prev).add(url)))
+                    }
+                  }}
+                  style={{ height: 'clamp(180px, 34vw, 260px)', width: 'auto', display: 'block', borderRadius: 6 }}
                 />
                 {imageProtected && <div style={{ ...s.photoProtectOverlay, borderRadius: 6 }} />}
               </button>
@@ -584,7 +594,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
       )}
 
       {/* ============ 02 · CURRENT WORKS ============ */}
-      {recentWorks.length > 0 && (
+      {recentGroups.length > 0 && (
         <section aria-label="최근 출연" style={s.section}>
           <h2 style={s.sectionHeading}>
             <span style={s.sectionNum}>02</span>
@@ -592,38 +602,37 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
             <span lang="en" style={s.sectionEn}>CURRENT WORKS</span>
             {canEdit && <span style={{ marginLeft: 'auto', fontSize: '0.7rem', color: 'var(--gold)', fontWeight: 600, alignSelf: 'center' }}>작품 클릭 → 편집 ✎</span>}
           </h2>
-          {/* 박스 카드 → 에디토리얼 행 리스트 (2026-06-12 대표 피드백 "더 잘보이게") */}
-          <div>
-            {recentWorks.map((entry) => {
-              const prefix = entry.category === 'drama'
-                ? (entry.broadcaster ?? null)
-                : entry.category === 'film'
-                  ? (entry.film_type ?? null)
-                  : null
-              return (
-                <div
-                  key={entry.id}
-                  className="recent-work-row"
-                  {...(canEdit ? {
-                    role: 'button' as const,
-                    tabIndex: 0,
-                    onClick: () => editFromRecent(entry),
-                    onKeyDown: (e: React.KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); editFromRecent(entry) } },
-                    style: { cursor: 'pointer' },
-                    title: '클릭하면 아래 작품 표에서 편집할 수 있어요',
-                  } : {})}
-                >
-                  <span style={s.recentYear}>{entry.year}</span>
-                  <span style={s.recentCat}>{CATEGORY_LABEL[entry.category]}</span>
-                  <p className="recent-work-title" style={s.recentTitle}>
-                    {prefix && <span style={s.recentPrefix}>{prefix}</span>}
-                    {entry.title}
-                  </p>
-                  {entry.role && <p className="recent-work-role" style={s.recentRole}>{entry.role}</p>}
-                </div>
-              )
-            })}
-          </div>
+          {/* CF 제외·상업영화만 + 드라마/영화 분류 (2026-06-30 대표 지시) */}
+          {recentGroups.map((group) => (
+            <div key={group.label} style={{ marginBottom: 18 }}>
+              <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', color: 'var(--gold)', margin: '2px 0 6px' }}>{group.label}</p>
+              {group.items.map((entry) => {
+                const prefix = entry.category === 'drama' ? (entry.broadcaster ?? null) : (entry.film_type ?? null)
+                return (
+                  <div
+                    key={entry.id}
+                    className="recent-work-row"
+                    {...(canEdit ? {
+                      role: 'button' as const,
+                      tabIndex: 0,
+                      onClick: () => editFromRecent(entry),
+                      onKeyDown: (e: React.KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); editFromRecent(entry) } },
+                      style: { cursor: 'pointer' },
+                      title: '클릭하면 아래 작품 표에서 편집할 수 있어요',
+                    } : {})}
+                  >
+                    <span style={s.recentYear}>{entry.year}</span>
+                    <span style={s.recentCat}>{CATEGORY_LABEL[entry.category]}</span>
+                    <p className="recent-work-title" style={s.recentTitle}>
+                      {prefix && <span style={s.recentPrefix}>{prefix}</span>}
+                      {entry.title}
+                    </p>
+                    {entry.role && <p className="recent-work-role" style={s.recentRole}>{entry.role}</p>}
+                  </div>
+                )
+              })}
+            </div>
+          ))}
         </section>
       )}
 
@@ -911,16 +920,15 @@ const s: Record<string, React.CSSProperties> = {
 
   /* ---- 프로필 사진 스트립 ---- */
   photoStrip: {
-    // 가로/세로 섞여도 원본 비율 유지하며 알아서 채워지는 masonry (column-width로 반응형 열 수)
-    columns: '170px',
-    columnGap: 10,
+    // 한 줄 flex — 고정 높이·자연 너비라 사진마다 하나씩(2단 쌓기 X), 넘치면 줄바꿈. 세로 먼저·가로는 order로 우측
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 10,
+    alignItems: 'flex-start',
   },
   photoCard: {
     position: 'relative',
-    display: 'block',
-    width: '100%',
-    breakInside: 'avoid',
-    marginBottom: 10,
+    flex: '0 0 auto',
     borderRadius: 6,
     overflow: 'hidden',
     userSelect: 'none',

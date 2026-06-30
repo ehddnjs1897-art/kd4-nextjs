@@ -23,6 +23,7 @@ interface Actor {
   name_en?: string | null
   gender: '남' | '여' | null
   age_group: string
+  birth_year: number | null
   height: number | null
   weight: number | null
   skills: string[]
@@ -101,7 +102,7 @@ function isUndefinedColumnError(err: { code?: string; message?: string } | null)
 // 단계적으로 select 컬럼을 줄여가며 재조회한다. (42703 → 다음 단계)
 function actorSelect(opts: { casting: boolean; videoType: boolean; filmExtra: boolean; advancedSkills: boolean }): string {
   return `
-      id, name, name_en, gender, age_group, height, weight, skills, is_public, updated_at,
+      id, name, name_en, gender, age_group, birth_year, height, weight, skills, is_public, updated_at,
       drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram, profile_doc_path${
         opts.casting ? ',\n      casting_tags, casting_summary, profile_pdf_url' : ''
       }${opts.advancedSkills ? ',\n      advanced_skills' : ''},
@@ -530,7 +531,8 @@ export default async function ActorDetailPage({
               {/* 서브라인 — 성별 · 나이대 · 신장/체중 한 줄 compact */}
               <p style={{ fontSize: '0.85rem', color: 'var(--gray-light)', letterSpacing: '0.03em', marginBottom: 14 }}>
                 {genderLabel}
-                {actor.age_group ? ` · ${actor.age_group}` : ''}
+                {/* 정확한 나이(birth_year) 있으면 'N세', 없으면 연령대 (2026-06-30 대표 지시) */}
+                {actor.birth_year ? ` · ${currentYear - actor.birth_year}세` : (actor.age_group ? ` · ${actor.age_group}` : '')}
                 {actor.height ? ` · ${actor.height}cm` : ''}
                 {actor.weight ? ` · ${actor.weight}kg` : ''}
                 {actor.name_en ? <> · <span lang="en">{actor.name_en}</span></> : ''}
