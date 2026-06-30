@@ -813,8 +813,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                   </div>
                 ) : (
                   <button type="button" onClick={() => pickCurrentPhoto(label)} disabled={!!cpUploadingLabel} aria-label={`${label} 사진 올리기`}
-                    style={{ ...a.photoCard, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, cursor: 'pointer', borderStyle: 'dashed', color: 'var(--navy)', fontFamily: 'inherit', fontSize: 14, fontWeight: 500 }}>
-                    <span style={{ fontSize: 22, lineHeight: 1 }}>＋</span>
+                    style={{ ...a.photoCard, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, cursor: 'pointer', borderStyle: 'dashed', color: 'var(--navy)', fontFamily: 'inherit', fontSize: 15, fontWeight: 600 }}>
+                    <span style={{ fontSize: 26, lineHeight: 1 }}>＋</span>
                     {busy ? '업로드 중…' : label}
                   </button>
                 )}
