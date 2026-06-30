@@ -131,9 +131,11 @@ export default function R2Video({
           disabled={downloading}
           aria-label={downloading ? '영상 다운로드 중' : '영상 다운로드'}
           aria-busy={downloading}
-          style={{ ...s.dlBtn, opacity: downloading ? 0.6 : 1, cursor: downloading ? 'not-allowed' : 'pointer' }}
+          style={{ ...s.dlBtn, opacity: downloading ? 0.7 : 1, cursor: downloading ? 'not-allowed' : 'pointer' }}
+          onMouseEnter={(e) => { if (!downloading) e.currentTarget.style.background = 'var(--gold-light)' }}
+          onMouseLeave={(e) => { if (!downloading) e.currentTarget.style.background = 'var(--gold)' }}
         >
-          {downloading ? '⏳ 다운로드 중...' : '⤓ 영상 다운로드'}
+          {downloading ? '다운로드 중...' : '영상 다운로드'}
         </button>
       )}
     </div>
@@ -184,21 +186,23 @@ const s: Record<string, React.CSSProperties> = {
   },
   title: { fontSize: '0.85rem', color: 'var(--gray)' },
   dlBtn: {
-    alignSelf: 'flex-start',
-    display: 'inline-flex',
+    alignSelf: 'stretch',          // 썸네일 너비만큼 꽉 차게
+    display: 'flex',
     alignItems: 'center',
-    gap: 6,
-    minHeight: 44,
-    minWidth: 44,
-    padding: '8px 16px',
-    fontSize: '0.8rem',
+    justifyContent: 'center',
+    width: '100%',
+    minHeight: 48,
+    marginTop: 2,
+    padding: '13px 16px',
+    fontSize: '0.9rem',
     fontWeight: 700,
-    color: 'var(--gold)',
-    background: 'rgba(196,165,90,0.12)',
-    border: '1.5px solid var(--gold)',
-    borderRadius: 6,
+    color: '#ffffff',              // 흰 글씨 — 네이비 채움 위에서 또렷
+    background: 'var(--gold)',      // var(--gold)=var(--navy)=#15488A 솔리드 채움 (잘 보이게)
+    border: 'none',
+    borderRadius: 8,
     cursor: 'pointer',
     fontFamily: 'var(--font-display), inherit',
-    letterSpacing: '0.03em',
+    letterSpacing: '0.04em',
+    transition: 'background 0.15s',
   },
 }
