@@ -53,6 +53,7 @@ export default function OnboardingForm({
   const [weight, setWeight] = useState('')      // 몸무게(kg) — 숫자만 (선택)
   const [instagram, setInstagram] = useState('')
   const [birthYear, setBirthYear] = useState('')  // 출생연도(4자리) → 나이 자동
+  const [gender, setGender] = useState('')        // 성별 '남'|'여' — 성별 필터 노출에 필수 (2026-07-01)
   const [skillInput, setSkillInput] = useState('') // 특기 칩 입력 필드 (skills 콤마 문자열은 유지)
   const DRAFT_KEY = `kd4-onboarding-draft-${userId}`  // 자동 임시저장(텍스트 항목만)
   const [draftRestored, setDraftRestored] = useState(false)
@@ -289,6 +290,7 @@ export default function OnboardingForm({
           weight: weight || undefined,
           instagram: instagram.trim() || undefined,
           birthYear: birthYear || undefined,
+          gender: gender || undefined,
         }),
         signal: AbortSignal.timeout(15_000),
       })
@@ -424,6 +426,23 @@ export default function OnboardingForm({
       <p style={a.caption}>기본 정보</p>
       <div style={a.card}>
         <div style={a.row}>
+          <span style={a.label}>성별</span>
+          <div role="group" aria-label="성별" style={{ display: 'flex', gap: 8, marginLeft: 'auto' }}>
+            {(['남', '여'] as const).map((g) => (
+              <button key={g} type="button" disabled={loading} onClick={() => setGender(g)}
+                aria-pressed={gender === g}
+                style={{
+                  padding: '7px 18px', borderRadius: 8, fontSize: 15, fontFamily: 'inherit', cursor: 'pointer',
+                  border: gender === g ? '1px solid var(--navy)' : '1px solid var(--border)',
+                  background: gender === g ? 'var(--navy)' : '#fff',
+                  color: gender === g ? '#fff' : 'var(--gray)', fontWeight: gender === g ? 600 : 400,
+                }}>
+                {g === '남' ? '남자' : '여자'}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div style={{ ...a.row, ...a.sep }}>
           <label htmlFor="onb-birth" style={a.label}>생년</label>
           <input id="onb-birth" name="birth_year" type="text" inputMode="numeric" value={birthYear}
             onChange={(e) => setBirthYear(e.target.value.replace(/[^0-9]/g, '').slice(0, 4))}

@@ -155,6 +155,8 @@ export async function POST(request: NextRequest) {
   const instagram = typeof body?.instagram === 'string'
     ? (body.instagram.replace(/[\x00-\x1f\x7f]/g, '').trim().slice(0, 200) || null)
     : null
+  // 성별 — '남'|'여'만 허용 (성별 필터 노출에 필요, 2026-07-01 대표 지시)
+  const gender: string | null = (body?.gender === '남' || body?.gender === '여') ? body.gender : null
   // 출생연도(4자리) → 나이대 자동 도출
   const birthYear = parseMetric(body?.birthYear, 1930, new Date().getFullYear())
   const ageGroupFromBirth = ((): string | null => {
@@ -300,6 +302,7 @@ export async function POST(request: NextRequest) {
   if (height !== null) actorPatch.height = height
   if (weight !== null) actorPatch.weight = weight
   if (instagram) actorPatch.instagram = instagram
+  if (gender) actorPatch.gender = gender
   if (birthYear !== null) actorPatch.birth_year = birthYear
   if (ageGroupFromBirth) actorPatch.age_group = ageGroupFromBirth  // 생년 → 나이대 자동
 
