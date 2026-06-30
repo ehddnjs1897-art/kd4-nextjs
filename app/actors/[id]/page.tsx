@@ -247,16 +247,20 @@ export async function generateMetadata({
 
   const genderLabel =
     actor.gender === '남' ? '남자 배우' : actor.gender === '여' ? '여자 배우' : '배우'
-  const subline = [actor.age_group, genderLabel].filter(Boolean).join(' · ')
+  // 연령대(30대) 대신 실제 만나이 우선 (2026-07-01 대표 지시)
+  const metaYear = new Date().getFullYear()
+  const ageLabel = actor.birth_year ? `${metaYear - actor.birth_year}세` : actor.age_group
+  const subline = [ageLabel, genderLabel].filter(Boolean).join(' · ')
 
+  // 하단 카드에 이름이 이미 이미지에 있으므로 설명에선 이름 접두어 중복 제거 (2026-07-01 대표 지시)
   const description = actor.casting_summary?.trim()
-    ? `${actor.name} — ${actor.casting_summary}`
+    ? actor.casting_summary.trim()
     : actor.casting_tags && actor.casting_tags.length > 0
       ? `${actor.name} · ${subline} · ${actor.casting_tags.slice(0, 3).join(' · ')}`
       : `${actor.name} · ${subline} · KD4 액팅 스튜디오 배우 프로필`
 
-  const title = actor.age_group
-    ? `${actor.name} · ${actor.age_group} 배우`
+  const title = ageLabel
+    ? `${actor.name} · ${ageLabel} 배우`
     : `${actor.name} · 배우`
 
   // keywords: 이름 + 캐스팅 태그 + 연령대/성별 + 브랜드

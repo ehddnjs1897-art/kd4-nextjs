@@ -32,7 +32,9 @@ interface ActorOg {
   name: string
   gender: '남' | '여' | null
   age_group: string | null
+  birth_year: number | null
   height: number | null
+  skills: string[] | null
   drive_photo_id: string | null
   storage_photo_path: string | null
   profile_photo: string | null
@@ -43,7 +45,7 @@ interface ActorOg {
 async function fetchActor(id: string): Promise<ActorOg | null> {
   if (!SUPABASE_URL || !SERVICE_KEY) return null
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/actors?id=eq.${encodeURIComponent(id)}&is_public=eq.true&select=name,gender,age_group,height,drive_photo_id,storage_photo_path,profile_photo,casting_tags,casting_summary&limit=1`,
+    `${SUPABASE_URL}/rest/v1/actors?id=eq.${encodeURIComponent(id)}&is_public=eq.true&select=name,gender,age_group,birth_year,height,skills,drive_photo_id,storage_photo_path,profile_photo,casting_tags,casting_summary&limit=1`,
     {
       headers: {
         apikey: SERVICE_KEY,
@@ -161,11 +163,14 @@ export async function GET(
   }
 
   const photoUrl = getPhotoUrl(actor)
-  const genderLabel =
-    actor.gender === '남' ? '남자 배우' : actor.gender === '여' ? '여자 배우' : '배우'
-  const subline = [actor.age_group, genderLabel, actor.height ? `${actor.height}cm` : null]
+  // 썸네일 직관화 (2026-07-01 대표 지시): 연령대(30대) 대신 실제 만나이 + 키, 그리고 특기(사투리 포함)
+  const currentYearOg = new Date().getFullYear()
+  const ageLabel = actor.birth_year ? `${currentYearOg - actor.birth_year}세` : actor.age_group
+  const subline = [ageLabel, actor.height ? `${actor.height}cm` : null]
     .filter(Boolean)
     .join(' · ')
+  // 특기(사투리·무에타이 등) — 카드 가독성을 위해 최대 3개. 캐스팅 태그는 플래그 OFF면 미표시 유지.
+  const skillLine = (actor.skills ?? []).slice(0, 3).join(' · ')
   const tags = SHOW_CASTING_TAGS ? (actor.casting_tags?.slice(0, 4) ?? []) : []
 
   return new ImageResponse(
@@ -268,15 +273,15 @@ export async function GET(
               {actor.name}
             </div>
 
-            {/* 서브라인 + 도메인 */}
+            {/* 서브라인(실제 나이·키) + 도메인 */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginTop: 4 }}>
               {subline && (
                 <div
                   style={{
                     display: 'flex',
-                    fontSize: 22,
-                    color: 'rgba(255,255,255,0.75)',
-                    fontWeight: 500,
+                    fontSize: 26,
+                    color: 'rgba(255,255,255,0.82)',
+                    fontWeight: 600,
                   }}
                 >
                   {subline}
@@ -294,6 +299,21 @@ export async function GET(
                 kd4.club
               </div>
             </div>
+
+            {/* 특기(사투리·무에타이 등) — 골드 */}
+            {skillLine && (
+              <div
+                style={{
+                  display: 'flex',
+                  fontSize: 21,
+                  color: '#D9BC6A',
+                  fontWeight: 500,
+                  marginTop: 2,
+                }}
+              >
+                {skillLine}
+              </div>
+            )}
           </div>
         </div>
       </div>

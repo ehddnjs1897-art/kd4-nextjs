@@ -56,7 +56,6 @@ export default function OnboardingForm({
   const DRAFT_KEY = `kd4-onboarding-draft-${userId}`  // 자동 임시저장(텍스트 항목만)
   const [draftRestored, setDraftRestored] = useState(false)
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([])  // 사진 업로드 전 미리보기
-  const [showCurrentPhotos, setShowCurrentPhotos] = useState(false) // 현재사진(전신 각도) 펼치기 — 기본 접어둠
 
   // 업로드 중 탭 닫기/새로고침 방지
   useEffect(() => {
@@ -388,27 +387,23 @@ export default function OnboardingForm({
         })}
       </div>
 
-      {/* 현재사진(전신) — 접어둠 */}
-      <button type="button" onClick={() => setShowCurrentPhotos(v => !v)} disabled={loading} style={a.moreToggle}>
-        {showCurrentPhotos ? '현재사진(정면·좌측·우측·후면·전신) 닫기' : '＋ 현재사진(정면·좌측·우측·후면·전신) 추가 · 선택'}
-      </button>
-      {showCurrentPhotos && (
-        <div style={{ ...a.card, padding: '14px 16px', marginTop: 8 }}>
-          <p style={{ fontSize: 13, color: 'var(--gray)', lineHeight: 1.6, marginBottom: 12 }}>
-            정면·좌측·우측·후면·전신 각도의 현재 모습. 체형·전신을 보여줘 캐스팅 판단에 도움이 됩니다. 각 15MB 이하.
-          </p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            {CURRENT_PHOTO_LABELS.map((label, idx) => (
-              <div key={label}>
-                <input ref={currentPhotoRefs[idx]} type="file" accept="image/*" disabled={loading} onChange={e => pickCurrentPhoto(idx, e.target.files?.[0] ?? null)} style={{ display: 'none' }} aria-hidden="true" />
-                <button type="button" onClick={() => currentPhotoRefs[idx].current?.click()} disabled={loading} style={{ ...a.miniBtn, ...(currentPhotos[idx] ? { borderColor: 'var(--navy)', color: 'var(--navy)' } : {}) }}>
-                  {currentPhotos[idx] ? `✓ ${label}` : `${label} 선택`}
-                </button>
-              </div>
-            ))}
-          </div>
+      {/* 현재사진(전신 각도) — 가입 때부터 항상 노출 (2026-07-01 대표 지시: 프로필사진 옆에 현재사진란도) */}
+      <p style={a.caption}>현재사진 <span style={a.opt}>선택</span></p>
+      <div style={{ ...a.card, padding: '14px 16px' }}>
+        <p style={{ fontSize: 13, color: 'var(--gray)', lineHeight: 1.6, marginBottom: 12 }}>
+          정면·좌측·우측·후면·전신 각도의 현재 모습. 체형·전신을 보여줘 캐스팅 판단에 도움이 됩니다. 각 15MB 이하.
+        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          {CURRENT_PHOTO_LABELS.map((label, idx) => (
+            <div key={label}>
+              <input ref={currentPhotoRefs[idx]} type="file" accept="image/*" disabled={loading} onChange={e => pickCurrentPhoto(idx, e.target.files?.[0] ?? null)} style={{ display: 'none' }} aria-hidden="true" />
+              <button type="button" onClick={() => currentPhotoRefs[idx].current?.click()} disabled={loading} style={{ ...a.miniBtn, ...(currentPhotos[idx] ? { borderColor: 'var(--navy)', color: 'var(--navy)' } : {}) }}>
+                {currentPhotos[idx] ? `✓ ${label}` : `${label} 선택`}
+              </button>
+            </div>
+          ))}
         </div>
-      )}
+      </div>
 
       {/* ━━━ 기본 정보 ━━━ */}
       <p style={a.caption}>기본 정보</p>
