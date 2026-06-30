@@ -716,7 +716,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           <div style={a.photoGrid}>
             {photos.map((p, idx) => (
               <div key={p.id} style={a.photoCard}>
-                <Image src={p.url} alt={p.is_profile ? '대표 프로필 사진' : `배우 사진 ${idx + 1}`} fill style={{ objectFit: 'cover', objectPosition: 'center 30%' }} sizes="180px" />
+                <Image src={p.url} alt={p.is_profile ? '대표 프로필 사진' : `배우 사진 ${idx + 1}`} fill unoptimized style={{ objectFit: 'cover', objectPosition: 'center 30%' }} sizes="180px" />
                 {p.is_profile && <span style={a.profileBadge}>대표</span>}
                 <div style={a.photoActions}>
                   {confirmingPhotoId === p.id ? (
@@ -762,7 +762,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
               <div key={label}>
                 {photo ? (
                   <div style={a.photoCard}>
-                    <Image src={photo.url} alt={`${label} 현재사진`} fill style={{ objectFit: 'cover', objectPosition: 'center 30%' }} sizes="180px" />
+                    <Image src={photo.url} alt={`${label} 현재사진`} fill unoptimized style={{ objectFit: 'cover', objectPosition: 'center 30%' }} sizes="180px" />
                     <span style={a.profileBadge}>{label}</span>
                     <div style={a.photoActions}>
                       <button type="button" onClick={() => pickCurrentPhoto(label)} disabled={!!cpUploadingLabel} aria-label={`${label} 사진 교체`} style={{ ...a.danger, background: 'rgba(255,255,255,0.92)', color: 'var(--navy)', border: 'none', fontWeight: 500 }}>교체</button>

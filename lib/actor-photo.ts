@@ -53,6 +53,10 @@ export function getActorPhotoUrl(actor: ActorPhotoSource): string {
  * Drive는 unoptimized 권장 (외부 도메인 + 캐시 헤더 약함).
  */
 export function shouldOptimize(actor: ActorPhotoSource): boolean {
-  if (actor.profile_photo) return true
-  return !!actor.storage_photo_path
+  const src = actor.profile_photo || actor.storage_photo_path || ''
+  if (!src) return false
+  // Vercel 이미지 최적화기가 일부 PNG(대용량·고해상)를 402로 거부 → 카드가 깨짐.
+  // PNG는 최적화 건너뛰고 원본 직접 로드 (2026-07-01, 권동원 대표사진 PNG 카드 깨짐 대응). JPG는 계속 최적화.
+  if (/\.png(\?|$)/i.test(src)) return false
+  return true
 }
