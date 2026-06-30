@@ -147,8 +147,6 @@ function photoSrc(p: ActorPhoto): string {
 export default function ActorTabs({ actor, canViewContact, imageProtected, canEdit = false, videoLocked = false, mainPhotoUrl }: Props) {
   // 비로그인 영상 클릭 → 회원가입 안내 모달
   const [signupPromptOpen, setSignupPromptOpen] = useState(false)
-  // 갤러리 — 가로사진(landscape) url 집합. onLoad로 감지해 CSS order로 우측에 모음 (2026-06-30 대표 지시)
-  const [landscapeUrls, setLandscapeUrls] = useState<Set<string>>(new Set())
   // ── 편집 상태 ──
   const [filmo, setFilmo] = useState<FilmoEntry[]>(actor.actor_filmography)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -369,8 +367,14 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
           <h2 style={s.sectionHeading}>
             <span style={s.sectionTitle}>프로필 사진</span>
           </h2>
+          {/* 장수와 무관하게 균일한 그리드 — 3:4 세로 셀 + cover (2026-07-01 대표 지시: 몇 장이든 정렬되게).
+              기존 '자연 크기 flex + 가로사진 우측정렬'이 장수·비율에 따라 들쭉날쭉하던 것 교체. */}
           <div
-            style={s.photoStrip}
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+              gap: 12,
+            }}
             onContextMenu={imageProtected ? (e) => e.preventDefault() : undefined}
             onDragStart={(e) => e.preventDefault()}
           >
@@ -380,23 +384,15 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                 type="button"
                 onClick={() => setLightbox({ source: 'profile', index: i })}
                 aria-label={`${actor.name} 프로필 사진 ${i + 1} 확대 보기`}
-                style={{ ...s.photoCard, padding: 0, border: 'none', background: 'transparent', cursor: 'zoom-in', order: landscapeUrls.has(url) ? 1 : 0 }}
+                style={{ position: 'relative', width: '100%', aspectRatio: '3 / 4', padding: 0, border: 'none', background: 'var(--bg3)', borderRadius: 6, overflow: 'hidden', cursor: 'zoom-in' }}
               >
-                {/* 가로/세로 원본 비율 그대로 — 고정 높이·자연 너비로 한 줄에 하나씩(2단 쌓기 X).
-                    가로사진은 onLoad로 감지해 우측으로(button order). (2026-06-30 대표 지시) */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={url}
                   alt={`${actor.name} 프로필 ${i + 1}`}
                   loading="lazy"
                   draggable={false}
-                  onLoad={(e) => {
-                    const im = e.currentTarget
-                    if (im.naturalWidth > im.naturalHeight * 1.05) {
-                      setLandscapeUrls((prev) => (prev.has(url) ? prev : new Set(prev).add(url)))
-                    }
-                  }}
-                  style={{ height: 'clamp(180px, 34vw, 260px)', width: 'auto', display: 'block', borderRadius: 6 }}
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }}
                 />
                 {imageProtected && <div style={{ ...s.photoProtectOverlay, borderRadius: 6 }} />}
               </button>
@@ -467,7 +463,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                           fill
                           sizes="(max-width:640px) 50vw, 25vw"
                           style={{ objectFit: 'cover', objectPosition: 'center top' }}
-                          unoptimized={!photo?.storage_path}
+                          unoptimized
                         />
                       )
                     ) : (

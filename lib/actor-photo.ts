@@ -52,11 +52,9 @@ export function getActorPhotoUrl(actor: ActorPhotoSource): string {
  * Storage·profile_photo는 이미 최적화됨 → next/image 캐시 OK.
  * Drive는 unoptimized 권장 (외부 도메인 + 캐시 헤더 약함).
  */
-export function shouldOptimize(actor: ActorPhotoSource): boolean {
-  const src = actor.profile_photo || actor.storage_photo_path || ''
-  if (!src) return false
-  // Vercel 이미지 최적화기가 일부 PNG(대용량·고해상)를 402로 거부 → 카드가 깨짐.
-  // PNG는 최적화 건너뛰고 원본 직접 로드 (2026-07-01, 권동원 대표사진 PNG 카드 깨짐 대응). JPG는 계속 최적화.
-  if (/\.png(\?|$)/i.test(src)) return false
-  return true
+export function shouldOptimize(_actor: ActorPhotoSource): boolean {
+  // Vercel 이미지 최적화 한도(402)가 소진돼 새로 올린 사진(PNG·JPG·용량 무관)이
+  // 최적화기에서 전부 거부됨 → 카드·현재사진이 깨짐. 사용자 업로드 사진은 최적화기를
+  // 거치지 않고 Supabase CDN 원본을 직접 로드한다 (2026-07-01). 캐시된 옛 사진은 영향 없음.
+  return false
 }
