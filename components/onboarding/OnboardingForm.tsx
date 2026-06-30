@@ -2,10 +2,16 @@
 
 /**
  * 배우 온보딩 업로드 폼
- *  - PPT(≤10MB) → Supabase Storage actor-docs
+ *  - PPT(≤20MB) → Supabase Storage actor-docs
  *  - 사진 (장당 ≤15MB) → Supabase Storage actor-photos
  *  - 영상(≤300MB) → R2 presigned PUT (브라우저 직접 업로드)
  * 업로드 완료 후 /api/profile/intake 로 경로만 기록.
+ *
+ * 2026-06 시니어 친화 전면개편 (REPLAY repl.co.kr 참고):
+ *  - 단계 위저드(다음/이전) 제거 → 한 페이지 행 리스트(스크롤 한 번)
+ *  - 자료(사진·영상·파일)를 맨 위로 — 제일 쉽고 중요한 것 먼저
+ *  - 큰 아이콘 + 큰 글자 + 큰 행 버튼(누르는 영역 넓게)
+ *  ⚠️ 상태·업로드·제출 로직(submit/uploadToBucket/uploadVideo)은 보존, 렌더만 교체
  */
 
 import { useState, useRef, useEffect } from 'react'
@@ -41,11 +47,10 @@ export default function OnboardingForm({
   const [instagram, setInstagram] = useState('')
   const [birthYear, setBirthYear] = useState('')  // 출생연도(4자리) → 나이 자동
   const [skillInput, setSkillInput] = useState('') // 특기 칩 입력 필드 (skills 콤마 문자열은 유지)
-  const [step, setStep] = useState(0)  // REPLAY 참고 — 3단계 STEP (0:기본 1:사진·문서 2:영상)
-  const STEP_LABELS = ['기본 정보', '사진·문서', '영상'] as const
-  const DRAFT_KEY = `kd4-onboarding-draft-${userId}`  // REPLAY 참고 — 자동 임시저장(텍스트 항목만)
+  const DRAFT_KEY = `kd4-onboarding-draft-${userId}`  // 자동 임시저장(텍스트 항목만)
   const [draftRestored, setDraftRestored] = useState(false)
-  const [photoPreviews, setPhotoPreviews] = useState<string[]>([])  // REPLAY 참고 — 사진 업로드 전 미리보기
+  const [photoPreviews, setPhotoPreviews] = useState<string[]>([])  // 사진 업로드 전 미리보기
+  const [showCurrentPhotos, setShowCurrentPhotos] = useState(false) // 현재사진(전신 각도) 펼치기 — 기본 접어둠
 
   // 업로드 중 탭 닫기/새로고침 방지
   useEffect(() => {
@@ -189,7 +194,7 @@ export default function OnboardingForm({
     // 프로필 사진은 최소 3장 (대표 지시 2026-06) — 올릴 거면 3장 이상
     if (photos.length > 0 && photos.length < 3) {
       setError('프로필 사진은 최소 3장 올려주세요.')
-      setStep(1)  // 사진 단계로 이동해 바로 추가하게
+      photosRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
       return
     }
     setLoading(true)
@@ -292,246 +297,60 @@ export default function OnboardingForm({
     !!ppt, photos.length > 0, videos.some(Boolean),
   ]
   const pct = Math.round((completionChecks.filter(Boolean).length / completionChecks.length) * 100)
+  const skillList = skills.split(',').map(s => s.trim()).filter(Boolean)
+  const advList = advancedSkills.split(',').map(s => s.trim()).filter(Boolean)
 
   // ─── 렌더 ────────────────────────────────────────────────────────────────────
   return (
-    <div style={{ maxWidth: 680 }}>
+    <div style={{ maxWidth: 620, margin: '0 auto' }}>
 
-      {/* 준비 안내 — 부담 낮추기 + 필수 최소 안내 */}
-      <div style={{ marginBottom: 24, padding: '16px 18px', background: 'rgba(196,165,90,0.08)', border: '1px solid rgba(196,165,90,0.25)', borderRadius: 10 }}>
-        <p style={{ fontSize: '0.86rem', color: 'var(--white)', lineHeight: 1.7, fontWeight: 700, marginBottom: 6 }}>
-          📋 한 번에 다 채우지 않으셔도 돼요.
+      {/* 안내 — 부담 낮추기 (제일 쉬운 것 하나만 해도 OK) */}
+      <div style={{ marginBottom: 20, padding: '18px 20px', background: 'rgba(196,165,90,0.08)', border: '1px solid rgba(196,165,90,0.25)', borderRadius: 12 }}>
+        <p style={{ fontSize: '1rem', color: 'var(--white)', lineHeight: 1.7, fontWeight: 700, marginBottom: 8 }}>
+          {userName ? `${userName}님, ` : ''}한 번에 다 안 채우셔도 돼요 👍
         </p>
-        <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.7 }}>
-          <strong style={{ color: 'var(--gold)' }}>사진·영상·프로필 문서 중 하나만</strong> 올려도 등록됩니다. 나머지는 제출 후 <strong>마이페이지</strong>에서 천천히 채우셔도 돼요. 정보가 많을수록 캐스팅 노출에 유리합니다.
+        <p style={{ fontSize: '0.92rem', color: 'var(--gray)', lineHeight: 1.75 }}>
+          <strong style={{ color: 'var(--gold)' }}>사진·영상·프로필 파일 중 하나만</strong> 올려도 등록됩니다.
+          나머지는 나중에 <strong style={{ color: 'var(--white)' }}>마이페이지</strong>에서 천천히 채우셔도 돼요.
         </p>
       </div>
 
-      {/* STEP 인디케이터 + 완성도 (REPLAY 참고) */}
+      {/* 완성도 바 */}
       <div style={{ marginBottom: 24 }}>
-        <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
-          {STEP_LABELS.map((label, i) => (
-            <div key={label} style={{ flex: 1, textAlign: 'center' }}>
-              <div style={{ height: 6, borderRadius: 999, background: i <= step ? 'var(--gold)' : 'var(--border)', transition: 'background 0.2s' }} />
-              <span style={{ display: 'block', marginTop: 6, fontSize: '0.72rem', fontWeight: i === step ? 700 : 400, color: i === step ? 'var(--white)' : 'var(--gray)' }}>
-                {i + 1}. {label}
-              </span>
-            </div>
-          ))}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
+          <span style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--white)' }}>내 프로필 완성도</span>
+          <span style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--gold)' }}>{pct}%</span>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--gray)' }}>
-          <span>{draftRestored ? '✓ 자동 임시저장 중' : ''}</span>
-          <span>완성도 {pct}%</span>
+        <div style={{ height: 8, borderRadius: 999, background: 'var(--border)', overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: `${pct}%`, background: 'var(--gold)', borderRadius: 999, transition: 'width 0.3s' }} />
         </div>
+        {draftRestored && (
+          <p style={{ fontSize: '0.74rem', color: 'var(--gray)', marginTop: 6 }}>✓ 작성 내용은 자동으로 임시저장돼요</p>
+        )}
       </div>
 
-      {step === 0 && (<>
-      {/* 기본 정보 — 키·몸무게·인스타 (캐스팅 검색·필터 핵심) */}
-      <section style={sec} aria-labelledby="onb-basic">
-        <h2 id="onb-basic" style={secTitle}>기본 정보<span style={optTag}>선택</span></h2>
-        <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 14 }}>
-          캐스팅 디렉터가 나이·키·체형으로 배우를 찾을 때 쓰여요. 아는 만큼만 적어주세요.
-        </p>
-        <div style={{ marginBottom: 14 }}>
-          <label htmlFor="onb-birth" style={fieldLabel}>출생연도</label>
-          <input
-            id="onb-birth" name="birth_year" type="text" inputMode="numeric"
-            value={birthYear}
-            onChange={(e) => setBirthYear(e.target.value.replace(/[^0-9]/g, '').slice(0, 4))}
-            disabled={loading} placeholder="예: 1995" aria-label="출생연도 (4자리)" style={inp} autoComplete="off"
-          />
-          {birthYear.length === 4 && Number(birthYear) >= 1930 && Number(birthYear) <= 2020 && (
-            <p style={{ fontSize: '0.72rem', color: 'var(--gold)', marginTop: 4 }}>만 {new Date().getFullYear() - Number(birthYear)}세 — 나이는 자동 계산돼요</p>
-          )}
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
+      {/* ━━━ ① 자료 올리기 (사진·영상·파일) — 제일 먼저, 제일 중요 ━━━ */}
+      <section style={sec} aria-labelledby="onb-files">
+        <div style={stepHead}>
+          <span style={stepNum}>1</span>
           <div>
-            <label htmlFor="onb-height" style={fieldLabel}>키 (cm)</label>
-            <input
-              id="onb-height" name="height" type="text" inputMode="numeric"
-              value={height}
-              onChange={(e) => setHeight(e.target.value.replace(/[^0-9]/g, '').slice(0, 3))}
-              disabled={loading} placeholder="예: 172" aria-label="키 (센티미터)" style={inp} autoComplete="off"
-            />
-          </div>
-          <div>
-            <label htmlFor="onb-weight" style={fieldLabel}>몸무게 (kg)<span style={{ fontWeight: 400, color: 'var(--gray)', marginLeft: 6 }}>· 선택</span></label>
-            <input
-              id="onb-weight" name="weight" type="text" inputMode="numeric"
-              value={weight}
-              onChange={(e) => setWeight(e.target.value.replace(/[^0-9]/g, '').slice(0, 3))}
-              disabled={loading} placeholder="예: 58" aria-label="몸무게 (킬로그램)" style={inp} autoComplete="off"
-            />
+            <h2 id="onb-files" style={stepTitle}>사진 · 영상 · 파일 올리기</h2>
+            <p style={stepSub}>제일 쉬운 것부터 — 하나만 올려도 등록돼요</p>
           </div>
         </div>
-        <label htmlFor="onb-instagram" style={fieldLabel}>인스타그램<span style={{ fontWeight: 400, color: 'var(--gray)', marginLeft: 6 }}>· 선택</span></label>
-        <input
-          id="onb-instagram" name="instagram" type="text"
-          value={instagram}
-          onChange={(e) => setInstagram(e.target.value)}
-          disabled={loading} placeholder="@아이디 또는 instagram.com/아이디" aria-label="인스타그램 주소" style={inp} autoComplete="off"
-        />
-      </section>
 
-      {/* 특기 (칩) + 고급 숙련도 (⭐ 토글) — REPLAY 참고. skills/advancedSkills 콤마문자열은 유지 */}
-      <section style={sec} aria-labelledby="onb-skills">
-        <h2 id="onb-skills" style={secTitle}>특기</h2>
-        <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 12 }}>
-          기술을 입력하고 <strong>Enter</strong>를 누르면 태그로 추가돼요 (수영·검도·피아노·영어 등). 전문가급은 칩의 <span aria-hidden="true">⭐</span>를 눌러 강조하세요.
-        </p>
-        <input
-          id="onb-skills-input"
-          name="skills"
-          type="text"
-          value={skillInput}
-          onChange={(e) => setSkillInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ',') {
-              e.preventDefault()
-              const v = skillInput.trim().replace(/,+$/, '').trim()
-              const cur = skills.split(',').map(s => s.trim()).filter(Boolean)
-              if (v && !cur.includes(v) && cur.length < 30) setSkills([...cur, v].join(', '))
-              setSkillInput('')
-            }
-          }}
-          disabled={loading}
-          placeholder="예: 수영 (입력 후 Enter)"
-          aria-label="특기 입력 (Enter로 추가)"
-          style={inp}
-          autoComplete="off"
-        />
-        {skills.split(',').map(s => s.trim()).filter(Boolean).length > 0 && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>
-            {skills.split(',').map(s => s.trim()).filter(Boolean).map((sk) => {
-              const isAdv = advancedSkills.split(',').map(s => s.trim()).filter(Boolean).includes(sk)
-              return (
-                <span key={sk} style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 6,
-                  padding: '6px 8px 6px 12px', borderRadius: 999,
-                  background: isAdv ? 'var(--navy)' : 'var(--bg3)',
-                  color: isAdv ? '#fff' : 'var(--white)',
-                  border: `1px solid ${isAdv ? 'var(--navy)' : 'var(--border)'}`,
-                  fontSize: '0.82rem', fontFamily: 'var(--font-sans)',
-                }}>
-                  <button
-                    type="button" disabled={loading} aria-pressed={isAdv}
-                    aria-label={`${sk} 고급 숙련도 ${isAdv ? '해제' : '표시'}`}
-                    onClick={() => {
-                      const adv = advancedSkills.split(',').map(s => s.trim()).filter(Boolean)
-                      setAdvancedSkills((isAdv ? adv.filter(x => x !== sk) : [...adv, sk]).join(', '))
-                    }}
-                    style={{ background: 'none', border: 'none', cursor: loading ? 'default' : 'pointer', padding: 0, fontSize: '0.82rem', lineHeight: 1, color: 'inherit' }}
-                  >{isAdv ? '⭐' : '☆'}</button>
-                  {sk}
-                  <button
-                    type="button" disabled={loading} aria-label={`${sk} 삭제`}
-                    onClick={() => {
-                      const cur = skills.split(',').map(s => s.trim()).filter(Boolean).filter(x => x !== sk)
-                      const adv = advancedSkills.split(',').map(s => s.trim()).filter(Boolean).filter(x => x !== sk)
-                      setSkills(cur.join(', '))
-                      setAdvancedSkills(adv.join(', '))
-                    }}
-                    style={{ background: 'none', border: 'none', cursor: loading ? 'default' : 'pointer', padding: '0 2px', fontSize: '0.9rem', lineHeight: 1, color: 'inherit', opacity: 0.7 }}
-                  >×</button>
-                </span>
-              )
-            })}
-          </div>
-        )}
-        <p style={{ fontSize: '0.74rem', color: 'var(--gray)', marginTop: 10 }}>
-          <span aria-hidden="true">⭐</span> 표시 = 전문가급/네이티브 수준
-        </p>
-      </section>
-
-      {/* 사투리 (가능 지역) */}
-      <section style={sec} aria-labelledby="onb-dialects">
-        <h2 id="onb-dialects" style={secTitle}>사투리 (가능 지역)</h2>
-        <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 12 }}>
-          네이티브 수준으로 구사 가능한 사투리 지역을 선택하세요. (사투리가 없으면 <strong style={{ color: 'var(--white)' }}>없음</strong>을 선택)
-        </p>
-        <div role="group" aria-label="사투리 가능 지역" style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-          {[...DIALECT_OPTIONS, DIALECT_NONE].map((d) => {
-            const on = dialects.includes(d)
-            const isNone = d === DIALECT_NONE
-            return (
-              <button
-                key={d}
-                type="button"
-                disabled={loading}
-                aria-pressed={on}
-                onClick={() => setDialects((prev) => {
-                  if (isNone) return prev.includes(DIALECT_NONE) ? [] : [DIALECT_NONE]
-                  const r = prev.filter((x) => x !== DIALECT_NONE)
-                  return r.includes(d) ? r.filter((x) => x !== d) : [...r, d]
-                })}
-                style={{
-                  padding: '8px 16px', borderRadius: 999, cursor: loading ? 'default' : 'pointer',
-                  fontSize: '0.85rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
-                  background: on ? 'var(--navy)' : 'transparent',
-                  color: on ? '#fff' : 'var(--gray)',
-                  border: `1px solid ${on ? 'var(--navy)' : 'var(--border)'}`,
-                  transition: 'all 0.15s',
-                }}
-              >
-                {on ? '✓ ' : ''}{isNone ? '없음 (표준어)' : d}
-              </button>
-            )
-          })}
-        </div>
-      </section>
-
-      {/* 한줄소개 */}
-      <section style={sec} aria-labelledby="onb-casting-summary">
-        <h2 id="onb-casting-summary" style={secTitle}>한줄소개</h2>
-        <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 12 }}>
-          캐스팅 디렉터에게 보이는 짧은 자기소개입니다.
-          <em style={{ color: 'var(--gray)', marginLeft: 6 }}>"장르를 넘나드는 탄탄한 기본기의 배우"</em>
-        </p>
-        <textarea
-          id="casting-summary"
-          name="casting_summary"
-          value={castingSummary}
-          onChange={(e) => setCastingSummary(e.target.value)}
-          maxLength={120}
-          rows={2}
-          disabled={loading}
-          placeholder="한 줄로 나를 소개해주세요."
-          aria-label="캐스팅 한 줄 소개"
-          aria-describedby="onb-casting-count"
-          style={{ ...inp, resize: 'vertical', minHeight: 64, lineHeight: 1.6 }}
-        />
-        <p id="onb-casting-count" aria-live="off" aria-atomic="true" style={{ fontSize: '0.72rem', color: 'var(--gray)', textAlign: 'right', marginTop: 4 }}>{castingSummary.length}/120</p>
-      </section>
-      </>)}
-
-      {step === 1 && (<>
-      {/* PPTX */}
-      <section style={sec} aria-labelledby="onb-pptx">
-        <h2 id="onb-pptx" style={secTitle}>프로필 문서</h2>
-        <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 14 }}>
-          <strong>.pptx 또는 .pdf</strong> 형식, 최대 20MB.
-          PPTX는 가로형 슬라이드로 올려주세요 (세로형은 사진이 잘릴 수 있어요).
-        </p>
-        <input ref={pptRef} type="file" accept=".pptx,.pdf,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation" disabled={loading} onChange={e => pickPpt(e.target.files?.[0] ?? null)} style={{ display: 'none' }} aria-hidden="true" />
-        <button type="button" onClick={() => pptRef.current?.click()} disabled={loading} style={fileBtn}>
-          {ppt ? <><span aria-hidden="true">📄</span>{` ${ppt.name} (${(ppt.size / MB).toFixed(1)}MB) — 변경`}</> : <><span aria-hidden="true">📄</span>{' 파일 선택'}</>}
-        </button>
-        {ppt && <p style={picked}><span aria-hidden="true">✓</span> {ppt.name} 선택됨</p>}
-      </section>
-
-      {/* 사진 */}
-      <section style={sec} aria-labelledby="onb-photos">
-        <h2 id="onb-photos" style={secTitle}>프로필 사진</h2>
-        <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 14 }}>
-          <strong>세로형 헤드샷 최소 3장</strong>을 올려주세요 (3~6장 권장, 장당 15MB 이하).
-          맨 앞 사진이 <strong>대표 사진</strong>으로 보입니다. 가로 사진을 함께 올리면 카카오톡 공유 썸네일로도 쓰여요.
-        </p>
+        {/* 프로필 사진 (행 버튼) */}
         <input ref={photosRef} type="file" accept="image/*" multiple disabled={loading} onChange={e => pickPhotos(e.target.files)} style={{ display: 'none' }} aria-hidden="true" />
-        <button type="button" onClick={() => photosRef.current?.click()} disabled={loading} style={fileBtn}>
-          {photos.length > 0 ? <><span aria-hidden="true">🖼</span>{` ${photos.length}장 선택됨 — 변경`}</> : <><span aria-hidden="true">🖼</span>{' 사진 선택'}</>}
+        <button type="button" onClick={() => photosRef.current?.click()} disabled={loading} style={rowBtn(photos.length > 0)} aria-label="프로필 사진 올리기">
+          <span style={rowIcon} aria-hidden="true">🖼</span>
+          <span style={rowBody}>
+            <span style={rowLabel}>프로필 사진 <span style={reqTag}>최소 3장</span></span>
+            <span style={rowSub}>{photos.length > 0 ? `${photos.length}장 선택됨` : '세로형 헤드샷 · 맨 앞이 대표사진'}</span>
+          </span>
+          <span style={rowAction(photos.length > 0)}>{photos.length > 0 ? '변경' : '올리기 ›'}</span>
         </button>
         {photos.length > 0 && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, margin: '8px 2px 0' }}>
             {photos.map((p, i) => (
               <div key={i} style={{ position: 'relative' }}>
                 {photoPreviews[i] && (
@@ -539,65 +358,257 @@ export default function OnboardingForm({
                   <img
                     src={photoPreviews[i]}
                     alt={`선택한 사진 ${i + 1} 미리보기`}
-                    style={{ width: 72, height: 96, objectFit: 'cover', borderRadius: 6, display: 'block', border: i === 0 ? '2px solid var(--gold)' : '1px solid var(--border)' }}
+                    style={{ width: 76, height: 100, objectFit: 'cover', borderRadius: 8, display: 'block', border: i === 0 ? '2px solid var(--gold)' : '1px solid var(--border)' }}
                   />
                 )}
                 {i === 0 && (
-                  <span style={{ position: 'absolute', bottom: 0, left: 0, right: 0, fontSize: '0.6rem', textAlign: 'center', background: 'var(--gold)', color: '#fff', padding: '1px 0', borderRadius: '0 0 6px 6px' }}>대표</span>
+                  <span style={{ position: 'absolute', bottom: 0, left: 0, right: 0, fontSize: '0.62rem', textAlign: 'center', background: 'var(--gold)', color: '#fff', padding: '2px 0', borderRadius: '0 0 7px 7px', fontWeight: 700 }}>대표</span>
                 )}
               </div>
             ))}
           </div>
         )}
 
-        {/* 현재사진 */}
-        <div style={{ marginTop: 20, padding: '16px 18px', background: 'var(--bg3)', borderRadius: 8, border: '1px solid var(--border)' }}>
-          <p style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--white)', marginBottom: 6 }}>
-            현재사진 <span style={{ fontSize: '0.74rem', fontWeight: 400, color: 'var(--gray)' }}>(선택)</span>
-          </p>
-          <p style={{ fontSize: '0.78rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 14 }}>
-            앞·좌·우·뒤 각도의 현재 모습 사진. <strong>체형·전신</strong>을 보여줘 캐스팅 판단에 도움이 됩니다. 각 15MB 이하.
-          </p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            {CURRENT_PHOTO_LABELS.map((label, idx) => (
-              <div key={label}>
-                <input ref={currentPhotoRefs[idx]} type="file" accept="image/*" disabled={loading} onChange={e => pickCurrentPhoto(idx, e.target.files?.[0] ?? null)} style={{ display: 'none' }} aria-hidden="true" />
-                <button type="button" onClick={() => currentPhotoRefs[idx].current?.click()} disabled={loading} style={{ ...fileBtn, fontSize: '0.78rem', padding: '8px 14px' }}>
-                  {currentPhotos[idx] ? <><span aria-hidden="true">✓ </span>{label}</> : `${label} 선택`}
-                </button>
-                {currentPhotos[idx] && (
-                  <p style={{ ...picked, marginTop: 4 }}>{currentPhotos[idx]!.name}</p>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-      </>)}
-
-      {step === 2 && (<>
-      {/* 영상 */}
-      <section style={sec} aria-labelledby="onb-videos">
-        <h2 id="onb-videos" style={secTitle}>출연영상</h2>
-        <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 14 }}>
-          mp4 권장, 최대 300MB. 출연영상 2개 + <strong>독백 영상</strong> 1개(혼자 연기하는 독백 — 감정·발성을 보여주는 용도)까지 올릴 수 있어요. 용량이 크면 업로드에 시간이 걸릴 수 있습니다.
-        </p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {/* 출연영상 (행 버튼 3개) */}
+        <div style={rowGroupGap}>
           {[0, 1, 2].map(idx => (
-            <div key={idx}>
+            <span key={idx}>
               <input ref={videoRefs[idx]} type="file" accept="video/*" disabled={loading} onChange={e => pickVideo(idx, e.target.files?.[0] ?? null)} style={{ display: 'none' }} aria-hidden="true" />
-              <button type="button" onClick={() => videoRefs[idx].current?.click()} disabled={loading} style={{ ...fileBtn, width: '100%', justifyContent: 'flex-start' }}>
-                {videos[idx]
-                  ? <><span aria-hidden="true">🎬</span>{` ${idx === 2 ? '독백' : `출연영상 ${idx + 1}`}: ${videos[idx]!.name} (${(videos[idx]!.size / MB).toFixed(0)}MB) — 변경`}</>
-                  : <><span aria-hidden="true">🎬</span>{` ${idx === 2 ? '독백 (선택)' : `출연영상 ${idx + 1}${idx > 0 ? ' (선택)' : ''}`} 선택`}</>}
+              <button type="button" onClick={() => videoRefs[idx].current?.click()} disabled={loading} style={rowBtn(!!videos[idx])} aria-label={`${idx === 2 ? '독백 영상' : `출연영상 ${idx + 1}`} 올리기`}>
+                <span style={rowIcon} aria-hidden="true">{idx === 2 ? '🎙' : '🎬'}</span>
+                <span style={rowBody}>
+                  <span style={rowLabel}>{idx === 2 ? '독백 영상' : `출연영상 ${idx + 1}`} {idx > 0 && <span style={optInline}>선택</span>}</span>
+                  <span style={rowSub}>
+                    {videos[idx]
+                      ? `${videos[idx]!.name} (${(videos[idx]!.size / MB).toFixed(0)}MB)`
+                      : idx === 2 ? '혼자 연기하는 독백 (감정·발성)' : 'mp4 권장 · 최대 300MB'}
+                  </span>
+                </span>
+                <span style={rowAction(!!videos[idx])}>{videos[idx] ? '변경' : '올리기 ›'}</span>
               </button>
-            </div>
+            </span>
           ))}
         </div>
-      </section>
-      </>)}
 
-      {/* 항상 DOM에 존재 — 스크린 리더 즉시 알림 보장 (WCAG 4.1.3) */}
+        {/* 프로필 파일 (PPT/PDF) */}
+        <input ref={pptRef} type="file" accept=".pptx,.pdf,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation" disabled={loading} onChange={e => pickPpt(e.target.files?.[0] ?? null)} style={{ display: 'none' }} aria-hidden="true" />
+        <button type="button" onClick={() => pptRef.current?.click()} disabled={loading} style={{ ...rowBtn(!!ppt), marginTop: 10 }} aria-label="프로필 파일 올리기">
+          <span style={rowIcon} aria-hidden="true">📄</span>
+          <span style={rowBody}>
+            <span style={rowLabel}>프로필 파일 <span style={optInline}>선택</span></span>
+            <span style={rowSub}>{ppt ? `${ppt.name} (${(ppt.size / MB).toFixed(1)}MB)` : 'PPT·PDF · 최대 20MB (가로형 권장)'}</span>
+          </span>
+          <span style={rowAction(!!ppt)}>{ppt ? '변경' : '올리기 ›'}</span>
+        </button>
+
+        {/* 현재사진 (전신 각도) — 접어둠 */}
+        <button type="button" onClick={() => setShowCurrentPhotos(v => !v)} disabled={loading} style={moreToggle}>
+          {showCurrentPhotos ? '▾ 현재사진(전신 각도) 닫기' : '＋ 현재사진(전신 각도) 추가하기 · 선택'}
+        </button>
+        {showCurrentPhotos && (
+          <div style={{ marginTop: 10, padding: '14px 16px', background: 'var(--bg3)', borderRadius: 10, border: '1px solid var(--border)' }}>
+            <p style={{ fontSize: '0.84rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 12 }}>
+              앞·좌·우·뒤 각도의 현재 모습. <strong style={{ color: 'var(--white)' }}>체형·전신</strong>을 보여줘 캐스팅 판단에 도움이 됩니다. 각 15MB 이하.
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              {CURRENT_PHOTO_LABELS.map((label, idx) => (
+                <div key={label}>
+                  <input ref={currentPhotoRefs[idx]} type="file" accept="image/*" disabled={loading} onChange={e => pickCurrentPhoto(idx, e.target.files?.[0] ?? null)} style={{ display: 'none' }} aria-hidden="true" />
+                  <button type="button" onClick={() => currentPhotoRefs[idx].current?.click()} disabled={loading} style={{ ...miniBtn, ...(currentPhotos[idx] ? { borderColor: 'var(--gold)', color: 'var(--gold)' } : {}) }}>
+                    {currentPhotos[idx] ? `✓ ${label}` : `${label} 선택`}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* ━━━ ② 기본 정보 (생년·키·체형) ━━━ */}
+      <section style={sec} aria-labelledby="onb-basic">
+        <div style={stepHead}>
+          <span style={stepNum}>2</span>
+          <div>
+            <h2 id="onb-basic" style={stepTitle}>기본 정보</h2>
+            <p style={stepSub}>캐스팅이 나이·키·체형으로 배우를 찾을 때 쓰여요</p>
+          </div>
+        </div>
+
+        <div style={fieldRow}>
+          <label htmlFor="onb-birth" style={bigLabel}>출생연도</label>
+          <input
+            id="onb-birth" name="birth_year" type="text" inputMode="numeric"
+            value={birthYear}
+            onChange={(e) => setBirthYear(e.target.value.replace(/[^0-9]/g, '').slice(0, 4))}
+            disabled={loading} placeholder="예: 1995" aria-label="출생연도 (4자리)" style={inpBig} autoComplete="off"
+          />
+          {birthYear.length === 4 && Number(birthYear) >= 1930 && Number(birthYear) <= 2020 && (
+            <p style={{ fontSize: '0.8rem', color: 'var(--gold)', marginTop: 6 }}>만 {new Date().getFullYear() - Number(birthYear)}세 — 나이는 자동 계산돼요</p>
+          )}
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, ...fieldRow }}>
+          <div>
+            <label htmlFor="onb-height" style={bigLabel}>키 (cm)</label>
+            <input
+              id="onb-height" name="height" type="text" inputMode="numeric"
+              value={height}
+              onChange={(e) => setHeight(e.target.value.replace(/[^0-9]/g, '').slice(0, 3))}
+              disabled={loading} placeholder="예: 172" aria-label="키 (센티미터)" style={inpBig} autoComplete="off"
+            />
+          </div>
+          <div>
+            <label htmlFor="onb-weight" style={bigLabel}>몸무게 (kg) <span style={optInline}>선택</span></label>
+            <input
+              id="onb-weight" name="weight" type="text" inputMode="numeric"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value.replace(/[^0-9]/g, '').slice(0, 3))}
+              disabled={loading} placeholder="예: 58" aria-label="몸무게 (킬로그램)" style={inpBig} autoComplete="off"
+            />
+          </div>
+        </div>
+        <div>
+          <label htmlFor="onb-instagram" style={bigLabel}>인스타그램 <span style={optInline}>선택</span></label>
+          <input
+            id="onb-instagram" name="instagram" type="text"
+            value={instagram}
+            onChange={(e) => setInstagram(e.target.value)}
+            disabled={loading} placeholder="@아이디 또는 instagram.com/아이디" aria-label="인스타그램 주소" style={inpBig} autoComplete="off"
+          />
+        </div>
+      </section>
+
+      {/* ━━━ ③ 특기 · 사투리 · 소개 ━━━ */}
+      <section style={sec} aria-labelledby="onb-extra">
+        <div style={stepHead}>
+          <span style={stepNum}>3</span>
+          <div>
+            <h2 id="onb-extra" style={stepTitle}>특기 · 사투리 · 소개</h2>
+            <p style={stepSub}>아는 만큼만 적어주세요 — 전부 선택이에요</p>
+          </div>
+        </div>
+
+        {/* 특기 (칩) */}
+        <div style={fieldRow}>
+          <label htmlFor="onb-skills-input" style={bigLabel}>특기</label>
+          <p style={helpText}>기술을 적고 <strong>Enter</strong>를 누르면 칸이 생겨요 (수영·검도·피아노 등). 전문가급은 <span aria-hidden="true">⭐</span>를 눌러 강조.</p>
+          <input
+            id="onb-skills-input"
+            name="skills"
+            type="text"
+            value={skillInput}
+            onChange={(e) => setSkillInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ',') {
+                e.preventDefault()
+                const v = skillInput.trim().replace(/,+$/, '').trim()
+                const cur = skills.split(',').map(s => s.trim()).filter(Boolean)
+                if (v && !cur.includes(v) && cur.length < 30) setSkills([...cur, v].join(', '))
+                setSkillInput('')
+              }
+            }}
+            disabled={loading}
+            placeholder="예: 수영 (입력 후 Enter)"
+            aria-label="특기 입력 (Enter로 추가)"
+            style={inpBig}
+            autoComplete="off"
+          />
+          {skillList.length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>
+              {skillList.map((sk) => {
+                const isAdv = advList.includes(sk)
+                return (
+                  <span key={sk} style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 6,
+                    padding: '7px 10px 7px 14px', borderRadius: 999,
+                    background: isAdv ? 'var(--navy)' : 'var(--bg3)',
+                    color: isAdv ? '#fff' : 'var(--white)',
+                    border: `1px solid ${isAdv ? 'var(--navy)' : 'var(--border)'}`,
+                    fontSize: '0.9rem', fontFamily: 'var(--font-sans)',
+                  }}>
+                    <button
+                      type="button" disabled={loading} aria-pressed={isAdv}
+                      aria-label={`${sk} 고급 숙련도 ${isAdv ? '해제' : '표시'}`}
+                      onClick={() => {
+                        const adv = advancedSkills.split(',').map(s => s.trim()).filter(Boolean)
+                        setAdvancedSkills((isAdv ? adv.filter(x => x !== sk) : [...adv, sk]).join(', '))
+                      }}
+                      style={{ background: 'none', border: 'none', cursor: loading ? 'default' : 'pointer', padding: 0, fontSize: '0.9rem', lineHeight: 1, color: 'inherit' }}
+                    >{isAdv ? '⭐' : '☆'}</button>
+                    {sk}
+                    <button
+                      type="button" disabled={loading} aria-label={`${sk} 삭제`}
+                      onClick={() => {
+                        const cur = skills.split(',').map(s => s.trim()).filter(Boolean).filter(x => x !== sk)
+                        const adv = advancedSkills.split(',').map(s => s.trim()).filter(Boolean).filter(x => x !== sk)
+                        setSkills(cur.join(', '))
+                        setAdvancedSkills(adv.join(', '))
+                      }}
+                      style={{ background: 'none', border: 'none', cursor: loading ? 'default' : 'pointer', padding: '0 2px', fontSize: '1rem', lineHeight: 1, color: 'inherit', opacity: 0.7 }}
+                    >×</button>
+                  </span>
+                )
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* 사투리 */}
+        <div style={fieldRow}>
+          <label style={bigLabel}>사투리 (가능 지역)</label>
+          <p style={helpText}>네이티브 수준으로 가능한 지역을 누르세요. 없으면 <strong style={{ color: 'var(--white)' }}>없음</strong>.</p>
+          <div role="group" aria-label="사투리 가능 지역" style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {[...DIALECT_OPTIONS, DIALECT_NONE].map((d) => {
+              const on = dialects.includes(d)
+              const isNone = d === DIALECT_NONE
+              return (
+                <button
+                  key={d}
+                  type="button"
+                  disabled={loading}
+                  aria-pressed={on}
+                  onClick={() => setDialects((prev) => {
+                    if (isNone) return prev.includes(DIALECT_NONE) ? [] : [DIALECT_NONE]
+                    const r = prev.filter((x) => x !== DIALECT_NONE)
+                    return r.includes(d) ? r.filter((x) => x !== d) : [...r, d]
+                  })}
+                  style={{
+                    padding: '10px 18px', borderRadius: 999, cursor: loading ? 'default' : 'pointer',
+                    fontSize: '0.92rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
+                    background: on ? 'var(--navy)' : 'transparent',
+                    color: on ? '#fff' : 'var(--gray)',
+                    border: `1px solid ${on ? 'var(--navy)' : 'var(--border)'}`,
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  {on ? '✓ ' : ''}{isNone ? '없음 (표준어)' : d}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* 한줄소개 */}
+        <div>
+          <label htmlFor="casting-summary" style={bigLabel}>한줄소개</label>
+          <p style={helpText}>캐스팅 디렉터에게 보이는 짧은 소개. <em style={{ color: 'var(--gray)' }}>&quot;장르를 넘나드는 탄탄한 기본기의 배우&quot;</em></p>
+          <textarea
+            id="casting-summary"
+            name="casting_summary"
+            value={castingSummary}
+            onChange={(e) => setCastingSummary(e.target.value)}
+            maxLength={120}
+            rows={2}
+            disabled={loading}
+            placeholder="한 줄로 나를 소개해주세요."
+            aria-label="캐스팅 한 줄 소개"
+            aria-describedby="onb-casting-count"
+            style={{ ...inpBig, resize: 'vertical', minHeight: 68, lineHeight: 1.6 }}
+          />
+          <p id="onb-casting-count" aria-live="off" aria-atomic="true" style={{ fontSize: '0.74rem', color: 'var(--gray)', textAlign: 'right', marginTop: 4 }}>{castingSummary.length}/120</p>
+        </div>
+      </section>
+
+      {/* 상태/에러/로딩 — 항상 DOM에 존재 (스크린 리더 즉시 알림 WCAG 4.1.3) */}
       <p role="status" aria-live="polite" aria-atomic="true" style={warning ? warnStyle : {}}>{warning}</p>
       <div
         ref={errorRef}
@@ -607,34 +618,21 @@ export default function OnboardingForm({
         style={{ outline: 'none', ...(error ? errStyle : {}) }}
       >{error}</div>
       {loading && status && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', background: 'rgba(196,165,90,0.08)', border: '1px solid rgba(196,165,90,0.2)', borderRadius: 8, marginBottom: 16 }}>
-          <span style={{ fontSize: '1rem' }} aria-hidden="true">⏳</span>
-          <p role="status" aria-live="polite" style={{ fontSize: '0.85rem', color: 'var(--gold)' }}>{status}</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '14px 16px', background: 'rgba(196,165,90,0.08)', border: '1px solid rgba(196,165,90,0.2)', borderRadius: 8, marginBottom: 16 }}>
+          <span style={{ fontSize: '1.1rem' }} aria-hidden="true">⏳</span>
+          <p role="status" aria-live="polite" style={{ fontSize: '0.92rem', color: 'var(--gold)' }}>{status}</p>
         </div>
       )}
 
-      {/* STEP 네비게이션 (REPLAY 참고) — 이전/다음, 마지막 단계만 제출 */}
-      <div style={{ display: 'flex', gap: 10 }}>
-        {step > 0 && (
-          <button type="button" onClick={() => setStep(s => Math.max(0, s - 1))} disabled={loading} style={navSecondary}>
-            ← 이전
-          </button>
-        )}
-        {step < 2 ? (
-          <button type="button" onClick={() => setStep(s => Math.min(2, s + 1))} disabled={loading} style={navPrimary}>
-            다음 →
-          </button>
-        ) : (
-          <button type="button" onClick={submit} disabled={loading} aria-busy={loading}
-            style={{ ...navPrimary, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1 }}>
-            {loading ? '업로드 중...' : '제출하기'}
-          </button>
-        )}
-      </div>
+      {/* 제출 — 큰 버튼 하나 */}
+      <button type="button" onClick={submit} disabled={loading} aria-busy={loading}
+        style={{ ...submitBtn, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1 }}>
+        {loading ? '업로드 중...' : '제출하기'}
+      </button>
 
       <button type="button" onClick={() => router.push('/dashboard')} disabled={loading} style={{
-        width: '100%', padding: 12, marginTop: 10, background: 'transparent',
-        color: 'var(--gray)', fontSize: '0.84rem', borderRadius: 8, border: 'none', cursor: 'pointer',
+        width: '100%', padding: 14, marginTop: 10, background: 'transparent',
+        color: 'var(--gray)', fontSize: '0.92rem', borderRadius: 8, border: 'none', cursor: 'pointer',
       }}>
         나중에 하기
       </button>
@@ -644,93 +642,89 @@ export default function OnboardingForm({
 
 // ─── 스타일 ───────────────────────────────────────────────────────────────────
 const sec: React.CSSProperties = {
-  marginBottom: 24,
+  marginBottom: 18,
   background: 'var(--bg2)',
   border: '1px solid var(--border)',
-  borderRadius: 10,
-  padding: '24px 22px',
+  borderRadius: 14,
+  padding: '22px 20px',
 }
 
-const secTitle: React.CSSProperties = {
-  fontFamily: 'var(--font-display)',
-  fontSize: '0.7rem',
-  fontWeight: 400,
-  letterSpacing: '0.25em',
-  color: 'var(--gold)',
-  textTransform: 'uppercase',
-  marginBottom: 12,
+// 섹션 헤더 — 번호 동그라미 + 큰 제목 (시니어 친화)
+const stepHead: React.CSSProperties = {
+  display: 'flex', alignItems: 'center', gap: 12, marginBottom: 18,
+}
+const stepNum: React.CSSProperties = {
+  flexShrink: 0, width: 30, height: 30, borderRadius: '50%',
+  background: 'var(--gold)', color: '#1a1a1a', fontWeight: 800,
+  display: 'flex', alignItems: 'center', justifyContent: 'center',
+  fontSize: '0.95rem', fontFamily: 'var(--font-display)',
+}
+const stepTitle: React.CSSProperties = {
+  fontSize: '1.18rem', fontWeight: 700, color: 'var(--white)', lineHeight: 1.2, margin: 0,
+}
+const stepSub: React.CSSProperties = {
+  fontSize: '0.84rem', color: 'var(--gray)', marginTop: 3, lineHeight: 1.4,
 }
 
-const fieldLabel: React.CSSProperties = {
-  display: 'block',
-  fontSize: '0.78rem',
-  fontWeight: 600,
-  color: 'var(--white)',
-  marginBottom: 6,
+// 큰 행 버튼 (파일 올리기) — 채워지면 골드 테두리
+const rowBtn = (filled: boolean): React.CSSProperties => ({
+  display: 'flex', alignItems: 'center', gap: 14, width: '100%', textAlign: 'left',
+  padding: '15px 16px', borderRadius: 12,
+  background: filled ? 'rgba(196,165,90,0.07)' : 'var(--bg3)',
+  border: `1.5px ${filled ? 'solid var(--gold)' : 'dashed var(--border)'}`,
+  cursor: 'pointer', transition: 'border-color 0.15s, background 0.15s',
+})
+const rowGroupGap: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: 10, marginTop: 10 }
+const rowIcon: React.CSSProperties = { flexShrink: 0, fontSize: '1.5rem', lineHeight: 1, width: 30, textAlign: 'center' }
+const rowBody: React.CSSProperties = { flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 3 }
+const rowLabel: React.CSSProperties = { fontSize: '1rem', fontWeight: 700, color: 'var(--white)' }
+const rowSub: React.CSSProperties = { fontSize: '0.8rem', color: 'var(--gray)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }
+const rowAction = (filled: boolean): React.CSSProperties => ({
+  flexShrink: 0, fontSize: '0.9rem', fontWeight: 700,
+  color: 'var(--gold)', whiteSpace: 'nowrap',
+})
+
+const reqTag: React.CSSProperties = { fontSize: '0.74rem', fontWeight: 700, color: '#e2554a', marginLeft: 4 }
+const optInline: React.CSSProperties = { fontSize: '0.74rem', fontWeight: 400, color: 'var(--gray)', marginLeft: 4 }
+
+// 더보기 토글 (현재사진 펼치기)
+const moreToggle: React.CSSProperties = {
+  display: 'block', width: '100%', marginTop: 12, padding: '11px 0',
+  background: 'transparent', border: '1px solid var(--border)', borderRadius: 10,
+  color: 'var(--gray)', fontSize: '0.86rem', cursor: 'pointer', fontFamily: 'var(--font-sans)',
+}
+const miniBtn: React.CSSProperties = {
+  display: 'block', width: '100%', padding: '10px 8px',
+  background: 'var(--bg2)', border: '1px dashed var(--border)', borderRadius: 8,
+  color: 'var(--white)', fontSize: '0.84rem', cursor: 'pointer',
 }
 
-const optTag: React.CSSProperties = {
-  fontSize: '0.62rem',
-  fontWeight: 400,
-  color: 'var(--gray)',
-  letterSpacing: 0,
-  marginLeft: 8,
-  verticalAlign: 'middle',
+// 텍스트 입력 (시니어 — 크게)
+const fieldRow: React.CSSProperties = { marginBottom: 18 }
+const bigLabel: React.CSSProperties = {
+  display: 'block', fontSize: '0.95rem', fontWeight: 700, color: 'var(--white)', marginBottom: 8,
+}
+const helpText: React.CSSProperties = {
+  fontSize: '0.82rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 10,
+}
+const inpBig: React.CSSProperties = {
+  display: 'block', width: '100%',
+  background: 'var(--bg3)', border: '1px solid var(--border)', borderRadius: 10,
+  padding: '14px 14px', color: 'var(--white)', fontSize: '1rem',
+  fontFamily: 'inherit', boxSizing: 'border-box',
 }
 
-const inp: React.CSSProperties = {
-  display: 'block',
-  width: '100%',
-  background: 'var(--bg3)',
-  border: '1px solid var(--border)',
-  borderRadius: 8,
-  padding: '10px 12px',
-  color: 'var(--white)',
-  fontSize: '0.88rem',
-  fontFamily: 'inherit',
-  boxSizing: 'border-box',
-}
-
-const fileBtn: React.CSSProperties = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: 8,
-  padding: '10px 18px',
-  background: 'var(--bg3)',
-  border: '1px dashed var(--border)',
-  borderRadius: 8,
-  color: 'var(--white)',
-  fontSize: '0.85rem',
-  cursor: 'pointer',
-  transition: 'border-color 0.15s',
-}
-
-const picked: React.CSSProperties = {
-  fontSize: '0.75rem',
-  color: 'var(--gold)',
-  marginTop: 6,
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
-}
-
-const navPrimary: React.CSSProperties = {
-  flex: 1, padding: '14px 0', background: 'var(--navy)', color: '#fff',
-  fontWeight: 700, fontSize: '0.95rem', borderRadius: 8, border: 'none', cursor: 'pointer',
-  fontFamily: 'var(--font-display)', letterSpacing: '0.04em',
-}
-
-const navSecondary: React.CSSProperties = {
-  flex: 1, padding: '14px 0', background: 'transparent', color: 'var(--white)',
-  fontWeight: 600, fontSize: '0.92rem', borderRadius: 8, border: '1px solid var(--border)', cursor: 'pointer',
+const submitBtn: React.CSSProperties = {
+  width: '100%', padding: '18px 0', background: 'var(--navy)', color: '#fff',
+  fontWeight: 700, fontSize: '1.1rem', borderRadius: 12, border: 'none',
   fontFamily: 'var(--font-display)', letterSpacing: '0.04em',
 }
 
 const errStyle: React.CSSProperties = {
   color: '#b91c1c',
-  fontSize: '0.85rem',
+  fontSize: '0.9rem',
   marginBottom: 14,
-  padding: '10px 14px',
+  padding: '12px 16px',
   background: 'rgba(185,28,28,0.08)',
   border: '1px solid rgba(185,28,28,0.2)',
   borderRadius: 8,
@@ -738,9 +732,9 @@ const errStyle: React.CSSProperties = {
 
 const warnStyle: React.CSSProperties = {
   color: '#fbbf24',
-  fontSize: '0.85rem',
+  fontSize: '0.9rem',
   marginBottom: 14,
-  padding: '10px 14px',
+  padding: '12px 16px',
   background: 'rgba(251,191,36,0.08)',
   border: '1px solid rgba(251,191,36,0.2)',
   borderRadius: 8,
