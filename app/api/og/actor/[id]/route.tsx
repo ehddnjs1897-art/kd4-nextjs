@@ -91,6 +91,64 @@ function getPhotoUrl(actor: ActorOg): string | null {
   return null
 }
 
+/** 이미지 헤더(앞 64KB)만 Range로 읽어 가로/세로 크기 판별 (full 디코드 없이). */
+async function imageDims(url: string): Promise<{ w: number; h: number } | null> {
+  try {
+    const res = await fetch(url, { headers: { Range: 'bytes=0-65535' }, signal: AbortSignal.timeout(5000) })
+    if (!res.ok && res.status !== 206) return null
+    const buf = Buffer.from(await res.arrayBuffer())
+    // PNG — IHDR(고정 오프셋)
+    if (buf.length >= 24 && buf.toString('hex', 0, 8) === '89504e470d0a1a0a') {
+      return { w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) }
+    }
+    // JPEG — SOF 마커 스캔
+    let o = 2
+    while (o + 9 < buf.length) {
+      if (buf[o] !== 0xff) { o++; continue }
+      const m = buf[o + 1]
+      if (m >= 0xc0 && m <= 0xcf && m !== 0xc4 && m !== 0xc8 && m !== 0xcc) {
+        return { h: buf.readUInt16BE(o + 5), w: buf.readUInt16BE(o + 7) }
+      }
+      if (m === 0xd8 || m === 0xd9 || (m >= 0xd0 && m <= 0xd7)) { o += 2; continue }
+      o += 2 + buf.readUInt16BE(o + 2)
+    }
+    return null
+  } catch {
+    return null
+  }
+}
+
+/** 썸네일(가로 1200×630)용 — 배우 포트폴리오 사진 중 '가로' 첫 장 URL. 없으면 null → 대표사진 폴백. */
+async function pickLandscapeUrl(id: string): Promise<string | null> {
+  if (!SUPABASE_URL || !SERVICE_KEY) return null
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/actor_photos?actor_id=eq.${encodeURIComponent(id)}&select=url,storage_path,photo_type,sort_order&order=sort_order.asc`,
+      {
+        headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },
+        signal: AbortSignal.timeout(8000),
+        next: { revalidate: 3600, tags: ['actors', `actor-${id}`] },
+      }
+    )
+    if (!res.ok) return null
+    const rows = (await res.json()) as { url: string | null; storage_path: string | null; photo_type: string | null }[]
+    const candidates = rows
+      .filter((p) => p.photo_type !== 'current')  // 전신 각도(현재사진) 제외 — 포트폴리오 사진만
+      .map((p) => p.url ?? (p.storage_path ? `${SUPABASE_URL}/storage/v1/object/public/actor-photos/${p.storage_path}` : null))
+      .filter((u): u is string => !!u && isSafeOgUrl(u))
+      .slice(0, 8)
+    if (candidates.length === 0) return null
+    // 병렬 측정 후 sort_order 순서대로 첫 가로 사진 선택
+    const measured = await Promise.all(candidates.map((u) => imageDims(u).then((d) => ({ u, d }))))
+    for (const { u, d } of measured) {
+      if (d && d.w > d.h * 1.05) return u
+    }
+    return null
+  } catch {
+    return null
+  }
+}
+
 const UUID_RE_OG = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 const fallbackImage = (
@@ -162,7 +220,10 @@ export async function GET(
     )
   }
 
-  const photoUrl = getPhotoUrl(actor)
+  // 썸네일은 가로(1200×630)이므로 세로 대표사진 대신 가로사진 우선 (2026-07-01 대표 지시). 없으면 대표사진.
+  const landscapeUrl = await pickLandscapeUrl(id)
+  const photoUrl = landscapeUrl ?? getPhotoUrl(actor)
+  const isLandscapeBg = !!landscapeUrl
   // 썸네일 직관화 (2026-07-01 대표 지시): 연령대(30대) 대신 실제 만나이 + 키, 그리고 특기(사투리 포함)
   const currentYearOg = new Date().getFullYear()
   const ageLabel = actor.birth_year ? `${currentYearOg - actor.birth_year}세` : actor.age_group
@@ -201,7 +262,8 @@ export async function GET(
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              objectPosition: 'center top',
+              // 가로사진은 중앙, 세로 대표사진은 상단(얼굴) 기준 크롭
+              objectPosition: isLandscapeBg ? 'center' : 'center top',
             }}
           />
         )}
