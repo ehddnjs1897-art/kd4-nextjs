@@ -381,9 +381,12 @@ export default async function ActorsPage({ searchParams }: PageProps) {
         },
       ]} />
       <style>{`
-        /* 가로형 3/2 카드 — 데스크톱 2열, 모바일 1열 (세로형 금지: 가로 프로필 썸네일) */
+        /* 세로형 3/4 카드 — 데스크톱 4열 / 태블릿 3열 / 모바일 2열 (2026-06-30 대표 지시로 가로→세로) */
+        @media (max-width: 1024px) {
+          .actors-grid { grid-template-columns: repeat(3, 1fr) !important; }
+        }
         @media (max-width: 640px) {
-          .actors-grid { grid-template-columns: 1fr !important; }
+          .actors-grid { grid-template-columns: repeat(2, 1fr) !important; }
           .actor-card:hover { transform: none !important; }
         }
         .actor-card:hover {

@@ -55,7 +55,7 @@ export default function ActorCardImage({ src, alt, unoptimized, priority }: Prop
       alt={alt}
       fill
       sizes="(max-width:640px) 100vw, (max-width:1232px) calc(50vw - 22px), 578px"
-      style={{ objectFit: 'contain', objectPosition: 'center' }}
+      style={{ objectFit: 'cover', objectPosition: 'left top' }}
       unoptimized={unoptimized}
       priority={priority}
       onError={() => setHasError(true)}

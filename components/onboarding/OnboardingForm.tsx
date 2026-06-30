@@ -342,7 +342,7 @@ export default function OnboardingForm({
         <input ref={photosRef} type="file" accept="image/*" multiple disabled={loading} onChange={e => pickPhotos(e.target.files)} style={{ display: 'none' }} aria-hidden="true" />
         {fileRow({
           icon: <PhotoIcon />, label: <>프로필 사진 <span style={a.req}>최소 3장</span></>,
-          sub: photos.length > 0 ? `${photos.length}장 선택됨 · 맨 앞이 대표사진` : '가로형 헤드샷 (3~6장)',
+          sub: photos.length > 0 ? `${photos.length}장 선택됨 · 맨 앞이 대표사진` : '세로형 헤드샷 (3~6장)',
           filled: photos.length > 0, onClick: () => photosRef.current?.click(), ariaLabel: '프로필 사진 올리기', first: true,
         })}
         {photos.length > 0 && (

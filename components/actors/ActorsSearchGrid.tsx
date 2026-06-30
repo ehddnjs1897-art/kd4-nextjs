@@ -496,7 +496,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
 //    (2026-06-09 대표 지시: 세로형으로 바꿔서 가로 프로필이 잘렸음 → 가로형으로 영구 고정)
 const gridStyle: React.CSSProperties = {
   display: 'grid',
-  gridTemplateColumns: 'repeat(2, 1fr)',
+  gridTemplateColumns: 'repeat(4, 1fr)',   // 세로 카드(3:4) — 데스크톱 4열 (태블릿 3·모바일 2는 page.tsx media)
   gap: 12,
 }
 
@@ -507,7 +507,7 @@ const cardStyle: React.CSSProperties = {
   overflow: 'hidden',
   border: '1px solid var(--border)',
   transition: 'border-color 0.2s, transform 0.2s',
-  aspectRatio: '3/2',                       // 🚨 가로형 — 세로(3/4)로 바꾸지 말 것
+  aspectRatio: '3/4',                       // 세로형 — 2026-06-30 대표 지시로 가로(3/2)→세로 전환(헤드샷 표준)
   position: 'relative',
   background: 'var(--bg3)',
 }
