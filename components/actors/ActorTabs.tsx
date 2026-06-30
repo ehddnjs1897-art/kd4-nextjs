@@ -408,10 +408,12 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
           <h2 style={s.sectionHeading}>
             <span style={s.sectionTitle}>현재사진</span>
           </h2>
+          {/* 현재사진은 프로필 사진보다 작게 — 작은 멀티열 타일 (2026-07-01 대표 지시) */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
-            gap: 12,
+            gridTemplateColumns: 'repeat(auto-fill, minmax(96px, 1fr))',
+            gap: 8,
+            maxWidth: 560,
           }}
             onContextMenu={imageProtected ? (e) => e.preventDefault() : undefined}
             onDragStart={(e) => e.preventDefault()}
