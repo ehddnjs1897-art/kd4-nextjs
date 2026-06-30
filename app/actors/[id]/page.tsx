@@ -426,7 +426,7 @@ export default async function ActorDetailPage({
   const genderLabel =
     actor.gender === '남' ? '남자 배우' : actor.gender === '여' ? '여자 배우' : '배우'
 
-  // HERO 우측 최근 출연 — CF 제외, 드라마 전체 + 상업영화만, 드라마/영화로 분류 (2026-06-30 대표 지시).
+  // HERO 우측 최근 출연 — CF·단편 제외, 드라마 전체 + 영화(상업·독립장편 등 장편), 드라마/영화로 분류 (2026-06-30 대표 지시).
   // 최근 2년 내, 그룹당 최대 3편. 아래 ActorTabs 최근출연과 동일 기준.
   const currentYear = new Date().getFullYear()
   const heroYearMin = currentYear - 1
@@ -435,7 +435,7 @@ export default async function ActorDetailPage({
     .sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
     .slice(0, 3)
   const heroFilm = (actor.actor_filmography ?? [])
-    .filter((f) => f.title && (f.year ?? 0) >= heroYearMin && f.category === 'film' && (f.film_type ?? '').includes('상업'))
+    .filter((f) => f.title && (f.year ?? 0) >= heroYearMin && f.category === 'film' && !(f.film_type ?? '').includes('단편'))
     .sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
     .slice(0, 3)
   const heroRecentGroups = [{ label: '드라마', items: heroDrama }, { label: '영화', items: heroFilm }].filter((g) => g.items.length > 0)

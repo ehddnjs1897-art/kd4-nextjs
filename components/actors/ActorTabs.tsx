@@ -299,10 +299,10 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
   const reelVideos = (actor.actor_videos ?? []).filter(v => !v.video_type || v.video_type === 'reel').slice(0, 2)
   const monologueVideos = (actor.actor_videos ?? []).filter(v => v.video_type === 'monologue').slice(0, 1)
 
-  // 최근 출연 — CF 제외, 드라마 전체 + 상업영화만 (2026-06-30 대표 지시). 드라마/영화로 분류.
+  // 최근 출연 — CF·단편 제외, 드라마 전체 + 영화(상업·독립장편 등 장편) (2026-06-30 대표 지시). 드라마/영화로 분류.
   const recentYearMin = new Date().getFullYear() - 1
   const recentDrama = allFilmo.filter((f) => (f.year ?? 0) >= recentYearMin && f.category === 'drama')
-  const recentFilm = allFilmo.filter((f) => (f.year ?? 0) >= recentYearMin && f.category === 'film' && (f.film_type ?? '').includes('상업'))
+  const recentFilm = allFilmo.filter((f) => (f.year ?? 0) >= recentYearMin && f.category === 'film' && !(f.film_type ?? '').includes('단편'))
   const recentGroups = [{ label: '드라마', items: recentDrama }, { label: '영화', items: recentFilm }].filter((g) => g.items.length > 0)
 
   // 카테고리별 필모 (memoized Map — 렌더마다 6번 filter 방지)
