@@ -276,9 +276,9 @@ export default function JoinPage() {
             }}
           >
             {[
-              { num: '현직 배우', label: '수료' },
+              { num: '현직 배우 150명', label: '수료' },
               { num: '3년', label: '캐스팅 연계 운영' },
-              { num: '6~8명', label: '소수정예 정원' },
+              { num: '8명', label: '소수정예 정원' },
             ].map((s) => (
               <div key={s.label} style={{ textAlign: 'center' }}>
                 <div

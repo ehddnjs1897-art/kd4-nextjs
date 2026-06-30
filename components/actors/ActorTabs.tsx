@@ -1003,7 +1003,7 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '0.8rem',
     fontWeight: 400,
     color: 'var(--gray)',
-    textAlign: 'right' as const,
+    textAlign: 'left' as const,
   },
 
   /* ---- 필모 테이블 공통 ---- */
