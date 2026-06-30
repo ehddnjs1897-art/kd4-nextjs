@@ -19,6 +19,7 @@ export default function SignupPage() {
   const [password, setPassword] = useState('')
   const [passwordConfirm, setPasswordConfirm] = useState('')
   const [phone, setPhone] = useState('')
+  const [gender, setGender] = useState('') // 배우: 성별 '남'|'여' (필수 — 성별 필터 노출)
   const [affiliation, setAffiliation] = useState('') // 디렉터: 소속 (선택)
 
   const [loading, setLoading] = useState(false)
@@ -69,6 +70,10 @@ export default function SignupPage() {
       setError('연락처 형식이 올바르지 않습니다. (예: 010-1234-5678)')
       return
     }
+    if (memberType === 'actor' && gender !== '남' && gender !== '여') {
+      setError('성별을 선택해 주세요.')
+      return
+    }
 
     setLoading(true)
     const supabase = createClient()
@@ -79,6 +84,9 @@ export default function SignupPage() {
     }
     if (memberType === 'actor' && phone) {
       metadata.phone = phone
+    }
+    if (memberType === 'actor' && (gender === '남' || gender === '여')) {
+      metadata.gender = gender
     }
     if (memberType === 'director' && affiliation) {
       metadata.affiliation = affiliation
@@ -371,6 +379,34 @@ export default function SignupPage() {
               {passwordConfirm && password !== passwordConfirm ? '비밀번호가 일치하지 않습니다.' : ''}
             </span>
           </div>
+
+          {/* 배우 회원: 성별 (필수 — 성별 필터 노출) */}
+          {memberType === 'actor' && (
+            <div style={styles.fieldGroup}>
+              <span style={styles.label}>
+                성별 <span aria-hidden="true" style={styles.required}>*</span>
+              </span>
+              <div role="group" aria-label="성별" style={{ display: 'flex', gap: 10 }}>
+                {(['남', '여'] as const).map((g) => (
+                  <button
+                    key={g}
+                    type="button"
+                    disabled={loading}
+                    onClick={() => setGender(g)}
+                    aria-pressed={gender === g}
+                    style={{
+                      flex: 1, padding: '12px 0', borderRadius: 8, fontSize: '1rem', fontFamily: 'inherit', cursor: 'pointer',
+                      border: gender === g ? '1px solid var(--navy)' : '1px solid var(--border)',
+                      background: gender === g ? 'var(--navy)' : 'transparent',
+                      color: gender === g ? '#fff' : 'var(--gray)', fontWeight: gender === g ? 700 : 400,
+                    }}
+                  >
+                    {g === '남' ? '남자' : '여자'}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* 배우 회원: 전화번호 */}
           {memberType === 'actor' && (

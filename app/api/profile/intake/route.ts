@@ -155,8 +155,13 @@ export async function POST(request: NextRequest) {
   const instagram = typeof body?.instagram === 'string'
     ? (body.instagram.replace(/[\x00-\x1f\x7f]/g, '').trim().slice(0, 200) || null)
     : null
-  // 성별 — '남'|'여'만 허용 (성별 필터 노출에 필요, 2026-07-01 대표 지시)
-  const gender: string | null = (body?.gender === '남' || body?.gender === '여') ? body.gender : null
+  // 성별 — '남'|'여'만 허용 (성별 필터 노출에 필요, 2026-07-01 대표 지시).
+  // 폼 값 우선, 없으면 회원가입 때 저장한 user_metadata.gender로 폴백 (가입 단계 입력분 반영).
+  const metaGender = (user.user_metadata as { gender?: unknown } | null)?.gender
+  const gender: string | null =
+    (body?.gender === '남' || body?.gender === '여') ? body.gender
+    : (metaGender === '남' || metaGender === '여') ? metaGender
+    : null
   // 출생연도(4자리) → 나이대 자동 도출
   const birthYear = parseMetric(body?.birthYear, 1930, new Date().getFullYear())
   const ageGroupFromBirth = ((): string | null => {
