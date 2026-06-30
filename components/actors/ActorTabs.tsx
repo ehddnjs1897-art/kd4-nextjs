@@ -362,6 +362,105 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
         </section>
       )}
 
+      {/* ============ 출연영상 — 수상 다음 (2026-07-01 대표 지시: 수상→출연영상→프로필→현재사진) ============ */}
+      {/* 영상 없음 안내 */}
+      {reelVideos.length === 0 && monologueVideos.length === 0 && (
+        <section style={s.section} aria-label="영상 없음">
+          <h2 style={s.sectionHeading}>
+            <span style={s.sectionNum}>01</span>
+            <span style={s.sectionTitle}>출연 영상</span>
+            <span lang="en" style={s.sectionEn}>REEL</span>
+          </h2>
+          <p role="status" style={{ fontSize: '0.85rem', color: 'var(--gray)', textAlign: 'center', padding: '24px 0' }}>
+            현재 업로드된 영상이 없습니다.
+          </p>
+        </section>
+      )}
+
+      {/* 01 · REEL */}
+      {reelVideos.length > 0 && (
+        <section style={s.section} aria-label={`${actor.name} REEL 영상`}>
+          <h2 style={s.sectionHeading}>
+            <span style={s.sectionNum}>01</span>
+            <span style={s.sectionTitle}>출연 영상</span>
+            <span lang="en" style={s.sectionEn}>REEL</span>
+          </h2>
+          <div style={s.videoGrid}>
+            {reelVideos.map((video) =>
+              videoLocked ? (
+                (video.youtube_id || video.r2_key) && (
+                  <div key={video.id} style={s.videoItem}>
+                    <LockedVideoCard
+                      thumbUrl={video.youtube_id ? `https://i.ytimg.com/vi/${video.youtube_id}/hqdefault.jpg` : actor.profile_photo}
+                      title={video.title || `${actor.name} 출연영상`}
+                      onClick={() => setSignupPromptOpen(true)}
+                    />
+                    {video.title && <p style={s.videoTitle}>{video.title}</p>}
+                  </div>
+                )
+              ) : video.youtube_id ? (
+                <div key={video.id} style={s.videoItem}>
+                  <YouTubeFacade
+                    videoId={video.youtube_id}
+                    title={video.title || `${actor.name} 출연영상`}
+                    containerStyle={{ borderRadius: 6, background: '#000' }}
+                  />
+                  {video.title && <p style={s.videoTitle}>{video.title}</p>}
+                </div>
+              ) : video.r2_key ? (
+                <R2Video
+                  key={video.id}
+                  videoId={video.id}
+                  title={video.title}
+                  poster={actor.profile_photo}
+                  allowDownload={canViewContact}
+                />
+              ) : null
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* 독백 */}
+      {monologueVideos.length > 0 && (
+        <section style={s.section} aria-label={`${actor.name} 독백 영상`}>
+          <h2 style={s.sectionHeading}>
+            <span style={s.sectionTitle}>독백</span>
+          </h2>
+          <div style={s.videoGrid}>
+            {monologueVideos.map((video) =>
+              videoLocked ? (
+                (video.youtube_id || video.r2_key) && (
+                  <div key={video.id} style={s.videoItem}>
+                    <LockedVideoCard
+                      thumbUrl={video.youtube_id ? `https://i.ytimg.com/vi/${video.youtube_id}/hqdefault.jpg` : actor.profile_photo}
+                      title={video.title || '독백'}
+                      onClick={() => setSignupPromptOpen(true)}
+                    />
+                  </div>
+                )
+              ) : video.youtube_id ? (
+                <div key={video.id} style={s.videoItem}>
+                  <YouTubeFacade
+                    videoId={video.youtube_id}
+                    title={video.title || '독백'}
+                    containerStyle={{ borderRadius: 6, background: '#000' }}
+                  />
+                </div>
+              ) : video.r2_key ? (
+                <R2Video
+                  key={video.id}
+                  videoId={video.id}
+                  title="독백"
+                  poster={actor.profile_photo}
+                  allowDownload={canViewContact}
+                />
+              ) : null
+            )}
+          </div>
+        </section>
+      )}
+
       {/* ============ 프로필 사진 스트립 ============ */}
       {stripPhotos.length > 0 && (
         <section style={s.section} aria-label={`${actor.name} 프로필 사진`}>
@@ -493,105 +592,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
         </section>
       )}
 
-      {/* ============ 영상 없음 안내 ============ */}
-      {reelVideos.length === 0 && monologueVideos.length === 0 && (
-        <section style={s.section} aria-label="영상 없음">
-          <h2 style={s.sectionHeading}>
-            <span style={s.sectionNum}>01</span>
-            <span style={s.sectionTitle}>출연 영상</span>
-            <span lang="en" style={s.sectionEn}>REEL</span>
-          </h2>
-          <p role="status" style={{ fontSize: '0.85rem', color: 'var(--gray)', textAlign: 'center', padding: '24px 0' }}>
-            현재 업로드된 영상이 없습니다.
-          </p>
-        </section>
-      )}
-
-      {/* ============ 01 · REEL ============ */}
-      {reelVideos.length > 0 && (
-        <section style={s.section} aria-label={`${actor.name} REEL 영상`}>
-          <h2 style={s.sectionHeading}>
-            <span style={s.sectionNum}>01</span>
-            <span style={s.sectionTitle}>출연 영상</span>
-            <span lang="en" style={s.sectionEn}>REEL</span>
-          </h2>
-          <div style={s.videoGrid}>
-            {reelVideos.map((video) =>
-              videoLocked ? (
-                (video.youtube_id || video.r2_key) && (
-                  <div key={video.id} style={s.videoItem}>
-                    <LockedVideoCard
-                      thumbUrl={video.youtube_id ? `https://i.ytimg.com/vi/${video.youtube_id}/hqdefault.jpg` : actor.profile_photo}
-                      title={video.title || `${actor.name} 출연영상`}
-                      onClick={() => setSignupPromptOpen(true)}
-                    />
-                    {video.title && <p style={s.videoTitle}>{video.title}</p>}
-                  </div>
-                )
-              ) : video.youtube_id ? (
-                <div key={video.id} style={s.videoItem}>
-                  <YouTubeFacade
-                    videoId={video.youtube_id}
-                    title={video.title || `${actor.name} 출연영상`}
-                    containerStyle={{ borderRadius: 6, background: '#000' }}
-                  />
-                  {video.title && <p style={s.videoTitle}>{video.title}</p>}
-                </div>
-              ) : video.r2_key ? (
-                <R2Video
-                  key={video.id}
-                  videoId={video.id}
-                  title={video.title}
-                  poster={actor.profile_photo}
-                  allowDownload={canViewContact}
-                />
-              ) : null
-            )}
-          </div>
-        </section>
-      )}
-
-      {/* ============ 독백 ============ */}
-      {monologueVideos.length > 0 && (
-        <section style={s.section} aria-label={`${actor.name} 독백 영상`}>
-          <h2 style={s.sectionHeading}>
-            <span style={s.sectionTitle}>독백</span>
-          </h2>
-          <div style={s.videoGrid}>
-            {monologueVideos.map((video) =>
-              videoLocked ? (
-                (video.youtube_id || video.r2_key) && (
-                  <div key={video.id} style={s.videoItem}>
-                    <LockedVideoCard
-                      thumbUrl={video.youtube_id ? `https://i.ytimg.com/vi/${video.youtube_id}/hqdefault.jpg` : actor.profile_photo}
-                      title={video.title || '독백'}
-                      onClick={() => setSignupPromptOpen(true)}
-                    />
-                  </div>
-                )
-              ) : video.youtube_id ? (
-                <div key={video.id} style={s.videoItem}>
-                  <YouTubeFacade
-                    videoId={video.youtube_id}
-                    title={video.title || '독백'}
-                    containerStyle={{ borderRadius: 6, background: '#000' }}
-                  />
-                </div>
-              ) : video.r2_key ? (
-                <R2Video
-                  key={video.id}
-                  videoId={video.id}
-                  title="독백"
-                  poster={actor.profile_photo}
-                  allowDownload={canViewContact}
-                />
-              ) : null
-            )}
-          </div>
-        </section>
-      )}
-
-      {/* 수상이력 섹션은 최상단으로 이동됨 (2026-07-01 대표 지시) */}
+      {/* 출연영상·수상 섹션은 상단으로 이동됨 (2026-07-01 대표 지시: 수상 → 출연영상 → 프로필 → 현재사진) */}
 
       {/* ============ 02 · CURRENT WORKS ============ */}
       {recentGroups.length > 0 && (
