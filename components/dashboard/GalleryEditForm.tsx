@@ -683,7 +683,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           <div style={a.photoGrid}>
             {photos.map((p, idx) => (
               <div key={p.id} style={a.photoCard}>
-                <Image src={p.url} alt={p.is_profile ? '대표 프로필 사진' : `배우 사진 ${idx + 1}`} fill style={{ objectFit: 'cover', objectPosition: 'left top' }} sizes="180px" />
+                <Image src={p.url} alt={p.is_profile ? '대표 프로필 사진' : `배우 사진 ${idx + 1}`} fill style={{ objectFit: 'cover', objectPosition: 'center 30%' }} sizes="180px" />
                 {p.is_profile && <span style={a.profileBadge}>대표</span>}
                 <div style={a.photoActions}>
                   {confirmingPhotoId === p.id ? (

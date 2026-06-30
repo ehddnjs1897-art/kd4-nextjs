@@ -339,30 +339,18 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                 aria-label={`${actor.name} 프로필 사진 ${i + 1} 확대 보기`}
                 style={{ ...s.photoCard, padding: 0, border: 'none', background: 'transparent', cursor: 'zoom-in' }}
               >
-                {imageProtected ? (
-                  <>
-                    <div
-                      role="img"
-                      aria-label={`${actor.name} 프로필 사진 ${i + 1}`}
-                      style={{
-                        ...s.photoImg,
-                        backgroundImage: `url("${url}")`,
-                      }}
-                    />
-                    <div style={s.photoProtectOverlay} />
-                  </>
-                ) : (
-                  <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                    <Image
-                      src={url}
-                      alt={`${actor.name} 프로필 ${i + 1}`}
-                      fill
-                      sizes="(max-width:640px) 100vw, 33vw"
-                      style={{ objectFit: 'cover', objectPosition: 'center top' }}
-                      unoptimized={!url.includes('.supabase.co/storage/')}
-                    />
-                  </div>
-                )}
+                {/* 가로/세로 원본 비율 그대로 — 잘림 없이 반응형 배치 (2026-06-30 대표 지시) */}
+                <Image
+                  src={url}
+                  alt={`${actor.name} 프로필 ${i + 1}`}
+                  width={0}
+                  height={0}
+                  sizes="(max-width:640px) 50vw, 200px"
+                  style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 6 }}
+                  unoptimized={!url.includes('.supabase.co/storage/')}
+                  draggable={false}
+                />
+                {imageProtected && <div style={{ ...s.photoProtectOverlay, borderRadius: 6 }} />}
               </button>
             ))}
           </div>
@@ -923,26 +911,20 @@ const s: Record<string, React.CSSProperties> = {
 
   /* ---- 프로필 사진 스트립 ---- */
   photoStrip: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: 10,
+    // 가로/세로 섞여도 원본 비율 유지하며 알아서 채워지는 masonry (column-width로 반응형 열 수)
+    columns: '170px',
+    columnGap: 10,
   },
   photoCard: {
     position: 'relative',
-    aspectRatio: '2 / 3',
+    display: 'block',
+    width: '100%',
+    breakInside: 'avoid',
+    marginBottom: 10,
     borderRadius: 6,
     overflow: 'hidden',
-    background: 'var(--bg3)',
-    border: '1px solid var(--border)',
     userSelect: 'none',
     WebkitUserSelect: 'none',
-  },
-  photoImg: {
-    position: 'absolute',
-    inset: 0,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center top',
-    backgroundRepeat: 'no-repeat',
   },
   photoProtectOverlay: {
     position: 'absolute',
