@@ -444,6 +444,11 @@ export default async function ActorDetailPage({
     .slice(0, 3)
   const heroRecentGroups = [{ label: '드라마', items: heroDrama }, { label: '영화', items: heroFilm }].filter((g) => g.items.length > 0)
 
+  // HERO 우측 수상 · 영화제 — award 채워진 작품을 연도순으로(각각 분리해 표시). 대표사진 옆 프로필에 노출 (2026-07-01 대표 지시)
+  const heroAwards = (actor.actor_filmography ?? [])
+    .filter((f) => f.award && f.award.trim().length > 0)
+    .sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
+
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingBottom: 72 }}>
       {/* JSON-LD */}
@@ -587,6 +592,22 @@ export default async function ActorDetailPage({
                       </ul>
                     </div>
                   ))}
+                </div>
+              )}
+
+              {/* 수상 · 영화제 — 대표사진 옆 프로필에 노출, 각 작품 분리 (2026-07-01 대표 지시) */}
+              {heroAwards.length > 0 && (
+                <div style={{ marginBottom: 16 }}>
+                  <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', color: 'var(--gold)', marginBottom: 7 }}>🏆 수상 · 영화제</p>
+                  <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    {heroAwards.map((f) => (
+                      <li key={`hero-award-${f.id}`} style={{ fontSize: '0.85rem', color: 'var(--white)', lineHeight: 1.5 }}>
+                        <span style={{ color: 'var(--gold)', fontWeight: 700, marginRight: 6 }}>{f.award}</span>
+                        {f.title && <strong style={{ fontWeight: 600 }}>{f.title}</strong>}
+                        {f.year ? <span style={{ color: 'var(--gray)', fontSize: '0.78rem' }}> · {f.year}</span> : null}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
 
