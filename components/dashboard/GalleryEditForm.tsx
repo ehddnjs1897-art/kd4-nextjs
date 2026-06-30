@@ -18,6 +18,7 @@ import { useState, useRef, useMemo, useEffect } from 'react'
 import { DIALECT_OPTIONS, DIALECT_NONE } from '@/lib/dialects'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
+import { prepareImageForUpload } from '@/lib/prepare-image'
 
 // ─── 타입 ─────────────────────────────────────────────────────────────────────
 interface PhotoItem {
@@ -106,50 +107,7 @@ function newFilm(): FilmItem {
   }
 }
 
-// 큰 사진은 브라우저에서 리사이즈 후 업로드 — Vercel 서버리스 본문 4.5MB 한계 회피.
-// (한계 초과 시 라우트 실행 전 413 "Request Entity Too Large"가 텍스트로 반환돼
-//  res.json()이 "Unexpected token 'R'"로 깨지던 버그. 폰 원본 사진 6~15MB 케이스.)
-const SAFE_UPLOAD_BYTES = 4 * 1024 * 1024
-async function compressIfLarge(file: File): Promise<File> {
-  if (file.size <= SAFE_UPLOAD_BYTES) return file
-  try {
-    const dataUrl = await new Promise<string>((resolve, reject) => {
-      const r = new FileReader()
-      r.onload = () => resolve(r.result as string)
-      r.onerror = () => reject(new Error('read'))
-      r.readAsDataURL(file)
-    })
-    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
-      const im = new window.Image()
-      im.onload = () => resolve(im)
-      im.onerror = () => reject(new Error('decode'))
-      im.src = dataUrl
-    })
-    const maxSide = 2000
-    let width = img.naturalWidth || img.width
-    let height = img.naturalHeight || img.height
-    if (Math.max(width, height) > maxSide) {
-      const scale = maxSide / Math.max(width, height)
-      width = Math.round(width * scale)
-      height = Math.round(height * scale)
-    }
-    const canvas = document.createElement('canvas')
-    canvas.width = width
-    canvas.height = height
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return file
-    ctx.drawImage(img, 0, 0, width, height)
-    for (const q of [0.9, 0.8, 0.7, 0.6]) {
-      const blob = await new Promise<Blob | null>((res) => canvas.toBlob((b) => res(b), 'image/jpeg', q))
-      if (blob && blob.size <= SAFE_UPLOAD_BYTES) {
-        return new File([blob], file.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' })
-      }
-    }
-    return file
-  } catch {
-    return file  // 압축 실패 — 원본으로 진행(작은 사진이면 통과)
-  }
-}
+// 이미지 준비(HEIC→JPEG 변환 + 대용량 리사이즈/압축)는 공용 유틸로 이동 → @/lib/prepare-image
 
 // ─── Apple식 라인 아이콘 ───────────────────────────────────────────────────────
 const iconProps = { width: 17, height: 17, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.9, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
@@ -403,7 +361,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     setUploading(true)
     setPhotoMsg('')
     try {
-      const upFile = await compressIfLarge(file)  // 4.5MB 초과분 리사이즈 → 413 회피
+      const upFile = await prepareImageForUpload(file)  // HEIC→JPEG 변환 + 4.5MB 초과분 리사이즈(413 회피)
       const fd = new FormData()
       fd.append('file', upFile)
       fd.append('actorId', actorId)
@@ -475,7 +433,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     setCpUploadingLabel(label)
     setCpMsg('')
     try {
-      const upFile = await compressIfLarge(file)  // 4.5MB 초과분 리사이즈 → 413 회피
+      const upFile = await prepareImageForUpload(file)  // HEIC→JPEG 변환 + 4.5MB 초과분 리사이즈(413 회피)
       const fd = new FormData()
       fd.append('file', upFile)
       fd.append('actorId', actorId)
@@ -780,7 +738,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           </div>
         )}
         <div style={{ marginTop: photos.length > 0 ? 16 : 0, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
-          <input ref={fileRef} type="file" accept="image/*" onChange={uploadPhoto} style={{ display: 'none' }} aria-hidden="true" />
+          <input ref={fileRef} type="file" accept="image/*,.heic,.heif" onChange={uploadPhoto} style={{ display: 'none' }} aria-hidden="true" />
           <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} aria-busy={uploading} style={{ ...a.ghost, opacity: uploading ? 0.6 : 1 }}>{uploading ? '업로드 중…' : '＋ 사진 추가'}</button>
           <span style={{ fontSize: 13, color: 'var(--gray)' }}>JPG·PNG · 세로형 헤드샷 권장 · 큰 사진은 자동으로 줄여 올라가요</span>
         </div>
@@ -795,7 +753,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         <p style={{ fontSize: 13, color: 'var(--gray)', lineHeight: 1.6, margin: '0 0 12px' }}>
           정면 · 좌측 · 우측 · 후면 · 전신 각도의 현재 모습. 체형·전신을 보여줘 캐스팅 판단에 도움이 됩니다.
         </p>
-        <input ref={cpFileRef} type="file" accept="image/*" onChange={uploadCurrentPhoto} style={{ display: 'none' }} aria-hidden="true" />
+        <input ref={cpFileRef} type="file" accept="image/*,.heic,.heif" onChange={uploadCurrentPhoto} style={{ display: 'none' }} aria-hidden="true" />
         <div style={a.photoGrid}>
           {CURRENT_PHOTO_LABELS.map((label) => {
             const photo = currentPhotos.find((p) => p.label === label)

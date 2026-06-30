@@ -17,6 +17,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { DIALECT_OPTIONS, DIALECT_NONE } from '@/lib/dialects'
+import { prepareImageForUpload } from '@/lib/prepare-image'
 
 const MB = 1024 * 1024
 
@@ -125,19 +126,33 @@ export default function OnboardingForm({
 
   async function pickPhotos(list: FileList | null) {
     if (!list) return
-    const arr = Array.from(list).slice(0, 6)
-    for (const f of arr) {
-      if (f.size > 15 * MB) { setError(`사진은 15MB 이하여야 합니다: ${f.name}`); return }
-    }
     setError('')
-    setWarning('')
-    setPhotos(arr)
+    try {
+      const arr = Array.from(list).slice(0, 6)
+      for (const f of arr) {
+        if (f.size > 30 * MB) { setError(`사진은 30MB 이하여야 합니다: ${f.name}`); return }
+      }
+      // 아이폰 HEIC → JPEG 변환 + 대용량 압축 (2026-07-01 대표 지시)
+      setWarning('사진을 처리하는 중이에요…')
+      const prepared: File[] = []
+      for (const f of arr) prepared.push(await prepareImageForUpload(f))
+      setWarning('')
+      setPhotos(prepared)
+    } catch (e) {
+      setWarning('')
+      setError((e as Error).message || '사진 처리에 실패했습니다.')
+    }
   }
 
-  function pickCurrentPhoto(idx: number, f: File | null) {
-    if (f && f.size > 15 * MB) { setError(`현재사진은 15MB 이하여야 합니다.`); return }
+  async function pickCurrentPhoto(idx: number, f: File | null) {
+    if (f && f.size > 30 * MB) { setError(`현재사진은 30MB 이하여야 합니다.`); return }
     setError('')
-    setCurrentPhotos(prev => prev.map((p, i) => i === idx ? f : p))
+    try {
+      const prepared = f ? await prepareImageForUpload(f) : null
+      setCurrentPhotos(prev => prev.map((p, i) => i === idx ? prepared : p))
+    } catch (e) {
+      setError((e as Error).message || '사진 처리에 실패했습니다.')
+    }
   }
 
   function pickPpt(f: File | null) {
@@ -339,7 +354,7 @@ export default function OnboardingForm({
       <p style={a.caption}>자료</p>
       <div style={a.card}>
         {/* 프로필 사진 */}
-        <input ref={photosRef} type="file" accept="image/*" multiple disabled={loading} onChange={e => pickPhotos(e.target.files)} style={{ display: 'none' }} aria-hidden="true" />
+        <input ref={photosRef} type="file" accept="image/*,.heic,.heif" multiple disabled={loading} onChange={e => pickPhotos(e.target.files)} style={{ display: 'none' }} aria-hidden="true" />
         {fileRow({
           icon: <PhotoIcon />, label: <>프로필 사진 <span style={a.req}>최소 3장</span></>,
           sub: photos.length > 0 ? `${photos.length}장 선택됨 · 맨 앞이 대표사진` : '세로형 헤드샷 (3~6장)',
@@ -396,7 +411,7 @@ export default function OnboardingForm({
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
           {CURRENT_PHOTO_LABELS.map((label, idx) => (
             <div key={label}>
-              <input ref={currentPhotoRefs[idx]} type="file" accept="image/*" disabled={loading} onChange={e => pickCurrentPhoto(idx, e.target.files?.[0] ?? null)} style={{ display: 'none' }} aria-hidden="true" />
+              <input ref={currentPhotoRefs[idx]} type="file" accept="image/*,.heic,.heif" disabled={loading} onChange={e => pickCurrentPhoto(idx, e.target.files?.[0] ?? null)} style={{ display: 'none' }} aria-hidden="true" />
               <button type="button" onClick={() => currentPhotoRefs[idx].current?.click()} disabled={loading} style={{ ...a.miniBtn, ...(currentPhotos[idx] ? { borderColor: 'var(--navy)', color: 'var(--navy)' } : {}) }}>
                 {currentPhotos[idx] ? `✓ ${label}` : `${label} 선택`}
               </button>
