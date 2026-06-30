@@ -733,7 +733,9 @@ export default async function ActorDetailPage({
           actor={actorForClient}
           canViewContact={canContact}
           imageProtected={!canContact}
-          canEdit={role === 'admin'}
+          /* 수정은 본인 로그인 계정만 — 상세페이지 인라인 편집 제거, 편집은 마이페이지로 일원화 (2026-07-01 대표 지시).
+             admin도 남의 프로필 인라인 편집 불가. (서버 API는 별도 — 관리 도구용 권한 유지) */
+          canEdit={false}
           videoLocked={!user}
           mainPhotoUrl={photoUrl !== '/placeholder-actor.svg' ? photoUrl : undefined}
         />

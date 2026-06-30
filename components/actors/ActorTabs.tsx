@@ -123,14 +123,8 @@ const FILM_TYPE_STYLE: Record<string, React.CSSProperties> = {
   '단편': { background: 'rgba(80,80,80,0.06)', color: 'var(--gray)', border: '1px solid var(--border)' },
 }
 
-// 실제 수상만 AWARD 섹션 노출 / 영화제 출품·선정·초청·후보는 작품 옆 빨강 표기
-const WIN_RE = /(수상|대상|그랑프리|최우수|우수상|신인상|연기상|작품상|남우|여우|특별상|심사위원|감독상|인기상)/
-const NOMINEE_RE = /(후보|노미네이트|노미네이션|nominee|nominat)/i
+// 영화제 키워드 — 필모 표의 구분(film_type) 배지 색 판단용 (수상·영화제 텍스트는 award 필드로 일원화)
 const FEST_RE = /(영화제|페스티벌|출품|선정|초청|상영|경쟁부문|nominee|festival)/i
-// 진짜 수상 = 수상 키워드 포함 AND 후보가 아님 (예: "청룡영화제 신인상 후보" → 수상 아님)
-function isWinAward(a?: string | null): boolean {
-  return !!a && WIN_RE.test(a) && !NOMINEE_RE.test(a)
-}
 
 const SECTION_NUMS: Record<FilmoCategory, string> = {
   drama: '03',
@@ -319,8 +313,10 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
   }, [allFilmo])
   const filmoByCategory = (cat: FilmoCategory) => filmoMap[cat] ?? []
 
-  // 수상이력
-  const awardEntries = allFilmo.filter((f) => isWinAward(f.award))
+  // 수상이력 — 실제 수상 + 영화제 출품/상영까지 모두 포함 (2026-07-01 대표 지시). 연도 내림차순.
+  const awardEntries = allFilmo
+    .filter((f) => !!f.award && f.award.trim().length > 0)
+    .sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
 
   // 카테고리 순서
   // 표시 순서: 드라마 → 영화 → 공연(연극+뮤지컬) → CF. 기타·뮤지컬단독 제외, CF는 공연 아래 (2026-06-08)
@@ -328,6 +324,45 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
 
   return (
     <div style={s.root}>
+      {/* ============ 수상 — 최상단 (2026-07-01 대표 지시: 프로필 제일 먼저). 실제 수상 + 영화제 출품/상영 포함 ============ */}
+      {awardEntries.length > 0 && (
+        <section aria-label="수상 이력" style={s.section}>
+          <h2 style={{ ...s.sectionHeading, borderBottomColor: 'var(--accent-red)' }}>
+            <span aria-hidden="true" style={{ ...s.sectionNum, color: 'var(--accent-red)' }}>🏆</span>
+            <span style={{ ...s.sectionTitle, color: 'var(--accent-red)' }}>수상 · 영화제</span>
+            <span lang="en" style={{ ...s.sectionEn, color: 'var(--accent-red)' }}>AWARDS</span>
+          </h2>
+          <div style={{ overflowX: 'auto' }}>
+          <table style={s.table}>
+            <caption className="sr-only">수상 및 영화제 이력</caption>
+            <thead>
+              <tr>
+                <th scope="col" style={{ ...s.th, width: 56 }}>연도</th>
+                <th scope="col" style={s.th}>작품명</th>
+                <th scope="col" style={s.th}>수상 · 영화제</th>
+              </tr>
+            </thead>
+            <tbody>
+              {awardEntries.map((entry) => (
+                <tr key={`award-${entry.id}`} style={{ ...s.tr, borderLeft: '3px solid var(--accent-red)' }}>
+                  <td style={{ ...s.td, color: 'var(--gray)', fontSize: '0.82rem' }}>
+                    {entry.year ?? '—'}
+                  </td>
+                  <td style={{ ...s.td, fontWeight: 600, color: 'var(--white)' }}>
+                    {/* 작품명 비표기 수상(대표 지시로 title 없이 입력된 row)은 — 처리 */}
+                    {entry.title || '—'}
+                  </td>
+                  <td style={{ ...s.td, color: 'var(--accent-red)', fontWeight: 600 }}>
+                    {entry.award}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          </div>
+        </section>
+      )}
+
       {/* ============ 프로필 사진 스트립 ============ */}
       {stripPhotos.length > 0 && (
         <section style={s.section} aria-label={`${actor.name} 프로필 사진`}>
@@ -557,44 +592,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
         </section>
       )}
 
-      {/* ============ 수상이력 — 영상 아래·최근출연 위 (2026-06-12 리디자인 순서) ============ */}
-      {awardEntries.length > 0 && (
-        <section aria-label="수상 이력" style={s.section}>
-          <h2 style={{ ...s.sectionHeading, borderBottomColor: 'var(--accent-red)' }}>
-            <span aria-hidden="true" style={{ ...s.sectionNum, color: 'var(--accent-red)' }}>🏆</span>
-            <span style={{ ...s.sectionTitle, color: 'var(--accent-red)' }}>수상</span>
-            <span lang="en" style={{ ...s.sectionEn, color: 'var(--accent-red)' }}>AWARD</span>
-          </h2>
-          <div style={{ overflowX: 'auto' }}>
-          <table style={s.table}>
-            <caption className="sr-only">수상 이력</caption>
-            <thead>
-              <tr>
-                <th scope="col" style={{ ...s.th, width: 56 }}>연도</th>
-                <th scope="col" style={s.th}>작품명</th>
-                <th scope="col" style={s.th}>수상내역</th>
-              </tr>
-            </thead>
-            <tbody>
-              {awardEntries.map((entry) => (
-                <tr key={`award-${entry.id}`} style={{ ...s.tr, borderLeft: '3px solid var(--accent-red)' }}>
-                  <td style={{ ...s.td, color: 'var(--gray)', fontSize: '0.82rem' }}>
-                    {entry.year ?? '—'}
-                  </td>
-                  <td style={{ ...s.td, fontWeight: 600, color: 'var(--white)' }}>
-                    {/* 작품명 비표기 수상(대표 지시로 title 없이 입력된 row)은 — 처리 */}
-                    {entry.title || '—'}
-                  </td>
-                  <td style={{ ...s.td, color: 'var(--accent-red)', fontWeight: 600 }}>
-                    {entry.award}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          </div>
-        </section>
-      )}
+      {/* 수상이력 섹션은 최상단으로 이동됨 (2026-07-01 대표 지시) */}
 
       {/* ============ 02 · CURRENT WORKS ============ */}
       {recentGroups.length > 0 && (
@@ -759,11 +757,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                       )}
                       <td style={{ ...s.td, fontWeight: 600, color: 'var(--white)' }}>
                         {entry.title}
-                        {entry.award && !isWinAward(entry.award) && (
-                          <span style={{ display: 'block', marginTop: 3, fontSize: '0.72rem', fontWeight: 600, color: 'var(--accent-red)', lineHeight: 1.35 }}>
-                            {entry.award}
-                          </span>
-                        )}
+                        {/* 영화제/수상은 최상단 '수상·영화제' 섹션으로 일원화 (2026-07-01 대표 지시) */}
                       </td>
                       <td style={s.td}>{entry.role ?? '—'}</td>
                       {canEdit && (
