@@ -516,11 +516,11 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
         </section>
       )}
 
-      {/* ============ 전략적 독백 ============ */}
+      {/* ============ 독백 ============ */}
       {monologueVideos.length > 0 && (
-        <section style={s.section} aria-label={`${actor.name} 전략적 독백 영상`}>
+        <section style={s.section} aria-label={`${actor.name} 독백 영상`}>
           <h2 style={s.sectionHeading}>
-            <span style={s.sectionTitle}>전략적 독백</span>
+            <span style={s.sectionTitle}>독백</span>
           </h2>
           <div style={s.videoGrid}>
             {monologueVideos.map((video) =>
@@ -529,7 +529,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                   <div key={video.id} style={s.videoItem}>
                     <LockedVideoCard
                       thumbUrl={video.youtube_id ? `https://i.ytimg.com/vi/${video.youtube_id}/hqdefault.jpg` : actor.profile_photo}
-                      title={video.title || '전략적 독백'}
+                      title={video.title || '독백'}
                       onClick={() => setSignupPromptOpen(true)}
                     />
                   </div>
@@ -538,7 +538,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                 <div key={video.id} style={s.videoItem}>
                   <YouTubeFacade
                     videoId={video.youtube_id}
-                    title={video.title || '전략적 독백'}
+                    title={video.title || '독백'}
                     containerStyle={{ borderRadius: 6, background: '#000' }}
                   />
                 </div>
@@ -546,7 +546,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                 <R2Video
                   key={video.id}
                   videoId={video.id}
-                  title="전략적 독백"
+                  title="독백"
                   poster={actor.profile_photo}
                   allowDownload={canViewContact}
                 />

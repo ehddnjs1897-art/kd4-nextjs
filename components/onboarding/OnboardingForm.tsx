@@ -27,7 +27,6 @@ export default function OnboardingForm({
   const router = useRouter()
   const [ppt, setPpt] = useState<File | null>(null)
   const [photos, setPhotos] = useState<File[]>([])
-  const [landscapeIdx, setLandscapeIdx] = useState<number>(-1)
   const [videos, setVideos] = useState<(File | null)[]>([null, null, null])
   const [castingSummary, setCastingSummary] = useState('')
   const [skills, setSkills] = useState('')             // 콤마 구분 (예: "수영, 검도, 피아노")
@@ -114,32 +113,14 @@ export default function OnboardingForm({
   }, [photos])
   /* eslint-enable react-hooks/set-state-in-effect */
 
-  function checkLandscape(file: File): Promise<boolean> {
-    return new Promise((resolve) => {
-      const img = new window.Image()
-      const url = URL.createObjectURL(file)
-      img.onload = () => { URL.revokeObjectURL(url); resolve(img.naturalWidth > img.naturalHeight) }
-      img.onerror = () => { URL.revokeObjectURL(url); resolve(false) }
-      img.src = url
-    })
-  }
-
   async function pickPhotos(list: FileList | null) {
     if (!list) return
-    const arr = Array.from(list).slice(0, 4)
+    const arr = Array.from(list).slice(0, 6)
     for (const f of arr) {
       if (f.size > 15 * MB) { setError(`사진은 15MB 이하여야 합니다: ${f.name}`); return }
     }
-    const checks = await Promise.all(arr.map(checkLandscape))
-    const idx = checks.findIndex(Boolean)
-    // 가로 사진 없어도 업로드 허용 (경고만, 차단 안 함) — 핸드폰 세로사진 배려
-    if (arr.length > 0 && idx === -1) {
-      setWarning('가로(16:9) 사진이 없어 첫 번째 사진이 썸네일로 사용됩니다. 가로 사진을 포함하면 더 좋아요!')
-    } else {
-      setWarning('')
-    }
     setError('')
-    setLandscapeIdx(idx >= 0 ? idx : 0)
+    setWarning('')
     setPhotos(arr)
   }
 
@@ -205,6 +186,12 @@ export default function OnboardingForm({
       setError('한줄소개 또는 파일을 하나 이상 입력해 주세요.')
       return
     }
+    // 프로필 사진은 최소 3장 (대표 지시 2026-06) — 올릴 거면 3장 이상
+    if (photos.length > 0 && photos.length < 3) {
+      setError('프로필 사진은 최소 3장 올려주세요.')
+      setStep(1)  // 사진 단계로 이동해 바로 추가하게
+      return
+    }
     setLoading(true)
     // 🔒 2026-06-15: 파일 업로드를 항목별로 격리. 파일 하나(예: PPT)가 실패해도
     //    전체 제출(actor row 생성)을 막지 않고, 성공한 파일 + 텍스트 정보로 등록 진행.
@@ -236,7 +223,7 @@ export default function OnboardingForm({
         catch { uploadWarnings.push(`현재사진(${cpFiles[i].label})`) }
       }
 
-      // 원본 슬롯 인덱스로 video_type 결정 — 3번째 슬롯(slot 2)이 '전략적 독백'(monologue).
+      // 원본 슬롯 인덱스로 video_type 결정 — 3번째 슬롯(slot 2)이 '독백'(monologue).
       // ⚠️ filter(Boolean)된 videoFiles의 인덱스로 판정하면(이전 버그) 슬롯1을 비우고 0·2만
       //    올릴 때 독백이 reel로 잘못 기록됨(나민정 케이스). 원본 videos 배열로 순회한다.
       const videoMetas: { key: string; size: number; filename: string; video_type: string }[] = []
@@ -253,10 +240,8 @@ export default function OnboardingForm({
       }
 
       setStatus('등록 마무리 중...')
-      // OG(카카오 썸네일)용 가로사진 — 전부 성공했을 때만 landscapeIdx 매핑 신뢰(일부 실패 시 인덱스 어긋남 → 첫 사진 폴백)
-      const ogPhotoPath = (landscapeIdx >= 0 && photoPaths.length === photos.length && photoPaths[landscapeIdx])
-        ? photoPaths[landscapeIdx].path
-        : photoPaths[0]?.path
+      // 대표사진 = 맨 앞 프로필 사진(헤드샷). 카카오 OG 썸네일은 /api/og/actor가 따로 합성 (2026-06 대표 지시)
+      const ogPhotoPath = photoPaths[0]?.path
       // 콤마 구분 → 배열 + 트림 + 빈값 제거
       const skillsArr = skills.split(',').map(s => s.trim()).filter(Boolean).slice(0, 30)
       const advArr = advancedSkills.split(',').map(s => s.trim()).filter(Boolean).slice(0, 30)
@@ -538,8 +523,8 @@ export default function OnboardingForm({
       <section style={sec} aria-labelledby="onb-photos">
         <h2 id="onb-photos" style={secTitle}>프로필 사진</h2>
         <p style={{ fontSize: '0.8rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 14 }}>
-          <strong>세로형 헤드샷 3~4장</strong>이 가장 보기 좋아요 (장당 15MB 이하).
-          여기에 <strong>가로 사진 1장</strong>을 함께 올리면 카카오톡으로 공유할 때 썸네일로 쓰입니다.
+          <strong>세로형 헤드샷 최소 3장</strong>을 올려주세요 (3~6장 권장, 장당 15MB 이하).
+          맨 앞 사진이 <strong>대표 사진</strong>으로 보입니다. 가로 사진을 함께 올리면 카카오톡 공유 썸네일로도 쓰여요.
         </p>
         <input ref={photosRef} type="file" accept="image/*" multiple disabled={loading} onChange={e => pickPhotos(e.target.files)} style={{ display: 'none' }} aria-hidden="true" />
         <button type="button" onClick={() => photosRef.current?.click()} disabled={loading} style={fileBtn}>
@@ -554,11 +539,11 @@ export default function OnboardingForm({
                   <img
                     src={photoPreviews[i]}
                     alt={`선택한 사진 ${i + 1} 미리보기`}
-                    style={{ width: 72, height: 96, objectFit: 'cover', borderRadius: 6, display: 'block', border: i === landscapeIdx ? '2px solid var(--gold)' : '1px solid var(--border)' }}
+                    style={{ width: 72, height: 96, objectFit: 'cover', borderRadius: 6, display: 'block', border: i === 0 ? '2px solid var(--gold)' : '1px solid var(--border)' }}
                   />
                 )}
-                {i === landscapeIdx && (
-                  <span style={{ position: 'absolute', bottom: 0, left: 0, right: 0, fontSize: '0.6rem', textAlign: 'center', background: 'var(--gold)', color: '#fff', padding: '1px 0', borderRadius: '0 0 6px 6px' }}>썸네일</span>
+                {i === 0 && (
+                  <span style={{ position: 'absolute', bottom: 0, left: 0, right: 0, fontSize: '0.6rem', textAlign: 'center', background: 'var(--gold)', color: '#fff', padding: '1px 0', borderRadius: '0 0 6px 6px' }}>대표</span>
                 )}
               </div>
             ))}
@@ -603,8 +588,8 @@ export default function OnboardingForm({
               <input ref={videoRefs[idx]} type="file" accept="video/*" disabled={loading} onChange={e => pickVideo(idx, e.target.files?.[0] ?? null)} style={{ display: 'none' }} aria-hidden="true" />
               <button type="button" onClick={() => videoRefs[idx].current?.click()} disabled={loading} style={{ ...fileBtn, width: '100%', justifyContent: 'flex-start' }}>
                 {videos[idx]
-                  ? <><span aria-hidden="true">🎬</span>{` ${idx === 2 ? '전략적 독백' : `출연영상 ${idx + 1}`}: ${videos[idx]!.name} (${(videos[idx]!.size / MB).toFixed(0)}MB) — 변경`}</>
-                  : <><span aria-hidden="true">🎬</span>{` ${idx === 2 ? '전략적 독백 (선택)' : `출연영상 ${idx + 1}${idx > 0 ? ' (선택)' : ''}`} 선택`}</>}
+                  ? <><span aria-hidden="true">🎬</span>{` ${idx === 2 ? '독백' : `출연영상 ${idx + 1}`}: ${videos[idx]!.name} (${(videos[idx]!.size / MB).toFixed(0)}MB) — 변경`}</>
+                  : <><span aria-hidden="true">🎬</span>{` ${idx === 2 ? '독백 (선택)' : `출연영상 ${idx + 1}${idx > 0 ? ' (선택)' : ''}`} 선택`}</>}
               </button>
             </div>
           ))}
