@@ -73,7 +73,7 @@ export async function GET(
   // role 확인 + 영상 row(+배우 공개 여부) 병렬 조회
   const [{ data: profile }, { data: video, error: videoError }] = await Promise.all([
     supabaseAdmin.from('profiles').select('role, actor_id').eq('id', user.id).maybeSingle(),
-    supabaseAdmin.from('actor_videos').select('id, r2_key, actor_id, title, actors ( is_public, name, gender, age_group )').eq('id', id).maybeSingle(),
+    supabaseAdmin.from('actor_videos').select('id, r2_key, actor_id, title, video_type, actors ( is_public, name, gender, age_group )').eq('id', id).maybeSingle(),
   ])
 
   const role = profile?.role
@@ -118,16 +118,38 @@ export async function GET(
 
   try {
     const ext = video.r2_key.split('.').pop() || 'mp4'
-    // 다운로드 파일명: "{나이대} {성별} {이름} 출연영상{idx}" (예: 30대 남 박성만 출연영상1)
-    // 배우 메타(age_group/gender/name) 없으면 기존 title 폴백
-    const idxRaw = parseInt(url.searchParams.get('idx') ?? '', 10)
-    const idx = Number.isFinite(idxRaw) && idxRaw >= 1 && idxRaw <= 999 ? idxRaw : 1
-    const base = actorRow?.age_group && actorRow?.gender && actorRow?.name
-      ? `${actorRow.age_group} ${actorRow.gender} ${actorRow.name} 출연영상${idx}`
-      : (video.title || 'video')
-    const filename = download
-      ? `${base.replace(/[\\/:*?"<>|]/g, '_')}.${ext}`
-      : undefined
+    // 다운로드 파일명: "{이름} {나이대} 출연영상{N}_KD4" (독백은 "{이름} {나이대} 독백_KD4")
+    //  - 2026-06-30 대표 지시: 업로드 파일명 무관, 다운로드 시 이 양식으로 통일
+    //  - N(순번)·독백 여부는 서버에서 계산 → 어느 다운로드 버튼(인라인/일괄)이든 정확
+    //  - 배우 메타(name/age_group) 없으면 기존 title 폴백
+    let filename: string | undefined
+    if (download) {
+      const vtype = (video as { video_type?: string | null }).video_type
+      const name = actorRow?.name
+      const ageGroup = actorRow?.age_group
+      let base: string
+      if (name && ageGroup) {
+        let label: string
+        if (vtype === 'monologue') {
+          label = '독백'
+        } else {
+          // 이 영상이 출연영상(reel) 중 몇 번째인지 sort_order 기준으로 계산 (화면 표시 순서와 일치)
+          const { data: rs } = await supabaseAdmin
+            .from('actor_videos')
+            .select('id, video_type, sort_order')
+            .eq('actor_id', video.actor_id)
+            .not('r2_key', 'is', null)
+            .order('sort_order', { ascending: true })
+          const reels = (rs ?? []).filter((r) => (r as { video_type?: string | null }).video_type !== 'monologue')
+          const pos = reels.findIndex((r) => r.id === video.id)
+          label = `출연영상${pos >= 0 ? pos + 1 : 1}`
+        }
+        base = `${name} ${ageGroup} ${label}_KD4`
+      } else {
+        base = video.title || 'video'
+      }
+      filename = `${base.replace(/[\\/:*?"<>|]/g, '_')}.${ext}`
+    }
     const signedUrl = await getVideoSignedUrl(video.r2_key, expirySec, filename)
     const expiresAt = new Date(Date.now() + expirySec * 1000).toISOString()
     return NextResponse.json({ url: signedUrl, expiresAt }, { headers: { 'Cache-Control': 'private, no-store' } })
