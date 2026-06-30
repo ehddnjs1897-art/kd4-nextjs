@@ -8,6 +8,10 @@
  * 2. 사진 업로드 / 삭제 / 프로필 지정
  * 3. 유튜브 영상 추가 / 삭제
  * 4. 필모그래피 CRUD
+ *
+ * 2026-06 직관 UI 개편 (Apple iOS 설정/Contacts 그룹 리스트 참고):
+ *  - 흰 카드 그룹 + 얇은 구분선 + 작은 네이비 아이콘 + 값 오른쪽 정렬 + 작은 ›
+ *  ⚠️ 모든 핸들러/상태 로직은 보존, 렌더·스타일만 교체. 접수 폼(OnboardingForm)과 톤 통일.
  */
 
 import { useState, useRef, useMemo, useEffect } from 'react'
@@ -92,111 +96,41 @@ function newFilm(): FilmItem {
   }
 }
 
-// ─── 스타일 ───────────────────────────────────────────────────────────────────
-const s: Record<string, React.CSSProperties> = {
-  section: {
-    marginBottom: 48,
-    background: 'var(--bg2)',
-    border: '1px solid var(--border)',
-    borderRadius: 8,
-    padding: '32px 28px',
-  },
-  sectionTitle: {
-    fontFamily: 'var(--font-display)',
-    fontSize: '0.7rem',
-    fontWeight: 400,
-    letterSpacing: '0.25em',
-    color: 'var(--gold)',
-    textTransform: 'uppercase' as const,
-    marginBottom: 24,
-  },
-  row: { display: 'flex', gap: 16, flexWrap: 'wrap' as const },
-  field: { display: 'flex', flexDirection: 'column' as const, gap: 6 },
-  label: { fontSize: '0.8rem', color: 'var(--gray)', fontWeight: 500 },
-  input: {
-    background: 'var(--bg3)',
-    border: '1px solid var(--border)',
-    borderRadius: 6,
-    padding: '10px 14px',
-    color: 'var(--white)',
-    fontSize: '0.9rem',
-    width: '100%',
-  },
-  btn: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: 8,
-    padding: '10px 20px',
-    minHeight: 44,
-    borderRadius: 6,
-    border: 'none',
-    cursor: 'pointer',
-    fontSize: '0.85rem',
-    fontWeight: 600,
-    transition: 'opacity 0.15s',
-  },
-  btnPrimary: {
-    background: 'var(--gold)',
-    color: '#ffffff',
-  },
-  btnGhost: {
-    background: 'transparent',
-    color: 'var(--gray)',
-    border: '1px solid var(--border)',
-  },
-  btnDanger: {
-    background: 'rgba(239,68,68,0.12)',
-    color: '#ef4444',
-    border: '1px solid rgba(239,68,68,0.3)',
-    padding: '6px 14px',
-    fontSize: '0.78rem',
-    minHeight: 44,
-  },
-  photoGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-    gap: 12,
-  },
-  photoCard: {
-    position: 'relative' as const,
-    aspectRatio: '9/16',
-    borderRadius: 6,
-    overflow: 'hidden',
-    border: '1px solid var(--border)',
-    background: 'var(--bg3)',
-  },
-  profileBadge: {
-    position: 'absolute' as const,
-    top: 8,
-    left: 8,
-    background: 'var(--gold)',
-    color: '#0a0a0a',
-    fontSize: '0.65rem',
-    fontWeight: 700,
-    padding: '2px 8px',
-    borderRadius: 20,
-    letterSpacing: '0.08em',
-    textTransform: 'uppercase' as const,
-  },
-  photoActions: {
-    position: 'absolute' as const,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    background: 'linear-gradient(transparent, rgba(0,0,0,0.85))',
-    padding: '24px 8px 8px',
-    display: 'flex',
-    gap: 6,
-    justifyContent: 'center',
-  },
-  filmRow: {
-    display: 'grid',
-    gridTemplateColumns: '100px 70px 1.2fr 1fr 1fr auto',
-    gap: 8,
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  msg: { fontSize: '0.82rem', padding: '8px 0', minHeight: 24 },
+// ─── Apple식 라인 아이콘 ───────────────────────────────────────────────────────
+const iconProps = { width: 17, height: 17, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.9, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
+const FileIcon = () => <svg {...iconProps}><path d="M14 2.5H7A2 2 0 005 4.5v15a2 2 0 002 2h10a2 2 0 002-2V7.5z" /><path d="M14 2.5v5h5" /></svg>
+const Chevron = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+
+// ─── Apple식 스타일 ───────────────────────────────────────────────────────────
+const a: Record<string, React.CSSProperties> = {
+  caption: { fontSize: 13, color: 'var(--gray)', margin: '0 6px 8px', fontWeight: 500 },
+  card: { background: '#FFFFFF', border: '1px solid var(--border)', borderRadius: 14, overflow: 'hidden', marginBottom: 8 },
+  cardPad: { background: '#FFFFFF', border: '1px solid var(--border)', borderRadius: 14, padding: '16px', marginBottom: 8 },
+  sep: { borderTop: '1px solid #ECEAE0' },
+  row: { display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', minHeight: 54, boxSizing: 'border-box' },
+  rowBtn: { display: 'flex', alignItems: 'center', gap: 13, width: '100%', textAlign: 'left', padding: '13px 16px', minHeight: 56, boxSizing: 'border-box', background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit' },
+  rowBody: { flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 2 },
+  tile: { flexShrink: 0, width: 30, height: 30, borderRadius: 8, background: 'var(--navy)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  label: { fontSize: 16, color: 'var(--white)', fontWeight: 400 },
+  sub: { fontSize: 13, color: 'var(--gray)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  chev: { flexShrink: 0, color: '#C7C3B9', display: 'flex', alignItems: 'center' },
+  inlineInput: { flex: 1, minWidth: 0, border: 'none', background: 'transparent', textAlign: 'right', fontSize: 16, color: 'var(--white)', fontFamily: 'inherit', padding: '4px 2px', borderRadius: 6 },
+  unit: { fontSize: 16, color: 'var(--gray)', flexShrink: 0 },
+  opt: { fontSize: 12, fontWeight: 400, color: 'var(--gray)', marginLeft: 4 },
+  blockLabel: { display: 'block', fontSize: 16, color: 'var(--white)', fontWeight: 500, marginBottom: 8 },
+  help: { fontSize: 13, color: 'var(--gray)', lineHeight: 1.6, marginBottom: 10 },
+  boxInput: { display: 'block', width: '100%', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 14px', color: 'var(--white)', fontSize: 16, fontFamily: 'inherit', boxSizing: 'border-box' },
+  smallInput: { background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8, padding: '9px 11px', color: 'var(--white)', fontSize: 14, fontFamily: 'inherit', boxSizing: 'border-box', width: '100%' },
+  primary: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '12px 22px', minHeight: 44, borderRadius: 12, border: 'none', cursor: 'pointer', fontSize: 15, fontWeight: 600, background: 'var(--navy)', color: '#fff', fontFamily: 'inherit' },
+  ghost: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '12px 18px', minHeight: 44, borderRadius: 12, cursor: 'pointer', fontSize: 15, fontWeight: 500, background: 'transparent', color: 'var(--navy)', border: '1px solid var(--border)', fontFamily: 'inherit' },
+  danger: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '7px 13px', minHeight: 36, borderRadius: 9, cursor: 'pointer', fontSize: 13, fontWeight: 500, background: 'transparent', color: '#C0392B', border: '1px solid rgba(192,57,43,0.3)', fontFamily: 'inherit' },
+  msg: { fontSize: 14, padding: '6px 0', minHeight: 22 },
+  photoGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: 10 },
+  photoCard: { position: 'relative', aspectRatio: '9/16', borderRadius: 10, overflow: 'hidden', border: '1px solid var(--border)', background: 'var(--bg3)' },
+  profileBadge: { position: 'absolute', top: 8, left: 8, background: 'var(--navy)', color: '#fff', fontSize: 11, fontWeight: 500, padding: '2px 9px', borderRadius: 20 },
+  photoActions: { position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(transparent, rgba(0,0,0,0.8))', padding: '24px 7px 7px', display: 'flex', gap: 6, justifyContent: 'center' },
+  listRow: { display: 'flex', gap: 12, alignItems: 'center', background: 'var(--bg)', borderRadius: 10, padding: '10px 14px' },
+  filmRow: { display: 'grid', gridTemplateColumns: '100px 70px 1.2fr 1fr 1fr auto', gap: 8, alignItems: 'center', marginBottom: 8 },
 }
 
 // ─── 컴포넌트 ─────────────────────────────────────────────────────────────────
@@ -592,362 +526,272 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   // ── 렌더 ────────────────────────────────────────────────────────────────────
 
   // 프로필 완성도 계산 (저장된 값 기준 + 실시간 state)
-  // useMemo: 관련 state가 변할 때만 재계산 (키보드 입력마다 재계산 방지)
   const completionItems = useMemo(() => [
-    { label: '프로필 사진', done: photos.length > 0, icon: '📸' },
-    { label: '출연 영상', done: videos.length > 0 || r2Videos.length > 0, icon: '🎬' },
-    { label: '필모그래피', done: filmography.length > 0, icon: '📋' },
-    { label: '한줄소개', done: castingSummary.trim().length > 0, icon: '✍️' },
+    { label: '프로필 사진', done: photos.length > 0 },
+    { label: '출연 영상', done: videos.length > 0 || r2Videos.length > 0 },
+    { label: '필모그래피', done: filmography.length > 0 },
+    { label: '한줄소개', done: castingSummary.trim().length > 0 },
   ], [photos.length, videos.length, r2Videos.length, filmography.length, castingSummary])
   const completionCount = completionItems.filter(i => i.done).length
   const completionPct = Math.round((completionCount / completionItems.length) * 100)
 
-  return (
-    <div style={{ maxWidth: 820 }}>
+  const isErr = (m: string, okWord: string) => m && !m.includes(okWord)
 
-      {/* ── 프로필 완성도 ── */}
-      <div style={{
-        background: 'var(--bg2)',
-        border: '1px solid var(--border)',
-        borderRadius: 8,
-        padding: '20px 24px',
-        marginBottom: 24,
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-          <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase' }}><span lang="en">Profile Completion</span></p>
-          <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.85rem', fontWeight: 700, color: completionPct === 100 ? '#4ade80' : 'var(--white)' }}>{completionPct}%</span>
+  return (
+    <div style={{ maxWidth: 600, margin: '0 auto' }}>
+
+      {/* ── 완성도 (절제된 상단 바) ── */}
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
+          <span style={{ fontSize: 15, fontWeight: 500, color: 'var(--white)' }}>프로필 완성도</span>
+          <span style={{ fontSize: 14, fontWeight: 500, color: completionPct === 100 ? '#1D9E75' : 'var(--gray)' }}>{completionPct}%</span>
         </div>
-        {/* 프로그레스 바 */}
-        <div style={{ height: 4, borderRadius: 4, background: 'var(--bg3)', marginBottom: 14, overflow: 'hidden' }}>
-          <div
-            role="progressbar"
-            aria-valuenow={completionPct}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-label="프로필 완성도"
-            style={{
-              height: '100%',
-              width: `${completionPct}%`,
-              borderRadius: 4,
-              background: completionPct === 100 ? '#4ade80' : 'var(--gold)',
-              transition: 'width 0.3s ease',
-            }} />
+        <div style={{ height: 5, borderRadius: 999, background: 'var(--bg3)', overflow: 'hidden', marginBottom: 12 }}>
+          <div role="progressbar" aria-valuenow={completionPct} aria-valuemin={0} aria-valuemax={100} aria-label="프로필 완성도"
+            style={{ height: '100%', width: `${completionPct}%`, borderRadius: 999, background: completionPct === 100 ? '#1D9E75' : 'var(--navy)', transition: 'width 0.3s ease' }} />
         </div>
-        {/* 항목별 체크리스트 */}
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {completionItems.map(item => (
-            <span key={item.label} style={{
-              display: 'inline-flex', alignItems: 'center', gap: 5,
-              padding: '4px 10px', borderRadius: 20,
-              fontSize: '0.75rem', fontWeight: 600,
-              background: item.done ? 'rgba(74,222,128,0.1)' : 'rgba(255,255,255,0.05)',
-              border: `1px solid ${item.done ? 'rgba(74,222,128,0.3)' : 'var(--border)'}`,
-              color: item.done ? '#4ade80' : 'var(--gray)',
-            }}>
-              <span aria-hidden="true">{item.done ? '✓' : '○'}</span>
-              <span><span aria-hidden="true">{item.icon}</span> {item.label}</span>
+            <span key={item.label} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '4px 11px', borderRadius: 999, fontSize: 13, fontWeight: 500, background: item.done ? 'rgba(29,158,117,0.1)' : 'transparent', border: `1px solid ${item.done ? 'rgba(29,158,117,0.35)' : 'var(--border)'}`, color: item.done ? '#1D9E75' : 'var(--gray)' }}>
+              <span aria-hidden="true">{item.done ? '✓' : '○'}</span>{item.label}
             </span>
           ))}
         </div>
-        {completionPct === 100 && (
-          <p style={{ fontSize: '0.78rem', color: '#4ade80', marginTop: 10, fontWeight: 500 }}>
-            <span aria-hidden="true">✨</span> 프로필이 완성됐어요! 관리자 검토 후 배우 DB에 공개됩니다.
-          </p>
-        )}
-        {completionPct === 0 && (
-          <p style={{ fontSize: '0.78rem', color: 'var(--gray)', marginTop: 10 }}>
-            아래 항목을 채우면 캐스팅 디렉터들에게 더 잘 노출됩니다.
-          </p>
-        )}
       </div>
 
       {/* ── 기본 정보 ── */}
-      <section style={s.section} aria-labelledby="gallery-section-info">
-        <h2 id="gallery-section-info" style={s.sectionTitle}>기본 정보</h2>
-        <div style={{ ...s.row, marginBottom: 20 }}>
-          <div style={{ ...s.field, flex: '1 1 120px' }}>
-            <label htmlFor="actor-height" style={s.label}>신장 (cm)</label>
-            <input id="actor-height" type="number" value={height} onChange={e => setHeight(e.target.value)} style={s.input} placeholder="170" min={100} max={230} autoComplete="off" />
-          </div>
-          <div style={{ ...s.field, flex: '1 1 120px' }}>
-            <label htmlFor="actor-weight" style={s.label}>체중 (kg)</label>
-            <input id="actor-weight" type="number" value={weight} onChange={e => setWeight(e.target.value)} style={s.input} placeholder="60" min={30} max={200} autoComplete="off" />
-          </div>
-          <div style={{ ...s.field, flex: '2 1 240px' }}>
-            <label htmlFor="actor-skills" style={s.label}>특기</label>
-            <input id="actor-skills" value={skills} onChange={e => setSkills(e.target.value)} style={s.input} placeholder="수영, 검도, 피아노, 영어, 사투리(경상도)" />
-          </div>
+      <p style={a.caption}>기본 정보</p>
+      <section style={a.card} aria-labelledby="gallery-section-info">
+        <h2 id="gallery-section-info" className="sr-only">기본 정보</h2>
+        <div style={a.row}>
+          <label htmlFor="actor-height" style={a.label}>신장</label>
+          <input id="actor-height" type="text" inputMode="numeric" value={height} onChange={e => setHeight(e.target.value.replace(/[^0-9]/g, '').slice(0, 3))} style={a.inlineInput} placeholder="170" autoComplete="off" />
+          <span style={a.unit}>cm</span>
         </div>
-        <div style={{ ...s.field, marginBottom: 20 }}>
-          <label htmlFor="actor-advanced-skills" style={s.label}>
-            <span aria-hidden="true">⭐</span> 고급 숙련도 <span style={{ fontWeight: 400, fontSize: '0.75rem', color: 'var(--gray)' }}>(전문가급/네이티브만. 위 특기 중 콤마로 구분해 다시 입력)</span>
-          </label>
-          <input id="actor-advanced-skills" value={advancedSkills} onChange={e => setAdvancedSkills(e.target.value)} style={s.input} placeholder="검도, 영어" />
+        <div style={{ ...a.row, ...a.sep }}>
+          <label htmlFor="actor-weight" style={a.label}>체중 <span style={a.opt}>선택</span></label>
+          <input id="actor-weight" type="text" inputMode="numeric" value={weight} onChange={e => setWeight(e.target.value.replace(/[^0-9]/g, '').slice(0, 3))} style={a.inlineInput} placeholder="60" autoComplete="off" />
+          <span style={a.unit}>kg</span>
         </div>
-        <div style={{ ...s.field, marginBottom: 20 }}>
-          <label style={s.label}>사투리 <span style={{ fontWeight: 400, fontSize: '0.75rem', color: 'var(--gray)' }}>(네이티브 수준 가능 지역만 선택 · 없으면 ‘없음’)</span></label>
-          <div role="group" aria-label="사투리 가능 지역" style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 4 }}>
+        <div style={{ ...a.row, ...a.sep }}>
+          <label htmlFor="actor-instagram" style={a.label}>인스타그램 <span style={a.opt}>선택</span></label>
+          <input id="actor-instagram" value={instagram} onChange={e => setInstagram(e.target.value)} style={a.inlineInput} placeholder="@아이디" autoComplete="off" />
+        </div>
+        <div style={{ padding: '16px', ...a.sep }}>
+          <label htmlFor="actor-skills" style={a.blockLabel}>특기</label>
+          <p style={a.help}>콤마(,)로 구분해 입력하세요.</p>
+          <input id="actor-skills" value={skills} onChange={e => setSkills(e.target.value)} style={a.boxInput} placeholder="수영, 검도, 피아노, 영어" />
+        </div>
+        <div style={{ padding: '16px', ...a.sep }}>
+          <label htmlFor="actor-advanced-skills" style={a.blockLabel}>고급 숙련도 <span style={a.opt}>선택</span></label>
+          <p style={a.help}>전문가급/네이티브 수준만. 위 특기 중 콤마로 구분해 다시 입력 — ⭐로 강조됩니다.</p>
+          <input id="actor-advanced-skills" value={advancedSkills} onChange={e => setAdvancedSkills(e.target.value)} style={a.boxInput} placeholder="검도, 영어" />
+        </div>
+        <div style={{ padding: '16px', ...a.sep }}>
+          <label style={a.blockLabel}>사투리</label>
+          <p style={a.help}>네이티브 수준 가능 지역만 선택. 없으면 ‘없음’.</p>
+          <div role="group" aria-label="사투리 가능 지역" style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {[...DIALECT_OPTIONS, DIALECT_NONE].map((d) => {
               const on = dialects.includes(d)
               const isNone = d === DIALECT_NONE
               return (
-                <button
-                  key={d}
-                  type="button"
-                  aria-pressed={on}
-                  onClick={() => setDialects((prev) => {
-                    if (isNone) return prev.includes(DIALECT_NONE) ? [] : [DIALECT_NONE]
-                    const r = prev.filter((x) => x !== DIALECT_NONE)
-                    return r.includes(d) ? r.filter((x) => x !== d) : [...r, d]
-                  })}
-                  style={{
-                    padding: '7px 15px', borderRadius: 999, cursor: 'pointer',
-                    fontSize: '0.83rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
-                    background: on ? 'var(--navy)' : 'transparent',
-                    color: on ? '#fff' : 'var(--gray)',
-                    border: `1px solid ${on ? 'var(--navy)' : 'var(--border)'}`,
-                    transition: 'all 0.15s',
-                  }}
-                >
+                <button key={d} type="button" aria-pressed={on}
+                  onClick={() => setDialects((prev) => { if (isNone) return prev.includes(DIALECT_NONE) ? [] : [DIALECT_NONE]; const r = prev.filter((x) => x !== DIALECT_NONE); return r.includes(d) ? r.filter((x) => x !== d) : [...r, d] })}
+                  style={{ padding: '9px 16px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 500, background: on ? 'var(--navy)' : 'transparent', color: on ? '#fff' : 'var(--gray)', border: `1px solid ${on ? 'var(--navy)' : 'var(--border)'}`, transition: 'all 0.15s' }}>
                   {on ? '✓ ' : ''}{isNone ? '없음 (표준어)' : d}
                 </button>
               )
             })}
           </div>
         </div>
-        <div style={{ ...s.field, marginBottom: 20 }}>
-          <label htmlFor="actor-instagram" style={s.label}>인스타그램 ID</label>
-          <input id="actor-instagram" value={instagram} onChange={e => setInstagram(e.target.value)} style={{ ...s.input, maxWidth: 280 }} placeholder="@username" />
+        <div style={{ padding: '16px', ...a.sep }}>
+          <label htmlFor="actor-casting-summary" style={a.blockLabel}>한줄소개</label>
+          <p style={a.help}>캐스팅 디렉터에게 보이는 자기소개 (50자 내외).</p>
+          <textarea id="actor-casting-summary" value={castingSummary} onChange={e => setCastingSummary(e.target.value)} maxLength={120} rows={2}
+            placeholder='예: "장르를 넘나드는 탄탄한 기본기의 배우"' aria-describedby="actor-casting-summary-count"
+            style={{ ...a.boxInput, resize: 'vertical', minHeight: 64, lineHeight: 1.6 }} />
+          <span id="actor-casting-summary-count" aria-live="off" aria-atomic="true" style={{ display: 'block', fontSize: 12, color: 'var(--gray)', textAlign: 'right', marginTop: 4 }}>{castingSummary.length}/120</span>
         </div>
-        <div style={{ ...s.field, marginBottom: 20 }}>
-          <label htmlFor="actor-casting-summary" style={s.label}>한줄소개 <span style={{ fontWeight: 400, fontSize: '0.75rem', color: 'var(--gray)' }}>(캐스팅 디렉터에게 보이는 자기소개, 50자 내외)</span></label>
-          <textarea
-            id="actor-casting-summary"
-            value={castingSummary}
-            onChange={e => setCastingSummary(e.target.value)}
-            maxLength={120}
-            rows={2}
-            placeholder='예: "장르를 넘나드는 탄탄한 기본기의 배우"'
-            aria-describedby="actor-casting-summary-count"
-            style={{ ...s.input, resize: 'vertical', minHeight: 64, lineHeight: 1.6, fontFamily: 'inherit' }}
-          />
-          <span id="actor-casting-summary-count" aria-live="off" aria-atomic="true" style={{ fontSize: '0.72rem', color: 'var(--gray)', textAlign: 'right' }}>{castingSummary.length}/120</span>
-        </div>
-        <button type="button" onClick={saveInfo} disabled={infoSaving} aria-busy={infoSaving} style={{ ...s.btn, ...s.btnPrimary, opacity: infoSaving ? 0.6 : 1 }}>
-          {infoSaving ? '저장 중…' : '저장'}
-        </button>
-        <p role="status" aria-live="polite" aria-atomic="true" style={{ ...s.msg, color: infoMsg && (infoMsg.includes('실패') || infoMsg.includes('오류')) ? '#ef4444' : 'var(--gold)', marginTop: 10 }}>{infoMsg}</p>
       </section>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28 }}>
+        <button type="button" onClick={saveInfo} disabled={infoSaving} aria-busy={infoSaving} style={{ ...a.primary, opacity: infoSaving ? 0.6 : 1 }}>{infoSaving ? '저장 중…' : '저장'}</button>
+        <span role="status" aria-live="polite" aria-atomic="true" style={{ ...a.msg, color: isErr(infoMsg, '저장') ? '#C0392B' : 'var(--navy)' }}>{infoMsg}</span>
+      </div>
 
-      {/* ── 프로필 자료 (PPTX) ── */}
-      <section style={s.section} aria-labelledby="gallery-section-ppt">
-        <h2 id="gallery-section-ppt" style={s.sectionTitle}>프로필 PPTX</h2>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-          <div style={{
-            width: 40, height: 40, borderRadius: 6, background: 'rgba(196,165,90,0.12)',
-            border: '1px solid rgba(196,165,90,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '1.2rem', flexShrink: 0,
-          }} aria-hidden="true">
-            📄
-          </div>
-          <div>
-            <p style={{ fontSize: '0.85rem', color: 'var(--white)', fontWeight: 600, marginBottom: 2 }}>
-              {hasPpt ? '프로필 PPTX 등록됨' : '프로필 PPTX 미등록'}
-            </p>
-            <p style={{ fontSize: '0.75rem', color: 'var(--gray)' }}>
-              {hasPpt ? '새 파일을 올리면 기존 파일이 교체됩니다.' : '.pptx 또는 .pdf · 최대 20MB'}
-            </p>
-            <p style={{ fontSize: '0.75rem', color: 'var(--gray)' }}>
-              PPTX는 가로형 슬라이드로 올려주세요 (세로형은 사진이 잘릴 수 있어요).
-            </p>
-            <p style={{ fontSize: '0.75rem', color: 'var(--gray)' }}>
-              파일명 예: 30대 남 홍길동 프로필.pptx<br />(다운로드 시 자동 변환됩니다)
-            </p>
-          </div>
-        </div>
+      {/* ── 프로필 파일 (PPTX) ── */}
+      <p style={a.caption}>프로필 파일</p>
+      <section style={a.card} aria-labelledby="gallery-section-ppt">
+        <h2 id="gallery-section-ppt" className="sr-only">프로필 파일</h2>
         <input ref={pptRef} type="file" accept=".pptx,.pdf,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation" onChange={uploadPpt} style={{ display: 'none' }} aria-hidden="true" />
-        <button type="button" onClick={() => pptRef.current?.click()} disabled={pptUploading} aria-busy={pptUploading} style={{ ...s.btn, ...s.btnGhost, opacity: pptUploading ? 0.6 : 1 }}>
-          {pptUploading ? '업로드 중…' : <><span aria-hidden="true">📄</span>{hasPpt ? ' 파일 교체' : ' 파일 올리기'}</>}
+        <button type="button" onClick={() => pptRef.current?.click()} disabled={pptUploading} aria-busy={pptUploading} style={a.rowBtn} aria-label={hasPpt ? '프로필 파일 교체' : '프로필 파일 올리기'}>
+          <span style={a.tile} aria-hidden="true"><FileIcon /></span>
+          <span style={a.rowBody}>
+            <span style={a.label}>{hasPpt ? '프로필 파일 등록됨' : '프로필 파일'} <span style={a.opt}>PPT·PDF</span></span>
+            <span style={a.sub}>{pptUploading ? '업로드 중…' : (hasPpt ? '새 파일을 올리면 교체됩니다 · 가로형 권장' : '최대 20MB · 가로형 슬라이드 권장')}</span>
+          </span>
+          <span style={{ fontSize: 14, color: 'var(--navy)', fontWeight: 500, marginRight: 2 }}>{hasPpt ? '교체' : '올리기'}</span>
+          <span style={a.chev}><Chevron /></span>
         </button>
-        <p role="status" aria-live="polite" aria-atomic="true" style={{ ...s.msg, color: pptMsg && !pptMsg.includes('완료') ? '#ef4444' : 'var(--gold)', marginTop: 8 }}>{pptMsg}</p>
       </section>
+      <p role="status" aria-live="polite" aria-atomic="true" style={{ ...a.msg, color: isErr(pptMsg, '완료') ? '#C0392B' : 'var(--navy)', margin: '0 6px 28px' }}>{pptMsg}</p>
 
       {/* ── 사진 ── */}
-      <section style={s.section} aria-labelledby="gallery-section-photos">
-        <h2 id="gallery-section-photos" style={s.sectionTitle}>사진</h2>
-        <div style={s.photoGrid}>
-          {photos.map((p, idx) => (
-            <div key={p.id} style={s.photoCard}>
-              <Image src={p.url} alt={p.is_profile ? '대표 프로필 사진' : `배우 사진 ${idx + 1}`} fill style={{ objectFit: 'cover' }} sizes="160px" />
-              {p.is_profile && <span style={s.profileBadge}>대표</span>}
-              <div style={s.photoActions}>
-                {confirmingPhotoId === p.id ? (
-                  <div style={{ display: 'flex', gap: 5 }}>
-                    <button type="button" autoFocus onClick={() => { setConfirmingPhotoId(null); deletePhotoRefs.current.get(p.id)?.focus() }} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 44 }}>취소</button>
-                    <button type="button" onClick={() => deletePhoto(p.id, p.is_profile)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 44, border: 'none' }}>확인</button>
-                  </div>
-                ) : (
-                  <>
-                    {!p.is_profile && (
-                      <button type="button" onClick={() => setProfile(p.id)} aria-label={`사진 ${idx + 1} 대표로 지정`} style={{ ...s.btn, ...s.btnGhost, padding: '4px 10px', fontSize: '0.72rem', minHeight: 44 }}>
-                        대표 지정
-                      </button>
-                    )}
-                    <button ref={el => { deletePhotoRefs.current.set(p.id, el) }} type="button" onClick={() => deletePhoto(p.id, p.is_profile)} aria-label={p.is_profile ? '대표 프로필 사진 삭제' : `사진 ${idx + 1} 삭제`} style={{ ...s.btn, ...s.btnDanger }}>
-                      삭제
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div style={{ marginTop: 20, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
-          <input ref={fileRef} type="file" accept="image/*" onChange={uploadPhoto} style={{ display: 'none' }} aria-hidden="true" />
-          <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} aria-busy={uploading} style={{ ...s.btn, ...s.btnPrimary, opacity: uploading ? 0.6 : 1 }}>
-            {uploading ? '업로드 중…' : '+ 사진 추가'}
-          </button>
-          <span style={{ fontSize: '0.78rem', color: 'var(--gray)' }}>JPG·PNG, 최대 15MB · 9:16 비율 권장</span>
-        </div>
-        <p role="status" aria-live="polite" aria-atomic="true" style={{ ...s.msg, color: photoMsg && !photoMsg.includes('완료') ? '#ef4444' : 'var(--gold)', marginTop: 8 }}>{photoMsg}</p>
-      </section>
-
-      {/* ── 영상 ── */}
-      <section style={s.section} aria-labelledby="gallery-section-videos">
-        <h2 id="gallery-section-videos" style={s.sectionTitle}>영상</h2>
-
-        {/* R2 업로드 영상 */}
-        <div style={{ marginBottom: 28 }}>
-          <p style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--gray)', letterSpacing: '0.08em', marginBottom: 12 }}><span aria-hidden="true">📁</span> 직접 업로드 영상</p>
-          {r2Videos.length > 0 && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 14 }}>
-              {r2Videos.map(v => (
-                <div key={v.id} style={{ display: 'flex', gap: 12, alignItems: 'center', background: 'var(--bg3)', borderRadius: 6, padding: '10px 14px' }}>
-                  <span style={{ fontSize: '1rem', flexShrink: 0 }} aria-hidden="true">🎬</span>
-                  <p style={{ flex: 1, fontSize: '0.84rem', color: 'var(--white)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {v.title || v.r2_key.split('/').pop()}
-                    <span style={{ fontSize: '0.72rem', color: 'var(--gray)', marginLeft: 6 }}>
-                      {v.video_type === 'monologue' ? '독백' : '출연영상'}
-                    </span>
-                  </p>
-                  {confirmingR2VideoId === v.id ? (
-                    <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
-                      <button type="button" autoFocus onClick={() => { setConfirmingR2VideoId(null); deleteR2VideoRefs.current.get(v.id)?.focus() }} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 44 }}>취소</button>
-                      <button type="button" onClick={() => deleteR2Video(v.id)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 44, border: 'none' }}>확인</button>
+      <p style={a.caption}>사진</p>
+      <section style={a.cardPad} aria-labelledby="gallery-section-photos">
+        <h2 id="gallery-section-photos" className="sr-only">사진</h2>
+        {photos.length > 0 && (
+          <div style={a.photoGrid}>
+            {photos.map((p, idx) => (
+              <div key={p.id} style={a.photoCard}>
+                <Image src={p.url} alt={p.is_profile ? '대표 프로필 사진' : `배우 사진 ${idx + 1}`} fill style={{ objectFit: 'cover' }} sizes="160px" />
+                {p.is_profile && <span style={a.profileBadge}>대표</span>}
+                <div style={a.photoActions}>
+                  {confirmingPhotoId === p.id ? (
+                    <div style={{ display: 'flex', gap: 5 }}>
+                      <button type="button" autoFocus onClick={() => { setConfirmingPhotoId(null); deletePhotoRefs.current.get(p.id)?.focus() }} style={{ ...a.danger, background: '#fff', color: 'var(--white)', border: '1px solid #fff' }}>취소</button>
+                      <button type="button" onClick={() => deletePhoto(p.id, p.is_profile)} style={{ ...a.danger, background: '#C0392B', color: '#fff', border: 'none' }}>확인</button>
                     </div>
                   ) : (
-                    <button ref={el => { deleteR2VideoRefs.current.set(v.id, el) }} type="button" onClick={() => deleteR2Video(v.id)} aria-label={`${v.title || '영상'} 삭제`} style={{ ...s.btn, ...s.btnDanger, flexShrink: 0 }}>삭제</button>
+                    <>
+                      {!p.is_profile && (
+                        <button type="button" onClick={() => setProfile(p.id)} aria-label={`사진 ${idx + 1} 대표로 지정`} style={{ ...a.danger, background: 'rgba(255,255,255,0.92)', color: 'var(--navy)', border: 'none', fontWeight: 500 }}>대표 지정</button>
+                      )}
+                      <button ref={el => { deletePhotoRefs.current.set(p.id, el) }} type="button" onClick={() => deletePhoto(p.id, p.is_profile)} aria-label={p.is_profile ? '대표 프로필 사진 삭제' : `사진 ${idx + 1} 삭제`} style={{ ...a.danger, background: 'rgba(255,255,255,0.92)', border: 'none' }}>삭제</button>
+                    </>
                   )}
                 </div>
-              ))}
-            </div>
-          )}
-          <div>
-            <input ref={r2VideoRef} type="file" accept="video/*" onChange={uploadR2Video} style={{ display: 'none' }} aria-hidden="true" />
-            <button type="button" onClick={() => r2VideoRef.current?.click()} disabled={r2Uploading} aria-busy={r2Uploading} style={{ ...s.btn, ...s.btnGhost, opacity: r2Uploading ? 0.6 : 1 }}>
-              {r2Uploading ? r2UploadStatus || '업로드 중…' : '+ 영상 파일 업로드'}
-            </button>
-            <span style={{ fontSize: '0.74rem', color: 'var(--gray)', marginLeft: 12 }}>mp4 권장, 최대 300MB</span>
+              </div>
+            ))}
           </div>
-          <p style={{ fontSize: '0.74rem', color: 'var(--gray)', marginTop: 8 }}>
-            파일명 예: 30대 남 홍길동 출연영상1.mp4<br />(다운로드 시 자동 변환됩니다)
-          </p>
-          <p role="status" aria-live="polite" aria-atomic="true" style={{ ...s.msg, color: r2VideoMsg && !r2VideoMsg.includes('완료') ? '#ef4444' : 'var(--gold)', marginTop: 8 }}>{r2VideoMsg}</p>
+        )}
+        <div style={{ marginTop: photos.length > 0 ? 16 : 0, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+          <input ref={fileRef} type="file" accept="image/*" onChange={uploadPhoto} style={{ display: 'none' }} aria-hidden="true" />
+          <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} aria-busy={uploading} style={{ ...a.ghost, opacity: uploading ? 0.6 : 1 }}>{uploading ? '업로드 중…' : '＋ 사진 추가'}</button>
+          <span style={{ fontSize: 13, color: 'var(--gray)' }}>JPG·PNG, 최대 15MB · 세로형 권장</span>
         </div>
+        <p role="status" aria-live="polite" aria-atomic="true" style={{ ...a.msg, color: isErr(photoMsg, '완료') ? '#C0392B' : 'var(--navy)' }}>{photoMsg}</p>
+      </section>
+      <div style={{ height: 20 }} />
+
+      {/* ── 영상 ── */}
+      <p style={a.caption}>영상</p>
+      <section style={a.cardPad} aria-labelledby="gallery-section-videos">
+        <h2 id="gallery-section-videos" className="sr-only">영상</h2>
+
+        {/* 직접 업로드 영상 (R2) */}
+        <p style={{ fontSize: 14, fontWeight: 500, color: 'var(--white)', marginBottom: 12 }}>직접 업로드 영상</p>
+        {r2Videos.length > 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 14 }}>
+            {r2Videos.map(v => (
+              <div key={v.id} style={a.listRow}>
+                <p style={{ flex: 1, fontSize: 15, color: 'var(--white)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {v.title || v.r2_key.split('/').pop()}
+                  <span style={{ fontSize: 13, color: 'var(--gray)', marginLeft: 6 }}>{v.video_type === 'monologue' ? '독백' : '출연영상'}</span>
+                </p>
+                {confirmingR2VideoId === v.id ? (
+                  <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
+                    <button type="button" autoFocus onClick={() => { setConfirmingR2VideoId(null); deleteR2VideoRefs.current.get(v.id)?.focus() }} style={a.ghost}>취소</button>
+                    <button type="button" onClick={() => deleteR2Video(v.id)} style={{ ...a.danger, background: '#C0392B', color: '#fff', border: 'none' }}>확인</button>
+                  </div>
+                ) : (
+                  <button ref={el => { deleteR2VideoRefs.current.set(v.id, el) }} type="button" onClick={() => deleteR2Video(v.id)} aria-label={`${v.title || '영상'} 삭제`} style={{ ...a.danger, flexShrink: 0 }}>삭제</button>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+        <input ref={r2VideoRef} type="file" accept="video/*" onChange={uploadR2Video} style={{ display: 'none' }} aria-hidden="true" />
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+          <button type="button" onClick={() => r2VideoRef.current?.click()} disabled={r2Uploading} aria-busy={r2Uploading} style={{ ...a.ghost, opacity: r2Uploading ? 0.6 : 1 }}>{r2Uploading ? r2UploadStatus || '업로드 중…' : '＋ 영상 파일 업로드'}</button>
+          <span style={{ fontSize: 13, color: 'var(--gray)' }}>mp4 권장, 최대 300MB</span>
+        </div>
+        <p role="status" aria-live="polite" aria-atomic="true" style={{ ...a.msg, color: isErr(r2VideoMsg, '완료') ? '#C0392B' : 'var(--navy)' }}>{r2VideoMsg}</p>
 
         {/* 유튜브 연결 영상 */}
-        <div style={{ paddingTop: 20, borderTop: '1px solid var(--border)' }}>
-          <p style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--gray)', letterSpacing: '0.08em', marginBottom: 12 }}><span aria-hidden="true">🎬</span> 유튜브 영상 연결</p>
+        <div style={{ paddingTop: 18, marginTop: 6, borderTop: '1px solid #ECEAE0' }}>
+          <p style={{ fontSize: 14, fontWeight: 500, color: 'var(--white)', marginBottom: 12 }}>유튜브 영상 연결</p>
           {videos.length > 0 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 14 }}>
               {videos.map(v => (
-                <div key={v.id} style={{ display: 'flex', gap: 12, alignItems: 'center', background: 'var(--bg3)', borderRadius: 6, padding: '10px 14px' }}>
-                  <div style={{ width: 60, height: 34, borderRadius: 4, overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
-                    <Image src={`https://img.youtube.com/vi/${v.youtube_id}/mqdefault.jpg`} alt={v.title || ''} fill sizes="60px" style={{ objectFit: 'cover' }} />
+                <div key={v.id} style={a.listRow}>
+                  <div style={{ width: 56, height: 32, borderRadius: 6, overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
+                    <Image src={`https://img.youtube.com/vi/${v.youtube_id}/mqdefault.jpg`} alt={v.title || ''} fill sizes="56px" style={{ objectFit: 'cover' }} />
                   </div>
-                  <p style={{ flex: 1, fontSize: '0.84rem', color: 'var(--white)', margin: 0 }}>
-                    {v.title || v.youtube_id}
-                  </p>
+                  <p style={{ flex: 1, fontSize: 15, color: 'var(--white)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v.title || v.youtube_id}</p>
                   {confirmingVideoId === v.id ? (
                     <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
-                      <button type="button" autoFocus onClick={() => { setConfirmingVideoId(null); deleteVideoRefs.current.get(v.id)?.focus() }} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 44 }}>취소</button>
-                      <button type="button" onClick={() => deleteVideo(v.id)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 44, border: 'none' }}>확인</button>
+                      <button type="button" autoFocus onClick={() => { setConfirmingVideoId(null); deleteVideoRefs.current.get(v.id)?.focus() }} style={a.ghost}>취소</button>
+                      <button type="button" onClick={() => deleteVideo(v.id)} style={{ ...a.danger, background: '#C0392B', color: '#fff', border: 'none' }}>확인</button>
                     </div>
                   ) : (
-                    <button ref={el => { deleteVideoRefs.current.set(v.id, el) }} type="button" onClick={() => deleteVideo(v.id)} aria-label={`${v.title || v.youtube_id} 삭제`} style={{ ...s.btn, ...s.btnDanger, flexShrink: 0 }}>삭제</button>
+                    <button ref={el => { deleteVideoRefs.current.set(v.id, el) }} type="button" onClick={() => deleteVideo(v.id)} aria-label={`${v.title || v.youtube_id} 삭제`} style={{ ...a.danger, flexShrink: 0 }}>삭제</button>
                   )}
                 </div>
               ))}
             </div>
           )}
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'flex-end' }}>
-            <div style={{ ...s.field, flex: '2 1 200px' }}>
-              <label htmlFor="video-url" style={s.label}>유튜브 URL 또는 ID</label>
-              <input id="video-url" value={videoUrl} onChange={e => setVideoUrl(e.target.value)} style={s.input} placeholder="https://youtu.be/..." />
+            <div style={{ flex: '2 1 200px' }}>
+              <label htmlFor="video-url" style={{ ...a.help, marginBottom: 6, display: 'block' }}>유튜브 URL 또는 ID</label>
+              <input id="video-url" value={videoUrl} onChange={e => setVideoUrl(e.target.value)} style={a.boxInput} placeholder="https://youtu.be/..." />
             </div>
-            <div style={{ ...s.field, flex: '1 1 140px' }}>
-              <label htmlFor="video-title" style={s.label}>제목 (선택)</label>
-              <input id="video-title" value={videoTitle} onChange={e => setVideoTitle(e.target.value)} style={s.input} placeholder="단편영화 주연" />
+            <div style={{ flex: '1 1 140px' }}>
+              <label htmlFor="video-title" style={{ ...a.help, marginBottom: 6, display: 'block' }}>제목 (선택)</label>
+              <input id="video-title" value={videoTitle} onChange={e => setVideoTitle(e.target.value)} style={a.boxInput} placeholder="단편영화 주연" />
             </div>
-            <button type="button" onClick={addVideo} disabled={videoAdding} aria-busy={videoAdding} style={{ ...s.btn, ...s.btnPrimary, marginBottom: 0, opacity: videoAdding ? 0.6 : 1 }}>{videoAdding ? '추가 중…' : '추가'}</button>
+            <button type="button" onClick={addVideo} disabled={videoAdding} aria-busy={videoAdding} style={{ ...a.primary, opacity: videoAdding ? 0.6 : 1 }}>{videoAdding ? '추가 중…' : '추가'}</button>
           </div>
-          <p role="status" aria-live="polite" aria-atomic="true" style={{ ...s.msg, color: videoMsg && !videoMsg.includes('완료') ? '#ef4444' : 'var(--gold)', marginTop: 8 }}>{videoMsg}</p>
+          <p role="status" aria-live="polite" aria-atomic="true" style={{ ...a.msg, color: isErr(videoMsg, '완료') ? '#C0392B' : 'var(--navy)' }}>{videoMsg}</p>
         </div>
       </section>
+      <div style={{ height: 20 }} />
 
       {/* ── 필모그래피 ── */}
-      <section style={s.section} aria-labelledby="gallery-section-filmography">
-        <h2 id="gallery-section-filmography" style={s.sectionTitle}>필모그래피</h2>
-
-        {/* tabIndex={0}: 키보드로 가로 스크롤 가능 (WCAG 2.1.1) */}
+      <p style={a.caption}>필모그래피</p>
+      <section style={a.cardPad} aria-labelledby="gallery-section-filmography">
+        <h2 id="gallery-section-filmography" className="sr-only">필모그래피</h2>
         {filmography.length > 0 && (
-          <div role="region" aria-label="필모그래피 목록" tabIndex={0} style={{ marginBottom: 20, overflowX: 'auto' }}>
-            <div style={{ minWidth: 600 }}>
-            <div style={{ ...s.filmRow, marginBottom: 4 }}>
-              {['구분', '연도', '작품명', '배역', '방송사·제작사', ''].map(h => (
-                <span key={h} style={{ fontSize: '0.72rem', color: 'var(--gray)', fontWeight: 600 }}>{h}</span>
-              ))}
-            </div>
-            {filmography.map((f, i) => (
-              <div key={f.id || i} style={s.filmRow}>
-                <select aria-label={`필모그래피 ${i + 1}번 구분`} value={f.category} onChange={e => updateFilm(i, 'category', e.target.value)} style={{ ...s.input, padding: '8px 10px' }}>
-                  <option value="drama">드라마</option>
-                  <option value="film">영화</option>
-                  <option value="cf">CF</option>
-                  <option value="theater">연극</option>
-                  <option value="musical">뮤지컬</option>
-                  <option value="etc">기타</option>
-                </select>
-                <input aria-label={`필모그래피 ${i + 1}번 연도`} type="number" value={f.year} onChange={e => updateFilm(i, 'year', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} min={1990} max={2099} autoComplete="off" />
-                <input aria-label={`필모그래피 ${i + 1}번 작품명`} value={f.title} onChange={e => updateFilm(i, 'title', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} placeholder="작품명" />
-                <input aria-label={`필모그래피 ${i + 1}번 배역`} value={f.role} onChange={e => updateFilm(i, 'role', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} placeholder="배역" />
-                <input aria-label={`필모그래피 ${i + 1}번 방송사 또는 제작사`} value={f.broadcaster ?? ''} onChange={e => updateFilm(i, 'broadcaster', e.target.value)} style={{ ...s.input, padding: '8px 10px' }} placeholder="확실한 것만" />
-                {confirmingFilmIdx === i ? (
-                  <div style={{ display: 'flex', gap: 5 }}>
-                    <button type="button" autoFocus onClick={() => { setConfirmingFilmIdx(null); deleteFilmRefs.current.get(i)?.focus() }} style={{ ...s.btn, ...s.btnGhost, padding: '8px 10px', minHeight: 44 }}>취소</button>
-                    <button type="button" onClick={() => deleteFilm(i)} style={{ ...s.btn, background: '#ef4444', color: '#fff', padding: '8px 10px', minHeight: 44, border: 'none' }}>확인</button>
-                  </div>
-                ) : (
-                  <button ref={el => { deleteFilmRefs.current.set(i, el) }} type="button" onClick={() => deleteFilm(i)} aria-label={`필모그래피 ${i + 1}번 삭제`} style={{ ...s.btn, ...s.btnDanger }}>삭제</button>
-                )}
+          <div role="region" aria-label="필모그래피 목록" tabIndex={0} style={{ marginBottom: 16, overflowX: 'auto' }}>
+            <div style={{ minWidth: 560 }}>
+              <div style={{ ...a.filmRow, marginBottom: 4 }}>
+                {['구분', '연도', '작품명', '배역', '방송사·제작사', ''].map(h => (
+                  <span key={h} style={{ fontSize: 12, color: 'var(--gray)', fontWeight: 500 }}>{h}</span>
+                ))}
               </div>
-            ))}
+              {filmography.map((f, i) => (
+                <div key={f.id || i} style={a.filmRow}>
+                  <select aria-label={`필모그래피 ${i + 1}번 구분`} value={f.category} onChange={e => updateFilm(i, 'category', e.target.value)} style={a.smallInput}>
+                    <option value="drama">드라마</option>
+                    <option value="film">영화</option>
+                    <option value="cf">CF</option>
+                    <option value="theater">연극</option>
+                    <option value="musical">뮤지컬</option>
+                    <option value="etc">기타</option>
+                  </select>
+                  <input aria-label={`필모그래피 ${i + 1}번 연도`} type="number" value={f.year} onChange={e => updateFilm(i, 'year', e.target.value)} style={a.smallInput} min={1990} max={2099} autoComplete="off" />
+                  <input aria-label={`필모그래피 ${i + 1}번 작품명`} value={f.title} onChange={e => updateFilm(i, 'title', e.target.value)} style={a.smallInput} placeholder="작품명" />
+                  <input aria-label={`필모그래피 ${i + 1}번 배역`} value={f.role} onChange={e => updateFilm(i, 'role', e.target.value)} style={a.smallInput} placeholder="배역" />
+                  <input aria-label={`필모그래피 ${i + 1}번 방송사 또는 제작사`} value={f.broadcaster ?? ''} onChange={e => updateFilm(i, 'broadcaster', e.target.value)} style={a.smallInput} placeholder="확실한 것만" />
+                  {confirmingFilmIdx === i ? (
+                    <div style={{ display: 'flex', gap: 5 }}>
+                      <button type="button" autoFocus onClick={() => { setConfirmingFilmIdx(null); deleteFilmRefs.current.get(i)?.focus() }} style={a.ghost}>취소</button>
+                      <button type="button" onClick={() => deleteFilm(i)} style={{ ...a.danger, background: '#C0392B', color: '#fff', border: 'none' }}>확인</button>
+                    </div>
+                  ) : (
+                    <button ref={el => { deleteFilmRefs.current.set(i, el) }} type="button" onClick={() => deleteFilm(i)} aria-label={`필모그래피 ${i + 1}번 삭제`} style={a.danger}>삭제</button>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         )}
-
         <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-          <button type="button" onClick={() => setFilmography(prev => [newFilm(), ...prev])} style={{ ...s.btn, ...s.btnGhost }}>
-            + 항목 추가
-          </button>
+          <button type="button" onClick={() => setFilmography(prev => [newFilm(), ...prev])} style={a.ghost}>＋ 항목 추가</button>
           {filmography.length > 0 && (
-            <button type="button" onClick={saveAllFilms} disabled={filmSaving} aria-busy={filmSaving} style={{ ...s.btn, ...s.btnPrimary, opacity: filmSaving ? 0.6 : 1 }}>
-              {filmSaving ? '저장 중…' : '저장'}
-            </button>
+            <button type="button" onClick={saveAllFilms} disabled={filmSaving} aria-busy={filmSaving} style={{ ...a.primary, opacity: filmSaving ? 0.6 : 1 }}>{filmSaving ? '저장 중…' : '저장'}</button>
           )}
+          <span role="status" aria-live="polite" aria-atomic="true" style={{ ...a.msg, color: isErr(filmMsg, '저장') ? '#C0392B' : 'var(--navy)' }}>{filmMsg}</span>
         </div>
-        <p role="status" aria-live="polite" aria-atomic="true" style={{ ...s.msg, color: filmMsg && !filmMsg.includes('저장') ? '#ef4444' : 'var(--gold)', marginTop: 8 }}>{filmMsg}</p>
       </section>
     </div>
   )
