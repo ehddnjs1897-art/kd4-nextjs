@@ -61,7 +61,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/actors?gender=%EB%82%A8`, lastModified: NOW, changeFrequency: 'weekly' as const, priority: 0.68 }, // 남
     { url: `${BASE}/actors?gender=%EC%97%AC`, lastModified: NOW, changeFrequency: 'weekly' as const, priority: 0.68 }, // 여
   ]
-  const AGE_GROUPS = ['20대', '30대', '40대', '50대 이상']
+  const AGE_GROUPS = ['20대', '30대', '40대', '50대', '60대 이상']
   const agePages: MetadataRoute.Sitemap = AGE_GROUPS.map((ag) => ({
     url: `${BASE}/actors?ageGroup=${encodeURIComponent(ag)}`,
     lastModified: NOW,

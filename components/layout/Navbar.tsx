@@ -451,6 +451,34 @@ export default function Navbar() {
                 로그인
               </Link>
             )}
+            {/* 회원가입 — 비로그인 시 상단에 또렷하게 (네이비 아웃라인 버튼) */}
+            {authLoaded && !isLoggedIn && (
+              <Link
+                href="/auth/signup"
+                className="desktop-auth"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minHeight: 44,
+                  padding: '8px 16px',
+                  background: 'transparent',
+                  color: 'var(--navy)',
+                  border: '1px solid var(--navy)',
+                  borderRadius: 'var(--radius)',
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '0.825rem',
+                  fontWeight: 700,
+                  textDecoration: 'none',
+                  whiteSpace: 'nowrap',
+                  transition: 'background 0.2s, color 0.2s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--navy)'; e.currentTarget.style.color = '#ffffff' }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--navy)' }}
+              >
+                회원가입
+              </Link>
+            )}
             {authLoaded && isLoggedIn && (
               <Link
                 href={myActorId ? `/actors/${myActorId}` : '/dashboard/edit'}
@@ -746,6 +774,29 @@ export default function Navbar() {
                   }}
                 >
                   {isLoggedIn ? '마이페이지' : '로그인'}
+                </Link>
+              )}
+              {/* 회원가입 — 비로그인 시 또렷하게 (네이비 채움 버튼) */}
+              {authLoaded && !isLoggedIn && (
+                <Link
+                  href="/auth/signup"
+                  onClick={closeMobile}
+                  style={{
+                    display: 'block',
+                    padding: '15px',
+                    background: 'var(--navy)',
+                    border: '1px solid var(--navy)',
+                    color: '#ffffff',
+                    fontFamily: 'var(--font-sans)',
+                    fontSize: '1rem',
+                    fontWeight: 700,
+                    borderRadius: 'var(--radius)',
+                    textAlign: 'center',
+                    letterSpacing: '0.06em',
+                    textDecoration: 'none',
+                  }}
+                >
+                  회원가입
                 </Link>
               )}
               {authLoaded && isLoggedIn && (

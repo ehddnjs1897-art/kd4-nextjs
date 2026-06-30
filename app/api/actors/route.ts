@@ -5,7 +5,7 @@
  *
  * Query Parameters:
  *   gender    — 남 | 여  (선택)
- *   ageGroup  — 10대 | 20대 | 30대 | 40대 | 50대 이상  (선택)
+ *   ageGroup  — 10대 | 20대 | 30대 | 40대 | 50대 | 60대 이상  (선택, '50대'는 레거시 '50대 이상' 포함)
  *   page      — 페이지 번호 (기본값: 1)
  *   limit     — 페이지당 결과 수 (기본값: 20, 최대: 100)
  *
@@ -52,7 +52,8 @@ export async function GET(request: NextRequest) {
 
     // 허용 목록 — 예상치 않은 값은 무시 (불필요한 DB 쿼리 방지)
     const ALLOWED_GENDERS = new Set(['남', '여'])
-    const ALLOWED_AGE_GROUPS = new Set(['10대', '20대', '30대', '40대', '50대이상'])
+    // '50대 이상'(공백 포함)이 실제 DB 저장값 — 과거 '50대이상'(공백 없음)은 매칭 0이던 버그. 동시 교정.
+    const ALLOWED_AGE_GROUPS = new Set(['10대', '20대', '30대', '40대', '50대', '60대 이상', '50대 이상'])
     const rawGender = searchParams.get('gender')
     const rawAgeGroup = searchParams.get('ageGroup')
     const gender = rawGender && ALLOWED_GENDERS.has(rawGender) ? rawGender : null
@@ -103,7 +104,10 @@ export async function GET(request: NextRequest) {
       query = query.eq('gender', gender)
     }
     if (ageGroup) {
-      query = query.eq('age_group', ageGroup)
+      // '50대' 버튼은 레거시 '50대 이상'(기존 데이터)도 함께 — UI 필터와 동일 규칙
+      query = ageGroup === '50대'
+        ? query.in('age_group', ['50대', '50대 이상'])
+        : query.eq('age_group', ageGroup)
     }
 
     const { data: actors, error, count } = await query

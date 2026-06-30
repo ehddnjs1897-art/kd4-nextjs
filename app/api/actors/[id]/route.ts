@@ -185,7 +185,7 @@ export async function PATCH(
     }
 
     // 입력값 검증
-    const ALLOWED_AGE_GROUPS = new Set(['10대', '20대', '30대', '40대', '50대 이상', null, ''])
+    const ALLOWED_AGE_GROUPS = new Set(['10대', '20대', '30대', '40대', '50대', '60대 이상', '50대 이상', null, ''])
     if ('age_group' in body && !ALLOWED_AGE_GROUPS.has(body.age_group as string | null)) {
       return NextResponse.json({ error: '잘못된 나이대입니다.' }, { status: 400 })
     }

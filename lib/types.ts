@@ -13,7 +13,7 @@ export interface Actor {
   name: string
   name_en: string | null
   gender: string | null            // '남' | '여' | 'M' | 'F'
-  age_group: string | null         // '20대' | '30대' | '40대' | '50대 이상'
+  age_group: string | null         // '20대' | '30대' | '40대' | '50대' | '60대 이상' (+ 레거시 '50대 이상')
   height: number | null
   weight: number | null
   skills: string[] | null

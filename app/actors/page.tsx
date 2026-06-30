@@ -38,7 +38,8 @@ export async function generateMetadata(
   const rawGender = Array.isArray(params.gender) ? params.gender[0] : (params.gender ?? '')
   const gender = ['남', '여'].includes(rawGender) ? rawGender : 'all'
   const rawAge = Array.isArray(params.ageGroup) ? params.ageGroup[0] : (params.ageGroup ?? '')
-  const ageGroup = ['20대', '30대', '40대', '50대 이상'].includes(rawAge) ? rawAge : 'all'
+  const normAge = rawAge === '50대 이상' ? '50대' : rawAge  // 레거시 라벨 → 50대 필터
+  const ageGroup = ['20대', '30대', '40대', '50대', '60대 이상'].includes(normAge) ? normAge : 'all'
   const rawTag = Array.isArray(params.tag) ? params.tag[0] : (params.tag ?? '')
   const cleaned = rawTag.replace(/[{}\\"]/g, '').slice(0, 200)
   const tagParts: string[] = cleaned && cleaned !== 'all' ? cleaned.split(',') : []
@@ -115,7 +116,7 @@ interface Actor {
 }
 
 type GenderFilter = 'all' | '남' | '여'
-type AgeFilter = 'all' | '20대' | '30대' | '40대' | '50대 이상'
+type AgeFilter = 'all' | '20대' | '30대' | '40대' | '50대' | '60대 이상'
 
 interface PageProps {
   searchParams: Promise<{
@@ -159,7 +160,10 @@ async function fetchActors(gender: string, ageGroup: string, tag: string, genre:
       .order('age_group', { ascending: true, nullsFirst: false })
       .order('created_at', { ascending: false })
     if (gender && gender !== 'all') q = q.eq('gender', gender)
-    if (ageGroup && ageGroup !== 'all') q = q.eq('age_group', ageGroup)
+    // '50대' 버튼은 레거시 '50대 이상'(기존 8명 — 제약 확장 전)도 함께 노출 → 누락 방지
+    if (ageGroup && ageGroup !== 'all') {
+      q = ageGroup === '50대' ? q.in('age_group', ['50대', '50대 이상']) : q.eq('age_group', ageGroup)
+    }
     return q.limit(500)  // Supabase 기본 1,000행 캡 — 명시적 상한으로 silent truncation 방지
   }
 
@@ -220,7 +224,9 @@ async function fetchActors(gender: string, ageGroup: string, tag: string, genre:
         .eq('is_public', true)
         .not('casting_tags', 'is', null)
       if (gender && gender !== 'all') tagsQuery = tagsQuery.eq('gender', gender)
-      if (ageGroup && ageGroup !== 'all') tagsQuery = tagsQuery.eq('age_group', ageGroup)
+      if (ageGroup && ageGroup !== 'all') tagsQuery = ageGroup === '50대'
+        ? tagsQuery.in('age_group', ['50대', '50대 이상'])
+        : tagsQuery.eq('age_group', ageGroup)
       const { data: tagsData } = await tagsQuery
       const tagSet = new Set<string>()
       for (const row of (tagsData ?? []) as Array<{ casting_tags: string[] | null }>) {
@@ -261,7 +267,8 @@ const AGE_OPTIONS: { value: AgeFilter; label: string }[] = [
   { value: '20대', label: '20대' },
   { value: '30대', label: '30대' },
   { value: '40대', label: '40대' },
-  { value: '50대 이상', label: '50대+' },
+  { value: '50대', label: '50대' },
+  { value: '60대 이상', label: '60대+' },
 ]
 
 export default async function ActorsPage({ searchParams }: PageProps) {
@@ -269,11 +276,12 @@ export default async function ActorsPage({ searchParams }: PageProps) {
   const params = await searchParams
   // 캐시 슬롯 폭발 방지 (PERF-1): 허용 값 이외는 'all'로 정규화 + tag 길이 제한
   const VALID_GENDERS = new Set(['all', '남', '여'])
-  const VALID_AGE_GROUPS = new Set(['all', '20대', '30대', '40대', '50대 이상'])
+  const VALID_AGE_GROUPS = new Set(['all', '20대', '30대', '40대', '50대', '60대 이상'])
   const rawGender = Array.isArray(params.gender) ? params.gender[0] : (params.gender ?? '')
   const gender = VALID_GENDERS.has(rawGender) ? rawGender : 'all'
   const rawAge = Array.isArray(params.ageGroup) ? params.ageGroup[0] : (params.ageGroup ?? '')
-  const ageGroup = VALID_AGE_GROUPS.has(rawAge) ? rawAge : 'all'
+  const normAge = rawAge === '50대 이상' ? '50대' : rawAge  // 레거시 라벨 링크 → 50대 필터
+  const ageGroup = VALID_AGE_GROUPS.has(normAge) ? normAge : 'all'
   const rawTag = Array.isArray(params.tag) ? params.tag[0] : (params.tag ?? 'all')
   const cleanedTag = rawTag.replace(/[{}\\"]/g, '').slice(0, 200)  // 콤마는 태그 구분자 — 제거 금지
   // 화이트리스트 필터 + 공백 trim + 중복제거 + 가나다순 정렬 → 캐시 슬롯 일관성 + 임의값 차단

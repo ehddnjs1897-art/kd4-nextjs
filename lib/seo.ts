@@ -60,7 +60,7 @@ interface ActorPersonInput {
 export function getActorPersonSchema(actor: ActorPersonInput) {
   if (!actor.name?.trim() || !actor.id?.trim()) return null
 
-  const ageMap: Record<string, string> = { '20대': '20s', '30대': '30s', '40대': '40s', '50대 이상': '50+' }
+  const ageMap: Record<string, string> = { '20대': '20s', '30대': '30s', '40대': '40s', '50대': '50s', '60대 이상': '60+', '50대 이상': '50+' }
 
   const ageDesc = actor.age_group ? `${actor.age_group} ` : ''
   const genderDesc = actor.gender === '남' ? '남자 배우' : actor.gender === '여' ? '여자 배우' : '배우'

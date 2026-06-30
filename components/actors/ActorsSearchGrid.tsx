@@ -86,8 +86,12 @@ const AGE_DETAIL_OPTIONS = [
   { value: '20대', label: '20대' },
   { value: '30대', label: '30대' },
   { value: '40대', label: '40대' },
-  { value: '50대 이상', label: '50대+' },
+  { value: '50대', label: '50대' },
+  { value: '60대 이상', label: '60대+' },
 ]
+
+// 레거시 '50대 이상' 저장값은 '50대' 버킷으로 취급 (제약 확장 전 기존 데이터 — 8명 호환)
+const ageBucket = (ag: string | null): string | null => (ag === '50대 이상' ? '50대' : ag)
 
 // 성별 필터 옵션 (클라이언트 추가 필터용)
 const GENDER_DETAIL_OPTIONS = [
@@ -167,7 +171,8 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
     if (q) setQuery(q)
     if (sp.get('video') === '1') setVideoOnly(true)
     const age = sp.get('age')
-    if (age && AGE_DETAIL_OPTIONS.some((o) => o.value === age)) setAgeFilter(age)
+    const normAge = age === '50대 이상' ? '50대' : age  // 레거시 라벨 링크 → 50대
+    if (normAge && AGE_DETAIL_OPTIONS.some((o) => o.value === normAge)) setAgeFilter(normAge)
     const g = sp.get('g')
     if (g === '남' || g === '여') setGenderFilter(g)
     setUrlReady(true)
@@ -192,7 +197,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
 
   // 현재 목록에 실제 존재하는 연령대만 필터 버튼 표시
   const availableAges = useMemo(() => {
-    const seen = new Set(actors.map((a) => a.age_group).filter(Boolean))
+    const seen = new Set(actors.map((a) => ageBucket(a.age_group)).filter(Boolean))
     return AGE_DETAIL_OPTIONS.filter((o) => o.value === 'all' || seen.has(o.value))
   }, [actors])
 
@@ -237,7 +242,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
       }
     }
     // 연령대 클라이언트 세부 필터
-    if (ageFilter !== 'all') list = list.filter((a) => a.age_group === ageFilter)
+    if (ageFilter !== 'all') list = list.filter((a) => ageBucket(a.age_group) === ageFilter)
     // 성별 클라이언트 세부 필터
     if (genderFilter !== 'all') list = list.filter((a) => a.gender === genderFilter)
     if (videoOnly) list = list.filter((a) => a.hasVideo)

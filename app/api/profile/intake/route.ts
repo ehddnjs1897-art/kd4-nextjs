@@ -24,7 +24,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 import { revalidateTag } from '@/lib/revalidate'
 import { sanitizeDialects } from '@/lib/dialects'
 import { matchActorOnSignup, matchActorForIntake } from '@/lib/actor-matching'
-import { isMissingColumnError, findMissingOptionalCol } from '@/lib/db-missing-column'
+import { isMissingColumnError, findMissingOptionalCol, isAgeGroupCheckError } from '@/lib/db-missing-column'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 
@@ -163,7 +163,8 @@ export async function POST(request: NextRequest) {
     if (age >= 20 && age < 30) return '20대'
     if (age >= 30 && age < 40) return '30대'
     if (age >= 40 && age < 50) return '40대'
-    if (age >= 50) return '50대 이상'
+    if (age >= 50 && age < 60) return '50대'
+    if (age >= 60) return '60대 이상'
     return null  // 10대 등은 age_group CHECK 안전 위해 미설정
   })()
 
@@ -322,6 +323,17 @@ export async function POST(request: NextRequest) {
     else OPTIONAL_COLS.forEach((c) => dropped.add(c)) // 컬럼 특정 불가 시 옵션 컬럼 모두 제외
     console.warn(`[profile/intake] 컬럼 미존재 — 제외 후 재시도: ${[...dropped].join(', ')}`)
     const retry = await patchAttempt(dropped)
+    patched = retry.data
+    patchErr = retry.error
+  }
+  // age_group CHECK 제약(23514) 방어 — DB 제약이 아직 신규 값('50대'·'60대 이상')을 안 받는 구간
+  // (제약 확장 SQL 미적용)에서 레거시 '50대 이상'으로 폴백해 제출 500을 막는다.
+  // 제약 확장 후엔 이 분기가 발화하지 않고 신규 값이 그대로 저장됨. (50+ 멤버 접수 안전망)
+  if (isAgeGroupCheckError(patchErr) && typeof actorPatch.age_group === 'string' && actorPatch.age_group !== '50대 이상') {
+    console.warn(`[profile/intake] age_group CHECK 제약 — '${actorPatch.age_group}' → '50대 이상' 폴백 (제약 확장 SQL 미적용)`)
+    const legacyPatch: Record<string, unknown> = { ...actorPatch, age_group: '50대 이상' }
+    for (const c of dropped) delete legacyPatch[c]
+    const retry = await supabaseAdmin.from('actors').update(legacyPatch).eq('id', actorId).select('id').maybeSingle()
     patched = retry.data
     patchErr = retry.error
   }

@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS actors (
   name TEXT NOT NULL,
   name_en TEXT,
   gender TEXT CHECK (gender IN ('남', '여')),
-  age_group TEXT CHECK (age_group IN ('20대', '30대', '40대', '50대 이상')),
+  age_group TEXT CHECK (age_group IN ('20대', '30대', '40대', '50대', '60대 이상', '50대 이상')),  -- '50대 이상'은 레거시(제약 확장 전 데이터) 호환용
   height INT,
   weight INT,
   skills TEXT[],                  -- 특기 배열 (예: ARRAY['댄스', '무술'])

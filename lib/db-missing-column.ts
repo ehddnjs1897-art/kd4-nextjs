@@ -21,6 +21,16 @@ export function isMissingColumnError(err: DbErr): boolean {
   return /does not exist/i.test(m) || /schema cache/i.test(m)
 }
 
+/**
+ * age_group CHECK 제약 위반(23514)인지 — 제약 확장 SQL 미적용 구간에서 신규 나이대 값
+ * ('50대'·'60대 이상')을 쓰려다 막힐 때 감지용. intake가 레거시 '50대 이상'으로 폴백해 500을 막는다.
+ */
+export function isAgeGroupCheckError(err: DbErr): boolean {
+  if (!err) return false
+  const m = err.message ?? ''
+  return err.code === '23514' && /age_group/i.test(m)
+}
+
 /** 에러 메시지에서 누락된 옵션 컬럼명을 특정 (42703·PGRST204 양식 모두). 못 찾으면 null. */
 export function findMissingOptionalCol(
   err: DbErr,
