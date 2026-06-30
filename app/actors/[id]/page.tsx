@@ -215,60 +215,6 @@ function getActorCached(id: string) {
   )()
 }
 
-type RelatedActor = {
-  id: string; name: string; gender: string | null; age_group: string | null
-  casting_tags: string[] | null
-  storage_photo_path: string | null; drive_photo_id: string | null; profile_photo: string | null
-}
-
-function relatedPhotoUrl(a: RelatedActor): string | null {
-  if (a.profile_photo) return a.profile_photo
-  if (a.storage_photo_path) {
-    if (a.storage_photo_path.split('/').some((seg) => seg === '..' || seg === '.')) return null
-    const base = process.env.NEXT_PUBLIC_SUPABASE_URL
-    if (base) return `${base}/storage/v1/object/public/actor-photos/${a.storage_photo_path}`
-  }
-  if (a.drive_photo_id) return `https://drive.google.com/thumbnail?id=${encodeURIComponent(a.drive_photo_id)}&sz=w400`
-  return null
-}
-
-function getRelatedActorsCached(
-  actorId: string,
-  castingTags: string[],
-  actorGender: string | null,
-  actorAgeGroup: string | null
-) {
-  const sortedTags = [...castingTags].sort().join(',')
-  return unstable_cache(
-    async (): Promise<RelatedActor[]> => {
-      const { data: relData } = await supabaseAdmin
-        .from('actors')
-        .select('id,name,gender,age_group,casting_tags,storage_photo_path,drive_photo_id,profile_photo')
-        .eq('is_public', true)
-        .neq('id', actorId)
-        .overlaps('casting_tags', castingTags)
-        .order('created_at', { ascending: true })
-        .limit(50)
-      if (!relData) return []
-      const tagSet = new Set(castingTags)
-      const scored = (relData as RelatedActor[]).map((a) => {
-        let score = 0
-        // 나이대 일치: +3점 (가장 높은 가중치)
-        if (a.age_group && a.age_group === actorAgeGroup) score += 3
-        // 성별 일치: +2점
-        if (a.gender && a.gender === actorGender) score += 2
-        // casting_tags 공통 수: +1점/개
-        score += (a.casting_tags ?? []).filter((t) => tagSet.has(t)).length
-        return { ...a, _score: score }
-      })
-      scored.sort((a, b) => b._score - a._score)
-      return scored.slice(0, 4).map(({ _score: _, ...rest }) => rest)
-    },
-    ['actor-related-v3', actorId, sortedTags],
-    { revalidate: 30, tags: ['actors', `actor-${actorId}`] }
-  )()
-}
-
 function profilePhotoUrl(actor: Actor): string {
   // 우선순위: profile_photo (수동 업로드) → Storage → Drive → 플레이스홀더
   if (actor.profile_photo) return actor.profile_photo
@@ -412,11 +358,6 @@ export default async function ActorDetailPage({
     return <ActorDbLocked role={role} nextUrl={`/actors/${id}`} />
   }
 
-  // 비슷한 배우: 접근 허용 확정 후 쿼리 (A~D 통과 이후) — 30s unstable_cache
-  const relatedActors: RelatedActor[] =
-    actor.casting_tags && actor.casting_tags.length > 0
-      ? await getRelatedActorsCached(actor.id, actor.casting_tags, actor.gender, actor.age_group)
-      : []
 
   const photoUrl = profilePhotoUrl(actor)
   const canContact = canViewActorContact(role)
@@ -504,21 +445,6 @@ export default async function ActorDetailPage({
         { name: '배우 DB', url: `${SITE_URL}/actors` },
         { name: actor.name, url: pageUrl },
       ])) }} />
-      {relatedActors.length > 0 && (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd({
-          '@context': 'https://schema.org',
-          '@type': 'ItemList',
-          '@id': `${pageUrl}#related`,
-          name: `${actor.name}${(actor.name.charCodeAt(actor.name.length - 1) - 0xAC00) % 28 ? '과' : '와'} 비슷한 KD4 배우`,
-          numberOfItems: relatedActors.length,
-          itemListElement: relatedActors.map((a, i) => ({
-            '@type': 'ListItem',
-            position: i + 1,
-            item: { '@type': 'Person', name: a.name, url: `${SITE_URL}/actors/${a.id}` },
-          })),
-        }) }} />
-      )}
-
       {/* 반응형 헬퍼 — HERO 2컬럼 (사진 좌 / 정보 우), 680px 이하 세로 스택 (2026-06-12 대표 지시 리디자인) */}
       <style>{`
         .actor-hero { display:grid; grid-template-columns:minmax(260px,400px) minmax(0,1fr); gap:clamp(24px,4vw,44px); align-items:start; }
@@ -798,96 +724,6 @@ export default async function ActorDetailPage({
         />
       </div>
 
-      {/* 비슷한 배우 — 같은 캐스팅 타입 배우 탐색 (tag overlap 기준) */}
-      {relatedActors.length > 0 && (
-        <section
-          aria-label="비슷한 배우"
-          style={{ maxWidth: 960, margin: '0 auto', padding: '32px clamp(20px,4vw,32px) 40px' }}
-        >
-          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '0.65rem', letterSpacing: '0.2em', color: 'var(--gold)', marginBottom: 20, fontWeight: 700, padding: 0 }}>
-            <span lang="en">SIMILAR ACTORS</span>
-            <span style={{ marginLeft: 10, fontFamily: 'var(--font-body)', letterSpacing: 'normal', textTransform: 'none', color: 'var(--gray)' }}>비슷한 배우</span>
-          </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
-            {relatedActors.map((a) => {
-              const relPhoto = relatedPhotoUrl(a)
-              return (
-                <Link
-                  key={a.id}
-                  href={`/actors/${a.id}`}
-                  aria-label={[a.name, a.gender, a.age_group, '배우 프로필 보기'].filter(Boolean).join(' · ')}
-                  style={{
-                    display: 'block',
-                    background: 'var(--bg2)',
-                    border: '1px solid var(--border)',
-                    borderRadius: 8,
-                    textDecoration: 'none',
-                    transition: 'border-color 0.2s, transform 0.2s',
-                    overflow: 'hidden',
-                  }}
-                  className="kd4-card-hover"
-                >
-                  {/* 썸네일 — 가로형(3/2) */}
-                  <div style={{ aspectRatio: '3/2', background: 'var(--bg3)', overflow: 'hidden' }}>
-                    {relPhoto ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={relPhoto}
-                        alt={`${a.name} 배우`}
-                        loading="lazy"
-                        style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center', display: 'block' }}
-                      />
-                    ) : (
-                      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--border)', fontSize: '1.5rem' }}>
-                        <span aria-hidden="true">👤</span>
-                      </div>
-                    )}
-                  </div>
-                  <div style={{ padding: '12px 14px' }}>
-                    <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '0.95rem', fontWeight: 700, color: 'var(--white)', marginBottom: 4, margin: '0 0 4px', padding: 0 }}>
-                      {a.name}
-                    </h3>
-                    <p style={{ fontSize: '0.72rem', color: 'var(--gray)', marginBottom: 8 }}>
-                      {[a.gender, a.age_group].filter(Boolean).join(' · ')}
-                    </p>
-                    {SHOW_CASTING_TAGS && a.casting_tags && a.casting_tags.length > 0 && (
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-                        {a.casting_tags.slice(0, 3).map((t) => (
-                          <span key={t} style={{
-                            fontSize: '0.7rem',
-                            background: 'rgba(21,72,138,0.08)',
-                            border: '1px solid rgba(21,72,138,0.18)',
-                            color: 'var(--gold)',
-                            padding: '2px 8px',
-                            borderRadius: 4,
-                          }}>
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </Link>
-              )
-            })}
-          </div>
-          {/* 태그 기반 더보기 링크 — 배우 DB 필터 페이지로 */}
-          {SHOW_CASTING_TAGS && actor.casting_tags && actor.casting_tags.length > 0 && (
-            <div style={{ marginTop: 24, textAlign: 'center' }}>
-              <Link
-                href={`/actors?tag=${encodeURIComponent(actor.casting_tags[0])}`}
-                style={{
-                  fontSize: '0.8rem', color: 'var(--gray)',
-                  textDecoration: 'none', borderBottom: '1px solid var(--border)',
-                  paddingBottom: 2,
-                }}
-              >
-                {actor.casting_tags[0]} 배우 더보기 →
-              </Link>
-            </div>
-          )}
-        </section>
-      )}
 
       {/* 본인 프로필 플로팅 편집 버튼 */}
       {isOwner && (
