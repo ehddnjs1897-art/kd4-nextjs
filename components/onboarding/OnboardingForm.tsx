@@ -20,7 +20,7 @@ import { DIALECT_OPTIONS, DIALECT_NONE } from '@/lib/dialects'
 
 const MB = 1024 * 1024
 
-const CURRENT_PHOTO_LABELS = ['앞면', '좌측면', '우측면', '뒷면'] as const
+const CURRENT_PHOTO_LABELS = ['정면', '좌측', '우측', '후면', '전신'] as const
 
 // ─── Apple식 라인 아이콘 (네이비 타일 안에 흰 선) ──────────────────────────────
 const iconProps = { width: 17, height: 17, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.9, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
@@ -68,7 +68,7 @@ export default function OnboardingForm({
     window.addEventListener('beforeunload', handler)
     return () => window.removeEventListener('beforeunload', handler)
   }, [loading])
-  const [currentPhotos, setCurrentPhotos] = useState<(File | null)[]>([null, null, null, null])
+  const [currentPhotos, setCurrentPhotos] = useState<(File | null)[]>([null, null, null, null, null])
 
   const pptRef = useRef<HTMLInputElement>(null)
   const photosRef = useRef<HTMLInputElement>(null)
@@ -80,7 +80,8 @@ export default function OnboardingForm({
   const cp1Ref = useRef<HTMLInputElement>(null)
   const cp2Ref = useRef<HTMLInputElement>(null)
   const cp3Ref = useRef<HTMLInputElement>(null)
-  const currentPhotoRefs = [cp0Ref, cp1Ref, cp2Ref, cp3Ref]
+  const cp4Ref = useRef<HTMLInputElement>(null)
+  const currentPhotoRefs = [cp0Ref, cp1Ref, cp2Ref, cp3Ref, cp4Ref]
   const errorRef = useRef<HTMLDivElement>(null)
 
   // 에러 발생 시 포커스 이동 (WCAG 2.4.3)
@@ -389,12 +390,12 @@ export default function OnboardingForm({
 
       {/* 현재사진(전신) — 접어둠 */}
       <button type="button" onClick={() => setShowCurrentPhotos(v => !v)} disabled={loading} style={a.moreToggle}>
-        {showCurrentPhotos ? '현재사진(전신 각도) 닫기' : '＋ 현재사진(전신 각도) 추가 · 선택'}
+        {showCurrentPhotos ? '현재사진(정면·좌측·우측·후면·전신) 닫기' : '＋ 현재사진(정면·좌측·우측·후면·전신) 추가 · 선택'}
       </button>
       {showCurrentPhotos && (
         <div style={{ ...a.card, padding: '14px 16px', marginTop: 8 }}>
           <p style={{ fontSize: 13, color: 'var(--gray)', lineHeight: 1.6, marginBottom: 12 }}>
-            앞·좌·우·뒤 각도의 현재 모습. 체형·전신을 보여줘 캐스팅 판단에 도움이 됩니다. 각 15MB 이하.
+            정면·좌측·우측·후면·전신 각도의 현재 모습. 체형·전신을 보여줘 캐스팅 판단에 도움이 됩니다. 각 15MB 이하.
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             {CURRENT_PHOTO_LABELS.map((label, idx) => (

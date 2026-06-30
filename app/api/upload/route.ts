@@ -18,6 +18,8 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 const DEFAULT_BUCKET = 'actor-media'
 // 업로드 허용 버킷 — 클라이언트가 임의 버킷에 파일을 올리는 것을 방지
 const ALLOWED_BUCKETS = new Set(['actor-media', 'actor-photos'])
+// 현재사진(전신 각도) 허용 라벨 — 화이트리스트 (2026-07-01 대표 지시: 정면/좌측/우측/후면/전신)
+const CURRENT_PHOTO_LABELS = new Set(['정면', '좌측', '우측', '후면', '전신'])
 
 // ─── 권한 확인 ───────────────────────────────────────────────────────────────
 
@@ -104,6 +106,13 @@ export async function POST(request: NextRequest) {
     const actorId = targetActorId  // 이미 UUID 검증됨 (line 79)
     const rawBucket = (formData.get('bucket') as string | null) ?? DEFAULT_BUCKET
     const bucket = ALLOWED_BUCKETS.has(rawBucket) ? rawBucket : DEFAULT_BUCKET
+
+    // 현재사진(전신 각도) — photoType='current' + label(정면/좌측/우측/후면/전신). 그 외는 일반 프로필 사진.
+    const rawPhotoType = (formData.get('photoType') as string | null) ?? ''
+    const rawLabel = (formData.get('label') as string | null) ?? ''
+    const isCurrent = rawPhotoType === 'current' && CURRENT_PHOTO_LABELS.has(rawLabel)
+    const photoType = isCurrent ? 'current' : null
+    const photoLabel = isCurrent ? rawLabel : null
 
     // 레이트 리밋 + 사진 총량 제한 — 두 COUNT를 병렬 조회 (순차 2 round-trip → 1)
     const MAX_PHOTOS_PER_ACTOR = 200
@@ -205,6 +214,8 @@ export async function POST(request: NextRequest) {
         storage_path: result.path,
         is_profile: false,
         sort_order: nextSortOrder,
+        photo_type: photoType,   // 'current'(전신 각도) 또는 null(일반 프로필)
+        label: photoLabel,       // 현재사진일 때만 정면/좌측/우측/후면/전신
       })
       .select('id')
       .maybeSingle()
@@ -218,8 +229,9 @@ export async function POST(request: NextRequest) {
     // actors.profile_photo가 비어있으면(목록 카드·상세 헤더가 PII 포함 이력서 이미지에 의존 중)
     // 이번 업로드를 자동 대표 지정 → 가입 후 사진만 올리면 첫 화면 사진이 즉시 교체된다.
     // 이미 대표사진이 있으면 건드리지 않음 (배우가 '대표 지정' 버튼으로 직접 변경).
+    // 현재사진(전신 각도)은 카드/헤더 대표사진이 될 수 없음 — 자동 승격 제외
     let isProfile = false
-    if (!actorRow?.profile_photo?.trim()) {
+    if (!isCurrent && !actorRow?.profile_photo?.trim()) {
       const [{ error: promoteErr }, { error: photoFlagErr }] = await Promise.all([
         supabaseAdmin.from('actors').update({ profile_photo: result.url }).eq('id', actorId),
         supabaseAdmin.from('actor_photos').update({ is_profile: true }).eq('id', photoRow.id),
@@ -233,7 +245,7 @@ export async function POST(request: NextRequest) {
 
     revalidateTag('actors')
     revalidateTag(`actor-${actorId}`)
-    return NextResponse.json({ url: result.url, id: photoRow.id, path: result.path, provider: result.provider, isProfile }, { status: 200 })
+    return NextResponse.json({ url: result.url, id: photoRow.id, path: result.path, provider: result.provider, isProfile, photoType, label: photoLabel }, { status: 200 })
   } catch (err: unknown) {
     console.error('[POST /api/upload] 오류:', err instanceof Error ? err.message : err)
     return NextResponse.json(

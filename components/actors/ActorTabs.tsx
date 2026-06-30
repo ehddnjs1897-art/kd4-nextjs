@@ -293,7 +293,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
 
   // 현재사진: photo_type='current'
   const currentPhotos = sortedPhotos.filter(p => p.photo_type === 'current')
-  const CURRENT_LABELS = ['앞면', '좌측면', '우측면', '뒷면']
+  const CURRENT_LABELS = ['정면', '좌측', '우측', '후면', '전신']
 
   // 영상 분리
   const reelVideos = (actor.actor_videos ?? []).filter(v => !v.video_type || v.video_type === 'reel').slice(0, 2)
@@ -330,7 +330,9 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
       {/* ============ 프로필 사진 스트립 ============ */}
       {stripPhotos.length > 0 && (
         <section style={s.section} aria-label={`${actor.name} 프로필 사진`}>
-          <h2 className="sr-only">프로필 사진</h2>
+          <h2 style={s.sectionHeading}>
+            <span style={s.sectionTitle}>프로필 사진</span>
+          </h2>
           <div
             style={s.photoStrip}
             onContextMenu={imageProtected ? (e) => e.preventDefault() : undefined}

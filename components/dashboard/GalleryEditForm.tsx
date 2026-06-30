@@ -26,6 +26,13 @@ interface PhotoItem {
   is_profile: boolean
 }
 
+// 현재사진(전신 각도) — 라벨별 1장 (정면/좌측/우측/후면/전신)
+interface CurrentPhotoItem {
+  id: string
+  url: string
+  label: string
+}
+
 interface VideoItem {
   id: string
   youtube_id: string
@@ -59,10 +66,14 @@ interface InitialData {
   castingSummary?: string
   profileDocPath?: string | null
   photos: PhotoItem[]
+  currentPhotos?: CurrentPhotoItem[]
   videos: VideoItem[]
   r2Videos: R2VideoItem[]
   filmography: FilmItem[]
 }
+
+// 현재사진 각도 라벨 — /api/upload 화이트리스트와 일치 (2026-07-01 대표 지시)
+const CURRENT_PHOTO_LABELS = ['정면', '좌측', '우측', '후면', '전신'] as const
 
 interface Props {
   actorId: string
@@ -195,6 +206,13 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   const [photoMsg, setPhotoMsg] = useState('')
   const [uploading, setUploading] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
+
+  // 현재사진(전신 각도) — 라벨별 1장
+  const [currentPhotos, setCurrentPhotos] = useState<CurrentPhotoItem[]>(initialData.currentPhotos ?? [])
+  const [cpUploadingLabel, setCpUploadingLabel] = useState<string | null>(null)
+  const [cpMsg, setCpMsg] = useState('')
+  const cpFileRef = useRef<HTMLInputElement>(null)
+  const cpPendingLabel = useRef<string | null>(null)  // 클릭한 각도 라벨을 onChange로 전달
 
   // PPTX
   const pptRef = useRef<HTMLInputElement>(null)
@@ -443,6 +461,63 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     }
   }
 
+  // ── 현재사진(전신 각도) 업로드/삭제 ──────────────────────────────────────────
+  function pickCurrentPhoto(label: string) {
+    cpPendingLabel.current = label
+    cpFileRef.current?.click()
+  }
+
+  async function uploadCurrentPhoto(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    const label = cpPendingLabel.current
+    if (!file || !label) return
+    if (file.size > 30 * 1024 * 1024) { setCpMsg('사진은 30MB 이하로 올려주세요.'); return }
+    setCpUploadingLabel(label)
+    setCpMsg('')
+    try {
+      const upFile = await compressIfLarge(file)  // 4.5MB 초과분 리사이즈 → 413 회피
+      const fd = new FormData()
+      fd.append('file', upFile)
+      fd.append('actorId', actorId)
+      fd.append('bucket', 'actor-photos')
+      fd.append('photoType', 'current')
+      fd.append('label', label)
+      const res = await fetch('/api/upload', { method: 'POST', body: fd })
+      if (res.status === 401) { window.location.href = '/auth/login'; return }
+      if (res.status === 413) throw new Error('사진 용량이 너무 큽니다. 더 작은 사진으로 올려주세요.')
+      if (!res.ok) {
+        const msg = await res.json().then((j) => j.error).catch(() => null)
+        throw new Error(msg || '업로드에 실패했습니다.')
+      }
+      const { url, id } = await res.json()
+      // 같은 각도(label)에 이미 사진이 있으면 기존 것 삭제 후 교체 — 각도당 1장 유지
+      const prevSameLabel = currentPhotos.find((p) => p.label === label)
+      setCurrentPhotos((prev) => [...prev.filter((p) => p.label !== label), { id, url, label }])
+      if (prevSameLabel) {
+        fetch(`/api/actors/${actorId}/photos/${prevSameLabel.id}`, { method: 'DELETE' }).catch(() => {})
+      }
+      setCpMsg(`${label} 업로드 완료.`)
+    } catch (err) {
+      setCpMsg((err as Error).message)
+    } finally {
+      setCpUploadingLabel(null)
+      cpPendingLabel.current = null
+      if (cpFileRef.current) cpFileRef.current.value = ''
+      flashMsg(setCpMsg)
+    }
+  }
+
+  async function deleteCurrentPhoto(id: string) {
+    try {
+      const res = await fetch(`/api/actors/${actorId}/photos/${id}`, { method: 'DELETE', signal: AbortSignal.timeout(10_000) })
+      if (res.status === 401) { window.location.href = '/auth/login'; return }
+      if (!res.ok) throw new Error((await res.json()).error || '삭제 실패')
+      setCurrentPhotos((prev) => prev.filter((p) => p.id !== id))
+    } catch (err) {
+      setCpMsg((err as Error).message)
+    }
+  }
+
   // ── 영상 추가 ───────────────────────────────────────────────────────────────
   async function addVideo() {
     if (videoAdding) return
@@ -675,10 +750,10 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       </section>
       <p role="status" aria-live="polite" aria-atomic="true" style={{ ...a.msg, color: isErr(pptMsg, '완료') ? '#C0392B' : 'var(--navy)', margin: '0 6px 28px' }}>{pptMsg}</p>
 
-      {/* ── 사진 ── */}
-      <p style={a.caption}>사진</p>
+      {/* ── 프로필 사진 ── */}
+      <p style={a.caption}>프로필 사진</p>
       <section style={a.cardPad} aria-labelledby="gallery-section-photos">
-        <h2 id="gallery-section-photos" className="sr-only">사진</h2>
+        <h2 id="gallery-section-photos" className="sr-only">프로필 사진</h2>
         {photos.length > 0 && (
           <div style={a.photoGrid}>
             {photos.map((p, idx) => (
@@ -710,6 +785,44 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           <span style={{ fontSize: 13, color: 'var(--gray)' }}>JPG·PNG · 세로형 헤드샷 권장 · 큰 사진은 자동으로 줄여 올라가요</span>
         </div>
         <p role="status" aria-live="polite" aria-atomic="true" style={{ ...a.msg, color: isErr(photoMsg, '완료') ? '#C0392B' : 'var(--navy)' }}>{photoMsg}</p>
+      </section>
+      <div style={{ height: 20 }} />
+
+      {/* ── 현재사진(전신 각도) ── */}
+      <p style={a.caption}>현재사진 <span style={a.opt}>선택</span></p>
+      <section style={a.cardPad} aria-labelledby="gallery-section-current">
+        <h2 id="gallery-section-current" className="sr-only">현재사진</h2>
+        <p style={{ fontSize: 13, color: 'var(--gray)', lineHeight: 1.6, margin: '0 0 12px' }}>
+          정면 · 좌측 · 우측 · 후면 · 전신 각도의 현재 모습. 체형·전신을 보여줘 캐스팅 판단에 도움이 됩니다.
+        </p>
+        <input ref={cpFileRef} type="file" accept="image/*" onChange={uploadCurrentPhoto} style={{ display: 'none' }} aria-hidden="true" />
+        <div style={a.photoGrid}>
+          {CURRENT_PHOTO_LABELS.map((label) => {
+            const photo = currentPhotos.find((p) => p.label === label)
+            const busy = cpUploadingLabel === label
+            return (
+              <div key={label}>
+                {photo ? (
+                  <div style={a.photoCard}>
+                    <Image src={photo.url} alt={`${label} 현재사진`} fill style={{ objectFit: 'cover', objectPosition: 'center 30%' }} sizes="180px" />
+                    <span style={a.profileBadge}>{label}</span>
+                    <div style={a.photoActions}>
+                      <button type="button" onClick={() => pickCurrentPhoto(label)} disabled={!!cpUploadingLabel} aria-label={`${label} 사진 교체`} style={{ ...a.danger, background: 'rgba(255,255,255,0.92)', color: 'var(--navy)', border: 'none', fontWeight: 500 }}>교체</button>
+                      <button type="button" onClick={() => deleteCurrentPhoto(photo.id)} aria-label={`${label} 사진 삭제`} style={{ ...a.danger, background: 'rgba(255,255,255,0.92)', border: 'none' }}>삭제</button>
+                    </div>
+                  </div>
+                ) : (
+                  <button type="button" onClick={() => pickCurrentPhoto(label)} disabled={!!cpUploadingLabel} aria-label={`${label} 사진 올리기`}
+                    style={{ ...a.photoCard, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, cursor: 'pointer', borderStyle: 'dashed', color: 'var(--navy)', fontFamily: 'inherit', fontSize: 14, fontWeight: 500 }}>
+                    <span style={{ fontSize: 22, lineHeight: 1 }}>＋</span>
+                    {busy ? '업로드 중…' : label}
+                  </button>
+                )}
+              </div>
+            )
+          })}
+        </div>
+        <p role="status" aria-live="polite" aria-atomic="true" style={{ ...a.msg, color: isErr(cpMsg, '완료') ? '#C0392B' : 'var(--navy)' }}>{cpMsg}</p>
       </section>
       <div style={{ height: 20 }} />
 

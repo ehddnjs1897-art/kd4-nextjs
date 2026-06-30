@@ -49,6 +49,8 @@ interface PhotoRow {
   url: string
   is_profile: boolean
   storage_path: string | null
+  photo_type: string | null   // 'current'(전신 각도) 또는 null/'profile'
+  label: string | null        // 현재사진일 때 정면/좌측/우측/후면/전신
 }
 
 interface VideoRow {
@@ -160,7 +162,7 @@ export default async function GalleryEditPage() {
       }),
     supabaseAdmin
       .from('actor_photos')
-      .select('id, url, is_profile, storage_path')
+      .select('id, url, is_profile, storage_path, photo_type, label')
       .eq('actor_id', actor_id)
       .order('is_profile', { ascending: false }),
     supabaseAdmin
@@ -191,7 +193,10 @@ export default async function GalleryEditPage() {
     throw new Error(`배우 정보를 불러오지 못했습니다: ${actorRes.error.message}`)
   }
   const actor = (actorRes.data ?? {}) as ActorRow
-  const photos = (photosRes.data ?? []) as PhotoRow[]
+  const allPhotos = (photosRes.data ?? []) as PhotoRow[]
+  // 프로필 사진(일반)과 현재사진(전신 각도, photo_type='current')을 분리해 폼에 전달
+  const photos = allPhotos.filter((p) => p.photo_type !== 'current')
+  const currentPhotosRows = allPhotos.filter((p) => p.photo_type === 'current')
   const videos = (videosRes.data ?? []) as VideoRow[]
   const filmography = (filmRes.data ?? []) as FilmRow[]
   const r2Videos = (r2VideosRes.data ?? []) as R2VideoRow[]
@@ -208,6 +213,11 @@ export default async function GalleryEditPage() {
       id: p.id,
       url: p.url,
       is_profile: p.is_profile ?? false,
+    })),
+    currentPhotos: currentPhotosRows.map((p) => ({
+      id: p.id,
+      url: p.url,
+      label: p.label ?? '',
     })),
     videos: videos.map((v) => ({
       id: v.id,
