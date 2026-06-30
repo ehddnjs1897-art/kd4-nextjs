@@ -250,21 +250,6 @@ export default function JoinPage() {
             </span>
           </h1>
 
-          <p
-            style={{
-              fontSize: 'clamp(0.95rem, 2.6vw, 1.05rem)',
-              color: 'rgba(255,255,255,0.86)',
-              lineHeight: 1.65,
-              marginBottom: '20px',
-              maxWidth: '520px',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              wordBreak: 'keep-all',
-            }}
-          >
-            현직 배우들이 참여한 인증된 시그니처 클래스
-          </p>
-
           {/* 숫자 임팩트 — 첫 화면 후킹 */}
           <div
             style={{
@@ -276,7 +261,7 @@ export default function JoinPage() {
             }}
           >
             {[
-              { num: '현직 배우 150명', label: '수료' },
+              { num: '150명', label: '현직 배우 수료' },
               { num: '3년', label: '캐스팅 연계 운영' },
               { num: '8명', label: '소수정예 정원' },
             ].map((s) => (
@@ -306,17 +291,6 @@ export default function JoinPage() {
               </div>
             ))}
           </div>
-
-          <p
-            style={{
-              fontSize: 'clamp(0.8rem, 2vw, 0.88rem)',
-              color: 'rgba(255,255,255,0.7)',
-              marginBottom: '24px',
-              letterSpacing: '0.03em',
-            }}
-          >
-            연기 경험 없어도 OK
-          </p>
 
           <div
             style={{
@@ -354,6 +328,17 @@ export default function JoinPage() {
               카카오로 문의하기
             </JoinCTALink>
           </div>
+
+          <p
+            style={{
+              fontSize: 'clamp(0.78rem, 2vw, 0.85rem)',
+              color: 'rgba(255,255,255,0.7)',
+              marginTop: '18px',
+              letterSpacing: '0.02em',
+            }}
+          >
+            연기 경험 없어도 OK
+          </p>
         </div>
       </section>
 
