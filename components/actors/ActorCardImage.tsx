@@ -44,10 +44,11 @@ function InitialFallback({ name }: { name: string }) {
 
 export default function ActorCardImage({ src, alt, unoptimized, priority }: Props) {
   const [hasError, setHasError] = useState(!src)
-  // 사진 비율 따라 크롭 위치 자동 조정 (2026-06-30 대표 지시 — 얼굴 가운데 정렬):
-  //  · 세로(헤드샷): 'center 30%' — 얼굴 T존이 가운데 오도록 상단 살짝 위
-  //  · 가로(이력서 합성이미지): 'left center' — 왼쪽 헤드샷 위주로
-  const [objectPosition, setObjectPosition] = useState('center 30%')
+  // 사진 비율 따라 크롭 자동 조정 (2026-07-01 대표 지시 — 얼굴 위주, 이력서 테두리 안 보이게):
+  //  · 세로(헤드샷): 'center 30%' — 얼굴 T존 가운데, 확대 없음
+  //  · 가로(이력서 합성이미지): 왼쪽 상단 얼굴로 확대(scale) — 오른쪽 이력서·테두리 잘라냄
+  const PORTRAIT: React.CSSProperties = { objectFit: 'cover', objectPosition: 'center 30%' }
+  const [imgStyle, setImgStyle] = useState<React.CSSProperties>(PORTRAIT)
 
   if (hasError) {
     return <InitialFallback name={alt} />
@@ -59,15 +60,20 @@ export default function ActorCardImage({ src, alt, unoptimized, priority }: Prop
       alt={alt}
       fill
       sizes="(max-width:640px) 100vw, (max-width:1232px) calc(50vw - 22px), 578px"
-      style={{ objectFit: 'cover', objectPosition }}
+      style={imgStyle}
       unoptimized={unoptimized}
       priority={priority}
       onError={() => setHasError(true)}
       onLoad={(e) => {
         const img = e.currentTarget
-        if (img.naturalWidth && img.naturalHeight) {
-          setObjectPosition(img.naturalWidth > img.naturalHeight * 1.05 ? 'left center' : 'center 30%')
-        }
+        if (!img.naturalWidth || !img.naturalHeight) return
+        const isLandscape = img.naturalWidth > img.naturalHeight * 1.05
+        setImgStyle(
+          isLandscape
+            // 가로 합성: 왼쪽 얼굴 지점으로 1.6배 확대 → 이력서(우측)·흰 테두리 화면 밖으로
+            ? { objectFit: 'cover', objectPosition: '20% 22%', transform: 'scale(1.6)', transformOrigin: '20% 22%' }
+            : PORTRAIT
+        )
       }}
     />
   )

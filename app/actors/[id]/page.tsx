@@ -665,12 +665,7 @@ export default async function ActorDetailPage({
               <div style={{ display: 'grid', gridTemplateColumns: 'max-content 1fr', rowGap: 8, columnGap: 18, alignItems: 'baseline', marginBottom: 18 }}>
                 {canContact ? (
                   <>
-                    {actor.phone && (
-                      <>
-                        <span style={{ fontSize: '0.72rem', color: 'var(--gray)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>전화</span>
-                        <a href={`tel:${actor.phone}`} aria-label={`전화하기 ${actor.phone}`} style={{ fontSize: '0.9rem', color: 'var(--gold)', textDecoration: 'none', fontWeight: 600 }}>{actor.phone}</a>
-                      </>
-                    )}
+                    {/* 전화번호는 텍스트로 노출하지 않음 — 아래 '직통 전화' 버튼으로만 연결 (2026-07-01 대표 지시: 개인 전화번호 비노출) */}
                     {actor.email && (
                       <>
                         <span style={{ fontSize: '0.72rem', color: 'var(--gray)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>이메일</span>

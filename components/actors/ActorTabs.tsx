@@ -661,11 +661,8 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                       </td>
                       {isDrama && (
                         <td style={{ ...s.td, color: 'var(--gray)', fontSize: '0.82rem' }}>
-                          {/* 드라마 구분(숏폼 등) 배지 + 방송사 (2026-07-01 대표 지시) */}
-                          {entry.film_type && (
-                            <span style={{ display: 'inline-block', padding: '1px 7px', borderRadius: 3, fontSize: '0.72rem', fontWeight: 600, marginRight: 6, ...(FILM_TYPE_STYLE[entry.film_type] ?? { background: 'var(--bg3)', color: 'var(--gray)', border: '1px solid var(--border)' }) }}>{entry.film_type}</span>
-                          )}
-                          {entry.broadcaster ?? (entry.film_type ? '' : '—')}
+                          {/* 드라마는 구분 배지 없이 방송사만 (2026-07-01 대표 지시: 유튜브·웹드라마 등 뱃지 달지 마) */}
+                          {entry.broadcaster ?? '—'}
                         </td>
                       )}
                       <td style={{ ...s.td, fontWeight: 600, color: 'var(--white)' }}>
