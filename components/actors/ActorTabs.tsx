@@ -451,13 +451,13 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
           <h2 style={s.sectionHeading}>
             <span style={s.sectionTitle}>프로필 사진</span>
           </h2>
-          {/* 장수와 무관하게 균일한 그리드 — 3:4 세로 셀 + cover (2026-07-01 대표 지시: 몇 장이든 정렬되게).
-              기존 '자연 크기 flex + 가로사진 우측정렬'이 장수·비율에 따라 들쭉날쭉하던 것 교체. */}
+          {/* 비율 보존 masonry(CSS columns) — 가로사진은 가로로, 세로사진은 세로로 원본 비율 그대로.
+              (2026-07-01 대표 지시: "가로사진이 세로형으로 보임 → 가로형은 가로형으로". 3:4 cover 강제 크롭 폐지.)
+              모바일은 컬럼 폭이 좁아 2열, 데스크톱은 자동으로 여러 열. */}
           <div
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
-              gap: 12,
+              columnWidth: 170,
+              columnGap: 12,
             }}
             onContextMenu={imageProtected ? (e) => e.preventDefault() : undefined}
             onDragStart={(e) => e.preventDefault()}
@@ -468,7 +468,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                 type="button"
                 onClick={() => setLightbox({ source: 'profile', index: i })}
                 aria-label={`${actor.name} 프로필 사진 ${i + 1} 확대 보기`}
-                style={{ position: 'relative', width: '100%', aspectRatio: '3 / 4', padding: 0, border: 'none', background: 'var(--bg3)', borderRadius: 6, overflow: 'hidden', cursor: 'zoom-in' }}
+                style={{ position: 'relative', display: 'block', width: '100%', marginBottom: 12, breakInside: 'avoid', padding: 0, border: 'none', background: 'var(--bg3)', borderRadius: 6, overflow: 'hidden', cursor: 'zoom-in' }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -476,7 +476,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                   alt={`${actor.name} 프로필 ${i + 1}`}
                   loading="lazy"
                   draggable={false}
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }}
+                  style={{ width: '100%', height: 'auto', display: 'block' }}
                 />
                 {imageProtected && <div style={{ ...s.photoProtectOverlay, borderRadius: 6 }} />}
               </button>

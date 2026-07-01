@@ -245,7 +245,12 @@ export async function generateMetadata({
   // 비공개 배우 — 크롤러가 메타데이터를 읽어도 인덱싱 차단 (페이지 컴포넌트는 notFound() 반환)
   if (!actor.is_public) return { title: '배우 프로필', robots: { index: false, follow: false } }
 
-  const ogImage = `${SITE_URL}/api/og/actor/${actor.id}`
+  // og:image에 버전 파라미터 — 프로필 수정(updated_at) 시마다 URL이 바뀌어 카톡/카카오가 썸네일을 새로 긁음.
+  // (updated_at 없으면 디자인 버전 상수 — OG 크롭/오버레이 개편분 강제 재크롤용, 2026-07-01)
+  const ogVer = (actor as { updated_at?: string | null }).updated_at
+    ? new Date((actor as { updated_at?: string }).updated_at!).getTime()
+    : 'v3'
+  const ogImage = `${SITE_URL}/api/og/actor/${actor.id}?v=${ogVer}`
   const pageUrl = `${SITE_URL}/actors/${actor.id}`
 
   const genderLabel =

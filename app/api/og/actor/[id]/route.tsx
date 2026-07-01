@@ -262,13 +262,13 @@ export async function GET(
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              // 가로사진은 중앙, 세로 대표사진은 상단(얼굴) 기준 크롭
-              objectPosition: isLandscapeBg ? 'center' : 'center top',
+              // 얼굴이 잘리지 않게 상단(머리·얼굴) 기준 크롭 — 가로/세로 공통 (2026-07-01 대표 지시: 얼굴 잘 보이게)
+              objectPosition: isLandscapeBg ? 'center 22%' : 'center top',
             }}
           />
         )}
 
-        {/* 다크 그라디언트 오버레이 (하단 강조) */}
+        {/* 다크 그라디언트 오버레이 — 하단(글자 영역)만 어둡게, 얼굴(상단 55%)은 밝게 유지 */}
         <div
           style={{
             position: 'absolute',
@@ -277,7 +277,7 @@ export async function GET(
             right: 0,
             bottom: 0,
             background:
-              'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0.15) 100%)',
+              'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 30%, rgba(0,0,0,0) 56%)',
             display: 'flex',
           }}
         />
