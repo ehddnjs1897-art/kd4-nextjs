@@ -600,7 +600,9 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     const f = filmography[idx]
     if (confirmingFilmIdx !== idx) { setConfirmingFilmIdx(idx); return }
     setConfirmingFilmIdx(null)
-    if (f.id) {
+    // 신규 추가 행(isNew)은 아직 DB에 없음 — 클라 UUID로 DELETE 호출하면 실패하므로 로컬에서만 제거
+    // (2026-07-01 버그 수정: "추가한거 삭제가 안돼")
+    if (f.id && !f.isNew) {
       try {
         const res = await fetch(`/api/actors/${actorId}/filmography/${f.id}`, { method: 'DELETE', signal: AbortSignal.timeout(10_000) })
         if (res.status === 401) { window.location.href = '/auth/login'; return }

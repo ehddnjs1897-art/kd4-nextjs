@@ -42,7 +42,13 @@ interface FilmItem {
 // is_featured(대표출연작)는 신규 컬럼 — 마이그레이션 전 DB엔 없을 수 있음.
 // 컬럼 미존재(42703) 시 해당 필드를 빼고 재시도해 필모 저장 자체가 실패하지 않도록 방어.
 function isUndefinedColumn(err: { code?: string; message?: string } | null | undefined): boolean {
-  return !!err && (err.code === '42703' || /column .* does not exist/i.test(err.message ?? ''))
+  // 42703: 컬럼 없음(SELECT/DDL) · PGRST204: PostgREST 스키마캐시에 컬럼 없음(INSERT/UPSERT)
+  // "Could not find the 'X' column ..." 는 'does not exist' 문구가 없어 별도 매칭 필요 (2026-07-01 is_featured 저장 실패 수정)
+  return !!err && (
+    err.code === '42703' || err.code === 'PGRST204' ||
+    /column .* does not exist/i.test(err.message ?? '') ||
+    /could not find .* column/i.test(err.message ?? '')
+  )
 }
 function stripFeatured<T extends { is_featured?: boolean }>(row: T): Omit<T, 'is_featured'> {
   const rest = { ...row }

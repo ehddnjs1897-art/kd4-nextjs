@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { revalidateTag } from '@/lib/revalidate'
 import { canViewActorDb } from '@/lib/access'
-import { DIALECT_OPTIONS } from '@/lib/dialects'
+import { sanitizeDialects } from '@/lib/dialects'
 import { isMissingColumnError, findMissingOptionalCol } from '@/lib/db-missing-column'
 import type { Actor, ActorDetail, UserRole } from '@/lib/types'
 
@@ -235,9 +235,11 @@ export async function PATCH(
         return NextResponse.json({ error: '고급 스킬 형식이 올바르지 않습니다.' }, { status: 400 })
     }
     if ('dialects' in body && body.dialects !== null) {
-      if (!Array.isArray(body.dialects) || body.dialects.length > DIALECT_OPTIONS.length
-        || body.dialects.some((d: unknown) => typeof d !== 'string' || !(DIALECT_OPTIONS as readonly string[]).includes(d)))
+      if (!Array.isArray(body.dialects)) {
         return NextResponse.json({ error: '사투리 형식이 올바르지 않습니다.' }, { status: 400 })
+      }
+      // 화이트리스트 정제 + '없음(표준어)' 상호배타 처리 — '없음'도 허용 (2026-07-01 저장 실패 버그 수정)
+      body.dialects = sanitizeDialects(body.dialects)
     }
 
     const allowed = ['height', 'weight', 'skills', 'advanced_skills', 'dialects', 'instagram', 'casting_summary', 'casting_tags', 'name_en', 'age_group', 'profile_doc_path']
