@@ -124,9 +124,6 @@ const FILM_TYPE_STYLE: Record<string, React.CSSProperties> = {
   '숏폼': { background: 'rgba(199,62,62,0.08)', color: 'var(--accent-red)', border: '1px solid rgba(199,62,62,0.25)' },  // 드라마 숏폼 구분
 }
 
-// 영화제 키워드 — 필모 표의 구분(film_type) 배지 색 판단용 (수상·영화제 텍스트는 award 필드로 일원화)
-const FEST_RE = /(영화제|페스티벌|출품|선정|초청|상영|경쟁부문|nominee|festival)/i
-
 const SECTION_NUMS: Record<FilmoCategory, string> = {
   drama: '03',
   film: '04',
@@ -649,7 +646,6 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
         const entries = filmoByCategory(cat)
         const num = SECTION_NUMS[cat]
         const isDrama = cat === 'drama'
-        const isFilm = cat === 'film'
         const isAdding = addingCat === cat
 
         return (
@@ -674,7 +670,6 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                 <tr>
                   <th scope="col" style={{ ...s.th, width: 72 }}>연도</th>
                   {isDrama && <th scope="col" style={{ ...s.th, width: 76 }}>방송사</th>}
-                  {isFilm && <th scope="col" style={{ ...s.th, width: 68 }}>구분</th>}
                   <th scope="col" style={s.th}>작품명</th>
                   <th scope="col" style={s.th}>역할</th>
                   {canEdit && <th scope="col" style={{ ...s.th, width: 64 }}></th>}
@@ -694,17 +689,6 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                           <td style={s.td}>
                             <input value={editFields.broadcaster} onChange={e => setEditFields(p => ({ ...p, broadcaster: e.target.value }))}
                               style={s.inlineInput} placeholder="방송사" aria-label="방송사" />
-                          </td>
-                        )}
-                        {isFilm && (
-                          <td style={s.td}>
-                            <select value={editFields.film_type} onChange={e => setEditFields(p => ({ ...p, film_type: e.target.value }))}
-                              style={s.inlineInput} aria-label="영화 구분">
-                              <option value="">구분</option>
-                              <option value="상업">상업</option>
-                              <option value="독립장편">독립장편</option>
-                              <option value="단편">단편</option>
-                            </select>
                           </td>
                         )}
                         <td style={s.td}>
@@ -744,25 +728,6 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                           {entry.broadcaster ?? (entry.film_type ? '' : '—')}
                         </td>
                       )}
-                      {isFilm && (
-                        <td style={s.td}>
-                          {entry.film_type ? (
-                            <span style={{
-                              display: 'inline-block',
-                              padding: '2px 8px',
-                              borderRadius: 3,
-                              fontSize: '0.75rem',
-                              fontWeight: 600,
-                              letterSpacing: '0.03em',
-                              ...(FEST_RE.test(entry.film_type)
-                                ? { color: 'var(--accent-red)', border: '1px solid rgba(199,62,62,0.3)', background: 'rgba(199,62,62,0.08)' }
-                                : (FILM_TYPE_STYLE[entry.film_type] ?? {})),
-                            }}>
-                              {entry.film_type}
-                            </span>
-                          ) : '—'}
-                        </td>
-                      )}
                       <td style={{ ...s.td, fontWeight: 600, color: 'var(--white)' }}>
                         {entry.title}
                         {/* 영화제/수상은 최상단 '수상·영화제' 섹션으로 일원화 (2026-07-01 대표 지시) */}
@@ -796,17 +761,6 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                       <td style={s.td}>
                         <input value={newEntry.broadcaster} onChange={e => setNewEntry(p => ({ ...p, broadcaster: e.target.value }))}
                           style={s.inlineInput} placeholder="방송사" aria-label="방송사" />
-                      </td>
-                    )}
-                    {isFilm && (
-                      <td style={s.td}>
-                        <select value={newEntry.film_type} onChange={e => setNewEntry(p => ({ ...p, film_type: e.target.value }))}
-                          style={s.inlineInput} aria-label="영화 구분">
-                          <option value="">구분</option>
-                          <option value="상업">상업</option>
-                          <option value="독립장편">독립장편</option>
-                          <option value="단편">단편</option>
-                        </select>
                       </td>
                     )}
                     <td style={s.td}>
