@@ -59,7 +59,7 @@ export function buildOrganization() {
       availableLanguage: 'Korean',
     },
     email: 'uikactors@gmail.com',
-    knowsAbout: ['마이즈너 테크닉', '연기 훈련', '출연영상 제작', '캐스팅', '배우 액셀러레이팅'],
+    knowsAbout: ['마이즈너 테크닉', '연기 훈련', '출연영상 제작', '캐스팅', '배우 성장 운영', 'Actor Operating System'],
     areaServed: [
       { '@type': 'City', name: '서울특별시' },
       { '@type': 'City', name: '신촌' },

@@ -29,7 +29,7 @@ function getLocalBusinessSchema() {
     name: 'KD4 액팅 스튜디오',
     alternateName: 'KD4 Acting Studio',
     description:
-      '서울 신촌 마이즈너 테크닉 기반 연기학원. 연기 훈련부터 출연영상 포트폴리오 제작, 캐스팅 연계까지 배우 액셀러레이팅 시스템.',
+      '서울 신촌 마이즈너 테크닉 기반 연기학원. 연기 훈련부터 출연영상 포트폴리오 제작, 캐스팅 연계까지 배우의 성장을 운영하는 시스템.',
     url: SITE_URL,
     telephone: '+82-10-8564-0244',
     email: 'uikactors@gmail.com',

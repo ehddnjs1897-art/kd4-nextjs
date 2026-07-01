@@ -304,13 +304,10 @@ export default async function ActorsPage({ searchParams }: PageProps) {
   if (activeTags.length > 0) h1Segments.push(activeTags.join('·'))
   if (ageGroup !== 'all') h1Segments.push(ageGroup)
   const dynamicH1 = h1Segments.length > 0 ? `${h1Segments.join(' ')} 배우 DB` : '배우 DB'
-  const dynamicSubtitle = !dbError && actors.length > 0
-    ? h1Segments.length > 0
-      ? `KD4 액팅 스튜디오의 ${h1Segments.join(' ')} 훈련된 배우를 캐스팅해보세요.`
-      : `KD4 액팅 스튜디오의 훈련된 배우를 캐스팅해보세요.`
-    : h1Segments.length > 0
-      ? `KD4 액팅 스튜디오의 ${h1Segments.join(' ')} 훈련된 배우를 캐스팅해보세요.`
-      : 'KD4 액팅 스튜디오의 훈련된 배우를 캐스팅해보세요.'
+  // KD4 AMS(배우 관리 시스템)의 커리어 레이어 — 프로필·오디션·캐스팅
+  const dynamicSubtitle = h1Segments.length > 0
+    ? `KD4 AMS 커리어 레이어 — ${h1Segments.join(' ')} 훈련된 배우를 캐스팅해보세요.`
+    : 'KD4가 성장을 운영하는 배우들의 커리어 레이어. 훈련된 배우를 캐스팅해보세요.'
 
   function filterHref(key: string, value: string) {
     const next = new URLSearchParams()
@@ -414,7 +411,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
 
         {/* 페이지 헤더 */}
         <div style={styles.header}>
-          <p style={styles.eyebrow}><span lang="en">ACTOR ROSTER</span></p>
+          <p style={styles.eyebrow}><span lang="en">AMS · CAREER LAYER</span></p>
           <h1 style={styles.pageTitle}>{dynamicH1}</h1>
           <p style={styles.subtitle}>{dynamicSubtitle}</p>
         </div>

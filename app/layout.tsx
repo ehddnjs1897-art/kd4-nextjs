@@ -40,11 +40,11 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: 'KD4 액팅 스튜디오 | 서울 신촌 마이즈너 테크닉 연기학원',
+    default: 'KD4 액팅 스튜디오 | 배우의 성장을 운영하는 신촌 마이즈너 연기학원',
     template: '%s | KD4 액팅 스튜디오',
   },
   description:
-    '서울 신촌 마이즈너 테크닉 기반 연기학원. 연기 훈련부터 출연영상 포트폴리오 제작, 캐스팅 연계까지. 배우를 성장시키는 KD4 액팅 스튜디오.',
+    '서울 신촌 마이즈너 테크닉 기반 연기학원. 연기 훈련부터 출연영상 포트폴리오 제작, 캐스팅 연계까지. 배우의 성장을 운영하는 KD4 액팅 스튜디오 — Actor Operating System.',
   keywords: [
     '연기학원', '마이즈너 테크닉', '신촌 연기학원', '배우 포트폴리오',
     '출연영상 제작', '캐스팅 연계', '연기 입문', '배우 훈련',
@@ -63,8 +63,8 @@ export const metadata: Metadata = {
     apple: '/heart-logo.png',
   },
   openGraph: {
-    title: 'KD4 액팅 스튜디오 | 서울 신촌 마이즈너 테크닉 연기학원',
-    description: '서울 신촌 마이즈너 테크닉 연기학원. 연기 훈련·포트폴리오 제작·캐스팅 연계. KD4 액팅 스튜디오',
+    title: 'KD4 액팅 스튜디오 | 배우의 성장을 운영하는 신촌 마이즈너 연기학원',
+    description: '서울 신촌 마이즈너 테크닉 연기학원. 연기 훈련·포트폴리오 제작·캐스팅 연계. 배우의 성장을 운영하는 KD4 액팅 스튜디오',
     url: SITE_URL,
     siteName: 'KD4 액팅 스튜디오',
     images: [
@@ -72,7 +72,7 @@ export const metadata: Metadata = {
         url: `${SITE_URL}/og-image.jpg`,
         width: 1200,
         height: 630,
-        alt: 'KD4 액팅 스튜디오 — 마이즈너 테크닉 연기 훈련',
+        alt: 'KD4 액팅 스튜디오 — 배우의 성장을 운영하는 Actor Operating System',
       },
     ],
     locale: 'ko_KR',
@@ -81,7 +81,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'KD4 액팅 스튜디오',
-    description: '마이즈너 테크닉 기반 연기 훈련 · 포트폴리오 제작 · 캐스팅 연계.',
+    description: '배우의 성장을 운영하는 KD4 — 마이즈너 테크닉 연기 훈련 · 포트폴리오 제작 · 캐스팅 연계.',
     images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오', type: 'image/jpeg' }],
   },
 }

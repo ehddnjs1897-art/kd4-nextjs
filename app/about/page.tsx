@@ -9,15 +9,15 @@ import YouTubeFacade from '@/components/youtube/YouTubeFacade'
 export const metadata: Metadata = {
   title: '스튜디오 소개',
   description:
-    '마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 현장에서 통하는 배우를 키웁니다. 삶의 변화, 좋은 연기, 커리어의 성장. KD4 액팅 스튜디오 소개. 서울 신촌 이대역 도보 3분.',
+    '마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 배우의 성장을 운영합니다. 교육·실행·관리·커리어·커뮤니티 5개 레이어의 Actor Operating System. KD4 액팅 스튜디오 소개. 서울 신촌 이대역 도보 3분.',
   robots: { index: true, follow: true },
   alternates: { canonical: `${SITE_URL}/about` },
-  keywords: ['KD4 액팅 스튜디오', '마이즈너 테크닉', '신촌 연기학원', '권동원', '연기 코칭', '연기 스튜디오 소개', '배우 양성'],
+  keywords: ['KD4 액팅 스튜디오', '마이즈너 테크닉', '신촌 연기학원', '권동원', '연기 코칭', '연기 스튜디오 소개', '배우 양성', 'Actor Operating System', '배우 성장 운영', 'AMS 배우 관리 시스템'],
   openGraph: {
     type: 'website',
     url: `${SITE_URL}/about`,
     title: '스튜디오 소개 | KD4 액팅 스튜디오',
-    description: '마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 현장에서 통하는 배우를 키웁니다. 삶의 변화, 좋은 연기, 커리어의 성장.',
+    description: '마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 배우의 성장을 운영합니다. 세계에서 가장 뛰어난 Actor Operating System을 만듭니다.',
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
     images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오', type: 'image/jpeg' }],
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: '스튜디오 소개 | KD4 액팅 스튜디오',
-    description: '마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 현장에서 통하는 배우를 키웁니다.',
+    description: '마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 배우의 성장을 운영합니다.',
     images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오', type: 'image/jpeg' }],
   },
 }
@@ -68,12 +68,23 @@ const STEPS = [
   },
 ]
 
-const WHO_NEEDS = [
-  '연기의 본질을 제대로 배우고 싶은 분',
-  '활동의 한계에 부딪힌 배우',
-  '열심히 하지만 달라지는 게 없는 배우',
-  '억지로 짜내는 연기에서 벗어나고 싶은 배우',
-  '출연영상이 없어서 캐스팅 기회를 놓치는 배우',
+// 배우가 실패하는 진짜 이유 (Pain Points) — 대표 전략 정의 언어 그대로
+const PAIN_POINTS = [
+  '무엇을 연습해야 하는지 모른다',
+  '언제 촬영해야 하는지 모른다',
+  '어떤 독백을 해야 하는지 모른다',
+  '어떤 오디션을 선택해야 하는지 모른다',
+  '성장하고 있는지 알 수 없다',
+  '혼자서 계속 흔들린다',
+]
+
+// Actor Operating System — 배우의 성장을 운영하는 5개 레이어
+const LAYERS = [
+  { num: '01', name: '교육', desc: '오프라인 수업 · 개인레슨 · 마스터클래스' },
+  { num: '02', name: '실행', desc: '촬영 · 출연영상 · 독백 · 레피티션 · 장면' },
+  { num: '03', name: '관리', desc: '목표 · 피드백 · 성장 기록 · AI 분석 · 멘토 리뷰' },
+  { num: '04', name: '커리어', desc: '프로필 · 오디션 · 캐스팅 · 감독 네트워크 · 제작' },
+  { num: '05', name: '커뮤니티', desc: '멤버십 · 선후배 · 스터디 · 협업' },
 ]
 
 const TESTIMONIALS = [
@@ -134,7 +145,7 @@ export default function AboutPage() {
           '@type': 'HowTo',
           '@id': `${SITE_URL}/about#howto`,
           name: 'KD4 액팅 스튜디오로 배우 커리어를 만드는 방법',
-          description: '마이즈너 테크닉 훈련부터 출연영상 포트폴리오 제작, 캐스팅 연계까지 — KD4 배우 액셀러레이팅 3단계 시스템.',
+          description: '마이즈너 테크닉 훈련부터 출연영상 포트폴리오 제작, 캐스팅 연계까지 — 배우의 성장을 운영하는 KD4 3단계 시스템.',
           step: STEPS.map((s, i) => ({
             '@type': 'HowToStep',
             position: i + 1,
@@ -311,16 +322,20 @@ export default function AboutPage() {
 
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
-      {/* ── 이런 배우에게 ── */}
-      <section aria-label="KD4가 필요한 배우" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
+      {/* ── 배우가 실패하는 진짜 이유 (Pain Points) ── */}
+      <section aria-label="배우가 실패하는 진짜 이유" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
         <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px', textAlign: 'center' }}>
-          <span lang="en">WHO NEEDS KD4</span>
+          <span lang="en">WHY ACTORS FAIL</span>
         </p>
-        <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 700, textAlign: 'center', marginBottom: '40px' }}>
-          이런 배우에게 필요합니다
+        <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 700, textAlign: 'center', marginBottom: '20px' }}>
+          배우가 실패하는 진짜 이유
         </h2>
+        <p className="section-desc" style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', color: 'var(--secondary)', lineHeight: 1.85, textAlign: 'center', maxWidth: '620px', margin: '0 auto 40px' }}>
+          배우는 연기를 몰라서 실패하지 않습니다. 무엇을 연습하고, 언제 촬영하고,
+          지금 성장하고 있는지 — 그 성장을 운영해줄 시스템이 없어서 흔들립니다.
+        </p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
-          {WHO_NEEDS.map((item, i) => (
+          {PAIN_POINTS.map((item, i) => (
             <div
               key={item}
               style={{
@@ -352,14 +367,18 @@ export default function AboutPage() {
 
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
 
-      {/* ── ALL IN ONE SYSTEM ── */}
-      <section aria-label="KD4 성장 시스템" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
+      {/* ── ACTOR OPERATING SYSTEM ── */}
+      <section aria-label="배우의 성장을 운영하는 방식" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
         <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px', textAlign: 'center' }}>
-          <span lang="en">ALL IN ONE SYSTEM</span>
+          <span lang="en">ACTOR OPERATING SYSTEM</span>
         </p>
-        <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 700, textAlign: 'center', marginBottom: '48px' }}>
-          KD4 성장 시스템
+        <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 700, textAlign: 'center', marginBottom: '20px' }}>
+          배우의 성장을 운영합니다
         </h2>
+        <p className="section-desc" style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', color: 'var(--secondary)', lineHeight: 1.85, textAlign: 'center', maxWidth: '640px', margin: '0 auto 48px' }}>
+          기업에는 CRM·ERP·LMS가 있지만, 배우를 위한 운영 시스템은 없었습니다.
+          KD4는 배우의 성장을 운영하는 <span lang="en">Actor Management System</span>을 만듭니다.
+        </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           {STEPS.map(step => (
             <div
@@ -387,6 +406,34 @@ export default function AboutPage() {
             </div>
           ))}
         </div>
+
+        {/* 5개 레이어 — Actor Operating System 아키텍처 */}
+        <h3 style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', fontWeight: 700, color: 'var(--white)', textAlign: 'center', margin: 'clamp(48px, 7vw, 72px) 0 24px', letterSpacing: '0.02em' }}>
+          KD4는 5개 레이어로 배우의 성장을 운영합니다
+        </h3>
+        <ul role="list" style={{ display: 'flex', flexDirection: 'column', gap: '10px', listStyle: 'none', margin: 0, padding: 0 }}>
+          {LAYERS.map(layer => (
+            <li
+              key={layer.num}
+              style={{
+                background: 'var(--bg2)',
+                border: '1px solid var(--border)',
+                borderRadius: '12px',
+                padding: '18px 22px',
+                display: 'grid',
+                gridTemplateColumns: '44px 1fr',
+                gap: '16px',
+                alignItems: 'center',
+              }}
+            >
+              <span style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '1.5rem', fontWeight: 700, color: 'var(--gold)', lineHeight: 1 }}>{layer.num}</span>
+              <div>
+                <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.98rem', fontWeight: 700, color: 'var(--white)', marginBottom: '3px' }}>{layer.name}</p>
+                <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', color: 'var(--secondary)', lineHeight: 1.6 }}>{layer.desc}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
@@ -397,7 +444,7 @@ export default function AboutPage() {
           {/* 좌측: 텍스트 */}
           <div>
             <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px' }}>
-              <span lang="en">ACTOR ACCELERATOR</span>
+              <span lang="en">FOUNDER · OPERATOR</span>
             </p>
             <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', fontWeight: 700, marginBottom: '20px' }}>
               권동원 대표
