@@ -80,11 +80,6 @@ interface FilmoEntry {
 
 const UUID_RE_ACTOR = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
-/* HERO 최근 출연 표기용 카테고리 라벨 — 방송사/구분 값이 없을 때 폴백 */
-const HERO_CAT_LABEL: Record<FilmoEntry['category'], string> = {
-  drama: '드라마', film: '영화', cf: 'CF', musical: '공연', theater: '공연', etc: '기타',
-}
-
 /* ---- 강제 동적 렌더링 — cookies() 사용으로 정적 사전 렌더 불가 ----
    generateStaticParams + createClient(cookies()) 조합은 빌드 시 cookies() 호출로
    Next.js가 오류를 throw하고 정적 404 페이지로 저장됨.
@@ -464,14 +459,34 @@ export default async function ActorDetailPage({
       ])) }} />
       {/* 반응형 헬퍼 — HERO 2컬럼 (사진 좌 / 정보 우), 680px 이하 세로 스택 (2026-06-12 대표 지시 리디자인) */}
       <style>{`
-        .actor-hero { display:grid; grid-template-columns:minmax(260px,400px) minmax(0,1fr); gap:clamp(24px,4vw,44px); align-items:start; }
-        /* 세로형 증명사진 프레임 — 2/3 비율 고정, 최대높이 70vh (max-width로 비율 유지한 채 제한) */
-        .actor-hero-photo { position:relative; width:100%; max-width:calc(70vh * 2 / 3); aspect-ratio:2/3; margin:0 auto; }
+        .actor-hero { display:grid; grid-template-columns:minmax(260px,380px) minmax(0,1fr); gap:clamp(24px,4vw,44px); align-items:start; }
+        /* 프로필 사진 — 원본 비율 유지(가로 사진은 가로 그대로, 세로 사진은 세로 그대로).
+           고정 프레임을 없애 letterbox(검정 여백) 발생을 원천 차단 (2026-07-01 대표 지시). */
+        .actor-hero-photo { position:relative; width:100%; max-width:380px; margin:0 auto; border-radius:14px; overflow:hidden; background:var(--bg2); box-shadow:0 6px 24px rgba(21,72,138,0.12); border:1px solid var(--border); }
+        .actor-hero-photo img { width:100%; height:auto; display:block; object-fit:cover; object-position:center 22%; }
         /* 우측 정보 열 — 자식(연락처·공유/다운로드·캐스팅문의)이 세로로 일정 간격 쌓이게.
            이 정의가 없어 버튼들이 서로 겹쳐 보이던 버그 수정 (2026-06-23) */
         .actor-hero-info { display:flex; flex-direction:column; gap:16px; align-items:stretch; }
+        /* 정보 카드 — 최근출연·수상·특기 구간을 한눈에 들어오게 카드로 묶음 (Apple/Tesla식 여백 + 구분) */
+        .kd-infocard { background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:16px 18px; }
+        .kd-infocard + .kd-infocard { margin-top:12px; }
+        .kd-card-head { display:flex; align-items:center; gap:8px; font-family:var(--font-display); font-size:0.66rem; font-weight:800; letter-spacing:0.14em; color:var(--gold); text-transform:uppercase; margin:0 0 12px; }
+        .kd-card-head::after { content:''; flex:1; height:1px; background:var(--border); }
+        /* 작품 행 — 좌 연도 뱃지 / 우 정보 */
+        .kd-work-row { display:flex; align-items:center; gap:12px; padding:8px 0; }
+        .kd-work-row + .kd-work-row { border-top:1px solid var(--border); }
+        .kd-year-chip { flex:0 0 auto; min-width:46px; text-align:center; font-family:var(--font-display); font-size:0.9rem; font-weight:800; color:var(--gold); line-height:1; }
+        .kd-year-chip small { display:block; font-size:0.56rem; font-weight:700; letter-spacing:0.1em; color:var(--gray); margin-top:3px; }
+        .kd-badge { display:inline-flex; align-items:center; font-size:0.62rem; font-weight:800; letter-spacing:0.04em; padding:2px 7px; border-radius:5px; margin-right:7px; vertical-align:middle; }
+        .kd-badge-drama { background:rgba(21,72,138,0.1); color:var(--navy); border:1px solid rgba(21,72,138,0.22); }
+        .kd-badge-film { background:rgba(199,62,62,0.08); color:var(--accent-red); border:1px solid rgba(199,62,62,0.22); }
+        .kd-pill { display:inline-flex; align-items:center; padding:5px 12px; border-radius:999px; font-size:0.78rem; font-weight:600; letter-spacing:0.02em; background:var(--bg); border:1px solid var(--border-strong); color:var(--gray-light); }
+        .kd-pill-gold { background:rgba(21,72,138,0.08); border-color:rgba(21,72,138,0.28); color:var(--gold); }
         @media (max-width:680px) {
           .actor-hero { grid-template-columns:1fr; gap:20px; }
+          /* 모바일: 사진이 화면을 다 먹지 않게 상한(세로 최대 62vh) — 가로 사진은 원본비율 그대로 */
+          .actor-hero-photo { max-width:100%; }
+          .actor-hero-photo img { max-height:62vh; object-position:center 20%; }
         }
       `}</style>
 
@@ -490,25 +505,18 @@ export default async function ActorDetailPage({
           </nav>
           <div className="actor-hero">
 
-            {/* 좌: 세로형 증명사진 — 2/3 고정 프레임, cover 크롭 (얼굴 상단 기준) */}
-            <div className="actor-hero-photo" style={{
-              borderRadius: 10,
-              overflow: 'hidden',
-              background: 'var(--bg2)',
-              boxShadow: '0 4px 18px rgba(21,72,138,0.10)',
-              border: '1px solid var(--border)',
-            }}>
+            {/* 좌: 프로필 사진 — 원본 비율 유지(가로/세로 그대로), letterbox 없음. 얼굴 상단 기준 cover. */}
+            <div className="actor-hero-photo">
               {photoUrl !== '/placeholder-actor.svg' ? (
-                // 증명사진 프레임(2/3) 고정 크롭 — 원본 비율을 알 수 없어 next/image 고정크기 대신 일반 img 사용. (eslint 경고는 빌드 차단 아님)
+                // 원본 비율을 알 수 없어 next/image 고정크기 대신 일반 img 사용. (eslint 경고는 빌드 차단 아님)
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={photoUrl}
                   alt={`${actor.name} 배우 프로필`}
                   fetchPriority="high"
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center', display: 'block' }}
                 />
               ) : (
-                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray)', fontSize: '3rem' }}>
+                <div style={{ aspectRatio: '3/4', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray)', fontSize: '3rem' }}>
                   <span className="sr-only">{actor.name} 프로필 사진 없음</span>
                   <span aria-hidden="true">👤</span>
                 </div>
@@ -567,86 +575,78 @@ export default async function ActorDetailPage({
                 </p>
               )}
 
-              {/* 최근 출연 — CF만 제외 + 드라마/영화 분류. 영화 단편/독립장편/상업·드라마 숏폼을 배지로 명확히 (최근 2년, 그룹당 최대 3편) */}
+              {/* 최근 출연 — 연도 뱃지 + 드라마/영화 컬러 배지 카드. 한눈에 스캔되게 (2026-07-01 대표 지시 리디자인) */}
               {heroRecentGroups.length > 0 && (
-                <div style={{ marginBottom: 16 }}>
-                  <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', color: 'var(--gold)', marginBottom: 7 }}>최근 출연</p>
-                  {heroRecentGroups.map((group) => (
-                    <div key={group.label} style={{ marginBottom: 8 }}>
-                      <p style={{ fontSize: '0.66rem', fontWeight: 700, letterSpacing: '0.08em', color: 'var(--gray)', margin: '0 0 3px' }}>{group.label}</p>
-                      <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 4 }}>
-                        {group.items.map((f) => {
-                          // 영화: 구분(단편/독립장편/상업) 배지. 드라마: 숏폼 등 구분이 있으면 배지 + 방송사 회색 접두.
-                          const typeTag = f.category === 'film' ? (f.film_type ?? null) : (f.category === 'drama' ? (f.film_type ?? null) : null)
-                          const bcast = f.category === 'drama' ? (f.broadcaster ?? null) : null
-                          const isShort = typeTag === '숏폼'
-                          return (
-                            <li key={f.id} style={{ fontSize: '0.85rem', color: 'var(--white)', lineHeight: 1.5 }}>
-                              {typeTag && <span style={{ display: 'inline-block', padding: '0 6px', borderRadius: 3, fontSize: '0.68rem', fontWeight: 700, marginRight: 6, verticalAlign: 'middle', background: isShort ? 'rgba(199,62,62,0.08)' : 'rgba(21,72,138,0.08)', color: isShort ? 'var(--accent-red)' : 'var(--navy)', border: `1px solid ${isShort ? 'rgba(199,62,62,0.25)' : 'rgba(21,72,138,0.2)'}` }}>{typeTag}</span>}
-                              {(bcast || (!typeTag)) && <span style={{ color: 'var(--gray)', marginRight: 6 }}>{bcast || HERO_CAT_LABEL[f.category]}</span>}
-                              <strong style={{ fontWeight: 600 }}>{f.title}</strong>
-                              {f.year ? <span style={{ color: 'var(--gray)', fontSize: '0.78rem' }}> · {f.year}</span> : null}
-                            </li>
-                          )
-                        })}
-                      </ul>
-                    </div>
-                  ))}
+                <div className="kd-infocard">
+                  <p className="kd-card-head"><span aria-hidden="true">🎬</span> 최근 출연</p>
+                  <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                    {heroRecentGroups.flatMap((group) => group.items).map((f) => {
+                      // 영화: 구분(단편/독립장편/상업) 배지. 드라마: 숏폼 등 구분 배지 + 방송사 접두.
+                      const typeTag = f.film_type ?? null
+                      const bcast = f.category === 'drama' ? (f.broadcaster ?? null) : null
+                      const isFilm = f.category === 'film'
+                      return (
+                        <li key={f.id} className="kd-work-row">
+                          <span className="kd-year-chip">{f.year ?? '—'}<small>{isFilm ? '영화' : '드라마'}</small></span>
+                          <span style={{ minWidth: 0, lineHeight: 1.45 }}>
+                            {typeTag && <span className={`kd-badge ${isFilm ? 'kd-badge-film' : 'kd-badge-drama'}`}>{typeTag}</span>}
+                            <strong style={{ fontWeight: 700, color: 'var(--white)', fontSize: '0.92rem' }}>{f.title}</strong>
+                            {(bcast || f.role) && (
+                              <span style={{ display: 'block', fontSize: '0.72rem', color: 'var(--gray)', marginTop: 2 }}>
+                                {[bcast, f.role].filter(Boolean).join(' · ')}
+                              </span>
+                            )}
+                          </span>
+                        </li>
+                      )
+                    })}
+                  </ul>
                 </div>
               )}
 
-              {/* 수상 · 영화제 — 대표사진 옆 프로필에 노출, 각 작품 분리 (2026-07-01 대표 지시) */}
+              {/* 수상 · 영화제 — 트로피 카드, 골드 강조. 각 작품 분리 (2026-07-01 대표 지시 리디자인) */}
               {heroAwards.length > 0 && (
-                <div style={{ marginBottom: 16 }}>
-                  <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', color: 'var(--gold)', marginBottom: 7 }}>🏆 수상 · 영화제</p>
-                  <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <div className="kd-infocard" style={{ background: 'rgba(21,72,138,0.05)', borderColor: 'rgba(21,72,138,0.22)' }}>
+                  <p className="kd-card-head"><span aria-hidden="true">🏆</span> 수상 · 영화제</p>
+                  <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
                     {heroAwards.map((f) => (
-                      <li key={`hero-award-${f.id}`} style={{ fontSize: '0.85rem', color: 'var(--white)', lineHeight: 1.5 }}>
-                        <span style={{ color: 'var(--gold)', fontWeight: 700, marginRight: 6 }}>{f.award}</span>
-                        {f.title && <strong style={{ fontWeight: 600 }}>{f.title}</strong>}
-                        {f.year ? <span style={{ color: 'var(--gray)', fontSize: '0.78rem' }}> · {f.year}</span> : null}
+                      <li key={`hero-award-${f.id}`} style={{ display: 'flex', gap: 11, alignItems: 'flex-start' }}>
+                        <span aria-hidden="true" style={{ flex: '0 0 auto', fontSize: '1.05rem', lineHeight: 1.2 }}>🏆</span>
+                        <span style={{ minWidth: 0 }}>
+                          <span style={{ display: 'block', color: 'var(--gold)', fontWeight: 800, fontSize: '0.9rem', lineHeight: 1.35 }}>{f.award}</span>
+                          <span style={{ fontSize: '0.78rem', color: 'var(--gray)' }}>
+                            {[f.title, f.year].filter(Boolean).join(' · ')}
+                          </span>
+                        </span>
                       </li>
                     ))}
                   </ul>
                 </div>
               )}
 
-              {/* 특기 */}
-              {actor.skills && actor.skills.length > 0 && (
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
-                  {actor.skills.map((sk) => (
-                    <span key={sk} style={{
-                      padding: '4px 12px',
-                      background: 'rgba(21,72,138,0.06)',
-                      border: '1px solid var(--border)',
-                      borderRadius: 4,
-                      fontSize: '0.78rem',
-                      color: 'var(--gray)',
-                      letterSpacing: '0.03em',
-                      fontWeight: 400,
-                    }}>
-                      {sk}
-                    </span>
-                  ))}
-                </div>
-              )}
-
-              {/* 사투리 — '없음'(표준어)은 입력 전용, 공개 표시는 실제 지역만 (2026-06 피드백) */}
-              {actor.dialects && actor.dialects.some((d) => d !== '없음') && (
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center', marginBottom: 14 }}>
-                  <span style={{ fontSize: '0.72rem', color: 'var(--gray)', letterSpacing: '0.05em', marginRight: 2 }}>사투리</span>
-                  {actor.dialects.filter((d) => d !== '없음').map((d) => (
-                    <span key={d} style={{
-                      padding: '4px 12px',
-                      background: 'rgba(21,72,138,0.08)',
-                      border: '1px solid rgba(21,72,138,0.25)',
-                      borderRadius: 4,
-                      fontSize: '0.78rem',
-                      color: 'var(--gold)',
-                      letterSpacing: '0.03em',
-                      fontWeight: 600,
-                    }}>{d}</span>
-                  ))}
+              {/* 특기 · 사투리 — pill 태그 카드로 통합 (한눈에 들어오게, 2026-07-01 리디자인) */}
+              {((actor.skills && actor.skills.length > 0) || (actor.dialects && actor.dialects.some((d) => d !== '없음'))) && (
+                <div className="kd-infocard">
+                  {actor.skills && actor.skills.length > 0 && (
+                    <>
+                      <p className="kd-card-head"><span aria-hidden="true">✦</span> 특기</p>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, marginBottom: actor.dialects && actor.dialects.some((d) => d !== '없음') ? 14 : 0 }}>
+                        {actor.skills.map((sk) => (
+                          <span key={sk} className="kd-pill">{sk}</span>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                  {actor.dialects && actor.dialects.some((d) => d !== '없음') && (
+                    <>
+                      <p className="kd-card-head"><span aria-hidden="true">🗣</span> 사투리</p>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
+                        {actor.dialects.filter((d) => d !== '없음').map((d) => (
+                          <span key={d} className="kd-pill kd-pill-gold">{d}</span>
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
 
