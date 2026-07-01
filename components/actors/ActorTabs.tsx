@@ -37,6 +37,7 @@ interface FilmoEntry {
   broadcaster?: string | null
   film_type?: string | null
   award?: string | null
+  is_featured?: boolean | null
 }
 
 interface Actor {
@@ -174,15 +175,6 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
     setEditErr('')
   }
 
-  // 최근출연 행에서 편집 진입 — 해당 작품을 편집모드로 열고 아래 카테고리 표로 스크롤 (2026-06-23)
-  function editFromRecent(entry: FilmoEntry) {
-    startEdit(entry)
-    setTimeout(() => {
-      const catId = entry.category === 'musical' ? 'theater' : entry.category
-      document.getElementById(`filmo-${catId}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }, 60)
-  }
-
   async function saveEdit(entry: FilmoEntry) {
     if (!editFields.title.trim()) return
     setSaving(true); setEditErr('')
@@ -290,11 +282,6 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
   const reelVideos = (actor.actor_videos ?? []).filter(v => !v.video_type || v.video_type === 'reel').slice(0, 2)
   const monologueVideos = (actor.actor_videos ?? []).filter(v => v.video_type === 'monologue').slice(0, 1)
 
-  // 최근 출연 — CF만 제외, 드라마 전체 + 영화 전체(단편·독립장편·상업, 구분 배지로 명확히). 드라마/영화로 분류 (2026-07-01 대표 지시).
-  const recentYearMin = new Date().getFullYear() - 1
-  const recentDrama = allFilmo.filter((f) => (f.year ?? 0) >= recentYearMin && f.category === 'drama')
-  const recentFilm = allFilmo.filter((f) => (f.year ?? 0) >= recentYearMin && f.category === 'film')  // 단편·독립장편·상업 모두 포함, 구분 배지로 명확히 (2026-07-01 대표 지시)
-  const recentGroups = [{ label: '드라마', items: recentDrama }, { label: '영화', items: recentFilm }].filter((g) => g.items.length > 0)
 
   // 카테고리별 필모 (memoized Map — 렌더마다 6번 filter 방지)
   const filmoMap = useMemo(() => {
@@ -591,53 +578,6 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
 
       {/* 출연영상·수상 섹션은 상단으로 이동됨 (2026-07-01 대표 지시: 수상 → 출연영상 → 프로필 → 현재사진) */}
 
-      {/* ============ 02 · CURRENT WORKS ============ */}
-      {recentGroups.length > 0 && (
-        <section aria-label="최근 출연" style={s.section}>
-          <h2 style={s.sectionHeading}>
-            <span style={s.sectionNum}>02</span>
-            <span style={s.sectionTitle}>최근 출연</span>
-            <span lang="en" style={s.sectionEn}>CURRENT WORKS</span>
-            {canEdit && <span style={{ marginLeft: 'auto', fontSize: '0.7rem', color: 'var(--gold)', fontWeight: 600, alignSelf: 'center' }}>작품 클릭 → 편집 ✎</span>}
-          </h2>
-          {/* CF 제외·상업영화만 + 드라마/영화 분류 (2026-06-30 대표 지시) */}
-          {recentGroups.map((group) => (
-            <div key={group.label} style={{ marginBottom: 18 }}>
-              <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', color: 'var(--gold)', margin: '2px 0 6px' }}>{group.label}</p>
-              {group.items.map((entry) => {
-                const isDramaRow = entry.category === 'drama'
-                const bcast = isDramaRow ? (entry.broadcaster ?? null) : null
-                // 영화: 단편/독립장편/상업 구분 배지로 명확히. 드라마: 숏폼 등 구분이 있으면 배지 (2026-07-01 대표 지시)
-                const typeTag = entry.category === 'film' ? (entry.film_type ?? null) : (isDramaRow ? (entry.film_type ?? null) : null)
-                return (
-                  <div
-                    key={entry.id}
-                    className="recent-work-row"
-                    {...(canEdit ? {
-                      role: 'button' as const,
-                      tabIndex: 0,
-                      onClick: () => editFromRecent(entry),
-                      onKeyDown: (e: React.KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); editFromRecent(entry) } },
-                      style: { cursor: 'pointer' },
-                      title: '클릭하면 아래 작품 표에서 편집할 수 있어요',
-                    } : {})}
-                  >
-                    <span style={s.recentYear}>{entry.year}</span>
-                    <span style={s.recentCat}>{CATEGORY_LABEL[entry.category]}</span>
-                    <p className="recent-work-title" style={s.recentTitle}>
-                      {typeTag && <span style={{ display: 'inline-block', padding: '1px 7px', borderRadius: 3, fontSize: '0.7rem', fontWeight: 600, marginRight: 6, verticalAlign: 'middle', ...(FILM_TYPE_STYLE[typeTag] ?? { background: 'var(--bg3)', color: 'var(--gray)', border: '1px solid var(--border)' }) }}>{typeTag}</span>}
-                      {bcast && <span style={s.recentPrefix}>{bcast}</span>}
-                      {entry.title}
-                    </p>
-                    {entry.role && <p className="recent-work-role" style={s.recentRole}>{entry.role}</p>}
-                  </div>
-                )
-              })}
-            </div>
-          ))}
-        </section>
-      )}
-
       {/* ============ 필모그래피 카테고리별 독립 섹션 ============ */}
       {(canEdit
         ? CATEGORY_ORDER  // 편집 모드에선 빈 카테고리도 표시 (추가 가능)
@@ -729,6 +669,8 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                         </td>
                       )}
                       <td style={{ ...s.td, fontWeight: 600, color: 'var(--white)' }}>
+                        {/* 대표출연작 표시 — 프로필 상단 하이라이트와 동일 작품임을 명시 (2026-07-01 대표 지시) */}
+                        {entry.is_featured && <span title="대표출연작" aria-label="대표출연작" style={{ color: 'var(--gold)', marginRight: 5 }}>★</span>}
                         {entry.title}
                         {/* 영화제/수상은 최상단 '수상·영화제' 섹션으로 일원화 (2026-07-01 대표 지시) */}
                       </td>
@@ -914,45 +856,6 @@ const s: Record<string, React.CSSProperties> = {
   videoTitle: {
     fontSize: '0.85rem',
     color: 'var(--gray)',
-  },
-
-  /* ---- CURRENT WORKS — 에디토리얼 행 리스트 (2026-06-12 박스 카드 제거)
-     행 레이아웃·모바일(680px)은 globals.css .recent-work-row 참고 ---- */
-  recentYear: {
-    fontFamily: 'var(--font-display), Oswald, sans-serif',
-    fontSize: '0.78rem',
-    fontWeight: 600,
-    color: 'var(--gray)',
-    letterSpacing: '0.08em',
-    fontVariantNumeric: 'tabular-nums',
-  },
-  recentCat: {
-    fontFamily: 'var(--font-display), Oswald, sans-serif',
-    fontSize: '0.66rem',
-    fontWeight: 700,
-    color: 'var(--gold)',
-    letterSpacing: '0.14em',
-  },
-  recentTitle: {
-    fontFamily: 'var(--font-serif)',
-    fontSize: '1.02rem',
-    fontWeight: 700,
-    color: 'var(--white)',
-    lineHeight: 1.45,
-  },
-  recentPrefix: {
-    fontFamily: 'var(--font-display), Oswald, sans-serif',
-    fontSize: '0.74rem',
-    fontWeight: 500,
-    color: 'var(--gray)',
-    letterSpacing: '0.05em',
-    marginRight: 8,
-  },
-  recentRole: {
-    fontSize: '0.8rem',
-    fontWeight: 400,
-    color: 'var(--gray)',
-    textAlign: 'left' as const,
   },
 
   /* ---- 필모 테이블 공통 ---- */

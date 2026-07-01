@@ -76,6 +76,7 @@ interface FilmoEntry {
   broadcaster?: string | null
   film_type?: string | null
   award?: string | null
+  is_featured?: boolean | null
 }
 
 const UUID_RE_ACTOR = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -95,7 +96,7 @@ function isUndefinedColumnError(err: { code?: string; message?: string } | null)
 
 // 운영 DB에 일부 컬럼이 누락돼 있어도(마이그레이션 미적용) 상세 페이지가 죽지 않도록
 // 단계적으로 select 컬럼을 줄여가며 재조회한다. (42703 → 다음 단계)
-function actorSelect(opts: { casting: boolean; videoType: boolean; filmExtra: boolean; advancedSkills: boolean }): string {
+function actorSelect(opts: { casting: boolean; videoType: boolean; filmExtra: boolean; advancedSkills: boolean; featured: boolean }): string {
   return `
       id, name, name_en, gender, age_group, birth_year, height, weight, skills, is_public, updated_at,
       drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram, profile_doc_path${
@@ -105,7 +106,7 @@ function actorSelect(opts: { casting: boolean; videoType: boolean; filmExtra: bo
       actor_videos ( id, youtube_id, r2_key, title${opts.videoType ? ', video_type' : ''} ),
       actor_filmography ( id, category, title, role, year, production${
         opts.filmExtra ? ', broadcaster, film_type, award' : ''
-      } )
+      }${opts.featured ? ', is_featured' : ''} )
     `
 }
 
@@ -158,30 +159,37 @@ async function _queryActorWithFallbacks(
   id: string,
   fetchWith: ActorFetcher
 ): Promise<Actor | null> {
-  // 1차: 전체 스키마 (advanced_skills 포함)
-  const full = await fetchWith(actorSelect({ casting: true, videoType: true, filmExtra: true, advancedSkills: true }))
+  // 1차: 전체 스키마 (advanced_skills + is_featured 포함)
+  const full = await fetchWith(actorSelect({ casting: true, videoType: true, filmExtra: true, advancedSkills: true, featured: true }))
   if (full.data) return full.data as unknown as Actor
   if (!full.error) return null
   console.error(`[ActorDetail] _queryActorWithFallbacks(${id}): DB 오류 code=${full.error.code} message=${full.error.message}`)
   if (!isUndefinedColumnError(full.error)) return null
 
+  // 1.2차: is_featured(대표출연작) 컬럼만 누락된 경우 — 마이그레이션 전에도 방송사·수상 표시 유지
+  console.warn('[ActorDetail] is_featured 컬럼 미존재 — 제외하고 재조회')
+  const noFeatured = await fetchWith(actorSelect({ casting: true, videoType: true, filmExtra: true, advancedSkills: true, featured: false }))
+  if (noFeatured.data) return noFeatured.data as unknown as Actor
+  if (!noFeatured.error) return null
+  if (!isUndefinedColumnError(noFeatured.error)) return null
+
   // 1.5차: advanced_skills만 누락된 경우
   console.warn('[ActorDetail] advanced_skills 컬럼 미존재 — 제외하고 재조회')
-  const noAdvanced = await fetchWith(actorSelect({ casting: true, videoType: true, filmExtra: true, advancedSkills: false }))
+  const noAdvanced = await fetchWith(actorSelect({ casting: true, videoType: true, filmExtra: true, advancedSkills: false, featured: false }))
   if (noAdvanced.data) return { ...(noAdvanced.data as unknown as Record<string, unknown>), advanced_skills: null } as unknown as Actor
   if (!noAdvanced.error) return null
   if (!isUndefinedColumnError(noAdvanced.error)) return null
 
   // 2차: video_type 컬럼 미존재 대응
   console.warn('[ActorDetail] 확장 컬럼 미존재 — video_type 제외하고 재조회')
-  const noVideoType = await fetchWith(actorSelect({ casting: true, videoType: false, filmExtra: true, advancedSkills: false }))
+  const noVideoType = await fetchWith(actorSelect({ casting: true, videoType: false, filmExtra: true, advancedSkills: false, featured: false }))
   if (noVideoType.data) return { ...(noVideoType.data as unknown as Record<string, unknown>), advanced_skills: null } as unknown as Actor
   if (!noVideoType.error) return null
   if (!isUndefinedColumnError(noVideoType.error)) return null
 
   // 3차: 레거시 기본 스키마
   console.warn('[ActorDetail] casting/filmography 확장 컬럼 미존재 — 기본 스키마로 fallback')
-  const base = await fetchWith(actorSelect({ casting: false, videoType: false, filmExtra: false, advancedSkills: false }))
+  const base = await fetchWith(actorSelect({ casting: false, videoType: false, filmExtra: false, advancedSkills: false, featured: false }))
   if (!base.data) return null
   return {
     ...(base.data as unknown as Omit<Actor, 'casting_tags' | 'casting_summary' | 'profile_pdf_url' | 'advanced_skills'>),
@@ -425,19 +433,13 @@ export default async function ActorDetailPage({
   const genderLabel =
     actor.gender === '남' ? '남자 배우' : actor.gender === '여' ? '여자 배우' : '배우'
 
-  // HERO 우측 최근 출연 — CF만 제외, 드라마 전체 + 영화 전체(단편·독립장편·상업 모두, 구분 배지로 명확히), 드라마/영화로 분류.
-  // 최근 2년 내, 그룹당 최대 3편. 아래 ActorTabs 최근출연과 동일 기준 (2026-07-01 대표 지시).
   const currentYear = new Date().getFullYear()
-  const heroYearMin = currentYear - 1
-  const heroDrama = (actor.actor_filmography ?? [])
-    .filter((f) => f.title && (f.year ?? 0) >= heroYearMin && f.category === 'drama')
+  // HERO 대표출연작 — 배우 본인이 지정한 작품(is_featured)만 상단 하이라이트로 노출.
+  // 연도 내림차순, 최대 6편. (기존 자동 "최근 출연" 요약을 대체 — 수동 큐레이션, 2026-07-01 대표 지시)
+  const heroFeatured = (actor.actor_filmography ?? [])
+    .filter((f) => f.is_featured && f.title)
     .sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
-    .slice(0, 3)
-  const heroFilm = (actor.actor_filmography ?? [])
-    .filter((f) => f.title && (f.year ?? 0) >= heroYearMin && f.category === 'film')
-    .sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
-    .slice(0, 3)
-  const heroRecentGroups = [{ label: '드라마', items: heroDrama }, { label: '영화', items: heroFilm }].filter((g) => g.items.length > 0)
+    .slice(0, 6)
 
   // HERO 우측 수상 · 영화제 — award 채워진 작품을 연도순으로(각각 분리해 표시). 대표사진 옆 프로필에 노출 (2026-07-01 대표 지시)
   const heroAwards = (actor.actor_filmography ?? [])
@@ -575,19 +577,19 @@ export default async function ActorDetailPage({
                 </p>
               )}
 
-              {/* 최근 출연 — 연도 뱃지 + 드라마/영화 컬러 배지 카드. 한눈에 스캔되게 (2026-07-01 대표 지시 리디자인) */}
-              {heroRecentGroups.length > 0 && (
-                <div className="kd-infocard">
-                  <p className="kd-card-head"><span aria-hidden="true">🎬</span> 최근 출연</p>
+              {/* 대표출연작 — 배우 본인이 지정한 작품만 상단 하이라이트. 연도 뱃지 + 드라마/영화 배지 카드 (2026-07-01 대표 지시) */}
+              {heroFeatured.length > 0 && (
+                <div className="kd-infocard" style={{ borderColor: 'rgba(21,72,138,0.28)' }}>
+                  <p className="kd-card-head"><span aria-hidden="true">★</span> 대표출연작</p>
                   <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                    {heroRecentGroups.flatMap((group) => group.items).map((f) => {
-                      // 영화: 구분(단편/독립장편/상업) 배지. 드라마: 숏폼 등 구분 배지 + 방송사 접두.
+                    {heroFeatured.map((f) => {
                       const typeTag = f.film_type ?? null
                       const bcast = f.category === 'drama' ? (f.broadcaster ?? null) : null
                       const isFilm = f.category === 'film'
+                      const catLabel = { drama: '드라마', film: '영화', cf: 'CF', musical: '공연', theater: '공연', etc: '작품' }[f.category]
                       return (
                         <li key={f.id} className="kd-work-row">
-                          <span className="kd-year-chip">{f.year ?? '—'}<small>{isFilm ? '영화' : '드라마'}</small></span>
+                          <span className="kd-year-chip">{f.year ?? '—'}<small>{catLabel}</small></span>
                           <span style={{ minWidth: 0, lineHeight: 1.45 }}>
                             {typeTag && <span className={`kd-badge ${isFilm ? 'kd-badge-film' : 'kd-badge-drama'}`}>{typeTag}</span>}
                             <strong style={{ fontWeight: 700, color: 'var(--white)', fontSize: '0.92rem' }}>{f.title}</strong>

@@ -1579,34 +1579,7 @@ ul, ol { list-style: none; }
   }
 }
 
-/* === 배우 상세 — 최근 출연(CURRENT WORKS) 에디토리얼 행 리스트 ===
-   2026-06-12 대표 피드백: 박스 카드 제거 → 보더 구분선만 있는 가로 리스트
-   데스크톱 한 줄: [연도][카테고리][방송사/구분+작품명][역할] */
-.recent-work-row {
-  display: grid;
-  /* 작품명·역할 1fr씩 분할 — 아래 필모 표의 작품명/역할 정렬과 동일 (2026-06 대표 지시) */
-  grid-template-columns: 48px 52px minmax(0, 1fr) minmax(0, 1fr);
-  column-gap: 20px;
-  align-items: baseline;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--border);
-}
-@media (max-width: 680px) {
-  /* 모바일: 1행째 연도·카테고리·역할(우측) / 2행째 작품명 전체폭 */
-  .recent-work-row {
-    grid-template-columns: auto auto minmax(0, 1fr);
-    column-gap: 12px;
-    row-gap: 4px;
-    padding: 12px 0;
-  }
-  .recent-work-row .recent-work-title {
-    grid-column: 1 / -1;
-    grid-row: 2;
-  }
-  .recent-work-row .recent-work-role {
-    justify-self: end;
-  }
-}
+/* (배우 상세 "최근 출연" 리스트 CSS 제거 — 대표출연작 큐레이션 카드로 대체, 2026-07-01) */
 
 /* === DASHBOARD PAGE — RESPONSIVE === */
 .dashboard-layout {

@@ -36,6 +36,18 @@ interface FilmItem {
   role?: string
   broadcaster?: string
   film_type?: string
+  is_featured?: boolean
+}
+
+// is_featured(대표출연작)는 신규 컬럼 — 마이그레이션 전 DB엔 없을 수 있음.
+// 컬럼 미존재(42703) 시 해당 필드를 빼고 재시도해 필모 저장 자체가 실패하지 않도록 방어.
+function isUndefinedColumn(err: { code?: string; message?: string } | null | undefined): boolean {
+  return !!err && (err.code === '42703' || /column .* does not exist/i.test(err.message ?? ''))
+}
+function stripFeatured<T extends { is_featured?: boolean }>(row: T): Omit<T, 'is_featured'> {
+  const rest = { ...row }
+  delete (rest as { is_featured?: boolean }).is_featured
+  return rest
 }
 
 export async function POST(request: NextRequest, { params }: Ctx) {
@@ -110,6 +122,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
         role: String(item.role ?? '').trim().slice(0, 100) || undefined,
         broadcaster: String(item.broadcaster ?? '').trim().slice(0, 100) || undefined,
         film_type: String(item.film_type ?? '').trim().slice(0, 50) || undefined,
+        is_featured: item.is_featured === true,
       }
       if (item.id) {
         // UUID 형식 아닌 id는 UPDATE 대신 INSERT로 처리 (오염된 id 방어)
@@ -149,10 +162,16 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       role: item.role ?? null,
       broadcaster: item.broadcaster ?? null,
       film_type: item.film_type ?? null,
+      is_featured: item.is_featured === true,
     }))
-    const { data: upserted, error: upsertErr } = toUpdate.length > 0
+    let upsertRes = toUpdate.length > 0
       ? await supabaseAdmin.from('actor_filmography').upsert(upsertRows, { onConflict: 'id' }).select('id')
       : { data: [] as { id: string }[], error: null }
+    // is_featured 컬럼 미존재 → 제외하고 재시도 (마이그레이션 전에도 저장 성공)
+    if (upsertRes.error && isUndefinedColumn(upsertRes.error) && toUpdate.length > 0) {
+      upsertRes = await supabaseAdmin.from('actor_filmography').upsert(upsertRows.map(stripFeatured), { onConflict: 'id' }).select('id')
+    }
+    const { data: upserted, error: upsertErr } = upsertRes
     if (upsertErr) console.error('[filmography/bulk] UPSERT 오류:', upsertErr.message)
     // 반환된 ID Set으로 silent no-op(경쟁 삭제) 탐지
     const upsertedIds = new Set((upserted ?? []).map(r => r.id))
@@ -194,12 +213,17 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       role: item.role ?? null,
       broadcaster: item.broadcaster ?? null,
       film_type: item.film_type ?? null,
+      is_featured: item.is_featured === true,
       sort_order: baseSortOrder + idx,
     }))
 
-    const insertResult = insertRows.length > 0
+    let insertResult = insertRows.length > 0
       ? await supabaseAdmin.from('actor_filmography').insert(insertRows).select('id')
-      : { data: [], error: null }
+      : { data: [] as { id: string }[], error: null }
+    // is_featured 컬럼 미존재 → 제외하고 재시도 (마이그레이션 전에도 저장 성공)
+    if (insertResult.error && isUndefinedColumn(insertResult.error) && insertRows.length > 0) {
+      insertResult = await supabaseAdmin.from('actor_filmography').insert(insertRows.map(stripFeatured)).select('id')
+    }
 
     const insertedIds = (insertResult.data ?? []).map((r: { id: string }) => r.id)
     const results = [

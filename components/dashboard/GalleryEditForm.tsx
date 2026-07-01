@@ -55,6 +55,7 @@ interface FilmItem {
   role: string
   broadcaster?: string
   film_type?: string
+  is_featured?: boolean  // 대표출연작 — 프로필 상단 하이라이트로 노출
   isNew?: boolean  // 클라이언트에서 새로 추가한 행 — 저장 시 클라 UUID를 서버에 보내지 않음(신규 삽입 처리)
 }
 
@@ -103,6 +104,7 @@ function newFilm(): FilmItem {
     year: new Date().getFullYear(),
     title: '',
     role: '',
+    is_featured: false,
     isNew: true,
   }
 }
@@ -144,7 +146,7 @@ const a: Record<string, React.CSSProperties> = {
   profileBadge: { position: 'absolute', top: 8, left: 8, background: 'var(--navy)', color: '#fff', fontSize: 11, fontWeight: 500, padding: '2px 9px', borderRadius: 20 },
   photoActions: { position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(transparent, rgba(0,0,0,0.8))', padding: '24px 7px 7px', display: 'flex', gap: 6, justifyContent: 'center' },
   listRow: { display: 'flex', gap: 12, alignItems: 'center', background: 'var(--bg)', borderRadius: 10, padding: '10px 14px' },
-  filmRow: { display: 'grid', gridTemplateColumns: '100px 70px 1.2fr 1fr 1fr auto', gap: 8, alignItems: 'center', marginBottom: 8 },
+  filmRow: { display: 'grid', gridTemplateColumns: '52px 100px 70px 1.2fr 1fr 1fr auto', gap: 8, alignItems: 'center', marginBottom: 8 },
 }
 
 // ─── 컴포넌트 ─────────────────────────────────────────────────────────────────
@@ -529,6 +531,15 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     })
   }
 
+  // 대표출연작 토글 — 저장 시 서버 반영, 프로필 상단 하이라이트로 노출 (2026-07-01 대표 지시)
+  function toggleFeatured(idx: number) {
+    setFilmography(prev => {
+      const next = [...prev]
+      next[idx] = { ...next[idx], is_featured: !next[idx].is_featured }
+      return next
+    })
+  }
+
   async function saveAllFilms() {
     const hasContent = filmography.some(f => f.title.trim())
     if (!hasContent) { setFilmMsg('저장할 항목이 없습니다.'); return }
@@ -544,6 +555,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           role: f.role?.trim() || undefined,
           broadcaster: f.broadcaster?.trim() || undefined,
           film_type: f.film_type?.trim() || undefined,
+          is_featured: !!f.is_featured,
         }))
       const res = await fetch(`/api/actors/${actorId}/filmography/bulk`, {
         method: 'POST',
@@ -861,16 +873,31 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       <p style={a.caption}>필모그래피</p>
       <section style={a.cardPad} aria-labelledby="gallery-section-filmography">
         <h2 id="gallery-section-filmography" className="sr-only">필모그래피</h2>
+        <p style={{ fontSize: 13, color: 'var(--gray)', margin: '0 0 12px', lineHeight: 1.6 }}>
+          작품 왼쪽 <span style={{ color: 'var(--navy)', fontWeight: 700 }}>★</span> 를 켜면 <strong style={{ color: 'var(--navy)' }}>대표출연작</strong>으로 지정됩니다 — 저장하면 프로필 <strong>맨 위 하이라이트</strong>에 노출돼요. (여러 개 선택 가능)
+        </p>
         {filmography.length > 0 && (
           <div role="region" aria-label="필모그래피 목록" tabIndex={0} style={{ marginBottom: 16, overflowX: 'auto' }}>
             <div style={{ minWidth: 560 }}>
               <div style={{ ...a.filmRow, marginBottom: 4 }}>
-                {['구분', '연도', '작품명', '배역', '방송사·제작사', ''].map(h => (
+                {['대표작', '구분', '연도', '작품명', '배역', '방송사·제작사', ''].map(h => (
                   <span key={h} style={{ fontSize: 12, color: 'var(--gray)', fontWeight: 500 }}>{h}</span>
                 ))}
               </div>
               {filmography.map((f, i) => (
                 <div key={f.id || i} style={a.filmRow}>
+                  {/* 대표출연작 지정 토글 — ★ 켜면 프로필 상단 하이라이트로 노출 (저장 필요) */}
+                  <button
+                    type="button"
+                    onClick={() => toggleFeatured(i)}
+                    aria-pressed={!!f.is_featured}
+                    aria-label={`필모그래피 ${i + 1}번 ${f.is_featured ? '대표출연작 해제' : '대표출연작으로 지정'}`}
+                    title={f.is_featured ? '대표출연작 — 클릭하면 해제' : '대표출연작으로 지정'}
+                    style={{
+                      fontSize: 20, lineHeight: 1, cursor: 'pointer', background: 'none', border: 'none', padding: 4,
+                      color: f.is_featured ? 'var(--navy)' : 'var(--border-strong)',
+                    }}
+                  >{f.is_featured ? '★' : '☆'}</button>
                   <select aria-label={`필모그래피 ${i + 1}번 구분`} value={f.category} onChange={e => updateFilm(i, 'category', e.target.value)} style={a.smallInput}>
                     <option value="drama">드라마</option>
                     <option value="film">영화</option>

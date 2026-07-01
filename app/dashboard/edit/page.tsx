@@ -67,6 +67,7 @@ interface FilmRow {
   role: string | null
   broadcaster: string | null
   film_type: string | null
+  is_featured?: boolean | null
 }
 
 export default async function GalleryEditPage() {
@@ -175,7 +176,8 @@ export default async function GalleryEditPage() {
     supabaseAdmin
       .from('actor_filmography')
       // broadcaster/film_type 미조회 시 저장할 때 null로 덮어써져 기존 방송사 데이터 소실
-      .select('id, category, year, title, role, broadcaster, film_type')
+      // is_featured(대표출연작)는 신규 컬럼 — 미존재(42703) 시 아래에서 제외하고 재조회
+      .select('id, category, year, title, role, broadcaster, film_type, is_featured')
       .eq('actor_id', actor_id)
       .order('year', { ascending: false }),
     supabaseAdmin
@@ -198,7 +200,16 @@ export default async function GalleryEditPage() {
   const photos = allPhotos.filter((p) => p.photo_type !== 'current')
   const currentPhotosRows = allPhotos.filter((p) => p.photo_type === 'current')
   const videos = (videosRes.data ?? []) as VideoRow[]
-  const filmography = (filmRes.data ?? []) as FilmRow[]
+  let filmography = (filmRes.data ?? []) as FilmRow[]
+  // is_featured 컬럼 미존재(42703) 등으로 조회 실패 시 → 해당 컬럼 제외하고 재조회 (마이그레이션 전 안전)
+  if (filmRes.error) {
+    const retry = await supabaseAdmin
+      .from('actor_filmography')
+      .select('id, category, year, title, role, broadcaster, film_type')
+      .eq('actor_id', actor_id)
+      .order('year', { ascending: false })
+    filmography = (retry.data ?? []) as FilmRow[]
+  }
   const r2Videos = (r2VideosRes.data ?? []) as R2VideoRow[]
 
   const initialData = {
@@ -238,6 +249,7 @@ export default async function GalleryEditPage() {
       role: f.role ?? '',
       broadcaster: f.broadcaster ?? undefined,
       film_type: f.film_type ?? undefined,
+      is_featured: f.is_featured ?? false,
     })),
   }
 
