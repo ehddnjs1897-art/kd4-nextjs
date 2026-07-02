@@ -32,6 +32,8 @@ interface ActorRow {
   skills: string[] | null   // DB 타입: text[] — string | null 이었던 오류 수정
   advanced_skills: string[] | null  // ⭐ 고급 숙련도 (2026-05-29 추가)
   dialects: string[] | null  // 사투리 가능 지역 (2026-06-08 추가)
+  school: string | null  // 학교 (2026-07-02 추가 — 별도 안전 조회로 병합)
+  major: string | null   // 전공 (2026-07-02 추가 — 별도 안전 조회로 병합)
   instagram: string | null
   casting_summary: string | null
   profile_doc_path: string | null
@@ -195,6 +197,16 @@ export default async function GalleryEditPage() {
     throw new Error(`배우 정보를 불러오지 못했습니다: ${actorRes.error.message}`)
   }
   const actor = (actorRes.data ?? {}) as ActorRow
+  // school/major(학교·전공) — 신규 컬럼. 위 actorRes select 문자열에 합치면 컬럼 미존재 시
+  // 전체 조회가 깨지므로(단일 select 문자열) 별도 안전 조회로 분리해 병합한다.
+  try {
+    const sq = await supabaseAdmin.from('actors').select('school, major').eq('id', actor_id).maybeSingle()
+    const row = sq.data as { school?: unknown; major?: unknown } | null
+    if (!sq.error && row) {
+      if (typeof row.school === 'string') actor.school = row.school
+      if (typeof row.major === 'string') actor.major = row.major
+    }
+  } catch { /* 컬럼 미존재 등 — 무시 */ }
   const allPhotos = (photosRes.data ?? []) as PhotoRow[]
   // 프로필 사진(일반)과 현재사진(전신 각도, photo_type='current')을 분리해 폼에 전달
   const photos = allPhotos.filter((p) => p.photo_type !== 'current')
@@ -217,6 +229,8 @@ export default async function GalleryEditPage() {
     weight: actor.weight ?? undefined,
     skills: actor.skills?.join(', ') ?? undefined,  // text[] → 쉼표 구분 문자열 (폼 표시용)
     dialects: actor.dialects ?? undefined,  // text[] 그대로 (멀티선택)
+    school: actor.school ?? undefined,
+    major: actor.major ?? undefined,
     instagram: actor.instagram ?? undefined,
     castingSummary: actor.casting_summary ?? undefined,
     profileDocPath: actor.profile_doc_path ?? null,

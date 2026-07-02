@@ -117,14 +117,6 @@ const CATEGORY_LABEL: Record<FilmoCategory, string> = {
   etc: '기타',
 }
 
-const FILM_TYPE_STYLE: Record<string, React.CSSProperties> = {
-  '상업': { background: 'rgba(21,72,138,0.08)', color: 'var(--navy)', border: '1px solid rgba(21,72,138,0.2)' },
-  '상업영화': { background: 'rgba(21,72,138,0.08)', color: 'var(--navy)', border: '1px solid rgba(21,72,138,0.2)' },
-  '독립장편': { background: 'rgba(80,80,80,0.08)', color: 'var(--gray-light)', border: '1px solid var(--border)' },
-  '단편': { background: 'rgba(80,80,80,0.06)', color: 'var(--gray)', border: '1px solid var(--border)' },
-  '숏폼': { background: 'rgba(199,62,62,0.08)', color: 'var(--accent-red)', border: '1px solid rgba(199,62,62,0.25)' },  // 드라마 숏폼 구분
-}
-
 const SECTION_NUMS: Record<FilmoCategory, string> = {
   drama: '03',
   film: '04',

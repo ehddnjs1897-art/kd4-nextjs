@@ -52,6 +52,8 @@ export default function OnboardingForm({
   const [height, setHeight] = useState('')      // 키(cm) — 숫자만
   const [weight, setWeight] = useState('')      // 몸무게(kg) — 숫자만 (선택)
   const [instagram, setInstagram] = useState('')
+  const [school, setSchool] = useState('')       // 학교 (선택)
+  const [major, setMajor] = useState('')         // 전공 (선택)
   const [birthYear, setBirthYear] = useState('')  // 출생연도(4자리) → 나이 자동
   const [gender, setGender] = useState('')        // 성별 '남'|'여' — 성별 필터 노출에 필수 (2026-07-01)
   const [skillInput, setSkillInput] = useState('') // 특기 칩 입력 필드 (skills 콤마 문자열은 유지)
@@ -98,6 +100,8 @@ export default function OnboardingForm({
         if (typeof d.height === 'string') setHeight(d.height)
         if (typeof d.weight === 'string') setWeight(d.weight)
         if (typeof d.instagram === 'string') setInstagram(d.instagram)
+        if (typeof d.school === 'string') setSchool(d.school)
+        if (typeof d.major === 'string') setMajor(d.major)
         if (typeof d.birthYear === 'string') setBirthYear(d.birthYear)
         if (typeof d.skills === 'string') setSkills(d.skills)
         if (typeof d.castingSummary === 'string') setCastingSummary(d.castingSummary)
@@ -112,9 +116,9 @@ export default function OnboardingForm({
   useEffect(() => {
     if (!draftRestored) return
     try {
-      localStorage.setItem(DRAFT_KEY, JSON.stringify({ height, weight, instagram, birthYear, skills, castingSummary, dialects }))
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ height, weight, instagram, school, major, birthYear, skills, castingSummary, dialects }))
     } catch { /* 용량 초과 등 무시 */ }
-  }, [draftRestored, DRAFT_KEY, height, weight, instagram, birthYear, skills, castingSummary, dialects])
+  }, [draftRestored, DRAFT_KEY, height, weight, instagram, school, major, birthYear, skills, castingSummary, dialects])
 
   // 사진 미리보기 — 선택한 사진 썸네일(업로드 전 결과 확인). objectURL 누수 방지 revoke
   /* eslint-disable react-hooks/set-state-in-effect */
@@ -289,6 +293,8 @@ export default function OnboardingForm({
           height: height || undefined,
           weight: weight || undefined,
           instagram: instagram.trim() || undefined,
+          school: school.trim() || undefined,
+          major: major.trim() || undefined,
           birthYear: birthYear || undefined,
           gender: gender || undefined,
         }),
@@ -470,6 +476,18 @@ export default function OnboardingForm({
           <input id="onb-instagram" name="instagram" type="text" value={instagram}
             onChange={(e) => setInstagram(e.target.value)}
             disabled={loading} placeholder="@아이디" aria-label="인스타그램 주소" style={a.inlineInput} autoComplete="off" />
+        </div>
+        <div style={{ ...a.row, ...a.sep }}>
+          <label htmlFor="onb-school" style={a.label}>학교 <span style={a.opt}>선택</span></label>
+          <input id="onb-school" name="school" type="text" value={school}
+            onChange={(e) => setSchool(e.target.value)}
+            disabled={loading} placeholder="국민대학교" aria-label="학교" style={a.inlineInput} autoComplete="off" maxLength={80} />
+        </div>
+        <div style={{ ...a.row, ...a.sep }}>
+          <label htmlFor="onb-major" style={a.label}>전공 <span style={a.opt}>선택</span></label>
+          <input id="onb-major" name="major" type="text" value={major}
+            onChange={(e) => setMajor(e.target.value)}
+            disabled={loading} placeholder="연극영화과" aria-label="전공" style={a.inlineInput} autoComplete="off" maxLength={80} />
         </div>
       </div>
 

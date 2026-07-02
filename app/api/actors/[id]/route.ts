@@ -241,16 +241,31 @@ export async function PATCH(
       // 화이트리스트 정제 + '없음(표준어)' 상호배타 처리 — '없음'도 허용 (2026-07-01 저장 실패 버그 수정)
       body.dialects = sanitizeDialects(body.dialects)
     }
+    // 학교·전공 — 문자열 trim, 최대 80자, 빈문자열→null (2026-07-02 학교·전공 기능 추가)
+    if ('school' in body) {
+      if (body.school !== null && typeof body.school !== 'string') {
+        return NextResponse.json({ error: '학교 형식이 올바르지 않습니다.' }, { status: 400 })
+      }
+      const trimmed = typeof body.school === 'string' ? body.school.trim().slice(0, 80) : null
+      body.school = trimmed || null
+    }
+    if ('major' in body) {
+      if (body.major !== null && typeof body.major !== 'string') {
+        return NextResponse.json({ error: '전공 형식이 올바르지 않습니다.' }, { status: 400 })
+      }
+      const trimmed = typeof body.major === 'string' ? body.major.trim().slice(0, 80) : null
+      body.major = trimmed || null
+    }
 
-    const allowed = ['height', 'weight', 'skills', 'advanced_skills', 'dialects', 'instagram', 'casting_summary', 'casting_tags', 'name_en', 'age_group', 'profile_doc_path']
+    const allowed = ['height', 'weight', 'skills', 'advanced_skills', 'dialects', 'school', 'major', 'instagram', 'casting_summary', 'casting_tags', 'name_en', 'age_group', 'profile_doc_path']
     const patch: Record<string, unknown> = {}
     for (const k of allowed) {
       if (k in body) patch[k] = body[k]
     }
 
-    // 신규 컬럼(advanced_skills/dialects) 미존재 fallback — 마이그레이션 미실행 안전.
+    // 신규 컬럼(advanced_skills/dialects/school/major) 미존재 fallback — 마이그레이션 미실행 안전.
     // ⚠️ UPDATE는 누락 컬럼 시 PGRST204를 냄(42703 아님) → isMissingColumnError로 둘 다 잡는다.
-    const OPTIONAL_COLS = ['advanced_skills', 'dialects']
+    const OPTIONAL_COLS = ['advanced_skills', 'dialects', 'school', 'major']
     const doUpdate = async (dropCols: Set<string>) => {
       const finalPatch: Record<string, unknown> = { ...patch, updated_at: new Date().toISOString() }
       for (const c of dropCols) delete finalPatch[c]

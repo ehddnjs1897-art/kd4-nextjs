@@ -64,6 +64,8 @@ interface InitialData {
   weight?: number
   skills?: string
   dialects?: string[]
+  school?: string
+  major?: string
   instagram?: string
   castingSummary?: string
   profileDocPath?: string | null
@@ -156,6 +158,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   const [weight, setWeight] = useState(initialData.weight ?? '')
   const [skills, setSkills] = useState(initialData.skills ?? '')
   const [dialects, setDialects] = useState<string[]>(initialData.dialects ?? [])
+  const [school, setSchool] = useState(initialData.school ?? '')
+  const [major, setMajor] = useState(initialData.major ?? '')
   const [instagram, setInstagram] = useState(initialData.instagram ?? '')
   const [castingSummary, setCastingSummary] = useState(initialData.castingSummary ?? '')
   const [infoMsg, setInfoMsg] = useState('')
@@ -237,6 +241,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           weight: weight || null,
           skills: skillsArr.length > 0 ? skillsArr : null,
           dialects: dialects.length > 0 ? dialects : null,
+          school: school.trim() || null,
+          major: major.trim() || null,
           instagram: instagram || null,
           casting_summary: castingSummary.trim() || null,
         }),
@@ -664,6 +670,14 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           <label htmlFor="actor-weight" style={a.label}>체중 <span style={a.opt}>선택</span></label>
           <input id="actor-weight" type="text" inputMode="numeric" value={weight} onChange={e => setWeight(e.target.value.replace(/[^0-9]/g, '').slice(0, 3))} style={a.inlineInput} placeholder="60" autoComplete="off" />
           <span style={a.unit}>kg</span>
+        </div>
+        <div style={{ ...a.row, ...a.sep }}>
+          <label htmlFor="actor-school" style={a.label}>학교 <span style={a.opt}>선택</span></label>
+          <input id="actor-school" value={school} onChange={e => setSchool(e.target.value)} style={a.inlineInput} placeholder="국민대학교" autoComplete="off" maxLength={80} />
+        </div>
+        <div style={{ ...a.row, ...a.sep }}>
+          <label htmlFor="actor-major" style={a.label}>전공 <span style={a.opt}>선택</span></label>
+          <input id="actor-major" value={major} onChange={e => setMajor(e.target.value)} style={a.inlineInput} placeholder="연극영화과" autoComplete="off" maxLength={80} />
         </div>
         <div style={{ ...a.row, ...a.sep }}>
           <label htmlFor="actor-instagram" style={a.label}>인스타그램 <span style={a.opt}>선택</span></label>

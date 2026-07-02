@@ -155,6 +155,13 @@ export async function POST(request: NextRequest) {
   const instagram = typeof body?.instagram === 'string'
     ? (body.instagram.replace(/[\x00-\x1f\x7f]/g, '').trim().slice(0, 200) || null)
     : null
+  // 학교·전공 — 제어문자 제거 + 80자 상한 (2026-07-02 학교·전공 기능 추가)
+  const school = typeof body?.school === 'string'
+    ? (body.school.replace(/[\x00-\x1f\x7f]/g, ' ').trim().slice(0, 80) || null)
+    : null
+  const major = typeof body?.major === 'string'
+    ? (body.major.replace(/[\x00-\x1f\x7f]/g, ' ').trim().slice(0, 80) || null)
+    : null
   // 성별 — '남'|'여'만 허용 (성별 필터 노출에 필요, 2026-07-01 대표 지시).
   // 폼 값 우선, 없으면 회원가입 때 저장한 user_metadata.gender로 폴백 (가입 단계 입력분 반영).
   const metaGender = (user.user_metadata as { gender?: unknown } | null)?.gender
@@ -304,6 +311,8 @@ export async function POST(request: NextRequest) {
   if (skills.length > 0) actorPatch.skills = skills
   if (advancedSkills.length > 0) actorPatch.advanced_skills = advancedSkills
   if (dialects.length > 0) actorPatch.dialects = dialects
+  if (school) actorPatch.school = school
+  if (major) actorPatch.major = major
   if (height !== null) actorPatch.height = height
   if (weight !== null) actorPatch.weight = weight
   if (instagram) actorPatch.instagram = instagram
@@ -314,7 +323,7 @@ export async function POST(request: NextRequest) {
   // 마이그레이션 미실행 가능 컬럼 대응 — 누락된 컬럼만 빼고 재시도해 안전 처리.
   // ⚠️ UPDATE는 누락 컬럼 시 42703이 아닌 PGRST204를 냄 → isMissingColumnError로 둘 다 잡는다.
   //    (birth_year는 여기서 빠져도 age_group은 유지 → 나이대 검색/필터는 정상 동작)
-  const OPTIONAL_COLS = ['advanced_skills', 'dialects', 'birth_year']
+  const OPTIONAL_COLS = ['advanced_skills', 'dialects', 'birth_year', 'school', 'major']
   const patchAttempt = async (dropCols: Set<string>) => {
     const finalPatch: Record<string, unknown> = { ...actorPatch }
     for (const c of dropCols) delete finalPatch[c]
@@ -366,12 +375,14 @@ export async function POST(request: NextRequest) {
   const photoBase = (existingPhotosMax?.sort_order ?? -1) + 1
 
   // 3. 사진 rows
+  // photo_type: 'profile' 명시 — DB DEFAULT 암묵 의존 금지(2026-07-02 photo_type NOT NULL 사고 재발 방지)
   if (photos.length > 0) {
     const rows = photos.map((p, i) => ({
       actor_id: actorId,
       url: photoPublicUrl(p.path),
       storage_path: p.path,
       sort_order: photoBase + i,
+      photo_type: 'profile',
     }))
     const { error: photoErr } = await supabaseAdmin.from('actor_photos').insert(rows)
     if (photoErr) {

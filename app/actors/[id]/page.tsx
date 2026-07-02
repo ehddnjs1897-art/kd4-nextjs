@@ -29,6 +29,8 @@ interface Actor {
   skills: string[]
   advanced_skills: string[] | null
   dialects: string[] | null
+  school: string | null
+  major: string | null
   drive_photo_id: string | null
   storage_photo_path: string | null
   profile_photo: string | null
@@ -121,7 +123,20 @@ async function getActor(id: string): Promise<Actor | null> {
     const d = (dq.data as { dialects?: unknown } | null)?.dialects
     if (!dq.error && Array.isArray(d)) dialects = d.filter((x): x is string => typeof x === 'string')
   } catch { /* 컬럼 미존재 등 — 무시 */ }
-  return { ...core, dialects } as Actor
+  // school/major(학교·전공)도 신규 컬럼 — dialects와 동일하게 별도 안전 조회로 분리.
+  // dialects 조회에 합치면(select('dialects, school, major')) 컬럼 미존재 시 dialects까지 죽으므로 절대 금지.
+  // 마이그레이션 미실행이면 컬럼 없음 → null(표시 안 함).
+  let school: string | null = null
+  let major: string | null = null
+  try {
+    const sq = await supabaseAdmin.from('actors').select('school, major').eq('id', id).maybeSingle()
+    const row = sq.data as { school?: unknown; major?: unknown } | null
+    if (!sq.error && row) {
+      if (typeof row.school === 'string') school = row.school
+      if (typeof row.major === 'string') major = row.major
+    }
+  } catch { /* 컬럼 미존재 등 — 무시 */ }
+  return { ...core, dialects, school, major } as Actor
 }
 
 async function getActorCore(id: string, allowPrivate = false): Promise<Actor | null> {
@@ -651,6 +666,15 @@ export default async function ActorDetailPage({
                         {actor.dialects.filter((d) => d !== '없음').map((d) => (
                           <span key={d} className="kd-pill kd-pill-gold">{d}</span>
                         ))}
+                      </div>
+                    </>
+                  )}
+                  {/* 학력 — 사투리와 같은 카드 내 행 (2026-07-02 학교·전공 기능 추가) */}
+                  {(actor.school || actor.major) && (
+                    <>
+                      <p className="kd-card-head" style={{ marginTop: 14 }}><span aria-hidden="true">🎓</span> 학력</p>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
+                        <span className="kd-pill">{[actor.school, actor.major].filter(Boolean).join(' · ')}</span>
                       </div>
                     </>
                   )}

@@ -117,7 +117,7 @@ export async function POST(request: NextRequest) {
     // 레이트 리밋 + 사진 총량 제한 — 두 COUNT를 병렬 조회 (순차 2 round-trip → 1)
     const MAX_PHOTOS_PER_ACTOR = 200
     const fiveMinAgo = new Date(Date.now() - 5 * 60_000).toISOString()
-    const [{ count: recentUploads }, { count: photoCount }, { data: maxSortRow }, { data: actorRow }] = await Promise.all([
+    const [{ count: recentUploads, error: recentUploadsErr }, { count: photoCount }, { data: maxSortRow }, { data: actorRow }] = await Promise.all([
       supabaseAdmin
         .from('actor_photos')
         .select('id', { count: 'exact', head: true })
@@ -142,6 +142,11 @@ export async function POST(request: NextRequest) {
         .eq('id', actorId)
         .maybeSingle(),
     ])
+    // 레이트리밋 count 쿼리 실패(예: created_at 컬럼 미존재) 시 조용히 0 취급되어 레이트리밋이
+    // 무력화될 수 있음 — 감지 가능하도록 로깅만 남기고 동작은 기존 유지(?? 0)
+    if (recentUploadsErr) {
+      console.warn('[upload] rate-limit count 실패(컬럼 미존재?):', recentUploadsErr.message)
+    }
     if ((recentUploads ?? 0) >= 20) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요. (5분 최대 20장)' }, { status: 429 })
     }
