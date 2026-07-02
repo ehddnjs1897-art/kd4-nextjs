@@ -26,7 +26,7 @@ AI가 학습 기억으로 방송사·플랫폼을 추측 입력하면 사고 →
 3. 파싱 실패(파일 없음) → null 유지, 사용자에게 "어떤 작품의 방송사인지 알려주세요" 요청
 4. 입력 후 반드시 사용자에게 변경 내용 보고 + 확인 요청
 
-## 🚨 2026-05-06 기준 현황 (새 채팅 시작 시 반드시 읽기)
+## 🚨 2026-07-02 기준 현황 (새 채팅 시작 시 반드시 읽기)
 
 ### 완료된 성능 최적화 (main 브랜치 반영됨)
 1. **CSS @import 4개 제거** — globals.css 렌더 블로킹 5,690ms 해소
@@ -71,12 +71,17 @@ AI가 학습 기억으로 방송사·플랫폼을 추측 입력하면 사고 →
 
 ### 🔴 남은 미완료 작업
 
-- [ ] **GA4 데이터 누적 검증** — 5/6 trim fix 후 18일 경과 (2026-05-24). GA4 콘솔에서 직접 확인 필요. curl/grep으로 라이브 코드 확인은 완료, 실제 트래킹 수신은 GA4 콘솔에서만 확인 가능
-- [ ] **PSI 모바일 점수 직접 측정** — 자동 PSI API는 일일 quota 초과 상태(공유 IP). pagespeed.web.dev 사용자 직접 1회 측정 권장
+- [ ] **GA4 데이터 누적 검증** — 5/6 trim fix 후 18일 경과 (2026-05-24). GA4 콘솔에서 직접 확인 필요. curl/grep으로 라이브 코드 확인은 완료, 실제 트래킹 수신은 GA4 콘솔에서만 확인 가능. 미검증 (2026-07-02, GA4 콘솔 접근 불가 — 코드 grep으로만 재확인 가능한 범위 아님)
+- [ ] **PSI 모바일 점수 직접 측정** — 자동 PSI API는 일일 quota 초과 상태(공유 IP). pagespeed.web.dev 사용자 직접 1회 측정 권장. 미검증 (2026-07-02, 사용자 직접 측정 필요 항목 — AI 라이브 검증 불가)
 - [x] **`director.jpg` / `heart-logo.png` Cache-Control** — 해결됨 (commit af90b1e, max-age=2592000 라이브 확인 2026-05-11)
 - [x] **자동 일일 트래픽 리포트 재가동** — 4/27 이후 14일치 누락됐으나 RemoteTrigger `trig_018ENRkD9xeDByXnnGKX5oHw` 등록 완료 (매일 00:00 UTC = 09:00 KST, 첫 실행 2026-05-12). ⚠️ GA4 API 자격증명 미설정 → 실행 시 Notion에 "수동 확인 필요" 페이지만 생성됨 (실제 데이터는 Google 서비스계정 키 설정 필요)
 - [x] **app/api/notify/route.ts Meta CAPI** — 커밋 완료 (ba8f4ed). `META_CAPI_TOKEN` + `NEXT_PUBLIC_META_PIXEL_ID` Vercel env 추가 시 즉시 작동 (env 없으면 silent skip)
-- [ ] **/actors Drive 썸네일** — 2026-05-14 직접 검증: 51명 중 48명 Storage 완료, 3명(송은아·조소영·김마고) Drive 의존 잔여. 송은아 PPTX 234MB(크기 초과), 조소영·김마고 Drive 파일 삭제됨 → 대표님 원본 파일 전달 필요
+- [ ] **/actors Drive 썸네일** — 2026-05-14 직접 검증: 51명 중 48명 Storage 완료, 3명(송은아·조소영·김마고) Drive 의존 잔여. 송은아 PPTX 234MB(크기 초과), 조소영·김마고 Drive 파일 삭제됨 → 대표님 원본 파일 전달 필요. 2026-07-02 코드 grep 재확인: `app/actors/[id]/page.tsx`에 `drive_photo_id` 폴백 로직 여전히 존재 → 최소 1명 이상 Drive 의존 잔여 확정, 정확한 잔여 인원수는 라이브 DB 조회 필요(미검증)
+- [x] **NEXT_PUBLIC_GEMINI_KEY 제거** — 2026-07-02 코드 grep 재확인: 코드 전체에서 `NEXT_PUBLIC_GEMINI_KEY` 참조 0건(라이브 홈페이지 HTML에도 미노출) → 서버전용 `GEMINI_KEY`로 완전 전환 완료 (커밋 b0dd050 반영 확정)
+- [x] **배우 상세페이지 전화번호 비노출** — 2026-07-01 커밋(e530cd0)으로 배우 전화번호 직접 노출 제거, 디렉터 직통 문의 버튼으로 대체. `app/actors/[id]/page.tsx` L378-381에서 PII(phone/email) 서버→클라이언트 직렬화 시 제거 확인(canContact 권한 없는 유저 번들 미노출)
+- [x] **회원가입(배우) 성별 필수** — 2026-07-01 커밋(7ef23ec, 46ececf)으로 접수폼·회원가입 양쪽에 성별(남/여) 필수 선택 추가. `app/auth/signup/page.tsx` L73 코드 확인: `memberType==='actor'`일 때 성별 미선택 시 제출 차단
+- [x] **`lib/db-missing-column.ts` 42703+PGRST204 이중 폴백** — 2026-06-23 커밋(075b05d)으로 신설, intake·actors/[id] 라우트 교체 완료. 파일 존재 확인(2026-07-02)
+- [x] **`scripts/_loadEnv.ts` env 값 개행오염 방어 로더** — 2026-06-18 신설, 파일 존재 확인(2026-07-02). `.env.local` 원본도 perl로 영구 정리됨(같은 날)
 
 ### 🔬 분석/관측 (2026-05-06)
 - **Meta Pixel 28일 깔때기** (4/27 시점): PageView 1,700 → ViewContent 85(5%) → DeepScroll 44 → InitiateCheckout 1 → CTAClick 1
@@ -213,6 +218,21 @@ lib/storage.ts에 R2 구현 추가 (TODO 표시됨)
 - Three.js HeroScene: dynamic(import, {ssr: false}) 필수
 - 이미지 업로드: 클라이언트에서 5MB 사전 체크
 - 배우 편집: server에서 actor_id 본인 여부 반드시 검증
+
+### 🚨 반복 사고 함정 (MISTAKES.md 발췌)
+
+> 출처: `KD4-HUB/04-ops/mistakes/MISTAKES.md` (전체 실수 기록은 원본 참조)
+
+| # | 함정 | 대응 | 날짜 |
+|---|---|---|---|
+| ⓐ | Supabase nullable 컬럼(`actor_filmography.title` 등)에 `.slice`/`.map`/`.toLowerCase`/`.filter` 직접 호출 시 TypeError로 서버컴포넌트 전체 크래시 | `(x ?? '')`·`?.`·`(arr ?? [])` 가드 필수. TS 타입 non-null ≠ 런타임 보장 | 2026-06-13 |
+| ⓑ | UPDATE/INSERT 시 누락 컬럼 폴백을 `42703`만 검사하면 무력화됨 — PostgREST는 스키마캐시 단계에서 `PGRST204` 반환(Postgres까지 안 감) | `42703`+`PGRST204` 둘 다 검사 — `lib/db-missing-column.ts`(isMissingColumnError·findMissingOptionalCol) 사용 | 2026-06-23 |
+| ⓒ | 파일 크기 제한 변경 시 한 곳만 고치면 재발 — 버킷 `file_size_limit`뿐 아니라 `allowed_mime_types`(HEIC·octet-stream 등)도 별도 게이트 | UI·서버 검증·signed-upload·Storage 버킷(크기+MIME) 4곳 동시 수정 + 실제 업로드 테스트로 확정 | 2026-06-15·06-16 |
+| ⓓ | 아직 없는 컬럼을 코드에 먼저 사용(미래 컬럼 선반영) + `?? []` 폴백이 에러를 삼켜 조용한 빈 목록 발생 | ORDER/SELECT 컬럼은 schema.sql+migrations에 실존하는 것만. `?? []` 폴백 쓸 땐 error 로깅 필수 | 2026-06-12 |
+| ⓔ | 타입 인터페이스 미확인 상태로 존재하지 않는 프로퍼티 접근 → tsc 에러 있는 채로 커밋됨 | 커밋 전 반드시 `tsc --noEmit` 0개 확인, 에러 있으면 커밋 중단 | 2026-06-09 |
+| ⓕ | GitHub push 성공해도 Vercel 웹훅 누락으로 자동배포 미발화 — "push 성공 ≠ 배포 완료" | 중요 배포는 Vercel MCP `list_deployments`로 READY 상태 확인, 누락 시 더미 커밋으로 재트리거 | 2026-06-08 |
+| ⓖ | 여러 세션/에이전트가 공유 working tree를 동시 점유 → 브랜치 꼬임·미완성 편집 혼입 | repo 편집은 반드시 격리 git worktree(`git worktree add` + node_modules 심볼릭링크)에서 진행 | 2026-06-08·06-09 |
+| ⓗ | `.env.local` 값에 literal `\n`이 큰따옴표 안에 남아 `source`로도 안 지워짐 — DNS/API 인증 실패 반복(5/20·5/29 임시 우회했으나 재발) | 원본 파일을 `perl -i -pe 's/\\n//g; s/\r$//'`로 영구 정리 + 신규 스크립트는 `scripts/_loadEnv.ts` 사용(값 trim+따옴표/이스케이프 제거 로더) | 2026-05-20·06-18(영구종결) |
 
 ## 브라우저/크롬 사용 규칙 (절대 준수)
 - 크롬 또는 브라우저 창을 열기 전에 **반드시** 이미 열려 있는 창/탭 먼저 확인
