@@ -56,6 +56,7 @@ export default function GlobalError({
             >
               다시 시도
             </button>
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- global-error는 라우터 컨텍스트 없음 */}
             <a
               href="/"
               style={{

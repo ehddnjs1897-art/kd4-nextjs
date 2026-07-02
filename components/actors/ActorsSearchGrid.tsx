@@ -431,6 +431,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
             </button>
           )}
           {/* 서버사이드 필터 초기화 — URL 파라미터 포함 (WCAG 3.3.2) */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- 의도적 풀 페이지 리로드로 서버 필터/쿼리 상태 초기화 */}
           <a
             href="/actors"
             style={{

@@ -87,7 +87,7 @@ export default function HeroScene() {
         let colIdx = 0;
         for (let x = 0; x < canvas.width; x += plankW) {
           // 각 열마다 랜덤 오프셋 → 판자 끝 위치가 엇갈림
-          let yOffset = (colIdx * 380 * SCALE + Math.random() * 240 * SCALE) % canvas.height;
+          const yOffset = (colIdx * 380 * SCALE + Math.random() * 240 * SCALE) % canvas.height;
           let y = -yOffset;
 
           while (y < canvas.height) {
@@ -130,10 +130,11 @@ export default function HeroScene() {
         const tex = new CanvasTexture(canvas);
         tex.wrapS = tex.wrapT = RepeatWrapping;
         tex.anisotropy = isMobile ? 2 : 8;
+        const t = tex as CanvasTexture & { colorSpace?: unknown; encoding?: number };
         if ("colorSpace" in tex) {
-          (tex as any).colorSpace = SRGBColorSpace;
+          t.colorSpace = SRGBColorSpace;
         } else {
-          (tex as any).encoding = 3001;
+          t.encoding = 3001;
         }
         return tex;
       };

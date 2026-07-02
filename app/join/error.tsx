@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import Link from 'next/link'
 
 export default function JoinError({
   error,
@@ -19,7 +20,7 @@ export default function JoinError({
         <p style={{ color: '#888', fontSize: '0.88rem', marginBottom: 24, lineHeight: 1.6 }}>일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.</p>
         <button type="button" onClick={reset} style={{ background: 'var(--gold)', color: '#fff', border: 'none', borderRadius: 6, padding: '11px 28px', minHeight: 44, fontSize: '0.88rem', fontWeight: 700, cursor: 'pointer' }}>다시 시도</button>
         <div style={{ marginTop: 12 }}>
-          <a href="/" style={{ color: '#888', fontSize: '0.85rem', textDecoration: 'underline', cursor: 'pointer' }}>홈으로</a>
+          <Link href="/" style={{ color: '#888', fontSize: '0.85rem', textDecoration: 'underline', cursor: 'pointer' }}>홈으로</Link>
         </div>
       </div>
     </div>

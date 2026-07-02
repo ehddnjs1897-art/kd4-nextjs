@@ -86,8 +86,9 @@ async function main() {
 
       console.log(`✅ ${actor.name} (${actor.id}) → ${filename}`)
       success++
-    } catch (err: any) {
-      console.error(`❌ ${actor.name} (${actor.id}): ${err.message ?? err}`)
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err)
+      console.error(`❌ ${actor.name} (${actor.id}): ${message}`)
       failed++
     }
 

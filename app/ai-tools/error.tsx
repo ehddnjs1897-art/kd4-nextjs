@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import Link from 'next/link'
 
 export default function AIToolsError({
   error,
@@ -62,7 +63,7 @@ export default function AIToolsError({
           >
             다시 시도
           </button>
-          <a
+          <Link
             href="/"
             style={{
               display: 'inline-flex',
@@ -79,7 +80,7 @@ export default function AIToolsError({
             }}
           >
             홈으로
-          </a>
+          </Link>
         </div>
       </div>
     </div>

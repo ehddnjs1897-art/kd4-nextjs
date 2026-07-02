@@ -69,7 +69,7 @@ export default function PublicLanding() {
               textAlign: 'center',
             }}
           >
-            <span lang="en">What's Inside</span>
+            <span lang="en">What&apos;s Inside</span>
           </p>
           <h2
             style={{

@@ -6,6 +6,7 @@
  */
 
 import { useEffect } from 'react'
+import Link from 'next/link'
 
 export default function ErrorPage({
   error,
@@ -69,7 +70,7 @@ export default function ErrorPage({
           >
             다시 시도
           </button>
-          <a
+          <Link
             href="/"
             style={{
               padding: '10px 22px',
@@ -87,7 +88,7 @@ export default function ErrorPage({
             }}
           >
             홈으로
-          </a>
+          </Link>
         </div>
       </div>
     </div>
