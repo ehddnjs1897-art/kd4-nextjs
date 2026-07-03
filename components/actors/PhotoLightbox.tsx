@@ -211,27 +211,40 @@ export default function PhotoLightbox({
           </div>
         )}
         {imageProtected ? (
-          <div
-            role="img"
-            aria-label={current.alt ?? `사진 ${activeIndex! + 1}`}
-            onLoad={() => setImgLoaded(true)}
-            style={{
-              width: '100%',
-              height: '100%',
-              backgroundImage: `url("${current.url}")`,
-              backgroundPosition: 'center',
-              backgroundSize: 'contain',
-              backgroundRepeat: 'no-repeat',
-              opacity: imgLoaded ? 1 : 0,
-              transition: 'opacity 0.2s',
-            }}
-          />
+          <>
+            {/* 숨은 프리로더 — <div> 배경이미지는 onLoad가 발화하지 않으므로, 같은 URL을
+                img로 미리 받아 로딩완료를 감지한다. (버그: 보호모드에서 '불러오는 중…' 무한 표시) */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={current.url}
+              alt=""
+              aria-hidden="true"
+              onLoad={() => setImgLoaded(true)}
+              onError={() => setImgLoaded(true)}
+              style={{ display: 'none' }}
+            />
+            <div
+              role="img"
+              aria-label={current.alt ?? `사진 ${activeIndex! + 1}`}
+              style={{
+                width: '100%',
+                height: '100%',
+                backgroundImage: `url("${current.url}")`,
+                backgroundPosition: 'center',
+                backgroundSize: 'contain',
+                backgroundRepeat: 'no-repeat',
+                opacity: imgLoaded ? 1 : 0,
+                transition: 'opacity 0.2s',
+              }}
+            />
+          </>
         ) : (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img
             src={current.url}
             alt={current.alt ?? `사진 ${activeIndex! + 1}`}
             onLoad={() => setImgLoaded(true)}
+            onError={() => setImgLoaded(true)}
             style={{
               maxWidth: '100%',
               maxHeight: '100%',
