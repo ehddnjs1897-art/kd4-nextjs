@@ -88,7 +88,7 @@ export async function generateMetadata({ params }: { params: Params }) {
       description,
       url: `${SITE_URL}/board/${id}`,
       siteName: 'KD4 액팅 스튜디오',
-      images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오' }],
+      images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오' }],
       locale: 'ko_KR',
       type: 'article',
     },
@@ -96,7 +96,7 @@ export async function generateMetadata({ params }: { params: Params }) {
       card: 'summary_large_image',
       title,
       description,
-      images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오' }],
+      images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오' }],
     },
   }
 }

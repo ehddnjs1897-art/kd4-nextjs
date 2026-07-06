@@ -10,13 +10,13 @@ export const metadata: Metadata = {
     siteName: 'KD4 액팅 스튜디오',
     type: 'website',
     url: `${SITE_URL}/game`,
-    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 — 스포트라이트 러시 게임' }],
+    images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 — 스포트라이트 러시 게임' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'OFF THE PLASTIC | KD4 액팅 스튜디오',
     description: '가면을 벗어라. 무대 위로, 더 높이. KD4 액팅 스튜디오 3D 아케이드 게임.',
-    images: [`${SITE_URL}/og-image.jpg`],
+    images: [`${SITE_URL}/og-heart.jpg`],
   },
 }
 

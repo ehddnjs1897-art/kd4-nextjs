@@ -69,7 +69,7 @@ export const metadata: Metadata = {
     siteName: 'KD4 액팅 스튜디오',
     images: [
       {
-        url: `${SITE_URL}/og-image.jpg`,
+        url: `${SITE_URL}/og-heart.jpg`,
         width: 1200,
         height: 630,
         alt: 'KD4 액팅 스튜디오 — 배우의 성장을 운영하는 Actor Operating System',
@@ -82,7 +82,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'KD4 액팅 스튜디오',
     description: '배우의 성장을 운영하는 KD4 — 마이즈너 테크닉 연기 훈련 · 포트폴리오 제작 · 캐스팅 연계.',
-    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오', type: 'image/jpeg' }],
+    images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오', type: 'image/jpeg' }],
   },
 }
 

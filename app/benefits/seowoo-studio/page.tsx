@@ -21,13 +21,13 @@ export const metadata: Metadata = {
     description: 'KD4 멤버 전용 배우 프로필·포트레이트 촬영 할인 — 헤어·메이크업 포함 15%, 미포함 10%',
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
-    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 × 서우스튜디오' }],
+    images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: 'KD4 × 서우스튜디오' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: '서우스튜디오 제휴 | KD4 액팅 스튜디오',
     description: 'KD4 멤버 전용 배우 프로필 촬영 할인',
-    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 × 서우스튜디오' }],
+    images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: 'KD4 × 서우스튜디오' }],
   },
 }
 

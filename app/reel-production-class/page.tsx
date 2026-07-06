@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     url: PAGE_URL,
     title: '출연영상 클래스 — 배우 포트폴리오 제작 | KD4',
     description: '전문 영화팀 + 맞춤 시나리오로 만드는 캐스팅용 출연영상 포트폴리오. 현직 배우 100명+ 참여한 시그니처 클래스.',
-    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: '출연영상 클래스 — 배우 포트폴리오 제작 | KD4', type: 'image/jpeg' }],
+    images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: '출연영상 클래스 — 배우 포트폴리오 제작 | KD4', type: 'image/jpeg' }],
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
   },
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: '출연영상 클래스 — KD4',
     description: '전문 영화팀 + 맞춤 시나리오로 만드는 캐스팅용 출연영상 포트폴리오.',
-    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: '출연영상 클래스 — KD4', type: 'image/jpeg' }],
+    images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: '출연영상 클래스 — KD4', type: 'image/jpeg' }],
   },
 }
 
@@ -108,7 +108,7 @@ export default function ReelPage() {
             dateModified: '2026-06-11',
             speakableCssSelectors: ['h1', '.section-desc', '.faq-answer'],
           }),
-          buildCourseFromClass(FILM_CLASS, { url: PAGE_URL, image: `${SITE_URL}/og-image.jpg` }),
+          buildCourseFromClass(FILM_CLASS, { url: PAGE_URL, image: `${SITE_URL}/og-heart.jpg` }),
           buildFaqPage(REEL_FAQ, PAGE_URL),
           {
             '@context': 'https://schema.org',

@@ -19,13 +19,13 @@ export const metadata: Metadata = {
     siteName: 'KD4 액팅 스튜디오',
     type: 'website',
     url: `${SITE_URL}/game/play`,
-    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 — OFF THE PLASTIC' }],
+    images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 — OFF THE PLASTIC' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'PLAY — OFF THE PLASTIC',
     description: 'OFF THE PLASTIC 게임 플레이',
-    images: [`${SITE_URL}/og-image.jpg`],
+    images: [`${SITE_URL}/og-heart.jpg`],
   },
 }
 

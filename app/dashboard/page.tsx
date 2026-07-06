@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     url: `${SITE_URL}/dashboard`,
     title: '마이페이지 | KD4 액팅 스튜디오',
     description: 'KD4 멤버 마이페이지',
-    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 마이페이지' }],
+    images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 마이페이지' }],
   },
 }
 
@@ -257,7 +257,7 @@ export default async function DashboardPage() {
                 {!(actorExists && completeness) && (
                   <Link href="/dashboard/edit" style={tileBtn}>
                     <span style={tileIcon} aria-hidden="true">✏️</span>
-                    <span>프로필 관리</span>
+                    <span>내 프로필 수정</span>
                   </Link>
                 )}
               </div>
@@ -320,8 +320,8 @@ export default async function DashboardPage() {
           </section>
         )}
 
-        {/* 캐스팅 숏리스트 — 디렉터/관리자 전용 (2026-06-17: 메인 헤더에서 이리로 이동) */}
-        {(isDirector || isAdmin) && (
+        {/* 캐스팅 숏리스트 — 디렉터 회원 전용 (2026-07-06 대표 지시: admin 마이페이지에서도 숨김, /shortlist 직접 접근은 유지) */}
+        {isDirector && (
           <section aria-label="캐스팅 숏리스트" style={card}>
             <h2 style={sectionTitle}>캐스팅 숏리스트</h2>
             <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 12 }}>

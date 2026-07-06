@@ -20,13 +20,13 @@ export const metadata: Metadata = {
     description: '마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 배우의 성장을 운영합니다. 세계에서 가장 뛰어난 Actor Operating System을 만듭니다.',
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
-    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오', type: 'image/jpeg' }],
+    images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오', type: 'image/jpeg' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: '스튜디오 소개 | KD4 액팅 스튜디오',
     description: '마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 배우의 성장을 운영합니다.',
-    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오', type: 'image/jpeg' }],
+    images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오', type: 'image/jpeg' }],
   },
 }
 

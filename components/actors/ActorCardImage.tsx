@@ -67,13 +67,21 @@ export default function ActorCardImage({ src, alt, unoptimized, priority }: Prop
       onLoad={(e) => {
         const img = e.currentTarget
         if (!img.naturalWidth || !img.naturalHeight) return
-        const isLandscape = img.naturalWidth > img.naturalHeight * 1.05
-        setImgStyle(
-          isLandscape
-            // 가로 합성: 왼쪽 얼굴 지점으로 1.6배 확대 → 이력서(우측)·흰 테두리 화면 밖으로
-            ? { objectFit: 'cover', objectPosition: '20% 22%', transform: 'scale(1.6)', transformOrigin: '20% 22%' }
-            : PORTRAIT
-        )
+        const w = img.naturalWidth
+        const h = img.naturalHeight
+        if (!(w > h * 1.05)) { setImgStyle(PORTRAIT); return }
+        // 가로 합성(헤드샷+이력서): 고정 배율(1.6) 크롭이 사진마다 얼굴을 빗나가던 것 →
+        // 비율 기반 동적 계산 (2026-07-06 대표 지시: 얼굴 T존 센터, 텍스트형도 위치 일관).
+        // 카드(3:4)가 cover로 보여주는 폭 = 0.75h. 헤드샷은 통상 왼쪽 ~45% 영역이므로
+        // 보이는 창을 '왼쪽 45%'로 맞추는 배율을 각 사진 비율에서 계산. 세로는 상단 1/4(T존) 앵커.
+        const visibleFrac = (0.75 * h) / w
+        const scale = Math.min(2.2, Math.max(1, visibleFrac / 0.45))
+        setImgStyle({
+          objectFit: 'cover',
+          objectPosition: 'left 25%',
+          transform: `scale(${scale})`,
+          transformOrigin: 'left 25%',
+        })
       }}
     />
   )

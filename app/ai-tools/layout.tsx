@@ -10,13 +10,13 @@ export const metadata: Metadata = {
     siteName: 'KD4 액팅 스튜디오',
     type: 'website',
     url: `${SITE_URL}/ai-tools`,
-    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 — AI 대본 분석 도구' }],
+    images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 — AI 대본 분석 도구' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AI 대본 분석 | KD4 액팅 스튜디오',
     description: 'KD4 멤버 전용 AI 대본 분석 도구 — 대사·감정·캐릭터를 자동으로 분석합니다.',
-    images: [`${SITE_URL}/og-image.jpg`],
+    images: [`${SITE_URL}/og-heart.jpg`],
   },
 }
 

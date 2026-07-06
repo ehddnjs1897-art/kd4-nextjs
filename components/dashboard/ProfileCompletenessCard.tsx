@@ -124,24 +124,26 @@ export default function ProfileCompletenessCard(props: CompletenessInput) {
       <Link
         href="/dashboard/edit"
         style={{
-          display: 'inline-flex',
+          display: 'flex',
+          width: '100%',
+          boxSizing: 'border-box',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: 6,
+          gap: 8,
           background: complete ? 'transparent' : 'var(--navy)',
           color: complete ? 'var(--navy)' : '#ffffff',
-          border: complete ? '1px solid var(--navy)' : 'none',
-          borderRadius: 7,
-          padding: '10px 18px',
-          minHeight: 44,
-          fontSize: '0.84rem',
+          border: complete ? '1.5px solid var(--navy)' : 'none',
+          borderRadius: 8,
+          padding: '15px 24px',
+          minHeight: 54,
+          fontSize: '1rem',
           fontWeight: 700,
           fontFamily: 'var(--font-display)',
           letterSpacing: '0.03em',
           textDecoration: 'none',
         }}
       >
-        {complete ? '프로필 관리' : '빈칸 채우러 가기'} <span aria-hidden="true">→</span>
+        {complete ? '내 프로필 수정' : '빈칸 채우러 가기'} <span aria-hidden="true">→</span>
       </Link>
     </div>
   )
