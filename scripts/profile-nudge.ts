@@ -16,6 +16,7 @@
  */
 import { createClient } from '@supabase/supabase-js'
 import { SolapiMessageService } from 'solapi'
+import sharp from 'sharp'
 import { readFileSync, writeFileSync, existsSync, appendFileSync } from 'fs'
 import { homedir } from 'os'
 import { join } from 'path'
@@ -45,7 +46,7 @@ function loadSentLog(): SentLog {
   try { return JSON.parse(readFileSync(SENT_LOG, 'utf8')) } catch { return {} }
 }
 
-function buildText(name: string, missing: { mainPhoto: boolean; gallery: boolean; video: boolean; doc: boolean; legacyPhoto: boolean }): string {
+function buildText(name: string, missing: { mainPhoto: boolean; gallery: boolean; video: boolean; doc: boolean; legacyPhoto: boolean; noLandscape: boolean }): string {
   const items: string[] = []
   if (missing.mainPhoto || missing.gallery) {
     items.push(missing.mainPhoto ? '▪ 프로필 사진 (대표사진 포함 3장 이상)' : '▪ 프로필 사진 3장 이상')
@@ -57,6 +58,9 @@ function buildText(name: string, missing: { mainPhoto: boolean; gallery: boolean
   }
   if (missing.video) items.push('▪ 연기 영상 (릴 또는 독백)')
   if (missing.doc) items.push('▪ 이력서 파일 (예전 파일 유실 — 다시 업로드)')
+  // 2026-07-08 대표 지시: 카카오톡 공유 썸네일은 가로(와이드) 사진에 최적화 —
+  // 가로 사진이 하나도 없으면 세로사진을 억지로 늘려써서 어색하게 잘림.
+  if (missing.noLandscape) items.push('▪ 가로(와이드) 사진 최소 1장 — 카카오톡 공유 썸네일에 사용돼요. 가로로 찍은 사진 한 장만 추가로 올려주세요')
 
   const head = items.length === 1 ? '배포 전에 딱 하나만 채워주세요.' : `배포 전에 ${name}님 프로필에 비어 있는 항목을 채워주세요.`
 
@@ -75,6 +79,58 @@ function buildText(name: string, missing: { mainPhoto: boolean; gallery: boolean
     '',
     '문의 010-8564-0244',
   ].join('\n')
+}
+
+/** actor_photos 한 장의 실제 픽셀 치수 확인 (원본 다운로드 후 sharp 메타데이터) */
+async function imgDims(url: string): Promise<{ w: number; h: number } | null> {
+  try {
+    const res = await fetch(url, { signal: AbortSignal.timeout(15000) })
+    if (!res.ok) return null
+    const buf = Buffer.from(await res.arrayBuffer())
+    const meta = await sharp(buf).metadata()
+    if (!meta.width || !meta.height) return null
+    return { w: meta.width, h: meta.height }
+  } catch {
+    return null
+  }
+}
+
+/**
+ * 배우별 "진짜 가로사진" 보유 여부 — /api/og/actor/[id]의 pickLandscapeUrl과 동일 기준
+ * (전신사진 제외, width > height*1.05). 4명씩 동시 다운로드해 확인 (53명 기준 1분 내외).
+ */
+interface PhotoRow { actor_id: string; url: string | null; storage_path: string | null }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function computeLandscapeSet(sb: any, actorIds: string[]): Promise<Set<string>> {
+  const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const { data: photos } = await sb
+    .from('actor_photos')
+    .select('actor_id, url, storage_path, photo_type, sort_order')
+    .neq('photo_type', 'current')
+    .order('sort_order', { ascending: true }) as { data: PhotoRow[] | null }
+
+  const byActor = new Map<string, string[]>()
+  for (const p of photos ?? []) {
+    const u = p.url ?? (p.storage_path ? `${SUPABASE_URL}/storage/v1/object/public/actor-photos/${p.storage_path}` : null)
+    if (!u) continue
+    const list = byActor.get(p.actor_id) ?? []
+    list.push(u.split('?')[0])
+    byActor.set(p.actor_id, list)
+  }
+
+  const result = new Set<string>()
+  const CONCURRENCY = 4
+  for (let i = 0; i < actorIds.length; i += CONCURRENCY) {
+    const batch = actorIds.slice(i, i + CONCURRENCY)
+    await Promise.all(batch.map(async (id) => {
+      for (const u of (byActor.get(id) ?? []).slice(0, 8)) {
+        const d = await imgDims(u)
+        if (d && d.w > d.h * 1.05) { result.add(id); return }
+      }
+    }))
+  }
+  return result
 }
 
 async function main() {
@@ -101,6 +157,9 @@ async function main() {
   const { data: photos } = await sb.from('actor_photos').select('actor_id')
   const photoSet = new Set((photos ?? []).map((p) => p.actor_id))
 
+  log('가로사진 보유 여부 확인 중 (이미지 다운로드, 1분 내외)...')
+  const landscapeSet = await computeLandscapeSet(sb, (actors ?? []).map((a) => a.id))
+
   const sentLog = loadSentLog()
   const now = Date.now()
   const targets: { id: string; name: string; phone: string; text: string }[] = []
@@ -121,8 +180,11 @@ async function main() {
       // 본인이 실제로 찍어 올린 사진이 아니므로 진짜 프로필 사진으로 교체 유도.
       // 본인이 새 사진 올리고 '대표로 지정'하면 profile_photo가 바뀌어 다음 실행부터 자동 제외됨.
       legacyPhoto: !!a.profile_photo && a.profile_photo.includes('/cards/'),
+      // 2026-07-08 대표 지시: 카톡 공유 썸네일(가로 1200×630)은 가로사진 우선 사용(/api/og/actor 로직) —
+      // 가로사진이 하나도 없으면 세로사진을 억지로 늘려써서 어색하게 잘림.
+      noLandscape: !landscapeSet.has(a.id),
     }
-    if (!missing.mainPhoto && !missing.gallery && !missing.video && !missing.doc && !missing.legacyPhoto) continue
+    if (!missing.mainPhoto && !missing.gallery && !missing.video && !missing.doc && !missing.legacyPhoto && !missing.noLandscape) continue
     if (!a.phone) { noPhone++; continue }
 
     const prev = sentLog[a.id]
