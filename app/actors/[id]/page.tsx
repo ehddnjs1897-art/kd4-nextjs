@@ -273,10 +273,16 @@ export async function generateMetadata({
   if (!actor.is_public) return { title: '배우 프로필', robots: { index: false, follow: false } }
 
   // og:image에 버전 파라미터 — 프로필 수정(updated_at) 시마다 URL이 바뀌어 카톡/카카오가 썸네일을 새로 긁음.
-  // (updated_at 없으면 디자인 버전 상수 — OG 크롭/오버레이 개편분 강제 재크롤용, 2026-07-01)
-  const ogVer = (actor as { updated_at?: string | null }).updated_at
-    ? new Date((actor as { updated_at?: string }).updated_at!).getTime()
-    : 'v3'
+  // 2026-07-08 발견: updated_at만 쓰면 "OG 렌더링 코드"를 고쳐도(오늘의 크롭 공식 수정,
+  // 그라디언트 제거 등) DB 행을 안 건드린 배우는 URL이 그대로라 카카오가 이미 공유된
+  // 링크의 캐시된(구버전) 썸네일을 계속 보여줌 — OG_DESIGN_VERSION을 항상 같이 섞어
+  // 넣어서, 이 상수를 올리면 전체 배우가 즉시 강제 재크롤 대상이 되게 함.
+  const OG_DESIGN_VERSION = 'v4' // 2026-07-08: 세로사진 헤드룸 공식(초과분 30%) + 그라디언트 제거
+  const ogVer = `${OG_DESIGN_VERSION}.${
+    (actor as { updated_at?: string | null }).updated_at
+      ? new Date((actor as { updated_at?: string }).updated_at!).getTime()
+      : 0
+  }`
   const ogImage = `${SITE_URL}/api/og/actor/${actor.id}?v=${ogVer}`
   const pageUrl = `${SITE_URL}/actors/${actor.id}`
 
