@@ -15,7 +15,6 @@
 
 import { ImageResponse } from 'next/og'
 import { type NextRequest } from 'next/server'
-import { SHOW_CASTING_TAGS } from '@/lib/access'
 
 export const runtime = 'nodejs'
 export const revalidate = 3600 // 1h — 배우가 프로필 수정해도 최대 1시간 내 OG 이미지 갱신
@@ -255,16 +254,6 @@ export async function GET(
   const TOP_OVERFLOW_FRAC = 0.3 // 잘려나가는 세로 초과분 중 상단 30%를 프레임 위로 넘김
   const photoTopOffset = scaledH > 630 ? Math.round(TOP_OVERFLOW_FRAC * (scaledH - 630)) : 0
   const photoLeftOffset = scaledW > 1200 ? Math.round((scaledW - 1200) / 2) : 0
-  // 썸네일 직관화 (2026-07-01 대표 지시): 연령대(30대) 대신 실제 만나이 + 키, 그리고 특기(사투리 포함)
-  const currentYearOg = new Date().getFullYear()
-  const ageLabel = actor.birth_year ? `${currentYearOg - actor.birth_year}세` : actor.age_group
-  const subline = [ageLabel, actor.height ? `${actor.height}cm` : null]
-    .filter(Boolean)
-    .join(' · ')
-  // 특기(사투리·무에타이 등) — 카드 가독성을 위해 최대 3개. 캐스팅 태그는 플래그 OFF면 미표시 유지.
-  const skillLine = (actor.skills ?? []).slice(0, 3).join(' · ')
-  const tags = SHOW_CASTING_TAGS ? (actor.casting_tags?.slice(0, 4) ?? []) : []
-
   return new ImageResponse(
     (
       <div
@@ -314,90 +303,19 @@ export async function GET(
             padding: '44px 60px 48px',
           }}
         >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {/* 캐스팅 태그 */}
-            {tags.length > 0 && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 4 }}>
-                {tags.map((t) => (
-                  <div
-                    key={t}
-                    style={{
-                      display: 'flex',
-                      fontSize: 18,
-                      fontWeight: 700,
-                      color: '#C9A84C',
-                      textShadow: '0 2px 8px rgba(0,0,0,0.85)',
-                      background: 'rgba(201,168,76,0.15)',
-                      border: '1px solid rgba(201,168,76,0.5)',
-                      borderRadius: 4,
-                      padding: '4px 12px',
-                    }}
-                  >
-                    {t}
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* 배우 이름 */}
-            <div
-              style={{
-                display: 'flex',
-                fontSize: 96,
-                fontWeight: 800,
-                color: '#FFFFFF',
-                lineHeight: 1.0,
-                letterSpacing: '-0.01em',
-                textShadow: '0 2px 10px rgba(0,0,0,0.85), 0 4px 24px rgba(0,0,0,0.6)',
-              }}
-            >
-              {actor.name}
-            </div>
-
-            {/* 서브라인(실제 나이·키) + 도메인 */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginTop: 4 }}>
-              {subline && (
-                <div
-                  style={{
-                    display: 'flex',
-                    fontSize: 26,
-                    color: 'rgba(255,255,255,0.92)',
-                    fontWeight: 600,
-                    textShadow: '0 2px 8px rgba(0,0,0,0.85)',
-                  }}
-                >
-                  {subline}
-                </div>
-              )}
-              <div
-                style={{
-                  display: 'flex',
-                  fontSize: 14,
-                  color: 'rgba(255,255,255,0.55)',
-                  letterSpacing: '0.06em',
-                  marginLeft: 'auto',
-                  textShadow: '0 2px 6px rgba(0,0,0,0.85)',
-                }}
-              >
-                kd4.club
-              </div>
-            </div>
-
-            {/* 특기(사투리·무에타이 등) — 골드 */}
-            {skillLine && (
-              <div
-                style={{
-                  display: 'flex',
-                  fontSize: 21,
-                  color: '#D9BC6A',
-                  fontWeight: 500,
-                  marginTop: 2,
-                  textShadow: '0 2px 8px rgba(0,0,0,0.85)',
-                }}
-              >
-                {skillLine}
-              </div>
-            )}
+          {/* 이름만 노출 — 나이·키·특기·태그·도메인 등 부가 텍스트 전부 제거 (2026-07-08 대표 지시) */}
+          <div
+            style={{
+              display: 'flex',
+              fontSize: 96,
+              fontWeight: 800,
+              color: '#FFFFFF',
+              lineHeight: 1.0,
+              letterSpacing: '-0.01em',
+              textShadow: '0 2px 10px rgba(0,0,0,0.85), 0 4px 24px rgba(0,0,0,0.6)',
+            }}
+          >
+            {actor.name}
           </div>
         </div>
       </div>
