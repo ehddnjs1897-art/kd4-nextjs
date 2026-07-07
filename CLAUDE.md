@@ -233,6 +233,8 @@ lib/storage.ts에 R2 구현 추가 (TODO 표시됨)
 | ⓕ | GitHub push 성공해도 Vercel 웹훅 누락으로 자동배포 미발화 — "push 성공 ≠ 배포 완료" | 중요 배포는 Vercel MCP `list_deployments`로 READY 상태 확인, 누락 시 더미 커밋으로 재트리거 | 2026-06-08 |
 | ⓖ | 여러 세션/에이전트가 공유 working tree를 동시 점유 → 브랜치 꼬임·미완성 편집 혼입 | repo 편집은 반드시 격리 git worktree(`git worktree add` + node_modules 심볼릭링크)에서 진행 | 2026-06-08·06-09 |
 | ⓗ | `.env.local` 값에 literal `\n`이 큰따옴표 안에 남아 `source`로도 안 지워짐 — DNS/API 인증 실패 반복(5/20·5/29 임시 우회했으나 재발) | 원본 파일을 `perl -i -pe 's/\\n//g; s/\r$//'`로 영구 정리 + 신규 스크립트는 `scripts/_loadEnv.ts` 사용(값 trim+따옴표/이스케이프 제거 로더) | 2026-05-20·06-18(영구종결) |
+| ⓘ | 관리자 스크립트가 `actors.profile_photo` 등 대표 필드를 직접 UPDATE하면서 짝을 이루는 상세 테이블(`actor_photos`)엔 행을 안 남김 → "목록 테이블에 행이 있나"만 보는 모든 로직(완성도 카드·자동알림)이 "없음"으로 오탐. 얼굴크롭 배치(7/6) 이후 24명이 실제 사진 있는데도 대시보드·문자에서 "사진 없음" 판정 | 대표 필드 하나만 바꾸는 관리자 스크립트는 반드시 짝 테이블 행도 함께 생성/갱신. "없음" 판정 로직은 대표 필드 존재 여부도 OR 조건으로 병행 확인 (편측 테이블만 보지 말 것). 자동 알림·오탐 가능 로직은 발송 전 실 데이터 샘플 교차검증 필수 | 2026-07-07 |
+| ⓙ | ⓗ의 재발 — `.env.local` 개행 정리는 로컬 파일만 대상이라 **Vercel 프로덕션 env var 값 자체**엔 여전히 trailing 개행이 남아있었음. `lib/supabase/{admin,client,server}.ts`는 `.trim()`을 하지만, `app/api/profile/intake/route.ts`(사진 URL 문자열 직접 조립, Supabase SDK `getPublicUrl()` 안 씀)처럼 개별적으로 `process.env.NEXT_PUBLIC_SUPABASE_URL`을 또 읽는 곳은 trim 누락 → 신규 업로드마다 URL에 개행이 그대로 저장(74행 오염, 2026-07-07 발견). 다행히 브라우저·Node fetch가 URL 파싱 시 개행을 자체 무시(WHATWG 스펙)해 화면엔 안 깨져 보였지만 DB엔 오염된 채 저장됨 | env var를 다시 읽는 새 코드를 추가할 때마다 `.trim()` 빠뜨리지 않기 — 가능하면 `lib/supabase/admin.ts`의 이미 trim된 client(`getPublicUrl()`)를 통해서만 URL 생성, 환경변수 직접 문자열 조립 금지. Vercel 대시보드의 실제 값도 주기적으로 재확인(로컬 정리만으로 안심 금지) | 2026-07-07 |
 
 ## 브라우저/크롬 사용 규칙 (절대 준수)
 - 크롬 또는 브라우저 창을 열기 전에 **반드시** 이미 열려 있는 창/탭 먼저 확인
