@@ -637,6 +637,12 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
 
   return (
     <div style={{ maxWidth: 600, margin: '0 auto' }}>
+      {/* 버튼 눌림 피드백 — 저장/추가/삭제 등 모든 액션 버튼 공통.
+          inline style 객체(a.primary/a.ghost/a.danger)는 :active를 표현 못 해 별도 클래스로 처리 (2026-07-08 대표 지시) */}
+      <style>{`
+        .btn-press { transition: transform 0.1s ease, opacity 0.1s ease; }
+        .btn-press:active { transform: scale(0.96); }
+      `}</style>
 
       {/* ── 완성도 (절제된 상단 바) ── */}
       <div style={{ marginBottom: 24 }}>
@@ -715,7 +721,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         </div>
       </section>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28 }}>
-        <button type="button" onClick={saveInfo} disabled={infoSaving} aria-busy={infoSaving} style={{ ...a.primary, opacity: infoSaving ? 0.6 : 1 }}>{infoSaving ? '저장 중…' : '저장'}</button>
+        <button type="button" className="btn-press" onClick={saveInfo} disabled={infoSaving} aria-busy={infoSaving} style={{ ...a.primary, opacity: infoSaving ? 0.6 : 1 }}>{infoSaving ? '저장 중…' : '저장'}</button>
         <span role="status" aria-live="polite" aria-atomic="true" style={{ ...a.msg, color: isErr(infoMsg, '저장') ? '#C0392B' : 'var(--navy)' }}>{infoMsg}</span>
       </div>
 
@@ -749,15 +755,15 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                 <div style={a.photoActions}>
                   {confirmingPhotoId === p.id ? (
                     <div style={{ display: 'flex', gap: 5 }}>
-                      <button type="button" autoFocus onClick={() => { setConfirmingPhotoId(null); deletePhotoRefs.current.get(p.id)?.focus() }} style={{ ...a.danger, background: '#fff', color: 'var(--white)', border: '1px solid #fff' }}>취소</button>
-                      <button type="button" onClick={() => deletePhoto(p.id, p.is_profile)} style={{ ...a.danger, background: '#C0392B', color: '#fff', border: 'none' }}>확인</button>
+                      <button type="button" className="btn-press" autoFocus onClick={() => { setConfirmingPhotoId(null); deletePhotoRefs.current.get(p.id)?.focus() }} style={{ ...a.danger, background: '#fff', color: 'var(--white)', border: '1px solid #fff' }}>취소</button>
+                      <button type="button" className="btn-press" onClick={() => deletePhoto(p.id, p.is_profile)} style={{ ...a.danger, background: '#C0392B', color: '#fff', border: 'none' }}>확인</button>
                     </div>
                   ) : (
                     <>
                       {!p.is_profile && (
-                        <button type="button" onClick={() => setProfile(p.id)} aria-label={`사진 ${idx + 1} 대표로 지정`} style={{ ...a.danger, background: 'rgba(255,255,255,0.92)', color: 'var(--navy)', border: 'none', fontWeight: 500 }}>대표 지정</button>
+                        <button type="button" className="btn-press" onClick={() => setProfile(p.id)} aria-label={`사진 ${idx + 1} 대표로 지정`} style={{ ...a.danger, background: 'rgba(255,255,255,0.92)', color: 'var(--navy)', border: 'none', fontWeight: 500 }}>대표 지정</button>
                       )}
-                      <button ref={el => { deletePhotoRefs.current.set(p.id, el) }} type="button" onClick={() => deletePhoto(p.id, p.is_profile)} aria-label={p.is_profile ? '대표 프로필 사진 삭제' : `사진 ${idx + 1} 삭제`} style={{ ...a.danger, background: 'rgba(255,255,255,0.92)', border: 'none' }}>삭제</button>
+                      <button ref={el => { deletePhotoRefs.current.set(p.id, el) }} type="button" className="btn-press" onClick={() => deletePhoto(p.id, p.is_profile)} aria-label={p.is_profile ? '대표 프로필 사진 삭제' : `사진 ${idx + 1} 삭제`} style={{ ...a.danger, background: 'rgba(255,255,255,0.92)', border: 'none' }}>삭제</button>
                     </>
                   )}
                 </div>
@@ -767,7 +773,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         )}
         <div style={{ marginTop: photos.length > 0 ? 16 : 0, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
           <input ref={fileRef} type="file" accept="image/*,.heic,.heif" onChange={uploadPhoto} style={{ display: 'none' }} aria-hidden="true" />
-          <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} aria-busy={uploading} style={{ ...a.ghost, opacity: uploading ? 0.6 : 1 }}>{uploading ? '업로드 중…' : '＋ 사진 추가'}</button>
+          <button type="button" className="btn-press" onClick={() => fileRef.current?.click()} disabled={uploading} aria-busy={uploading} style={{ ...a.ghost, opacity: uploading ? 0.6 : 1 }}>{uploading ? '업로드 중…' : '＋ 사진 추가'}</button>
           <span style={{ fontSize: 13, color: 'var(--gray)' }}>JPG·PNG · 세로형 헤드샷 권장 · 큰 사진은 자동으로 줄여 올라가요</span>
         </div>
         <p role="status" aria-live="polite" aria-atomic="true" style={{ ...a.msg, color: isErr(photoMsg, '완료') ? '#C0392B' : 'var(--navy)' }}>{photoMsg}</p>
@@ -793,8 +799,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                     <Image src={photo.url} alt={`${label} 현재사진`} fill unoptimized style={{ objectFit: 'cover', objectPosition: 'center 30%' }} sizes="180px" />
                     <span style={a.profileBadge}>{label}</span>
                     <div style={a.photoActions}>
-                      <button type="button" onClick={() => pickCurrentPhoto(label)} disabled={!!cpUploadingLabel} aria-label={`${label} 사진 교체`} style={{ ...a.danger, background: 'rgba(255,255,255,0.92)', color: 'var(--navy)', border: 'none', fontWeight: 500 }}>교체</button>
-                      <button type="button" onClick={() => deleteCurrentPhoto(photo.id)} aria-label={`${label} 사진 삭제`} style={{ ...a.danger, background: 'rgba(255,255,255,0.92)', border: 'none' }}>삭제</button>
+                      <button type="button" className="btn-press" onClick={() => pickCurrentPhoto(label)} disabled={!!cpUploadingLabel} aria-label={`${label} 사진 교체`} style={{ ...a.danger, background: 'rgba(255,255,255,0.92)', color: 'var(--navy)', border: 'none', fontWeight: 500 }}>교체</button>
+                      <button type="button" className="btn-press" onClick={() => deleteCurrentPhoto(photo.id)} aria-label={`${label} 사진 삭제`} style={{ ...a.danger, background: 'rgba(255,255,255,0.92)', border: 'none' }}>삭제</button>
                     </div>
                   </div>
                 ) : (
@@ -829,11 +835,11 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                 </p>
                 {confirmingR2VideoId === v.id ? (
                   <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
-                    <button type="button" autoFocus onClick={() => { setConfirmingR2VideoId(null); deleteR2VideoRefs.current.get(v.id)?.focus() }} style={a.ghost}>취소</button>
-                    <button type="button" onClick={() => deleteR2Video(v.id)} style={{ ...a.danger, background: '#C0392B', color: '#fff', border: 'none' }}>확인</button>
+                    <button type="button" className="btn-press" autoFocus onClick={() => { setConfirmingR2VideoId(null); deleteR2VideoRefs.current.get(v.id)?.focus() }} style={a.ghost}>취소</button>
+                    <button type="button" className="btn-press" onClick={() => deleteR2Video(v.id)} style={{ ...a.danger, background: '#C0392B', color: '#fff', border: 'none' }}>확인</button>
                   </div>
                 ) : (
-                  <button ref={el => { deleteR2VideoRefs.current.set(v.id, el) }} type="button" onClick={() => deleteR2Video(v.id)} aria-label={`${v.title || '영상'} 삭제`} style={{ ...a.danger, flexShrink: 0 }}>삭제</button>
+                  <button ref={el => { deleteR2VideoRefs.current.set(v.id, el) }} type="button" className="btn-press" onClick={() => deleteR2Video(v.id)} aria-label={`${v.title || '영상'} 삭제`} style={{ ...a.danger, flexShrink: 0 }}>삭제</button>
                 )}
               </div>
             ))}
@@ -841,7 +847,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         )}
         <input ref={r2VideoRef} type="file" accept="video/*" onChange={uploadR2Video} style={{ display: 'none' }} aria-hidden="true" />
         <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
-          <button type="button" onClick={() => r2VideoRef.current?.click()} disabled={r2Uploading} aria-busy={r2Uploading} style={{ ...a.ghost, opacity: r2Uploading ? 0.6 : 1 }}>{r2Uploading ? r2UploadStatus || '업로드 중…' : '＋ 영상 파일 업로드'}</button>
+          <button type="button" className="btn-press" onClick={() => r2VideoRef.current?.click()} disabled={r2Uploading} aria-busy={r2Uploading} style={{ ...a.ghost, opacity: r2Uploading ? 0.6 : 1 }}>{r2Uploading ? r2UploadStatus || '업로드 중…' : '＋ 영상 파일 업로드'}</button>
           <span style={{ fontSize: 13, color: 'var(--gray)' }}>mp4 권장, 최대 300MB</span>
         </div>
         <p role="status" aria-live="polite" aria-atomic="true" style={{ ...a.msg, color: isErr(r2VideoMsg, '완료') ? '#C0392B' : 'var(--navy)' }}>{r2VideoMsg}</p>
@@ -859,11 +865,11 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                   <p style={{ flex: 1, fontSize: 15, color: 'var(--white)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v.title || v.youtube_id}</p>
                   {confirmingVideoId === v.id ? (
                     <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
-                      <button type="button" autoFocus onClick={() => { setConfirmingVideoId(null); deleteVideoRefs.current.get(v.id)?.focus() }} style={a.ghost}>취소</button>
-                      <button type="button" onClick={() => deleteVideo(v.id)} style={{ ...a.danger, background: '#C0392B', color: '#fff', border: 'none' }}>확인</button>
+                      <button type="button" className="btn-press" autoFocus onClick={() => { setConfirmingVideoId(null); deleteVideoRefs.current.get(v.id)?.focus() }} style={a.ghost}>취소</button>
+                      <button type="button" className="btn-press" onClick={() => deleteVideo(v.id)} style={{ ...a.danger, background: '#C0392B', color: '#fff', border: 'none' }}>확인</button>
                     </div>
                   ) : (
-                    <button ref={el => { deleteVideoRefs.current.set(v.id, el) }} type="button" onClick={() => deleteVideo(v.id)} aria-label={`${v.title || v.youtube_id} 삭제`} style={{ ...a.danger, flexShrink: 0 }}>삭제</button>
+                    <button ref={el => { deleteVideoRefs.current.set(v.id, el) }} type="button" className="btn-press" onClick={() => deleteVideo(v.id)} aria-label={`${v.title || v.youtube_id} 삭제`} style={{ ...a.danger, flexShrink: 0 }}>삭제</button>
                   )}
                 </div>
               ))}
@@ -878,7 +884,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
               <label htmlFor="video-title" style={{ ...a.help, marginBottom: 6, display: 'block' }}>제목 (선택)</label>
               <input id="video-title" value={videoTitle} onChange={e => setVideoTitle(e.target.value)} style={a.boxInput} placeholder="단편영화 주연" />
             </div>
-            <button type="button" onClick={addVideo} disabled={videoAdding} aria-busy={videoAdding} style={{ ...a.primary, opacity: videoAdding ? 0.6 : 1 }}>{videoAdding ? '추가 중…' : '추가'}</button>
+            <button type="button" className="btn-press" onClick={addVideo} disabled={videoAdding} aria-busy={videoAdding} style={{ ...a.primary, opacity: videoAdding ? 0.6 : 1 }}>{videoAdding ? '추가 중…' : '추가'}</button>
           </div>
           <p role="status" aria-live="polite" aria-atomic="true" style={{ ...a.msg, color: isErr(videoMsg, '완료') ? '#C0392B' : 'var(--navy)' }}>{videoMsg}</p>
         </div>
@@ -943,11 +949,11 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                   )}
                   {confirmingFilmIdx === i ? (
                     <div style={{ display: 'flex', gap: 5 }}>
-                      <button type="button" autoFocus onClick={() => { setConfirmingFilmIdx(null); deleteFilmRefs.current.get(i)?.focus() }} style={a.ghost}>취소</button>
-                      <button type="button" onClick={() => deleteFilm(i)} style={{ ...a.danger, background: '#C0392B', color: '#fff', border: 'none' }}>확인</button>
+                      <button type="button" className="btn-press" autoFocus onClick={() => { setConfirmingFilmIdx(null); deleteFilmRefs.current.get(i)?.focus() }} style={a.ghost}>취소</button>
+                      <button type="button" className="btn-press" onClick={() => deleteFilm(i)} style={{ ...a.danger, background: '#C0392B', color: '#fff', border: 'none' }}>확인</button>
                     </div>
                   ) : (
-                    <button ref={el => { deleteFilmRefs.current.set(i, el) }} type="button" onClick={() => deleteFilm(i)} aria-label={`필모그래피 ${i + 1}번 삭제`} style={a.danger}>삭제</button>
+                    <button ref={el => { deleteFilmRefs.current.set(i, el) }} type="button" className="btn-press" onClick={() => deleteFilm(i)} aria-label={`필모그래피 ${i + 1}번 삭제`} style={a.danger}>삭제</button>
                   )}
                 </div>
               ))}
@@ -955,9 +961,9 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           </div>
         )}
         <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-          <button type="button" onClick={() => setFilmography(prev => [newFilm(), ...prev])} style={a.ghost}>＋ 항목 추가</button>
+          <button type="button" className="btn-press" onClick={() => setFilmography(prev => [newFilm(), ...prev])} style={a.ghost}>＋ 항목 추가</button>
           {filmography.length > 0 && (
-            <button type="button" onClick={saveAllFilms} disabled={filmSaving} aria-busy={filmSaving} style={{ ...a.primary, opacity: filmSaving ? 0.6 : 1 }}>{filmSaving ? '저장 중…' : '저장'}</button>
+            <button type="button" className="btn-press" onClick={saveAllFilms} disabled={filmSaving} aria-busy={filmSaving} style={{ ...a.primary, opacity: filmSaving ? 0.6 : 1 }}>{filmSaving ? '저장 중…' : '저장'}</button>
           )}
           <span role="status" aria-live="polite" aria-atomic="true" style={{ ...a.msg, color: isErr(filmMsg, '저장') ? '#C0392B' : 'var(--navy)' }}>{filmMsg}</span>
         </div>
