@@ -118,8 +118,8 @@ async function imageDims(url: string): Promise<{ w: number; h: number } | null> 
   }
 }
 
-/** 썸네일(가로 1200×630)용 — 배우 포트폴리오 사진 중 '가로' 첫 장 URL. 없으면 null → 대표사진 폴백. */
-async function pickLandscapeUrl(id: string): Promise<string | null> {
+/** 썸네일(가로 1200×630)용 — 배우 포트폴리오 사진 중 '가로' 첫 장의 URL+실측 치수. 없으면 null → 대표사진 폴백. */
+async function pickLandscapeUrl(id: string): Promise<{ url: string; w: number; h: number } | null> {
   if (!SUPABASE_URL || !SERVICE_KEY) return null
   try {
     const res = await fetch(
@@ -141,7 +141,7 @@ async function pickLandscapeUrl(id: string): Promise<string | null> {
     // 병렬 측정 후 sort_order 순서대로 첫 가로 사진 선택
     const measured = await Promise.all(candidates.map((u) => imageDims(u).then((d) => ({ u, d }))))
     for (const { u, d } of measured) {
-      if (d && d.w > d.h * 1.05) return u
+      if (d && d.w > d.h * 1.05) return { url: u, w: d.w, h: d.h }
     }
     return null
   } catch {
@@ -221,29 +221,37 @@ export async function GET(
   }
 
   // 썸네일은 가로(1200×630)이므로 세로 대표사진 대신 가로사진 우선 (2026-07-01 대표 지시). 없으면 대표사진.
-  const landscapeUrl = await pickLandscapeUrl(id)
-  const photoUrl = landscapeUrl ?? getPhotoUrl(actor)
-  const isLandscapeBg = !!landscapeUrl
+  const landscapePick = await pickLandscapeUrl(id)
+  const photoUrl = landscapePick?.url ?? getPhotoUrl(actor)
+  const isLandscapeBg = !!landscapePick
 
-  // 2026-07-08 발견: 가로사진 없는 배우는 세로사진을 1200×630에 cover로 욱여넣는데
-  // 'center top' 고정값이 스케일 후 상단만 노출해 눈까지만 보이고 코·입·턱이 잘림
-  // (설진수 제보). 흔한 인물사진 세로비(2:3~3:4)라면 어느 쪽이든 12~13%대로 수렴하므로
-  // 고정 기본값(12%)을 우선 적용 — imageDims 네트워크 조회 성패에 기능이 좌우되지 않게 함.
-  // 치수 조회가 성공하면(비정상적으로 긴 세로사진 등) 더 정확한 값으로 보정.
-  let fallbackPositionY = 12
-  if (photoUrl && !isLandscapeBg) {
+  // 2026-07-08 발견: objectFit/objectPosition 퍼센트 지정을 3차례 다르게 바꿔 배포해도
+  // 픽셀 단위로 완전히 동일한 결과가 나와(설진수 제보) — next/og(Satori)가 <img>의
+  // object-position Y값을 아예 반영하지 않는 것으로 판단. 가로사진 배경도 같은 속성에
+  // 의존하고 있어 겉보기엔 괜찮아 보여도(가로사진은 세로 여백이 작아 앵커 위치 차이가
+  // 눈에 덜 띌 뿐) 동일하게 무시되고 있을 가능성 높음 — 두 분기 모두 object-fit/
+  // object-position을 걷어내고, 스케일된 실측 픽셀 크기 + top/left 오프셋으로 직접
+  // 배치하는 방식으로 전환 (width/height/top/left는 Satori가 확실히 지원하는 기본 박스 속성).
+  let photoW = 900
+  let photoH = 1200 // 실측 실패 시 기본 가정: 3:4 세로비
+  if (isLandscapeBg && landscapePick) {
+    photoW = landscapePick.w
+    photoH = landscapePick.h
+  } else if (photoUrl) {
     try {
       const d = await imageDims(photoUrl)
-      if (d && d.h > d.w) {
-        const scaledH = d.h * (1200 / d.w)
-        const headroomFrac = 0.08 // 원본 상단 8% 지점을 프레임 상단에 (헤드룸 유지)
-        const offset = headroomFrac * scaledH
-        fallbackPositionY = Math.max(0, Math.min(100, (offset / (scaledH - 630)) * 100))
-      }
+      if (d) { photoW = d.w; photoH = d.h }
     } catch (e) {
-      console.warn('[OG] imageDims 실패 — 기본값(12%) 사용:', e instanceof Error ? e.message : e)
+      console.warn('[OG] imageDims 실패 — 기본 세로비(3:4) 가정 사용:', e instanceof Error ? e.message : e)
     }
   }
+  // 1200×630 프레임을 채우는 스케일(cover) — 가로/세로 어느 쪽이 넘치든 동일 계산
+  const coverScale = Math.max(1200 / photoW, 630 / photoH)
+  const scaledW = Math.round(photoW * coverScale)
+  const scaledH = Math.round(photoH * coverScale)
+  const headroomFrac = 0.08 // 세로 여백 있는 쪽은 상단 8% 지점을 프레임 상단에 (헤드룸 유지)
+  const photoTopOffset = scaledH > 630 ? Math.round(Math.max(0, Math.min(scaledH - 630, headroomFrac * scaledH))) : 0
+  const photoLeftOffset = scaledW > 1200 ? Math.round((scaledW - 1200) / 2) : 0
   // 썸네일 직관화 (2026-07-01 대표 지시): 연령대(30대) 대신 실제 만나이 + 키, 그리고 특기(사투리 포함)
   const currentYearOg = new Date().getFullYear()
   const ageLabel = actor.birth_year ? `${currentYearOg - actor.birth_year}세` : actor.age_group
@@ -267,26 +275,25 @@ export async function GET(
           overflow: 'hidden',
         }}
       >
-        {/* 풀배경 사진 */}
+        {/* 풀배경 사진 — object-fit/object-position 대신 실측 스케일 픽셀 크기 + top/left
+            음수 오프셋으로 직접 배치 (Satori의 object-position Y값 미반영 문제 우회) */}
         {photoUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={photoUrl}
-            alt={actor.name}
-            width={1200}
-            height={630}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              // 얼굴이 잘리지 않게 상단(머리·얼굴) 기준 크롭 — 가로/세로 공통 (2026-07-01 대표 지시: 얼굴 잘 보이게)
-              // Satori가 소수점 퍼센트('12.0%')를 못 읽어 무시할 가능성 있어 정수로 반올림
-              objectPosition: isLandscapeBg ? 'center 22%' : `center ${Math.round(fallbackPositionY)}%`,
-            }}
-          />
+          <div style={{ position: 'absolute', top: 0, left: 0, width: 1200, height: 630, overflow: 'hidden', display: 'flex' }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={photoUrl}
+              alt={actor.name}
+              width={scaledW}
+              height={scaledH}
+              style={{
+                position: 'absolute',
+                top: -photoTopOffset,
+                left: -photoLeftOffset,
+                width: scaledW,
+                height: scaledH,
+              }}
+            />
+          </div>
         )}
 
         {/* 콘텐츠 레이어 — 2026-07-08 대표 지시: 사진 전체 그라디언트 제거,
