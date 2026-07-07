@@ -54,6 +54,7 @@ interface Missing {
   legacyPhoto: boolean
   noLandscape: boolean
   noSummary: boolean
+  noBirthYear: boolean
 }
 
 function buildText(name: string, missing: Missing): string {
@@ -74,6 +75,9 @@ function buildText(name: string, missing: Missing): string {
   // 2026-07-08 대표 지시(리더클래스 점검 중 발견): 한줄소개는 캐스팅 담당자가 5초 안에
   // 제일 먼저 읽는 항목 — 대시보드 완성도 카드엔 반영되지만 자동문자엔 빠져있던 항목 추가.
   if (missing.noSummary) items.push('▪ 한줄소개 — 캐스팅 담당자가 가장 먼저 보는 문구예요. 나를 한 줄로 소개해 주세요')
+  // 2026-07-07 대표 지시(카톡 공유 썸네일 점검 중 발견): 출생연도가 없으면 실제 나이 대신
+  // "30대" 같은 연령대로만 표시됨(/api/og/actor 로직) — 정확한 나이 노출을 위해 생년 입력 유도.
+  if (missing.noBirthYear) items.push('▪ 출생연도 — 캐스팅 담당자가 정확한 나이를 확인할 수 있도록 생년을 입력해 주세요')
 
   const head = items.length === 1 ? '배포 전에 딱 하나만 채워주세요.' : `배포 전에 ${name}님 프로필에 비어 있는 항목을 채워주세요.`
 
@@ -161,7 +165,7 @@ async function main() {
   const sb = createClient(url, key)
   const { data: allActors, error } = await sb
     .from('actors')
-    .select('id, name, phone, is_public, profile_photo, storage_photo_path, profile_doc_path, casting_summary')
+    .select('id, name, phone, is_public, profile_photo, storage_photo_path, profile_doc_path, casting_summary, birth_year')
     .eq('is_public', true)
   if (error) { log(`DB 조회 실패: ${error.message}`); process.exit(1) }
 
@@ -209,8 +213,12 @@ async function main() {
       noLandscape: !landscapeSet.has(a.id),
       // 2026-07-08 대표 지시(리더클래스 점검): 한줄소개 — 완성도 카드엔 있었는데 자동문자엔 누락돼있던 항목.
       noSummary: !a.casting_summary || !String(a.casting_summary).trim(),
+      // 2026-07-07 대표 지시: 카카오톡 공유 썸네일에 실제나이 대신 "30대"(연령대)가 나오는
+      // 문제 발견 — OG 라우트 코드는 정상(birth_year 있으면 실제나이 계산), 원인은 데이터 누락.
+      // birth_year 없으면 age_group으로 폴백되는 배우 40명 발견해서 항목 추가.
+      noBirthYear: !a.birth_year,
     }
-    if (!missing.mainPhoto && !missing.gallery && !missing.video && !missing.doc && !missing.legacyPhoto && !missing.noLandscape && !missing.noSummary) continue
+    if (!missing.mainPhoto && !missing.gallery && !missing.video && !missing.doc && !missing.legacyPhoto && !missing.noLandscape && !missing.noSummary && !missing.noBirthYear) continue
     if (!a.phone) { noPhone++; continue }
 
     const prev = sentLog[a.id]
