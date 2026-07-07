@@ -29,6 +29,7 @@ interface Profile {
 interface ActorRow {
   height: number | null
   weight: number | null
+  birth_year: number | null
   skills: string[] | null   // DB 타입: text[] — string | null 이었던 오류 수정
   advanced_skills: string[] | null  // ⭐ 고급 숙련도 (2026-05-29 추가)
   dialects: string[] | null  // 사투리 가능 지역 (2026-06-08 추가)
@@ -139,7 +140,7 @@ export default async function GalleryEditPage() {
   const [actorRes, photosRes, videosRes, filmRes, r2VideosRes] = await Promise.all([
     supabaseAdmin
       .from('actors')
-      .select('height, weight, skills, advanced_skills, dialects, instagram, casting_summary, profile_doc_path')
+      .select('height, weight, birth_year, skills, advanced_skills, dialects, instagram, casting_summary, profile_doc_path')
       .eq('id', actor_id)
       .maybeSingle()
       .then(async (r) => {
@@ -148,14 +149,14 @@ export default async function GalleryEditPage() {
           // 1) dialects만 제외 (advanced_skills는 존재할 수 있음)
           const f1 = await supabaseAdmin
             .from('actors')
-            .select('height, weight, skills, advanced_skills, instagram, casting_summary, profile_doc_path')
+            .select('height, weight, birth_year, skills, advanced_skills, instagram, casting_summary, profile_doc_path')
             .eq('id', actor_id)
             .maybeSingle()
           if (!f1.error && f1.data) return { data: { ...f1.data, dialects: null }, error: null }
           // 2) 둘 다 제외
           const f2 = await supabaseAdmin
             .from('actors')
-            .select('height, weight, skills, instagram, casting_summary, profile_doc_path')
+            .select('height, weight, birth_year, skills, instagram, casting_summary, profile_doc_path')
             .eq('id', actor_id)
             .maybeSingle()
           if (f2.data) return { data: { ...f2.data, advanced_skills: null, dialects: null }, error: null }
@@ -227,6 +228,7 @@ export default async function GalleryEditPage() {
   const initialData = {
     height: actor.height ?? undefined,
     weight: actor.weight ?? undefined,
+    birthYear: actor.birth_year ?? undefined,
     skills: actor.skills?.join(', ') ?? undefined,  // text[] → 쉼표 구분 문자열 (폼 표시용)
     dialects: actor.dialects ?? undefined,  // text[] 그대로 (멀티선택)
     school: actor.school ?? undefined,

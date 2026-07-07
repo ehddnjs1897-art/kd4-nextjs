@@ -199,6 +199,13 @@ export async function PATCH(
       if (!Number.isFinite(w) || w < 20 || w > 200)
         return NextResponse.json({ error: '몸무게는 20–200 범위여야 합니다.' }, { status: 400 })
     }
+    // 출생연도 — 카카오 공유 썸네일 실제나이 표시용 (2026-07-08 대표 지시로 자가입력 추가)
+    if ('birth_year' in body && body.birth_year !== null) {
+      const by = Number(body.birth_year)
+      const thisYear = new Date().getFullYear()
+      if (!Number.isFinite(by) || by < 1940 || by > thisYear - 5)
+        return NextResponse.json({ error: `출생연도는 1940–${thisYear - 5} 범위여야 합니다.` }, { status: 400 })
+    }
     if (typeof body.casting_summary === 'string' && body.casting_summary.length > 2000)
       return NextResponse.json({ error: '캐스팅 소개는 2000자 이하로 입력해주세요.' }, { status: 400 })
     if (typeof body.instagram === 'string') {
@@ -257,7 +264,7 @@ export async function PATCH(
       body.major = trimmed || null
     }
 
-    const allowed = ['height', 'weight', 'skills', 'advanced_skills', 'dialects', 'school', 'major', 'instagram', 'casting_summary', 'casting_tags', 'name_en', 'age_group', 'profile_doc_path']
+    const allowed = ['height', 'weight', 'birth_year', 'skills', 'advanced_skills', 'dialects', 'school', 'major', 'instagram', 'casting_summary', 'casting_tags', 'name_en', 'age_group', 'profile_doc_path']
     const patch: Record<string, unknown> = {}
     for (const k of allowed) {
       if (k in body) patch[k] = body[k]

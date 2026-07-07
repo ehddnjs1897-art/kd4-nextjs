@@ -62,6 +62,7 @@ interface FilmItem {
 interface InitialData {
   height?: number
   weight?: number
+  birthYear?: number
   skills?: string
   dialects?: string[]
   school?: string
@@ -156,6 +157,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   // 기본 정보
   const [height, setHeight] = useState(initialData.height ?? '')
   const [weight, setWeight] = useState(initialData.weight ?? '')
+  const [birthYear, setBirthYear] = useState(initialData.birthYear ?? '')
   const [skills, setSkills] = useState(initialData.skills ?? '')
   const [dialects, setDialects] = useState<string[]>(initialData.dialects ?? [])
   const [school, setSchool] = useState(initialData.school ?? '')
@@ -239,6 +241,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         body: JSON.stringify({
           height: height || null,
           weight: weight || null,
+          birth_year: birthYear || null,
           skills: skillsArr.length > 0 ? skillsArr : null,
           dialects: dialects.length > 0 ? dialects : null,
           school: school.trim() || null,
@@ -668,6 +671,12 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       <section style={a.card} aria-labelledby="gallery-section-info">
         <h2 id="gallery-section-info" className="sr-only">기본 정보</h2>
         <div style={a.row}>
+          {/* 출생연도 — 카카오톡 공유 썸네일에 실제 나이를 보여주려면 필요 (2026-07-08 대표 지시로 자가입력 추가) */}
+          <label htmlFor="actor-birth-year" style={a.label}>출생연도</label>
+          <input id="actor-birth-year" type="text" inputMode="numeric" value={birthYear} onChange={e => setBirthYear(e.target.value.replace(/[^0-9]/g, '').slice(0, 4))} style={a.inlineInput} placeholder="1995" autoComplete="off" />
+          <span style={a.unit}>년</span>
+        </div>
+        <div style={{ ...a.row, ...a.sep }}>
           <label htmlFor="actor-height" style={a.label}>신장</label>
           <input id="actor-height" type="text" inputMode="numeric" value={height} onChange={e => setHeight(e.target.value.replace(/[^0-9]/g, '').slice(0, 3))} style={a.inlineInput} placeholder="170" autoComplete="off" />
           <span style={a.unit}>cm</span>
