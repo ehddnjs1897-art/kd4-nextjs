@@ -277,7 +277,7 @@ export async function generateMetadata({
   // 그라디언트 제거 등) DB 행을 안 건드린 배우는 URL이 그대로라 카카오가 이미 공유된
   // 링크의 캐시된(구버전) 썸네일을 계속 보여줌 — OG_DESIGN_VERSION을 항상 같이 섞어
   // 넣어서, 이 상수를 올리면 전체 배우가 즉시 강제 재크롤 대상이 되게 함.
-  const OG_DESIGN_VERSION = 'v5' // 2026-07-08: 텍스트 뒤 솔리드 박스 완전 제거(인물+텍스트만, text-shadow만 허용)
+  const OG_DESIGN_VERSION = 'v6' // 2026-07-08: 나이·키·특기·태그·도메인 텍스트 전부 제거, 이름만 노출
   const ogVer = `${OG_DESIGN_VERSION}.${
     (actor as { updated_at?: string | null }).updated_at
       ? new Date((actor as { updated_at?: string }).updated_at!).getTime()
