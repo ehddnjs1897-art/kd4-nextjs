@@ -227,15 +227,21 @@ export async function GET(
 
   // 2026-07-08 발견: 가로사진 없는 배우는 세로사진을 1200×630에 cover로 욱여넣는데
   // 'center top' 고정값이 스케일 후 상단만 노출해 눈까지만 보이고 코·입·턱이 잘림
-  // (설진수 제보). 실제 세로 원본 치수를 재서 얼굴 하관까지 보이는 위치를 계산.
-  let fallbackPositionY = 0
+  // (설진수 제보). 흔한 인물사진 세로비(2:3~3:4)라면 어느 쪽이든 12~13%대로 수렴하므로
+  // 고정 기본값(12%)을 우선 적용 — imageDims 네트워크 조회 성패에 기능이 좌우되지 않게 함.
+  // 치수 조회가 성공하면(비정상적으로 긴 세로사진 등) 더 정확한 값으로 보정.
+  let fallbackPositionY = 12
   if (photoUrl && !isLandscapeBg) {
-    const d = await imageDims(photoUrl)
-    if (d && d.h > d.w) {
-      const scaledH = d.h * (1200 / d.w)
-      const headroomFrac = 0.08 // 원본 상단 8% 지점을 프레임 상단에 (헤드룸 유지)
-      const offset = headroomFrac * scaledH
-      fallbackPositionY = Math.max(0, Math.min(100, (offset / (scaledH - 630)) * 100))
+    try {
+      const d = await imageDims(photoUrl)
+      if (d && d.h > d.w) {
+        const scaledH = d.h * (1200 / d.w)
+        const headroomFrac = 0.08 // 원본 상단 8% 지점을 프레임 상단에 (헤드룸 유지)
+        const offset = headroomFrac * scaledH
+        fallbackPositionY = Math.max(0, Math.min(100, (offset / (scaledH - 630)) * 100))
+      }
+    } catch (e) {
+      console.warn('[OG] imageDims 실패 — 기본값(12%) 사용:', e instanceof Error ? e.message : e)
     }
   }
   // 썸네일 직관화 (2026-07-01 대표 지시): 연령대(30대) 대신 실제 만나이 + 키, 그리고 특기(사투리 포함)
