@@ -23,6 +23,7 @@ import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { revalidateTag } from '@/lib/revalidate'
 import { sanitizeDialects } from '@/lib/dialects'
+import { CONSENT_VERSION } from '@/lib/consent'
 import { matchActorOnSignup, matchActorForIntake } from '@/lib/actor-matching'
 import { isMissingColumnError, findMissingOptionalCol, isAgeGroupCheckError } from '@/lib/db-missing-column'
 
@@ -82,6 +83,22 @@ export async function POST(request: NextRequest) {
   } catch {
     return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })
   }
+  // 프로필 공개·캐스팅 관계자 제공 동의 (방침 v1, 2026-07-07) — 배우 프로필 등록의 전제.
+  // 가입 때 이미 동의(user_metadata.consent_dist)했으면 통과, 아니면 이번 요청의 동의를 기록.
+  const alreadyConsentedDist = typeof user.user_metadata?.consent_dist === 'string'
+  if (!alreadyConsentedDist) {
+    if (body?.consentDistribution !== true) {
+      return NextResponse.json(
+        { error: '프로필 공개·캐스팅 관계자 제공 동의가 필요합니다. 페이지를 새로고침한 뒤 동의에 체크해 주세요.' },
+        { status: 400 }
+      )
+    }
+    const { error: consentErr } = await supabaseAdmin.auth.admin.updateUserById(user.id, {
+      user_metadata: { ...user.user_metadata, consent_dist: CONSENT_VERSION, consent_at: new Date().toISOString() },
+    })
+    if (consentErr) console.warn('[profile/intake] 동의 기록 실패:', consentErr.message)
+  }
+
   // 최대 길이 상수
   const MAX_PATH_LEN = 500   // Storage/R2 경로
   const MAX_SUMMARY_LEN = 2000

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { getRedirectOrigin } from '@/lib/constants'
+import { CONSENT_VERSION } from '@/lib/consent'
 
 type MemberType = 'actor' | 'director'
 type Step = 'type-select' | 'form' | 'success'
@@ -21,6 +22,11 @@ export default function SignupPage() {
   const [phone, setPhone] = useState('')
   const [gender, setGender] = useState('') // 배우: 성별 '남'|'여' (필수 — 성별 필터 노출)
   const [affiliation, setAffiliation] = useState('') // 디렉터: 소속 (선택)
+
+  // 서비스 동의 (방침·약관 v1, 2026-07-07) — 기록은 auth metadata(consent_*)
+  const [agreeTos, setAgreeTos] = useState(false)
+  const [agreePrivacy, setAgreePrivacy] = useState(false)
+  const [agreeDist, setAgreeDist] = useState(false) // 배우: 프로필 공개·캐스팅 관계자 제공·사진영상 이용
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -74,6 +80,14 @@ export default function SignupPage() {
       setError('성별을 선택해 주세요.')
       return
     }
+    if (!agreeTos || !agreePrivacy) {
+      setError('이용약관과 개인정보 수집·이용 동의(필수)에 체크해 주세요.')
+      return
+    }
+    if (memberType === 'actor' && !agreeDist) {
+      setError('프로필 공개·캐스팅 관계자 제공 동의(필수)에 체크해 주세요.')
+      return
+    }
 
     setLoading(true)
     const supabase = createClient()
@@ -90,6 +104,13 @@ export default function SignupPage() {
     }
     if (memberType === 'director' && affiliation) {
       metadata.affiliation = affiliation
+    }
+    // 동의 기록 — 버전·시각 (재동의 필요 시 lib/consent.ts CONSENT_VERSION을 올림)
+    metadata.consent_tos = CONSENT_VERSION
+    metadata.consent_privacy = CONSENT_VERSION
+    metadata.consent_at = new Date().toISOString()
+    if (memberType === 'actor') {
+      metadata.consent_dist = CONSENT_VERSION
     }
 
     const { data: signUpData, error: authError } = await supabase.auth.signUp({
@@ -456,6 +477,36 @@ export default function SignupPage() {
             </div>
           )}
 
+          {/* 서비스 동의 (필수) — /terms·/privacy v1 (2026-07-07) */}
+          <div style={styles.consentGroup}>
+            <label style={styles.consentRow}>
+              <input type="checkbox" checked={agreeTos} onChange={(e) => setAgreeTos(e.target.checked)} disabled={loading} style={styles.consentBox} />
+              <span style={styles.consentText}>
+                <Link href="/terms" target="_blank" style={styles.consentLink}>이용약관</Link> 동의 <span aria-hidden="true" style={styles.required}>*</span>
+              </span>
+            </label>
+            <label style={styles.consentRow}>
+              <input type="checkbox" checked={agreePrivacy} onChange={(e) => setAgreePrivacy(e.target.checked)} disabled={loading} style={styles.consentBox} />
+              <span style={styles.consentText}>
+                <Link href="/privacy" target="_blank" style={styles.consentLink}>개인정보 수집·이용</Link> 동의 <span aria-hidden="true" style={styles.required}>*</span>
+              </span>
+            </label>
+            {memberType === 'actor' && (
+              <label style={styles.consentRow}>
+                <input type="checkbox" checked={agreeDist} onChange={(e) => setAgreeDist(e.target.checked)} disabled={loading} style={styles.consentBox} />
+                <span style={styles.consentText}>
+                  프로필 공개 및 캐스팅 관계자 제공·사진영상 이용 동의 <span aria-hidden="true" style={styles.required}>*</span>
+                  <br /><span style={styles.consentSub}>캐스팅 연결을 위한 동의예요 — 언제든 비공개 전환할 수 있어요</span>
+                </span>
+              </label>
+            )}
+            {memberType === 'director' && (
+              <p style={styles.consentSub}>
+                열람한 배우 연락처·프로필은 캐스팅 목적 외 이용·재배포가 금지됩니다. (이용약관 제7조)
+              </p>
+            )}
+          </div>
+
           <button
             type="submit"
             disabled={loading}
@@ -652,6 +703,45 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '0.75rem',
     color: 'var(--gold)',
     letterSpacing: '0.02em',
+  },
+  consentGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 12,
+    padding: '14px 14px',
+    background: 'var(--bg3)',
+    border: '1px solid var(--border)',
+    borderRadius: 8,
+  },
+  consentRow: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: 10,
+    cursor: 'pointer',
+  },
+  consentBox: {
+    width: 20,
+    height: 20,
+    marginTop: 1,
+    accentColor: 'var(--navy)',
+    cursor: 'pointer',
+    flexShrink: 0,
+  },
+  consentText: {
+    fontSize: '0.82rem',
+    color: 'var(--white)',
+    lineHeight: 1.55,
+  },
+  consentLink: {
+    color: 'var(--gold)',
+    fontWeight: 600,
+    textDecoration: 'underline',
+  },
+  consentSub: {
+    fontSize: '0.72rem',
+    color: 'var(--gray)',
+    lineHeight: 1.6,
+    margin: 0,
   },
   btnPrimary: {
     background: 'var(--gold)',

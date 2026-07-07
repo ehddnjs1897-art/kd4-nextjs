@@ -196,6 +196,16 @@ export default async function DashboardPage() {
           <a href="/enroll" style={{ display: 'inline-block', marginTop: 12, padding: '10px 18px', background: 'var(--gold)', color: '#fff', fontFamily: 'var(--font-sans)', fontSize: '0.9rem', fontWeight: 700, borderRadius: 'var(--radius)', textDecoration: 'none' }}>멤버 수강신청 →</a>
         </div>
 
+        {/* 서비스 동의 배너 — 방침·약관 v1 신설(2026-07-07), 기존 배우 멤버 1회 동의 수집 */}
+        {isActorMember && actorId && typeof user.user_metadata?.consent_dist !== 'string' && (
+          <Link href="/consent" style={{ display: 'block', padding: '14px 18px', borderRadius: 8, background: 'rgba(21,72,138,0.06)', border: '1px solid rgba(21,72,138,0.3)', textDecoration: 'none' }}>
+            <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: 700, color: 'var(--navy)' }}>서비스 이용 동의 한 번만 확인해 주세요 <span aria-hidden="true">→</span></p>
+            <p style={{ margin: '5px 0 0', fontSize: '0.78rem', color: 'var(--gray)', lineHeight: 1.6 }}>
+              개인정보처리방침·이용약관이 새로 생겼어요. 프로필 공개와 캐스팅 연결을 계속 받으려면 동의가 필요해요.
+            </p>
+          </Link>
+        )}
+
         {/* 내 계정 카드 */}
         <section aria-label="내 계정" style={card}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid var(--border)' }}>

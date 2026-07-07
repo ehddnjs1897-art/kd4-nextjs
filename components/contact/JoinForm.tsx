@@ -982,7 +982,10 @@ export default function JoinForm() {
               <strong style={{ color: 'var(--navy)' }}>[필수]</strong> 개인정보 수집·이용에 동의합니다.
               <br />
               <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>
-                상담 연락 목적으로만 사용됩니다 · 언제든 삭제 요청 가능
+                상담 연락 목적으로만 사용됩니다 · 언제든 삭제 요청 가능 ·{' '}
+                <a href="/privacy" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--navy)', textDecoration: 'underline' }}>
+                  처리방침
+                </a>
               </span>
             </span>
           </label>

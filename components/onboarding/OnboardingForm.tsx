@@ -73,6 +73,17 @@ export default function OnboardingForm({
   }, [loading])
   const [currentPhotos, setCurrentPhotos] = useState<(File | null)[]>([null, null, null, null, null])
 
+  // 프로필 공개·캐스팅 관계자 제공 동의 (방침 v1, 2026-07-07)
+  // — 가입 시 이미 동의한 회원(auth metadata consent_dist 기록)은 체크박스 생략
+  const [agreeDist, setAgreeDist] = useState(false)
+  const [distConsented, setDistConsented] = useState(false)
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (typeof user?.user_metadata?.consent_dist === 'string') setDistConsented(true)
+    })
+  }, [])
+
   const pptRef = useRef<HTMLInputElement>(null)
   const photosRef = useRef<HTMLInputElement>(null)
   const v0Ref = useRef<HTMLInputElement>(null)
@@ -222,6 +233,10 @@ export default function OnboardingForm({
       photosRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
       return
     }
+    if (!distConsented && !agreeDist) {
+      setError('프로필 공개·캐스팅 관계자 제공 동의(필수)에 체크해 주세요.')
+      return
+    }
     setLoading(true)
     // 🔒 2026-06-15: 파일 업로드를 항목별로 격리. 파일 하나(예: PPT)가 실패해도
     //    전체 제출(actor row 생성)을 막지 않고, 성공한 파일 + 텍스트 정보로 등록 진행.
@@ -297,6 +312,7 @@ export default function OnboardingForm({
           major: major.trim() || undefined,
           birthYear: birthYear || undefined,
           gender: gender || undefined,
+          consentDistribution: distConsented || agreeDist,
         }),
         signal: AbortSignal.timeout(15_000),
       })
@@ -552,6 +568,24 @@ export default function OnboardingForm({
           <p id="onb-casting-count" aria-live="off" aria-atomic="true" style={{ fontSize: 12, color: 'var(--gray)', textAlign: 'right', marginTop: 4 }}>{castingSummary.length}/120</p>
         </div>
       </div>
+
+      {/* 서비스 동의 — 프로필 공개·캐스팅 관계자 제공·사진영상 이용 (방침 v1). 가입 때 이미 동의했으면 숨김 */}
+      {!distConsented && (
+        <div style={{ ...a.card, padding: '14px 16px' }}>
+          <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, cursor: 'pointer' }}>
+            <input type="checkbox" checked={agreeDist} onChange={(e) => setAgreeDist(e.target.checked)} disabled={loading}
+              style={{ width: 20, height: 20, marginTop: 2, accentColor: 'var(--navy)', cursor: 'pointer', flexShrink: 0 }} />
+            <span style={{ fontSize: 14, color: 'var(--white)', lineHeight: 1.6 }}>
+              <strong style={{ color: 'var(--navy)' }}>[필수]</strong> 프로필 공개 및 캐스팅 관계자 제공·사진영상 이용에 동의합니다.
+              <br />
+              <span style={{ fontSize: 12, color: 'var(--gray)' }}>
+                캐스팅 연결을 위한 동의예요 · 언제든 비공개 전환 가능 ·{' '}
+                <a href="/privacy" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--navy)', textDecoration: 'underline' }}>처리방침</a>
+              </span>
+            </span>
+          </label>
+        </div>
+      )}
 
       {/* 상태/에러/로딩 — 항상 DOM에 존재 (스크린 리더 즉시 알림 WCAG 4.1.3) */}
       <p role="status" aria-live="polite" aria-atomic="true" style={warning ? warnStyle : {}}>{warning}</p>
