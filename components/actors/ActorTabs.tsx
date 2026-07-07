@@ -6,6 +6,7 @@ import R2Video from '@/components/actors/R2Video'
 import PhotoLightbox from '@/components/actors/PhotoLightbox'
 import SignupPromptModal from '@/components/actors/SignupPromptModal'
 import YouTubeFacade from '@/components/youtube/YouTubeFacade'
+import VimeoFacade from '@/components/vimeo/VimeoFacade'
 
 /* ---- 타입 ---- */
 interface ActorPhoto {
@@ -22,6 +23,8 @@ interface ActorPhoto {
 interface ActorVideo {
   id: string
   youtube_id: string | null
+  vimeo_id?: string | null
+  vimeo_hash?: string | null
   r2_key?: string | null
   title: string | null
   video_type?: string | null  // 'reel' | 'monologue'
@@ -364,7 +367,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
           <div style={s.videoGrid}>
             {reelVideos.map((video) =>
               videoLocked ? (
-                (video.youtube_id || video.r2_key) && (
+                (video.youtube_id || video.vimeo_id || video.r2_key) && (
                   <div key={video.id} style={s.videoItem}>
                     <LockedVideoCard
                       thumbUrl={video.youtube_id ? `https://i.ytimg.com/vi/${video.youtube_id}/hqdefault.jpg` : actor.profile_photo}
@@ -378,6 +381,16 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                 <div key={video.id} style={s.videoItem}>
                   <YouTubeFacade
                     videoId={video.youtube_id}
+                    title={video.title || `${actor.name} 출연영상`}
+                    containerStyle={{ borderRadius: 6, background: '#000' }}
+                  />
+                  {video.title && <p style={s.videoTitle}>{video.title}</p>}
+                </div>
+              ) : video.vimeo_id ? (
+                <div key={video.id} style={s.videoItem}>
+                  <VimeoFacade
+                    videoId={video.vimeo_id}
+                    hash={video.vimeo_hash ?? ''}
                     title={video.title || `${actor.name} 출연영상`}
                     containerStyle={{ borderRadius: 6, background: '#000' }}
                   />
@@ -406,7 +419,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
           <div style={s.videoGrid}>
             {monologueVideos.map((video) =>
               videoLocked ? (
-                (video.youtube_id || video.r2_key) && (
+                (video.youtube_id || video.vimeo_id || video.r2_key) && (
                   <div key={video.id} style={s.videoItem}>
                     <LockedVideoCard
                       thumbUrl={video.youtube_id ? `https://i.ytimg.com/vi/${video.youtube_id}/hqdefault.jpg` : actor.profile_photo}
@@ -419,6 +432,15 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                 <div key={video.id} style={s.videoItem}>
                   <YouTubeFacade
                     videoId={video.youtube_id}
+                    title={video.title || '독백'}
+                    containerStyle={{ borderRadius: 6, background: '#000' }}
+                  />
+                </div>
+              ) : video.vimeo_id ? (
+                <div key={video.id} style={s.videoItem}>
+                  <VimeoFacade
+                    videoId={video.vimeo_id}
+                    hash={video.vimeo_hash ?? ''}
                     title={video.title || '독백'}
                     containerStyle={{ borderRadius: 6, background: '#000' }}
                   />

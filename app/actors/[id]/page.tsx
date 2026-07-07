@@ -62,6 +62,8 @@ interface ActorPhoto {
 interface ActorVideo {
   id: string
   youtube_id: string | null
+  vimeo_id?: string | null
+  vimeo_hash?: string | null
   r2_key: string | null
   title: string | null
   created_at?: string | null
@@ -98,14 +100,14 @@ function isUndefinedColumnError(err: { code?: string; message?: string } | null)
 
 // 운영 DB에 일부 컬럼이 누락돼 있어도(마이그레이션 미적용) 상세 페이지가 죽지 않도록
 // 단계적으로 select 컬럼을 줄여가며 재조회한다. (42703 → 다음 단계)
-function actorSelect(opts: { casting: boolean; videoType: boolean; filmExtra: boolean; advancedSkills: boolean; featured: boolean }): string {
+function actorSelect(opts: { casting: boolean; videoType: boolean; filmExtra: boolean; advancedSkills: boolean; featured: boolean; vimeo?: boolean }): string {
   return `
       id, name, name_en, gender, age_group, birth_year, height, weight, skills, is_public, updated_at,
       drive_photo_id, storage_photo_path, profile_photo, email, phone, instagram, profile_doc_path${
         opts.casting ? ',\n      casting_tags, casting_summary, profile_pdf_url' : ''
       }${opts.advancedSkills ? ',\n      advanced_skills' : ''},
       actor_photos ( id, drive_photo_id, url, storage_path, caption, sort_order, photo_type, label ),
-      actor_videos ( id, youtube_id, r2_key, title${opts.videoType ? ', video_type' : ''} ),
+      actor_videos ( id, youtube_id, r2_key, title${opts.videoType ? ', video_type' : ''}${opts.vimeo ? ', vimeo_id, vimeo_hash' : ''} ),
       actor_filmography ( id, category, title, role, year, production${
         opts.filmExtra ? ', broadcaster, film_type, award' : ''
       }${opts.featured ? ', is_featured' : ''} )
@@ -174,7 +176,17 @@ async function _queryActorWithFallbacks(
   id: string,
   fetchWith: ActorFetcher
 ): Promise<Actor | null> {
-  // 1차: 전체 스키마 (advanced_skills + is_featured 포함)
+  // 0차: 전체 스키마 + vimeo_id/vimeo_hash (2026-07-08 신규 — 마이그레이션 미적용 시 즉시 아래 1차로 폴백)
+  const withVimeo = await fetchWith(actorSelect({ casting: true, videoType: true, filmExtra: true, advancedSkills: true, featured: true, vimeo: true }))
+  if (withVimeo.data) return withVimeo.data as unknown as Actor
+  if (!withVimeo.error) return null
+  if (!isUndefinedColumnError(withVimeo.error)) {
+    console.error(`[ActorDetail] _queryActorWithFallbacks(${id}): DB 오류 code=${withVimeo.error.code} message=${withVimeo.error.message}`)
+    return null
+  }
+  console.warn('[ActorDetail] vimeo_id/vimeo_hash 컬럼 미존재 — 제외하고 재조회')
+
+  // 1차: 전체 스키마 (advanced_skills + is_featured 포함, vimeo 제외)
   const full = await fetchWith(actorSelect({ casting: true, videoType: true, filmExtra: true, advancedSkills: true, featured: true }))
   if (full.data) return full.data as unknown as Actor
   if (!full.error) return null
