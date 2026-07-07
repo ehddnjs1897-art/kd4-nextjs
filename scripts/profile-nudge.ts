@@ -45,10 +45,15 @@ function loadSentLog(): SentLog {
   try { return JSON.parse(readFileSync(SENT_LOG, 'utf8')) } catch { return {} }
 }
 
-function buildText(name: string, missing: { mainPhoto: boolean; gallery: boolean; video: boolean; doc: boolean }): string {
+function buildText(name: string, missing: { mainPhoto: boolean; gallery: boolean; video: boolean; doc: boolean; legacyPhoto: boolean }): string {
   const items: string[] = []
   if (missing.mainPhoto || missing.gallery) {
     items.push(missing.mainPhoto ? '▪ 프로필 사진 (대표사진 포함 3장 이상)' : '▪ 프로필 사진 3장 이상')
+  }
+  // 사진은 있지만 옛 자료(가로 이력서 합성사진)를 자동으로 오려낸 것 — 본인이 직접 올린 사진 아님
+  // (mainPhoto 항목과 중복 노출 안 되게 위 조건에서 제외된 케이스만 별도 문구)
+  if (missing.legacyPhoto && !missing.mainPhoto && !missing.gallery) {
+    items.push('▪ 프로필 사진 교체 — 지금 사진은 예전 자료에서 자동으로 오려낸 사진이에요. 본인이 직접 찍은 사진으로 새로 올려주세요')
   }
   if (missing.video) items.push('▪ 연기 영상 (릴 또는 독백)')
   if (missing.doc) items.push('▪ 이력서 파일 (예전 파일 유실 — 다시 업로드)')
@@ -112,8 +117,12 @@ async function main() {
       gallery: !photoSet.has(a.id) && !a.profile_photo,
       video: !vidSet.has(a.id),
       doc: !!a.profile_doc_path && String(a.profile_doc_path).startsWith('migrated/'),
+      // 2026-07-08 대표 지시: '/cards/' 경로는 얼굴크롭 배치가 만든 산출물 —
+      // 본인이 실제로 찍어 올린 사진이 아니므로 진짜 프로필 사진으로 교체 유도.
+      // 본인이 새 사진 올리고 '대표로 지정'하면 profile_photo가 바뀌어 다음 실행부터 자동 제외됨.
+      legacyPhoto: !!a.profile_photo && a.profile_photo.includes('/cards/'),
     }
-    if (!missing.mainPhoto && !missing.gallery && !missing.video && !missing.doc) continue
+    if (!missing.mainPhoto && !missing.gallery && !missing.video && !missing.doc && !missing.legacyPhoto) continue
     if (!a.phone) { noPhone++; continue }
 
     const prev = sentLog[a.id]
