@@ -224,6 +224,20 @@ export async function GET(
   const landscapeUrl = await pickLandscapeUrl(id)
   const photoUrl = landscapeUrl ?? getPhotoUrl(actor)
   const isLandscapeBg = !!landscapeUrl
+
+  // 2026-07-08 발견: 가로사진 없는 배우는 세로사진을 1200×630에 cover로 욱여넣는데
+  // 'center top' 고정값이 스케일 후 상단만 노출해 눈까지만 보이고 코·입·턱이 잘림
+  // (설진수 제보). 실제 세로 원본 치수를 재서 얼굴 하관까지 보이는 위치를 계산.
+  let fallbackPositionY = 0
+  if (photoUrl && !isLandscapeBg) {
+    const d = await imageDims(photoUrl)
+    if (d && d.h > d.w) {
+      const scaledH = d.h * (1200 / d.w)
+      const headroomFrac = 0.08 // 원본 상단 8% 지점을 프레임 상단에 (헤드룸 유지)
+      const offset = headroomFrac * scaledH
+      fallbackPositionY = Math.max(0, Math.min(100, (offset / (scaledH - 630)) * 100))
+    }
+  }
   // 썸네일 직관화 (2026-07-01 대표 지시): 연령대(30대) 대신 실제 만나이 + 키, 그리고 특기(사투리 포함)
   const currentYearOg = new Date().getFullYear()
   const ageLabel = actor.birth_year ? `${currentYearOg - actor.birth_year}세` : actor.age_group
@@ -263,7 +277,7 @@ export async function GET(
               height: '100%',
               objectFit: 'cover',
               // 얼굴이 잘리지 않게 상단(머리·얼굴) 기준 크롭 — 가로/세로 공통 (2026-07-01 대표 지시: 얼굴 잘 보이게)
-              objectPosition: isLandscapeBg ? 'center 22%' : 'center top',
+              objectPosition: isLandscapeBg ? 'center 22%' : `center ${fallbackPositionY.toFixed(1)}%`,
             }}
           />
         )}
