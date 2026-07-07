@@ -105,7 +105,11 @@ async function main() {
   for (const a of actors ?? []) {
     const missing = {
       mainPhoto: !a.profile_photo,
-      gallery: !photoSet.has(a.id),
+      // 2026-07-07 수정: actor_photos 행이 없어도 actors.profile_photo가 있으면
+      // "사진 없음"으로 오탐 안 함 — 관리자 스크립트가 actors.profile_photo만 직접
+      // 갱신하고 actor_photos엔 기록 안 남기는 경로(예: 얼굴크롭 배치)가 실재해서
+      // 실사진 있는 24명한테 "사진 없음" 문자가 나갈 뻔한 사고 발견·수정.
+      gallery: !photoSet.has(a.id) && !a.profile_photo,
       video: !vidSet.has(a.id),
       doc: !!a.profile_doc_path && String(a.profile_doc_path).startsWith('migrated/'),
     }
