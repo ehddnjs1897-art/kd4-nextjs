@@ -122,14 +122,14 @@ export default async function DashboardPage() {
     // 메타(특기·소개·사투리). dialects 컬럼 미적용(42703) 시 단계적 fallback — edit 페이지와 동일 패턴
     const metaPromise = supabaseAdmin
       .from('actors')
-      .select('id, casting_summary, skills, dialects, profile_photo')
+      .select('id, casting_summary, skills, dialects, profile_photo, storage_photo_path')
       .eq('id', actorId)
       .maybeSingle()
       .then(async (r) => {
         if (r.error && r.error.code === '42703') {
           const f = await supabaseAdmin
             .from('actors')
-            .select('id, casting_summary, skills, profile_photo')
+            .select('id, casting_summary, skills, profile_photo, storage_photo_path')
             .eq('id', actorId)
             .maybeSingle()
           if (f.data) return { data: { ...f.data, dialects: null }, error: null, hasDialects: false }
@@ -149,14 +149,15 @@ export default async function DashboardPage() {
 
     actorExists = !!meta.data
     if (meta.data) {
-      const m = meta.data as { casting_summary: string | null; skills: string[] | null; dialects: string[] | null; profile_photo: string | null }
+      const m = meta.data as { casting_summary: string | null; skills: string[] | null; dialects: string[] | null; profile_photo: string | null; storage_photo_path: string | null }
       const hasProfilePhotoRes = await supabaseAdmin
         .from('actor_photos').select('id', { count: 'exact', head: true })
         .eq('actor_id', actorId).eq('is_profile', true)
       completeness = {
-        // actor_photos에 is_profile 행이 없어도 actors.profile_photo가 있으면 완성으로 인정
-        // (관리자 스크립트가 actors.profile_photo만 직접 갱신하는 경로 대비 — 2026-07-07 오탐 발견·수정)
-        hasProfilePhoto: (hasProfilePhotoRes.count ?? 0) > 0 || !!m.profile_photo,
+        // actor_photos에 is_profile 행이 없어도 actors.profile_photo/storage_photo_path가 있으면
+        // 완성으로 인정 — lib/actor-photo.ts getActorPhotoUrl과 동일 우선순위(레거시 마이그레이션
+        // 배우는 profile_photo 없이 storage_photo_path만 있는 경우가 있음, 2026-07-08 오탐 발견·수정)
+        hasProfilePhoto: (hasProfilePhotoRes.count ?? 0) > 0 || !!m.profile_photo || !!m.storage_photo_path,
         photoCount: photoCnt.count ?? 0,
         videoCount: (ytVidCnt.count ?? 0) + (r2VidCnt.count ?? 0),
         hasCastingSummary: !!(m.casting_summary && m.casting_summary.trim().length > 0),

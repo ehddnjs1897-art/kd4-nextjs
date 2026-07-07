@@ -148,7 +148,7 @@ async function main() {
   const sb = createClient(url, key)
   const { data: actors, error } = await sb
     .from('actors')
-    .select('id, name, phone, is_public, profile_photo, profile_doc_path')
+    .select('id, name, phone, is_public, profile_photo, storage_photo_path, profile_doc_path')
     .eq('is_public', true)
   if (error) { log(`DB 조회 실패: ${error.message}`); process.exit(1) }
 
@@ -167,13 +167,18 @@ async function main() {
   let noPhone = 0
 
   for (const a of actors ?? []) {
+    // "사진 있음" 판정은 lib/actor-photo.ts getActorPhotoUrl과 동일 우선순위여야 함
+    // (profile_photo → storage_photo_path). 2026-07-08: storage_photo_path만 있고
+    // profile_photo가 null인 레거시 마이그레이션 배우(박정민 등)를 "사진 없음"으로
+    // 잘못 문자 보낼 뻔한 것 발견·수정 — 오늘 벌써 세 번째 같은 유형의 오탐.
+    const hasAnyPhoto = !!a.profile_photo || !!a.storage_photo_path
     const missing = {
-      mainPhoto: !a.profile_photo,
-      // 2026-07-07 수정: actor_photos 행이 없어도 actors.profile_photo가 있으면
-      // "사진 없음"으로 오탐 안 함 — 관리자 스크립트가 actors.profile_photo만 직접
+      mainPhoto: !hasAnyPhoto,
+      // 2026-07-07 수정: actor_photos 행이 없어도 실제 사진(profile_photo/storage_photo_path)이
+      // 있으면 "사진 없음"으로 오탐 안 함 — 관리자 스크립트가 대표 필드만 직접
       // 갱신하고 actor_photos엔 기록 안 남기는 경로(예: 얼굴크롭 배치)가 실재해서
-      // 실사진 있는 24명한테 "사진 없음" 문자가 나갈 뻔한 사고 발견·수정.
-      gallery: !photoSet.has(a.id) && !a.profile_photo,
+      // 실사진 있는 배우한테 "사진 없음" 문자가 나갈 뻔한 사고 발견·수정.
+      gallery: !photoSet.has(a.id) && !hasAnyPhoto,
       video: !vidSet.has(a.id),
       doc: !!a.profile_doc_path && String(a.profile_doc_path).startsWith('migrated/'),
       // 2026-07-08 대표 지시: '/cards/' 경로는 얼굴크롭 배치가 만든 산출물 —
