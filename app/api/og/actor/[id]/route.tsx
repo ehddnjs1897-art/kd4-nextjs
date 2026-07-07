@@ -226,12 +226,15 @@ export async function GET(
   const isLandscapeBg = !!landscapePick
 
   // 2026-07-08 발견: objectFit/objectPosition 퍼센트 지정을 3차례 다르게 바꿔 배포해도
-  // 픽셀 단위로 완전히 동일한 결과가 나와(설진수 제보) — next/og(Satori)가 <img>의
-  // object-position Y값을 아예 반영하지 않는 것으로 판단. 가로사진 배경도 같은 속성에
-  // 의존하고 있어 겉보기엔 괜찮아 보여도(가로사진은 세로 여백이 작아 앵커 위치 차이가
-  // 눈에 덜 띌 뿐) 동일하게 무시되고 있을 가능성 높음 — 두 분기 모두 object-fit/
-  // object-position을 걷어내고, 스케일된 실측 픽셀 크기 + top/left 오프셋으로 직접
-  // 배치하는 방식으로 전환 (width/height/top/left는 Satori가 확실히 지원하는 기본 박스 속성).
+  // 픽셀 단위로 동일한 결과가 나와(설진수 제보) Satori가 값을 무시하는 것으로 의심했으나,
+  // width/height/top/left 픽셀 배치로 바꿔 실측 crop과 1:1로 대조해보니 Satori는 정상
+  // 렌더링 중이었음 — 진짜 원인은 헤드룸 기준값(스케일 후 전체 높이의 8%)이 너무 작았던
+  // 것. 세로 원본(2:3~3:4)을 1200×630(1.9:1)에 우겨넣으면 실제로 보이는 영역이 원본의
+  // 30~35%뿐이라, 상단에서 8%만 내려가면 어차피 코 언저리에서 끝남 — 3차례 시도 모두
+  // 비슷한 작은 값(8~12%)이라 결과가 겹쳐 보였을 뿐, Satori 문제가 아니었음.
+  // → 기준을 '스케일 후 전체 높이의 %'가 아니라 '실제로 잘려나가는 초과분(overflow)의 %'로
+  // 변경 — 원본 사진으로 직접 검증(설진수 2:3 강한크롭, 박우진 1.5:1 약한크롭 둘 다 확인):
+  // 초과분의 30% 지점에서 시작하면 이마~눈~코~입~턱까지 자연스럽게 프레임에 들어옴.
   let photoW = 900
   let photoH = 1200 // 실측 실패 시 기본 가정: 3:4 세로비
   if (isLandscapeBg && landscapePick) {
@@ -249,8 +252,8 @@ export async function GET(
   const coverScale = Math.max(1200 / photoW, 630 / photoH)
   const scaledW = Math.round(photoW * coverScale)
   const scaledH = Math.round(photoH * coverScale)
-  const headroomFrac = 0.08 // 세로 여백 있는 쪽은 상단 8% 지점을 프레임 상단에 (헤드룸 유지)
-  const photoTopOffset = scaledH > 630 ? Math.round(Math.max(0, Math.min(scaledH - 630, headroomFrac * scaledH))) : 0
+  const TOP_OVERFLOW_FRAC = 0.3 // 잘려나가는 세로 초과분 중 상단 30%를 프레임 위로 넘김
+  const photoTopOffset = scaledH > 630 ? Math.round(TOP_OVERFLOW_FRAC * (scaledH - 630)) : 0
   const photoLeftOffset = scaledW > 1200 ? Math.round((scaledW - 1200) / 2) : 0
   // 썸네일 직관화 (2026-07-01 대표 지시): 연령대(30대) 대신 실제 만나이 + 키, 그리고 특기(사투리 포함)
   const currentYearOg = new Date().getFullYear()
