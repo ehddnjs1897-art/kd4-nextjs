@@ -283,7 +283,8 @@ export async function GET(
               height: '100%',
               objectFit: 'cover',
               // 얼굴이 잘리지 않게 상단(머리·얼굴) 기준 크롭 — 가로/세로 공통 (2026-07-01 대표 지시: 얼굴 잘 보이게)
-              objectPosition: isLandscapeBg ? 'center 22%' : `center ${fallbackPositionY.toFixed(1)}%`,
+              // Satori가 소수점 퍼센트('12.0%')를 못 읽어 무시할 가능성 있어 정수로 반올림
+              objectPosition: isLandscapeBg ? 'center 22%' : `center ${Math.round(fallbackPositionY)}%`,
             }}
           />
         )}
