@@ -25,8 +25,8 @@ const ogRateMap = new Map<string, { count: number; resetAt: number }>()
 const OG_RATE_LIMIT = 30
 const OG_RATE_WINDOW_MS = 60_000
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()
+const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()
 
 interface ActorOg {
   name: string

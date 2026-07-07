@@ -239,7 +239,7 @@ function profilePhotoUrl(actor: Actor): string {
   if (actor.profile_photo) return actor.profile_photo
   if (actor.storage_photo_path) {
     if (actor.storage_photo_path.split('/').some((seg: string) => seg === '..' || seg === '.')) return '/placeholder-actor.svg'
-    const base = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const base = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()
     if (base) return `${base}/storage/v1/object/public/actor-photos/${actor.storage_photo_path}`
   }
   if (actor.drive_photo_id)

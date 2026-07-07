@@ -21,7 +21,7 @@ export interface ActorPhotoSource {
 
 const STORAGE_BUCKET = 'actor-photos'
 // 모듈 스코프에 호이스팅 — 배우 51+명 렌더 시 env read 중복 방지
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
+const SUPABASE_URL = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? '').trim()
 
 /**
  * 배우 목록 카드용 사진 URL (비로그인 노출 안전).

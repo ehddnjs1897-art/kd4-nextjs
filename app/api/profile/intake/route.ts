@@ -27,7 +27,7 @@ import { CONSENT_VERSION } from '@/lib/consent'
 import { matchActorOnSignup, matchActorForIntake } from '@/lib/actor-matching'
 import { isMissingColumnError, findMissingOptionalCol, isAgeGroupCheckError } from '@/lib/db-missing-column'
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()
 
 function photoPublicUrl(path: string): string {
   return `${SUPABASE_URL}/storage/v1/object/public/actor-photos/${path}`

@@ -105,7 +105,7 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://connect.facebook.net" />
         {/* Supabase preconnect — 클라이언트 인증 갱신·Storage 요청 TCP 핸드셰이크 선점 */}
         {process.env.NEXT_PUBLIC_SUPABASE_URL && (
-          <link rel="preconnect" href={process.env.NEXT_PUBLIC_SUPABASE_URL} crossOrigin="anonymous" />
+          <link rel="preconnect" href={process.env.NEXT_PUBLIC_SUPABASE_URL.trim()} crossOrigin="anonymous" />
         )}
       </head>
       <body
