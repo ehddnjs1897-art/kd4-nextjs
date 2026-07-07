@@ -268,21 +268,8 @@ export async function GET(
           />
         )}
 
-        {/* 다크 그라디언트 오버레이 — 하단(글자 영역)만 어둡게, 얼굴(상단 55%)은 밝게 유지 */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background:
-              'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 30%, rgba(0,0,0,0) 56%)',
-            display: 'flex',
-          }}
-        />
-
-        {/* 콘텐츠 레이어 */}
+        {/* 콘텐츠 레이어 — 2026-07-08 대표 지시: 사진 전체 그라디언트 제거,
+            글자 뒤 솔리드 패널로만 가독성 확보(사진은 원본 그대로 밝게 보임) */}
         <div
           style={{
             position: 'absolute',
@@ -296,8 +283,17 @@ export async function GET(
             padding: '44px 60px 48px',
           }}
         >
-          {/* 하단: 이름 · 서브라인 · 태그 */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {/* 하단: 이름 · 서브라인 · 태그 — 솔리드 다크 패널(그라디언트 아님) */}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 10,
+              background: 'rgba(10,10,10,0.72)',
+              borderRadius: 16,
+              padding: '20px 26px',
+            }}
+          >
             {/* 캐스팅 태그 */}
             {tags.length > 0 && (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 4 }}>

@@ -4,6 +4,9 @@
  * R2에 저장된 출연영상 재생
  * - 마운트 즉시 signed URL 미리 발급 → 재생 버튼 클릭 즉시 영상 시작
  * - poster: 재생 전 썸네일 이미지 (배우 프로필 사진 등)
+ * - preload="auto"(2026-07-08): "재생하면 로딩이 길다" 제보 — signed URL만 미리
+ *   받고 실제 영상 바이트는 재생 클릭 시점에야 받기 시작해 체감 버퍼링 발생.
+ *   URL 확보 즉시 실제 영상 데이터도 미리 받아두게 변경.
  */
 
 import { useState, useEffect, useRef } from 'react'
@@ -81,7 +84,7 @@ export default function R2Video({
               src={`${url}#t=0.5`}
               title={title || '배우 출연영상'}
               controls={playing}
-              preload="metadata"
+              preload="auto"
               playsInline
               controlsList="nodownload"
               onContextMenu={(e) => e.preventDefault()}
