@@ -299,8 +299,8 @@ export async function GET(
           </div>
         )}
 
-        {/* 콘텐츠 레이어 — 2026-07-08 대표 지시: 사진 전체 그라디언트 제거,
-            글자 뒤 솔리드 패널로만 가독성 확보(사진은 원본 그대로 밝게 보임) */}
+        {/* 콘텐츠 레이어 — 2026-07-08 대표 지시: 박스·패널·그라디언트 전부 금지, 인물 사진과
+            텍스트만 나오게. 배경 요소 없이 텍스트 자체에 그림자만 줘서 가독성 확보 (다시 박스 넣지 말 것). */}
         <div
           style={{
             position: 'absolute',
@@ -314,17 +314,7 @@ export async function GET(
             padding: '44px 60px 48px',
           }}
         >
-          {/* 하단: 이름 · 서브라인 · 태그 — 솔리드 다크 패널(그라디언트 아님) */}
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 10,
-              background: 'rgba(10,10,10,0.72)',
-              borderRadius: 16,
-              padding: '20px 26px',
-            }}
-          >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {/* 캐스팅 태그 */}
             {tags.length > 0 && (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 4 }}>
@@ -336,6 +326,7 @@ export async function GET(
                       fontSize: 18,
                       fontWeight: 700,
                       color: '#C9A84C',
+                      textShadow: '0 2px 8px rgba(0,0,0,0.85)',
                       background: 'rgba(201,168,76,0.15)',
                       border: '1px solid rgba(201,168,76,0.5)',
                       borderRadius: 4,
@@ -357,6 +348,7 @@ export async function GET(
                 color: '#FFFFFF',
                 lineHeight: 1.0,
                 letterSpacing: '-0.01em',
+                textShadow: '0 2px 10px rgba(0,0,0,0.85), 0 4px 24px rgba(0,0,0,0.6)',
               }}
             >
               {actor.name}
@@ -369,8 +361,9 @@ export async function GET(
                   style={{
                     display: 'flex',
                     fontSize: 26,
-                    color: 'rgba(255,255,255,0.82)',
+                    color: 'rgba(255,255,255,0.92)',
                     fontWeight: 600,
+                    textShadow: '0 2px 8px rgba(0,0,0,0.85)',
                   }}
                 >
                   {subline}
@@ -380,9 +373,10 @@ export async function GET(
                 style={{
                   display: 'flex',
                   fontSize: 14,
-                  color: 'rgba(255,255,255,0.25)',
+                  color: 'rgba(255,255,255,0.55)',
                   letterSpacing: '0.06em',
                   marginLeft: 'auto',
+                  textShadow: '0 2px 6px rgba(0,0,0,0.85)',
                 }}
               >
                 kd4.club
@@ -398,6 +392,7 @@ export async function GET(
                   color: '#D9BC6A',
                   fontWeight: 500,
                   marginTop: 2,
+                  textShadow: '0 2px 8px rgba(0,0,0,0.85)',
                 }}
               >
                 {skillLine}
