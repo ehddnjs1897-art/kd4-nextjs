@@ -46,7 +46,17 @@ function loadSentLog(): SentLog {
   try { return JSON.parse(readFileSync(SENT_LOG, 'utf8')) } catch { return {} }
 }
 
-function buildText(name: string, missing: { mainPhoto: boolean; gallery: boolean; video: boolean; doc: boolean; legacyPhoto: boolean; noLandscape: boolean }): string {
+interface Missing {
+  mainPhoto: boolean
+  gallery: boolean
+  video: boolean
+  doc: boolean
+  legacyPhoto: boolean
+  noLandscape: boolean
+  noSummary: boolean
+}
+
+function buildText(name: string, missing: Missing): string {
   const items: string[] = []
   if (missing.mainPhoto || missing.gallery) {
     items.push(missing.mainPhoto ? '▪ 프로필 사진 (대표사진 포함 3장 이상)' : '▪ 프로필 사진 3장 이상')
@@ -61,6 +71,9 @@ function buildText(name: string, missing: { mainPhoto: boolean; gallery: boolean
   // 2026-07-08 대표 지시: 카카오톡 공유 썸네일은 가로(와이드) 사진에 최적화 —
   // 가로 사진이 하나도 없으면 세로사진을 억지로 늘려써서 어색하게 잘림.
   if (missing.noLandscape) items.push('▪ 가로(와이드) 사진 최소 1장 — 카카오톡 공유 썸네일에 사용돼요. 가로로 찍은 사진 한 장만 추가로 올려주세요')
+  // 2026-07-08 대표 지시(리더클래스 점검 중 발견): 한줄소개는 캐스팅 담당자가 5초 안에
+  // 제일 먼저 읽는 항목 — 대시보드 완성도 카드엔 반영되지만 자동문자엔 빠져있던 항목 추가.
+  if (missing.noSummary) items.push('▪ 한줄소개 — 캐스팅 담당자가 가장 먼저 보는 문구예요. 나를 한 줄로 소개해 주세요')
 
   const head = items.length === 1 ? '배포 전에 딱 하나만 채워주세요.' : `배포 전에 ${name}님 프로필에 비어 있는 항목을 채워주세요.`
 
@@ -146,11 +159,17 @@ async function main() {
   }
 
   const sb = createClient(url, key)
-  const { data: actors, error } = await sb
+  const { data: allActors, error } = await sb
     .from('actors')
-    .select('id, name, phone, is_public, profile_photo, storage_photo_path, profile_doc_path')
+    .select('id, name, phone, is_public, profile_photo, storage_photo_path, profile_doc_path, casting_summary')
     .eq('is_public', true)
   if (error) { log(`DB 조회 실패: ${error.message}`); process.exit(1) }
+
+  // ONLY_NAMES=이름1,이름2 — 특정 인원만 지금 즉시 발송(예: 오늘 수업 앞둔 리더클래스만).
+  // 미설정 시 공개 배우 전원 대상(정기 주간 실행 기본 동작).
+  const onlyNames = process.env.ONLY_NAMES?.split(',').map((s) => s.trim()).filter(Boolean)
+  const actors = onlyNames ? (allActors ?? []).filter((a) => onlyNames.includes(a.name)) : allActors
+  if (onlyNames) log(`ONLY_NAMES 필터 적용 — ${onlyNames.length}명 지정, ${actors?.length ?? 0}명 매칭`)
 
   const { data: vids } = await sb.from('actor_videos').select('actor_id')
   const vidSet = new Set((vids ?? []).map((v) => v.actor_id))
@@ -188,8 +207,10 @@ async function main() {
       // 2026-07-08 대표 지시: 카톡 공유 썸네일(가로 1200×630)은 가로사진 우선 사용(/api/og/actor 로직) —
       // 가로사진이 하나도 없으면 세로사진을 억지로 늘려써서 어색하게 잘림.
       noLandscape: !landscapeSet.has(a.id),
+      // 2026-07-08 대표 지시(리더클래스 점검): 한줄소개 — 완성도 카드엔 있었는데 자동문자엔 누락돼있던 항목.
+      noSummary: !a.casting_summary || !String(a.casting_summary).trim(),
     }
-    if (!missing.mainPhoto && !missing.gallery && !missing.video && !missing.doc && !missing.legacyPhoto && !missing.noLandscape) continue
+    if (!missing.mainPhoto && !missing.gallery && !missing.video && !missing.doc && !missing.legacyPhoto && !missing.noLandscape && !missing.noSummary) continue
     if (!a.phone) { noPhone++; continue }
 
     const prev = sentLog[a.id]
