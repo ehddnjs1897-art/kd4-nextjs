@@ -10,6 +10,7 @@ const publicLinks = [
   { label: '클래스 소개', href: '/classes' },
   { label: '배우 DB', href: '/actors' },
   { label: '멤버 혜택', href: '/benefits' },
+  { label: 'FAQ', href: '/faq' },
 ]
 
 const crewLinks = [
