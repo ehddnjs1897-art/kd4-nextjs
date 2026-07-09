@@ -22,6 +22,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/actors`,                       lastModified: NOW,                   changeFrequency: 'weekly',  priority: 0.8 },
     { url: `${BASE}/benefits`,                     lastModified: new Date('2026-06-11'), changeFrequency: 'monthly', priority: 0.7 },
     { url: `${BASE}/benefits/seowoo-studio`,       lastModified: new Date('2026-06-11'), changeFrequency: 'monthly', priority: 0.65 },
+    // 2026-07-10 신설 페이지 — AEO 핵심 (FAQ=AI 답변엔진 인용 타깃, reviews=신뢰 신호)
+    { url: `${BASE}/faq`,                          lastModified: new Date('2026-07-10'), changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${BASE}/reviews`,                      lastModified: new Date('2026-07-10'), changeFrequency: 'weekly',  priority: 0.7 },
     { url: `${BASE}/board`,                        lastModified: NOW,                   changeFrequency: 'daily',   priority: 0.6 },
     { url: `${BASE}/privacy`,                      lastModified: new Date('2026-07-07'), changeFrequency: 'yearly',  priority: 0.3 },
     { url: `${BASE}/terms`,                        lastModified: new Date('2026-07-07'), changeFrequency: 'yearly',  priority: 0.3 },

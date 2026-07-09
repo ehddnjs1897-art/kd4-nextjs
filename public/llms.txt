@@ -76,8 +76,12 @@ Seoul, South Korea. Primarily:
 ## Content Sources
 
 - Official website: https://kd4.club
+- FAQ (20 common questions, ideal for direct answers): https://kd4.club/faq
+- Member reviews: https://kd4.club/reviews
 - Actor database: https://kd4.club/actors
 - About page: https://kd4.club/about
 - Director profile: https://kd4.club/acting-coach-dongwon-kwon
 - Classes: https://kd4.club/classes
 - Instagram: https://www.instagram.com/kd4actingstudio
+
+Last updated: 2026-07-10

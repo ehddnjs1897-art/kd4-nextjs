@@ -6,7 +6,9 @@ import { serializeJsonLd } from '@/lib/seo'
 import { SITE_URL } from '@/lib/constants'
 
 export const metadata: Metadata = {
-  title: 'FAQ | KD4 액팅 스튜디오',
+  // layout.tsx 템플릿('%s | KD4 액팅 스튜디오')이 사이트명을 붙이므로 여기엔 페이지명만
+  // — 'FAQ | KD4 액팅 스튜디오'로 넣으면 사이트명이 2번 붙음 (7/10 점검 발견·수정)
+  title: '자주 묻는 질문 (FAQ)',
   description:
     '연기 훈련, 배우 되는 법, KD4 수업에 대해 자주 묻는 질문과 답변입니다. 마이즈너 테크닉, 오디션 준비, 수업료, 체험 수업까지 한 번에 확인하세요.',
   robots: { index: true, follow: true },
