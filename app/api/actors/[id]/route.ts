@@ -8,6 +8,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 import { revalidateTag } from '@/lib/revalidate'
 import { canViewActorDb } from '@/lib/access'
 import { sanitizeDialects } from '@/lib/dialects'
+import { sanitizeCastingTypes } from '@/lib/casting-preferences'
 import { isMissingColumnError, findMissingOptionalCol } from '@/lib/db-missing-column'
 import type { Actor, ActorDetail, UserRole } from '@/lib/types'
 
@@ -248,6 +249,13 @@ export async function PATCH(
       // 화이트리스트 정제 + '없음(표준어)' 상호배타 처리 — '없음'도 허용 (2026-07-01 저장 실패 버그 수정)
       body.dialects = sanitizeDialects(body.dialects)
     }
+    // 오디션 알림 관심분야 — 화이트리스트 정제, 빈 선택은 null(=전체 수신)
+    if ('preferred_casting_types' in body && body.preferred_casting_types !== null) {
+      if (!Array.isArray(body.preferred_casting_types)) {
+        return NextResponse.json({ error: '관심분야 형식이 올바르지 않습니다.' }, { status: 400 })
+      }
+      body.preferred_casting_types = sanitizeCastingTypes(body.preferred_casting_types)
+    }
     // 학교·전공 — 문자열 trim, 최대 80자, 빈문자열→null (2026-07-02 학교·전공 기능 추가)
     if ('school' in body) {
       if (body.school !== null && typeof body.school !== 'string') {
@@ -264,15 +272,15 @@ export async function PATCH(
       body.major = trimmed || null
     }
 
-    const allowed = ['height', 'weight', 'birth_year', 'skills', 'advanced_skills', 'dialects', 'school', 'major', 'instagram', 'casting_summary', 'casting_tags', 'name_en', 'age_group', 'profile_doc_path']
+    const allowed = ['height', 'weight', 'birth_year', 'skills', 'advanced_skills', 'dialects', 'preferred_casting_types', 'school', 'major', 'instagram', 'casting_summary', 'casting_tags', 'name_en', 'age_group', 'profile_doc_path']
     const patch: Record<string, unknown> = {}
     for (const k of allowed) {
       if (k in body) patch[k] = body[k]
     }
 
-    // 신규 컬럼(advanced_skills/dialects/school/major) 미존재 fallback — 마이그레이션 미실행 안전.
+    // 신규 컬럼(advanced_skills/dialects/preferred_casting_types/school/major) 미존재 fallback — 마이그레이션 미실행 안전.
     // ⚠️ UPDATE는 누락 컬럼 시 PGRST204를 냄(42703 아님) → isMissingColumnError로 둘 다 잡는다.
-    const OPTIONAL_COLS = ['advanced_skills', 'dialects', 'school', 'major']
+    const OPTIONAL_COLS = ['advanced_skills', 'dialects', 'preferred_casting_types', 'school', 'major']
     const doUpdate = async (dropCols: Set<string>) => {
       const finalPatch: Record<string, unknown> = { ...patch, updated_at: new Date().toISOString() }
       for (const c of dropCols) delete finalPatch[c]

@@ -33,6 +33,7 @@ interface ActorRow {
   skills: string[] | null   // DB 타입: text[] — string | null 이었던 오류 수정
   advanced_skills: string[] | null  // ⭐ 고급 숙련도 (2026-05-29 추가)
   dialects: string[] | null  // 사투리 가능 지역 (2026-06-08 추가)
+  preferred_casting_types?: string[] | null  // 오디션 알림 관심분야 (2026-07-09 추가 — 별도 안전 조회로 병합)
   school: string | null  // 학교 (2026-07-02 추가 — 별도 안전 조회로 병합)
   major: string | null   // 전공 (2026-07-02 추가 — 별도 안전 조회로 병합)
   instagram: string | null
@@ -209,6 +210,14 @@ export default async function GalleryEditPage() {
       if (typeof row.major === 'string') actor.major = row.major
     }
   } catch { /* 컬럼 미존재 등 — 무시 */ }
+  // preferred_casting_types(오디션 알림 관심분야) — 신규 컬럼, 마이그레이션 전 미존재 가능 → 동일 안전 조회 패턴
+  try {
+    const pq = await supabaseAdmin.from('actors').select('preferred_casting_types').eq('id', actor_id).maybeSingle()
+    const row = pq.data as { preferred_casting_types?: unknown } | null
+    if (!pq.error && row && Array.isArray(row.preferred_casting_types)) {
+      actor.preferred_casting_types = row.preferred_casting_types as string[]
+    }
+  } catch { /* 컬럼 미존재 등 — 무시 */ }
   const allPhotos = (photosRes.data ?? []) as PhotoRow[]
   // 프로필 사진(일반)과 현재사진(전신 각도, photo_type='current')을 분리해 폼에 전달
   const photos = allPhotos.filter((p) => p.photo_type !== 'current')
@@ -232,6 +241,7 @@ export default async function GalleryEditPage() {
     birthYear: actor.birth_year ?? undefined,
     skills: actor.skills?.join(', ') ?? undefined,  // text[] → 쉼표 구분 문자열 (폼 표시용)
     dialects: actor.dialects ?? undefined,  // text[] 그대로 (멀티선택)
+    preferredCastingTypes: actor.preferred_casting_types ?? undefined,
     school: actor.school ?? undefined,
     major: actor.major ?? undefined,
     instagram: actor.instagram ?? undefined,

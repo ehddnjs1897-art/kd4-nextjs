@@ -16,6 +16,7 @@
 
 import { useState, useRef, useMemo, useEffect } from 'react'
 import { DIALECT_OPTIONS, DIALECT_NONE } from '@/lib/dialects'
+import { CASTING_TYPE_OPTIONS } from '@/lib/casting-preferences'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 import { prepareImageForUpload } from '@/lib/prepare-image'
@@ -66,6 +67,7 @@ interface InitialData {
   birthYear?: number
   skills?: string
   dialects?: string[]
+  preferredCastingTypes?: string[]
   school?: string
   major?: string
   instagram?: string
@@ -161,6 +163,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
   const [birthYear, setBirthYear] = useState(initialData.birthYear ?? '')
   const [skills, setSkills] = useState(initialData.skills ?? '')
   const [dialects, setDialects] = useState<string[]>(initialData.dialects ?? [])
+  const [preferredTypes, setPreferredTypes] = useState<string[]>(initialData.preferredCastingTypes ?? [])
   const [school, setSchool] = useState(initialData.school ?? '')
   const [major, setMajor] = useState(initialData.major ?? '')
   const [instagram, setInstagram] = useState(initialData.instagram ?? '')
@@ -245,6 +248,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           birth_year: birthYear || null,
           skills: skillsArr.length > 0 ? skillsArr : null,
           dialects: dialects.length > 0 ? dialects : null,
+          preferred_casting_types: preferredTypes.length > 0 ? preferredTypes : null,
           school: school.trim() || null,
           major: major.trim() || null,
           instagram: instagram || null,
@@ -717,6 +721,22 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                   onClick={() => setDialects((prev) => { if (isNone) return prev.includes(DIALECT_NONE) ? [] : [DIALECT_NONE]; const r = prev.filter((x) => x !== DIALECT_NONE); return r.includes(d) ? r.filter((x) => x !== d) : [...r, d] })}
                   style={{ padding: '9px 16px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 500, background: on ? 'var(--navy)' : 'transparent', color: on ? '#fff' : 'var(--gray)', border: `1px solid ${on ? 'var(--navy)' : 'var(--border)'}`, transition: 'all 0.15s' }}>
                   {on ? '✓ ' : ''}{isNone ? '없음 (표준어)' : d}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+        <div style={{ padding: '16px', ...a.sep }}>
+          <label style={a.blockLabel}>오디션 알림 관심분야</label>
+          <p style={a.help}>선택한 유형의 공고만 문자로 받아요. 아무것도 선택 안 하면 전체 유형을 받습니다.</p>
+          <div role="group" aria-label="오디션 알림 관심분야" style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {CASTING_TYPE_OPTIONS.map((t) => {
+              const on = preferredTypes.includes(t)
+              return (
+                <button key={t} type="button" aria-pressed={on}
+                  onClick={() => setPreferredTypes((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]))}
+                  style={{ padding: '9px 16px', borderRadius: 999, cursor: 'pointer', fontSize: 14, fontWeight: 500, background: on ? 'var(--navy)' : 'transparent', color: on ? '#fff' : 'var(--gray)', border: `1px solid ${on ? 'var(--navy)' : 'var(--border)'}`, transition: 'all 0.15s' }}>
+                  {on ? '✓ ' : ''}{t}
                 </button>
               )
             })}
