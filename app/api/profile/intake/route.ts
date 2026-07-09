@@ -278,10 +278,14 @@ export async function POST(request: NextRequest) {
           // 동일인 의심되나 자동병합 보류 — 비공개 신규행으로 두고 관리자 검토 필요.
           console.warn(`[profile/intake] 동일인 의심·자동병합 보류(${intakeMatch.reason}) → 비공개 신규행. name=${profile.name ?? ''}`)
         }
+        // 활동명(예명) — 가입 시 입력했으면 배우 프로필 표시명으로 사용 (2026-07-10 대표 지시:
+        // 예명 활동 배우가 본명으로 가입해 이력이 두 이름으로 흩어지는 문제 방지).
+        // 매칭(matchActorOnSignup/ForIntake)은 계속 실명+전화 기준 — 표시명만 예명.
+        const stageName = (user.user_metadata?.stage_name ?? '').toString().trim().slice(0, 50)
         const { data: created, error: createErr } = await supabaseAdmin
           .from('actors')
           .insert({
-            name: profile.name ?? '(이름 미입력)',
+            name: stageName || profile.name || '(이름 미입력)',
             phone: profile.phone ?? null,
             is_public: false, // 관리자 검토 후 공개
             self_managed: true,

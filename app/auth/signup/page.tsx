@@ -16,6 +16,7 @@ export default function SignupPage() {
   const [memberType, setMemberType] = useState<MemberType>('actor')
 
   const [name, setName] = useState('')
+  const [stageName, setStageName] = useState('') // 배우: 활동명(예명) — 프로필 표시명 (선택, 2026-07-10 대표 지시)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirm, setPasswordConfirm] = useState('')
@@ -98,6 +99,9 @@ export default function SignupPage() {
     }
     if (memberType === 'actor' && phone) {
       metadata.phone = phone
+    }
+    if (memberType === 'actor' && stageName.trim()) {
+      metadata.stage_name = stageName.trim()
     }
     if (memberType === 'actor' && (gender === '남' || gender === '여')) {
       metadata.gender = gender
@@ -400,6 +404,31 @@ export default function SignupPage() {
               {passwordConfirm && password !== passwordConfirm ? '비밀번호가 일치하지 않습니다.' : ''}
             </span>
           </div>
+
+          {/* 배우 회원: 활동명(예명) — 프로필 표시명 (선택, 2026-07-10 대표 지시: 예명 활동 배우가 실명 가입해 이력이 흩어지는 문제 방지) */}
+          {memberType === 'actor' && (
+            <div style={styles.fieldGroup}>
+              <label htmlFor="stageName" style={styles.label}>
+                활동명(예명) <span style={styles.optional}>(선택)</span>
+              </label>
+              <input
+                id="stageName"
+                type="text"
+                value={stageName}
+                onChange={(e) => setStageName(e.target.value)}
+                placeholder="실명과 다른 이름으로 활동하시면 입력"
+                disabled={loading}
+                maxLength={50}
+                spellCheck={false}
+                autoComplete="off"
+                aria-describedby="stage-name-hint"
+                style={styles.input}
+              />
+              <p id="stage-name-hint" style={styles.hint}>
+                <span aria-hidden="true">🎭</span> 배우 프로필에는 이 이름으로 표시돼요. 비워두면 실명으로 표시됩니다.
+              </p>
+            </div>
+          )}
 
           {/* 배우 회원: 성별 (필수 — 성별 필터 노출) */}
           {memberType === 'actor' && (
