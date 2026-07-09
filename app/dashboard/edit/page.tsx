@@ -70,6 +70,7 @@ interface FilmRow {
   role: string | null
   broadcaster: string | null
   film_type: string | null
+  award: string | null
   is_featured?: boolean | null
 }
 
@@ -180,7 +181,7 @@ export default async function GalleryEditPage() {
       .from('actor_filmography')
       // broadcaster/film_type 미조회 시 저장할 때 null로 덮어써져 기존 방송사 데이터 소실
       // is_featured(대표출연작)는 신규 컬럼 — 미존재(42703) 시 아래에서 제외하고 재조회
-      .select('id, category, year, title, role, broadcaster, film_type, is_featured')
+      .select('id, category, year, title, role, broadcaster, film_type, award, is_featured')
       .eq('actor_id', actor_id)
       .order('year', { ascending: false }),
     supabaseAdmin
@@ -218,7 +219,7 @@ export default async function GalleryEditPage() {
   if (filmRes.error) {
     const retry = await supabaseAdmin
       .from('actor_filmography')
-      .select('id, category, year, title, role, broadcaster, film_type')
+      .select('id, category, year, title, role, broadcaster, film_type, award')
       .eq('actor_id', actor_id)
       .order('year', { ascending: false })
     filmography = (retry.data ?? []) as FilmRow[]
@@ -265,6 +266,7 @@ export default async function GalleryEditPage() {
       role: f.role ?? '',
       broadcaster: f.broadcaster ?? undefined,
       film_type: f.film_type ?? undefined,
+      award: f.award ?? undefined,
       is_featured: f.is_featured ?? false,
     })),
   }

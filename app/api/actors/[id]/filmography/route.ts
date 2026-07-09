@@ -50,16 +50,19 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       }
     }
 
-    let parsedBody: { category?: string; year?: number; title?: string; role?: string; broadcaster?: string; film_type?: string }
+    let parsedBody: { category?: string; year?: number; title?: string; role?: string; broadcaster?: string; film_type?: string; award?: string }
     try {
       parsedBody = await request.json()
     } catch {
       return NextResponse.json({ error: '잘못된 요청 형식입니다.' }, { status: 400 })
     }
-    const { category, year, title, role, broadcaster, film_type } = parsedBody
+    const { category, year, title, role, broadcaster, film_type, award } = parsedBody
     if (!title) return NextResponse.json({ error: '작품명이 필요합니다.' }, { status: 400 })
     if (typeof title === 'string' && title.length > 200) {
       return NextResponse.json({ error: '작품명은 200자 이하로 입력해주세요.' }, { status: 400 })
+    }
+    if (typeof award === 'string' && award.length > 200) {
+      return NextResponse.json({ error: '수상·영화제 이력은 200자 이하로 입력해주세요.' }, { status: 400 })
     }
 
     const VALID_FILM_CATEGORIES = new Set(['drama', 'film', 'cf', 'musical', 'theater', 'etc'])
@@ -103,6 +106,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
         role: role ? String(role).slice(0, 100) : null,
         broadcaster: broadcaster ? String(broadcaster).slice(0, 100) : null,
         film_type: film_type ? String(film_type).slice(0, 50) : null,
+        award: award ? String(award).slice(0, 200) : null,
         sort_order: nextSortOrder,
       })
       .select('id')

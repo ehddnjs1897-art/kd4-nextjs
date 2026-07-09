@@ -55,6 +55,7 @@ interface FilmItem {
   role: string
   broadcaster?: string
   film_type?: string
+  award?: string  // 수상 이력 · 영화제 참가(출품/상영/초청) — 자유 입력
   is_featured?: boolean  // 대표출연작 — 프로필 상단 하이라이트로 노출
   isNew?: boolean  // 클라이언트에서 새로 추가한 행 — 저장 시 클라 UUID를 서버에 보내지 않음(신규 삽입 처리)
 }
@@ -564,6 +565,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
           role: f.role?.trim() || undefined,
           broadcaster: f.broadcaster?.trim() || undefined,
           film_type: f.film_type?.trim() || undefined,
+          award: f.award?.trim() || undefined,
           is_featured: !!f.is_featured,
         }))
       const res = await fetch(`/api/actors/${actorId}/filmography/bulk`, {
@@ -916,7 +918,8 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                 ))}
               </div>
               {filmography.map((f, i) => (
-                <div key={f.id || i} style={a.filmRow}>
+                <div key={f.id || i} style={{ marginBottom: 10 }}>
+                <div style={{ ...a.filmRow, marginBottom: 6 }}>
                   {/* 대표출연작 지정 토글 — ★ 켜면 프로필 상단 하이라이트로 노출 (저장 필요) */}
                   <button
                     type="button"
@@ -964,6 +967,14 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
                   ) : (
                     <button ref={el => { deleteFilmRefs.current.set(i, el) }} type="button" className="btn-press" onClick={() => deleteFilm(i)} aria-label={`필모그래피 ${i + 1}번 삭제`} style={a.danger}>삭제</button>
                   )}
+                </div>
+                <input
+                  aria-label={`필모그래피 ${i + 1}번 수상·영화제`}
+                  value={f.award ?? ''}
+                  onChange={e => updateFilm(i, 'award', e.target.value)}
+                  style={a.smallInput}
+                  placeholder="🏆 수상·영화제 이력 (선택) — 예: 제21회 미쟝센 단편영화제 최우수상"
+                />
                 </div>
               ))}
             </div>

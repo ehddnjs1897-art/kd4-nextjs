@@ -3,7 +3,7 @@
  * 필모그래피 전체를 한 번에 동기화
  *
  * body: {
- *   items: { id?: string; category: string; year?: number; title: string; role?: string; broadcaster?: string; film_type?: string }[]
+ *   items: { id?: string; category: string; year?: number; title: string; role?: string; broadcaster?: string; film_type?: string; award?: string }[]
  * }
  *
  * 처리 전략:
@@ -36,6 +36,7 @@ interface FilmItem {
   role?: string
   broadcaster?: string
   film_type?: string
+  award?: string
   is_featured?: boolean
 }
 
@@ -128,6 +129,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
         role: String(item.role ?? '').trim().slice(0, 100) || undefined,
         broadcaster: String(item.broadcaster ?? '').trim().slice(0, 100) || undefined,
         film_type: String(item.film_type ?? '').trim().slice(0, 50) || undefined,
+        award: String(item.award ?? '').trim().slice(0, 200) || undefined,
         is_featured: item.is_featured === true,
       }
       if (item.id) {
@@ -168,6 +170,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       role: item.role ?? null,
       broadcaster: item.broadcaster ?? null,
       film_type: item.film_type ?? null,
+      award: item.award ?? null,
       is_featured: item.is_featured === true,
     }))
     let upsertRes = toUpdate.length > 0
@@ -219,6 +222,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       role: item.role ?? null,
       broadcaster: item.broadcaster ?? null,
       film_type: item.film_type ?? null,
+      award: item.award ?? null,
       is_featured: item.is_featured === true,
       sort_order: baseSortOrder + idx,
     }))
