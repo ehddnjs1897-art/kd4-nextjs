@@ -26,6 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/faq`,                          lastModified: new Date('2026-07-10'), changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/reviews`,                      lastModified: new Date('2026-07-10'), changeFrequency: 'weekly',  priority: 0.7 },
     { url: `${BASE}/board`,                        lastModified: NOW,                   changeFrequency: 'daily',   priority: 0.6 },
+    { url: `${BASE}/monologues`,                   lastModified: NOW,                   changeFrequency: 'daily',   priority: 0.7 },
     { url: `${BASE}/privacy`,                      lastModified: new Date('2026-07-07'), changeFrequency: 'yearly',  priority: 0.3 },
     { url: `${BASE}/terms`,                        lastModified: new Date('2026-07-07'), changeFrequency: 'yearly',  priority: 0.3 },
   ]
@@ -53,6 +54,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.warn('[sitemap] Supabase 접근 실패 — 정적 페이지만 반환', e instanceof Error ? e.message : e)
   }
 
+  // 독백 아카이브 상세 페이지 (공개분만)
+  let monologuePages: MetadataRoute.Sitemap = []
+  try {
+    const { data: monologues, error: monoError } = await supabaseAdmin
+      .from('monologues')
+      .select('id, created_at')
+      .eq('is_published', true)
+      .order('created_at', { ascending: false })
+    if (monoError) console.error('[sitemap] monologues 조회 실패:', monoError.message)
+
+    monologuePages = (monologues ?? []).map((m) => ({
+      url: `${BASE}/monologues/${m.id}`,
+      lastModified: m.created_at ? new Date(m.created_at) : NOW,
+      changeFrequency: 'monthly' as const,
+      priority: 0.55,
+    }))
+  } catch (e) {
+    console.warn('[sitemap] monologues 접근 실패 — 목록 페이지만 반환', e instanceof Error ? e.message : e)
+  }
+
   // 캐스팅 태그별 필터 페이지 — 형사 배우·의사 배우 등 키워드 검색 유입
   const tagPages: MetadataRoute.Sitemap = [...CASTING_TAG_OPTIONS].map((tag) => ({
     url: `${BASE}/actors?tag=${encodeURIComponent(tag)}`,
@@ -74,5 +95,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.63,
   }))
 
-  return [...staticPages, ...actorPages, ...tagPages, ...genderPages, ...agePages]
+  return [...staticPages, ...actorPages, ...monologuePages, ...tagPages, ...genderPages, ...agePages]
 }
