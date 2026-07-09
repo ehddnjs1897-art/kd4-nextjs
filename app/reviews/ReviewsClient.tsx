@@ -4,17 +4,6 @@ import { useState } from 'react'
 import Image from 'next/image'
 import type { Review } from './page'
 
-// ── 필터 탭 정의 ──
-const FILTERS = [
-  { label: '전체', value: 'all' },
-  { label: '오픈클래스', value: '오픈클래스' },
-  { label: '마이즈너 정규', value: '마이즈너' },
-  { label: '출연영상 클래스', value: '출연영상 클래스' },
-  { label: '액터길드', value: '액터길드' },
-] as const
-
-type FilterValue = (typeof FILTERS)[number]['value']
-
 // 과정 뱃지 색상
 const COURSE_COLORS: Record<string, string> = {
   '오픈클래스': 'var(--gold)',
@@ -203,7 +192,7 @@ function ImageReviewCard({ review }: { review: Review }) {
 }
 
 // ── Empty State ──
-function EmptyState({ filter }: { filter: FilterValue }) {
+function EmptyState() {
   return (
     <div
       style={{
@@ -214,27 +203,15 @@ function EmptyState({ filter }: { filter: FilterValue }) {
       }}
     >
       <div style={{ fontSize: '3rem', marginBottom: '16px' }}>💬</div>
-      <p style={{ fontSize: '1rem', fontWeight: 500 }}>
-        {filter === 'all'
-          ? '후기를 불러오는 중입니다.'
-          : `'${filter}' 과정 후기가 아직 없습니다.`}
-      </p>
+      <p style={{ fontSize: '1rem', fontWeight: 500 }}>후기를 불러오는 중입니다.</p>
     </div>
   )
 }
 
 // ── Main Client Component ──
 export default function ReviewsClient({ reviews }: { reviews: Review[] }) {
-  const [activeFilter, setActiveFilter] = useState<FilterValue>('all')
-
-  const filtered = reviews.filter((r) => {
-    if (activeFilter === 'all') return true
-    if (activeFilter === '마이즈너') return r.course_type.includes('마이즈너')
-    return r.course_type === activeFilter
-  })
-
-  const textReviews = filtered.filter((r) => r.review_text)
-  const imageReviews = filtered.filter((r) => !r.review_text)
+  const textReviews = reviews.filter((r) => r.review_text)
+  const imageReviews = reviews.filter((r) => !r.review_text)
 
   // 전체 후기 수 (DB 없을 때도 64로 표시)
   const totalCount = reviews.length > 0 ? reviews.length : 64
@@ -295,56 +272,6 @@ export default function ReviewsClient({ reviews }: { reviews: Review[] }) {
           </span>
         </div>
       </section>
-
-      {/* ── 필터 탭 ── */}
-      <div
-        style={{
-          position: 'sticky',
-          top: '64px',
-          zIndex: 100,
-          background: 'var(--bg)',
-          borderBottom: '1px solid var(--border)',
-          padding: '0 24px',
-        }}
-      >
-        <div
-          style={{
-            maxWidth: 'var(--container)',
-            margin: '0 auto',
-            display: 'flex',
-            gap: '4px',
-            overflowX: 'auto',
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none',
-          }}
-        >
-          {FILTERS.map((f) => (
-            <button
-              key={f.value}
-              type="button"
-              onClick={() => setActiveFilter(f.value)}
-              aria-pressed={activeFilter === f.value}
-              style={{
-                padding: '14px 20px',
-                background: 'none',
-                border: 'none',
-                borderBottom: activeFilter === f.value
-                  ? '2px solid var(--navy)'
-                  : '2px solid transparent',
-                color: activeFilter === f.value ? 'var(--navy)' : '#666',
-                fontFamily: 'var(--font-sans)',
-                fontSize: '0.875rem',
-                fontWeight: activeFilter === f.value ? 700 : 500,
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                transition: 'color 0.15s, border-color 0.15s',
-              }}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
-      </div>
 
       {/* ── 컨텐츠 영역 ── */}
       <div style={{ maxWidth: 'var(--container)', margin: '0 auto', padding: '48px 24px 80px' }}>
@@ -408,7 +335,7 @@ export default function ReviewsClient({ reviews }: { reviews: Review[] }) {
             </div>
           </section>
         ) : (
-          filtered.length === 0 && <EmptyState filter={activeFilter} />
+          reviews.length === 0 && <EmptyState />
         )}
 
         {/* DB 비어있을 때 안내 (개발 환경) */}
