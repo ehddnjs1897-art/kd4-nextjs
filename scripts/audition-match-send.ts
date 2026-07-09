@@ -36,7 +36,13 @@ interface Target {
 
 function halt(): boolean {
   const flags = join(homedir(), '.claude/flags')
-  return existsSync(join(flags, 'agent-halt')) || existsSync(join(flags, 'audition-match-off'))
+  return (
+    existsSync(join(flags, 'agent-halt')) ||
+    existsSync(join(flags, 'audition-match-off')) ||
+    // 2026-07-09 대표 지시 "아직 문자메시지 보내지마" — 품질 검수 통과 전 발송 전면 보류.
+    // 매칭·텔레그램 검토알림은 계속 돌고 SMS만 막는다. 해제 = 이 플래그 파일 삭제.
+    existsSync(join(flags, 'audition-sms-hold'))
+  )
 }
 
 function stamp(): string {
