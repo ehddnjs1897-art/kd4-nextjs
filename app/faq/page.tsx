@@ -118,6 +118,13 @@ const faqs = [
   },
 ]
 
+// 최종 수정일 — FAQ 문항·답변 내용을 실제로 고칠 때마다 이 날짜를 갱신할 것.
+// (자동 NOW 금지 — 내용 변화 없이 매일 "갱신됨" 거짓 신호를 주면 검색·AI 엔진 신뢰도 하락,
+//  sitemap.ts lastModified와 같은 원칙. 2026-07-10 대표 지시로 화면+스키마 동시 표기)
+const FAQ_UPDATED = '2026-07-10'
+const [fy, fm, fd] = FAQ_UPDATED.split('-')
+const FAQ_UPDATED_LABEL = `${fy}년 ${Number(fm)}월 ${Number(fd)}일`
+
 // Schema.org FAQPage JSON-LD
 const faqSchema = {
   '@context': 'https://schema.org',
@@ -126,6 +133,8 @@ const faqSchema = {
   url: `${SITE_URL}/faq`,
   name: 'KD4 액팅 스튜디오 자주 묻는 질문',
   inLanguage: 'ko',
+  datePublished: '2026-07-10',
+  dateModified: FAQ_UPDATED,
   isPartOf: { '@type': 'WebSite', url: SITE_URL },
   mainEntity: faqs.map(item => ({
     '@type': 'Question',
@@ -253,6 +262,17 @@ export default function FaqPage() {
             연기 훈련, 배우 되는 법, KD4 수업에 대한 궁금증을 정리했습니다.
             <br />
             더 궁금한 점은 무료 상담으로 직접 물어보세요.
+          </p>
+          {/* 최종 수정일 — 검색·AI 엔진의 정보 신선도 신호 (2026-07-10 대표 지시) */}
+          <p
+            style={{
+              fontFamily: 'var(--font-sans)',
+              fontSize: '0.78rem',
+              color: 'var(--gray)',
+              marginTop: '20px',
+            }}
+          >
+            최종 수정일: <time dateTime={FAQ_UPDATED}>{FAQ_UPDATED_LABEL}</time>
           </p>
         </section>
 
