@@ -12,7 +12,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 import GalleryEditForm from '@/components/dashboard/GalleryEditForm'
 import OnboardingForm from '@/components/onboarding/OnboardingForm'
 import { UserRole } from '@/lib/types'
-import { matchActorOnSignup } from '@/lib/actor-matching'
+import { matchActorOnSignup, ensureProfileRow } from '@/lib/actor-matching'
 
 export const metadata: Metadata = {
   title: '프로필 편집',
@@ -89,14 +89,26 @@ export default async function GalleryEditPage() {
   }
 
   // ── 프로필 · 역할 확인 ─────────────────────────────────────────────────────
-  const { data: profile, error: profileErr } = await supabase
+  const { data: profileRow, error: profileErr } = await supabase
     .from('profiles')
     .select('role, actor_id, name, phone')
     .eq('id', user.id)
     .maybeSingle()
 
-  if (profileErr || !profile) {
+  if (profileErr) {
     redirect('/dashboard')
+  }
+
+  // profiles 행 자체가 없는 경우 즉석 복구 (2026-07-10, 육군길 케이스 — on-signup 호출 유실)
+  let profile: Profile | null = profileRow
+  if (!profile) {
+    const healed = await ensureProfileRow(user)
+    if (healed) {
+      profile = { role: healed.role as UserRole, actor_id: healed.actor_id, name: healed.name, phone: healed.phone }
+    } else {
+      console.error('[dashboard/edit] 프로필 행 자가복구 실패 — user.id:', user.id)
+      redirect('/dashboard')
+    }
   }
 
   const { role } = profile as Profile

@@ -29,7 +29,7 @@ import ProfileCompletenessCard from '@/components/dashboard/ProfileCompletenessC
 import EnrollmentsPanel from '@/components/dashboard/EnrollmentsPanel'
 import { UserRole } from '@/lib/types'
 import { canViewActorDb as canViewActorDbFn } from '@/lib/access'
-import { matchActorOnSignup } from '@/lib/actor-matching'
+import { matchActorOnSignup, ensureProfileRow } from '@/lib/actor-matching'
 
 const ROLE_LABEL: Record<string, string> = {
   admin: '관리자',
@@ -62,7 +62,7 @@ export default async function DashboardPage() {
 
   // profile + enrollments 병렬 조회 (enrollments는 user.id만 있으면 됨)
   const now = new Date()
-  const [{ data: profile, error: profileErr }, { data: enrData, error: enrErr }] = await Promise.all([
+  const [{ data: profileRow, error: profileErr }, { data: enrData, error: enrErr }] = await Promise.all([
     supabase
       .from('profiles')
       .select('id, name, email, phone, role, created_at, actor_id')
@@ -80,6 +80,16 @@ export default async function DashboardPage() {
   // DB 오류 시 (일시적 네트워크/RLS 문제 등) → error boundary로 전달
   if (profileErr) throw new Error(`프로필 조회 실패: ${profileErr.message}`)
   if (enrErr) console.error('[dashboard] 수강 내역 조회 오류:', enrErr.message)
+
+  // ── 자가 복구: profiles 행 자체가 없는 경우 (2026-07-10, 육군길 케이스) ──────
+  // 회원가입 마지막 단계(on-signup) 호출이 통째로 유실되면 행 자체가 없어 아래(actor_id만
+  // 없는 경우) 복구로는 못 잡음 — user_metadata로 즉석 생성(연락처 저장·크루신청 등
+  // profiles 행 존재를 전제하는 모든 기능이 원인 설명 없이 막히던 증상의 근본 수정).
+  let profile = profileRow
+  if (!profile) {
+    profile = await ensureProfileRow(user)
+    if (!profile) console.error('[dashboard] 프로필 행 자가복구 실패 — user.id:', user.id)
+  }
 
   // ── 자가 복구 (2026-06-12 대표 지시) ────────────────────────────────────
   // 가입 마지막 단계(on-signup) 호출이 끊겨 '일반 회원'으로 남았거나, actors 전화번호

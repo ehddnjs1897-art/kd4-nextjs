@@ -217,6 +217,78 @@ export async function matchActorForIntake(
 }
 
 /**
+ * profiles 행 자체가 없는 경우의 자가복구 (2026-07-10, 육군길 케이스).
+ *
+ * 정상 흐름은 회원가입 페이지가 signUp() 직후 /api/auth/on-signup을 호출해 profiles 행을
+ * 만든다. 하지만 signUp()이 세션을 즉시 안 돌려주면(이메일은 서버에서 이미 자동승인됐는데도
+ * 클라이언트 응답에 session이 없는 경우 실측됨) on-signup 호출 자체가 스킵되고, 이후 로그인은
+ * 별도 페이지라 on-signup을 다시 안 부름 → profiles 행이 영영 안 생겨 대시보드 접속 자체가
+ * 깨진다("연락처 저장 안 됨", "크루신청 버튼이 안 먹음" 전부 이 증상).
+ *
+ * on-signup/route.ts의 핵심 로직(업서트+배우매칭+수강연결)과 동일 — 대시보드류 서버 컴포넌트가
+ * profile 조회 결과가 null일 때 이걸 불러 즉석 복구한다. user는 이미 auth.getUser()로 받은
+ * 객체를 그대로 넘기면 된다(재조회 불필요).
+ */
+export async function ensureProfileRow(user: {
+  id: string
+  email?: string | null
+  user_metadata?: Record<string, unknown> | null
+}): Promise<{
+  id: string
+  name: string | null
+  email: string | null
+  phone: string | null
+  role: string
+  created_at: string
+  actor_id: string | null
+} | null> {
+  const meta = user.user_metadata ?? {}
+  const name = ((meta.name as string) ?? '').toString().slice(0, 100)
+  const rawPhone = ((meta.phone as string) ?? '').toString().slice(0, 20)
+  const phoneNormalized = rawPhone.replace(/[^\d]/g, '')
+  const phone = /^[+]?[\d\s\-().]{7,20}$/.test(rawPhone) && phoneNormalized.length >= 7 ? phoneNormalized : ''
+  const ALLOWED_MEMBER_TYPES = new Set(['actor', 'director'])
+  const rawMemberType = (meta.member_type as string) ?? 'actor'
+  const memberType = ALLOWED_MEMBER_TYPES.has(rawMemberType) ? rawMemberType : 'actor'
+  const role = memberType === 'director' ? 'member' : 'actor'
+
+  const { data: upserted, error } = await supabaseAdmin
+    .from('profiles')
+    .upsert(
+      { id: user.id, name: name || null, phone: memberType === 'actor' ? (phone || null) : null, email: user.email || null, role },
+      { onConflict: 'id' }
+    )
+    .select('id, name, email, phone, role, created_at, actor_id')
+    .maybeSingle()
+
+  if (error || !upserted) {
+    console.error('[ensureProfileRow] profiles upsert 실패:', error?.message ?? 'no row')
+    return null
+  }
+
+  if (name && memberType !== 'director' && !upserted.actor_id) {
+    try {
+      const res = await matchActorOnSignup(user.id, name, phone)
+      if (res.matched && res.actorId) {
+        upserted.actor_id = res.actorId
+        upserted.role = 'actor'
+      }
+    } catch (e) {
+      console.error('[ensureProfileRow] matching error:', e instanceof Error ? e.message : String(e))
+    }
+  }
+  if (name) {
+    try {
+      await linkEnrollmentsOnSignup(user.id, name, upserted.actor_id ?? undefined)
+    } catch (e) {
+      console.error('[ensureProfileRow] enrollment link error:', e instanceof Error ? e.message : String(e))
+    }
+  }
+
+  return upserted
+}
+
+/**
  * 회원가입 직후 호출.
  * 운영 시트에서 미리 넣어둔 수강 기록(enrollments) 중
  * user_id가 비어있고 이름이 일치하는 것을 가입 계정과 연결한다.
