@@ -111,7 +111,7 @@ export async function GET(
 
   const { data: actor } = await supabaseAdmin
     .from('actors')
-    .select('name, gender, age_group, profile_doc_path, profile_pdf_url, is_public')
+    .select('name, gender, birth_year, profile_doc_path, profile_pdf_url, is_public')
     .eq('id', id)
     .maybeSingle()
   if (!actor) {
@@ -123,13 +123,12 @@ export async function GET(
   }
 
   const safeName = (actor.name || 'profile').replace(/[\r\n"\\]/g, '').trim() || 'profile'
-  // 다운로드 파일명: "{나이대} {성별} {이름} 프로필" (예: 30대 남 박성만 프로필)
-  // 배우 메타(age_group/gender/name) 없으면 기존 "{이름} 프로필" 폴백
-  const safeAgeGroup = (actor.age_group || '').replace(/[\r\n"\\]/g, '').trim()
+  // 다운로드 파일명: "{OO}년생 {성별} {이름}_프로필" (예: 57년생 여 정애란_프로필, 2026-07-10 대표 지시)
+  // 생년/성별 없으면 있는 것만 붙이고 "{이름}_프로필"로 폴백
   const safeGender = (actor.gender || '').replace(/[\r\n"\\]/g, '').trim()
-  const downloadBase = actor.name && safeAgeGroup && safeGender
-    ? `${safeAgeGroup} ${safeGender} ${safeName} 프로필`
-    : `${safeName} 프로필`
+  const birthYear2 = actor.birth_year ? String(actor.birth_year).slice(-2) : ''
+  const prefixParts = [birthYear2 && `${birthYear2}년생`, safeGender].filter(Boolean)
+  const downloadBase = [...prefixParts, `${safeName}_프로필`].join(' ')
 
   // path 1: profile_doc_path — 저장 위치가 둘로 갈린다(2026-06-24 다운로드 깨짐 수정):
   //   · 셀프제출(intake/{uid}/...) → Supabase Storage actor-docs 버킷
