@@ -241,13 +241,14 @@ export async function POST(request: NextRequest) {
     // 현재사진(전신 각도)은 카드/헤더 대표사진이 될 수 없음 — 자동 승격 제외
     let isProfile = false
     if (!isCurrent && !actorRow?.profile_photo?.trim()) {
-      const [{ error: promoteErr }, { error: photoFlagErr }] = await Promise.all([
-        supabaseAdmin.from('actors').update({ profile_photo: result.url }).eq('id', actorId),
-        supabaseAdmin.from('actor_photos').update({ is_profile: true }).eq('id', photoRow.id),
+      const [{ data: promoted, error: promoteErr }, { data: photoFlagged, error: photoFlagErr }] = await Promise.all([
+        supabaseAdmin.from('actors').update({ profile_photo: result.url }).eq('id', actorId).select('id'),
+        supabaseAdmin.from('actor_photos').update({ is_profile: true }).eq('id', photoRow.id).select('id'),
       ])
       if (promoteErr || photoFlagErr) {
         console.error('[POST /api/upload] 자동 대표 승격 실패:', promoteErr?.message ?? photoFlagErr?.message)
-      } else {
+      } else if (promoted?.length && photoFlagged?.length) {
+        // 두 업데이트가 실제로 행을 매칭했을 때만 승격 완료로 간주 (동시 업로드 경쟁 조건 시 0건 매칭 방지)
         isProfile = true
       }
     }

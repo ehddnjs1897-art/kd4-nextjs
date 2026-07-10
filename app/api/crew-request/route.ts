@@ -9,6 +9,7 @@ import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { notifyCrewRequest } from '@/lib/email'
 import { sendSMS } from '@/lib/sms'
+import { ensureProfileRow } from '@/lib/actor-matching'
 
 const ADMIN_PHONE = process.env.ADMIN_PHONE_NUMBER ?? ''
 
@@ -46,11 +47,14 @@ export async function POST(request: NextRequest) {
     }
 
     // 현재 역할 + 이름 조회
-    const { data: profile } = await supabaseAdmin
+    const { data: profileRow } = await supabaseAdmin
       .from('profiles')
       .select('role, name')
       .eq('id', user.id)
       .maybeSingle()
+
+    // profiles 행 자체가 없는 경우(on-signup 유실) — 즉석 자가복구 후 계속 (2026-07-10, 육군길 케이스와 동일 패턴)
+    const profile = profileRow ?? (await ensureProfileRow(user))
 
     const currentRole = (profile?.role ?? 'user') as string
 

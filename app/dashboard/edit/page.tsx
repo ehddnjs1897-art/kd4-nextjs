@@ -67,7 +67,7 @@ interface FilmRow {
   id: string
   category: string | null
   year: number | null
-  title: string
+  title: string | null
   role: string | null
   broadcaster: string | null
   film_type: string | null
@@ -284,7 +284,7 @@ export default async function GalleryEditPage() {
       id: f.id,
       category: f.category ?? 'drama', // select option value는 영문 — '드라마' fallback은 불일치
       year: f.year ?? new Date().getFullYear(),
-      title: f.title,
+      title: f.title ?? '',
       role: f.role ?? '',
       broadcaster: f.broadcaster ?? undefined,
       film_type: f.film_type ?? undefined,
