@@ -73,7 +73,7 @@ export async function GET(
   // role 확인 + 영상 row(+배우 공개 여부) 병렬 조회
   const [{ data: profile }, { data: video, error: videoError }] = await Promise.all([
     supabaseAdmin.from('profiles').select('role, actor_id').eq('id', user.id).maybeSingle(),
-    supabaseAdmin.from('actor_videos').select('id, r2_key, actor_id, title, video_type, actors ( is_public, name, gender, age_group )').eq('id', id).maybeSingle(),
+    supabaseAdmin.from('actor_videos').select('id, r2_key, actor_id, title, video_type, actors ( is_public, name, gender, birth_year )').eq('id', id).maybeSingle(),
   ])
 
   const role = profile?.role
@@ -95,7 +95,7 @@ export async function GET(
   //   - 공개 배우(is_public)의 영상: 로그인 사용자 누구나 시청 가능 (user/actor 포함)
   //   - 비공개 배우의 영상: 운영 역할(elevated) 또는 본인만
   //   - 다운로드는 여전히 디렉터/관리자만 (아래 별도 게이트)
-  type ActorRel = { is_public?: boolean | null; name?: string | null; gender?: string | null; age_group?: string | null }
+  type ActorRel = { is_public?: boolean | null; name?: string | null; gender?: string | null; birth_year?: number | null }
   const actorsRel = (video as unknown as { actors?: ActorRel | ActorRel[] }).actors
   const actorRow = Array.isArray(actorsRel) ? actorsRel[0] : actorsRel
   const actorIsPublic = actorRow?.is_public === true
@@ -118,17 +118,18 @@ export async function GET(
 
   try {
     const ext = video.r2_key.split('.').pop() || 'mp4'
-    // 다운로드 파일명: "{이름} {나이대} 출연영상{N}_KD4" (독백은 "{이름} {나이대} 독백_KD4")
-    //  - 2026-06-30 대표 지시: 업로드 파일명 무관, 다운로드 시 이 양식으로 통일
+    // 다운로드 파일명: "{OO}년생 {성별} {이름}_출연영상{N}" (독백은 "..._독백", 2026-07-10 대표 지시)
+    //  - 업로드 파일명 무관, 다운로드 시 이 양식으로 통일 (프로필 문서와 동일 규칙)
     //  - N(순번)·독백 여부는 서버에서 계산 → 어느 다운로드 버튼(인라인/일괄)이든 정확
-    //  - 배우 메타(name/age_group) 없으면 기존 title 폴백
+    //  - 배우 메타(name) 없으면 기존 title 폴백
     let filename: string | undefined
     if (download) {
       const vtype = (video as { video_type?: string | null }).video_type
       const name = actorRow?.name
-      const ageGroup = actorRow?.age_group
+      const gender = (actorRow?.gender || '').trim()
+      const birthYear2 = actorRow?.birth_year ? String(actorRow.birth_year).slice(-2) : ''
       let base: string
-      if (name && ageGroup) {
+      if (name) {
         let label: string
         if (vtype === 'monologue') {
           label = '독백'
@@ -144,7 +145,8 @@ export async function GET(
           const pos = reels.findIndex((r) => r.id === video.id)
           label = `출연영상${pos >= 0 ? pos + 1 : 1}`
         }
-        base = `${name} ${ageGroup} ${label}_KD4`
+        const prefixParts = [birthYear2 && `${birthYear2}년생`, gender].filter(Boolean)
+        base = [...prefixParts, `${name}_${label}`].join(' ')
       } else {
         base = video.title || 'video'
       }
