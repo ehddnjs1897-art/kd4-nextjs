@@ -29,6 +29,12 @@ function formatDate(iso: string) {
   })
 }
 
+// 자가등록 배우가 승인(공개) 없이 며칠째 방치됐는지 — 승인대기 배너 정렬·경고색 기준
+// (2026-07-10: 관리자 화면에 이 상태를 보여줄 곳이 아예 없어 최대 28일간 9명이 묻혀있던 것 발견 후 신설)
+function daysSince(iso: string): number {
+  return Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000)
+}
+
 const ROLE_CYCLE: Record<string, string> = {
   user: 'crew',
   crew_pending: 'crew',
@@ -97,6 +103,11 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
   const [localApplications, setLocalApplications] = useState(applications)
   const [loadingId, setLoadingId] = useState<string | null>(null)
   const [confirmingDeletePostId, setConfirmingDeletePostId] = useState<string | null>(null)
+
+  // 승인 대기 배우 — 본인이 자료 올렸는데 아직 비공개인 사람. 오래 기다린 순.
+  const pendingActors = localActors
+    .filter((a) => a.self_managed && !a.is_public)
+    .sort((a, b) => new Date(a.intake_submitted_at ?? 0).getTime() - new Date(b.intake_submitted_at ?? 0).getTime())
   const [toastMsg, setToastMsg] = useState<{ text: string; type: 'error' | 'ok' } | null>(null)
 
   // 탭 활성화 시 tabpanel로 포커스 이동 (WCAG 2.1.1 / ARIA Authoring Practices)
@@ -290,6 +301,44 @@ export default function AdminDashboard({ profiles, actors, posts, applications }
             </>
           ) : ''}
         </div>
+
+        {/* 승인 대기 배우 배너 — 본인이 자료 올렸는데 알려주는 화면이 없어 최대 28일 방치되던 것 발견(2026-07-10) 후 신설.
+            0명이면 아예 렌더 안 함(빈 배너로 화면 잠식 방지). */}
+        {pendingActors.length > 0 && (
+          <div style={s.pendingBanner} role="region" aria-label="승인 대기 배우">
+            <p style={s.pendingBannerTitle}>
+              <span aria-hidden="true">🔔</span> 승인 대기 {pendingActors.length}명 — 본인이 자료를 올렸는데 아직 비공개예요
+            </p>
+            <ul role="list" style={s.pendingList}>
+              {pendingActors.map((a) => {
+                const days = a.intake_submitted_at ? daysSince(a.intake_submitted_at) : null
+                return (
+                  <li key={a.id} style={s.pendingItem}>
+                    <span style={s.pendingName}>
+                      {a.name}
+                      {a.phone && <span style={s.pendingPhone}> · {a.phone}</span>}
+                    </span>
+                    <span style={days !== null && days >= 14 ? s.pendingDaysUrgent : s.pendingDays}>
+                      {days !== null ? `${days}일째 대기` : '대기중'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleActorToggle(a.id, a.is_public)}
+                      disabled={loadingId === a.id}
+                      aria-busy={loadingId === a.id}
+                      style={s.pendingApproveBtn}
+                    >
+                      {loadingId === a.id ? '처리 중…' : '공개하기'}
+                    </button>
+                    <a href={`/actors/${a.id}`} target="_blank" rel="noopener noreferrer" style={s.pendingPreviewLink}>
+                      미리보기
+                    </a>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        )}
 
         {/* 통계 카드 */}
         <div style={s.statsRow}>
@@ -658,6 +707,71 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '0.75rem',
     color: 'var(--gray)',
     letterSpacing: '0.05em',
+  },
+  pendingBanner: {
+    background: 'rgba(240,173,78,0.08)',
+    border: '1px solid rgba(240,173,78,0.35)',
+    borderRadius: 8,
+    padding: '16px 20px',
+    marginBottom: 24,
+  },
+  pendingBannerTitle: {
+    fontSize: '0.9rem',
+    fontWeight: 700,
+    color: '#f0ad4e',
+    margin: '0 0 12px',
+  },
+  pendingList: {
+    listStyle: 'none' as const,
+    margin: 0,
+    padding: 0,
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: 8,
+  },
+  pendingItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 12,
+    flexWrap: 'wrap' as const,
+    padding: '8px 0',
+    borderTop: '1px solid rgba(240,173,78,0.15)',
+  },
+  pendingName: {
+    fontSize: '0.85rem',
+    color: 'var(--white)',
+    fontWeight: 600,
+    minWidth: 140,
+  },
+  pendingPhone: {
+    fontWeight: 400,
+    color: 'var(--gray)',
+  },
+  pendingDays: {
+    fontSize: '0.78rem',
+    color: 'var(--gray)',
+  },
+  pendingDaysUrgent: {
+    fontSize: '0.78rem',
+    color: '#ef4444',
+    fontWeight: 700,
+  },
+  pendingApproveBtn: {
+    marginLeft: 'auto',
+    padding: '6px 16px',
+    minHeight: 36,
+    background: '#f0ad4e',
+    color: '#1a1a1a',
+    border: 'none',
+    borderRadius: 6,
+    fontSize: '0.8rem',
+    fontWeight: 700,
+    cursor: 'pointer',
+  },
+  pendingPreviewLink: {
+    fontSize: '0.78rem',
+    color: 'var(--gold)',
+    textDecoration: 'underline',
   },
   tabBar: {
     display: 'flex',

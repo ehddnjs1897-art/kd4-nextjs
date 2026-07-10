@@ -32,6 +32,9 @@ export interface AdminActor {
   gender: string | null
   age_group: string | null
   is_public: boolean
+  self_managed: boolean | null
+  intake_submitted_at: string | null
+  phone: string | null
 }
 
 export interface AdminPost {
@@ -71,7 +74,7 @@ async function fetchProfiles(): Promise<AdminProfile[]> {
 async function fetchActors(): Promise<AdminActor[]> {
   const { data, error } = await supabaseAdmin
     .from('actors')
-    .select('id, name, gender, age_group, is_public')
+    .select('id, name, gender, age_group, is_public, self_managed, intake_submitted_at, phone')
     .order('created_at', { ascending: false })
     .limit(1000) // 상한: 비공개 포함 전체 배우 수 — 무제한 반환 방지
 
