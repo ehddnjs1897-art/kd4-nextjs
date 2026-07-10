@@ -243,7 +243,7 @@ export default function Navbar() {
           }}
         >
           {/* ── 로고 ── */}
-          <Link href="/" style={{ display: 'flex', alignItems: 'center' }}>
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
             <Image
               src="/heart-logo.png"
               alt="KD4 Acting Studio"
@@ -269,20 +269,24 @@ export default function Navbar() {
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '3rem',
+              gap: '1.5rem',
               listStyle: 'none',
               margin: 0,
               padding: 0,
             }}
             className="desktop-nav"
           >
-            {/* 공개 링크 */}
+            {/* 공개 링크 — whiteSpace:nowrap + flexShrink:0 필수: 없으면 항목이 늘면서(독백 아카이브·FAQ 추가 등)
+                좁아진 폭을 flexbox가 강제로 나눠 가지면서 "배우 DB" 같은 텍스트가 글자 단위로 줄바꿈됨
+                (2026-07-10 로그인 시 텍스트 밀림 제보 — 실측상 로그인 상태에서 1200px 컨테이너 기준 69px 초과) */}
             {publicLinks.map(link => (
-              <li key={link.label}>
+              <li key={link.label} style={{ flexShrink: 0 }}>
                 <Link
                   href={link.href}
                   aria-current={pathname === link.href ? 'page' : undefined}
                   style={{
+                    display: 'inline-block',
+                    whiteSpace: 'nowrap',
                     color: pathname === link.href ? 'var(--navy)' : '#111111',
                     fontFamily: 'var(--font-sans)',
                     fontSize: '0.875rem',
@@ -300,7 +304,7 @@ export default function Navbar() {
             {/* KD4 크루 드롭다운 — 승인된 회원만 */}
             {isCrewApproved && (
               <li
-                style={{ position: 'relative' }}
+                style={{ position: 'relative', flexShrink: 0 }}
                 onMouseEnter={handleDropEnter}
                 onMouseLeave={handleDropLeave}
               >
@@ -430,7 +434,7 @@ export default function Navbar() {
           </ul>
 
           {/* ── CTA + 햄버거 ── */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
             {/* 로그인/마이페이지 진입점 — 데스크탑 */}
             {authLoaded && !isLoggedIn && (
               <Link
@@ -874,7 +878,9 @@ export default function Navbar() {
       )}
 
       <style>{`
-        @media (max-width: 768px) {
+        /* 1280px — 항목 7개(스튜디오소개·클래스소개·후기·배우DB·독백아카이브·멤버혜택·FAQ)+KD4크루+로그인상태
+           실측상 1200px 컨테이너에서도 69px 초과(2026-07-10) → 겹치기 전에 햄버거로 전환 */
+        @media (max-width: 1280px) {
           .desktop-nav { display: none !important; }
           .desktop-cta { display: none !important; }
           .desktop-auth { display: none !important; }
