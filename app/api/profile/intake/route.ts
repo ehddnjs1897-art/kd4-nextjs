@@ -274,8 +274,10 @@ export async function POST(request: NextRequest) {
         actorId = intakeMatch.actorId
         console.log('[profile/intake] 동일인 자동병합(최신 업로드 우선):', actorId, '|', intakeMatch.reason)
       } else {
-        if (intakeMatch.reason === 'ambiguous' || intakeMatch.reason === 'phone_conflict' || intakeMatch.reason === 'claimed') {
-          // 동일인 의심되나 자동병합 보류 — 비공개 신규행으로 두고 관리자 검토 필요.
+        // 동일인 의심(이름 모호·전화 충돌·이미 다른 계정이 선점) 케이스만 비공개 유지 —
+        // 자동공개 시 같은 사람이 프로필 2개로 노출되는 진짜 문제라 관리자 확인 전까지 보류.
+        const isDuplicateSuspicious = intakeMatch.reason === 'ambiguous' || intakeMatch.reason === 'phone_conflict' || intakeMatch.reason === 'claimed'
+        if (isDuplicateSuspicious) {
           console.warn(`[profile/intake] 동일인 의심·자동병합 보류(${intakeMatch.reason}) → 비공개 신규행. name=${profile.name ?? ''}`)
         }
         // 활동명(예명) — 가입 시 입력했으면 배우 프로필 표시명으로 사용 (2026-07-10 대표 지시:
@@ -287,7 +289,9 @@ export async function POST(request: NextRequest) {
           .insert({
             name: stageName || profile.name || '(이름 미입력)',
             phone: profile.phone ?? null,
-            is_public: false, // 관리자 검토 후 공개
+            // 신규 등록 즉시 공개 (2026-07-10 대표 지시 — 관리자 검토 대기 없이 바로 노출).
+            // 단, 동일인 중복 의심 시에만 비공개 유지 (관리자 대시보드 대기배너에서 검토).
+            is_public: !isDuplicateSuspicious,
             self_managed: true,
             source: 'manual',
             intake_submitted_at: nowIso,
