@@ -83,27 +83,7 @@ export default async function MonologueDetailPage({ params }: { params: Params }
         ← 독백 아카이브로
       </Link>
 
-      {m.card_image_url && (
-        <div
-          style={{
-            width: '100%',
-            maxWidth: 480,
-            margin: '0 auto 32px',
-            borderRadius: 8,
-            overflow: 'hidden',
-            boxShadow: '0 4px 24px rgba(0,0,0,0.12)',
-          }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={m.card_image_url}
-            alt={`${m.role} - ${m.work} 독백 카드`}
-            style={{ width: '100%', height: 'auto', display: 'block' }}
-          />
-        </div>
-      )}
-
-      <header style={{ textAlign: 'center', marginBottom: 24 }}>
+      <header style={{ textAlign: 'center', marginBottom: 40 }}>
         <h1
           style={{
             fontFamily: 'var(--font-serif)',
@@ -119,6 +99,47 @@ export default async function MonologueDetailPage({ params }: { params: Params }
           {m.medium} · {m.genre} · {m.target} · 감정선 {m.emotion}
         </p>
       </header>
+
+      {m.card_image_url && (
+        <div style={{ margin: '0 auto 48px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div
+            style={{
+              width: '100%',
+              maxWidth: 640,
+              borderRadius: 8,
+              overflow: 'hidden',
+              boxShadow: '0 4px 24px rgba(0,0,0,0.12)',
+            }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={m.card_image_url}
+              alt={`${m.role} - ${m.work} 독백 카드`}
+              style={{ width: '100%', height: 'auto', display: 'block' }}
+            />
+          </div>
+          <a
+            href={`/api/monologues/${m.id}/download`}
+            download
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              marginTop: 20,
+              padding: '10px 24px',
+              borderRadius: 999,
+              background: 'var(--navy)',
+              color: '#fff',
+              fontFamily: 'var(--font-sans)',
+              fontSize: '0.85rem',
+              fontWeight: 600,
+              textDecoration: 'none',
+            }}
+          >
+            ↓ 카드 다운로드
+          </a>
+        </div>
+      )}
 
       {fullText && (
         <section style={{ marginBottom: 32 }}>
@@ -147,15 +168,6 @@ export default async function MonologueDetailPage({ params }: { params: Params }
             {fullText}
           </p>
         </section>
-      )}
-
-      {m.source_url && (
-        <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.78rem', color: 'var(--gray)' }}>
-          출처:{' '}
-          <a href={m.source_url} target="_blank" rel="noopener noreferrer nofollow" style={{ color: 'var(--navy)' }}>
-            원문 보기
-          </a>
-        </p>
       )}
     </main>
   )
