@@ -9,15 +9,16 @@ const publicLinks = [
   { label: '스튜디오 소개', href: '/about' },
   { label: '클래스 소개', href: '/classes' },
   { label: '후기', href: '/reviews' },
-  { label: '배우 DB', href: '/actors' },
-  { label: '독백 아카이브', href: '/monologues' },
   { label: '멤버 혜택', href: '/benefits' },
   { label: 'FAQ', href: '/faq' },
 ]
 
+// 멤버 전용 콘텐츠(배우 DB·독백 아카이브)는 메인 내비에 중복 노출하지 않고
+// KD4 크루 드롭다운에서만 — 2026-07-10 대표 지시 ("배우DB 독백아카이브 크루 드롭박스에 넣어, 중복 없게")
 const crewLinks = [
   { label: '무료 상담 신청', href: '/join', public: true },
   { label: '배우 DB', href: '/actors', public: true },
+  { label: '독백 아카이브', href: '/monologues', public: true },
   { label: '커뮤니티', href: '/board', public: false },
   { label: '대본 분석', href: '/ai-tools', public: false },
 ]
@@ -878,8 +879,9 @@ export default function Navbar() {
       )}
 
       <style>{`
-        /* 1280px — 항목 7개(스튜디오소개·클래스소개·후기·배우DB·독백아카이브·멤버혜택·FAQ)+KD4크루+로그인상태
-           실측상 1200px 컨테이너에서도 69px 초과(2026-07-10) → 겹치기 전에 햄버거로 전환 */
+        /* 1280px — 항목 5개(스튜디오소개·클래스소개·후기·멤버혜택·FAQ)+KD4크루+로그인상태
+           (2026-07-10 배우DB·독백아카이브는 KD4크루 드롭다운으로 이동 — 중복 제거)
+           실측상 1200px 컨테이너에서도 69px 초과했던 7개 시절 기준값 그대로 유지(여유만 커짐) */
         @media (max-width: 1280px) {
           .desktop-nav { display: none !important; }
           .desktop-cta { display: none !important; }
