@@ -2,11 +2,13 @@
  * GET /api/monologues/[id]/download
  *
  * 독백 카드 이미지 강제 다운로드 — same-origin 프록시.
- * monologue-cards 버킷은 공개 버킷이라 인증 불요(독백 아카이브 자체가 비회원 열람 가능).
- * card_image_url을 브라우저에 직접 열면 새 탭에 이미지가 열릴 뿐 다운로드되지 않으므로
- * (크로스오리진 <a download>는 브라우저가 무시) 서버가 받아서 Content-Disposition을 붙여 재서빙한다.
+ * 독백 아카이브 열람 자체는 비회원도 가능하지만, 다운로드는 로그인 멤버만
+ * (2026-07-10 대표 지시). card_image_url을 브라우저에 직접 열면 새 탭에
+ * 이미지가 열릴 뿐 다운로드되지 않으므로(크로스오리진 <a download>는 브라우저가
+ * 무시) 서버가 받아서 Content-Disposition을 붙여 재서빙한다.
  */
 import { NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -28,6 +30,12 @@ export async function GET(
   const { id } = await params
   if (!UUID_RE.test(id)) {
     return NextResponse.json({ error: '잘못된 독백 ID입니다.' }, { status: 400 })
+  }
+
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   }
 
   const { data: m, error } = await supabaseAdmin

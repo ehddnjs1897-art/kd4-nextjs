@@ -6,6 +6,7 @@ import { getMonologueById } from '@/lib/monologues'
 import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { buildBreadcrumb } from '@/lib/seo-schemas'
+import { createClient } from '@/lib/supabase/server'
 
 export const revalidate = 300
 
@@ -57,6 +58,10 @@ export default async function MonologueDetailPage({ params }: { params: Params }
 
   const fullText = m.full_body && m.full_body.length > m.body.length ? m.full_body : null
 
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  const downloadHref = user ? `/api/monologues/${m.id}/download` : `/auth/login?next=${encodeURIComponent(`/monologues/${m.id}`)}`
+
   return (
     <main style={{ maxWidth: 780, margin: '0 auto', padding: '40px 20px 80px' }}>
       <PageJsonLd
@@ -68,20 +73,6 @@ export default async function MonologueDetailPage({ params }: { params: Params }
           ]),
         ]}
       />
-
-      <Link
-        href="/monologues"
-        style={{
-          display: 'inline-block',
-          marginBottom: 24,
-          fontFamily: 'var(--font-sans)',
-          fontSize: '0.85rem',
-          color: 'var(--gray)',
-          textDecoration: 'none',
-        }}
-      >
-        ← 독백 아카이브로
-      </Link>
 
       <header style={{ textAlign: 'center', marginBottom: 40 }}>
         <h1
@@ -119,8 +110,8 @@ export default async function MonologueDetailPage({ params }: { params: Params }
             />
           </div>
           <a
-            href={`/api/monologues/${m.id}/download`}
-            download
+            href={downloadHref}
+            download={user ? true : undefined}
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -136,7 +127,7 @@ export default async function MonologueDetailPage({ params }: { params: Params }
               textDecoration: 'none',
             }}
           >
-            ↓ 카드 다운로드
+            ↓ 독백 다운로드
           </a>
         </div>
       )}
@@ -169,6 +160,27 @@ export default async function MonologueDetailPage({ params }: { params: Params }
           </p>
         </section>
       )}
+
+      <div style={{ textAlign: 'center', marginTop: 48 }}>
+        <Link
+          href="/monologues"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+            padding: '10px 24px',
+            borderRadius: 999,
+            border: '1px solid var(--border)',
+            color: 'var(--navy)',
+            fontFamily: 'var(--font-sans)',
+            fontSize: '0.85rem',
+            fontWeight: 600,
+            textDecoration: 'none',
+          }}
+        >
+          ← 독백 아카이브로
+        </Link>
+      </div>
     </main>
   )
 }
