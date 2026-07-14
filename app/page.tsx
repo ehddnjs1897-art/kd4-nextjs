@@ -323,13 +323,13 @@ export default function HomePage() {
     <>
       <PageJsonLd schemas={[
         buildBreadcrumb([{ name: '홈', url: SITE_URL }]),
-        buildWebPage({ idPath: '#webpage', url: SITE_URL, name: 'KD4 액팅 스튜디오 | 서울 신촌 마이즈너 테크닉 연기학원', description: '서울 신촌 마이즈너 테크닉 기반 연기학원. 연기 훈련부터 출연영상 포트폴리오 제작, 캐스팅 연계까지. 배우의 성장을 운영하는 KD4 액팅 스튜디오.', about: { '@id': `${SITE_URL}#org` }, dateModified: '2026-06-11', speakableCssSelectors: ['h1', 'h2'] }),
+        buildWebPage({ idPath: '#webpage', url: SITE_URL, name: 'KD4 액팅 스튜디오 | 서울 신촌 마이즈너 테크닉 연기학원', description: '서울 신촌 마이즈너 테크닉 기반 연기학원. 연기 훈련부터 출연영상 포트폴리오 제작, 캐스팅 연계까지. 배우를 성장시키는 KD4 액팅 스튜디오.', about: { '@id': `${SITE_URL}#org` }, dateModified: '2026-06-11', speakableCssSelectors: ['h1', 'h2'] }),
         {
           '@context': 'https://schema.org',
           '@type': 'HowTo',
           '@id': `${SITE_URL}#howto`,
           name: 'KD4 액팅 스튜디오로 배우 커리어를 만드는 방법',
-          description: '마이즈너 테크닉 훈련부터 출연영상 포트폴리오, 캐스팅 연계까지 — 배우의 성장을 운영하는 3단계 시스템.',
+          description: '마이즈너 테크닉 훈련부터 출연영상 포트폴리오, 캐스팅 연계까지 — 3단계 배우 액셀러레이팅 시스템.',
           step: [
             { '@type': 'HowToStep', position: 1, name: '아메리칸 액팅 메소드 트레이닝', text: '마이즈너 테크닉 · 이바나 처벅 테크닉 기반의 심층 연기 훈련' },
             { '@type': 'HowToStep', position: 2, name: '포트폴리오 제작', text: '전문 영화팀과 함께 제작하는 출연영상으로 실전 포트폴리오 완성' },
@@ -383,14 +383,14 @@ export default function HomePage() {
              — .hero-wall-statement 로 이동 (2026-06-16, 대표 디렉션) */}
 
         {/* sr-only h1 — JS 렌더 전에도 스크린리더에 즉시 노출 */}
-        <h1 className="sr-only">KD4 액팅 스튜디오 — <span lang="en">ACTOR OPERATING SYSTEM</span></h1>
+        <h1 className="sr-only">KD4 액팅 스튜디오 — <span lang="en">ACTOR ACCELERATING SYSTEM</span></h1>
 
         {/* 뒷벽에 박히는 타이틀 — DOM/CSS로 선명하게, 달리줌과 동기화
              측정 완료 전(titleReady=false)에는 비가시 — letter-spacing 적용 후 등장 */}
         <div className={`hero-title-wall-pos ${titleReady ? 'is-ready' : ''}`}>
           <div className="hero-title-wall" ref={heroTitleRef}>
             <h1 aria-hidden="true">KD4 액팅 스튜디오</h1>
-            <p className="hero-title-wall-sub"><span lang="en">ACTOR OPERATING SYSTEM</span></p>
+            <p className="hero-title-wall-sub"><span lang="en">ACTOR ACCELERATING SYSTEM</span></p>
           </div>
           {/* 달리줌으로 KD4 타이틀이 사라지면 같은 자리에 마이즈너 문구가 떠오름 */}
           <div className="hero-wall-statement">
@@ -431,10 +431,10 @@ export default function HomePage() {
           배우들의 아지트
         </p>
         <p style={{ fontSize: "clamp(0.88rem, 1.8vw, 1.05rem)", color: "#111111", letterSpacing: "0.02em", marginBottom: "6px" }}>
-          배우는 연기를 몰라서가 아니라, 성장을 운영해줄 시스템이 없어서 흔들립니다.
+          우리는 양산형 배우를 찍어내는 공장식 학원을 거부합니다.
         </p>
         <p style={{ fontSize: "clamp(0.88rem, 1.8vw, 1.05rem)", color: "var(--gold)", fontWeight: 600, letterSpacing: "0.02em", marginBottom: "32px" }}>
-          우리는 배우의 성장을 운영하는 KD4 액팅 스튜디오입니다.
+          우리는 배우를 성장시키는 KD4 액팅 스튜디오입니다.
         </p>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", marginBottom: "40px" }}>
           <span style={{ display: "block", width: "36px", height: "1px", background: "var(--gold)" }} />
@@ -664,7 +664,7 @@ export default function HomePage() {
                 lineHeight: 1.7,
               }}
             >
-              연기 훈련부터 캐스팅까지, 배우의 성장을 운영하는 시스템
+              연기 훈련부터 캐스팅까지, 배우 액셀러레이팅 시스템
             </p>
           </div>
 
