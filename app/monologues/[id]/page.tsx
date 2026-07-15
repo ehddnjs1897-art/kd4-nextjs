@@ -7,6 +7,7 @@ import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { buildBreadcrumb } from '@/lib/seo-schemas'
 import { createClient } from '@/lib/supabase/server'
+import CopyTextButton from '@/components/monologues/CopyTextButton'
 
 export const revalidate = 300
 
@@ -56,7 +57,10 @@ export default async function MonologueDetailPage({ params }: { params: Params }
   const m = await fetchMonologue(id)
   if (!m) notFound()
 
-  const fullText = m.full_body && m.full_body.length > m.body.length ? m.full_body : null
+  // full_body가 body보다 짧거나 같은 경우(대다수 — 크롤러가 동일 텍스트를 양쪽에 채움)가 많아
+  // "더 길 때만" 조건이면 대부분 텍스트 섹션 자체가 안 뜸(2026-07-14 발견, 364건 중 251건 영향).
+  // 둘 중 더 긴 쪽(같으면 body) — 이미지 하단에 복사 가능한 텍스트가 항상 뜨도록 보장.
+  const displayText = m.full_body && m.full_body.length > m.body.length ? m.full_body : m.body
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -132,21 +136,32 @@ export default async function MonologueDetailPage({ params }: { params: Params }
         </div>
       )}
 
-      {fullText && (
+      {displayText && (
         <section style={{ marginBottom: 32 }}>
-          <h2
+          <div
             style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: '0.9rem',
-              fontWeight: 700,
-              color: 'var(--navy)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 12,
               marginBottom: 12,
               borderBottom: '2px solid var(--navy)',
               paddingBottom: 6,
             }}
           >
-            전체 대사
-          </h2>
+            <h2
+              style={{
+                fontFamily: 'var(--font-sans)',
+                fontSize: '0.9rem',
+                fontWeight: 700,
+                color: 'var(--navy)',
+                margin: 0,
+              }}
+            >
+              전체 대사
+            </h2>
+            <CopyTextButton text={displayText} />
+          </div>
           <p
             style={{
               fontFamily: 'var(--font-serif)',
@@ -154,9 +169,10 @@ export default async function MonologueDetailPage({ params }: { params: Params }
               lineHeight: 1.9,
               color: 'var(--black)',
               whiteSpace: 'pre-line',
+              userSelect: 'text',
             }}
           >
-            {fullText}
+            {displayText}
           </p>
         </section>
       )}
