@@ -180,24 +180,6 @@ export default async function MonologuesPage({ searchParams }: { searchParams: S
                     {m.role}
                   </div>
                 )}
-                {m.grade === 'S' && (
-                  <span
-                    style={{
-                      position: 'absolute',
-                      top: 8,
-                      left: 8,
-                      background: 'var(--navy)',
-                      color: '#fff',
-                      fontSize: '0.7rem',
-                      fontWeight: 700,
-                      padding: '3px 8px',
-                      borderRadius: 4,
-                      fontFamily: 'var(--font-sans)',
-                    }}
-                  >
-                    S
-                  </span>
-                )}
               </div>
               <div style={{ padding: '10px 12px' }}>
                 <div
