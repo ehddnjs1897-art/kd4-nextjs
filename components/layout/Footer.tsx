@@ -274,6 +274,7 @@ export default function Footer() {
                 { label: 'KD4 액팅 코치', href: '/acting-coach-dongwon-kwon' },
                 { label: '신촌 위치 안내', href: '/sinchon-acting-academy' },
                 { label: '배우 DB', href: '/actors' },
+                { label: '독백 대본 아카이브', href: '/monologues' },
                 { label: '커뮤니티', href: '/board' },
               ].map(link => (
                 <li key={link.label}>

@@ -26,7 +26,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/faq`,                          lastModified: new Date('2026-07-10'), changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/reviews`,                      lastModified: new Date('2026-07-10'), changeFrequency: 'weekly',  priority: 0.7 },
     { url: `${BASE}/board`,                        lastModified: NOW,                   changeFrequency: 'daily',   priority: 0.6 },
-    { url: `${BASE}/monologues`,                   lastModified: NOW,                   changeFrequency: 'daily',   priority: 0.7 },
+    // 독백 아카이브 — 남자독백·여자독백 등 실검색 키워드 타깃 핵심 페이지 (2026-07-16 SEO 강화로 0.7→0.85)
+    { url: `${BASE}/monologues`,                   lastModified: NOW,                   changeFrequency: 'daily',   priority: 0.85 },
     { url: `${BASE}/privacy`,                      lastModified: new Date('2026-07-07'), changeFrequency: 'yearly',  priority: 0.3 },
     { url: `${BASE}/terms`,                        lastModified: new Date('2026-07-07'), changeFrequency: 'yearly',  priority: 0.3 },
   ]
@@ -95,5 +96,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.63,
   }))
 
-  return [...staticPages, ...actorPages, ...monologuePages, ...tagPages, ...genderPages, ...agePages]
+  // 독백 성별·매체 필터 페이지 — "남자독백대본"·"여자독백대본"·"영화독백"·"드라마독백" 키워드 유입
+  // (self-canonical: app/monologues/page.tsx generateMetadata에서 단독 필터 시 자기 URL을 canonical로 선언)
+  const monologueGenderPages: MetadataRoute.Sitemap = ['남성', '여성'].map((g) => ({
+    url: `${BASE}/monologues?gender=${encodeURIComponent(g)}`,
+    lastModified: NOW,
+    changeFrequency: 'daily' as const,
+    priority: 0.7,
+  }))
+  const monologueMediumPages: MetadataRoute.Sitemap = ['영화', 'TV드라마', '연극', '뮤지컬'].map((m) => ({
+    url: `${BASE}/monologues?medium=${encodeURIComponent(m)}`,
+    lastModified: NOW,
+    changeFrequency: 'weekly' as const,
+    priority: 0.62,
+  }))
+  // "20대독백"~"50대독백" 키워드 유입 — lib/monologues.ts AGE_OPTIONS value와 일치해야 함
+  const monologueAgePages: MetadataRoute.Sitemap = ['10대', '20대', '30대', '40대', '50대이상'].map((a) => ({
+    url: `${BASE}/monologues?age=${encodeURIComponent(a)}`,
+    lastModified: NOW,
+    changeFrequency: 'weekly' as const,
+    priority: 0.65,
+  }))
+
+  return [...staticPages, ...actorPages, ...monologuePages, ...monologueGenderPages, ...monologueMediumPages, ...monologueAgePages, ...tagPages, ...genderPages, ...agePages]
 }

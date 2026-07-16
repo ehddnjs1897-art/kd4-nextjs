@@ -1324,6 +1324,17 @@ export default function HomePage() {
               카카오로 문의하기
             </a>
           </div>
+
+          {/* 독백 아카이브 내부 링크 — "독백 대본" 키워드 앵커 텍스트 (SEO) */}
+          <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.7 }}>
+            오디션 준비 중이라면 — 남자독백·여자독백 무료{' '}
+            <Link
+              href="/monologues"
+              style={{ color: 'var(--navy)', fontWeight: 700, textDecoration: 'underline', textUnderlineOffset: 4 }}
+            >
+              독백 대본 아카이브 <span aria-hidden="true">→</span>
+            </Link>
+          </p>
         </div>
       </section>
     </>

@@ -1,4 +1,5 @@
 import 'server-only'
+import { cache } from 'react'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
 export interface Monologue {
@@ -60,8 +61,8 @@ export async function getMonologues(filters: MonologueFilters = {}): Promise<Mon
   return rows.sort((a, b) => (gradeOrder[a.grade] ?? 9) - (gradeOrder[b.grade] ?? 9))
 }
 
-/** 발행된 독백 전체 개수 (필터 무관 — 부제 "○○편" 표기용) */
-export async function getMonologueTotalCount(): Promise<number> {
+/** 발행된 독백 전체 개수 (필터 무관 — 부제 "○○편" 표기용). cache()로 요청 내 중복 조회 방지 */
+export const getMonologueTotalCount = cache(async (): Promise<number> => {
   const { count, error } = await supabaseAdmin
     .from('monologues')
     .select('id', { count: 'exact', head: true })
@@ -72,7 +73,16 @@ export async function getMonologueTotalCount(): Promise<number> {
     return 0
   }
   return count ?? 0
-}
+})
+
+/**
+ * generateMetadata와 페이지 컴포넌트가 같은 요청에서 각각 호출해도 DB 조회는 1번만.
+ * react cache()는 인자 동일성(===)으로 dedupe하므로 객체가 아닌 원시값 인자를 받는다.
+ */
+export const getMonologuesCached = cache(
+  async (gender?: string, genre?: string, medium?: string, age?: string): Promise<Monologue[]> =>
+    getMonologues({ gender, genre, medium, age })
+)
 
 export async function getMonologueById(id: string): Promise<Monologue | null> {
   const { data, error } = await supabaseAdmin

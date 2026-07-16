@@ -24,15 +24,22 @@ const fetchMonologue = cache(async (id: string) => {
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { id } = await params
   const m = await fetchMonologue(id)
-  if (!m) return { title: '독백을 찾을 수 없습니다 | KD4 액팅 스튜디오' }
+  // 루트 layout의 title template(%s | KD4 액팅 스튜디오)이 사이트명을 붙이므로 여기선 붙이지 않는다
+  // (기존 수동 접미사 + template 이중 적용으로 라이브 364페이지 title에 사이트명 2회 중복 — 2026-07-16 수정)
+  if (!m) return { title: '독백을 찾을 수 없습니다' }
 
-  const title = `${m.role} - ${m.work} 독백 대사`
-  const desc = m.body.slice(0, 100)
+  const title = `${m.role} - ${m.work} 독백 대사${m.target ? ` (${m.target})` : ''}`
+  const desc = `${m.medium}·${m.genre}${m.target ? ` ${m.target}` : ''} 독백 대본. ${(m.body ?? '').slice(0, 80)}`
   const canonicalUrl = `${SITE_URL}/monologues/${m.id}`
 
   return {
-    title: `${title} | KD4 액팅 스튜디오`,
+    title,
     description: desc,
+    keywords: [
+      `${m.work} 독백`, `${m.role} 독백`, `${m.work} 대사`,
+      m.target?.startsWith('남성') ? '남자독백대본' : '여자독백대본',
+      '오디션 독백', '독백 대본', `${m.medium} 독백`,
+    ],
     alternates: { canonical: canonicalUrl },
     openGraph: {
       type: 'article',
