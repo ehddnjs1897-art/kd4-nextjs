@@ -1,7 +1,12 @@
 import { Metadata } from 'next'
-import { createClient } from '@/lib/supabase/server'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 import { SITE_URL } from '@/lib/constants'
 import ReviewsClient from './ReviewsClient'
+
+// 공개 후기(비회원 열람 가능, 인증 불요)라 쿠키 기반 클라이언트 대신 supabaseAdmin 사용 +
+// ISR 캐싱 — 기존엔 revalidate 자체가 없어(쿠키 클라이언트라 항상 dynamic) 방문마다 DB를
+// 새로 조회해 TTFB 1.2~1.5초로 느렸음(2026-07-14 실측). /actors·/monologues와 동일 패턴으로 통일.
+export const revalidate = 300
 
 // ── Metadata (SSR — SEO/GEO 최적화) ──
 export const metadata: Metadata = {
@@ -67,8 +72,7 @@ function buildReviewSchema(reviews: Review[]) {
 // ── SSR 데이터 패칭 ──
 async function getReviews(): Promise<Review[]> {
   try {
-    const supabase = await createClient()
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('actor_reviews')
       .select(
         'id, reviewer_name, course_type, review_text, image_url, notion_filename, review_year, sort_weight'

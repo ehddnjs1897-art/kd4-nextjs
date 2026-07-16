@@ -6,8 +6,8 @@ import { getMonologueById } from '@/lib/monologues'
 import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { buildBreadcrumb } from '@/lib/seo-schemas'
-import { createClient } from '@/lib/supabase/server'
 import CopyTextButton from '@/components/monologues/CopyTextButton'
+import DownloadButton from '@/components/monologues/DownloadButton'
 
 export const revalidate = 300
 
@@ -69,10 +69,6 @@ export default async function MonologueDetailPage({ params }: { params: Params }
   // 둘 중 더 긴 쪽(같으면 body) — 이미지 하단에 복사 가능한 텍스트가 항상 뜨도록 보장.
   const displayText = m.full_body && m.full_body.length > m.body.length ? m.full_body : m.body
 
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  const downloadHref = user ? `/api/monologues/${m.id}/download` : `/auth/login?next=${encodeURIComponent(`/monologues/${m.id}`)}`
-
   return (
     <main style={{ maxWidth: 780, margin: '0 auto', padding: '40px 20px 80px' }}>
       <PageJsonLd
@@ -120,26 +116,7 @@ export default async function MonologueDetailPage({ params }: { params: Params }
               style={{ width: '100%', height: 'auto', display: 'block' }}
             />
           </div>
-          <a
-            href={downloadHref}
-            download={user ? true : undefined}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              marginTop: 20,
-              padding: '10px 24px',
-              borderRadius: 999,
-              background: 'var(--navy)',
-              color: '#fff',
-              fontFamily: 'var(--font-sans)',
-              fontSize: '0.85rem',
-              fontWeight: 600,
-              textDecoration: 'none',
-            }}
-          >
-            ↓ 독백 다운로드
-          </a>
+          <DownloadButton monologueId={m.id} />
         </div>
       )}
 

@@ -26,15 +26,27 @@ export interface MonologueFilters {
   age?: string      // AGE_OPTIONS의 value ('10대' | '20대' | ... | '50대이상')
 }
 
+/** 목록 카드가 실제로 렌더링하는 필드만 — 상세페이지 전용인 body/full_body/source_* 제외 */
+export type MonologueListItem = Pick<
+  Monologue,
+  'id' | 'role' | 'work' | 'medium' | 'genre' | 'target' | 'card_image_url' | 'grade'
+>
+
+const LIST_COLUMNS = 'id, role, work, medium, genre, target, card_image_url, grade'
 const SELECT_COLUMNS =
   'id, role, work, medium, genre, target, emotion, body, full_body, source_url, source_platform, card_image_url, grade, created_at'
 
-/** 성별/나이대가 합쳐진 target 컬럼(예: "여성 / 20대")에서 성별만 필터링 */
-export async function getMonologues(filters: MonologueFilters = {}): Promise<Monologue[]> {
+/**
+ * 목록 페이지 전용 — 상세 전용 필드(body/full_body 등, 편당 최대 수백~수천자)는 안 가져온다.
+ * 2026-07-14 발견: 목록이 필터 조합마다 364건 전체를 body+full_body까지 통째로 실어와
+ * TTFB 1.8초+/응답 1MB로 느렸음(실측). 카드가 안 쓰는 필드라 제외해도 화면엔 영향 없음.
+ * 성별/나이대가 합쳐진 target 컬럼(예: "여성 / 20대")에서 성별만 필터링.
+ */
+export async function getMonologues(filters: MonologueFilters = {}): Promise<MonologueListItem[]> {
   // grade 정렬(S→A→B)은 문자열 순서와 안 맞아 DB에 안 맡기고 아래에서 JS로 보정
   let query = supabaseAdmin
     .from('monologues')
-    .select(SELECT_COLUMNS)
+    .select(LIST_COLUMNS)
     .eq('is_published', true)
     .order('sort_weight', { ascending: false })
     .order('created_at', { ascending: false })
@@ -55,7 +67,7 @@ export async function getMonologues(filters: MonologueFilters = {}): Promise<Mon
     return []
   }
 
-  const rows = (data ?? []) as Monologue[]
+  const rows = (data ?? []) as MonologueListItem[]
   // grade 정렬 보정: S → A → B
   const gradeOrder: Record<string, number> = { S: 0, A: 1, B: 2 }
   return rows.sort((a, b) => (gradeOrder[a.grade] ?? 9) - (gradeOrder[b.grade] ?? 9))
@@ -80,7 +92,7 @@ export const getMonologueTotalCount = cache(async (): Promise<number> => {
  * react cache()는 인자 동일성(===)으로 dedupe하므로 객체가 아닌 원시값 인자를 받는다.
  */
 export const getMonologuesCached = cache(
-  async (gender?: string, genre?: string, medium?: string, age?: string): Promise<Monologue[]> =>
+  async (gender?: string, genre?: string, medium?: string, age?: string): Promise<MonologueListItem[]> =>
     getMonologues({ gender, genre, medium, age })
 )
 
