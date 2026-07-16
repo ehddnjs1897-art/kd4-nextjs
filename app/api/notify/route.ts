@@ -254,6 +254,30 @@ async function sendNotionConsultation(payload: {
   }
 }
 
+/* ── 신청자 본인에게 사전상담 안내 SMS ────────────────────────────────
+ * 기존 Make.com "KD4.club 상담 접수 자동화" 시나리오가 담당하던 로직을
+ * 코드로 이관 (2026-07-16). Make 시나리오는 비활성화됨 — 이 함수가 유일한 발신처.
+ * ──────────────────────────────────────────────────────────────────── */
+async function sendConsultationCallTimeSMS(name: string, phone: string) {
+  const safeName = name.replace(/[\r\n\t]/g, ' ')
+  const msg =
+    `안녕하세요 ${safeName}배우님,\n` +
+    `KD4 액팅 스튜디오입니다.\n\n` +
+    `사전상담을 위해 통화 가능한 시간을\n` +
+    `2~3개 남겨주시면 맞춰 연락드리겠습니다.\n\n` +
+    `*상담 전 카카오 채널로\n` +
+    `프로필과 출연영상을 보내주세요.\n` +
+    `(없을시 생략가능)\n\n` +
+    `─────────────────\n` +
+    `✅ 카카오 채널\nhttps://pf.kakao.com/_ximxdqn\n\n` +
+    `✅ 홈페이지\nhttps://kd4.club\n\n` +
+    `✅ 인스타그램\nhttps://www.instagram.com/kd4actingstudio\n\n` +
+    `✅ 유튜브\nhttps://www.youtube.com/@kd4actingstudio\n` +
+    `─────────────────\n` +
+    `KD4 액팅 스튜디오 드림`
+  await sendSMS(phone, msg)
+}
+
 // 인메모리 디바운스 — DB count는 비원자적이라 동시 요청 경쟁 조건 발생 가능
 // Vercel Serverless: 인스턴스 재시작 시 초기화되나 단일 인스턴스 내 동시성은 차단
 const notifyPhoneMap = new Map<string, number>()
@@ -437,6 +461,13 @@ export async function POST(request: NextRequest) {
         name: '[redacted]', email: '[redacted]',
       })
     }
+
+    // 1-b. 신청자 본인에게 사전상담(통화가능시간) 안내 SMS
+    //      기존엔 Make.com "KD4.club 상담 접수 자동화" 웹훅이 이 SMS를 보냈으나
+    //      2026-07-16 대표 지시로 Make 시나리오 비활성화 + 코드로 이관.
+    await sendConsultationCallTimeSMS(name, phone).catch((err) =>
+      console.error('[notify] 사전상담 안내 SMS 실패:', err instanceof Error ? err.message : String(err))
+    )
 
     // 2. Make webhook 발송 — await 로 변경 (2026-05-13)
     //   이전: fire-and-forget → Vercel serverless cold start 시점에 함수 종료가 빨라
