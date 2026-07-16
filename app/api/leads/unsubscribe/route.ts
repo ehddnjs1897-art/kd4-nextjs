@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
 
   return new NextResponse(
     htmlPage(
-      `<p>KD4 클래스 안내 문자를 더 이상 받지 않으시겠어요?<br>아래 버튼을 누르면 수신이 해제됩니다.</p>
+      `<p>KD4 소식을 더 이상 받지 않으시겠어요?<br>아래 버튼을 누르면 수신이 해제됩니다.</p>
 <form method="POST" action="/api/leads/unsubscribe?id=${id}">
   <button type="submit">수신거부 확정</button>
 </form>`
@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
     console.warn(`[leads/unsubscribe] 수신거부 확정: ${id}`)
 
     return new NextResponse(
-      htmlPage('<p>KD4 클래스 안내 문자 수신이 해제되었습니다.<br>더 이상 발송되지 않습니다.<br><br>다시 받고 싶으시면 010-8564-0244로 연락 주세요.</p>'),
+      htmlPage('<p>KD4 소식 수신이 해제되었습니다.<br>더 이상 발송되지 않습니다.<br><br>다시 받고 싶으시면 010-8564-0244로 연락 주세요.</p>'),
       { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
     )
   } catch (err) {
