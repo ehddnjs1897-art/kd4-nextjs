@@ -1,20 +1,21 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { getMonologues, GENRE_OPTIONS, MEDIUM_OPTIONS } from '@/lib/monologues'
+import { getMonologues, getMonologueTotalCount, GENRE_OPTIONS, MEDIUM_OPTIONS, AGE_OPTIONS } from '@/lib/monologues'
 import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { buildBreadcrumb } from '@/lib/seo-schemas'
 
 export const revalidate = 300 // 5분 ISR — 크롤러 파이프라인이 새 카드를 계속 추가하므로 적당히 신선하게
 
-type SearchParams = Promise<{ gender?: string; genre?: string; medium?: string }>
+type SearchParams = Promise<{ gender?: string; genre?: string; medium?: string; age?: string }>
 
 export async function generateMetadata({ searchParams }: { searchParams: SearchParams }): Promise<Metadata> {
   const params = await searchParams
   const parts: string[] = []
   if (params.gender) parts.push(params.gender)
-  if (params.genre) parts.push(params.genre)
+  if (params.age) parts.push(AGE_OPTIONS.find((o) => o.value === params.age)?.label ?? params.age)
   if (params.medium) parts.push(params.medium)
+  if (params.genre) parts.push(params.genre)
   const suffix = parts.length ? ` — ${parts.join(' · ')}` : ''
   const title = `독백 대본 아카이브${suffix}`
   const desc = '오디션·연습용 독백 대본을 배역·작품·장르·감정선별로 모아둔 KD4 독백 아카이브. 실제 영화·드라마 대사부터 연습용 창작 대본까지.'
@@ -58,6 +59,31 @@ function FilterPill({ label, href, active }: { label: string; href: string; acti
   )
 }
 
+function FilterGroup({ label, first, children }: { label: string; first?: boolean; children: React.ReactNode }) {
+  return (
+    <div
+      style={{
+        padding: '13px 16px',
+        borderTop: first ? 'none' : '1px solid var(--border)',
+      }}
+    >
+      <div
+        style={{
+          fontFamily: 'var(--font-sans)',
+          fontSize: '0.72rem',
+          fontWeight: 700,
+          letterSpacing: '0.03em',
+          color: 'var(--gray)',
+          marginBottom: 9,
+        }}
+      >
+        {label}
+      </div>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>{children}</div>
+    </div>
+  )
+}
+
 function buildHref(base: Record<string, string | undefined>, key: string, value: string | undefined) {
   const next = { ...base, [key]: value }
   const qs = new URLSearchParams()
@@ -73,9 +99,14 @@ export default async function MonologuesPage({ searchParams }: { searchParams: S
   const gender = params.gender && ['남성', '여성'].includes(params.gender) ? params.gender : undefined
   const genre = params.genre && GENRE_OPTIONS.includes(params.genre) ? params.genre : undefined
   const medium = params.medium && MEDIUM_OPTIONS.includes(params.medium) ? params.medium : undefined
+  const age = params.age && AGE_OPTIONS.some((o) => o.value === params.age) ? params.age : undefined
 
-  const monologues = await getMonologues({ gender, genre, medium })
-  const current = { gender, genre, medium }
+  const [monologues, totalCount] = await Promise.all([
+    getMonologues({ gender, genre, medium, age }),
+    getMonologueTotalCount(),
+  ])
+  const current = { gender, genre, medium, age }
+  const hasFilter = Boolean(gender || genre || medium || age)
 
   return (
     <main style={{ maxWidth: 'var(--container)', margin: '0 auto', padding: '48px 20px 80px' }}>
@@ -101,32 +132,49 @@ export default async function MonologuesPage({ searchParams }: { searchParams: S
           독백 대본 아카이브
         </h1>
         <p style={{ fontFamily: 'var(--font-sans)', color: 'var(--text-warm)', fontSize: '0.95rem' }}>
-          오디션·연습용 독백 {monologues.length}편 — 배역·작품·장르·감정선으로 찾아보세요.
+          {hasFilter
+            ? `오디션·연습용 독백 ${totalCount}편 중 ${monologues.length}편 — 배역·작품·장르·감정선으로 찾아보세요.`
+            : `오디션·연습용 독백 ${totalCount}편 — 배역·작품·장르·감정선으로 찾아보세요.`}
         </p>
       </header>
 
-      {/* 성별 필터 */}
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
-        <FilterPill label="전체" href={buildHref(current, 'gender', undefined)} active={!gender} />
-        <FilterPill label="여성" href={buildHref(current, 'gender', '여성')} active={gender === '여성'} />
-        <FilterPill label="남성" href={buildHref(current, 'gender', '남성')} active={gender === '남성'} />
-      </div>
+      {/* 필터 — 그룹별 레이블 + 구분선 (Apple HIG 스타일) */}
+      <section
+        style={{
+          marginBottom: 32,
+          border: '1px solid var(--border)',
+          borderRadius: 'var(--radius)',
+          background: '#fff',
+          overflow: 'hidden',
+        }}
+      >
+        <FilterGroup label="성별" first>
+          <FilterPill label="전체" href={buildHref(current, 'gender', undefined)} active={!gender} />
+          <FilterPill label="여성" href={buildHref(current, 'gender', '여성')} active={gender === '여성'} />
+          <FilterPill label="남성" href={buildHref(current, 'gender', '남성')} active={gender === '남성'} />
+        </FilterGroup>
 
-      {/* 미디어 필터 */}
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12, overflowX: 'auto' }}>
-        <FilterPill label="전체 미디어" href={buildHref(current, 'medium', undefined)} active={!medium} />
-        {MEDIUM_OPTIONS.map((m) => (
-          <FilterPill key={m} label={m} href={buildHref(current, 'medium', m)} active={medium === m} />
-        ))}
-      </div>
+        <FilterGroup label="연령대">
+          <FilterPill label="전체 연령" href={buildHref(current, 'age', undefined)} active={!age} />
+          {AGE_OPTIONS.map((o) => (
+            <FilterPill key={o.value} label={o.label} href={buildHref(current, 'age', o.value)} active={age === o.value} />
+          ))}
+        </FilterGroup>
 
-      {/* 장르 필터 */}
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 32, overflowX: 'auto' }}>
-        <FilterPill label="전체 장르" href={buildHref(current, 'genre', undefined)} active={!genre} />
-        {GENRE_OPTIONS.map((g) => (
-          <FilterPill key={g} label={g} href={buildHref(current, 'genre', g)} active={genre === g} />
-        ))}
-      </div>
+        <FilterGroup label="미디어">
+          <FilterPill label="전체 미디어" href={buildHref(current, 'medium', undefined)} active={!medium} />
+          {MEDIUM_OPTIONS.map((m) => (
+            <FilterPill key={m} label={m} href={buildHref(current, 'medium', m)} active={medium === m} />
+          ))}
+        </FilterGroup>
+
+        <FilterGroup label="장르">
+          <FilterPill label="전체 장르" href={buildHref(current, 'genre', undefined)} active={!genre} />
+          {GENRE_OPTIONS.map((g) => (
+            <FilterPill key={g} label={g} href={buildHref(current, 'genre', g)} active={genre === g} />
+          ))}
+        </FilterGroup>
+      </section>
 
       {monologues.length === 0 ? (
         <p style={{ fontFamily: 'var(--font-sans)', color: 'var(--gray)', padding: '60px 0', textAlign: 'center' }}>
