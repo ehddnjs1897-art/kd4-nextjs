@@ -278,9 +278,9 @@ export default async function DashboardPage() {
                 )}
                 {/* 완성도 카드 안에 편집 버튼이 이미 있으므로, 카드가 없을 때만 별도 타일 노출 (중복 방지) */}
                 {!(actorExists && completeness) && (
-                  <Link href="/dashboard/edit" style={tileBtn}>
-                    <span style={tileIcon} aria-hidden="true">✏️</span>
+                  <Link href="/dashboard/edit" style={listRow}>
                     <span>내 프로필 수정</span>
+                    <span aria-hidden="true" style={chevron}>›</span>
                   </Link>
                 )}
               </div>
@@ -316,18 +316,18 @@ export default async function DashboardPage() {
         {canViewActorDb && (
           <section aria-label="KD4 크루" style={card}>
             <h2 style={sectionTitle}>KD4 크루</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
-              <Link href="/actors" style={tileBtn}>
-                <span style={tileIcon} aria-hidden="true">🎬</span>
+            <div>
+              <Link href="/actors" style={{ ...listRow, borderBottom: '1px solid var(--border)' }}>
                 <span>배우 DB</span>
+                <span aria-hidden="true" style={chevron}>›</span>
               </Link>
-              <Link href="/board" style={tileBtn}>
-                <span style={tileIcon} aria-hidden="true">💬</span>
+              <Link href="/board" style={{ ...listRow, borderBottom: '1px solid var(--border)' }}>
                 <span>커뮤니티</span>
+                <span aria-hidden="true" style={chevron}>›</span>
               </Link>
-              <Link href="/ai-tools" style={tileBtn}>
-                <span style={tileIcon} aria-hidden="true">🤖</span>
+              <Link href="/ai-tools" style={listRow}>
                 <span>대본 분석</span>
+                <span aria-hidden="true" style={chevron}>›</span>
               </Link>
             </div>
           </section>
@@ -350,9 +350,9 @@ export default async function DashboardPage() {
             <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 12 }}>
               배우 DB에서 ♡로 담아둔 관심 배우를 한눈에 모아봅니다. (이 기기에 저장)
             </p>
-            <Link href="/shortlist" style={tileBtn}>
-              <span style={tileIcon} aria-hidden="true">♥</span>
+            <Link href="/shortlist" style={listRow}>
               <span>내 숏리스트 보기</span>
+              <span aria-hidden="true" style={chevron}>›</span>
             </Link>
           </section>
         )}
@@ -456,27 +456,25 @@ const sectionTitle: React.CSSProperties = {
   marginBottom: 4,
 }
 
-const tileBtn: React.CSSProperties = {
+// Apple 설정 앱 스타일 리스트 행 — 라벨 좌측 + 얇은 화살표 우측 (2026-07-14 대표 지시,
+// 큰 이모지 타일 그리드를 "Apple design" 정리 대상으로 지목해 편집폼과 동일한 원칙 적용)
+const listRow: React.CSSProperties = {
   display: 'flex',
-  flexDirection: 'column',
   alignItems: 'center',
-  gap: 6,
-  padding: '14px 10px',
+  justifyContent: 'space-between',
+  padding: '13px 2px',
   minHeight: 44,
-  background: 'var(--bg)',
-  border: '1px solid var(--border)',
-  borderRadius: 8,
-  fontSize: '0.8rem',
+  fontSize: '0.88rem',
   color: 'var(--white)',
   textDecoration: 'none',
   fontFamily: 'var(--font-display)',
-  textAlign: 'center',
   fontWeight: 500,
 }
 
-const tileIcon: React.CSSProperties = {
-  fontSize: '1.3rem',
-  lineHeight: 1,
+const chevron: React.CSSProperties = {
+  color: 'var(--gray)',
+  fontSize: '1.05rem',
+  fontWeight: 400,
 }
 
 const primaryBtn: React.CSSProperties = {

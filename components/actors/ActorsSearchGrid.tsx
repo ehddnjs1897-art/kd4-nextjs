@@ -93,13 +93,6 @@ const AGE_DETAIL_OPTIONS = [
 // 레거시 '50대 이상' 저장값은 '50대' 버킷으로 취급 (제약 확장 전 기존 데이터 — 8명 호환)
 const ageBucket = (ag: string | null): string | null => (ag === '50대 이상' ? '50대' : ag)
 
-// 성별 필터 옵션 (클라이언트 추가 필터용)
-const GENDER_DETAIL_OPTIONS = [
-  { value: 'all', label: '전체' },
-  { value: '남', label: '남' },
-  { value: '여', label: '여' },
-]
-
 // ── 한국어 초성검색 (외부 라이브러리 없이) ──
 const CHO = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ']
 function toChoseong(str: string): string {
@@ -195,18 +188,6 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
     window.history.replaceState(window.history.state, '', qs ? `${window.location.pathname}?${qs}` : window.location.pathname)
   }, [urlReady, query, videoOnly, ageFilter, genderFilter])
 
-  // 현재 목록에 실제 존재하는 연령대만 필터 버튼 표시
-  const availableAges = useMemo(() => {
-    const seen = new Set(actors.map((a) => ageBucket(a.age_group)).filter(Boolean))
-    return AGE_DETAIL_OPTIONS.filter((o) => o.value === 'all' || seen.has(o.value))
-  }, [actors])
-
-  // 현재 목록에 실제 존재하는 성별만 필터 버튼 표시
-  const availableGenders = useMemo(() => {
-    const seen = new Set<string>(actors.map((a) => a.gender).filter((g): g is '남' | '여' => g !== null))
-    return GENDER_DETAIL_OPTIONS.filter((o) => o.value === 'all' || seen.has(o.value))
-  }, [actors])
-
   const filtered = useMemo(() => {
     const raw = deferredQuery.trim()
     let list = actors
@@ -293,52 +274,13 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
         )}
       </form>
 
-      {/* 클라이언트 세부 필터 — 성별 + 연령대 + 영상 */}
+      {/* 클라이언트 세부 필터 — 영상 (성별·연령대는 2026-07-14 제거: page.tsx 상단 필터바와
+          완전히 겹치는 버튼이 "전체" 상태 — 가장 흔한 첫 방문 화면 — 에서 매번 이중으로 보이고
+          있었음. availableGenders/AgeslengthGate>2 가드는 서버 필터가 이미 좁혀놨을 때만
+          걸러지고 기본 화면에선 걸러지지 않아 원래 의도(중복 시 숨김)가 무력화된 상태였음.
+          genderFilter/ageFilter 상태·URL 동기화(?g=·?age=)·filtered 로직은 그대로 둠 —
+          공유된 필터 링크는 계속 정상 동작, 버튼 UI만 제거해 화면 중복만 없앰. */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16, alignItems: 'center' }}>
-        {/* 성별 필터 (서버 필터와 중복되지 않을 때만 표시) */}
-        {availableGenders.length > 2 && (
-          <div role="group" aria-label="성별 필터" style={{ display: 'flex', gap: 4 }}>
-            {availableGenders.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => setGenderFilter(opt.value)}
-                aria-pressed={genderFilter === opt.value}
-                style={{
-                  padding: '6px 12px', borderRadius: 999, cursor: 'pointer',
-                  fontSize: '0.78rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
-                  background: genderFilter === opt.value ? 'var(--navy)' : 'var(--bg2)',
-                  color: genderFilter === opt.value ? '#fff' : 'var(--gray)',
-                  border: `1px solid ${genderFilter === opt.value ? 'var(--navy)' : 'var(--border)'}`,
-                  transition: 'all 0.15s',
-                }}
-              >{opt.label}</button>
-            ))}
-          </div>
-        )}
-
-        {/* 연령대 세부 필터 */}
-        {availableAges.length > 2 && (
-          <div role="group" aria-label="연령대 필터" style={{ display: 'flex', gap: 4 }}>
-            {availableAges.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => setAgeFilter(opt.value)}
-                aria-pressed={ageFilter === opt.value}
-                style={{
-                  padding: '6px 12px', borderRadius: 999, cursor: 'pointer',
-                  fontSize: '0.78rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
-                  background: ageFilter === opt.value ? 'var(--navy-tint-2)' : 'var(--bg2)',
-                  color: ageFilter === opt.value ? 'var(--navy)' : 'var(--gray)',
-                  border: `1px solid ${ageFilter === opt.value ? 'var(--navy-tint-3)' : 'var(--border)'}`,
-                  transition: 'all 0.15s',
-                }}
-              >{opt.label}</button>
-            ))}
-          </div>
-        )}
-
         {/* 출연영상 보유 배우 필터 토글 (영상 보유 배우가 있을 때만) */}
         {anyVideo && (
           <button
