@@ -472,12 +472,20 @@ export default async function ActorDetailPage({
     actor.gender === '남' ? '남자 배우' : actor.gender === '여' ? '여자 배우' : '배우'
 
   const currentYear = new Date().getFullYear()
-  // HERO 대표출연작 — 배우 본인이 지정한 작품(is_featured)만 상단 하이라이트로 노출.
-  // 연도 내림차순, 최대 6편. (기존 자동 "최근 출연" 요약을 대체 — 수동 큐레이션, 2026-07-01 대표 지시)
-  const heroFeatured = (actor.actor_filmography ?? [])
+  // HERO 대표출연작 — 배우 본인이 별표(is_featured)한 작품 우선, 연도 내림차순 최대 6편.
+  // 별표가 하나도 없는 배우는 최신 작품 3편을 같은 카드 양식으로 자동 표시 (2026-07-16 대표 지시
+  // "양식 일관되게 통일" — 별표 유무로 섹션 자체가 있다/없다 갈리던 프로필 간 불일치 해소.
+  // 7/1 이전 별표 저장 유실 버그로 별표가 안 남은 배우들도 이 폴백으로 커버, 수동 큐레이션은 계속 우선)
+  const starredWorks = (actor.actor_filmography ?? [])
     .filter((f) => f.is_featured && f.title)
     .sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
     .slice(0, 6)
+  const heroFeatured = starredWorks.length > 0
+    ? starredWorks
+    : (actor.actor_filmography ?? [])
+        .filter((f) => f.title)
+        .sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
+        .slice(0, 3)
 
   // HERO 우측 수상 · 영화제 — award 채워진 작품을 연도순으로(각각 분리해 표시). 대표사진 옆 프로필에 노출 (2026-07-01 대표 지시)
   const heroAwards = (actor.actor_filmography ?? [])
