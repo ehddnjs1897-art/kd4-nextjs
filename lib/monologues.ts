@@ -1,5 +1,6 @@
 import 'server-only'
 import { cache } from 'react'
+import { unstable_cache } from 'next/cache'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
 export interface Monologue {
@@ -73,8 +74,7 @@ export async function getMonologues(filters: MonologueFilters = {}): Promise<Mon
   return rows.sort((a, b) => (gradeOrder[a.grade] ?? 9) - (gradeOrder[b.grade] ?? 9))
 }
 
-/** 발행된 독백 전체 개수 (필터 무관 — 부제 "○○편" 표기용). cache()로 요청 내 중복 조회 방지 */
-export const getMonologueTotalCount = cache(async (): Promise<number> => {
+async function fetchMonologueTotalCount(): Promise<number> {
   const { count, error } = await supabaseAdmin
     .from('monologues')
     .select('id', { count: 'exact', head: true })
@@ -85,15 +85,36 @@ export const getMonologueTotalCount = cache(async (): Promise<number> => {
     return 0
   }
   return count ?? 0
-})
+}
 
 /**
- * generateMetadata와 페이지 컴포넌트가 같은 요청에서 각각 호출해도 DB 조회는 1번만.
- * react cache()는 인자 동일성(===)으로 dedupe하므로 객체가 아닌 원시값 인자를 받는다.
+ * 발행된 독백 전체 개수 (필터 무관 — 부제 "○○편" 표기용).
+ * 5분 단위 프로세스 간 캐시(unstable_cache) + 요청 내 중복 호출 dedupe(react cache) 이중 적용 —
+ * getMonologuesCached와 동일한 이유(아래 주석 참조).
+ */
+export const getMonologueTotalCount = cache(
+  (): Promise<number> =>
+    unstable_cache(fetchMonologueTotalCount, ['monologues-total-count-v1'], {
+      revalidate: 300,
+      tags: ['monologues'],
+    })()
+)
+
+/**
+ * 필터 조합별 5분 캐시(unstable_cache) — /monologues는 searchParams를 읽어 Next.js가
+ * 라우트 자체를 항상 dynamic 렌더링하므로 페이지 최상단 `export const revalidate`는
+ * 이 데이터 조회에 아무 효과가 없다(2026-07-14 실측: 반복 요청에도 TTFB 1.2~1.5초로
+ * 안 줄어듦 — /actors가 쓰는 unstable_cache 패턴으로 데이터 자체를 캐싱해야 함).
+ * 바깥쪽 react cache()는 generateMetadata+페이지 컴포넌트가 같은 요청에서 두 번 호출해도
+ * 1번만 실행되게(인자 동일성 dedupe) — 요청 내 중복 호출까지 막아준다.
  */
 export const getMonologuesCached = cache(
-  async (gender?: string, genre?: string, medium?: string, age?: string): Promise<MonologueListItem[]> =>
-    getMonologues({ gender, genre, medium, age })
+  (gender?: string, genre?: string, medium?: string, age?: string): Promise<MonologueListItem[]> =>
+    unstable_cache(
+      () => getMonologues({ gender, genre, medium, age }),
+      ['monologues-list-v1', gender ?? '', genre ?? '', medium ?? '', age ?? ''],
+      { revalidate: 300, tags: ['monologues'] }
+    )()
 )
 
 export async function getMonologueById(id: string): Promise<Monologue | null> {
