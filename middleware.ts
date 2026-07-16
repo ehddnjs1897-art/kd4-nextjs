@@ -41,8 +41,18 @@ export async function middleware(request: NextRequest) {
   }
 
   // 광고 랜딩 · 공개 페이지 — Supabase 완전 격리 (어떤 외부 장애도 영향 없음)
-  // 주의: /actors 는 회원 전용으로 잠금되어 세션 판별이 필요하므로 제외 (페이지 단에서 권한 처리)
-  const PUBLIC_PATHS = ['/', '/join']
+  // 주의: /actors, /board 는 회원 전용으로 잠금(또는 역할별 분기)되어 세션 판별이
+  // 필요하므로 제외 (페이지 단에서 권한 처리). 여기 추가하는 경로는 페이지 컴포넌트가
+  // 서버에서 세션/쿠키를 전혀 안 읽는 순수 공개 콘텐츠여야 함 — 그렇지 않으면 로그인
+  // 상태가 반영 안 되거나 미들웨어의 세션 갱신을 놓쳐 다른 페이지 로그인이 깨질 수 있음.
+  //
+  // 2026-07-14 추가(성능): 이 미들웨어는 매칭되는 모든 경로에서 supabase.auth.getUser()로
+  // 세션 쿠키를 실시간 갱신하는데, 이게 Supabase Auth API 왕복(네트워크 요청) + 매 응답에
+  // Set-Cookie를 강제해 Cache-Control이 private,no-store로 깔림 — 페이지 자체가 아무리
+  // 잘 캐싱돼 있어도(revalidate·unstable_cache) 이 미들웨어 단계에서 캐싱이 전부 무효화됨.
+  // 실측: /monologues·/reviews TTFB가 페이지 캐싱 수정 후에도 0.5~1.5초로 안 줄던 원인이
+  // 바로 이거였음. 세션이 전혀 필요 없는 순수 공개 목록/상세 페이지를 여기 추가해 우회.
+  const PUBLIC_PATHS = ['/', '/join', '/monologues', '/reviews', '/classes', '/about', '/faq', '/benefits']
   if (PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + '/'))) {
     return NextResponse.next()
   }
