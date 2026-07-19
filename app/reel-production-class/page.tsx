@@ -86,6 +86,46 @@ const PORTFOLIO_VIDEOS = [
 
 const PORTFOLIO_PLAYLIST = 'https://www.youtube.com/playlist?list=PLMbZlnkLfP7iaE41p_g9dzGKp5eU9VZk2'
 
+type CurriculumSession = { title: string; detail: string | null; highlight?: boolean }
+type CurriculumMonth = { month: string; emoji: string; goal: string | null; sessions: CurriculumSession[] }
+
+/** 월별 커리큘럼 — 3개월 코스 월 4회(회당 4시간). highlight: true 인 회차는 촬영·납품 단계(강조 카드로 렌더) */
+const CURRICULUM_MONTHS: CurriculumMonth[] = [
+  {
+    month: '첫째 달',
+    emoji: '🎬',
+    goal: '본인의 톤과 매력을 객관적으로 파악하고, 카메라 앞에서 살아있는 반응을 만드는 법',
+    sessions: [
+      { title: 'OT · 레퍼런스 취합', detail: '본인 톤·매력에 맞는 영상 레퍼런스를 함께 큐레이션' },
+      { title: '마이즈너 테크닉 — 레피티션', detail: '상대에게서 연기의 근거를 찾는 훈련. 카메라 앞 집중력의 토대' },
+      { title: '이바나 처벅 — 목표와 장애', detail: '인물의 목표·장애·행동을 분석해 장면의 동력 설계' },
+      { title: '캐릭터 방향 확정', detail: '배우 개인의 서사와 캐스팅 포지션을 정리해 시나리오 방향 결정' },
+    ],
+  },
+  {
+    month: '둘째 달',
+    emoji: '📝',
+    goal: '본인 전용 시나리오를 완성하고, 카메라 연기로 장면을 소화하는 능력',
+    sessions: [
+      { title: '맞춤 시나리오 초고 리딩', detail: '레퍼런스 기반 본인 전용 시나리오. 단순 독백이 아닌 임팩트 장면' },
+      { title: '장면 분석 · 비트 나누기', detail: '대사 아래 흐르는 행동을 찾아 장면을 구조화' },
+      { title: '카메라 연기 훈련', detail: '풀샷·바스트·클로즈업 등 사이즈별 연기 조절' },
+      { title: '시나리오 확정 · 리허설', detail: '촬영본 확정 후 현장 조건에 맞춘 리허설' },
+    ],
+  },
+  {
+    month: '셋째 달',
+    emoji: '🎥',
+    goal: '전문 영화팀과 실제 촬영을 진행하고 완성 영상으로 납품받기',
+    sessions: [
+      { title: '프리 프로덕션', detail: '콘티·장소·의상·스케줄 확정', highlight: true },
+      { title: '전문 영화팀 현장 촬영', detail: '영화 현장의 카메라·조명·사운드 셋업으로 촬영', highlight: true },
+      { title: '1차 편집본 리뷰', detail: '편집본을 함께 확인하고 피드백 반영' },
+      { title: '컬러·사운드 완료 · 납품', detail: '컬러 그레이딩·사운드 디자인 완료. 오디션 제출에 바로 사용', highlight: true },
+    ],
+  },
+]
+
 export default function ReelPage() {
   return (
     <div style={{ paddingTop: '80px', background: 'var(--bg)', minHeight: '100vh', color: '#111111' }}>
@@ -103,7 +143,7 @@ export default function ReelPage() {
             name: '출연영상 클래스 — 배우 포트폴리오 제작 | KD4 액팅 스튜디오',
             description: '전문 영화팀과 제작하는 배우 출연영상 포트폴리오 클래스. KD4 액팅 스튜디오.',
             mainEntity: { '@id': `${PAGE_URL}#course-intensive-class` },
-            dateModified: '2026-06-11',
+            dateModified: '2026-07-19',
             speakableCssSelectors: ['h1', '.section-desc', '.faq-answer'],
           }),
           buildCourseFromClass(FILM_CLASS, { url: PAGE_URL, image: `${SITE_URL}/og-heart.jpg` }),
@@ -233,11 +273,76 @@ export default function ReelPage() {
         </div>
       </section>
 
+      {/* CURRICULUM */}
+      <section aria-label="3개월 코스 커리큘럼" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
+            <p className="section-eyebrow" lang="en">04 — CURRICULUM</p>
+            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>3개월 코스</h2>
+            <p className="section-desc">
+              월 4회 · 회당 4시간. 마이즈너 훈련을 병행하며 촬영은 후반부에 집중됩니다.
+            </p>
+          </div>
+
+          {/* 월별 타임라인 */}
+          <div className="reel-timeline" style={{ maxWidth: '820px', margin: '0 auto', position: 'relative' }}>
+            <span className="reel-timeline-line" aria-hidden="true" style={{ position: 'absolute', left: '104px', top: '12px', bottom: '12px', width: '1px', background: 'var(--border)' }} />
+            {CURRICULUM_MONTHS.map((m, mi) => (
+              <div key={m.month} className="reel-month" style={{ display: 'grid', gridTemplateColumns: '104px 1fr', marginBottom: mi === CURRICULUM_MONTHS.length - 1 ? 0 : 'clamp(32px, 5vw, 48px)' }}>
+                <div className="reel-month-rail" style={{ position: 'relative', textAlign: 'right', paddingRight: '28px' }}>
+                  <div aria-hidden="true" style={{ fontSize: '1.5rem', lineHeight: 1 }}>{m.emoji}</div>
+                  <div style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', fontWeight: 700, marginTop: '10px', color: '#111' }}>{m.month}</div>
+                  <div lang="en" style={{ fontFamily: 'var(--font-display)', fontSize: '0.68rem', letterSpacing: '0.1em', color: 'var(--gray)', marginTop: '2px' }}>MONTH {mi + 1}</div>
+                  <span className="reel-month-dot" aria-hidden="true" style={{ position: 'absolute', right: '-4px', top: '0.5rem', width: '9px', height: '9px', borderRadius: '50%', background: 'var(--navy)', border: '2px solid var(--bg2)', boxSizing: 'content-box' }} />
+                </div>
+                <div className="reel-month-body" style={{ paddingLeft: '28px' }}>
+                  {m.goal && (
+                    <p style={{ fontSize: 'clamp(0.86rem, 2.1vw, 0.92rem)', color: 'var(--navy)', lineHeight: 1.7, marginBottom: '16px', wordBreak: 'keep-all' }}>
+                      <span lang="en" style={{ fontFamily: 'var(--font-display)', fontSize: '0.68rem', letterSpacing: '0.1em', color: 'var(--gray)', display: 'block', marginBottom: '4px' }}>GOAL</span>
+                      {m.goal}
+                    </p>
+                  )}
+                  <ol role="list" style={{ display: 'flex', flexDirection: 'column', gap: '8px', listStyle: 'none' }}>
+                    {m.sessions.map((s, si) => (
+                      <li
+                        key={si}
+                        style={{
+                          display: 'grid',
+                          gridTemplateColumns: 'auto 1fr',
+                          gap: '14px',
+                          alignItems: 'start',
+                          background: s.highlight ? 'var(--navy-tint-1)' : 'var(--bg)',
+                          border: `1px solid ${s.highlight ? 'var(--navy-tint-3)' : 'var(--border)'}`,
+                          borderRadius: '10px',
+                          padding: '14px 16px',
+                        }}
+                      >
+                        <span aria-hidden="true" style={{ fontFamily: 'var(--font-display)', fontSize: '0.72rem', fontWeight: 700, color: 'var(--navy)', background: s.highlight ? 'var(--navy-tint-2)' : 'var(--navy-tint-1)', borderRadius: '999px', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
+                          {si + 1}
+                        </span>
+                        <span>
+                          <span style={{ display: 'block', fontSize: 'clamp(0.88rem, 2.1vw, 0.92rem)', fontWeight: 600, color: '#111', lineHeight: 1.6, wordBreak: 'keep-all' }}>
+                            <span className="sr-only">{si + 1}회차 — </span>{s.title}
+                          </span>
+                          {s.detail && (
+                            <span style={{ display: 'block', fontSize: '0.82rem', color: 'var(--gray-light)', lineHeight: 1.65, marginTop: '4px', wordBreak: 'keep-all' }}>{s.detail}</span>
+                          )}
+                        </span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CLASS DETAILS */}
       <section aria-label="클래스 상세 정보" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
-            <p className="section-eyebrow" lang="en">04 — DETAILS</p>
+            <p className="section-eyebrow" lang="en">05 — DETAILS</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>클래스 정보</h2>
           </div>
           <div style={{ maxWidth: '640px', margin: '0 auto', background: 'var(--bg)', border: '1.5px solid var(--navy)', borderRadius: '12px', padding: '24px' }}>
@@ -273,7 +378,7 @@ export default function ReelPage() {
       <section aria-label="포함 사항" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
-            <p className="section-eyebrow" lang="en">05 — INCLUDES</p>
+            <p className="section-eyebrow" lang="en">06 — INCLUDES</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>포함 사항</h2>
             <p className="section-desc">
               영상 소유권은 KD4가 보유하되 멤버는 캐스팅 활동에 자유롭게 사용 가능합니다.
@@ -343,6 +448,26 @@ export default function ReelPage() {
           멤버 혜택
         </Link>
       </section>
+
+      <style>{`
+        /* 모바일: 커리큘럼 타임라인 — 세로 레일 해제하고 월 헤더를 가로로 스택 */
+        @media (max-width: 640px) {
+          .reel-timeline-line { display: none !important; }
+          .reel-month { grid-template-columns: 1fr !important; }
+          .reel-month-rail {
+            text-align: left !important;
+            padding-right: 0 !important;
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+          }
+          .reel-month-dot { display: none !important; }
+          .reel-month-body { padding-left: 0 !important; }
+        }
+      `}</style>
     </div>
   )
 }
