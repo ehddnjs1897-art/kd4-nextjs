@@ -455,7 +455,7 @@ export default function AboutPage() {
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {[
-                '누적 캐스팅 연계 100건+',
+                '최근 캐스팅 60건',
                 '누적 코칭 배우 400명+',
                 '현직 배우 멤버들과 함께하는 커뮤니티',
                 '디즈니+ · 넷플릭스 · tvN · MBC · KBS · 상업영화 100여편 출연',
