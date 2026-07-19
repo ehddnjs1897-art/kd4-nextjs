@@ -75,8 +75,6 @@ const INCLUDES = [
   { yes: true, text: '전문 영화팀 촬영 (카메라·조명·사운드)' },
   { yes: true, text: '편집·컬러 그레이딩·사운드 디자인' },
   { yes: true, text: '캐스팅·오디션 제출용 영상 납품' },
-  { yes: false, text: '추가 촬영 회차 (별도 견적)' },
-  { yes: false, text: '상업적 재판매·타 학원 홍보 사용' },
 ]
 
 const PORTFOLIO_VIDEOS = [
