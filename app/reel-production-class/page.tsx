@@ -89,39 +89,40 @@ const PORTFOLIO_PLAYLIST = 'https://www.youtube.com/playlist?list=PLMbZlnkLfP7ia
 type CurriculumSession = { title: string; detail: string | null; highlight?: boolean }
 type CurriculumMonth = { month: string; emoji: string; goal: string | null; sessions: CurriculumSession[] }
 
-/** 월별 커리큘럼 — 3개월 코스 월 4회(회당 4시간). highlight: true 인 회차는 촬영·납품 단계(강조 카드로 렌더) */
+/** 월별 커리큘럼 — 노션 원본("출연영상 클래스 안내") 그대로. 3개월 코스 월 4회.
+ *  goal(월별 목표 문구)은 원본에 없어 임의 작성하지 않고 null. highlight: true = 촬영 회차. */
 const CURRICULUM_MONTHS: CurriculumMonth[] = [
   {
     month: '첫째 달',
-    emoji: '🎬',
-    goal: '본인의 톤과 매력을 객관적으로 파악하고, 카메라 앞에서 살아있는 반응을 만드는 법',
+    emoji: '🌒',
+    goal: null,
     sessions: [
-      { title: 'OT · 레퍼런스 취합', detail: '본인 톤·매력에 맞는 영상 레퍼런스를 함께 큐레이션' },
-      { title: '마이즈너 테크닉 — 레피티션', detail: '상대에게서 연기의 근거를 찾는 훈련. 카메라 앞 집중력의 토대' },
-      { title: '이바나 처벅 — 목표와 장애', detail: '인물의 목표·장애·행동을 분석해 장면의 동력 설계' },
-      { title: '캐릭터 방향 확정', detail: '배우 개인의 서사와 캐스팅 포지션을 정리해 시나리오 방향 결정' },
+      { title: 'OT · 억압된 감정으로부터 해방되기', detail: 'Finger tag · Comedy improv · Pinch & ouch · Liberation of emotions' },
+      { title: '맞춤형 시나리오 작성을 위한 전략 컨설팅', detail: '레퍼런스 취합 · 자유연기' },
+      { title: '마이즈너 테크닉 훈련', detail: 'Repetition · Presentation 1 — 카드 쌓기' },
+      { title: '마이즈너 테크닉 훈련', detail: 'Repetition · Presentation 2 — 카드 쌓기' },
     ],
   },
   {
     month: '둘째 달',
-    emoji: '📝',
-    goal: '본인 전용 시나리오를 완성하고, 카메라 연기로 장면을 소화하는 능력',
+    emoji: '🌓',
+    goal: null,
     sessions: [
-      { title: '맞춤 시나리오 초고 리딩', detail: '레퍼런스 기반 본인 전용 시나리오. 단순 독백이 아닌 임팩트 장면' },
-      { title: '장면 분석 · 비트 나누기', detail: '대사 아래 흐르는 행동을 찾아 장면을 구조화' },
-      { title: '카메라 연기 훈련', detail: '풀샷·바스트·클로즈업 등 사이즈별 연기 조절' },
-      { title: '시나리오 확정 · 리허설', detail: '촬영본 확정 후 현장 조건에 맞춘 리허설' },
+      { title: '마이즈너 테크닉 훈련', detail: 'Repetition · Presentation 2 — 개인적 오브제' },
+      { title: '1차 대본 배부 및 리딩', detail: '스탠딩 리딩 훈련 · Repetition · Cold reading' },
+      { title: '캐릭터 라이징', detail: '마이즈너 테크닉 분석 훈련' },
+      { title: '마이즈너 테크닉 훈련', detail: 'Perspective Repetition · Text Repetition' },
     ],
   },
   {
     month: '셋째 달',
-    emoji: '🎥',
-    goal: '전문 영화팀과 실제 촬영을 진행하고 완성 영상으로 납품받기',
+    emoji: '🌔',
+    goal: null,
     sessions: [
-      { title: '프리 프로덕션', detail: '콘티·장소·의상·스케줄 확정', highlight: true },
-      { title: '전문 영화팀 현장 촬영', detail: '영화 현장의 카메라·조명·사운드 셋업으로 촬영', highlight: true },
-      { title: '1차 편집본 리뷰', detail: '편집본을 함께 확인하고 피드백 반영' },
-      { title: '컬러·사운드 완료 · 납품', detail: '컬러 그레이딩·사운드 디자인 완료. 오디션 제출에 바로 사용', highlight: true },
+      { title: '감독 참관 테스트 촬영 및 리허설', detail: 'Test shooting', highlight: true },
+      { title: '장면 디벨롭', detail: "Actor's paraphrase · Perspective repetition · Text repetition · Rehearsal" },
+      { title: '장면 디벨롭', detail: null },
+      { title: '촬영', detail: null, highlight: true },
     ],
   },
 ]
@@ -143,7 +144,7 @@ export default function ReelPage() {
             name: '출연영상 클래스 — 배우 포트폴리오 제작 | KD4 액팅 스튜디오',
             description: '전문 영화팀과 제작하는 배우 출연영상 포트폴리오 클래스. KD4 액팅 스튜디오.',
             mainEntity: { '@id': `${PAGE_URL}#course-intensive-class` },
-            dateModified: '2026-07-19',
+            dateModified: '2026-07-20',
             speakableCssSelectors: ['h1', '.section-desc', '.faq-answer'],
           }),
           buildCourseFromClass(FILM_CLASS, { url: PAGE_URL, image: `${SITE_URL}/og-heart.jpg` }),

@@ -166,14 +166,19 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
         {detailHref && (
           <Link
             href={detailHref}
-            aria-label={`${cls.nameKo} 상세 페이지 보기`}
+            aria-label={`${cls.nameKo} 자세히 보기`}
+            onClick={() => analytics.ctaClick('class_card_detail', cls.nameKo)}
             style={{
-              display: 'block', textAlign: 'center', padding: '8px 0',
-              fontSize: '0.82rem', fontFamily: 'var(--font-display)', letterSpacing: '0.04em',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '10px 0', minHeight: 44,
+              marginTop: 8, border: '1.5px solid var(--navy)', borderRadius: 'var(--radius)',
+              fontWeight: 700, fontSize: '0.85rem', fontFamily: 'var(--font-display)', letterSpacing: '0.04em',
               color: 'var(--navy)', textDecoration: 'none',
+              transition: 'background 0.2s',
             }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(21,72,138,0.08)' }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
           >
-            클래스 상세 페이지 보기 →
+            자세히 보기 <span aria-hidden="true">→</span>
           </Link>
         )}
       </div>
