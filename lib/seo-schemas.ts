@@ -11,7 +11,7 @@
  *   - '#dongwon'  → Person (권동원 대표)
  */
 import type { ClassItem } from './classes'
-import { DIRECTOR, SEBIN, PROMO_DEADLINE } from './classes'
+import { DIRECTOR, SEBIN, HYUNJAE, PROMO_DEADLINE } from './classes'
 import { SITE_URL } from './constants'
 
 const ADDRESS = {
@@ -212,10 +212,43 @@ export function buildPersonSebinDetailed() {
       { '@type': 'EducationalOrganization', name: '동국대학교 연극영화과' },
     ],
     performerIn: [
-      ...SEBIN.filmography.drama.map((title) => ({ '@type': 'CreativeWork', name: title })),
-      ...SEBIN.filmography.play.map((title) => ({ '@type': 'TheaterEvent', name: title })),
+      ...(SEBIN.filmographySections.find((sec) => sec.label === 'DRAMA')?.items ?? []).map((title) => ({ '@type': 'CreativeWork', name: title })),
+      ...(SEBIN.filmographySections.find((sec) => sec.label === 'PLAY')?.items ?? []).map((title) => ({ '@type': 'TheaterEvent', name: title })),
     ],
     knowsLanguage: ['Korean', 'English'],
+    subjectOf: { '@type': 'WebPage', '@id': `${SITE_URL}/acting-coaches#webpage` },
+    sameAs: [...SAMEAS],
+  }
+}
+
+/** Person — 이현재 상세 (코치 페이지 전용) */
+export function buildPersonHyunjaeDetailed() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    '@id': `${SITE_URL}#hyunjae`,
+    name: HYUNJAE.name,
+    alternateName: HYUNJAE.nameEn,
+    jobTitle: ['액팅 코치', '연기 강사', '배우'],
+    gender: 'Male',
+    nationality: { '@type': 'Country', name: '대한민국' },
+    description: 'KD4 액팅 코치이자 현역 배우. 중국 iQIYI 영화부문 신인상(한국인 최초) 수상, 한국과 중화권 영화·드라마 다수 출연.',
+    url: `${SITE_URL}/acting-coaches#hyunjae`,
+    image: `${SITE_URL}${HYUNJAE.photo}`,
+    worksFor: { '@id': `${SITE_URL}#org` },
+    knowsAbout: ['연기 코칭', '연기 훈련'],
+    hasOccupation: [
+      { '@type': 'Occupation', name: '배우', alternateName: 'Actor', occupationLocation: { '@type': 'Country', name: '대한민국' } },
+      { '@type': 'Occupation', name: '액팅 코치', alternateName: 'Acting Coach', occupationLocation: { '@type': 'Country', name: '대한민국' } },
+    ],
+    alumniOf: [
+      { '@type': 'EducationalOrganization', name: '청주대학교 예술대학원 연극영화학과' },
+    ],
+    award: [...(HYUNJAE.awards ?? [])],
+    performerIn: [
+      ...(HYUNJAE.filmographySections.find((sec) => sec.label === 'OVERSEAS FILM & DRAMA')?.items ?? []).map((title) => ({ '@type': 'CreativeWork', name: title })),
+      ...(HYUNJAE.filmographySections.find((sec) => sec.label === 'KOREA FILM & DRAMA')?.items ?? []).map((title) => ({ '@type': 'CreativeWork', name: title })),
+    ],
     subjectOf: { '@type': 'WebPage', '@id': `${SITE_URL}/acting-coaches#webpage` },
     sameAs: [...SAMEAS],
   }

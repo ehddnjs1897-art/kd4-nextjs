@@ -179,42 +179,42 @@ export default function SinchonPage() {
         </div>
       </section>
 
-      {/* ===== STUDIO — 외관·연습실·라운지 (미니멀 3장) ===== */}
-      <section aria-label="스튜디오" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)', borderTop: '1px solid var(--border)' }}>
+      {/* ===== STUDIO — 외관·연습실·라운지 (미니멀 3장 + 캡션) ===== */}
+      <section aria-label="스튜디오" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow"><span lang="en">02 — STUDIO</span></p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>스튜디오</h2>
             <p className="section-desc" style={{ textAlign: 'center', margin: '0 auto' }}>배우를 위한 최적의 공간. 1층, 공조시설 완비. 대도구·소도구를 활용한 씬 액팅에 최적화.</p>
           </div>
-          <div className="sinchon-studio-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', maxWidth: '1080px', margin: '0 auto' }}>
+          <div className="sinchon-studio-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', maxWidth: '1080px', margin: '0 auto' }}>
             {[
-              { src: '/sinchon/exterior.webp', alt: 'KD4 액팅 스튜디오 외관 — 통유리 입구와 파란 사인', w: 1280, h: 996 },
-              { src: '/sinchon/studio.webp',   alt: 'KD4 액팅 스튜디오 연습실 — 탁 트인 넓은 공간과 원목 바닥', w: 1280, h: 720 },
-              { src: '/sinchon/lounge.webp',   alt: 'KD4 액팅 스튜디오 — 씬 액팅 공간과 소파 라운지', w: 1280, h: 720 },
+              { src: '/sinchon/exterior.webp', alt: 'KD4 액팅 스튜디오 외관 — 통유리 입구와 파란 사인', w: 1280, h: 996, caption: '외관 — 1층 통유리 입구' },
+              { src: '/sinchon/studio.webp',   alt: 'KD4 액팅 스튜디오 연습실 — 탁 트인 넓은 공간과 원목 바닥', w: 1280, h: 720, caption: '연습실 — 탁 트인 훈련 공간' },
+              { src: '/sinchon/lounge.webp',   alt: 'KD4 액팅 스튜디오 — 씬 액팅 공간과 소파 라운지', w: 1280, h: 720, caption: '라운지 — 씬 액팅 공간' },
             ].map((img) => (
-              <div key={img.src} style={{ aspectRatio: '4 / 3', borderRadius: '10px', overflow: 'hidden', background: 'var(--bg2)' }}>
-                <Image
-                  src={img.src}
-                  alt={img.alt}
-                  width={img.w}
-                  height={img.h}
-                  sizes="(max-width: 760px) 100vw, 360px"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                />
-              </div>
+              <figure key={img.src} style={{ margin: 0 }}>
+                <div style={{ aspectRatio: '4 / 3', borderRadius: '10px', overflow: 'hidden', background: 'var(--bg)', border: '1px solid var(--border)' }}>
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    width={img.w}
+                    height={img.h}
+                    sizes="(max-width: 760px) 100vw, 360px"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  />
+                </div>
+                <figcaption style={{ fontSize: '0.82rem', color: 'var(--gray-light)', marginTop: '8px', textAlign: 'center', wordBreak: 'keep-all' }}>
+                  {img.caption}
+                </figcaption>
+              </figure>
             ))}
           </div>
         </div>
       </section>
-      <style>{`
-        @media (max-width: 760px) {
-          .sinchon-studio-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
 
       {/* ===== RELATED CLASSES — 내부 교차 링크 ===== */}
-      <section aria-label="신촌에서 배울 수 있는 클래스" style={{ padding: 'clamp(40px, 7vw, 64px) 0', background: 'var(--bg)', borderTop: '1px solid var(--border)' }}>
+      <section aria-label="신촌에서 배울 수 있는 클래스" style={{ padding: 'clamp(40px, 7vw, 64px) 0', background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ maxWidth: '760px', margin: '0 auto', textAlign: 'center' }}>
             <p className="section-eyebrow"><span lang="en">CLASSES</span></p>
@@ -227,7 +227,7 @@ export default function SinchonPage() {
                 출연영상 클래스 →
               </Link>
               <Link href="/acting-coaches" style={{ display: 'inline-block', padding: '11px 22px', background: 'var(--bg2)', border: '1px solid var(--border-strong)', borderRadius: '8px', fontSize: '0.88rem', fontWeight: 600, color: 'var(--navy)', textDecoration: 'none' }}>
-                권동원 액팅코치 소개 →
+                액팅 코치 소개 →
               </Link>
               <Link href="/about" style={{ display: 'inline-block', padding: '11px 22px', background: 'var(--bg2)', border: '1px solid var(--border-strong)', borderRadius: '8px', fontSize: '0.88rem', fontWeight: 600, color: 'var(--navy)', textDecoration: 'none' }}>
                 KD4 소개 →
@@ -273,6 +273,7 @@ export default function SinchonPage() {
         @media (max-width: 760px) {
           .sinchon-route-grid { grid-template-columns: 1fr !important; }
           .sinchon-info-grid { grid-template-columns: 1fr !important; }
+          .sinchon-studio-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
     </div>

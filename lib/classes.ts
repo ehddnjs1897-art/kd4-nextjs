@@ -195,7 +195,8 @@ export const CLASSES: ClassItem[] = [
     schedule: "월 4회",
     duration: "2시간 (1:1)",
     capacity: "1:1",
-    price: "400,000"
+    price: "400,000",
+    instructor: "주세빈 강사"
   }
 ];
 
@@ -285,9 +286,11 @@ export const DIRECTOR: DirectorProfile = {
 };
 
 /* ──────────────────────────────────────────────────────────────
- * 오디션 테크닉 클래스 강사 프로필 (acting-coaches 강사 페이지 §05)
- * 출처: 주세빈 프로필.pdf(2026-07-21 대표 전달) + 채팅 명시 값(주연/조연 표기)
- *    · photo: public/sebin-joo.jpg (프로필 PDF 원본 사진, 소속 AINOK)
+ * 강사 프로필 (acting-coaches 강사 페이지)
+ * 출처: 대표가 전달한 강사 본인 프로필 자료만 — 임의 추측 입력 금지
+ *    · SEBIN: 주세빈 프로필.pdf(2026-07-21) + 채팅 명시 값(주연/조연 표기)
+ *    · HYUNJAE: 2026-07-21 대표 전달 프로필 텍스트·사진 (연락처는 비게시)
+ * 필드는 강사마다 제공 자료가 달라 선택형 — 없는 값은 표시 안 함
  * ────────────────────────────────────────────────────────────── */
 
 export interface InstructorProfile {
@@ -295,17 +298,15 @@ export interface InstructorProfile {
   nameEn: string;
   title: string;
   photo: string;
-  birth: string;
-  height: string;
-  weight: string;
-  talent: string[];
+  /** 사진 원본 비율 — CSS aspectRatio 값 (크롭 없이 표시) */
+  photoAspect: string;
+  birth?: string;
+  height?: string;
+  weight?: string;
+  talent?: string[];
+  awards?: string[];
   education: string[];
-  filmography: {
-    drama: string[];
-    play: string[];
-    cf: string[];
-    movie: string[];
-  };
+  filmographySections: { label: string; items: string[] }[];
 }
 
 export const SEBIN: InstructorProfile = {
@@ -313,27 +314,83 @@ export const SEBIN: InstructorProfile = {
   nameEn: "Joo Se Bin",
   title: "KD4 오디션 테크닉 클래스 강사",
   photo: "/sebin-joo.jpg",
+  photoAspect: "532 / 771",
   birth: "1997.10.09",
   height: "164cm",
   weight: "41kg",
   talent: ["영어 (고급)", "승마", "춤", "노래", "발레"],
   education: ["동국대학교 연극영화과 졸업", "동국대학교 MFA 재학중"],
 
-  filmography: {
-    drama: [
-      "TV조선 \"닥터신\" 주연",
-      "JTBC \"디 엠파이어: 법의제국\" 조연",
-      "카카오TV \"다시, 플라이\"",
-      "tvN \"여신강림\"",
-      "OCN \"미스터 기간제\"",
-    ],
-    play: [
-      "연극 \"찔레꽃\"",
-      "연극 \"밑바닥에서\"",
-      "연극 \"꽃의 비밀\"",
-      "연극 \"순우삼촌\"",
-    ],
-    cf: ["아모레퍼시픽 프리메라", "아리얼", "LG OLED TV", "Ulkin(얼킨) 외 다수"],
-    movie: ["상업영화 \"무무무\" 개봉 예정"],
-  },
+  filmographySections: [
+    {
+      label: "DRAMA",
+      items: [
+        "TV조선 \"닥터신\" 주연",
+        "JTBC \"디 엠파이어: 법의제국\" 조연",
+        "카카오TV \"다시, 플라이\"",
+        "tvN \"여신강림\"",
+        "OCN \"미스터 기간제\"",
+      ],
+    },
+    {
+      label: "PLAY",
+      items: ["연극 \"찔레꽃\"", "연극 \"밑바닥에서\"", "연극 \"꽃의 비밀\"", "연극 \"순우삼촌\""],
+    },
+    { label: "CF", items: ["아모레퍼시픽 프리메라", "아리얼", "LG OLED TV", "Ulkin(얼킨) 외 다수"] },
+    { label: "MOVIE", items: ["상업영화 \"무무무\" 개봉 예정"] },
+  ],
+};
+
+export const HYUNJAE: InstructorProfile = {
+  name: "이현재",
+  nameEn: "Lee Hyunjae",
+  title: "KD4 액팅 코치",
+  photo: "/hyunjae-lee.jpg",
+  photoAspect: "1214 / 1832",
+  awards: ["중국 iQIYI(아이치이) 영화부문 신인상 — 한국인 최초 수상"],
+  education: ["청주대학교 예술대학원 연극영화학과 박사수료"],
+
+  filmographySections: [
+    {
+      label: "OVERSEAS FILM & DRAMA",
+      items: [
+        "영화 \"연애 중의 도시\" 주연 (프로듀싱: 이와이 슌지 감독)",
+        "영화 \"우애동유\" Sean 역 (촬영: 크리스토퍼 도일 감독)",
+        "웹드라마 \"모델의왕\" 주연 (대만 제작사)",
+        "후난위성TV 사극드라마 \"사미인\" 초나라 장수 굴유 역",
+        "영화 \"남신시대2\" 주연",
+        "영화 \"가장간불견지전영대사\" 주연",
+        "영화 \"소시대 4: 영혼진두\" 주연",
+        "영화 \"소시대 3: 자금시대\" 주연 (신인상 수상작)",
+      ],
+    },
+    {
+      label: "KOREA FILM & DRAMA",
+      items: [
+        "NETFLIX \"드라마월드2\" 특별출연 (연출: 크리스 마틴 감독)",
+        "KBS2 특집시트콤 \"그녀를 찾아줘\" 주연",
+        "웹드라마 \"뷰티 살롱M\" 주연",
+        "KBS2 \"직장의 신\" 훌리세사 역",
+        "tvN \"닥치고 꽃미남 밴드\" 주연",
+        "채널A \"컬러 오브 우먼\" 제이슨허 역",
+        "영화 \"플레이\" 주연",
+      ],
+    },
+    {
+      label: "CF",
+      items: [
+        "한국 — SK-II, 노스페이스, 삼성 갤럭시 라운드, 코오롱 SPASSO, 에뛰드 하우스, 신한카드, 맥스웰하우스 콜롬비아나, 노스페이스 화이트라벨, Nikon, 롯데리아, 콜드스톤, H&T, UGIZ, 르노삼성 QM6, FFEFFSTUDIO, MANITSUIT(맨잇슈트), ZEN, LG안마의자",
+        "중국 — 안약(쩐쉬밍), GQ·BAZZAR TV APP",
+      ],
+    },
+    {
+      label: "VARIETY & ETC",
+      items: [
+        "MBC \"라디오스타\"",
+        "MBC every1 \"무작정 패밀리3\"",
+        "중국 강소위성TV \"리얼히어로\"",
+        "제17회 상하이 국제 영화제 레드카펫",
+      ],
+    },
+  ],
 };
