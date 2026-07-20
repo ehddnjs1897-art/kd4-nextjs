@@ -309,6 +309,24 @@ export interface InstructorProfile {
   filmographySections: { label: string; items: string[] }[];
 }
 
+/** 권동원 — 강사 페이지 수평 팀 표시용 (DIRECTOR 정본에서 파생, 중복 입력 없음) */
+export const DONGWON_COACH: InstructorProfile = {
+  name: DIRECTOR.name,
+  nameEn: "Kwon Dongwon",
+  title: "KD4 마이즈너 테크닉 강사",
+  photo: DIRECTOR.photo,
+  photoAspect: "3 / 2",
+  education: [...DIRECTOR.credentials.education],
+  awards: [...DIRECTOR.credentials.awards],
+
+  filmographySections: [
+    { label: "DRAMA", items: [...DIRECTOR.filmography.drama] },
+    { label: "FILM", items: [...DIRECTOR.filmography.film] },
+    { label: "CF", items: [...DIRECTOR.filmography.cf] },
+    { label: "CAREER", items: [...DIRECTOR.credentials.career, ...DIRECTOR.credentials.channels] },
+  ],
+};
+
 export const SEBIN: InstructorProfile = {
   name: "주세빈",
   nameEn: "Joo Se Bin",
