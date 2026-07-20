@@ -282,3 +282,57 @@ export const DIRECTOR: DirectorProfile = {
     "프로 배우 400명+ 액팅 코칭 · Youtube 2000만뷰+",
   ],
 };
+
+/* ──────────────────────────────────────────────────────────────
+ * 오디션 테크닉 클래스 강사 프로필 (acting-coach-sebin-joo 페이지 전용)
+ * 출처: 주세빈 프로필.pdf(2026-07-21 대표 전달) + 채팅 명시 값(주연/조연 표기)
+ *    · photo: public/sebin-joo.jpg (프로필 PDF 원본 사진, 소속 AINOK)
+ * ────────────────────────────────────────────────────────────── */
+
+export interface InstructorProfile {
+  name: string;
+  nameEn: string;
+  title: string;
+  photo: string;
+  birth: string;
+  height: string;
+  weight: string;
+  talent: string[];
+  education: string[];
+  filmography: {
+    drama: string[];
+    play: string[];
+    cf: string[];
+    movie: string[];
+  };
+}
+
+export const SEBIN: InstructorProfile = {
+  name: "주세빈",
+  nameEn: "Joo Se Bin",
+  title: "KD4 오디션 테크닉 클래스 강사",
+  photo: "/sebin-joo.jpg",
+  birth: "1997.10.09",
+  height: "164cm",
+  weight: "41kg",
+  talent: ["영어 (고급)", "승마", "춤", "노래", "발레"],
+  education: ["동국대학교 연극영화과 졸업", "동국대학교 MFA 재학중"],
+
+  filmography: {
+    drama: [
+      "TV조선 \"닥터신\" 주연",
+      "JTBC \"디 엠파이어: 법의제국\" 조연",
+      "카카오TV \"다시, 플라이\"",
+      "tvN \"여신강림\"",
+      "OCN \"미스터 기간제\"",
+    ],
+    play: [
+      "연극 \"찔레꽃\"",
+      "연극 \"밑바닥에서\"",
+      "연극 \"꽃의 비밀\"",
+      "연극 \"순우삼촌\"",
+    ],
+    cf: ["아모레퍼시픽 프리메라", "아리얼", "LG OLED TV", "Ulkin(얼킨) 외 다수"],
+    movie: ["상업영화 \"무무무\" 개봉 예정"],
+  },
+};

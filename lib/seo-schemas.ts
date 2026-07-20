@@ -11,7 +11,7 @@
  *   - '#dongwon'  → Person (권동원 대표)
  */
 import type { ClassItem } from './classes'
-import { DIRECTOR, PROMO_DEADLINE } from './classes'
+import { DIRECTOR, SEBIN, PROMO_DEADLINE } from './classes'
 import { SITE_URL } from './constants'
 
 const ADDRESS = {
@@ -184,6 +184,39 @@ export function buildPersonDongwonDetailed() {
     ],
     knowsLanguage: ['Korean', 'English'],
     subjectOf: { '@type': 'WebPage', '@id': `${SITE_URL}/acting-coach-dongwon-kwon#webpage` },
+    sameAs: [...SAMEAS],
+  }
+}
+
+/** Person — 주세빈 상세 (코치 페이지 전용, alumniOf·performerIn 포함) */
+export function buildPersonSebinDetailed() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    '@id': `${SITE_URL}#sebin`,
+    name: SEBIN.name,
+    alternateName: SEBIN.nameEn,
+    jobTitle: ['액팅 코치', '연기 강사', '배우'],
+    gender: 'Female',
+    nationality: { '@type': 'Country', name: '대한민국' },
+    description: 'KD4 오디션 테크닉 클래스 강사이자 현역 배우. TV조선 닥터신 주연 등 다수 드라마·연극·CF 출연.',
+    url: `${SITE_URL}/acting-coach-sebin-joo`,
+    image: `${SITE_URL}${SEBIN.photo}`,
+    worksFor: { '@id': `${SITE_URL}#org` },
+    knowsAbout: ['오디션 테크닉', '오디션 독백', '연기 코칭', '캐스팅'],
+    hasOccupation: [
+      { '@type': 'Occupation', name: '배우', alternateName: 'Actor', occupationLocation: { '@type': 'Country', name: '대한민국' } },
+      { '@type': 'Occupation', name: '액팅 코치', alternateName: 'Acting Coach', occupationLocation: { '@type': 'Country', name: '대한민국' } },
+    ],
+    alumniOf: [
+      { '@type': 'EducationalOrganization', name: '동국대학교 연극영화과' },
+    ],
+    performerIn: [
+      ...SEBIN.filmography.drama.map((title) => ({ '@type': 'CreativeWork', name: title })),
+      ...SEBIN.filmography.play.map((title) => ({ '@type': 'TheaterEvent', name: title })),
+    ],
+    knowsLanguage: ['Korean', 'English'],
+    subjectOf: { '@type': 'WebPage', '@id': `${SITE_URL}/acting-coach-sebin-joo#webpage` },
     sameAs: [...SAMEAS],
   }
 }

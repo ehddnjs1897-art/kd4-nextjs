@@ -731,6 +731,9 @@ export default function AboutPage() {
             <Link href="/acting-coach-dongwon-kwon" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
               권동원 액팅 코치 <span aria-hidden="true">→</span>
             </Link>
+            <Link href="/acting-coach-sebin-joo" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
+              주세빈 액팅 코치 <span aria-hidden="true">→</span>
+            </Link>
             <Link href="/meisner-technique-class" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
               마이즈너 테크닉 클래스 <span aria-hidden="true">→</span>
             </Link>
