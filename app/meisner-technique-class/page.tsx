@@ -409,7 +409,7 @@ export default function MeisnerPage() {
                   </li>
                 ))}
               </ul>
-              <Link href="/acting-coach-dongwon-kwon" style={{ fontSize: '0.88rem', color: 'var(--navy)', fontWeight: 600 }}>
+              <Link href="/acting-coaches" style={{ fontSize: '0.88rem', color: 'var(--navy)', fontWeight: 600 }}>
                 액팅 코치 프로필 자세히 보기 <span aria-hidden="true">→</span>
               </Link>
             </div>

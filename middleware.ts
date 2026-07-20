@@ -40,6 +40,14 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url, 308)
   }
 
+  // 강사 페이지 구주소 → /acting-coaches 통합 (2026-07-21 개편, SEO 링크 보존)
+  if (pathname === '/acting-coach-dongwon-kwon' || pathname === '/acting-coach-sebin-joo') {
+    const url = request.nextUrl.clone()
+    url.pathname = '/acting-coaches'
+    if (pathname === '/acting-coach-sebin-joo') url.hash = 'sebin'
+    return NextResponse.redirect(url, 308)
+  }
+
   // 광고 랜딩 · 공개 페이지 — Supabase 완전 격리 (어떤 외부 장애도 영향 없음)
   // 주의: /actors, /board 는 회원 전용으로 잠금(또는 역할별 분기)되어 세션 판별이
   // 필요하므로 제외 (페이지 단에서 권한 처리). 여기 추가하는 경로는 페이지 컴포넌트가
@@ -52,7 +60,7 @@ export async function middleware(request: NextRequest) {
   // 잘 캐싱돼 있어도(revalidate·unstable_cache) 이 미들웨어 단계에서 캐싱이 전부 무효화됨.
   // 실측: /monologues·/reviews TTFB가 페이지 캐싱 수정 후에도 0.5~1.5초로 안 줄던 원인이
   // 바로 이거였음. 세션이 전혀 필요 없는 순수 공개 목록/상세 페이지를 여기 추가해 우회.
-  const PUBLIC_PATHS = ['/', '/join', '/monologues', '/reviews', '/classes', '/about', '/faq', '/benefits']
+  const PUBLIC_PATHS = ['/', '/join', '/monologues', '/reviews', '/classes', '/about', '/faq', '/benefits', '/acting-coaches']
   if (PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + '/'))) {
     return NextResponse.next()
   }

@@ -94,7 +94,7 @@ export const REEL_FAQ: FaqItem[] = [
   },
 ]
 
-/** /acting-coach-dongwon-kwon — 강사 권동원 */
+/** /acting-coaches — 강사 권동원 */
 export const COACH_FAQ: FaqItem[] = [
   {
     q: '권동원 대표가 직접 가르치나요?',

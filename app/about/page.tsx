@@ -728,10 +728,10 @@ export default function AboutPage() {
         {/* 내부 교차 링크 — 주요 SEO 페이지 연결 */}
         <nav aria-label="관련 페이지" style={{ marginTop: '32px', paddingTop: '20px', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
           <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/acting-coach-dongwon-kwon" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
+            <Link href="/acting-coaches" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
               권동원 액팅 코치 <span aria-hidden="true">→</span>
             </Link>
-            <Link href="/acting-coach-dongwon-kwon#sebin" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
+            <Link href="/acting-coaches#sebin" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
               주세빈 액팅 코치 <span aria-hidden="true">→</span>
             </Link>
             <Link href="/meisner-technique-class" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>

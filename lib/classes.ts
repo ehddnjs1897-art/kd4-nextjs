@@ -153,8 +153,9 @@ export const CLASSES: ClassItem[] = [
     nameKo: "오디션 테크닉 클래스",
     category: "step3",
     nameEn: "Audition Technique Class",
-    quote: "캐스팅 디렉터의 시선을 멈추게 할 독백 만들기",
+    quote: "캐스팅 관계자의 시선을 멈추게 할 독백 만들기",
     bullets: [
+      "배우 브랜딩, 에티튜드 만들기",
       "오디션 독백 만들기 / 오디션 테크닉",
       "캐스팅 연계",
       "독백 영상 촬영 제공"
@@ -284,7 +285,7 @@ export const DIRECTOR: DirectorProfile = {
 };
 
 /* ──────────────────────────────────────────────────────────────
- * 오디션 테크닉 클래스 강사 프로필 (acting-coach-dongwon-kwon 강사 페이지 §05)
+ * 오디션 테크닉 클래스 강사 프로필 (acting-coaches 강사 페이지 §05)
  * 출처: 주세빈 프로필.pdf(2026-07-21 대표 전달) + 채팅 명시 값(주연/조연 표기)
  *    · photo: public/sebin-joo.jpg (프로필 PDF 원본 사진, 소속 AINOK)
  * ────────────────────────────────────────────────────────────── */

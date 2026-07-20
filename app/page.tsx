@@ -1140,7 +1140,7 @@ export default function HomePage() {
             <div style={{ display: "flex", gap: 24, justifyContent: "center", flexWrap: "wrap" }}>
               <Link href="/meisner-technique-class" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>마이즈너 테크닉 클래스 <span aria-hidden="true">→</span></Link>
               <Link href="/reel-production-class" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>출연영상 클래스 <span aria-hidden="true">→</span></Link>
-              <Link href="/acting-coach-dongwon-kwon" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>권동원 액팅코치 <span aria-hidden="true">→</span></Link>
+              <Link href="/acting-coaches" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>권동원 액팅코치 <span aria-hidden="true">→</span></Link>
               <Link href="/sinchon-acting-academy" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>신촌 연기학원 오시는 길 <span aria-hidden="true">→</span></Link>
               <Link href="/benefits" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>멤버 혜택 <span aria-hidden="true">→</span></Link>
             </div>

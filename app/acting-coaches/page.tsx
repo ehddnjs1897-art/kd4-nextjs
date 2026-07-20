@@ -12,7 +12,7 @@ import { SITE_URL } from '@/lib/constants'
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
 const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
 
-const PAGE_URL = `${SITE_URL}/acting-coach-dongwon-kwon`
+const PAGE_URL = `${SITE_URL}/acting-coaches`
 
 // 권동원 직강 클래스 (오디션 테크닉·움직임·베이직 제외 — 전부 리더 직강)
 const COACH_CLASS_NAMES = [
@@ -48,28 +48,26 @@ function wrapEnglishToken(text: string): React.ReactNode {
 }
 
 export const metadata: Metadata = {
-  title: '권동원 — 액팅 코치 (리더) · 현역 배우',
+  title: 'KD4 액팅 코치 — 권동원 리더 · 주세빈 강사',
   description:
-    'KD4 액팅 스튜디오 대표 권동원. 마이즈너 테크닉 액팅 코치(리더), 현역 배우. Disney+ 무빙2·Netflix 중증외상센터 출연. LA Meisner Workshop 수료, 프로 배우 400명+ 코칭. 오디션 테크닉 클래스는 주세빈 강사(TV조선 닥터신 주연)가 지도. 서울 신촌.',
-  keywords: ['권동원', '권동원 배우', '권동원 KD4', '주세빈', '주세빈 배우', '마이즈너 강사', '액팅 코치', '액팅 리더', '현역 배우 강사', '신촌 액팅코치', '서울 액팅 코치'],
+    'KD4 액팅 스튜디오 강사진. 권동원 리더 — 마이즈너 테크닉 코치, Disney+ 무빙2·Netflix 중증외상센터 출연 현역 배우, 프로 배우 400명+ 코칭. 주세빈 강사 — 오디션 테크닉 클래스, TV조선 닥터신 주연. 서울 신촌.',
+  keywords: ['KD4 액팅 코치', '권동원', '권동원 배우', '권동원 KD4', '주세빈', '주세빈 배우', '주세빈 KD4', '마이즈너 강사', '오디션 테크닉 강사', '액팅 코치', '액팅 리더', '현역 배우 강사', '신촌 액팅코치', '서울 액팅 코치'],
   robots: { index: true, follow: true },
   alternates: { canonical: PAGE_URL },
   openGraph: {
-    type: 'profile',
-    firstName: '동원',
-    lastName: '권',
+    type: 'website',
     url: PAGE_URL,
-    title: '권동원 — 액팅 코치 (리더) · 현역 배우 | KD4 대표',
-    description: 'KD4 액팅 스튜디오 대표. 마이즈너 테크닉 정통 코치(리더)이자 현역 배우.',
-    images: [{ url: `${SITE_URL}/director.jpg`, width: 1200, height: 630, alt: '권동원 KD4 액팅 코치' }],
+    title: 'KD4 액팅 코치 — 권동원 리더 · 주세빈 강사',
+    description: '현역 배우로 활동 중인 코치진이 직접 지도합니다. 권동원(마이즈너 테크닉) · 주세빈(오디션 테크닉).',
+    images: [{ url: `${SITE_URL}/director.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 코치 권동원' }],
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
   },
   twitter: {
     card: 'summary_large_image',
-    title: '권동원 — KD4 대표 · 액팅 코치 (리더)',
-    description: 'Disney+ 무빙2 · Netflix 중증외상센터 출연 중인 현역 배우.',
-    images: [{ url: `${SITE_URL}/director.jpg`, width: 1200, height: 630, alt: '권동원 KD4 액팅 코치' }],
+    title: 'KD4 액팅 코치 — 권동원 리더 · 주세빈 강사',
+    description: '현역 배우로 활동 중인 코치진이 직접 지도합니다.',
+    images: [{ url: `${SITE_URL}/director.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 코치 권동원' }],
   },
 }
 
@@ -83,12 +81,11 @@ export default function CoachPage() {
             { name: '액팅 코치', url: PAGE_URL },
           ]),
           buildWebPage({
-            type: 'ProfilePage',
-            idPath: '/acting-coach-dongwon-kwon#webpage',
+            type: 'WebPage',
+            idPath: '/acting-coaches#webpage',
             url: PAGE_URL,
-            name: '권동원 — 액팅 코치 (리더) · 현역 배우 | KD4 액팅 스튜디오',
-            description: 'KD4 대표. 마이즈너 테크닉 액팅 코치이자 현역 배우. Disney+ 무빙2, Netflix 중증외상센터 출연 중.',
-            mainEntity: { '@id': `${SITE_URL}#dongwon` },
+            name: 'KD4 액팅 코치 — 권동원 리더 · 주세빈 강사 | KD4 액팅 스튜디오',
+            description: '현역 배우로 활동 중인 KD4 강사진. 권동원 리더(마이즈너 테크닉) · 주세빈 강사(오디션 테크닉).',
             dateModified: '2026-07-21',
             speakableCssSelectors: ['h1', '.section-desc', '.faq-answer'],
           }),
@@ -98,12 +95,12 @@ export default function CoachPage() {
         ]}
       />
 
-      {/* ===== HERO — 가로 사진 크게 + 네이비 그라데이션 ===== */}
+      {/* ===== HERO — 강사진 공통 소개 ===== */}
       <section
-        aria-label="권동원 액팅 코치 소개"
+        aria-label="KD4 액팅 코치 소개"
         style={{
           background: 'linear-gradient(160deg, var(--navy-deep) 0%, var(--navy) 55%, #133f78 100%)',
-          padding: 'clamp(48px, 8vw, 80px) 24px clamp(56px, 9vw, 88px)',
+          padding: 'clamp(48px, 8vw, 80px) 24px clamp(48px, 8vw, 72px)',
           position: 'relative',
           overflow: 'hidden',
         }}
@@ -111,19 +108,51 @@ export default function CoachPage() {
         {/* 데코 글로우 */}
         <div aria-hidden style={{ position: 'absolute', top: '-120px', right: '-80px', width: '360px', height: '360px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(199,62,62,0.22), transparent 70%)' }} />
         <div className="container" style={{ maxWidth: '960px', margin: '0 auto', position: 'relative' }}>
-          <div style={{ textAlign: 'center', marginBottom: 'clamp(28px, 5vw, 44px)' }}>
+          <div style={{ textAlign: 'center' }}>
             <p className="section-eyebrow" style={{ color: '#F0A8A8', marginBottom: '14px', letterSpacing: '0.22em' }}>
-              <span lang="en">THE LEADER · KD4</span>
+              <span lang="en">ACTING COACHES · KD4</span>
             </p>
             <h1
               className="section-title-serif"
               style={{ color: '#fff', fontSize: 'clamp(1.9rem, 5vw, 3rem)', lineHeight: 1.3, marginBottom: '16px', wordBreak: 'keep-all' }}
             >
-              권동원 — 액팅 코치 <span style={{ color: '#F0A8A8' }}>(리더)</span>
+              KD4 액팅 코치
             </h1>
             <p style={{ fontSize: 'clamp(0.95rem, 2.4vw, 1.08rem)', color: 'rgba(255,255,255,0.82)', lineHeight: 1.75, maxWidth: '600px', margin: '0 auto', wordBreak: 'keep-all' }}>
+              현역 배우로 활동 중인 코치진이 책 속 이론이 아니라
+              지금 촬영장에서 통하는 감각으로 직접 지도합니다.
+            </p>
+
+            {/* 강사 바로가기 */}
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '24px' }}>
+              <a href="#dongwon" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 18px', minHeight: '44px', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.22)', borderRadius: '999px', color: '#fff', fontSize: '0.88rem', fontWeight: 600, textDecoration: 'none' }}>
+                권동원 — 마이즈너 테크닉 <span aria-hidden="true" style={{ color: '#F0A8A8' }}>↓</span>
+              </a>
+              <a href="#sebin" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 18px', minHeight: '44px', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.22)', borderRadius: '999px', color: '#fff', fontSize: '0.88rem', fontWeight: 600, textDecoration: 'none' }}>
+                주세빈 — 오디션 테크닉 <span aria-hidden="true" style={{ color: '#F0A8A8' }}>↓</span>
+              </a>
+            </div>
+
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '20px' }}>
+              <JoinCTALink href="#form" location="coach-hero" label="무료 상담 신청" className="btn-primary" style={{ background: '#fff', color: 'var(--navy)' }}>
+                무료 상담 신청
+              </JoinCTALink>
+              <JoinCTALink href="https://pf.kakao.com/_ximxdqn" kind="external" channel="kakao" location="coach-hero" label="카카오 채널 문의" className="btn-outline" style={{ borderColor: 'rgba(255,255,255,0.4)', color: 'rgba(255,255,255,0.95)' }}>
+                카카오 채널 문의
+              </JoinCTALink>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== 01 — 권동원 리더 (사진 + 이력 + 철학) ===== */}
+      <section id="dongwon" aria-label="권동원 액팅 코치 (리더)" style={{ scrollMarginTop: '80px', padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
+        <div className="container" style={{ maxWidth: '960px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 'clamp(24px, 4vw, 36px)' }}>
+            <p className="section-eyebrow"><span lang="en">01 — THE LEADER</span></p>
+            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>권동원 — 액팅 코치 (리더)</h2>
+            <p className="section-desc" style={{ margin: '0 auto' }}>
               <span lang="en">Disney+</span> 무빙2 · <span lang="en">Netflix</span> 중증외상센터 출연 중인 현역 배우.
-              <br />
               프로 배우 400명+ 액팅 코칭 · <span lang="en">LA Meisner Workshop</span> 수료.
             </p>
           </div>
@@ -136,8 +165,9 @@ export default function CoachPage() {
               aspectRatio: '3 / 2',
               borderRadius: '18px',
               overflow: 'hidden',
-              boxShadow: '0 30px 70px -25px rgba(0,0,0,0.6)',
-              border: '1px solid rgba(255,255,255,0.14)',
+              boxShadow: '0 30px 70px -25px rgba(0,0,0,0.35)',
+              border: '1px solid var(--border)',
+              marginBottom: 'clamp(28px, 5vw, 40px)',
             }}
           >
             <Image
@@ -148,34 +178,16 @@ export default function CoachPage() {
               style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
               priority
             />
-            <div aria-hidden style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(15,51,100,0.45), transparent 45%)' }} />
           </div>
 
-          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center', marginTop: 'clamp(24px, 4vw, 36px)' }}>
-            <JoinCTALink href="#form" location="coach-hero" label="무료 상담 신청" className="btn-primary" style={{ background: '#fff', color: 'var(--navy)' }}>
-              무료 상담 신청
-            </JoinCTALink>
-            <JoinCTALink href="https://pf.kakao.com/_ximxdqn" kind="external" channel="kakao" location="coach-hero" label="카카오 채널 문의" className="btn-outline" style={{ borderColor: 'rgba(255,255,255,0.4)', color: 'rgba(255,255,255,0.95)' }}>
-              카카오 채널 문의
-            </JoinCTALink>
+          <div style={{ maxWidth: '720px', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--navy)', fontSize: '1.12rem', lineHeight: 1.75, marginBottom: '24px', textAlign: 'center', wordBreak: 'keep-all' }}>
+              &ldquo;{DIRECTOR.quote}&rdquo;
+            </p>
+            <p style={{ fontSize: '0.96rem', color: 'var(--gray-light)', lineHeight: 1.85, wordBreak: 'keep-all' }}>
+              마이즈너 테크닉은 한국에 아직 깊이 알려지지 않은 미국 정통 액팅 메소드입니다. <span lang="en">LA Meisner Workshop</span>과 한국 마이즈너 테크닉 아카데미를 모두 수료하고, 한국 배우에게 맞게 재해석한 커리큘럼으로 가르칩니다. 현역 배우로 매년 작품에 출연하기에, 책 속 이론이 아니라 지금 촬영장에서 통하는 감각을 매주 수업에 담습니다.
+            </p>
           </div>
-        </div>
-      </section>
-
-      {/* ===== PHILOSOPHY ===== */}
-      <section aria-label="가르치는 철학" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
-        <div className="container" style={{ maxWidth: '720px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-            <p className="section-eyebrow"><span lang="en">01 — PHILOSOPHY</span></p>
-            <h2 className="section-title-serif" style={{ marginBottom: '16px' }}>가르치는 철학</h2>
-            <div aria-hidden style={{ width: '48px', height: '3px', background: 'var(--accent-red)', borderRadius: '2px', margin: '0 auto' }} />
-          </div>
-          <p style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--navy)', fontSize: '1.12rem', lineHeight: 1.75, marginBottom: '24px', textAlign: 'center', wordBreak: 'keep-all' }}>
-            &ldquo;{DIRECTOR.quote}&rdquo;
-          </p>
-          <p style={{ fontSize: '0.96rem', color: 'var(--gray-light)', lineHeight: 1.85, wordBreak: 'keep-all' }}>
-            마이즈너 테크닉은 한국에 아직 깊이 알려지지 않은 미국 정통 액팅 메소드입니다. <span lang="en">LA Meisner Workshop</span>과 한국 마이즈너 테크닉 아카데미를 모두 수료하고, 한국 배우에게 맞게 재해석한 커리큘럼으로 가르칩니다. 현역 배우로 매년 작품에 출연하기에, 책 속 이론이 아니라 지금 촬영장에서 통하는 감각을 매주 수업에 담습니다.
-          </p>
         </div>
       </section>
 

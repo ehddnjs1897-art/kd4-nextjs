@@ -122,7 +122,7 @@ export function buildPersonDongwon() {
     jobTitle: ['액팅 코치', '연기 강사', '배우', 'KD4 대표'],
     gender: 'Male',
     nationality: { '@type': 'Country', name: '대한민국' },
-    url: `${SITE_URL}/acting-coach-dongwon-kwon`,
+    url: `${SITE_URL}/acting-coaches#dongwon`,
     image: `${SITE_URL}${DIRECTOR.photo}`,
     worksFor: { '@id': `${SITE_URL}#org` },
     knowsAbout: [
@@ -133,7 +133,7 @@ export function buildPersonDongwon() {
       '연기 훈련',
     ],
     knowsLanguage: ['Korean', 'English'],
-    subjectOf: { '@type': 'WebPage', '@id': `${SITE_URL}/acting-coach-dongwon-kwon#webpage` },
+    subjectOf: { '@type': 'WebPage', '@id': `${SITE_URL}/acting-coaches#webpage` },
     sameAs: [...SAMEAS],
   }
 }
@@ -151,7 +151,7 @@ export function buildPersonDongwonDetailed() {
     nationality: { '@type': 'Country', name: '대한민국' },
     description:
       'KD4 액팅 스튜디오 대표. 마이즈너 테크닉 액팅 코치이자 현역 배우로 Disney+ 무빙2, Netflix 중증외상센터 등에 출연 중.',
-    url: `${SITE_URL}/acting-coach-dongwon-kwon`,
+    url: `${SITE_URL}/acting-coaches#dongwon`,
     image: `${SITE_URL}${DIRECTOR.photo}`,
     worksFor: { '@id': `${SITE_URL}#org` },
     knowsAbout: [
@@ -183,7 +183,7 @@ export function buildPersonDongwonDetailed() {
       })),
     ],
     knowsLanguage: ['Korean', 'English'],
-    subjectOf: { '@type': 'WebPage', '@id': `${SITE_URL}/acting-coach-dongwon-kwon#webpage` },
+    subjectOf: { '@type': 'WebPage', '@id': `${SITE_URL}/acting-coaches#webpage` },
     sameAs: [...SAMEAS],
   }
 }
@@ -200,7 +200,7 @@ export function buildPersonSebinDetailed() {
     gender: 'Female',
     nationality: { '@type': 'Country', name: '대한민국' },
     description: 'KD4 오디션 테크닉 클래스 강사이자 현역 배우. TV조선 닥터신 주연 등 다수 드라마·연극·CF 출연.',
-    url: `${SITE_URL}/acting-coach-dongwon-kwon#sebin`,
+    url: `${SITE_URL}/acting-coaches#sebin`,
     image: `${SITE_URL}${SEBIN.photo}`,
     worksFor: { '@id': `${SITE_URL}#org` },
     knowsAbout: ['오디션 테크닉', '오디션 독백', '연기 코칭', '캐스팅'],
@@ -216,7 +216,7 @@ export function buildPersonSebinDetailed() {
       ...SEBIN.filmography.play.map((title) => ({ '@type': 'TheaterEvent', name: title })),
     ],
     knowsLanguage: ['Korean', 'English'],
-    subjectOf: { '@type': 'WebPage', '@id': `${SITE_URL}/acting-coach-dongwon-kwon#webpage` },
+    subjectOf: { '@type': 'WebPage', '@id': `${SITE_URL}/acting-coaches#webpage` },
     sameAs: [...SAMEAS],
   }
 }

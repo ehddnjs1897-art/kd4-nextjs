@@ -765,7 +765,7 @@ export default function BenefitsPage() {
             <Link href="/about" style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.55)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
               KD4 소개 <span aria-hidden="true">→</span>
             </Link>
-            <Link href="/acting-coach-dongwon-kwon" style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.55)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
+            <Link href="/acting-coaches" style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.55)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
               권동원 액팅 코치 <span aria-hidden="true">→</span>
             </Link>
             <Link href="/meisner-technique-class" style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.55)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
