@@ -132,7 +132,7 @@ export default function CoachPage() {
                 주세빈 — 오디션 테크닉 <span aria-hidden="true" style={{ color: '#F0A8A8' }}>↓</span>
               </a>
               <a href="#hyunjae" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 18px', minHeight: '44px', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.22)', borderRadius: '999px', color: '#fff', fontSize: '0.88rem', fontWeight: 600, textDecoration: 'none' }}>
-                이현재 — 액팅 코치 <span aria-hidden="true" style={{ color: '#F0A8A8' }}>↓</span>
+                이현재 — 강사 <span aria-hidden="true" style={{ color: '#F0A8A8' }}>↓</span>
               </a>
             </div>
 
@@ -297,7 +297,7 @@ export default function CoachPage() {
         person={SEBIN}
         sectionId="sebin"
         eyebrow="05 — AUDITION TECHNIQUE COACH"
-        heading="주세빈 — 오디션 테크닉 클래스 강사"
+        heading="주세빈 — 오디션 테크닉 강사"
         background="var(--bg)"
         cardBackground="var(--bg2)"
         intro={
@@ -311,13 +311,13 @@ export default function CoachPage() {
         person={HYUNJAE}
         sectionId="hyunjae"
         eyebrow="06 — ACTING COACH"
-        heading="이현재 — 액팅 코치"
+        heading="이현재 — 강사"
         background="var(--bg2)"
         cardBackground="var(--bg)"
         intro={
           <>청주대학교 예술대학원 연극영화학과 박사수료. 중국 <span lang="en">iQIYI</span>(아이치이) 영화부문 신인상을 한국인 최초로 수상, 한국과 중화권 영화·드라마에서 활동해 온 현역 배우입니다.</>
         }
-        classNames={[]}
+        classNames={['개인 레슨']}
       />
 
       {/* ===== FAQ ===== */}

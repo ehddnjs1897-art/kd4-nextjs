@@ -164,7 +164,7 @@ export const CLASSES: ClassItem[] = [
     duration: "3시간",
     capacity: "6명",
     price: "250,000",
-    instructor: "주세빈 강사"
+    instructor: "주세빈·이현재 강사"
   },
   {
     step: "별도",
@@ -196,7 +196,7 @@ export const CLASSES: ClassItem[] = [
     duration: "2시간 (1:1)",
     capacity: "1:1",
     price: "400,000",
-    instructor: "주세빈 강사"
+    instructor: "주세빈·이현재 강사"
   }
 ];
 
@@ -312,7 +312,7 @@ export interface InstructorProfile {
 export const SEBIN: InstructorProfile = {
   name: "주세빈",
   nameEn: "Joo Se Bin",
-  title: "KD4 오디션 테크닉 클래스 강사",
+  title: "KD4 오디션 테크닉 강사",
   photo: "/sebin-joo.jpg",
   photoAspect: "532 / 771",
   birth: "1997.10.09",
@@ -326,7 +326,7 @@ export const SEBIN: InstructorProfile = {
       label: "DRAMA",
       items: [
         "TV조선 \"닥터신\" 주연",
-        "JTBC \"디 엠파이어: 법의제국\" 조연",
+        "JTBC \"디 엠파이어: 법의제국\" 주연",
         "카카오TV \"다시, 플라이\"",
         "tvN \"여신강림\"",
         "OCN \"미스터 기간제\"",
@@ -344,7 +344,7 @@ export const SEBIN: InstructorProfile = {
 export const HYUNJAE: InstructorProfile = {
   name: "이현재",
   nameEn: "Lee Hyunjae",
-  title: "KD4 액팅 코치",
+  title: "KD4 강사",
   photo: "/hyunjae-lee.jpg",
   photoAspect: "1214 / 1832",
   awards: ["중국 iQIYI(아이치이) 영화부문 신인상 — 한국인 최초 수상"],
