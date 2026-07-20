@@ -528,6 +528,23 @@ export async function POST(request: NextRequest) {
         // PII 제거: String(err)은 에러 메시지에 전화번호 포함 가능 → err.message만 사용
         console.error('[notify] 관리자 SMS 실패:', err instanceof Error ? err.message : '알 수 없는 오류')
       )
+      // 3-c. 상세 관리자 알림 SMS — [KD4 상담 접수]
+      //      Make.com "KD4.club 상담 접수 자동화" 비활성화(2026-07-16) 후 코드 이관
+      //      유입경로·희망클래스·마이즈너경험이 포함된 상세 내용 (일반 상담 전용)
+      if (!isCastingInquiry) {
+        const safeMotivation = typeof record.motivation === 'string'
+          ? record.motivation.replace(/[\r\n\t]/g, ' / ').slice(0, 500)
+          : null
+        const detailedParts: string[] = [
+          `[KD4 상담 접수] 이름: ${safeName}`,
+          `연락처: ${safePhone}`,
+          ...(safeClass ? [`관심클래스: ${safeClass}`] : []),
+          ...(safeMotivation ? [`문의: ${safeMotivation}`] : []),
+        ]
+        await sendSMS(adminPhone, detailedParts.join('\n')).catch((err) =>
+          console.error('[notify] 상담접수 상세 SMS 실패:', err instanceof Error ? err.message : '알 수 없는 오류')
+        )
+      }
     }
 
     // 3-b. 캐스팅 문의 → 해당 배우 본인에게도 직통 SMS (2026-06-12 대표 지시: 배우 전화번호 동기화)
