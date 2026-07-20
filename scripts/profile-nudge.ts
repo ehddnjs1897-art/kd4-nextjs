@@ -82,11 +82,11 @@ function buildText(name: string, missing: Missing): string {
   // "30대" 같은 연령대로만 표시됨(/api/og/actor 로직) — 정확한 나이 노출을 위해 생년 입력 유도.
   if (missing.noBirthYear) items.push('▪ 출생연도 — 캐스팅 담당자가 정확한 나이를 확인할 수 있도록 생년을 입력해 주세요')
 
-  const head = items.length === 1 ? '배포 전에 딱 하나만 채워주세요.' : `배포 전에 ${name}님 프로필에 비어 있는 항목을 채워주세요.`
+  const head = items.length === 1 ? '아래 항목 하나만 채워주시면 돼요.' : '아래 비어 있는 항목을 채워주세요.'
 
   return [
     '[KD4 액팅 스튜디오]',
-    `${name}님, KD4가 배우 프로필을 캐스팅 디렉터·영화과·인물조감독에게 배포하는 작업을 시작합니다.`,
+    `${name}님, 배우 DB 프로필 최신화 안내드립니다.`,
     '',
     head,
     '',
