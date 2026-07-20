@@ -130,7 +130,7 @@ export default function CoachPage() {
         heading="권동원 — 대표/리더 · 액팅 코치"
         background="var(--bg)"
         cardBackground="var(--bg2)"
-        photoMaxWidth="100%"
+        photoWide
         classCardLabel="대표 직강 클래스"
         intro={
           <><span lang="en">KD4</span> 대표 · <span lang="en">Disney+</span> 무빙2, <span lang="en">Netflix</span> 중증외상센터 출연 중인 현역 배우. 프로 배우 400명+ 액팅 코칭.</>
@@ -232,6 +232,7 @@ function InstructorSection({
   background,
   cardBackground,
   photoMaxWidth = '300px',
+  photoWide = false,
   classCardLabel = '담당 클래스',
 }: {
   person: InstructorProfile
@@ -243,6 +244,7 @@ function InstructorSection({
   background: string
   cardBackground: string
   photoMaxWidth?: string
+  photoWide?: boolean
   classCardLabel?: string
 }) {
   const profileRows: { label: string; value: string }[] = [
@@ -265,6 +267,31 @@ function InstructorSection({
           <p className="section-desc" style={{ margin: '0 auto' }}>{intro}</p>
         </div>
 
+        {photoWide ? (
+          <>
+            {/* 와이드 사진 — 이전 히어로처럼 컨테이너 전체 폭 */}
+            <div style={{ position: 'relative', width: '100%', maxWidth: '960px', aspectRatio: person.photoAspect, margin: '0 auto clamp(24px, 4vw, 36px)', borderRadius: '18px', overflow: 'hidden', border: '1px solid var(--border)', boxShadow: '0 30px 70px -25px rgba(0,0,0,0.35)' }}>
+              <Image
+                src={person.photo}
+                alt={`${person.name} ${person.title}`}
+                fill
+                sizes="(max-width: 960px) calc(100vw - 48px), 912px"
+                style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
+                priority
+              />
+            </div>
+            <dl style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '10px', maxWidth: '820px', margin: '0 auto 20px' }}>
+              {profileRows.map(({ label, value }) => (
+                <div key={label} style={{ background: cardBackground, border: '1px solid var(--border)', borderLeft: '3px solid var(--navy)', borderRadius: '8px', padding: '14px 16px' }}>
+                  <dt style={{ fontFamily: 'var(--font-display)', fontSize: '0.72rem', letterSpacing: '0.12em', color: 'var(--navy)', fontWeight: 700, marginBottom: '6px' }}>
+                    <span lang="en">{label}</span>
+                  </dt>
+                  <dd style={{ fontSize: '0.92rem', color: '#111', lineHeight: 1.6, wordBreak: 'keep-all' }}>{value}</dd>
+                </div>
+              ))}
+            </dl>
+          </>
+        ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px', maxWidth: '820px', margin: '0 auto 20px', alignItems: 'start' }}>
           {/* 사진 — 원본 비율 유지 (크롭 없음) */}
           <div style={{ position: 'relative', width: '100%', maxWidth: photoMaxWidth, aspectRatio: person.photoAspect, margin: '0 auto', borderRadius: '14px', overflow: 'hidden', border: '1px solid var(--border)' }}>
@@ -289,6 +316,7 @@ function InstructorSection({
             ))}
           </dl>
         </div>
+        )}
 
         {/* 필모그래피 */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px', maxWidth: '1040px', margin: '0 auto' }}>
