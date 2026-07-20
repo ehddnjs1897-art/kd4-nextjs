@@ -251,6 +251,9 @@ export async function ensureProfileRow(user: {
   const rawMemberType = (meta.member_type as string) ?? 'actor'
   const memberType = ALLOWED_MEMBER_TYPES.has(rawMemberType) ? rawMemberType : 'actor'
   const role = memberType === 'director' ? 'member' : 'actor'
+  // 가입 metadata의 출생연도 (2026-07-21) — 범위 검증 후 배우 레코드 반영용
+  const byRaw = Number(meta.birth_year)
+  const birthYear = Number.isInteger(byRaw) && byRaw >= 1930 && byRaw <= new Date().getFullYear() ? byRaw : null
 
   const { data: upserted, error } = await supabaseAdmin
     .from('profiles')
@@ -277,6 +280,16 @@ export async function ensureProfileRow(user: {
       console.error('[ensureProfileRow] matching error:', e instanceof Error ? e.message : String(e))
     }
   }
+  // 가입 시 입력한 출생연도 반영 — 비어있을 때만 (기존 데이터 안 덮음)
+  if (birthYear && upserted.actor_id) {
+    const { error: byErr } = await supabaseAdmin
+      .from('actors')
+      .update({ birth_year: birthYear })
+      .eq('id', upserted.actor_id)
+      .is('birth_year', null)
+    if (byErr) console.error('[ensureProfileRow] birth_year 반영 실패:', byErr.message)
+  }
+
   if (name) {
     try {
       await linkEnrollmentsOnSignup(user.id, name, upserted.actor_id ?? undefined)

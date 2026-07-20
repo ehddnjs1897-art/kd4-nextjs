@@ -638,7 +638,9 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     { label: '출연 영상', done: videos.length > 0 || r2Videos.length > 0 },
     { label: '필모그래피', done: filmography.length > 0 },
     { label: '한줄소개', done: castingSummary.trim().length > 0 },
-  ], [photos.length, videos.length, r2Videos.length, filmography.length, castingSummary])
+    // 출생연도 — "기입할 곳이 없다" 멤버 제보(2026-07-21) → 완성도 배지로 노출해 기본 정보 칸으로 유도
+    { label: '출생연도', done: /^\d{4}$/.test(String(birthYear).trim()) },
+  ], [photos.length, videos.length, r2Videos.length, filmography.length, castingSummary, birthYear])
   const completionCount = completionItems.filter(i => i.done).length
   const completionPct = Math.round((completionCount / completionItems.length) * 100)
 

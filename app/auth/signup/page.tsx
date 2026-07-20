@@ -22,6 +22,7 @@ export default function SignupPage() {
   const [passwordConfirm, setPasswordConfirm] = useState('')
   const [phone, setPhone] = useState('')
   const [gender, setGender] = useState('') // 배우: 성별 '남'|'여' (필수 — 성별 필터 노출)
+  const [birthYear, setBirthYear] = useState('') // 배우: 출생연도 4자리 (필수 — 카톡 공유 썸네일 실제 나이, 2026-07-21 대표 지시)
   const [affiliation, setAffiliation] = useState('') // 디렉터: 소속 (선택)
 
   // 서비스 동의 (방침·약관 v1, 2026-07-07) — 기록은 auth metadata(consent_*)
@@ -81,6 +82,13 @@ export default function SignupPage() {
       setError('성별을 선택해 주세요.')
       return
     }
+    if (memberType === 'actor') {
+      const by = Number(birthYear)
+      if (!/^\d{4}$/.test(birthYear) || by < 1930 || by > new Date().getFullYear()) {
+        setError('출생연도 4자리를 입력해 주세요. (예: 1995)')
+        return
+      }
+    }
     if (!agreeTos || !agreePrivacy) {
       setError('이용약관과 개인정보 수집·이용 동의(필수)에 체크해 주세요.')
       return
@@ -105,6 +113,9 @@ export default function SignupPage() {
     }
     if (memberType === 'actor' && (gender === '남' || gender === '여')) {
       metadata.gender = gender
+    }
+    if (memberType === 'actor' && /^\d{4}$/.test(birthYear)) {
+      metadata.birth_year = birthYear
     }
     if (memberType === 'director' && affiliation) {
       metadata.affiliation = affiliation
@@ -455,6 +466,30 @@ export default function SignupPage() {
                   </button>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* 배우 회원: 출생연도 (필수 — 캐스팅 노출·카톡 공유 썸네일에 실제 나이 표시, 2026-07-21 대표 지시) */}
+          {memberType === 'actor' && (
+            <div style={styles.fieldGroup}>
+              <label htmlFor="birthYear" style={styles.label}>
+                출생연도 <span aria-hidden="true" style={styles.required}>*</span>
+              </label>
+              <input
+                id="birthYear"
+                type="text"
+                inputMode="numeric"
+                value={birthYear}
+                onChange={(e) => setBirthYear(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                placeholder="1995"
+                disabled={loading}
+                autoComplete="bday-year"
+                aria-describedby="birth-year-hint"
+                style={styles.input}
+              />
+              <p id="birth-year-hint" style={styles.hint}>
+                <span aria-hidden="true">🎂</span> 캐스팅 담당자에게 정확한 나이가 표시돼요.
+              </p>
             </div>
           )}
 

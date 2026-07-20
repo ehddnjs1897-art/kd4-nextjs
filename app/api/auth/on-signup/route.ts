@@ -47,6 +47,10 @@ export async function POST(request: NextRequest) {
   const ALLOWED_MEMBER_TYPES = new Set(['actor', 'director'])
   const rawMemberType: string = user.user_metadata?.member_type ?? 'actor'
   const memberType: string = ALLOWED_MEMBER_TYPES.has(rawMemberType) ? rawMemberType : 'actor'
+  // 출생연도 (2026-07-21 회원가입 필드 추가) — 신뢰할 수 없는 입력이라 범위 검증
+  const rawBirth = Number(user.user_metadata?.birth_year)
+  const birthYear: number | null =
+    Number.isInteger(rawBirth) && rawBirth >= 1930 && rawBirth <= new Date().getFullYear() ? rawBirth : null
 
   // 기존 역할 + actor_id 확인 (이미 승급된 역할이면 강등 금지; actor_id 있으면 매칭 스킵)
   const { data: existing } = await supabaseAdmin
@@ -89,6 +93,17 @@ export async function POST(request: NextRequest) {
     } catch (e) {
       console.error('[on-signup] matching error:', e instanceof Error ? e.message : String(e))
     }
+  }
+
+  // 가입 시 입력한 출생연도를 연결된 배우 레코드에 반영 — 비어있을 때만 (기존 데이터 안 덮음)
+  const linkedActorId = actorId ?? existing?.actor_id ?? null
+  if (birthYear && linkedActorId) {
+    const { error: byErr } = await supabaseAdmin
+      .from('actors')
+      .update({ birth_year: birthYear })
+      .eq('id', linkedActorId)
+      .is('birth_year', null)
+    if (byErr) console.error('[on-signup] birth_year 반영 실패:', byErr.message)
   }
 
   // 미리 넣어둔 수강 기록 연결
