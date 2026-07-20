@@ -270,9 +270,10 @@ async function sendConsultationCallTimeSMS(name: string, phone: string) {
     `(없을시 생략가능)\n\n` +
     `─────────────────\n` +
     `✅ 카카오 채널\nhttps://pf.kakao.com/_ximxdqn\n\n` +
-    `✅ 홈페이지\nhttps://kd4.club\n\n` +
-    `✅ 인스타그램\nhttps://www.instagram.com/kd4actingstudio\n\n` +
-    `✅ 유튜브\nhttps://www.youtube.com/@kd4actingstudio\n` +
+    `✅ 웹사이트\nhttps://kd4.club\n\n` +
+    `✅ 신청 페이지\nhttps://kd4.club/join\n\n` +
+    `✅ 캐스팅 포트폴리오\nhttps://www.youtube.com/playlist?list=PLMbZlnkLfP7iaE41p_g9dzGKp5eU9VZk2\n\n` +
+    `✅ 위치·시설 안내\nhttps://kd4.club/sinchon-acting-academy\n` +
     `─────────────────\n` +
     `KD4 액팅 스튜디오 드림`
   await sendSMS(phone, msg)
