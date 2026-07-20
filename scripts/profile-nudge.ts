@@ -24,6 +24,9 @@ import { join } from 'path'
 const DRY = process.env.DRY_RUN === '1'
 const OPS = join(homedir(), 'Desktop/KD4-HUB/04-ops/daily-reports')
 const SENT_LOG = join(OPS, 'profile-nudge-sent.json')
+// 사진 치수 캐시 — Supabase 무료 전환(2026-07-21) 후 egress 절약: 같은 사진을 매주 재다운로드하지 않음.
+// 스토리지 파일은 불변(URL 고정)이라 치수 캐시가 판정 결과를 바꾸지 않음 (가로사진 판정 로직 동일).
+const DIMS_CACHE = join(OPS, 'photo-dims-cache.json')
 const RUN_LOG = join(OPS, 'profile-nudge.log')
 const MAX_NUDGES = 3
 const COOLDOWN_DAYS = 6
@@ -136,17 +139,25 @@ async function computeLandscapeSet(sb: any, actorIds: string[]): Promise<Set<str
     byActor.set(p.actor_id, list)
   }
 
+  let dimsCache: Record<string, { w: number; h: number }> = {}
+  try { dimsCache = JSON.parse(readFileSync(DIMS_CACHE, 'utf8')) } catch { /* 첫 실행 — 캐시 없음 */ }
+
   const result = new Set<string>()
   const CONCURRENCY = 4
   for (let i = 0; i < actorIds.length; i += CONCURRENCY) {
     const batch = actorIds.slice(i, i + CONCURRENCY)
     await Promise.all(batch.map(async (id) => {
       for (const u of (byActor.get(id) ?? []).slice(0, 8)) {
-        const d = await imgDims(u)
+        let d = dimsCache[u]
+        if (!d) {
+          const fresh = await imgDims(u)
+          if (fresh) { d = fresh; dimsCache[u] = fresh }
+        }
         if (d && d.w > d.h * 1.05) { result.add(id); return }
       }
     }))
   }
+  try { writeFileSync(DIMS_CACHE, JSON.stringify(dimsCache)) } catch { /* 캐시 저장 실패는 치명 아님 */ }
   return result
 }
 
