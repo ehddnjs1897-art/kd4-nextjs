@@ -146,13 +146,13 @@ export async function PATCH(
       updates.content = body.content.trim()
     }
     if (body.category) {
-      const validCategories = ['일반', '공지', '질문', '자유', '수업']
+      const validCategories = ['일반', '공지', '질문', '자유', '수업', '캐스팅']
       if (!validCategories.includes(body.category)) {
         return NextResponse.json({ error: '올바른 카테고리를 선택해주세요.' }, { status: 400 })
       }
-      // '공지' 카테고리는 관리자만 설정 가능 (API 레벨 강제)
-      if (body.category === '공지' && !isAdmin) {
-        return NextResponse.json({ error: '공지 카테고리는 관리자만 사용할 수 있습니다.' }, { status: 403 })
+      // '공지'·'캐스팅' 카테고리는 관리자만 설정 가능 (API 레벨 강제)
+      if ((body.category === '공지' || body.category === '캐스팅') && !isAdmin) {
+        return NextResponse.json({ error: '해당 카테고리는 관리자만 사용할 수 있습니다.' }, { status: 403 })
       }
       updates.category = body.category
     }

@@ -4,8 +4,9 @@ import { useState, useCallback, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 
-type Category = '전체' | '공지' | '질문' | '자유' | '수업' | '내 게시글'
-const BASE_CATEGORIES: Category[] = ['전체', '질문', '자유', '수업', '공지']
+type Category = '전체' | '공지' | '캐스팅' | '질문' | '자유' | '수업' | '내 게시글'
+const BASE_CATEGORIES: Category[] = ['전체', '질문', '자유', '수업', '캐스팅', '공지']
+const GALLERY_CATEGORIES = new Set(['공지', '캐스팅'])
 const PAGE_SIZE = 20
 
 interface Post {
@@ -23,14 +24,16 @@ function formatDate(iso: string) {
   return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`
 }
 
+const CATEGORY_COLOR_MAP: Record<string, string> = {
+  공지: '#e74c3c',
+  캐스팅: '#c9a24b',
+  질문: '#4a9eff',
+  자유: '#5a5652',
+  수업: '#a855f7',
+}
+
 function CategoryBadge({ category }: { category: string }) {
-  const colorMap: Record<string, string> = {
-    공지: '#e74c3c',
-    질문: '#4a9eff',
-    자유: '#5a5652',
-    수업: '#a855f7',
-  }
-  const color = colorMap[category] ?? '#5a5652'
+  const color = CATEGORY_COLOR_MAP[category] ?? '#5a5652'
   return (
     <span style={{
       display: 'inline-block',
@@ -233,17 +236,18 @@ export default function BoardClient({
         <button type="submit" className="sr-only">검색</button>
       </form>
 
-      {/* 공지 갤러리 — 공지 카테고리이거나 전체 탭에서 공지 포함 시 카드 그리드 표시 */}
+      {/* 공지·캐스팅 갤러리 — 해당 카테고리 탭이거나 전체 탭에서 포함 시 카드 그리드 표시 */}
       {(() => {
-        const notices = posts.filter(p => p.category === '공지' && p.thumbnail_url)
+        const notices = posts.filter(p => GALLERY_CATEGORIES.has(p.category) && p.thumbnail_url)
         if (notices.length === 0) return null
-        // 공지 탭이면 전체를 갤러리로, 전체 탭이면 상단에만 표시
-        const showingNoticeTab = activeCategory === '공지'
+        // 공지·캐스팅 탭이면 전체를 갤러리로, 전체 탭이면 상단에만 표시
+        const showingGalleryTab = GALLERY_CATEGORIES.has(activeCategory)
+        const galleryLabel = activeCategory === '캐스팅' ? '🎉 캐스팅' : activeCategory === '공지' ? '📢 공지' : '📢 공지·캐스팅'
         return (
-          <section aria-label="공지 갤러리" style={{ marginBottom: '28px' }}>
-            {!showingNoticeTab && (
+          <section aria-label="공지·캐스팅 갤러리" style={{ marginBottom: '28px' }}>
+            {!showingGalleryTab && (
               <p style={{ fontSize: '0.75rem', fontWeight: 600, color: '#e74c3c', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>
-                📢 공지
+                {galleryLabel}
               </p>
             )}
             <div className="notice-gallery">
@@ -259,7 +263,7 @@ export default function BoardClient({
                     />
                   </div>
                   <div className="notice-card-body">
-                    <span className="notice-card-badge">공지</span>
+                    <span className="notice-card-badge" style={{ background: CATEGORY_COLOR_MAP[post.category] ?? '#e74c3c' }}>{post.category}</span>
                     <p className="notice-card-title">{post.title}</p>
                     <time className="notice-card-date" dateTime={post.created_at}>{formatDate(post.created_at)}</time>
                   </div>
@@ -270,8 +274,8 @@ export default function BoardClient({
         )
       })()}
 
-      {/* 공지 탭이고 전부 갤러리로 렌더했으면 테이블 숨김 */}
-      {activeCategory === '공지' && posts.every(p => p.thumbnail_url) ? null : (
+      {/* 공지·캐스팅 탭이고 전부 갤러리로 렌더했으면 테이블 숨김 */}
+      {GALLERY_CATEGORIES.has(activeCategory) && posts.every(p => p.thumbnail_url) ? null : (
 
       /* 게시글 테이블 */
       <div

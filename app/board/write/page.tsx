@@ -8,9 +8,9 @@ const RichTextEditor = lazy(() => import('@/components/board/RichTextEditor'))
 // 일반 사용자 카테고리
 const USER_CATEGORIES = ['질문', '자유', '수업'] as const
 // 관리자 추가 카테고리
-const ADMIN_CATEGORIES = ['질문', '자유', '수업', '공지'] as const
+const ADMIN_CATEGORIES = ['질문', '자유', '수업', '캐스팅', '공지'] as const
 
-type Category = '질문' | '자유' | '수업' | '공지'
+type Category = '질문' | '자유' | '수업' | '캐스팅' | '공지'
 
 export default function WritePage() {
   const router = useRouter()

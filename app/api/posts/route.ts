@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1)
 
-    const VALID_CATEGORIES_GET = new Set(['일반', '공지', '질문', '자유', '수업', '전체'])
+    const VALID_CATEGORIES_GET = new Set(['일반', '공지', '질문', '자유', '수업', '캐스팅', '전체'])
     if (category && category !== '전체' && VALID_CATEGORIES_GET.has(category)) {
       query = query.eq('category', category)
     }
@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '내용은 10,000자 이하로 입력해주세요.' }, { status: 400 })
     }
   
-    const validCategories = ['일반', '공지', '질문', '자유', '수업']
+    const validCategories = ['일반', '공지', '질문', '자유', '수업', '캐스팅']
     if (!validCategories.includes(category)) {
       return NextResponse.json({ error: '올바른 카테고리를 선택해주세요.' }, { status: 400 })
     }
@@ -170,9 +170,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '잠시 후 다시 시도해주세요. (1분 최대 5개)' }, { status: 429 })
     }
 
-    // '공지' 카테고리는 관리자만 사용 가능 (UI에서도 숨기지만 API 레벨에서도 강제)
-    if (category === '공지' && profile?.role !== 'admin') {
-      return NextResponse.json({ error: '공지 카테고리는 관리자만 사용할 수 있습니다.' }, { status: 403 })
+    // '공지'·'캐스팅' 카테고리는 관리자만 사용 가능 (UI에서도 숨기지만 API 레벨에서도 강제)
+    if ((category === '공지' || category === '캐스팅') && profile?.role !== 'admin') {
+      return NextResponse.json({ error: '해당 카테고리는 관리자만 사용할 수 있습니다.' }, { status: 403 })
     }
 
     const authorName = profile?.name ?? '익명'

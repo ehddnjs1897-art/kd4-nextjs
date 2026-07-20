@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 const RichTextEditor = lazy(() => import('@/components/board/RichTextEditor'))
 
-const ALL_CATEGORIES = ['일반', '공지', '질문', '자유', '수업'] as const
+const ALL_CATEGORIES = ['일반', '공지', '캐스팅', '질문', '자유', '수업'] as const
 const USER_CATEGORIES = ['일반', '질문', '자유', '수업'] as const
 type Category = typeof ALL_CATEGORIES[number]
 
