@@ -11,7 +11,9 @@ import SalesDashboard, {
 } from './SalesDashboard'
 
 // 매출 대시보드는 이 이메일로 로그인한 경우에만 열람 가능 (관리자 중에서도 대표 전용)
-const ADMIN_SALES_EMAILS = ['uikactors@gmail.com']
+// 2026-07-21: 대표 개인 계정(ehddnjs1897) 추가 — 그 계정으로 로그인하면 /admin으로 조용히
+// 튕겨 "대시보드 눌러도 안 넘어가는" 증상이었음. 두 계정 모두 대표 본인.
+const ADMIN_SALES_EMAILS = ['uikactors@gmail.com', 'ehddnjs1897@gmail.com']
 
 export const metadata: Metadata = {
   title: '매출/수강 통합 대시보드 (관리자)',
