@@ -2,11 +2,11 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-import { CLASSES, DIRECTOR } from '@/lib/classes'
+import { CLASSES, DIRECTOR, SEBIN } from '@/lib/classes'
 import { COACH_FAQ } from '@/lib/landing-faqs'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import JoinCTALink from '@/components/join/JoinCTALink'
-import { buildBreadcrumb, buildFaqPage, buildPersonDongwonDetailed, buildWebPage } from '@/lib/seo-schemas'
+import { buildBreadcrumb, buildFaqPage, buildPersonDongwonDetailed, buildPersonSebinDetailed, buildWebPage } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
@@ -50,8 +50,8 @@ function wrapEnglishToken(text: string): React.ReactNode {
 export const metadata: Metadata = {
   title: '권동원 — 액팅 코치 (리더) · 현역 배우',
   description:
-    'KD4 액팅 스튜디오 대표 권동원. 마이즈너 테크닉 액팅 코치(리더), 현역 배우. Disney+ 무빙2·Netflix 중증외상센터 출연. LA Meisner Workshop 수료, 프로 배우 400명+ 코칭. 서울 신촌.',
-  keywords: ['권동원', '권동원 배우', '권동원 KD4', '마이즈너 강사', '액팅 코치', '액팅 리더', '현역 배우 강사', '신촌 액팅코치', '서울 액팅 코치'],
+    'KD4 액팅 스튜디오 대표 권동원. 마이즈너 테크닉 액팅 코치(리더), 현역 배우. Disney+ 무빙2·Netflix 중증외상센터 출연. LA Meisner Workshop 수료, 프로 배우 400명+ 코칭. 오디션 테크닉 클래스는 주세빈 강사(TV조선 닥터신 주연)가 지도. 서울 신촌.',
+  keywords: ['권동원', '권동원 배우', '권동원 KD4', '주세빈', '주세빈 배우', '마이즈너 강사', '액팅 코치', '액팅 리더', '현역 배우 강사', '신촌 액팅코치', '서울 액팅 코치'],
   robots: { index: true, follow: true },
   alternates: { canonical: PAGE_URL },
   openGraph: {
@@ -89,10 +89,11 @@ export default function CoachPage() {
             name: '권동원 — 액팅 코치 (리더) · 현역 배우 | KD4 액팅 스튜디오',
             description: 'KD4 대표. 마이즈너 테크닉 액팅 코치이자 현역 배우. Disney+ 무빙2, Netflix 중증외상센터 출연 중.',
             mainEntity: { '@id': `${SITE_URL}#dongwon` },
-            dateModified: '2026-06-11',
+            dateModified: '2026-07-21',
             speakableCssSelectors: ['h1', '.section-desc', '.faq-answer'],
           }),
           buildPersonDongwonDetailed(), // 권동원 Person 정본 (필모·수상·학력 포함)
+          buildPersonSebinDetailed(), // 주세빈 강사 (오디션 테크닉 클래스)
           buildFaqPage(COACH_FAQ, PAGE_URL),
         ]}
       />
@@ -121,7 +122,9 @@ export default function CoachPage() {
               권동원 — 액팅 코치 <span style={{ color: '#F0A8A8' }}>(리더)</span>
             </h1>
             <p style={{ fontSize: 'clamp(0.95rem, 2.4vw, 1.08rem)', color: 'rgba(255,255,255,0.82)', lineHeight: 1.75, maxWidth: '600px', margin: '0 auto', wordBreak: 'keep-all' }}>
-              {DIRECTOR.title}. <span lang="en">Disney+</span> 무빙2, <span lang="en">Netflix</span> 중증외상센터 출연 중. <span lang="en">LA Meisner Workshop</span> 수료.
+              <span lang="en">Disney+</span> 무빙2 · <span lang="en">Netflix</span> 중증외상센터 출연 중인 현역 배우.
+              <br />
+              프로 배우 400명+ 액팅 코칭 · <span lang="en">LA Meisner Workshop</span> 수료.
             </p>
           </div>
 
@@ -185,7 +188,7 @@ export default function CoachPage() {
           </div>
           <ul role="list" style={{ maxWidth: '640px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {DIRECTOR.profileFlat.map((line, i) => (
-              <li key={i} style={{ padding: '14px 16px 14px 44px', background: 'var(--bg)', border: '1px solid var(--border)', borderLeft: '3px solid var(--navy)', borderRadius: '8px', fontSize: '0.94rem', color: '#111', position: 'relative' }}>
+              <li key={i} style={{ padding: '14px 16px 14px 44px', background: 'var(--bg)', border: '1px solid var(--border)', borderLeft: '3px solid var(--navy)', borderRadius: '8px', fontSize: '0.94rem', color: '#111', position: 'relative', wordBreak: 'keep-all' }}>
                 <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', fontFamily: 'var(--font-display)', fontSize: '0.78rem', color: 'var(--navy)', fontWeight: 700 }}>
                   {String(i + 1).padStart(2, '0')}
                 </span>
@@ -217,7 +220,7 @@ export default function CoachPage() {
                 </h3>
                 <ul role="list" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   {items.map((title) => (
-                    <li key={title} style={{ fontSize: '0.88rem', color: 'var(--gray-light)', lineHeight: 1.6, paddingLeft: '14px', position: 'relative' }}>
+                    <li key={title} style={{ fontSize: '0.88rem', color: 'var(--gray-light)', lineHeight: 1.6, paddingLeft: '14px', position: 'relative', wordBreak: 'keep-all' }}>
                       <span style={{ position: 'absolute', left: 0, top: '0.6em', width: '6px', height: '1px', background: 'var(--navy)' }} />
                       {title}
                     </li>
@@ -271,6 +274,89 @@ export default function CoachPage() {
           <p style={{ textAlign: 'center', fontSize: '0.82rem', color: 'rgba(255,255,255,0.65)', marginTop: '20px' }}>
             * 표기 금액은 정가(월 수강료) 기준입니다.
           </p>
+        </div>
+      </section>
+
+      {/* ===== SEBIN — 오디션 테크닉 클래스 강사 ===== */}
+      <section id="sebin" aria-label="주세빈 오디션 테크닉 클래스 강사" style={{ scrollMarginTop: '80px', padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
+            <p className="section-eyebrow"><span lang="en">05 — AUDITION TECHNIQUE COACH</span></p>
+            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>주세빈 — 오디션 테크닉 클래스 강사</h2>
+            <p className="section-desc" style={{ margin: '0 auto' }}>
+              동국대학교 연극영화과 졸업. <span lang="en">TV</span>조선 &ldquo;닥터신&rdquo; 주연 등 드라마·연극·<span lang="en">CF</span>에서 활동 중인 현역 배우입니다.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px', maxWidth: '820px', margin: '0 auto 20px', alignItems: 'start' }}>
+            {/* 사진 — 원본 비율 유지 */}
+            <div style={{ position: 'relative', width: '100%', maxWidth: '300px', aspectRatio: '532 / 771', margin: '0 auto', borderRadius: '14px', overflow: 'hidden', border: '1px solid var(--border)' }}>
+              <Image
+                src={SEBIN.photo}
+                alt="주세빈 KD4 오디션 테크닉 클래스 강사"
+                fill
+                sizes="(max-width: 640px) 90vw, 300px"
+                style={{ objectFit: 'cover' }}
+              />
+            </div>
+
+            {/* 기본 프로필 */}
+            <dl style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {[
+                { label: 'EDUCATION', value: SEBIN.education.join(' · ') },
+                { label: 'BIRTH', value: SEBIN.birth },
+                { label: 'HEIGHT / WEIGHT', value: `${SEBIN.height} · ${SEBIN.weight}` },
+                { label: 'TALENT', value: SEBIN.talent.join(', ') },
+              ].map(({ label, value }) => (
+                <div key={label} style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderLeft: '3px solid var(--navy)', borderRadius: '8px', padding: '14px 16px' }}>
+                  <dt style={{ fontFamily: 'var(--font-display)', fontSize: '0.72rem', letterSpacing: '0.12em', color: 'var(--navy)', fontWeight: 700, marginBottom: '6px' }}>
+                    <span lang="en">{label}</span>
+                  </dt>
+                  <dd style={{ fontSize: '0.92rem', color: '#111', lineHeight: 1.6, wordBreak: 'keep-all' }}>{value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+
+          {/* 필모그래피 */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px', maxWidth: '1040px', margin: '0 auto' }}>
+            {[
+              { label: 'DRAMA', items: SEBIN.filmography.drama },
+              { label: 'PLAY', items: SEBIN.filmography.play },
+              { label: 'CF', items: SEBIN.filmography.cf },
+              { label: 'MOVIE', items: SEBIN.filmography.movie },
+            ].map(({ label, items }) => (
+              <div key={label} style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '12px', padding: '24px' }}>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '0.78rem', letterSpacing: '0.15em', color: 'var(--navy)', fontWeight: 700, marginBottom: '12px' }}>
+                  <span lang="en">{label}</span>
+                </h3>
+                <ul role="list" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  {items.map((title) => (
+                    <li key={title} style={{ fontSize: '0.88rem', color: 'var(--gray-light)', lineHeight: 1.6, paddingLeft: '14px', position: 'relative', wordBreak: 'keep-all' }}>
+                      <span style={{ position: 'absolute', left: 0, top: '0.6em', width: '6px', height: '1px', background: 'var(--navy)' }} />
+                      {title}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          {/* 담당 클래스 */}
+          {(() => {
+            const cls = CLASSES.find((c) => c.nameKo === '오디션 테크닉 클래스')
+            if (!cls) return null
+            return (
+              <div style={{ maxWidth: '480px', margin: '20px auto 0', background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '12px', padding: '20px 24px', display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
+                <div>
+                  <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.7rem', letterSpacing: '0.14em', color: 'var(--navy)', fontWeight: 700, marginBottom: '4px' }}>담당 클래스</p>
+                  <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.02rem', fontWeight: 700, color: '#111' }}>{cls.nameKo}</p>
+                  <p style={{ fontSize: '0.82rem', color: 'var(--gray-light)', marginTop: '2px' }}>{cls.schedule} · {cls.duration} · 정원 {cls.capacity}</p>
+                </div>
+                <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.05rem', fontWeight: 700, color: 'var(--navy)' }}>월 ₩{cls.price}</span>
+              </div>
+            )
+          })()}
         </div>
       </section>
 

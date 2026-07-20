@@ -200,7 +200,7 @@ export function buildPersonSebinDetailed() {
     gender: 'Female',
     nationality: { '@type': 'Country', name: '대한민국' },
     description: 'KD4 오디션 테크닉 클래스 강사이자 현역 배우. TV조선 닥터신 주연 등 다수 드라마·연극·CF 출연.',
-    url: `${SITE_URL}/acting-coach-sebin-joo`,
+    url: `${SITE_URL}/acting-coach-dongwon-kwon#sebin`,
     image: `${SITE_URL}${SEBIN.photo}`,
     worksFor: { '@id': `${SITE_URL}#org` },
     knowsAbout: ['오디션 테크닉', '오디션 독백', '연기 코칭', '캐스팅'],
@@ -216,7 +216,7 @@ export function buildPersonSebinDetailed() {
       ...SEBIN.filmography.play.map((title) => ({ '@type': 'TheaterEvent', name: title })),
     ],
     knowsLanguage: ['Korean', 'English'],
-    subjectOf: { '@type': 'WebPage', '@id': `${SITE_URL}/acting-coach-sebin-joo#webpage` },
+    subjectOf: { '@type': 'WebPage', '@id': `${SITE_URL}/acting-coach-dongwon-kwon#webpage` },
     sameAs: [...SAMEAS],
   }
 }
