@@ -127,10 +127,11 @@ export default function CoachPage() {
         person={DONGWON_COACH}
         sectionId="dongwon"
         eyebrow="01 — MEISNER TECHNIQUE COACH"
-        heading="권동원 — 마이즈너 테크닉 강사"
+        heading="권동원 — 대표/리더 · 액팅 코치"
         background="var(--bg)"
         cardBackground="var(--bg2)"
         photoMaxWidth="100%"
+        classCardLabel="대표 직강 클래스"
         intro={
           <><span lang="en">KD4</span> 대표 · <span lang="en">Disney+</span> 무빙2, <span lang="en">Netflix</span> 중증외상센터 출연 중인 현역 배우. 프로 배우 400명+ 액팅 코칭.</>
         }
@@ -231,6 +232,7 @@ function InstructorSection({
   background,
   cardBackground,
   photoMaxWidth = '300px',
+  classCardLabel = '담당 클래스',
 }: {
   person: InstructorProfile
   sectionId: string
@@ -241,6 +243,7 @@ function InstructorSection({
   background: string
   cardBackground: string
   photoMaxWidth?: string
+  classCardLabel?: string
 }) {
   const profileRows: { label: string; value: string }[] = [
     { label: 'EDUCATION', value: person.education.join(' · ') },
@@ -314,7 +317,7 @@ function InstructorSection({
               const inner = (
                 <>
                   <div>
-                    <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.7rem', letterSpacing: '0.14em', color: 'var(--navy)', fontWeight: 700, marginBottom: '4px' }}>담당 클래스</p>
+                    <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.7rem', letterSpacing: '0.14em', color: 'var(--navy)', fontWeight: 700, marginBottom: '4px' }}>{classCardLabel}</p>
                     <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.02rem', fontWeight: 700, color: '#111' }}>{cls.nameKo}</p>
                     <p style={{ fontSize: '0.82rem', color: 'var(--gray-light)', marginTop: '2px' }}>
                       {cls.schedule} · {cls.duration} · 정원 {cls.capacity}

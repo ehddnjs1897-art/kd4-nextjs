@@ -313,7 +313,7 @@ export interface InstructorProfile {
 export const DONGWON_COACH: InstructorProfile = {
   name: DIRECTOR.name,
   nameEn: "Kwon Dongwon",
-  title: "KD4 마이즈너 테크닉 강사",
+  title: "KD4 대표/리더 · 액팅 코치",
   photo: DIRECTOR.photo,
   photoAspect: "3 / 2",
   education: [...DIRECTOR.credentials.education],
