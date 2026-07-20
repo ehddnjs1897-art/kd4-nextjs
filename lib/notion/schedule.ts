@@ -20,6 +20,7 @@ type NotionProp = {
   title?: NotionText[]
   rich_text?: NotionText[]
   select?: { name?: string } | null
+  number?: number | null
 }
 type NotionPage = { properties?: Record<string, NotionProp> }
 
@@ -27,11 +28,20 @@ function plain(arr?: NotionText[]): string {
   return (arr || []).map((t) => t.plain_text || '').join('')
 }
 
+export type NotionScheduleData = {
+  schedule: ScheduleByMonth
+  /**
+   * 'YYYY-MM' → 해당 월 금액 합(원). 결제상태 완납·분납 행의 금액만 집계
+   * (미납·환불·협찬 제외). 2026-06부터 결제 입력 창구가 이 DB라 매출 정본.
+   */
+  revenueByMonth: Record<string, number>
+}
+
 /**
- * 노션 수강현황 DB를 월별로 그룹해서 반환.
+ * 노션 수강현황 DB를 월별로 그룹해서 반환 (수강 명단 + 월별 매출 합계).
  * 토큰이 없거나 어떤 에러든 발생하면 null (호출측 JSON fallback).
  */
-export async function fetchScheduleFromNotion(): Promise<ScheduleByMonth | null> {
+export async function fetchScheduleFromNotion(): Promise<NotionScheduleData | null> {
   const token = process.env.NOTION_TOKEN
   if (!token) return null
 
@@ -62,11 +72,21 @@ export async function fetchScheduleFromNotion(): Promise<ScheduleByMonth | null>
     } while (cursor && ++guard < 50)
 
     const byMonth: ScheduleByMonth = {}
+    const revenueByMonth: Record<string, number> = {}
     for (const p of pages) {
       const pr = p.properties || {}
       const name = plain(pr['이름']?.title)
       const month = pr['월']?.select?.name || ''
-      if (!name || !month) continue
+      if (!month) continue
+
+      // 매출 집계 — 완납·분납 행의 금액만 (이름 유무와 무관)
+      const pay = pr['결제상태']?.select?.name || ''
+      const amount = typeof pr['금액']?.number === 'number' ? pr['금액'].number || 0 : 0
+      if ((pay === '완납' || pay === '분납') && amount > 0) {
+        revenueByMonth[month] = (revenueByMonth[month] || 0) + amount
+      }
+
+      if (!name) continue
       const subject = pr['수업']?.select?.name || ''
       const cohort = plain(pr['기수']?.rich_text)
       const key = cohort ? `${subject} ${cohort}` : subject
@@ -74,7 +94,7 @@ export async function fetchScheduleFromNotion(): Promise<ScheduleByMonth | null>
       byMonth[month][key] = byMonth[month][key] || []
       byMonth[month][key].push(name)
     }
-    return byMonth
+    return { schedule: byMonth, revenueByMonth }
   } catch {
     return null
   }
@@ -87,6 +107,8 @@ export type NotionUnpaidItem = {
   pay: string
   status: string
   memo: string
+  /** 금액(원) — 미납 KPI 합산용. 노션에 비어있으면 0 */
+  amount: number
 }
 
 /** Asia/Seoul 기준 현재 월 키 'YYYY-MM' (노션 월 select 값과 동일 형식, 예: '2026-06') */
@@ -159,7 +181,8 @@ export async function fetchUnpaidFromNotion(): Promise<{
       const subject = pr['수업']?.select?.name || ''
       const cohort = plain(pr['기수']?.rich_text)
       const ban = banSelect || (cohort ? `${subject} ${cohort}`.trim() : subject)
-      items.push({ name, ban, pay, status, memo: plain(pr['메모']?.rich_text) })
+      const amount = typeof pr['금액']?.number === 'number' ? pr['금액'].number || 0 : 0
+      items.push({ name, ban, pay, status, memo: plain(pr['메모']?.rich_text), amount })
     }
     return { month, items }
   } catch {

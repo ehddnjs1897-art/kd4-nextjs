@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-dynamic'
 
-// 과거 월별 매출 (2025.11 ~ 2026.4) — enrollments엔 2026-05·06만 있으므로 구글시트 과거기록으로 보완
+// 과거 월별 매출 (2025.11 ~ 2026.4) — 구글시트 과거기록. 이후 월은 자동 집계라 여기 추가 금지
 const PAST_REVENUE: Record<string, number> = {
   '25.11': 7740100,
   '25.12': 5272800,
@@ -31,18 +31,44 @@ const PAST_REVENUE: Record<string, number> = {
   '26.4': 7972500,
 }
 
-// 표시할 월 순서 (오래된 → 최신)
-const MONTH_KEYS = ['25.11', '25.12', '26.1', '26.2', '26.3', '26.4', '26.5', '26.6']
+// 이 시점(2026-06)부터 결제 입력 창구가 노션 수강현황 DB → 매출도 노션이 정본
+const NOTION_REVENUE_FROM_IDX = 2026 * 12 + (6 - 1)
 
-const MONTH_LABEL: Record<string, string> = {
-  '25.11': '2025년 11월',
-  '25.12': '2025년 12월',
-  '26.1': '2026년 1월',
-  '26.2': '2026년 2월',
-  '26.3': '2026년 3월',
-  '26.4': '2026년 4월',
-  '26.5': '2026년 5월',
-  '26.6': '2026년 6월',
+// '26.6' 형식 키 → 월 일련번호 (연*12+월-1). 비교/정렬용
+function keyIdx(k: string): number {
+  const m = k.match(/^(\d{2})\.(\d{1,2})$/)
+  return m ? (2000 + Number(m[1])) * 12 + (Number(m[2]) - 1) : -1
+}
+
+/**
+ * 표시할 월 목록을 2025-11부터 서울 기준 이번 달까지 자동 생성.
+ * 노션에 이번 달 이후 매출(다음 달 예약금 등)이 이미 있으면 그 월까지 포함.
+ * → 매달 코드 수정 없이 새 달이 자동으로 나타남.
+ */
+function buildMonths(notionYMs: string[]): { keys: string[]; label: Record<string, string> } {
+  const parts = new Intl.DateTimeFormat('en', {
+    timeZone: 'Asia/Seoul',
+    year: 'numeric',
+    month: '2-digit',
+  }).formatToParts(new Date())
+  const cy = Number(parts.find((p) => p.type === 'year')?.value) || new Date().getFullYear()
+  const cm = Number(parts.find((p) => p.type === 'month')?.value) || new Date().getMonth() + 1
+  let endIdx = cy * 12 + (cm - 1)
+  for (const ym of notionYMs) {
+    const m = ym.match(/^(\d{4})-(\d{1,2})$/)
+    if (m) endIdx = Math.max(endIdx, Number(m[1]) * 12 + (Number(m[2]) - 1))
+  }
+  const startIdx = 2025 * 12 + (11 - 1) // 2025-11
+  const keys: string[] = []
+  const label: Record<string, string> = {}
+  for (let i = startIdx; i <= endIdx; i++) {
+    const y = Math.floor(i / 12)
+    const mo = (i % 12) + 1
+    const k = `${String(y).slice(2)}.${mo}`
+    keys.push(k)
+    label[k] = `${y}년 ${mo}월`
+  }
+  return { keys, label }
 }
 
 // year_month (예: '2026-05', '2026-5', '26.5' 등) → 정규화 키 '26.5'
@@ -71,15 +97,20 @@ export default async function AdminSalesPage() {
     redirect('/admin')
   }
 
-  const enrollRes = await supabaseAdmin
-    .from('enrollments')
-    .select('name, amount, year_month, class_name, payment_status, paid_at, created_at')
-    .limit(2000)
+  // Supabase(결제대기·과도기 매출) + 노션(수강 명단·매출 정본·미납)을 동시 조회
+  const [enrollRes, notionData, notionUnpaid] = await Promise.all([
+    supabaseAdmin
+      .from('enrollments')
+      .select('name, amount, year_month, class_name, payment_status, paid_at, created_at')
+      .limit(2000),
+    fetchScheduleFromNotion(),
+    fetchUnpaidFromNotion(),
+  ])
 
   const rows = enrollRes.error ? [] : enrollRes.data ?? []
 
-  // 월별 매출 집계 (결제완료 건만 매출로 카운트)
-  const revByMonth: Record<string, number> = { ...PAST_REVENUE }
+  // Supabase 월별 매출 (결제완료 건만) + 결제대기 명단
+  const supaByMonth: Record<string, number> = {}
   const unpaid: UnpaidRow[] = []
 
   for (const r of rows) {
@@ -88,7 +119,7 @@ export default async function AdminSalesPage() {
     const paid = r.payment_status === '결제완료'
 
     if (paid && key) {
-      revByMonth[key] = (revByMonth[key] || 0) + amount
+      supaByMonth[key] = (supaByMonth[key] || 0) + amount
     }
     if (!paid) {
       unpaid.push({
@@ -100,21 +131,29 @@ export default async function AdminSalesPage() {
     }
   }
 
-  // 만원 단위로 변환한 월별 매출 (프리뷰와 동일하게 막대그래프는 만원 단위)
-  const revenue: MonthRevenue[] = MONTH_KEYS.map((k) => ({
-    key: k,
-    label: MONTH_LABEL[k],
-    won: revByMonth[k] || 0,
-    man: Math.round((revByMonth[k] || 0) / 10000),
-  }))
+  // 노션 월별 매출 ('2026-07' → '26.7' 키로 정규화)
+  const notionRevRaw = notionData?.revenueByMonth ?? {}
+  const notionRev: Record<string, number> = {}
+  for (const [ym, won] of Object.entries(notionRevRaw)) {
+    const k = normalizeYM(ym)
+    if (k) notionRev[k] = (notionRev[k] || 0) + won
+  }
 
-  // 수강현황 (월별 기수별 명단) — 노션 토큰 있으면 실시간, 없으면 정적 JSON fallback
-  // + 노션 실시간 미납 체크 명단 (토큰 없거나 실패 시 null → 카드 숨김)
-  const [liveSchedule, notionUnpaid] = await Promise.all([
-    fetchScheduleFromNotion(),
-    fetchUnpaidFromNotion(),
-  ])
-  // 노션 실시간이 비어있으면(토큰 없음/0건) 정적 JSON으로 폴백
+  // 월 목록: 2025-11 ~ 이번 달 (+노션에 매출 잡힌 미래 월) 자동 생성
+  const { keys: monthKeys, label: monthLabel } = buildMonths(Object.keys(notionRevRaw))
+
+  // 월별 매출 — 소스 우선순위:
+  //   2026-06부터: 노션 수강현황 DB (결제 입력 정본) → 연동 실패 시 Supabase 폴백
+  //   2026-05: Supabase enrollments / 그 이전: 구글시트 과거기록(PAST_REVENUE)
+  const revenue: MonthRevenue[] = monthKeys.map((k) => {
+    const supa = supaByMonth[k] || 0
+    const won =
+      keyIdx(k) >= NOTION_REVENUE_FROM_IDX ? notionRev[k] ?? supa : PAST_REVENUE[k] ?? supa
+    return { key: k, label: monthLabel[k] ?? k, won, man: Math.round(won / 10000) }
+  })
+
+  // 수강현황 (월별 기수별 명단) — 노션 실시간, 비어있으면 정적 JSON fallback
+  const liveSchedule = notionData?.schedule ?? null
   const rawSchedule: Record<string, unknown> =
     liveSchedule && Object.keys(liveSchedule).length > 0
       ? liveSchedule
@@ -122,18 +161,19 @@ export default async function AdminSalesPage() {
   const schedule: ScheduleMap = {}
   for (const [k, v] of Object.entries(rawSchedule)) {
     if (k.startsWith('_')) continue
-    // 월 키 형식 통일: 노션 '2026-06' / JSON '26.6' → 모두 '26.6' (MONTH_KEYS 매칭)
+    // 월 키 형식 통일: 노션 '2026-06' / JSON '26.6' → 모두 '26.6' (monthKeys 매칭)
     const nk = normalizeYM(k) ?? k
     schedule[nk] = v as Record<string, string[]>
   }
 
   return (
     <SalesDashboard
-      monthKeys={MONTH_KEYS}
+      monthKeys={monthKeys}
       revenue={revenue}
       schedule={schedule}
       unpaid={unpaid}
       notionUnpaid={notionUnpaid}
+      notionLive={!!notionData}
     />
   )
 }

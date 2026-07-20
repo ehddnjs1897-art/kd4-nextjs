@@ -21,7 +21,7 @@ export type UnpaidRow = {
 /** 노션 수강현황 DB 실시간 미납 체크 데이터 (lib/notion/schedule.fetchUnpaidFromNotion 결과와 동일 구조) */
 export type NotionUnpaidData = {
   month: string
-  items: { name: string; ban: string; pay: string; status: string; memo: string }[]
+  items: { name: string; ban: string; pay: string; status: string; memo: string; amount: number }[]
 }
 
 const ICON: Record<string, string> = {
@@ -51,12 +51,15 @@ export default function SalesDashboard({
   schedule,
   unpaid,
   notionUnpaid,
+  notionLive = false,
 }: {
   monthKeys: string[]
   revenue: MonthRevenue[]
   schedule: ScheduleMap
   unpaid: UnpaidRow[]
   notionUnpaid?: NotionUnpaidData | null
+  /** 노션 수강현황 DB 실시간 연동 성공 여부 (false면 폴백 데이터 표시 중) */
+  notionLive?: boolean
 }) {
   const revByKey = useMemo(() => {
     const m: Record<string, MonthRevenue> = {}
@@ -100,6 +103,13 @@ export default function SalesDashboard({
   const schOrder = Object.entries(sch).sort((a, b) => b[1].length - a[1].length)
 
   const unpaidTotal = unpaid.reduce((a, b) => a + b.amount, 0)
+
+  // 미납 KPI — 노션 연동 성공 시 노션 미납(결제상태=미납)이 정본, 실패 시 Supabase 결제대기
+  const notionMinap = (notionUnpaid?.items ?? []).filter((it) => it.pay === '미납')
+  const minapCount = notionUnpaid ? notionMinap.length : unpaid.length
+  const minapTotal = notionUnpaid
+    ? notionMinap.reduce((a, b) => a + (b.amount || 0), 0)
+    : unpaidTotal
 
   // 노션 실시간 미납 체크 — 반별 그룹핑 (인원 많은 순)
   const notionGroups = useMemo(() => {
@@ -406,9 +416,12 @@ export default function SalesDashboard({
       <div className="head">
         <div>
           <h1>
-            KD4 통합 대시보드 <span className="ptag">실시간 · Supabase</span>
+            KD4 통합 대시보드{' '}
+            <span className="ptag">{notionLive ? '노션 실시간 연동' : '노션 연결 끊김 · 폴백'}</span>
           </h1>
-          <div className="sub">매출(Supabase) + 스케줄표(구글시트) 월별 연동</div>
+          <div className="sub">
+            매출·수강현황·미납 = 노션 「수강 현황」 DB 실시간 (5분 캐시) · 결제대기 = Supabase
+          </div>
         </div>
         <select value={selected} onChange={(e) => setSelected(e.target.value)} aria-label="월 선택">
           {monthKeys.map((k) => (
@@ -445,13 +458,13 @@ export default function SalesDashboard({
           <div className="delta up">{classCount}개 수업/기수</div>
         </div>
         <div className="kpi">
-          <div className="label">미납 건수</div>
+          <div className="label">미납 건수{notionUnpaid ? ` (${notionUnpaid.month})` : ''}</div>
           <div className="val">
-            {unpaid.length}
+            {minapCount}
             <span className="unit">건</span>
           </div>
           <div className="delta warn">
-            {unpaid.length > 0 ? <><span aria-hidden="true">⚠️</span>{` ${formatMan(Math.round(unpaidTotal / 10000))}만원`}</> : '없음'}
+            {minapCount > 0 ? <><span aria-hidden="true">⚠️</span>{` ${formatMan(Math.round(minapTotal / 10000))}만원`}</> : '없음'}
           </div>
         </div>
       </div>
@@ -478,8 +491,8 @@ export default function SalesDashboard({
           })}
         </div>
         <div className="note">
-          * 막대 클릭 또는 상단 월 선택으로 해당 월 강조. 2026-05부터 Supabase 자동집계, 이전은
-          구글시트 과거기록.
+          * 막대 클릭 또는 상단 월 선택으로 해당 월 강조. 2026-06부터 노션 수강현황 DB(완납·분납
+          금액) 자동집계, 2026-05는 Supabase, 이전은 구글시트 과거기록.
         </div>
       </div>
 
@@ -502,7 +515,8 @@ export default function SalesDashboard({
         )}
       </div>
       <div className="note">
-        * 스케줄표 구글시트 월별 탭 파싱. 손작성 비정형 시트라 일부 이름은 검증 필요할 수 있어요.
+        * 노션 「수강 현황」 DB 실시간 연동{notionLive ? '' : ' (지금은 연결 끊김 — 마지막 저장본 표시 중)'}.
+        노션에서 고치면 5분 안에 여기 반영.
       </div>
 
       <div className="sect"><span aria-hidden="true">💳</span> 결제 관리</div>
@@ -562,9 +576,10 @@ export default function SalesDashboard({
       </div>
 
       <div className="foot">
-        매출은 Supabase enrollments 실시간 집계 (2026-05~), 이전 월은 구글시트 과거기록 보완.
+        매출 = 노션 「수강 현황」 DB 완납·분납 금액 자동합산 (2026-06~, 5분 캐시) · 2026-05는
+        Supabase · 이전 월은 구글시트 과거기록.
         <br />
-        수강 현황은 스케줄표 월별 명단 기준.
+        수강 현황·미납 체크도 같은 노션 DB 기준 — 노션만 고치면 대시보드는 따라온다.
       </div>
     </div>
   )
