@@ -34,6 +34,13 @@ const PAST_REVENUE: Record<string, number> = {
 // 이 시점(2026-06)부터 결제 입력 창구가 노션 수강현황 DB → 매출도 노션이 정본
 const NOTION_REVENUE_FROM_IDX = 2026 * 12 + (6 - 1)
 
+// 대표 확정 매출 — 자동집계보다 우선 (2026-07-21 대표: 6월 12,360,000원 확정)
+// 노션에 '완납인데 금액 미기재' 행들이 있어 자동합계가 낮게 잡히는 달의 보정값.
+// 노션 금액이 다 채워져 자동합계가 이 값에 도달하면 해당 키를 지워도 됨.
+const CONFIRMED_REVENUE: Record<string, number> = {
+  '26.6': 12360000,
+}
+
 // '26.6' 형식 키 → 월 일련번호 (연*12+월-1). 비교/정렬용
 function keyIdx(k: string): number {
   const m = k.match(/^(\d{2})\.(\d{1,2})$/)
@@ -147,8 +154,9 @@ export default async function AdminSalesPage() {
   //   2026-05: Supabase enrollments / 그 이전: 구글시트 과거기록(PAST_REVENUE)
   const revenue: MonthRevenue[] = monthKeys.map((k) => {
     const supa = supaByMonth[k] || 0
-    const won =
+    const auto =
       keyIdx(k) >= NOTION_REVENUE_FROM_IDX ? notionRev[k] ?? supa : PAST_REVENUE[k] ?? supa
+    const won = CONFIRMED_REVENUE[k] ?? auto
     return { key: k, label: monthLabel[k] ?? k, won, man: Math.round(won / 10000) }
   })
 

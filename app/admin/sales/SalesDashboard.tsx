@@ -39,7 +39,7 @@ const ICON: Record<string, string> = {
   심화: '📈',
 }
 
-const GOAL_MAN = 1100 // 월 목표 매출 1,100만
+const GOAL_MAN = 2000 // 월 목표 매출 2,000만 (2026-07-21 대표 지시 — 모든 목표 2,000만 통일)
 
 function formatMan(man: number): string {
   return man.toLocaleString('ko-KR')
