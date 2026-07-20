@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { getMonologuesCached, getMonologueTotalCount, GENRE_OPTIONS, MEDIUM_OPTIONS, AGE_OPTIONS } from '@/lib/monologues'
 import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
-import { buildBreadcrumb, buildWebPage } from '@/lib/seo-schemas'
+import { buildBreadcrumb, buildWebPage, buildFaqPage } from '@/lib/seo-schemas'
 
 export const revalidate = 300 // 5분 ISR — 크롤러 파이프라인이 새 카드를 계속 추가하므로 적당히 신선하게
 
@@ -165,6 +165,28 @@ function buildHref(base: Record<string, string | undefined>, key: string, value:
   return s ? `/monologues?${s}` : '/monologues'
 }
 
+/** 하단 AEO 문답 — 질문 1개 = 답 1~2문장. 화면과 FAQPage JSON-LD가 같은 데이터를 씀.
+ *  {count}는 렌더 시 실제 편수로 치환 */
+const RUN_BY_Q = '누가 운영하나요?'
+const MONOLOGUE_FAQ = [
+  {
+    q: '독백 대본, 무료인가요?',
+    a: '네. {count}편 전부 무료이고 매주 새 대본이 추가됩니다.',
+  },
+  {
+    q: '나에게 맞는 독백은 어떻게 찾나요?',
+    a: '성별·연령대·미디어·장르 필터로 바로 검색됩니다. 대본마다 배역·작품·감정선이 정리되어 있습니다.',
+  },
+  {
+    q: '어디에 쓸 수 있나요?',
+    a: '오디션 독백, 자유연기 대본, 연기 연습에 그대로 쓰세요. 대사 전문 복사와 카드 이미지 저장을 지원합니다.',
+  },
+  {
+    q: RUN_BY_Q,
+    a: '서울 신촌의 마이즈너 테크닉 연기 스튜디오 KD4 액팅 스튜디오가 직접 만듭니다. 독백 연습 다음 단계는 연기 클래스에서 카메라 앞 훈련으로 이어가세요.',
+  },
+]
+
 /** 하단 SEO 안내 섹션의 키워드 내부 링크 */
 const SEO_LINKS = [
   { label: '남자독백 대본 전체보기', href: '/monologues?gender=%EB%82%A8%EC%84%B1' },
@@ -220,6 +242,11 @@ export default async function MonologuesPage({ searchParams }: { searchParams: S
               url: `${SITE_URL}/monologues/${m.id}`,
             })),
           },
+          // AEO — 하단 문답 섹션과 동일 데이터의 FAQPage (AI 검색엔진 인용용)
+          buildFaqPage(
+            MONOLOGUE_FAQ.map((f) => ({ q: f.q, a: f.a.replace('{count}', String(totalCount)) })),
+            `${SITE_URL}/monologues`,
+          ),
         ]}
       />
 
@@ -360,7 +387,8 @@ export default async function MonologuesPage({ searchParams }: { searchParams: S
         </div>
       )}
 
-      {/* 하단 SEO 안내 섹션 — 검색 유입 키워드(남자독백·여자독백·연령대·오디션독백) 텍스트 콘텐츠.
+      {/* 하단 AEO 안내 섹션 — 질문 소제목 + 한 줄 답변 구조.
+          AI 검색엔진(ChatGPT·퍼플렉시티)이 문답 단위로 인용하기 좋고 사람도 스캔하기 좋게.
           필터 상태와 무관하게 기본(전체) 페이지에서만 노출해 필터 페이지 중복 콘텐츠 방지 */}
       {!hasFilter && (
         <section
@@ -374,29 +402,52 @@ export default async function MonologuesPage({ searchParams }: { searchParams: S
               fontSize: '1.1rem',
               fontWeight: 700,
               color: 'var(--navy-deep)',
-              marginBottom: 14,
+              marginBottom: 18,
             }}
           >
-            남자독백·여자독백부터 연령대별 독백 대본까지, 오디션 준비의 시작
+            독백 대본 아카이브, 이렇게 쓰세요
           </h2>
-          <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', lineHeight: 1.9, color: 'var(--text-warm)', marginBottom: 12 }}>
-            KD4 독백 대본 아카이브는 영화·드라마·연극·뮤지컬 속 장면을 바탕으로 한 오디션·연기 연습용
-            독백 대본 {totalCount}편을 무료로 제공합니다. 남자독백 대본과 여자독백 대본은 성별 필터로,
-            20대 독백·30대 독백·40대 독백·50대 독백은 연령대 필터로 바로 찾을 수 있습니다. 모든 독백은
-            배역·작품·장르·감정선 기준으로 정리되어 있어 오디션 독백 선정과 독백 연습에 그대로 활용할 수
-            있고, 대사 전문 복사와 카드 이미지 다운로드를 지원합니다.
-          </p>
-          <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', lineHeight: 1.9, color: 'var(--text-warm)', marginBottom: 20 }}>
-            이 아카이브는 서울 신촌의 마이즈너 테크닉 연기 스튜디오,{' '}
-            <Link href="/about" style={{ color: 'var(--navy)', textDecoration: 'underline', textUnderlineOffset: 3 }}>
-              KD4 액팅 스튜디오
-            </Link>
-            가 직접 운영합니다. 독백 연습에서 한 걸음 더 나아가고 싶다면{' '}
-            <Link href="/classes" style={{ color: 'var(--navy)', textDecoration: 'underline', textUnderlineOffset: 3 }}>
-              연기 클래스
-            </Link>
-            에서 카메라 앞 훈련까지 이어갈 수 있습니다.
-          </p>
+          {MONOLOGUE_FAQ.map((item) => (
+            <div key={item.q} style={{ marginBottom: 16 }}>
+              <h3
+                style={{
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '0.9rem',
+                  fontWeight: 700,
+                  color: 'var(--navy-deep)',
+                  marginBottom: 4,
+                  wordBreak: 'keep-all',
+                }}
+              >
+                {item.q}
+              </h3>
+              <p
+                style={{
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '0.85rem',
+                  lineHeight: 1.8,
+                  color: 'var(--text-warm)',
+                  wordBreak: 'keep-all',
+                }}
+              >
+                {item.q === RUN_BY_Q ? (
+                  <>
+                    서울 신촌의 마이즈너 테크닉 연기 스튜디오{' '}
+                    <Link href="/about" style={{ color: 'var(--navy)', textDecoration: 'underline', textUnderlineOffset: 3 }}>
+                      KD4 액팅 스튜디오
+                    </Link>
+                    가 직접 만듭니다. 독백 연습 다음 단계는{' '}
+                    <Link href="/classes" style={{ color: 'var(--navy)', textDecoration: 'underline', textUnderlineOffset: 3 }}>
+                      연기 클래스
+                    </Link>
+                    에서 카메라 앞 훈련으로 이어가세요.
+                  </>
+                ) : (
+                  item.a.replace('{count}', String(totalCount))
+                )}
+              </p>
+            </div>
+          ))}
           <nav aria-label="독백 대본 바로가기" style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {SEO_LINKS.map((l) => (
               <Link
