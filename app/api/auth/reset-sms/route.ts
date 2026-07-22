@@ -91,20 +91,25 @@ export async function POST(req: Request) {
   const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
     type: 'recovery',
     email,
-    options: { redirectTo: `${SITE_URL}/auth/update-password` },
   })
-  const actionLink = linkData?.properties?.action_link
-  if (linkError || !actionLink) {
+  const hashedToken = linkData?.properties?.hashed_token
+  if (linkError || !hashedToken) {
     console.error('[reset-sms] generateLink 실패:', linkError?.message)
     return NextResponse.json({ ok: false, error: '일시적인 오류입니다. 잠시 후 다시 시도해 주세요.' }, { status: 500 })
   }
+
+  // 직링크(action_link)는 문자앱 미리보기가 미리 열어 1회용 토큰을 소모하거나
+  // 요청 브라우저가 아니면 검증 실패해 "만료" 오탐 발생 (7/23 배준 배우 사례).
+  // 토큰을 소모하지 않는 버튼 페이지(/auth/confirm)를 경유시켜 어느 앱에서 열어도 동작.
+  const confirmLink = `${SITE_URL}/auth/confirm?token_hash=${hashedToken}&type=recovery`
 
   const text = [
     '[KD4 액팅 스튜디오]',
     '비밀번호 재설정 링크입니다. 1시간 안에 눌러주세요.',
     '',
-    actionLink,
+    confirmLink,
     '',
+    "링크를 열고 '비밀번호 재설정 계속하기' 버튼을 누르면 새 비밀번호를 설정할 수 있습니다.",
     '본인이 요청하지 않았다면 이 문자는 무시하셔도 됩니다.',
   ].join('\n')
 
