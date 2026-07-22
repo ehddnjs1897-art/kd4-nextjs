@@ -9,6 +9,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createHash } from 'crypto'
 import { sendSMS } from '@/lib/sms'
+import { sendConsultationReceivedEmail } from '@/lib/email'
 import { getSupabaseAdmin } from '@/lib/supabase/admin'
 import { SITE_URL } from '@/lib/constants'
 
@@ -469,6 +470,15 @@ export async function POST(request: NextRequest) {
     await sendConsultationCallTimeSMS(name, phone).catch((err) =>
       console.error('[notify] 사전상담 안내 SMS 실패:', err instanceof Error ? err.message : String(err))
     )
+
+    // 1-c. 신청자 본인에게 접수 확인 이메일 (2026-07-23 대표 지시: 메일 발송 전부 연동)
+    //      SMS와 동일 내용의 이메일판 — RESEND_API_KEY 없으면 내부에서 silent skip.
+    //      캐스팅 문의는 이메일이 선택 항목이라 있을 때만.
+    if (emailRaw) {
+      await sendConsultationReceivedEmail(name, emailRaw).catch((err) =>
+        console.error('[notify] 접수확인 이메일 실패:', err instanceof Error ? err.message : String(err))
+      )
+    }
 
     // 2. Make webhook 발송 — await 로 변경 (2026-05-13)
     //   이전: fire-and-forget → Vercel serverless cold start 시점에 함수 종료가 빨라

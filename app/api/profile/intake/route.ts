@@ -481,6 +481,15 @@ export async function POST(request: NextRequest) {
     console.warn('[profile/intake] 사후 압축 스킵:', e instanceof Error ? e.message : e)
   }
 
+  // ── 접수 완료 확인 이메일 (2026-07-23 대표 지시: 메일 발송 전부 연동) ──
+  // RESEND_API_KEY 없으면 내부 silent skip. 실패해도 접수 성공에 영향 없음.
+  if (user.email) {
+    const { sendProfileIntakeDoneEmail } = await import('@/lib/email')
+    await sendProfileIntakeDoneEmail(profile.name || '배우', user.email).catch((err) =>
+      console.error('[profile/intake] 접수완료 이메일 실패:', err instanceof Error ? err.message : String(err))
+    )
+  }
+
   revalidateTag('actors')
   if (actorId) revalidateTag(`actor-${actorId}`)
   return NextResponse.json({
