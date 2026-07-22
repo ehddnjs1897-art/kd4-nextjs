@@ -318,6 +318,9 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
     const file = e.target.files?.[0]
     if (!file) return
     if (file.size > 300 * 1024 * 1024) { setR2VideoMsg('300MB 이하 파일만 가능합니다.'); return }
+    // 2026-07-22: 아이폰 .MOV(HEVC) 원본은 폰에서만 재생되고 컴퓨터에서는 소리만
+    // 나오는 문제가 실제로 발생(안세영님 피드백) — 업로드 자체는 막지 않되 미리 안내.
+    const isMov = /\.mov$/i.test(file.name) || file.type === 'video/quicktime'
     setR2Uploading(true); setR2UploadStatus('업로드 URL 발급 중...')
     try {
       const urlRes = await fetch('/api/r2/upload-url', {
@@ -343,13 +346,17 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
       if (!res.ok) throw new Error((await res.json()).error || '기록 실패')
       const row = await res.json()
       setR2Videos(prev => [...prev, { id: row.id, r2_key: key, title: file.name, video_type: 'reel' }])
-      setR2VideoMsg('영상 업로드 완료.')
+      setR2VideoMsg(
+        isMov
+          ? '업로드 완료. 단, MOV 파일은 컴퓨터에서 소리만 나올 수 있어요 — 가능하면 mp4로 변환해서 다시 올려주세요.'
+          : '영상 업로드 완료.'
+      )
     } catch (e) {
       setR2VideoMsg((e as Error).message)
     } finally {
       setR2Uploading(false); setR2UploadStatus('')
       if (r2VideoRef.current) r2VideoRef.current.value = ''
-      flashMsg(setR2VideoMsg, 5000)
+      flashMsg(setR2VideoMsg, isMov ? 9000 : 5000)
     }
   }
 
@@ -881,7 +888,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         <input ref={r2VideoRef} type="file" accept="video/*" onChange={uploadR2Video} style={{ display: 'none' }} aria-hidden="true" />
         <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
           <button type="button" className="btn-press" onClick={() => r2VideoRef.current?.click()} disabled={r2Uploading} aria-busy={r2Uploading} style={{ ...a.ghost, opacity: r2Uploading ? 0.6 : 1 }}>{r2Uploading ? r2UploadStatus || '업로드 중…' : '＋ 영상 파일 업로드'}</button>
-          <span style={{ fontSize: 13, color: 'var(--gray)' }}>mp4 권장, 최대 300MB</span>
+          <span style={{ fontSize: 13, color: 'var(--gray)' }}>mp4 파일로 올려주세요 (최대 300MB) — mov는 컴퓨터에서 소리만 나올 수 있어요</span>
         </div>
         <p role="status" aria-live="polite" aria-atomic="true" style={{ ...a.msg, color: isErr(r2VideoMsg, '완료') ? '#C0392B' : 'var(--navy)' }}>{r2VideoMsg}</p>
 
