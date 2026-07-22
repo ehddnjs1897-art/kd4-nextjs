@@ -440,7 +440,7 @@ export default function ClassesPage() {
                 {
                   step: '03',
                   title: '캐스팅 연결',
-                  desc: '캐스팅 디렉터가 배우 DB를 통해 직접 연락합니다. 지금까지 60건 이상의 캐스팅이 이뤄졌습니다.',
+                  desc: '캐스팅 디렉터가 배우 DB를 통해 직접 연락합니다. 최근 캐스팅 60건이 이뤄졌습니다.',
                 },
               ].map((item) => (
                 <div key={item.step} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>

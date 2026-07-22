@@ -168,7 +168,7 @@ export default function MeisnerPage() {
             name: '마이즈너 테크닉 — KD4 액팅 스튜디오',
             description: 'KD4 액팅 스튜디오 마이즈너 테크닉 정규 클래스 소개 영상. 연기하지 않는 연기, 진짜 반응 훈련 방식을 담았습니다.',
             thumbnailUrl: 'https://i.ytimg.com/vi/6crvxRnBerk/hqdefault.jpg',
-            uploadDate: '2024-01-01',
+            uploadDate: '2024-01-01T00:00:00+09:00', // Search Console 7/20 지적 — 시간대 포함 완전 ISO 8601
             contentUrl: 'https://www.youtube.com/watch?v=6crvxRnBerk',
             embedUrl: 'https://www.youtube.com/embed/6crvxRnBerk',
             inLanguage: 'ko',

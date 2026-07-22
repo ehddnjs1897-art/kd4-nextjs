@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import FaqAccordion from '@/components/ui/FaqAccordion'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { serializeJsonLd } from '@/lib/seo'
 import { SITE_URL } from '@/lib/constants'
@@ -94,7 +93,7 @@ const faqs = [
   },
   {
     q: '캐스팅 디렉터와 연결해주나요?',
-    a: '네. 방진원·이상원 캐스팅 디렉터와 공식 협업하며 정기 오디션 및 캐스팅을 연계합니다. 지금까지 60건 이상의 캐스팅이 이뤄졌습니다. kd4.club 배우 DB를 통해 캐스팅팀이 직접 배우를 조회합니다.',
+    a: '네. 방진원·이상원 캐스팅 디렉터와 공식 협업하며 정기 오디션 및 캐스팅을 연계합니다. 최근 캐스팅 60건이 이뤄졌습니다. kd4.club 배우 DB를 통해 캐스팅팀이 직접 배우를 조회합니다.',
   },
   {
     q: '입시 준비생도 다닐 수 있나요?',
@@ -106,7 +105,7 @@ const faqs = [
   },
   {
     q: 'KD4에 다닌 배우들이 실제로 캐스팅된 사례가 있나요?',
-    a: '네. KD4 멤버들이 Disney+ 무빙, Netflix 중증외상센터, tvN 금쪽같은 내 스타 등 드라마·영화·CF에 실제 출연했습니다. 지금까지 60건 이상의 캐스팅 연계 실적이 있으며, kd4.club 배우 DB에서 필모그래피를 직접 확인할 수 있습니다.',
+    a: '네. KD4 멤버들이 Disney+ 무빙, Netflix 중증외상센터, tvN 금쪽같은 내 스타 등 드라마·영화·CF에 실제 출연했습니다. 최근 캐스팅 60건의 연계 실적이 있으며, kd4.club 배우 DB에서 필모그래피를 직접 확인할 수 있습니다.',
   },
   {
     q: '수업은 몇 명이 함께 하나요?',
@@ -276,7 +275,11 @@ export default function FaqPage() {
           </p>
         </section>
 
-        {/* FAQ 아코디언 */}
+        {/* FAQ 아코디언 — 서버 정적 렌더 (2026-07-23 전환)
+            기존 클라이언트 컴포넌트(useState 아코디언)는 답변이 display:none으로 숨겨져
+            검색엔진·AI 크롤러 가독성이 낮았음. 네이티브 <details>/<summary>로 전환:
+            JS 없이 정적 HTML에 질문·답변 전문이 노출되고, 접기/펼치기는 브라우저 기본 동작.
+            디자인(폰트·색·간격·셰브런)은 기존 FaqAccordion과 동일하게 유지. */}
         <section
           style={{
             maxWidth: '860px',
@@ -284,7 +287,83 @@ export default function FaqPage() {
             padding: '0 24px 80px',
           }}
         >
-          <FaqAccordion faqs={faqs} />
+          <style>{`
+            .faq-item summary { list-style: none; }
+            .faq-item summary::-webkit-details-marker { display: none; }
+            .faq-item summary::marker { content: ''; }
+            .faq-item[open] .faq-q { color: var(--navy); }
+            .faq-item[open] .faq-chevron { transform: rotate(180deg); color: var(--navy); }
+          `}</style>
+          <div style={{ maxWidth: '780px', margin: '0 auto' }}>
+            {faqs.map((item, i) => (
+              <details
+                key={i}
+                className="faq-item"
+                style={{ borderBottom: '1px solid var(--border)' }}
+              >
+                <summary
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    width: '100%',
+                    padding: '22px 0',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    gap: '16px',
+                  }}
+                >
+                  <span
+                    className="faq-q"
+                    style={{
+                      fontFamily: 'var(--font-sans)',
+                      fontSize: '1rem',
+                      fontWeight: 600,
+                      color: 'var(--black)',
+                      lineHeight: 1.55,
+                      transition: 'color 0.2s',
+                    }}
+                  >
+                    {item.q}
+                  </span>
+                  <svg
+                    aria-hidden="true"
+                    className="faq-chevron"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    style={{
+                      flexShrink: 0,
+                      color: 'var(--gray)',
+                      transition: 'transform 0.25s ease, color 0.2s',
+                    }}
+                  >
+                    <path
+                      d="M5 8l5 5 5-5"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </summary>
+                <div style={{ paddingBottom: '20px' }}>
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-sans)',
+                      fontSize: '0.95rem',
+                      color: 'var(--secondary)',
+                      lineHeight: 1.8,
+                      margin: 0,
+                    }}
+                  >
+                    {item.a}
+                  </p>
+                </div>
+              </details>
+            ))}
+          </div>
         </section>
 
         {/* 하단 CTA */}
