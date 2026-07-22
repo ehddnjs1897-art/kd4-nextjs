@@ -4,10 +4,13 @@ import { getMonologuesCached, getMonologueTotalCount, GENRE_OPTIONS, MEDIUM_OPTI
 import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { buildBreadcrumb, buildWebPage, buildFaqPage } from '@/lib/seo-schemas'
+import MonologuesSearchGrid from '@/components/monologues/MonologuesSearchGrid'
 
 export const revalidate = 300 // 5분 ISR — 크롤러 파이프라인이 새 카드를 계속 추가하므로 적당히 신선하게
 
-type SearchParams = Promise<{ gender?: string; genre?: string; medium?: string; age?: string }>
+// q(검색어)는 클라이언트 전용 필터라 데이터 쿼리(parseFilters)에는 안 씀 —
+// MonologuesSearchGrid의 초기값으로만 넘겨 공유 링크(예: ?genre=멜로&q=이별) 첫 렌더에 반영.
+type SearchParams = Promise<{ gender?: string; genre?: string; medium?: string; age?: string; q?: string }>
 
 // 타겟 키워드 — 2026-07-17 네이버 자동완성 수요조사 반영:
 // 실수요는 "독백 대사"·"여자 독백 대사"·"자유연기 대본"·"연기 (연습) 대본" 계열이 압도적
@@ -202,7 +205,9 @@ const SEO_LINKS = [
 ]
 
 export default async function MonologuesPage({ searchParams }: { searchParams: SearchParams }) {
-  const { gender, genre, medium, age } = parseFilters(await searchParams)
+  const sp = await searchParams
+  const { gender, genre, medium, age } = parseFilters(sp)
+  const initialQuery = sp.q?.trim() || ''
 
   const [monologues, totalCount] = await Promise.all([
     getMonologuesCached(gender, genre, medium, age),
@@ -311,81 +316,7 @@ export default async function MonologuesPage({ searchParams }: { searchParams: S
         </FilterGroup>
       </section>
 
-      {monologues.length === 0 ? (
-        <p style={{ fontFamily: 'var(--font-sans)', color: 'var(--gray)', padding: '60px 0', textAlign: 'center' }}>
-          조건에 맞는 독백이 아직 없습니다. 다른 필터를 시도해보세요.
-        </p>
-      ) : (
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-            gap: 20,
-          }}
-        >
-          {monologues.map((m) => (
-            <Link
-              key={m.id}
-              href={`/monologues/${m.id}`}
-              style={{
-                display: 'block',
-                textDecoration: 'none',
-                borderRadius: 'var(--radius)',
-                overflow: 'hidden',
-                border: '1px solid var(--border)',
-                background: '#fff',
-                transition: 'var(--transition)',
-              }}
-            >
-              <div style={{ position: 'relative', aspectRatio: '1 / 1', background: 'var(--bg3)' }}>
-                {m.card_image_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={m.card_image_url}
-                    alt={`${m.role} - ${m.work} 독백 대본 카드${m.target ? ` (${m.target})` : ''}`}
-                    loading="lazy"
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      inset: 0,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontFamily: 'var(--font-serif)',
-                      color: 'var(--navy)',
-                      opacity: 0.3,
-                      fontSize: '1.4rem',
-                    }}
-                  >
-                    {m.role}
-                  </div>
-                )}
-              </div>
-              <div style={{ padding: '10px 12px' }}>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-sans)',
-                    fontWeight: 700,
-                    fontSize: '0.9rem',
-                    color: 'var(--black)',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  {m.role} · {m.work}
-                </div>
-                <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', color: 'var(--gray)', marginTop: 2 }}>
-                  {m.medium} · {m.genre} · {m.target}
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
+      <MonologuesSearchGrid monologues={monologues} initialQuery={initialQuery} />
 
       {/* 하단 AEO 안내 섹션 — 질문 소제목 + 한 줄 답변 구조.
           AI 검색엔진(ChatGPT·퍼플렉시티)이 문답 단위로 인용하기 좋고 사람도 스캔하기 좋게.
