@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { randomUUID } from 'crypto'
+import { compressImageBuffer } from '@/lib/compress-image'
 
 const MAX_SIZE = 10 * 1024 * 1024 // 10MB
 
@@ -64,11 +65,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '지원하지 않는 이미지 형식입니다.' }, { status: 400 })
   }
 
-  const fileName = `posts/${user.id}_${randomUUID()}.${ext}`
+  // 자동 압축 (2026-07-23 대표 지시) — GIF는 애니메이션 보존 위해 제외, 실패 시 원본 유지
+  const compressed = !isGif ? await compressImageBuffer(bytes) : null
+  const outBytes = compressed ? compressed.buffer : bytes
+  const outType = compressed ? compressed.contentType : file.type
+  const outExt = compressed ? 'jpg' : ext
+
+  const fileName = `posts/${user.id}_${randomUUID()}.${outExt}`
 
   const { error } = await supabaseAdmin.storage
     .from('casting')
-    .upload(fileName, bytes, { contentType: file.type, upsert: false })
+    .upload(fileName, outBytes, { contentType: outType, upsert: false })
 
   if (error) return NextResponse.json({ error: '업로드 실패: ' + error.message }, { status: 500 })
 

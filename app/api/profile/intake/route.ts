@@ -34,6 +34,8 @@ function photoPublicUrl(path: string): string {
 }
 
 export const runtime = 'nodejs'
+// 사진 사후 압축(아래) 시간 확보 — 접수 자체는 앞 단계에서 끝나고 압축은 실패해도 무해
+export const maxDuration = 60
 
 // 인메모리 중복 제출 방지 — actor_id 없는 사용자가 동시에 여러 POST를 보내면
 // 두 개의 actor row가 생길 수 있다. 60초 쿨다운으로 동일 인스턴스 내 race 방어.
@@ -452,6 +454,31 @@ export async function POST(request: NextRequest) {
       console.error('[profile/intake] 영상 등록 실패:', videoErr.message)
       partialErrors.push('영상 등록 실패')
     }
+  }
+
+  // ── 업로드 사진 사후 압축 (2026-07-23 대표 지시: 업로드마다 자동 압축) ──
+  // 접수폼 사진은 브라우저가 스토리지에 직접 올려 서버가 바이트를 못 보므로,
+  // 등록이 끝난 뒤 같은 경로에 압축본을 덮어쓴다(참조 URL 불변). 개별 실패는
+  // 접수 성공에 영향 없음. 40초 시간 가드 — 남은 파일은 원본 유지(무해).
+  try {
+    const { compressImageBuffer } = await import('@/lib/compress-image')
+    const started = Date.now()
+    const photoPaths = [...photos, ...currentPhotoItems].map((p) => p.path)
+    for (const path of photoPaths) {
+      if (Date.now() - started > 40_000) break
+      try {
+        const { data: blob, error: dlErr } = await supabaseAdmin.storage.from('actor-photos').download(path)
+        if (dlErr || !blob) continue
+        const compressed = await compressImageBuffer(Buffer.from(await blob.arrayBuffer()))
+        if (!compressed) continue
+        await supabaseAdmin.storage.from('actor-photos').upload(path, compressed.buffer, {
+          contentType: compressed.contentType,
+          upsert: true,
+        })
+      } catch { /* 개별 파일 압축 실패 무시 — 원본 유지 */ }
+    }
+  } catch (e) {
+    console.warn('[profile/intake] 사후 압축 스킵:', e instanceof Error ? e.message : e)
   }
 
   revalidateTag('actors')

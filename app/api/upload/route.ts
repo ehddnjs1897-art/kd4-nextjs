@@ -11,6 +11,7 @@ import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { uploadFile } from '@/lib/storage'
 import { revalidateTag } from '@/lib/revalidate'
+import { compressImageBuffer } from '@/lib/compress-image'
 
 const MAX_IMAGE_SIZE = 15 * 1024 * 1024 // 15 MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
@@ -204,8 +205,20 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // ── 자동 압축 (2026-07-23 대표 지시) ── GIF는 애니메이션 보존 위해 제외.
+    // 압축 실패/이득 없음이면 원본 그대로 — 업로드가 압축 때문에 실패하는 일은 없게.
+    let uploadBlob: File | Blob = file
+    let uploadName = file.name.slice(0, 200)
+    if (!isGif) {
+      const compressed = await compressImageBuffer(Buffer.from(await file.arrayBuffer()))
+      if (compressed) {
+        uploadBlob = new Blob([new Uint8Array(compressed.buffer)], { type: compressed.contentType })
+        uploadName = uploadName.replace(/\.[^.]*$/, '') .slice(0, 195) + '.jpg'
+      }
+    }
+
     // ── Storage 업로드 ──
-    const result = await uploadFile(file, bucket, actorId, file.name.slice(0, 200))
+    const result = await uploadFile(uploadBlob, bucket, actorId, uploadName)
 
     // sort_order는 위 Promise.all에서 미리 조회한 maxSortRow 재사용 (추가 round-trip 없음)
     const nextSortOrder = (maxSortRow?.sort_order ?? -1) + 1
