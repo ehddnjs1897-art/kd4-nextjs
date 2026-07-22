@@ -468,7 +468,7 @@ export default function OnboardingForm({
           <label htmlFor="onb-birth" style={a.label}>생년</label>
           <input id="onb-birth" name="birth_year" type="text" inputMode="numeric" value={birthYear}
             onChange={(e) => setBirthYear(e.target.value.replace(/[^0-9]/g, '').slice(0, 4))}
-            disabled={loading} placeholder="1995" aria-label="출생연도 (4자리)" style={a.inlineInput} autoComplete="off" />
+            disabled={loading} aria-label="출생연도 (4자리)" style={a.inlineInput} autoComplete="off" />
           {birthYear.length === 4 && Number(birthYear) >= 1930 && Number(birthYear) <= 2020 && (
             <span style={{ fontSize: 13, color: 'var(--navy)', marginLeft: 8 }}>만 {new Date().getFullYear() - Number(birthYear)}세</span>
           )}
@@ -477,33 +477,33 @@ export default function OnboardingForm({
           <label htmlFor="onb-height" style={a.label}>키</label>
           <input id="onb-height" name="height" type="text" inputMode="numeric" value={height}
             onChange={(e) => setHeight(e.target.value.replace(/[^0-9]/g, '').slice(0, 3))}
-            disabled={loading} placeholder="172" aria-label="키 (센티미터)" style={a.inlineInput} autoComplete="off" />
+            disabled={loading} aria-label="키 (센티미터)" style={a.inlineInput} autoComplete="off" />
           <span style={a.unit}>cm</span>
         </div>
         <div style={{ ...a.row, ...a.sep }}>
           <label htmlFor="onb-weight" style={a.label}>몸무게 <span style={a.opt}>선택</span></label>
           <input id="onb-weight" name="weight" type="text" inputMode="numeric" value={weight}
             onChange={(e) => setWeight(e.target.value.replace(/[^0-9]/g, '').slice(0, 3))}
-            disabled={loading} placeholder="58" aria-label="몸무게 (킬로그램)" style={a.inlineInput} autoComplete="off" />
+            disabled={loading} aria-label="몸무게 (킬로그램)" style={a.inlineInput} autoComplete="off" />
           <span style={a.unit}>kg</span>
         </div>
         <div style={{ ...a.row, ...a.sep }}>
           <label htmlFor="onb-instagram" style={a.label}>인스타그램 <span style={a.opt}>선택</span></label>
           <input id="onb-instagram" name="instagram" type="text" value={instagram}
             onChange={(e) => setInstagram(e.target.value)}
-            disabled={loading} placeholder="@아이디" aria-label="인스타그램 주소" style={a.inlineInput} autoComplete="off" />
+            disabled={loading} aria-label="인스타그램 주소" style={a.inlineInput} autoComplete="off" />
         </div>
         <div style={{ ...a.row, ...a.sep }}>
           <label htmlFor="onb-school" style={a.label}>학교 <span style={a.opt}>선택</span></label>
           <input id="onb-school" name="school" type="text" value={school}
             onChange={(e) => setSchool(e.target.value)}
-            disabled={loading} placeholder="국민대학교" aria-label="학교" style={a.inlineInput} autoComplete="off" maxLength={80} />
+            disabled={loading} aria-label="학교" style={a.inlineInput} autoComplete="off" maxLength={80} />
         </div>
         <div style={{ ...a.row, ...a.sep }}>
           <label htmlFor="onb-major" style={a.label}>전공 <span style={a.opt}>선택</span></label>
           <input id="onb-major" name="major" type="text" value={major}
             onChange={(e) => setMajor(e.target.value)}
-            disabled={loading} placeholder="연극영화과" aria-label="전공" style={a.inlineInput} autoComplete="off" maxLength={80} />
+            disabled={loading} aria-label="전공" style={a.inlineInput} autoComplete="off" maxLength={80} />
         </div>
       </div>
 

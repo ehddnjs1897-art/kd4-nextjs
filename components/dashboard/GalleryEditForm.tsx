@@ -688,35 +688,35 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
         <div style={a.row}>
           {/* 출생연도 — 카카오톡 공유 썸네일에 실제 나이를 보여주려면 필요 (2026-07-08 대표 지시로 자가입력 추가) */}
           <label htmlFor="actor-birth-year" style={a.label}>출생연도</label>
-          <input id="actor-birth-year" type="text" inputMode="numeric" value={birthYear} onChange={e => setBirthYear(e.target.value.replace(/[^0-9]/g, '').slice(0, 4))} style={a.inlineInput} placeholder="1995" autoComplete="off" />
+          <input id="actor-birth-year" type="text" inputMode="numeric" value={birthYear} onChange={e => setBirthYear(e.target.value.replace(/[^0-9]/g, '').slice(0, 4))} style={a.inlineInput} autoComplete="off" />
           <span style={a.unit}>년</span>
         </div>
         <div style={{ ...a.row, ...a.sep }}>
           <label htmlFor="actor-height" style={a.label}>신장</label>
-          <input id="actor-height" type="text" inputMode="numeric" value={height} onChange={e => setHeight(e.target.value.replace(/[^0-9]/g, '').slice(0, 3))} style={a.inlineInput} placeholder="170" autoComplete="off" />
+          <input id="actor-height" type="text" inputMode="numeric" value={height} onChange={e => setHeight(e.target.value.replace(/[^0-9]/g, '').slice(0, 3))} style={a.inlineInput} autoComplete="off" />
           <span style={a.unit}>cm</span>
         </div>
         <div style={{ ...a.row, ...a.sep }}>
           <label htmlFor="actor-weight" style={a.label}>체중 <span style={a.opt}>선택</span></label>
-          <input id="actor-weight" type="text" inputMode="numeric" value={weight} onChange={e => setWeight(e.target.value.replace(/[^0-9]/g, '').slice(0, 3))} style={a.inlineInput} placeholder="60" autoComplete="off" />
+          <input id="actor-weight" type="text" inputMode="numeric" value={weight} onChange={e => setWeight(e.target.value.replace(/[^0-9]/g, '').slice(0, 3))} style={a.inlineInput} autoComplete="off" />
           <span style={a.unit}>kg</span>
         </div>
         <div style={{ ...a.row, ...a.sep }}>
           <label htmlFor="actor-school" style={a.label}>학교 <span style={a.opt}>선택</span></label>
-          <input id="actor-school" value={school} onChange={e => setSchool(e.target.value)} style={a.inlineInput} placeholder="국민대학교" autoComplete="off" maxLength={80} />
+          <input id="actor-school" value={school} onChange={e => setSchool(e.target.value)} style={a.inlineInput} autoComplete="off" maxLength={80} />
         </div>
         <div style={{ ...a.row, ...a.sep }}>
           <label htmlFor="actor-major" style={a.label}>전공 <span style={a.opt}>선택</span></label>
-          <input id="actor-major" value={major} onChange={e => setMajor(e.target.value)} style={a.inlineInput} placeholder="연극영화과" autoComplete="off" maxLength={80} />
+          <input id="actor-major" value={major} onChange={e => setMajor(e.target.value)} style={a.inlineInput} autoComplete="off" maxLength={80} />
         </div>
         <div style={{ ...a.row, ...a.sep }}>
           <label htmlFor="actor-instagram" style={a.label}>인스타그램 <span style={a.opt}>선택</span></label>
-          <input id="actor-instagram" value={instagram} onChange={e => setInstagram(e.target.value)} style={a.inlineInput} placeholder="@아이디" autoComplete="off" />
+          <input id="actor-instagram" value={instagram} onChange={e => setInstagram(e.target.value)} style={a.inlineInput} autoComplete="off" />
         </div>
         <div style={{ padding: '16px', ...a.sep }}>
           <label htmlFor="actor-skills" style={a.blockLabel}>특기</label>
           <p style={a.help}>콤마(,)로 구분해 입력하세요.</p>
-          <input id="actor-skills" value={skills} onChange={e => setSkills(e.target.value)} style={a.boxInput} placeholder="수영, 검도, 피아노, 영어" />
+          <input id="actor-skills" value={skills} onChange={e => setSkills(e.target.value)} style={a.boxInput} />
         </div>
         <div style={{ padding: '16px', ...a.sep }}>
           <label style={a.blockLabel}>사투리</label>
@@ -922,7 +922,7 @@ export default function GalleryEditForm({ actorId, initialData }: Props) {
             </div>
             <div style={{ flex: '1 1 140px' }}>
               <label htmlFor="video-title" style={{ ...a.help, marginBottom: 6, display: 'block' }}>제목 (선택)</label>
-              <input id="video-title" value={videoTitle} onChange={e => setVideoTitle(e.target.value)} style={a.boxInput} placeholder="단편영화 주연" />
+              <input id="video-title" value={videoTitle} onChange={e => setVideoTitle(e.target.value)} style={a.boxInput} />
             </div>
             <button type="button" className="btn-press" onClick={addVideo} disabled={videoAdding} aria-busy={videoAdding} style={{ ...a.primary, opacity: videoAdding ? 0.6 : 1 }}>{videoAdding ? '추가 중…' : '추가'}</button>
           </div>

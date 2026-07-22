@@ -481,7 +481,7 @@ export default function SignupPage() {
                 inputMode="numeric"
                 value={birthYear}
                 onChange={(e) => setBirthYear(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                placeholder="1995"
+               
                 disabled={loading}
                 autoComplete="bday-year"
                 aria-describedby="birth-year-hint"
