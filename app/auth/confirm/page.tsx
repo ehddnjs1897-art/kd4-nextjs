@@ -1,3 +1,4 @@
+import { createHash, timingSafeEqual } from 'node:crypto'
 import type { EmailOtpType } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
@@ -6,15 +7,18 @@ import { createClient } from '@/lib/supabase/server'
  * 인증 링크 확인 페이지 — 문자/메일 속 재설정 링크가 도달하는 곳.
  *
  * 왜 버튼을 한 번 누르게 하나:
- * ① 1회용 토큰을 GET 렌더에서 소모하지 않으므로, 아이폰 문자 미리보기·메신저
+ * ① 토큰을 GET 렌더에서 소모하지 않으므로, 아이폰 문자 미리보기·메신저
  *    링크 프리뷰 봇이 링크를 미리 열어도 토큰이 살아 있음 (기존엔 이것 때문에
  *    사용자가 실제로 누르는 순간 이미 "만료" — 2026-07-23 배준 배우 사례)
  * ② verifyOtp(token_hash)는 링크를 요청한 브라우저가 아니어도 동작 — 문자앱·
  *    카톡 인앱 브라우저에서 열어도 세션이 정상 생성됨 (PKCE code 교환 방식은
  *    요청 브라우저에서만 성공해 "만료" 오탐을 유발했음)
  *
- * 사용 URL 형식: /auth/confirm?token_hash=...&type=recovery&next=/auth/update-password
- * (Supabase 메일 템플릿은 {{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery)
+ * 두 가지 URL 형식:
+ * - ?rt=<자체토큰>&u=<유저id> — 문자 재설정 (시간 만료 없음, 2026-07-23 대표 지시
+ *   "재설정 링크 자체를 상시 열어둬". 사용 성공 시에만 소거되는 1회용).
+ *   버튼을 누르는 순간 서버가 Supabase recovery 토큰을 즉석 발급·검증해 세션 생성.
+ * - ?token_hash=...&type=recovery — Supabase 발급 토큰 직접 검증 (메일 템플릿·관리자 링크용)
  */
 
 export const metadata = { title: '본인 확인 | KD4 액팅 스튜디오' }
@@ -25,10 +29,10 @@ async function verifyAction(formData: FormData) {
   'use server'
 
   const tokenHash = String(formData.get('token_hash') ?? '')
+  const rt = String(formData.get('rt') ?? '')
+  const uid = String(formData.get('u') ?? '')
   const typeRaw = String(formData.get('type') ?? 'recovery')
   const nextRaw = String(formData.get('next') ?? '')
-
-  if (!tokenHash) redirect('/auth/reset')
 
   const type = (ALLOWED_TYPES as string[]).includes(typeRaw) ? (typeRaw as EmailOtpType) : 'recovery'
   // 오픈 리다이렉트 방지: 내부 경로만 허용
@@ -36,6 +40,45 @@ async function verifyAction(formData: FormData) {
     nextRaw.startsWith('/') && !nextRaw.startsWith('//') && !nextRaw.startsWith('/\\')
       ? nextRaw
       : '/auth/update-password'
+
+  // ── 방식 1: 자체 상시 토큰 (문자 재설정) ──
+  if (rt && uid) {
+    // supabaseAdmin은 서버 전용 — 클라이언트 번들 유입 방지를 위해 액션 안에서 동적 로드
+    const { supabaseAdmin } = await import('@/lib/supabase/admin')
+
+    const { data: userData, error: userError } = await supabaseAdmin.auth.admin.getUserById(uid)
+    const stored = (userData?.user?.app_metadata as Record<string, unknown> | undefined)?.reset_token_hash
+    if (userError || typeof stored !== 'string' || !userData?.user?.email) {
+      redirect('/auth/update-password') // 세션 없음 → "링크가 만료되었습니다" 화면 재사용
+    }
+
+    const given = createHash('sha256').update(rt).digest()
+    const expected = Buffer.from(stored, 'hex')
+    const valid = given.length === expected.length && timingSafeEqual(given, expected)
+    if (!valid) redirect('/auth/update-password')
+
+    // 버튼을 누른 "지금" Supabase recovery 토큰을 발급해 즉시 검증 — 만료 창이 초 단위라
+    // 문자 속 링크 자체는 시간 제한이 없다
+    const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
+      type: 'recovery',
+      email: userData.user.email,
+    })
+    const freshHash = linkData?.properties?.hashed_token
+    if (linkError || !freshHash) redirect('/auth/update-password')
+
+    const supabase = await createClient()
+    const { error: otpError } = await supabase.auth.verifyOtp({ type: 'recovery', token_hash: freshHash })
+    if (otpError) redirect('/auth/update-password')
+
+    // 사용 성공 → 토큰 소거 (같은 문자로 두 번 비밀번호를 바꿀 수 없게 — 1회용)
+    await supabaseAdmin.auth.admin.updateUserById(uid, {
+      app_metadata: { reset_token_hash: null, reset_token_at: null },
+    })
+    redirect(safeNext)
+  }
+
+  // ── 방식 2: Supabase 토큰 직접 검증 (메일 템플릿·관리자 링크) ──
+  if (!tokenHash) redirect('/auth/reset')
 
   const supabase = await createClient()
   const { error } = await supabase.auth.verifyOtp({ type, token_hash: tokenHash })
@@ -48,11 +91,11 @@ async function verifyAction(formData: FormData) {
 export default async function ConfirmPage({
   searchParams,
 }: {
-  searchParams: Promise<{ token_hash?: string; type?: string; next?: string }>
+  searchParams: Promise<{ token_hash?: string; type?: string; next?: string; rt?: string; u?: string }>
 }) {
-  const { token_hash = '', type = 'recovery', next = '' } = await searchParams
+  const { token_hash = '', type = 'recovery', next = '', rt = '', u = '' } = await searchParams
 
-  if (!token_hash) redirect('/auth/reset')
+  if (!token_hash && !(rt && u)) redirect('/auth/reset')
 
   const isRecovery = !ALLOWED_TYPES.includes(type as EmailOtpType) || type === 'recovery'
 
@@ -76,6 +119,8 @@ export default async function ConfirmPage({
 
         <form action={verifyAction}>
           <input type="hidden" name="token_hash" value={token_hash} />
+          <input type="hidden" name="rt" value={rt} />
+          <input type="hidden" name="u" value={u} />
           <input type="hidden" name="type" value={type} />
           <input type="hidden" name="next" value={next} />
           <button type="submit" style={styles.btnPrimary}>

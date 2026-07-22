@@ -1,3 +1,4 @@
+import { createHash, randomBytes } from 'node:crypto'
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { sendSMS } from '@/lib/sms'
@@ -88,28 +89,31 @@ export async function POST(req: Request) {
     )
   }
 
-  const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
-    type: 'recovery',
-    email,
+  // 시간 만료 없는 자체 재설정 토큰 (2026-07-23 대표 지시: "재설정 링크 자체를 상시 열어둬").
+  // Supabase 1회용 토큰(1시간)은 문자에 싣지 않고, 배우가 버튼을 누르는 순간
+  // /auth/confirm 서버 액션이 내부에서 즉석 발급·검증한다 (만료 창이 초 단위로 축소).
+  // 토큰 해시는 auth app_metadata에 보관 — 새 요청 시 덮어쓰기, 사용 성공 시 소거(1회용).
+  const rawToken = randomBytes(32).toString('hex')
+  const tokenHash = createHash('sha256').update(rawToken).digest('hex')
+  const { error: metaError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+    app_metadata: { reset_token_hash: tokenHash, reset_token_at: new Date().toISOString() },
   })
-  const hashedToken = linkData?.properties?.hashed_token
-  if (linkError || !hashedToken) {
-    console.error('[reset-sms] generateLink 실패:', linkError?.message)
+  if (metaError) {
+    console.error('[reset-sms] 토큰 저장 실패:', metaError.message)
     return NextResponse.json({ ok: false, error: '일시적인 오류입니다. 잠시 후 다시 시도해 주세요.' }, { status: 500 })
   }
 
-  // 직링크(action_link)는 문자앱 미리보기가 미리 열어 1회용 토큰을 소모하거나
-  // 요청 브라우저가 아니면 검증 실패해 "만료" 오탐 발생 (7/23 배준 배우 사례).
-  // 토큰을 소모하지 않는 버튼 페이지(/auth/confirm)를 경유시켜 어느 앱에서 열어도 동작.
-  const confirmLink = `${SITE_URL}/auth/confirm?token_hash=${hashedToken}&type=recovery`
+  // 직링크는 문자앱 미리보기가 미리 열어 토큰을 소모하거나 타 브라우저에서 검증
+  // 실패해 "만료" 오탐 발생 (7/23 배준 배우 사례) — 버튼 페이지(/auth/confirm) 경유.
+  const confirmLink = `${SITE_URL}/auth/confirm?rt=${rawToken}&u=${userId}`
 
   const text = [
     '[KD4 액팅 스튜디오]',
-    '비밀번호 재설정 링크입니다. 1시간 안에 눌러주세요.',
+    '비밀번호 재설정 링크입니다.',
     '',
     confirmLink,
     '',
-    "링크를 열고 '비밀번호 재설정 계속하기' 버튼을 누르면 새 비밀번호를 설정할 수 있습니다.",
+    "링크를 열고 '비밀번호 재설정 계속하기' 버튼을 누르면 새 비밀번호를 설정할 수 있습니다. 링크는 사용 전까지 계속 유효합니다.",
     '본인이 요청하지 않았다면 이 문자는 무시하셔도 됩니다.',
   ].join('\n')
 
