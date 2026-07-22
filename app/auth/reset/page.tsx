@@ -2,14 +2,18 @@
 
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/client'
-import { SITE_URL } from '@/lib/constants'
 
 type Step = 'form' | 'sent'
 
+// 2026-07-22 이메일 → 문자(SMS) 재설정 전환.
+// 기존 이메일 방식은 Supabase 기본 메일서버 제한으로 실제 도착하지 않는데
+// "발송했습니다"라고만 떠서 허위 안내 상태였음(대표 지시로 교체).
+// 가입 이메일 + 등록된 휴대폰이 모두 일치해야 그 등록 번호로 링크가 발송된다.
 export default function ResetPasswordPage() {
   const [step, setStep] = useState<Step>('form')
   const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [maskedPhone, setMaskedPhone] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const errorRef = useRef<HTMLDivElement>(null)
@@ -22,18 +26,24 @@ export default function ResetPasswordPage() {
     setError('')
     setLoading(true)
 
-    const supabase = createClient()
-    const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${typeof window !== 'undefined' ? window.location.origin : SITE_URL}/auth/update-password`,
-    })
-
-    if (resetError) {
-      setError('재설정 메일 발송에 실패했습니다. 이메일을 확인해 주세요.')
-      setLoading(false)
-      return
+    try {
+      const res = await fetch('/api/auth/reset-sms', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, phone }),
+        signal: AbortSignal.timeout(15_000),
+      })
+      const data = (await res.json()) as { ok?: boolean; maskedPhone?: string; error?: string }
+      if (!res.ok || !data.ok) {
+        setError(data.error || '요청에 실패했습니다. 잠시 후 다시 시도해 주세요.')
+        setLoading(false)
+        return
+      }
+      setMaskedPhone(data.maskedPhone ?? '등록된 번호')
+      setStep('sent')
+    } catch {
+      setError('요청에 실패했습니다. 잠시 후 다시 시도해 주세요.')
     }
-
-    setStep('sent')
     setLoading(false)
   }
 
@@ -50,10 +60,10 @@ export default function ResetPasswordPage() {
         {step === 'sent' ? (
           <div role="status" style={{ textAlign: 'center' }}>
             <p style={styles.sentMsg}>
-              <strong style={{ color: 'var(--gold)' }}>{email}</strong>으로
-              재설정 링크를 발송했습니다.
+              등록된 휴대폰 <strong style={{ color: 'var(--gold)' }}>{maskedPhone}</strong>로
+              재설정 링크를 문자로 보냈습니다.
               <br />
-              메일을 확인해 주세요.
+              1시간 안에 문자의 링크를 눌러주세요.
             </p>
             <Link href="/auth/login" style={styles.btnBack}>
               로그인으로 돌아가기
@@ -61,6 +71,11 @@ export default function ResetPasswordPage() {
           </div>
         ) : (
           <form onSubmit={handleReset} style={styles.form} aria-label="비밀번호 재설정">
+            <p style={styles.guideMsg}>
+              가입 이메일과 등록된 휴대폰 번호가 일치하면
+              <br />그 번호로 재설정 링크를 <strong>문자</strong>로 보내드려요.
+            </p>
+
             <div
               ref={errorRef}
               id="reset-error"
@@ -89,14 +104,38 @@ export default function ResetPasswordPage() {
               />
             </div>
 
+            <div style={styles.fieldGroup}>
+              <label htmlFor="phone" style={styles.label}>
+                등록된 휴대폰 번호
+              </label>
+              <input
+                id="phone"
+                type="tel"
+                inputMode="numeric"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="010-0000-0000"
+                required
+                disabled={loading}
+                autoComplete="tel"
+                aria-invalid={!!error}
+                aria-describedby={error ? "reset-error" : undefined}
+                style={styles.input}
+              />
+            </div>
+
             <button
               type="submit"
               disabled={loading}
               aria-busy={loading}
               style={{ ...styles.btnPrimary, opacity: loading ? 0.6 : 1 }}
             >
-              {loading ? '발송 중...' : '재설정 링크 받기'}
+              {loading ? '발송 중...' : '문자로 재설정 링크 받기'}
             </button>
+
+            <p style={styles.helpMsg}>
+              문자를 받을 수 없거나 번호가 바뀌었다면 010-8564-0244로 문의해 주세요.
+            </p>
 
             <Link href="/auth/login" style={styles.backLink}>
               <span aria-hidden="true">← </span>로그인으로 돌아가기
@@ -215,6 +254,19 @@ const styles: Record<string, React.CSSProperties> = {
     color: 'var(--white)',
     lineHeight: 1.7,
     marginBottom: 24,
+  },
+  guideMsg: {
+    fontSize: '0.85rem',
+    color: 'var(--gray)',
+    lineHeight: 1.7,
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  helpMsg: {
+    fontSize: '0.78rem',
+    color: 'var(--gray)',
+    lineHeight: 1.6,
+    textAlign: 'center',
   },
   btnBack: {
     display: 'inline-flex',
