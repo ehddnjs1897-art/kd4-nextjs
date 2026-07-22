@@ -47,7 +47,10 @@ export default function MonologuesSearchGrid({ monologues, initialQuery = '' }: 
       m.work.toLowerCase().includes(word) ||
       m.genre.toLowerCase().includes(word) ||
       m.medium.toLowerCase().includes(word) ||
-      m.target.toLowerCase().includes(word)
+      m.target.toLowerCase().includes(word) ||
+      // 감정선 검색 (2026-07-22 대표 지시) — "슬픔"으로 "슬픔 → 절망" 매칭.
+      // NOT NULL 컬럼이지만 런타임 가드는 하우스룰(MISTAKES ⓐ)대로 유지.
+      (m.emotion ?? '').toLowerCase().includes(word)
     return monologues.filter((m) => words.every((w) => wordMatches(m, w)))
   }, [monologues, deferredQuery])
 
@@ -73,8 +76,8 @@ export default function MonologuesSearchGrid({ monologues, initialQuery = '' }: 
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="배역·작품·장르로 검색 (예: 형사 멜로)"
-          aria-label="독백 배역, 작품, 장르 검색"
+          placeholder="배역·작품·장르·감정으로 검색 (예: 슬픔 30대)"
+          aria-label="독백 배역, 작품, 장르, 감정 검색"
           style={{
             width: '100%',
             paddingLeft: 40,

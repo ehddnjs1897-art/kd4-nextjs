@@ -27,13 +27,15 @@ export interface MonologueFilters {
   age?: string      // AGE_OPTIONS의 value ('10대' | '20대' | ... | '50대이상')
 }
 
-/** 목록 카드가 실제로 렌더링하는 필드만 — 상세페이지 전용인 body/full_body/source_* 제외 */
+/** 목록 카드가 실제로 렌더링하는 필드만 — 상세페이지 전용인 body/full_body/source_* 제외.
+ *  emotion은 카드에 표시하진 않지만 검색 대상(2026-07-22 대표 지시: 감정 키워드 검색) —
+ *  짧은 문자열(예: "슬픔 → 절망")이라 payload 영향 미미(604건 기준 ~12KB). */
 export type MonologueListItem = Pick<
   Monologue,
-  'id' | 'role' | 'work' | 'medium' | 'genre' | 'target' | 'card_image_url' | 'grade'
+  'id' | 'role' | 'work' | 'medium' | 'genre' | 'target' | 'emotion' | 'card_image_url' | 'grade'
 >
 
-const LIST_COLUMNS = 'id, role, work, medium, genre, target, card_image_url, grade'
+const LIST_COLUMNS = 'id, role, work, medium, genre, target, emotion, card_image_url, grade'
 const SELECT_COLUMNS =
   'id, role, work, medium, genre, target, emotion, body, full_body, source_url, source_platform, card_image_url, grade, created_at'
 
@@ -112,7 +114,8 @@ export const getMonologuesCached = cache(
   (gender?: string, genre?: string, medium?: string, age?: string): Promise<MonologueListItem[]> =>
     unstable_cache(
       () => getMonologues({ gender, genre, medium, age }),
-      ['monologues-list-v1', gender ?? '', genre ?? '', medium ?? '', age ?? ''],
+      // v2: emotion 컬럼 추가(2026-07-22) — 캐시된 구형 행(emotion 없음)과 섞이지 않게 키 승격
+      ['monologues-list-v2', gender ?? '', genre ?? '', medium ?? '', age ?? ''],
       { revalidate: 300, tags: ['monologues'] }
     )()
 )
