@@ -60,6 +60,14 @@ export default function Navbar() {
     return () => { document.body.style.overflow = '' }
   }, [mobileOpen])
 
+  /* ── 경로가 바뀌면 열려 있는 메뉴 전부 닫기 — 전체화면 모바일 오버레이가
+     새 페이지를 가려 "눌러도 아무 반응 없음"으로 보이는 사고 방지 (2026-07-23 대표 제보) ── */
+  useEffect(() => {
+    setMobileOpen(false)
+    setMobileCrewOpen(false)
+    setCrewDropOpen(false)
+  }, [pathname])
+
   /* ── 데스크탑 크루 드롭다운 Escape 닫기 ── */
   useEffect(() => {
     if (!crewDropOpen) return
@@ -171,11 +179,12 @@ export default function Navbar() {
     router.push('/')
   }
 
-  /* ── 크루 링크 클릭: 비로그인 시 로그인 페이지로 ── */
+  /* ── 크루 링크 클릭: 비로그인 시 회원가입 페이지로 안내 (2026-07-23 대표 지시 —
+     "아무 응답 없음" 금지, 회원가입으로. next로 가입/로그인 후 원래 목적지 복귀) ── */
   const handleCrewLinkClick = (e: React.MouseEvent, href: string) => {
     if (!isLoggedIn) {
       e.preventDefault()
-      router.push(`/auth/login?next=${encodeURIComponent(href)}`)
+      router.push(`/auth/signup?next=${encodeURIComponent(href)}`)
     }
   }
 
@@ -738,7 +747,7 @@ export default function Navbar() {
                           href={item.href}
                           onClick={item.public
                             ? closeMobile
-                            : (e => { handleCrewLinkClick(e, item.href); if (isLoggedIn) closeMobile() })}
+                            : (e => { handleCrewLinkClick(e, item.href); closeMobile() })}
                           style={{
                             display: 'block',
                             padding: '14px 16px',

@@ -31,16 +31,21 @@ function LoginContent() {
   const [error, setError] = useState('')
   const errorRef = useRef<HTMLDivElement>(null)
 
+  // next 파라미터 — 로그인/회원가입 왕복에도 원래 목적지 유지.
+  // 오픈 리다이렉트 방지: 내부 경로(/...)만 허용
+  const rawNext = searchParams.get('next')
+  const safeNext = rawNext && rawNext.startsWith('/') && !rawNext.startsWith('//') && !rawNext.startsWith('/\\') ? rawNext : null
+
   // 에러 발생 시 포커스 이동 (WCAG 2.4.3)
   useEffect(() => { if (error) errorRef.current?.focus() }, [error])
 
-  // 이미 로그인된 경우 대시보드로 리다이렉트
+  // 이미 로그인된 경우 목적지(next) 또는 대시보드로 리다이렉트
   useEffect(() => {
     const supabase = createClient()
     supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) router.replace('/dashboard')
+      if (user) router.replace(safeNext ?? '/dashboard')
     })
-  }, [router])
+  }, [router, safeNext])
 
   // URL error 파라미터 처리 (OAuth 콜백 오류 등)
   useEffect(() => {
@@ -71,9 +76,8 @@ function LoginContent() {
       return
     }
 
-    // 오픈 리다이렉트 방지: 동일 출처(/) 경로만 허용
-    const rawNext = searchParams.get('next')
-    const safeDest = rawNext && rawNext.startsWith('/') && !rawNext.startsWith('//') && !rawNext.startsWith('/\\') ? rawNext : '/dashboard'
+    // 목적지는 상단에서 검증된 safeNext 사용 (오픈 리다이렉트 방지 동일)
+    const safeDest = safeNext ?? '/dashboard'
     // 모바일에서 router.push(클라 라우팅)는 갓 설정된 세션 쿠키가 다음 서버 요청에 즉시
     // 안 실려 "한 번에 로그인 안 됨"(첫 시도 실패 → 재시도해야 됨)이 발생한다.
     // full-page 이동으로 브라우저가 쿠키를 확실히 포함한 요청을 보내게 한다 (2026-06-23).
@@ -229,10 +233,10 @@ function LoginContent() {
           </button>
         </div>
 
-        {/* 회원가입 링크 */}
+        {/* 회원가입 링크 — next 유지 (가입 후 원래 목적지 복귀) */}
         <p style={styles.signupText}>
           아직 계정이 없으신가요?{' '}
-          <Link href="/auth/signup" style={styles.signupLink}>
+          <Link href={safeNext ? `/auth/signup?next=${encodeURIComponent(safeNext)}` : '/auth/signup'} style={styles.signupLink}>
             회원가입
           </Link>
         </p>

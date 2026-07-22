@@ -22,7 +22,7 @@ interface Actor {
 }
 
 export default function ShortlistPage() {
-  const { isDirector, loaded: roleLoaded } = useUserRole()
+  const { role, isDirector, loaded: roleLoaded } = useUserRole()
   const { favorites, loaded, clearFavorites } = useFavorites()
   const [actors, setActors] = useState<Actor[]>([])
   const [fetching, setFetching] = useState(false)
@@ -73,19 +73,37 @@ export default function ShortlistPage() {
     )
   }
   if (!isDirector) {
+    // 비로그인(role=null)과 로그인-비디렉터를 구분 — 비로그인에게 "마이페이지에서 신청"은
+    // 로그인 페이지로 튕기는 오안내였음 (2026-07-23 비로그인 데드엔드 전수 수리)
+    const loggedOut = role === null
     return (
       <main id="main-content" style={{ maxWidth: 560, margin: '0 auto', padding: '120px 24px', textAlign: 'center' }}>
         <p style={{ fontSize: '2rem', marginBottom: 16 }}>🔒</p>
         <h1 style={{ fontFamily: 'var(--font-sans)', fontSize: '1.3rem', fontWeight: 700, color: 'var(--white)', marginBottom: 12 }}>
           캐스팅 디렉터 전용
         </h1>
-        <p style={{ color: 'var(--gray)', fontFamily: 'var(--font-sans)', fontSize: '0.92rem', lineHeight: 1.7, marginBottom: 24 }}>
-          숏리스트는 캐스팅 디렉터 회원만 이용할 수 있는 기능입니다.<br />
-          디렉터 권한이 필요하면 마이페이지에서 신청해주세요.
-        </p>
-        <Link href="/dashboard" style={{ display: 'inline-flex', alignItems: 'center', padding: '10px 24px', border: '1px solid var(--gold)', borderRadius: 4, color: 'var(--gold)', fontFamily: 'var(--font-sans)', fontSize: '0.9rem', textDecoration: 'none' }}>
-          마이페이지로
-        </Link>
+        {loggedOut ? (
+          <>
+            <p style={{ color: 'var(--gray)', fontFamily: 'var(--font-sans)', fontSize: '0.92rem', lineHeight: 1.7, marginBottom: 24 }}>
+              숏리스트는 캐스팅 디렉터 회원만 이용할 수 있는 기능입니다.<br />
+              디렉터 회원으로 가입 후 이용해 주세요. 이미 계정이 있다면{' '}
+              <Link href="/auth/login?next=/shortlist" style={{ color: 'var(--gold)' }}>로그인</Link>해 주세요.
+            </p>
+            <Link href="/auth/signup?next=/shortlist" style={{ display: 'inline-flex', alignItems: 'center', padding: '10px 24px', border: '1px solid var(--gold)', borderRadius: 4, color: 'var(--gold)', fontFamily: 'var(--font-sans)', fontSize: '0.9rem', textDecoration: 'none' }}>
+              회원가입
+            </Link>
+          </>
+        ) : (
+          <>
+            <p style={{ color: 'var(--gray)', fontFamily: 'var(--font-sans)', fontSize: '0.92rem', lineHeight: 1.7, marginBottom: 24 }}>
+              숏리스트는 캐스팅 디렉터 회원만 이용할 수 있는 기능입니다.<br />
+              디렉터 권한이 필요하면 마이페이지에서 신청해주세요.
+            </p>
+            <Link href="/dashboard" style={{ display: 'inline-flex', alignItems: 'center', padding: '10px 24px', border: '1px solid var(--gold)', borderRadius: 4, color: 'var(--gold)', fontFamily: 'var(--font-sans)', fontSize: '0.9rem', textDecoration: 'none' }}>
+              마이페이지로
+            </Link>
+          </>
+        )}
       </main>
     )
   }

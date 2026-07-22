@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, Suspense } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { getRedirectOrigin } from '@/lib/constants'
 import { CONSENT_VERSION } from '@/lib/consent'
@@ -10,8 +10,23 @@ import { CONSENT_VERSION } from '@/lib/consent'
 type MemberType = 'actor' | 'director'
 type Step = 'type-select' | 'form' | 'success'
 
+// useSearchParams는 Suspense 경계 필요 (Next.js 빌드 요구사항 — 로그인 페이지와 동일 패턴)
 export default function SignupPage() {
+  return (
+    <Suspense fallback={<div role="status" aria-label="로딩 중" style={{ minHeight: '100vh', background: 'var(--bg)' }} />}>
+      <SignupContent />
+    </Suspense>
+  )
+}
+
+function SignupContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  // 비로그인 상태로 멤버 전용 메뉴(커뮤니티 등)를 눌러 온 경우 가입/로그인 후 원래 목적지로 복귀.
+  // 오픈 리다이렉트 방지: 내부 경로(/...)만 허용
+  const rawNext = searchParams.get('next')
+  const safeNext = rawNext && rawNext.startsWith('/') && !rawNext.startsWith('//') && !rawNext.startsWith('/\\') ? rawNext : null
+  const nextQS = safeNext ? `?next=${encodeURIComponent(safeNext)}` : ''
   const [step, setStep] = useState<Step>('type-select')
   const [memberType, setMemberType] = useState<MemberType>('actor')
 
@@ -43,13 +58,13 @@ export default function SignupPage() {
   // 에러 발생 시 포커스 이동 (WCAG 2.4.3)
   useEffect(() => { if (error) errorRef.current?.focus() }, [error])
 
-  // 이미 로그인된 경우 대시보드로 리다이렉트
+  // 이미 로그인된 경우 목적지(next) 또는 대시보드로 리다이렉트
   useEffect(() => {
     const supabase = createClient()
     supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) router.replace('/dashboard')
+      if (user) router.replace(safeNext ?? '/dashboard')
     })
-  }, [router])
+  }, [router, safeNext])
 
   function formatPhone(value: string) {
     const digits = value.replace(/\D/g, '')
@@ -175,10 +190,10 @@ export default function SignupPage() {
     setLoading(false)
 
     if (hasSession) {
-      // 이미 로그인됨 — 곧바로 대시보드로.
+      // 이미 로그인됨 — 원래 가려던 곳(next) 또는 대시보드로.
       // 로그인과 동일 이유: 모바일에서 router.push는 갓 설정된 세션쿠키가 서버 요청에
       // 즉시 안 실려 회원가입 직후 비로그인 처리될 수 있음 → full-page 이동 (2026-06-23)
-      window.location.href = '/dashboard'
+      window.location.href = safeNext ?? '/dashboard'
     } else {
       // 메일 인증 대기 화면
       setStep('success')
@@ -245,7 +260,7 @@ export default function SignupPage() {
 
           <p style={styles.loginText}>
             이미 계정이 있으신가요?{' '}
-            <Link href="/auth/login" style={styles.loginLink}>
+            <Link href={`/auth/login${nextQS}`} style={styles.loginLink}>
               로그인
             </Link>
           </p>
@@ -270,7 +285,7 @@ export default function SignupPage() {
           <p style={{ ...styles.successDesc, color: 'var(--gray)', fontSize: '0.8rem', marginTop: 12 }}>
             메일이 오지 않는 경우 스팸 메일함을 확인해 주세요.
           </p>
-          <Link href="/auth/login" style={styles.btnBack}>
+          <Link href={`/auth/login${nextQS}`} style={styles.btnBack}>
             로그인 페이지로 이동
           </Link>
         </div>
