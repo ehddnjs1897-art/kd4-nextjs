@@ -825,7 +825,9 @@ export default async function ActorDetailPage({
           /* 수정은 본인 로그인 계정만 — 상세페이지 인라인 편집 제거, 편집은 마이페이지로 일원화 (2026-07-01 대표 지시).
              admin도 남의 프로필 인라인 편집 불가. (서버 API는 별도 — 관리 도구용 권한 유지) */
           canEdit={false}
-          videoLocked={!user}
+          /* 2026-07-23 대표 지시: 배우 DB 비로그인 전체 열람 — 영상 잠금 해제.
+             롤백 시 videoLocked={!user} 로 복귀 (연락처·다운로드는 여전히 디렉터/관리자 전용) */
+          videoLocked={false}
           mainPhotoUrl={photoUrl !== '/placeholder-actor.svg' ? photoUrl : undefined}
         />
       </div>

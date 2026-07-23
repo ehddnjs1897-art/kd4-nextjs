@@ -10,6 +10,11 @@
  *   - ACTOR_DB_PUBLIC_PROFILE = true 시 공개 배우(is_public)의 프로필 본문은 비로그인도 열람 가능
  *   - 연락처·다운로드는 여전히 canViewActorContact(디렉터/관리자)만
  *   - 롤백: ACTOR_DB_PUBLIC_PROFILE = false 한 줄로 즉시 현행 복귀 (킬스위치)
+ *
+ * 정책 업데이트 (2026-07-23 대표 지시 — 배우 DB 전체 공개):
+ *   - 출연영상도 비로그인 열람 가능 (상세페이지 videoLocked={false} — 잠금 해제)
+ *   - GET /api/actors, GET /api/actors/[id] 비로그인 호출 허용 (공개 배우만, PII 제외)
+ *   - 연락처(phone/email)·프로필 다운로드는 변함없이 디렉터/관리자 전용
  */
 import type { UserRole } from '@/lib/types'
 

@@ -1,16 +1,15 @@
 /**
- * GET  /api/actors/[id]  — 배우 단건 상세 조회
+ * GET  /api/actors/[id]  — 배우 단건 상세 조회 (비로그인 허용 — 공개 배우만, PII 제외. 2026-07-23 대표 지시)
  * PATCH /api/actors/[id] — 배우 기본 정보 수정 (editor/admin 본인만)
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { revalidateTag } from '@/lib/revalidate'
-import { canViewActorDb } from '@/lib/access'
 import { sanitizeDialects } from '@/lib/dialects'
 import { sanitizeCastingTypes } from '@/lib/casting-preferences'
 import { isMissingColumnError, findMissingOptionalCol } from '@/lib/db-missing-column'
-import type { Actor, ActorDetail, UserRole } from '@/lib/types'
+import type { Actor, ActorDetail } from '@/lib/types'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
@@ -58,26 +57,23 @@ export async function GET(
       }
     }
 
-    // 배우 DB는 회원 전용 콘텐츠 — 비로그인 요청 차단
+    // 2026-07-23 대표 지시: 배우 DB 전체 공개 — 비로그인도 공개 배우 상세 조회 가능 (401/403 게이트 제거).
+    // 연락처(phone/email)·특권 영상 필드는 본인/디렉터/관리자만, 비공개 프로필은 본인/관리·편집자만.
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
 
     let canSeeContact = false   // 연락처 열람 가능 여부 (director/admin or 본인)
     let canSeeNonPublic = false // 비공개 프로필 열람 가능 여부 (본인 or admin/editor)
 
-    // user 보장됨 (위 401 가드 통과)
-    // supabaseAdmin: RLS 우회로 정확한 role/actor_id 조회 (다른 auth 체크와 일관성 유지)
-    const { data: profile } = await supabaseAdmin
-      .from('profiles').select('role, actor_id').eq('id', user.id).maybeSingle()
-    const role = profile?.role ?? ''
-    const isOwn = profile?.actor_id === id
-    canSeeContact = isOwn || ['director', 'admin'].includes(role)
-    // 본인 또는 관리/편집자는 is_public=false 프로필도 열람 가능 (관리자 검토 대기 중인 경우)
-    canSeeNonPublic = isOwn || ['admin', 'editor'].includes(role)
-    // 배우 DB 열람 권한 확인 (본인이거나 actor/crew/editor/director/admin만 허용)
-    if (!isOwn && !canViewActorDb(role as UserRole | undefined)) {
-      return NextResponse.json({ error: '배우 프로필 열람 권한이 없습니다.' }, { status: 403 })
+    if (user) {
+      // supabaseAdmin: RLS 우회로 정확한 role/actor_id 조회 (다른 auth 체크와 일관성 유지)
+      const { data: profile } = await supabaseAdmin
+        .from('profiles').select('role, actor_id').eq('id', user.id).maybeSingle()
+      const role = profile?.role ?? ''
+      const isOwn = profile?.actor_id === id
+      canSeeContact = isOwn || ['director', 'admin'].includes(role)
+      // 본인 또는 관리/편집자는 is_public=false 프로필도 열람 가능 (관리자 검토 대기 중인 경우)
+      canSeeNonPublic = isOwn || ['admin', 'editor'].includes(role)
     }
 
     // 접촉 권한 없는 경우 PII+내부 컬럼을 DB에서 처음부터 제외 (defence-in-depth)

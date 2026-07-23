@@ -9,13 +9,13 @@
  *   page      — 페이지 번호 (기본값: 1)
  *   limit     — 페이지당 결과 수 (기본값: 20, 최대: 100)
  *
- * 보안: 비로그인 시 phone, email 컬럼 제외 (API 레벨 처리, RLS 미적용 기간 대응)
+ * 보안: 비로그인/비특권 시 phone, email 컬럼 제외 (API 레벨 처리, RLS 미적용 기간 대응)
+ * 공개: 비로그인 호출 허용 — 공개 배우(is_public)만, PII 제외 (2026-07-23 대표 지시)
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
-import { canViewActorDb } from '@/lib/access'
-import type { Actor, ActorPublic, UserRole } from '@/lib/types'
+import type { Actor, ActorPublic } from '@/lib/types'
 
 // GET 엔드포인트 IP 기반 레이트 리밋 (60 req/min — DoS 방어)
 const actorsGetRateMap = new Map<string, { count: number; resetAt: number }>()
@@ -65,22 +65,19 @@ export async function GET(request: NextRequest) {
     const limit = Math.min(100, Math.max(1, Number.isFinite(rawLimit) ? rawLimit : 20))
     const offset = (page - 1) * limit
 
-    // 배우 DB는 회원 전용 콘텐츠 — 비로그인 요청 차단 (미들웨어가 페이지 접근을 막지만 API 레이어도 독립적으로 강제)
+    // 2026-07-23 대표 지시: 배우 DB 전체 공개 — 비로그인도 공개 배우 목록 조회 가능 (401/403 게이트 제거).
+    // 연락처(phone/email)는 여전히 디렉터/관리자만, 비공개 배우 포함 조회는 admin만.
     const supabase = await createClient()
     const {
       data: { user },
     } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
     let canSeeContact = false
     let isAdmin = false
-    // user 보장됨 (위 401 가드 통과)
-    const { data: profile } = await supabaseAdmin
-      .from('profiles').select('role').eq('id', user.id).maybeSingle()
-    canSeeContact = ['director', 'admin'].includes(profile?.role ?? '')
-    isAdmin = profile?.role === 'admin'
-    // 배우 DB 열람 권한 확인 (actor/crew/editor/director/admin만 허용)
-    if (!canViewActorDb(profile?.role as UserRole | undefined)) {
-      return NextResponse.json({ error: '배우 프로필 열람 권한이 없습니다.' }, { status: 403 })
+    if (user) {
+      const { data: profile } = await supabaseAdmin
+        .from('profiles').select('role').eq('id', user.id).maybeSingle()
+      canSeeContact = ['director', 'admin'].includes(profile?.role ?? '')
+      isAdmin = profile?.role === 'admin'
     }
 
     // admin은 ?include_non_public=true 로 비공개 배우도 조회 가능 (검토 대기 중 배우 관리용)
