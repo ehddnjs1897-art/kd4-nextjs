@@ -186,8 +186,9 @@ async function fetchActors(gender: string, ageGroup: string, tag: string, genre:
       }
       castingSchemaAvailable = false
     } else if (error) {
-      console.error('[ActorsPage] Supabase 오류:', error.message)
-      return { actors: [], dbError: true, allTags: [], videoActorIds: [] }
+      // 오류를 반환값으로 삼키면 unstable_cache가 빈 목록을 120초 캐시 → 전 방문자 "0명" 노출 (2026-07-23 사고)
+      // throw하면 캐시에 저장되지 않아 회복 즉시 다음 요청부터 정상 (페이지에서 catch)
+      throw new Error(`[ActorsPage] Supabase 오류: ${error.message}`)
     } else {
       actors = (data ?? []) as unknown as Actor[]
     }
@@ -197,8 +198,7 @@ async function fetchActors(gender: string, ageGroup: string, tag: string, genre:
   if (!castingSchemaAvailable) {
     const { data, error } = await buildQuery('id, name, gender, age_group, drive_photo_id, storage_photo_path, profile_photo')
     if (error) {
-      console.error('[ActorsPage] Fallback Supabase 오류:', error.message)
-      return { actors: [], dbError: true, allTags: [], videoActorIds: [] }
+      throw new Error(`[ActorsPage] Fallback Supabase 오류: ${error.message}`)
     }
     actors = ((data ?? []) as unknown as Array<Omit<Actor, 'casting_tags' | 'casting_summary'>>)
       .map((a) => ({ ...a, casting_tags: null, casting_summary: null }))
@@ -293,7 +293,19 @@ export default async function ActorsPage({ searchParams }: PageProps) {
   const genre = GENRE_BY_VALUE.has(rawGenre) ? rawGenre : 'all'
   const activeGenre = genre !== 'all' ? GENRE_BY_VALUE.get(genre) : undefined
 
-  const { actors, dbError, videoActorIds } = await getActorsCached(gender, ageGroup, tag, genre)
+  // 실패는 캐시 바깥에서 처리 — fetchActors가 throw하면 unstable_cache에 저장되지 않으므로
+  // 일시 장애가 120초짜리 "빈 목록" 캐시로 굳지 않는다 (2026-07-23 배우DB 공백 사고 재발 방지)
+  let actors: Actor[] = []
+  let videoActorIds: string[] = []
+  let dbError = false
+  try {
+    const cached = await getActorsCached(gender, ageGroup, tag, genre)
+    actors = cached.actors
+    videoActorIds = cached.videoActorIds
+  } catch (e) {
+    console.error('[ActorsPage] 배우 목록 조회 실패(비캐시):', e instanceof Error ? e.message : e)
+    dbError = true
+  }
   const videoIdSet = new Set(videoActorIds)
 
   // 동적 H1 — 필터 활성 시 "여자 멜로·로맨스 30대 배우 DB", 기본 "배우 DB"

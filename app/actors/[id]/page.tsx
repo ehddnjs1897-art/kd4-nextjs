@@ -181,8 +181,9 @@ async function _queryActorWithFallbacks(
   if (withVimeo.data) return withVimeo.data as unknown as Actor
   if (!withVimeo.error) return null
   if (!isUndefinedColumnError(withVimeo.error)) {
-    console.error(`[ActorDetail] _queryActorWithFallbacks(${id}): DB 오류 code=${withVimeo.error.code} message=${withVimeo.error.message}`)
-    return null
+    // null 반환 시 unstable_cache가 "없는 배우"로 30초 캐시 → 일시 장애가 멀쩡한 배우를 404로 보이게 함.
+    // throw는 캐시에 저장되지 않음 — error boundary(재시도 버튼)로 처리
+    throw new Error(`[ActorDetail] _queryActorWithFallbacks(${id}): DB 오류 code=${withVimeo.error.code} message=${withVimeo.error.message}`)
   }
   console.warn('[ActorDetail] vimeo_id/vimeo_hash 컬럼 미존재 — 제외하고 재조회')
 
@@ -191,32 +192,43 @@ async function _queryActorWithFallbacks(
   if (full.data) return full.data as unknown as Actor
   if (!full.error) return null
   console.error(`[ActorDetail] _queryActorWithFallbacks(${id}): DB 오류 code=${full.error.code} message=${full.error.message}`)
-  if (!isUndefinedColumnError(full.error)) return null
+  if (!isUndefinedColumnError(full.error)) {
+    throw new Error(`[ActorDetail] _queryActorWithFallbacks(${id}): DB 오류 code=${full.error.code} message=${full.error.message}`)
+  }
 
   // 1.2차: is_featured(대표출연작) 컬럼만 누락된 경우 — 마이그레이션 전에도 방송사·수상 표시 유지
   console.warn('[ActorDetail] is_featured 컬럼 미존재 — 제외하고 재조회')
   const noFeatured = await fetchWith(actorSelect({ casting: true, videoType: true, filmExtra: true, advancedSkills: true, featured: false }))
   if (noFeatured.data) return noFeatured.data as unknown as Actor
   if (!noFeatured.error) return null
-  if (!isUndefinedColumnError(noFeatured.error)) return null
+  if (!isUndefinedColumnError(noFeatured.error)) {
+    throw new Error(`[ActorDetail] noFeatured 재조회 DB 오류 code=${noFeatured.error.code} message=${noFeatured.error.message}`)
+  }
 
   // 1.5차: advanced_skills만 누락된 경우
   console.warn('[ActorDetail] advanced_skills 컬럼 미존재 — 제외하고 재조회')
   const noAdvanced = await fetchWith(actorSelect({ casting: true, videoType: true, filmExtra: true, advancedSkills: false, featured: false }))
   if (noAdvanced.data) return { ...(noAdvanced.data as unknown as Record<string, unknown>), advanced_skills: null } as unknown as Actor
   if (!noAdvanced.error) return null
-  if (!isUndefinedColumnError(noAdvanced.error)) return null
+  if (!isUndefinedColumnError(noAdvanced.error)) {
+    throw new Error(`[ActorDetail] noAdvanced 재조회 DB 오류 code=${noAdvanced.error.code} message=${noAdvanced.error.message}`)
+  }
 
   // 2차: video_type 컬럼 미존재 대응
   console.warn('[ActorDetail] 확장 컬럼 미존재 — video_type 제외하고 재조회')
   const noVideoType = await fetchWith(actorSelect({ casting: true, videoType: false, filmExtra: true, advancedSkills: false, featured: false }))
   if (noVideoType.data) return { ...(noVideoType.data as unknown as Record<string, unknown>), advanced_skills: null } as unknown as Actor
   if (!noVideoType.error) return null
-  if (!isUndefinedColumnError(noVideoType.error)) return null
+  if (!isUndefinedColumnError(noVideoType.error)) {
+    throw new Error(`[ActorDetail] noVideoType 재조회 DB 오류 code=${noVideoType.error.code} message=${noVideoType.error.message}`)
+  }
 
   // 3차: 레거시 기본 스키마
   console.warn('[ActorDetail] casting/filmography 확장 컬럼 미존재 — 기본 스키마로 fallback')
   const base = await fetchWith(actorSelect({ casting: false, videoType: false, filmExtra: false, advancedSkills: false, featured: false }))
+  if (base.error) {
+    throw new Error(`[ActorDetail] 기본 스키마 조회 DB 오류 code=${base.error.code} message=${base.error.message}`)
+  }
   if (!base.data) return null
   return {
     ...(base.data as unknown as Omit<Actor, 'casting_tags' | 'casting_summary' | 'profile_pdf_url' | 'advanced_skills'>),
