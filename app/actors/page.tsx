@@ -242,16 +242,23 @@ async function fetchActors(gender: string, ageGroup: string, tag: string, genre:
   try {
     const { data: vr, error: vrErr } = await supabaseAdmin
       .from('actors')
-      .select('id, view_count')
+      .select('id, view_count, is_leader_featured')
       .eq('is_public', true)
     if (!vrErr && vr) {
-      const rank = new Map(
-        (vr as Array<{ id: string; view_count: number | null }>).map((r) => [r.id, r.view_count ?? 0])
-      )
-      actors = [...actors].sort((a, b) => (rank.get(b.id) ?? 0) - (rank.get(a.id) ?? 0))
+      const rows = vr as Array<{ id: string; view_count: number | null; is_leader_featured: boolean | null }>
+      const viewRank = new Map(rows.map((r) => [r.id, r.view_count ?? 0]))
+      const featured = new Map(rows.map((r) => [r.id, !!r.is_leader_featured]))
+      // 정렬 우선순위: ① 리더클래스 멤버 최우선(대표 요청 — 클릭수 아직 안 쌓인 지금 임시 상단 고정,
+      //   is_leader_featured 컬럼이라 대시보드 등에서 나중에 자유롭게 껐다 켰다 가능) ② 클릭수 내림차순
+      actors = [...actors].sort((a, b) => {
+        const fa = featured.get(a.id) ? 1 : 0
+        const fb = featured.get(b.id) ? 1 : 0
+        if (fa !== fb) return fb - fa
+        return (viewRank.get(b.id) ?? 0) - (viewRank.get(a.id) ?? 0)
+      })
     }
   } catch {
-    /* view_count 미존재 등 — 기존 정렬 유지 */
+    /* view_count/is_leader_featured 미존재 등 — 기존 정렬 유지 */
   }
 
   // 병렬 시작해둔 영상 보유 배우 id 회수 (실패 시 빈 배열 — 필터 비활성)
