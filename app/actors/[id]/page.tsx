@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import { unstable_cache } from 'next/cache'
 
 import Link from 'next/link'
+import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
@@ -362,6 +363,26 @@ export async function generateMetadata({
 }
 
 /* ---- 페이지 컴포넌트 ---- */
+/** increment_actor_view RPC 실패 경고 — 콜드스타트 당 1회만 출력 */
+let _viewRpcWarnedOnce = false
+
+/**
+ * 클릭수 집계 — 배우 목록 "클릭수 많은 순" 정렬용 (2026-07-24 대표 지시).
+ * 봇·링크 미리보기 UA는 제외. RPC 미생성(마이그레이션 전)·실패 시 페이지에 영향 없음.
+ */
+async function recordActorView(id: string, ua: string): Promise<void> {
+  if (/bot|crawl|spider|preview|scrap|facebookexternalhit|kakaotalk|whatsapp|telegram/i.test(ua)) return
+  await supabaseAdmin.rpc('increment_actor_view', { aid: id }).then(
+    ({ error }) => {
+      if (error && !_viewRpcWarnedOnce) {
+        console.warn('[ActorDetail] increment_actor_view RPC 실패(마이그레이션 전이면 정상):', error.message)
+        _viewRpcWarnedOnce = true
+      }
+    },
+    () => {}
+  )
+}
+
 export default async function ActorDetailPage({
   params,
 }: {
@@ -382,6 +403,9 @@ export default async function ActorDetailPage({
   // 공개 조회 실패 → 로그인 사용자면 비공개 포함 재시도 (오너/admin이 자기 프로필 보는 케이스)
   const actor = publicActor ?? (user ? await getActorCore(id, true) : null)
   if (!actor) notFound()
+
+  // 클릭수 집계 (봇 제외) — recordActorView 참고
+  await recordActorView(id, (await headers()).get('user-agent') ?? '')
 
   // (A) 역할/소유권 계산 — 로그인 사용자만 (비로그인은 기본값 사용)
   let role: UserRole = 'user'

@@ -236,6 +236,24 @@ async function fetchActors(gender: string, ageGroup: string, tag: string, genre:
     }
   }
 
+  // 클릭수(조회수) 많은 순 정렬 — 2026-07-24 대표 지시 "클릭수 많은 순서로 먼저 뜨게".
+  // view_count 컬럼 미생성(마이그레이션 전)이면 조용히 건너뛰어 기존 정렬 유지.
+  // JS 정렬은 안정 정렬이라 동점(초기 0회 포함)은 기존 순서(연령대→최신순)를 그대로 보존.
+  try {
+    const { data: vr, error: vrErr } = await supabaseAdmin
+      .from('actors')
+      .select('id, view_count')
+      .eq('is_public', true)
+    if (!vrErr && vr) {
+      const rank = new Map(
+        (vr as Array<{ id: string; view_count: number | null }>).map((r) => [r.id, r.view_count ?? 0])
+      )
+      actors = [...actors].sort((a, b) => (rank.get(b.id) ?? 0) - (rank.get(a.id) ?? 0))
+    }
+  } catch {
+    /* view_count 미존재 등 — 기존 정렬 유지 */
+  }
+
   // 병렬 시작해둔 영상 보유 배우 id 회수 (실패 시 빈 배열 — 필터 비활성)
   const videoActorIds = await videoIdsPromise
 
