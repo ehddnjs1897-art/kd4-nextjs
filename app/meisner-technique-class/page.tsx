@@ -134,7 +134,8 @@ const CURRICULUM_MONTHS: CurriculumMonth[] = [
 ]
 
 const NOTICE_ITEMS = [
-  '마이즈너 정규 클래스는 4개월간 진행됩니다.',
+  '마이즈너 정규 클래스는 4개월간 원팀으로 진행됩니다.',
+  '원팀 과정의 특성상 협의되지 않은 중도 하차는 원칙적으로 불가하며, 불가피한 경우 규정에 따라 패널티가 부과됩니다.',
   '일정이 생겨 참여가 어려우시다면, 수업 5일 전까지 미리 말씀해 주세요.',
   '원활한 학습을 돕기 위한 보강 제도가 준비되어 있으니 관련 규정을 확인 후 편하게 문의해 주시기 바랍니다.',
 ]
@@ -369,7 +370,17 @@ export default function MeisnerPage() {
                 </li>
               ))}
             </ul>
-            <p style={{ fontSize: '0.86rem', color: 'var(--gray-light)', lineHeight: 1.7, paddingTop: '14px', borderTop: '1px solid var(--border)' }}>
+            {/* 동의서 다운로드 — 수강 전 확인 서류 (2026-07-28 대표 지시) */}
+            <p style={{ fontSize: '0.86rem', paddingTop: '14px', borderTop: '1px solid var(--border)', marginBottom: '10px' }}>
+              <a
+                href="/docs/meisner-class-consent.docx"
+                download="마이즈너 정규 클래스 동의서.docx"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--navy)', fontWeight: 600 }}
+              >
+                <span aria-hidden="true">📄</span> 마이즈너 정규 동의서 내려받기 <span aria-hidden="true">↓</span>
+              </a>
+            </p>
+            <p style={{ fontSize: '0.86rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
               문의:{' '}
               <JoinCTALink
                 href="https://pf.kakao.com/_ximxdqn"

@@ -127,6 +127,13 @@ const CURRICULUM_MONTHS: CurriculumMonth[] = [
   },
 ]
 
+// 수강 유의사항 — 출연영상 동의서(개인정보·초상권·수강 규정 확인서) 내용 기준 (2026-07-28)
+const NOTICE_ITEMS = [
+  '출연영상 클래스는 3개월 코스이며, 파트너와의 협업으로 진행됩니다.',
+  '협업 과정의 특성상 2회차 수업 이후에는 중도 하차가 원칙적으로 불가하며, 부득이한 경우 규정에 따라 패널티가 부과됩니다.',
+  '수업 중 촬영되는 사진·영상은 홍보 목적으로 활용될 수 있습니다. 자세한 내용은 아래 동의서를 확인해 주세요.',
+]
+
 export default function ReelPage() {
   return (
     <div style={{ paddingTop: '80px', background: 'var(--bg)', minHeight: '100vh', color: '#111111' }}>
@@ -335,6 +342,47 @@ export default function ReelPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* NOTICE — 수강 유의사항 (마이즈너 페이지와 동일 스타일, 2026-07-28 대표 지시) */}
+      <section aria-label="수강 유의사항" style={{ padding: '0 0 clamp(64px, 10vw, 96px)', background: 'var(--bg2)' }}>
+        <div className="container">
+          <div style={{ maxWidth: '640px', margin: '0 auto', background: 'var(--bg)', border: '1px solid var(--border)', borderLeft: '3px solid var(--navy)', borderRadius: '10px', padding: 'clamp(20px, 3.5vw, 26px)' }}>
+            <p className="section-eyebrow" lang="en" style={{ marginBottom: '12px' }}>NOTICE</p>
+            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.05rem', fontWeight: 700, marginBottom: '14px', color: '#111' }}>수강 전 유의사항</h2>
+            <ul role="list" style={{ display: 'flex', flexDirection: 'column', gap: '9px', marginBottom: '16px' }}>
+              {NOTICE_ITEMS.map((item, i) => (
+                <li key={i} style={{ fontSize: 'clamp(0.86rem, 2.1vw, 0.9rem)', color: 'var(--gray-light)', lineHeight: 1.75, paddingLeft: '16px', position: 'relative', wordBreak: 'keep-all' }}>
+                  <span aria-hidden="true" style={{ position: 'absolute', left: 0, top: '0.6em', width: '8px', height: '1px', background: 'var(--navy)' }} />
+                  {item}
+                </li>
+              ))}
+            </ul>
+            {/* 동의서 다운로드 — 수강 전 확인 서류 */}
+            <p style={{ fontSize: '0.86rem', paddingTop: '14px', borderTop: '1px solid var(--border)', marginBottom: '10px' }}>
+              <a
+                href="/docs/reel-class-consent.docx"
+                download="출연영상 클래스 동의서.docx"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--navy)', fontWeight: 600 }}
+              >
+                <span aria-hidden="true">📄</span> 출연영상 동의서 내려받기 <span aria-hidden="true">↓</span>
+              </a>
+            </p>
+            <p style={{ fontSize: '0.86rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
+              문의:{' '}
+              <JoinCTALink
+                href="https://pf.kakao.com/_ximxdqn"
+                kind="external"
+                channel="kakao"
+                location="reel-notice"
+                label="카카오채널 문의"
+                style={{ color: 'var(--navy)', fontWeight: 600 }}
+              >
+                카카오채널 ‘KD4 액팅 스튜디오’ <span aria-hidden="true">→</span>
+              </JoinCTALink>
+            </p>
           </div>
         </div>
       </section>
