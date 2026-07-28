@@ -83,6 +83,9 @@ const PORTFOLIO_VIDEOS = [
   { id: '7Q62XeyVLbc', title: '출연영상 샘플 1' },
   { id: 'IWL6hlOrU-w', title: '출연영상 샘플 2' },
   { id: 'PUlrhjOkvjA', title: '출연영상 샘플 3' },
+  { id: 'qwD63hTNQLs', title: '출연영상 샘플 4' },
+  { id: 'tLAZZOGd3FA', title: '출연영상 샘플 5' },
+  { id: 'zoDJtGT3aQM', title: '출연영상 샘플 6' },
 ]
 
 const PORTFOLIO_PLAYLIST = 'https://www.youtube.com/playlist?list=PLMbZlnkLfP7iaE41p_g9dzGKp5eU9VZk2'
@@ -240,11 +243,11 @@ export default function ReelPage() {
       </section>
 
       {/* PORTFOLIO */}
-      <section aria-label="결과물 샘플 포트폴리오" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
+      <section aria-label="포트폴리오" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
             <p className="section-eyebrow" lang="en">02 — PORTFOLIO</p>
-            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>결과물 샘플</h2>
+            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>포트폴리오</h2>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px', maxWidth: '1040px', margin: '0 auto' }}>
             {PORTFOLIO_VIDEOS.map((v) => (
