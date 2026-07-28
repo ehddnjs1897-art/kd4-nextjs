@@ -380,19 +380,33 @@ export default function MeisnerPage() {
                 <span aria-hidden="true">📄</span> 마이즈너 정규 동의서 내려받기 <span aria-hidden="true">↓</span>
               </a>
             </p>
-            <p style={{ fontSize: '0.86rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-              문의:{' '}
-              <JoinCTALink
-                href="https://pf.kakao.com/_ximxdqn"
-                kind="external"
-                channel="kakao"
-                location="meisner-notice"
-                label="카카오채널 문의"
-                style={{ color: 'var(--navy)', fontWeight: 600 }}
-              >
-                카카오채널 ‘KD4 액팅 스튜디오’ <span aria-hidden="true">→</span>
-              </JoinCTALink>
-            </p>
+            {/* 문의 — 사이트 공통 카카오 버튼 (2026-07-28 대표 지시: 텍스트 링크 → 버튼) */}
+            <JoinCTALink
+              href="https://pf.kakao.com/_ximxdqn"
+              kind="external"
+              channel="kakao"
+              location="meisner-notice"
+              label="카카오채널 문의"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                minHeight: 48,
+                padding: '12px 20px',
+                background: '#FEE500',
+                color: '#3C1E1E',
+                fontFamily: 'var(--font-sans)',
+                fontSize: '0.9rem',
+                fontWeight: 700,
+                borderRadius: 10,
+                textDecoration: 'none',
+                letterSpacing: '0.01em',
+              }}
+            >
+              <Image src="/icons/kakao.png" alt="" aria-hidden="true" width={18} height={18} style={{ objectFit: 'contain' }} />
+              카카오채널로 문의하기
+            </JoinCTALink>
           </div>
         </div>
       </section>
