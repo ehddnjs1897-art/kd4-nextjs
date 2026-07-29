@@ -17,6 +17,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase/admin'
 import { SITE_URL } from '@/lib/constants'
+import { normalizeUtmSource, normalizeUtmMedium, normalizeUtmLabel } from '@/lib/utm'
 
 const ALLOWED_CHANNELS = new Set(['kakao', 'form', 'instagram', 'blog'])
 
@@ -65,10 +66,11 @@ export async function POST(request: NextRequest) {
     // UTM 캡슐
     const utm = (data.utm && typeof data.utm === 'object') ? (data.utm as Record<string, unknown>) : {}
     const utmFields = {
-      utm_source: safeStr(utm.utm_source, 200),
-      utm_medium: safeStr(utm.utm_medium, 200),
-      utm_campaign: safeStr(utm.utm_campaign, 200),
-      utm_content: safeStr(utm.utm_content, 200),
+      /* 유입 표기 정규화 — notify 라우트와 동일 기준 (lib/utm.ts) */
+      utm_source: normalizeUtmSource(safeStr(utm.utm_source, 200)),
+      utm_medium: normalizeUtmMedium(safeStr(utm.utm_medium, 200)),
+      utm_campaign: normalizeUtmLabel(safeStr(utm.utm_campaign, 200)),
+      utm_content: normalizeUtmLabel(safeStr(utm.utm_content, 200)),
       utm_term: safeStr(utm.utm_term, 200),
       referrer: safeStr(utm.referrer ?? data.referrer, 500),
     }

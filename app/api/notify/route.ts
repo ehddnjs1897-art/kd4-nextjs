@@ -12,6 +12,7 @@ import { sendSMS } from '@/lib/sms'
 import { sendConsultationReceivedEmail } from '@/lib/email'
 import { getSupabaseAdmin } from '@/lib/supabase/admin'
 import { SITE_URL } from '@/lib/constants'
+import { normalizeUtmSource, normalizeUtmMedium, normalizeUtmLabel } from '@/lib/utm'
 
 /* ── Meta Conversions API (CAPI) ──────────────────────────────────────
  * iOS14 ATT 이후 클라이언트 픽셀 단독 추적은 30%+ 누락. 서버에서 직접
@@ -413,10 +414,11 @@ export async function POST(request: NextRequest) {
         source: typeof record?.source === 'string' ? record.source.trim().slice(0, 100) : null,
         inquiry_type: typeof record?.inquiry_type === 'string' ? record.inquiry_type.trim().slice(0, 100) : null,
         motivation: typeof record?.motivation === 'string' ? record.motivation.trim().slice(0, 2000) : null,
-        utm_source: typeof record?.utm_source === 'string' ? record.utm_source.trim().slice(0, 200) : null,
-        utm_medium: typeof record?.utm_medium === 'string' ? record.utm_medium.trim().slice(0, 200) : null,
-        utm_campaign: typeof record?.utm_campaign === 'string' ? record.utm_campaign.trim().slice(0, 200) : null,
-        utm_content: typeof record?.utm_content === 'string' ? record.utm_content.trim().slice(0, 200) : null,
+        /* 유입 표기 정규화 — ig/insta/meta 처럼 갈라지던 값을 한 이름으로 (lib/utm.ts) */
+        utm_source: normalizeUtmSource(typeof record?.utm_source === 'string' ? record.utm_source.slice(0, 200) : null),
+        utm_medium: normalizeUtmMedium(typeof record?.utm_medium === 'string' ? record.utm_medium.slice(0, 200) : null),
+        utm_campaign: normalizeUtmLabel(typeof record?.utm_campaign === 'string' ? record.utm_campaign.slice(0, 200) : null),
+        utm_content: normalizeUtmLabel(typeof record?.utm_content === 'string' ? record.utm_content.slice(0, 200) : null),
         utm_term: typeof record?.utm_term === 'string' ? record.utm_term.trim().slice(0, 200) : null,
         referrer: typeof record?.referrer === 'string' ? record.referrer.trim().slice(0, 500) : null,
         status: (['대기', '확인', '완료'] as const).includes(record?.status as '대기' | '확인' | '완료') ? record.status : '대기',
@@ -424,10 +426,10 @@ export async function POST(request: NextRequest) {
     }
     // UTM 컬럼(DB 상위 레벨) — raw_payload 내부와 동일 패턴으로 sanitize
     const utmFields = {
-      utm_source: typeof record?.utm_source === 'string' ? record.utm_source.trim().slice(0, 200) : null,
-      utm_medium: typeof record?.utm_medium === 'string' ? record.utm_medium.trim().slice(0, 200) : null,
-      utm_campaign: typeof record?.utm_campaign === 'string' ? record.utm_campaign.trim().slice(0, 200) : null,
-      utm_content: typeof record?.utm_content === 'string' ? record.utm_content.trim().slice(0, 200) : null,
+      utm_source: normalizeUtmSource(typeof record?.utm_source === 'string' ? record.utm_source.slice(0, 200) : null),
+      utm_medium: normalizeUtmMedium(typeof record?.utm_medium === 'string' ? record.utm_medium.slice(0, 200) : null),
+      utm_campaign: normalizeUtmLabel(typeof record?.utm_campaign === 'string' ? record.utm_campaign.slice(0, 200) : null),
+      utm_content: normalizeUtmLabel(typeof record?.utm_content === 'string' ? record.utm_content.slice(0, 200) : null),
       utm_term: typeof record?.utm_term === 'string' ? record.utm_term.trim().slice(0, 200) : null,
       referrer: typeof record?.referrer === 'string' ? record.referrer.trim().slice(0, 500) : null,
     }
@@ -495,10 +497,11 @@ export async function POST(request: NextRequest) {
         source: typeof record?.source === 'string' ? record.source.trim().slice(0, 100) : null,
         inquiry_type: typeof record?.inquiry_type === 'string' ? record.inquiry_type.trim().slice(0, 100) : null,
         motivation: typeof record?.motivation === 'string' ? record.motivation.trim().slice(0, 2000) : null,
-        utm_source: typeof record?.utm_source === 'string' ? record.utm_source.trim().slice(0, 200) : null,
-        utm_medium: typeof record?.utm_medium === 'string' ? record.utm_medium.trim().slice(0, 200) : null,
-        utm_campaign: typeof record?.utm_campaign === 'string' ? record.utm_campaign.trim().slice(0, 200) : null,
-        utm_content: typeof record?.utm_content === 'string' ? record.utm_content.trim().slice(0, 200) : null,
+        /* 유입 표기 정규화 — ig/insta/meta 처럼 갈라지던 값을 한 이름으로 (lib/utm.ts) */
+        utm_source: normalizeUtmSource(typeof record?.utm_source === 'string' ? record.utm_source.slice(0, 200) : null),
+        utm_medium: normalizeUtmMedium(typeof record?.utm_medium === 'string' ? record.utm_medium.slice(0, 200) : null),
+        utm_campaign: normalizeUtmLabel(typeof record?.utm_campaign === 'string' ? record.utm_campaign.slice(0, 200) : null),
+        utm_content: normalizeUtmLabel(typeof record?.utm_content === 'string' ? record.utm_content.slice(0, 200) : null),
         utm_term: typeof record?.utm_term === 'string' ? record.utm_term.trim().slice(0, 200) : null,
         referrer: typeof record?.referrer === 'string' ? record.referrer.trim().slice(0, 500) : null,
         status: (['대기', '확인', '완료'] as const).includes(record?.status as '대기' | '확인' | '완료') ? record.status : '대기',
