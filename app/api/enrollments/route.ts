@@ -10,7 +10,7 @@ import { NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
-import { CLASSES } from '@/lib/classes'
+import { CLASSES, BRANDING_SERVICES } from '@/lib/classes'
 
 const VALID_TYPES = ['신규 등록', '수업 유지', '클래스 추가·변경', '퍼스널 브랜딩 서비스']
 
@@ -137,7 +137,7 @@ export async function POST(request: Request) {
     } else {
       // 유효 클래스만 추려서 서버에서 금액 주입
       rows = class_names
-        .map((cn) => CLASSES.find((c) => c.nameKo === cn))
+        .map((cn) => CLASSES.find((c) => c.nameKo === cn) ?? BRANDING_SERVICES.find((c) => c.nameKo === cn))
         .filter((c): c is NonNullable<typeof c> => Boolean(c))
         .map((cls) => ({
           ...baseRow,

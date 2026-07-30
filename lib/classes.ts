@@ -200,6 +200,41 @@ export const CLASSES: ClassItem[] = [
   }
 ];
 
+/** 퍼스널 브랜딩 서비스(출연영상 편집·프로필 편집) — 의도적으로 CLASSES 밖에 별도 보관.
+ *  CLASSES에 합치면 app/classes(공개 가격표 페이지 + layout.tsx의 JSON-LD 구조화 데이터)와
+ *  app/enroll("클래스 추가·변경" 탭, CLASSES 비필터 전체 노출)에 새 항목으로 노출됨(2026-07-30 확인).
+ *  그래서 app/api/enrollments/route.ts 서버 검증에서만 CLASSES와 함께 조회해 사용한다.
+ *  nameKo·price는 components/enroll/EnrollForm.tsx 로컬 BRANDING_SERVICES와 반드시 동일하게 유지
+ *  (nameKo가 어긋나면 서버 조회 실패 → 즉시 400 재발. 클라이언트가 보내는 문자열이 곧 조회 키다).
+ *  quote 문구 출처: app/benefits/page.tsx CAREER_SERVICES(기존 공개 문구 그대로 재사용, 신규 카피 아님).
+ *  DB는 문제 없음: enrollments.enrollment_type CHECK에 '퍼스널 브랜딩 서비스'가 이미 포함되어 있고
+ *  (migrations/2026-06-13_enrollment_type_check_fix.sql), 라이브 적용도 확인됨
+ *  (2026-07-30 읽기전용 실측 — 구 CHECK로는 불가능한 '수업 유지' row가 2026-07-22자로 존재). */
+export const BRANDING_SERVICES: ClassItem[] = [
+  {
+    step: "서비스",
+    nameKo: "출연영상 편집 서비스",
+    nameEn: "Film Editing Service",
+    quote: "촬영한 출연영상을 캐스팅 디렉터에게 보낼 수 있도록, 업계 문법에 맞게 편집해 드립니다.",
+    bullets: ["촬영한 출연영상을 캐스팅 디렉터에게 보낼 수 있도록, 업계 문법에 맞게 편집해 드립니다."],
+    schedule: "일정 협의",
+    duration: "결과물 납품",
+    capacity: "-",
+    price: "50,000",
+  },
+  {
+    step: "서비스",
+    nameKo: "프로필 편집 서비스",
+    nameEn: "Profile Editing Service",
+    quote: "오디션 또는 캐스팅 디렉터 제출 시 바로 사용할 수 있도록, 업계 문법에 맞게 제작해 드립니다.",
+    bullets: ["오디션 또는 캐스팅 디렉터 제출 시 바로 사용할 수 있도록, 업계 문법에 맞게 제작해 드립니다."],
+    schedule: "일정 협의",
+    duration: "결과물 납품",
+    capacity: "-",
+    price: "30,000",
+  },
+];
+
 /* ──────────────────────────────────────────────────────────────
  * 권동원 대표 이력 템플릿
  *  - kd4.club 메인(app/page.tsx L661-751)을 정답지로 삼음
