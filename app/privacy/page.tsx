@@ -3,12 +3,15 @@ import Link from 'next/link'
 import { SITE_URL } from '@/lib/constants'
 
 /**
- * 개인정보처리방침 v1 (시행 2026-07-07)
+ * 개인정보처리방침 v1.1 (최초 시행 2026-07-07, v1.1 공고 2026-08-03 · 시행 2026-08-10)
  *
  * - 배우 프로필(사진·영상·신체정보·연락처)을 수집해 캐스팅 관계자에게 제공하는
  *   서비스 특성상 "제3자 제공" 조항이 핵심 — 개인정보보호법 제30조 공개 의무 이행.
+ * - v1.1: 위탁·국외이전을 표로 격상(법정 고지 항목 명시), Resend(메일)·Cloudflare R2(영상)
+ *   수탁처 추가 — 이용자에게 불리한 변경이 아니므로 CONSENT_VERSION(재동의)은 v1 유지.
  * - 동의 기록은 Supabase Auth user_metadata(consent_tos/consent_privacy/consent_dist)로 남김.
- * - 버전 올릴 때: CONSENT_VERSION(lib/consent.ts)과 이 문서의 시행일을 함께 갱신할 것.
+ * - 재동의가 필요한 변경(수집 항목 확대, 제공 범위 변경 등) 시: CONSENT_VERSION(lib/consent.ts)과
+ *   이 문서의 시행일을 함께 갱신할 것.
  */
 
 export const metadata: Metadata = {
@@ -42,7 +45,7 @@ export default function PrivacyPage() {
           개인정보처리방침
         </h1>
         <p style={{ fontSize: '0.8rem', color: 'var(--gray)', marginBottom: 28 }}>
-          시행일 2026년 7월 7일 · 버전 v1
+          버전 v1.1 · 공고 2026년 8월 3일 · 시행 2026년 8월 10일 (최초 시행 2026년 7월 7일)
         </p>
 
         <p style={P}>
@@ -97,12 +100,57 @@ export default function PrivacyPage() {
         </p>
 
         <h2 style={H2}>4. 처리 위탁 및 국외 이전</h2>
-        <ul style={UL}>
-          <li style={LI}>Supabase — 회원·프로필 데이터 및 파일(사진·영상·문서) 보관 (서버가 국외에 소재할 수 있음)</li>
-          <li style={LI}>Vercel — 웹사이트 호스팅 (서버가 국외에 소재할 수 있음)</li>
-          <li style={LI}>Solapi — 문자(SMS/LMS/MMS) 발송</li>
-          <li style={LI}>Google(Analytics)·Meta(Pixel) — 방문 통계 및 광고 성과 측정</li>
-        </ul>
+        <p style={P}>
+          서비스 운영을 위해 아래 업체에 개인정보 처리를 위탁하며, 일부 정보는 서비스 이용(가입·업로드·접속) 시점에
+          네트워크를 통해 국외 서버로 전송·보관됩니다. 보유 기간은 회원 탈퇴 또는 위탁 계약 종료 시까지입니다.
+        </p>
+        <div style={{ overflowX: 'auto', marginBottom: 10 }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid var(--border)', minWidth: 520 }}>
+            <thead>
+              <tr>
+                <th style={TH}>수탁업체</th>
+                <th style={TH}>위탁 업무</th>
+                <th style={TH}>처리 국가</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={TD}>Supabase</td>
+                <td style={TD}>회원·프로필 데이터 및 파일(사진·문서) 보관</td>
+                <td style={TD}>싱가포르</td>
+              </tr>
+              <tr>
+                <td style={TD}>Vercel</td>
+                <td style={TD}>웹사이트 호스팅·접속 기록</td>
+                <td style={TD}>미국</td>
+              </tr>
+              <tr>
+                <td style={TD}>Cloudflare</td>
+                <td style={TD}>영상 파일 보관(R2)</td>
+                <td style={TD}>미국(글로벌 분산)</td>
+              </tr>
+              <tr>
+                <td style={TD}>Resend</td>
+                <td style={TD}>이메일 발송(인증·안내 메일)</td>
+                <td style={TD}>일본(도쿄)</td>
+              </tr>
+              <tr>
+                <td style={TD}>Solapi</td>
+                <td style={TD}>문자(SMS/LMS/MMS) 발송</td>
+                <td style={TD}>대한민국</td>
+              </tr>
+              <tr>
+                <td style={TD}>Google(Analytics)·Meta(Pixel)</td>
+                <td style={TD}>방문 통계·광고 성과 측정(행태정보)</td>
+                <td style={TD}>미국</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style={P}>
+          국외 이전을 원하지 않는 경우 가입·이용을 중단하거나 아래 연락처로 거부 의사를 밝힐 수 있습니다.
+          다만 위 업체들은 서비스 제공에 필수적인 기반이므로, 거부 시 서비스 이용이 제한될 수 있습니다.
+        </p>
 
         <h2 style={H2}>5. 보유 및 이용 기간</h2>
         <p style={P}>
