@@ -44,6 +44,7 @@ function SignupContent() {
   const [agreeTos, setAgreeTos] = useState(false)
   const [agreePrivacy, setAgreePrivacy] = useState(false)
   const [agreeDist, setAgreeDist] = useState(false) // 배우: 프로필 공개·캐스팅 관계자 제공·사진영상 이용
+  const [agreeMarketing, setAgreeMarketing] = useState(false) // 소식·혜택 안내 수신 (선택 — 2026-08-03 추가)
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -71,6 +72,36 @@ function SignupContent() {
     if (digits.length <= 3) return digits
     if (digits.length <= 7) return `${digits.slice(0, 3)}-${digits.slice(3)}`
     return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7, 11)}`
+  }
+
+  // 간편 가입(소셜) — 배우 회원 전용. OAuth 가입은 /api/auth/on-signup에서 기본 'actor'로
+  // 등록되고, 세부 정보(전화·성별·출생연도)는 이후 프로필 접수에서 입력받는다.
+  async function handleGoogleSignup() {
+    setLoading(true)
+    setError('')
+    const supabase = createClient()
+    const { error: authError } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: `${getRedirectOrigin()}/auth/callback` },
+    })
+    if (authError) {
+      setError('구글 가입 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.')
+      setLoading(false)
+    }
+  }
+
+  async function handleKakaoSignup() {
+    setLoading(true)
+    setError('')
+    const supabase = createClient()
+    const { error: authError } = await supabase.auth.signInWithOAuth({
+      provider: 'kakao',
+      options: { redirectTo: `${getRedirectOrigin()}/auth/callback` },
+    })
+    if (authError) {
+      setError('카카오 가입 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.')
+      setLoading(false)
+    }
   }
 
   async function handleSignup(e: React.FormEvent) {
@@ -141,6 +172,9 @@ function SignupContent() {
     metadata.consent_at = new Date().toISOString()
     if (memberType === 'actor') {
       metadata.consent_dist = CONSENT_VERSION
+    }
+    if (agreeMarketing) {
+      metadata.consent_marketing = CONSENT_VERSION
     }
 
     const { data: signUpData, error: authError } = await supabase.auth.signUp({
@@ -327,6 +361,40 @@ function SignupContent() {
           aria-atomic="true"
           style={{ outline: 'none', ...(error ? styles.errorBox : {}) }}
         >{error ?? ''}</div>
+
+        {/* 간편 가입 — 소셜 시작 (2026-08-03 아트워커 벤치마크 대표 지시).
+            OAuth 가입은 배우 회원으로 등록되며, 세부 정보는 이후 프로필 접수에서 입력 */}
+        {memberType === 'actor' && (
+          <>
+            <div style={styles.socialGroup}>
+              <button
+                type="button"
+                onClick={handleGoogleSignup}
+                disabled={loading}
+                aria-busy={loading}
+                style={{ ...styles.btnSocial, ...styles.btnGoogle, opacity: loading ? 0.6 : 1 }}
+              >
+                <GoogleIcon />
+                <span lang="en">Google</span>로 계속하기
+              </button>
+              <button
+                type="button"
+                onClick={handleKakaoSignup}
+                disabled={loading}
+                aria-busy={loading}
+                style={{ ...styles.btnSocial, ...styles.btnKakao, opacity: loading ? 0.6 : 1 }}
+              >
+                <KakaoIcon />
+                카카오로 계속하기
+              </button>
+            </div>
+            <div style={styles.divider} aria-hidden="true">
+              <span style={styles.dividerLine} />
+              <span style={styles.dividerText}>또는 이메일로 가입</span>
+              <span style={styles.dividerLine} />
+            </div>
+          </>
+        )}
 
         <p className="sr-only">별표(*)는 필수 항목입니다</p>
         <form onSubmit={handleSignup} aria-label="회원가입" style={styles.form}>
@@ -579,6 +647,13 @@ function SignupContent() {
                 </span>
               </label>
             )}
+            <label style={styles.consentRow}>
+              <input type="checkbox" checked={agreeMarketing} onChange={(e) => setAgreeMarketing(e.target.checked)} disabled={loading} style={styles.consentBox} />
+              <span style={styles.consentText}>
+                소식·혜택 안내 수신 동의 <span style={styles.consentSub}>(선택)</span>
+                <br /><span style={styles.consentSub}>클래스 소식·캐스팅 기회·이벤트 안내를 받아요 — 언제든 수신 거부할 수 있어요</span>
+              </span>
+            </label>
             {memberType === 'director' && (
               <p style={styles.consentSub}>
                 열람한 배우 연락처·프로필은 캐스팅 목적 외 이용·재배포가 금지됩니다. (이용약관 제7조)
@@ -881,4 +956,91 @@ const styles: Record<string, React.CSSProperties> = {
     cursor: 'pointer',
     textDecoration: 'none',
   },
+  /* ── 간편 가입(소셜) — 로그인 페이지와 동일 스타일 (2026-08-03) ── */
+  socialGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 10,
+  },
+  btnSocial: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    width: '100%',
+    padding: '11px 0',
+    minHeight: 44,
+    borderRadius: 6,
+    fontSize: '0.9rem',
+    fontWeight: 500,
+    fontFamily: 'inherit',
+    cursor: 'pointer',
+    border: '1px solid transparent',
+    transition: 'opacity 0.2s',
+  },
+  btnGoogle: {
+    background: 'var(--bg3)',
+    border: '1px solid var(--border)',
+    color: 'var(--white)',
+  },
+  btnKakao: {
+    background: '#FEE500',
+    color: '#3C1E1E',
+    fontWeight: 700,
+  },
+  divider: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 12,
+    margin: '24px 0',
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    background: 'var(--border)',
+  },
+  dividerText: {
+    fontSize: '0.8rem',
+    color: 'var(--gray)',
+    flexShrink: 0,
+  },
+}
+
+/* ---- 인라인 아이콘 (로그인 페이지와 동일) ---- */
+function GoogleIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" style={{ flexShrink: 0 }}>
+      <path
+        fill="#4285F4"
+        d="M17.64 9.2a10.35 10.35 0 0 0-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"
+      />
+      <path
+        fill="#34A853"
+        d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26C11.17 14.27 10.17 14.6 9 14.6c-2.34 0-4.32-1.58-5.03-3.71H.96v2.34A9 9 0 0 0 9 18z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M3.97 10.89A5.4 5.4 0 0 1 3.69 9c0-.65.11-1.28.28-1.89V4.77H.96A9 9 0 0 0 0 9c0 1.45.35 2.82.96 4.23l3.01-2.34z"
+      />
+      <path
+        fill="#EA4335"
+        d="M9 3.58c1.32 0 2.5.45 3.44 1.35L14.98 2.4A9 9 0 0 0 9 0 9 9 0 0 0 .96 4.77l3.01 2.34C4.68 5.16 6.66 3.58 9 3.58z"
+      />
+    </svg>
+  )
+}
+
+function KakaoIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="#3C1E1E"
+      aria-hidden="true"
+      style={{ flexShrink: 0 }}
+    >
+      <path d="M12 3C6.48 3 2 6.48 2 10.8c0 2.72 1.68 5.12 4.2 6.56l-1.08 4 4.36-2.88c.8.12 1.64.2 2.52.2 5.52 0 10-3.48 10-7.8S17.52 3 12 3z" />
+    </svg>
+  )
 }
