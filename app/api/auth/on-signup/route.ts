@@ -83,6 +83,26 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '프로필 설정 실패' }, { status: 500 })
   }
 
+  // 디렉터 회원 가입 신청 → 대표에게 SMS 알림 (2026-08-03 대표 지시).
+  // 신규 신청(이번 호출로 처음 member가 되는 경우)에만 발송 — 재로그인/재호출 중복 방지.
+  // 실패해도 가입 흐름에는 영향 없음.
+  const isNewDirectorRequest =
+    memberType === 'director' && newRole === 'member' && existingRole !== 'member'
+  if (isNewDirectorRequest && process.env.ADMIN_PHONE_NUMBER) {
+    const affiliation: string = (user.user_metadata?.affiliation ?? '').toString().slice(0, 60)
+    const adminText = [
+      '[KD4] 디렉터 회원 가입 신청',
+      `이름: ${name || '(미입력)'}`,
+      affiliation ? `소속: ${affiliation}` : null,
+      '승인 대기 중입니다.',
+    ].filter(Boolean).join('\n')
+    // await 필수 — 서버리스에서 응답 반환 후 미완료 발송은 잘릴 수 있음.
+    // sendSMS는 throw하지 않고(내부 try/catch + 10초 타임아웃) 실패 시 false만 반환.
+    const { sendSMS } = await import('@/lib/sms')
+    const smsSent = await sendSMS(process.env.ADMIN_PHONE_NUMBER.trim(), adminText)
+    if (!smsSent) console.error('[on-signup] 디렉터 신청 알림 SMS 발송 실패 (가입 흐름은 정상 진행)')
+  }
+
   // 배우 매칭 (이름+전화 우선, 이름 단독 폴백은 matchActorOnSignup 내부 가드 처리)
   // — actor_id 이미 연결된 경우 스킵 (중복 매칭 방지)
   let actorId: string | undefined
