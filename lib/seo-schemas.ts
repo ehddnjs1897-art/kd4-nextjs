@@ -321,6 +321,41 @@ export function buildWebPage(opts: {
   return schema
 }
 
+/** 독백 상세 — Article + 원작 CreativeWork 참조. 무료·한국어·원작 메타를 명시해 AI 검색 인용 대상이 되게 한다 */
+export function buildMonologueArticle(m: {
+  id: string
+  role: string
+  work: string
+  medium: string
+  genre: string
+  target: string
+  emotion: string
+  body: string
+  card_image_url: string | null
+  created_at: string
+}) {
+  const url = `${SITE_URL}/monologues/${m.id}`
+  const schema: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    '@id': `${url}#article`,
+    headline: `${m.role} - ${m.work} 독백 대사${m.target ? ` (${m.target})` : ''}`,
+    description: `${m.medium}·${m.genre}${m.target ? ` ${m.target}` : ''} 독백 대본. ${(m.body ?? '').slice(0, 80)}`,
+    url,
+    mainEntityOfPage: url,
+    inLanguage: 'ko',
+    isAccessibleForFree: true,
+    author: { '@id': `${SITE_URL}#org` },
+    publisher: { '@id': `${SITE_URL}#org` },
+    datePublished: m.created_at,
+    isPartOf: { '@id': `${SITE_URL}/monologues#webpage` },
+  }
+  if (m.genre) schema.genre = m.genre
+  if (m.work) schema.about = { '@type': 'CreativeWork', name: m.work }
+  if (m.card_image_url) schema.image = m.card_image_url
+  return schema
+}
+
 /** Course — ClassItem을 상세 Course 라벨로 변환 */
 export function buildCourseFromClass(cls: ClassItem, opts: { url: string; image?: string }) {
   const desc = [cls.quote, ...cls.bullets].join(' · ')

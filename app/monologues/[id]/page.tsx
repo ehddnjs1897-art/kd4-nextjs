@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 import { getMonologueById } from '@/lib/monologues'
 import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
-import { buildBreadcrumb } from '@/lib/seo-schemas'
+import { buildBreadcrumb, buildMonologueArticle } from '@/lib/seo-schemas'
 import CopyTextButton from '@/components/monologues/CopyTextButton'
 import DownloadButton from '@/components/monologues/DownloadButton'
 
@@ -78,6 +78,7 @@ export default async function MonologueDetailPage({ params }: { params: Params }
             { name: '독백 아카이브', url: `${SITE_URL}/monologues` },
             { name: `${m.role} - ${m.work}`, url: `${SITE_URL}/monologues/${m.id}` },
           ]),
+          buildMonologueArticle(m),
         ]}
       />
 
