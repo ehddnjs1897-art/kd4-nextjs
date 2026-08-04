@@ -20,6 +20,8 @@ interface UTMData {
   utm_content: string | null
   utm_term: string | null
   referrer: string | null
+  /** 세션 최초 착지 경로 — FirstTouchTracker(루트 레이아웃)가 보존 (2026-08-04) */
+  landing: string | null
 }
 
 /** UTM 영속 키 — 사이트 탐색 중에도 광고 진입 UTM 유지 (2026-05-19 버그 수정)
@@ -28,7 +30,7 @@ interface UTMData {
 const UTM_STORAGE_KEY = 'kd4_utm'
 
 function readUTMFromURL(): UTMData {
-  const empty: UTMData = { utm_source: null, utm_medium: null, utm_campaign: null, utm_content: null, utm_term: null, referrer: null }
+  const empty: UTMData = { utm_source: null, utm_medium: null, utm_campaign: null, utm_content: null, utm_term: null, referrer: null, landing: null }
   if (typeof window === 'undefined' || typeof document === 'undefined') return empty
 
   const params = new URLSearchParams(window.location.search)
@@ -39,6 +41,7 @@ function readUTMFromURL(): UTMData {
     utm_content: params.get('utm_content'),
     utm_term: params.get('utm_term'),
     referrer: document.referrer || null,
+    landing: (window.location.pathname + window.location.search).slice(0, 300),
   }
 
   const hasURLUTM = Boolean(
@@ -159,6 +162,7 @@ export default function JoinForm() {
     utm_content: null,
     utm_term: null,
     referrer: null,
+    landing: null,
   })
   useEffect(() => {
     utmRef.current = readUTMFromURL()

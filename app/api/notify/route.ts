@@ -12,7 +12,7 @@ import { sendSMS } from '@/lib/sms'
 import { sendConsultationReceivedEmail } from '@/lib/email'
 import { getSupabaseAdmin } from '@/lib/supabase/admin'
 import { SITE_URL } from '@/lib/constants'
-import { normalizeUtmSource, normalizeUtmMedium, normalizeUtmLabel } from '@/lib/utm'
+import { normalizeUtmSource, normalizeUtmMedium, normalizeUtmLabel, inferOrganicUtm } from '@/lib/utm'
 
 /* ── Meta Conversions API (CAPI) ──────────────────────────────────────
  * iOS14 ATT 이후 클라이언트 픽셀 단독 추적은 30%+ 누락. 서버에서 직접
@@ -315,6 +315,21 @@ export async function POST(request: NextRequest) {
     }
     const record = data?.record ?? data
 
+    // 자연 유입 추정 (2026-08-04): UTM 없이 외부 referrer만 있는 상담은 source/medium을
+    // referrer에서 도출 — 검색 착지(/monologues 등) 상담이 '직접 방문'으로 뭉개지는 것 방지.
+    // record 자체를 보강해 DB insert·노션 카드·SMS 알림이 전부 같은 값을 보게 한다.
+    if (record && typeof record === 'object' && !record.utm_source) {
+      const inferred = inferOrganicUtm(typeof record.referrer === 'string' ? record.referrer : null)
+      if (inferred) {
+        record.utm_source = inferred.utm_source
+        record.utm_medium = record.utm_medium || inferred.utm_medium
+      }
+    }
+    // 착지 페이지(FirstTouchTracker가 보존)는 utm_content가 비어있을 때만 채운다 — 광고 소재명 보호
+    if (record && typeof record === 'object' && !record.utm_content && typeof record.landing === 'string' && record.landing.trim()) {
+      record.utm_content = record.landing.trim().slice(0, 200)
+    }
+
     // 서버사이드 허니팟 체크 — 클라이언트 차단 우회 방어 (스펙 2-E)
     // `company` 필드가 비어있어야 실제 사람. 봇은 보통 모든 필드를 채움.
     if (typeof record?.company === 'string' && record.company.trim()) {
@@ -421,6 +436,7 @@ export async function POST(request: NextRequest) {
         utm_content: normalizeUtmLabel(typeof record?.utm_content === 'string' ? record.utm_content.slice(0, 200) : null),
         utm_term: typeof record?.utm_term === 'string' ? record.utm_term.trim().slice(0, 200) : null,
         referrer: typeof record?.referrer === 'string' ? record.referrer.trim().slice(0, 500) : null,
+        landing: typeof record?.landing === 'string' ? record.landing.trim().slice(0, 300) : null,
         status: (['대기', '확인', '완료'] as const).includes(record?.status as '대기' | '확인' | '완료') ? record.status : '대기',
       },
     }

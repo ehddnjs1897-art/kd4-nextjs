@@ -81,3 +81,37 @@ export function normalizeUtmLabel(raw?: string | null): string | null {
   if (!raw?.trim()) return null
   return canonicalKey(raw)
 }
+
+/** referrer 호스트 → 정규 source. 검색엔진은 organic, 소셜·기타는 referral
+ *  (유료 유입은 UTM이 붙어 이 경로를 타지 않는다) */
+const REFERRER_SOURCES: [RegExp, string, string][] = [
+  [/(^|\.)naver\.com$/, 'naver', 'organic'],
+  [/(^|\.)google\.[a-z.]+$/, 'google', 'organic'],
+  [/(^|\.)daum\.net$/, 'daum', 'organic'],
+  [/(^|\.)bing\.com$/, 'bing', 'organic'],
+  [/(^|\.)instagram\.com$/, 'instagram', 'referral'],
+  [/(^|\.)(youtube\.com|youtu\.be)$/, 'youtube', 'referral'],
+  [/(^|\.)facebook\.com$/, 'facebook', 'referral'],
+  [/(^|\.)kakao\.com$/, 'kakao', 'referral'],
+]
+
+/**
+ * UTM 없는 유입의 source/medium을 referrer에서 추정한다 (2026-08-04 신설).
+ * 배경: 검색으로 /monologues 등에 착지한 상담이 전부 '직접 방문'으로 뭉개져
+ * "독백 아카이브가 상담을 만드나"를 셀 수 없었다. 내부 이동·referrer 없음은 null.
+ */
+export function inferOrganicUtm(referrer?: string | null): { utm_source: string; utm_medium: string } | null {
+  if (!referrer?.trim()) return null
+  let host = ''
+  try {
+    host = new URL(referrer).hostname.toLowerCase()
+  } catch {
+    return null
+  }
+  if (!host || host === 'kd4.club' || host.endsWith('.kd4.club')) return null
+  for (const [re, source, medium] of REFERRER_SOURCES) {
+    if (re.test(host)) return { utm_source: source, utm_medium: medium }
+  }
+  // 모르는 외부 호스트도 버리지 않는다 — 낯선 이름이 리포트에 뜨는 편이 낫다 (위 normalize 철학과 동일)
+  return { utm_source: host.replace(/^www\./, ''), utm_medium: 'referral' }
+}

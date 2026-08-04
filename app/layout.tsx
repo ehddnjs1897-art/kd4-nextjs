@@ -7,6 +7,7 @@ import { RouteAnnouncer } from '@/components/layout/RouteAnnouncer'
 import JsonLd from '@/components/seo/JsonLd'
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
 import GAPageTracker from '@/components/analytics/GAPageTracker'
+import FirstTouchTracker from '@/components/analytics/FirstTouchTracker'
 import MetaPixel from '@/components/analytics/MetaPixel'
 import { SITE_URL } from '@/lib/constants'
 
@@ -120,6 +121,7 @@ export default function RootLayout({
         <ConditionalShell>{children}</ConditionalShell>
         <GoogleAnalytics />
         <GAPageTracker />
+        <FirstTouchTracker />
         <MetaPixel />
         {/* Kakao SDK: lazyOnload — 공유 버튼 클릭 전에 불필요, 클릭 시 fallback(클립보드) 확보됨 */}
         <Script

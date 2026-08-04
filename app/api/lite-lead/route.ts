@@ -17,7 +17,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase/admin'
 import { SITE_URL } from '@/lib/constants'
-import { normalizeUtmSource, normalizeUtmMedium, normalizeUtmLabel } from '@/lib/utm'
+import { normalizeUtmSource, normalizeUtmMedium, normalizeUtmLabel, inferOrganicUtm } from '@/lib/utm'
 
 const ALLOWED_CHANNELS = new Set(['kakao', 'form', 'instagram', 'blog'])
 
@@ -74,6 +74,16 @@ export async function POST(request: NextRequest) {
       utm_term: safeStr(utm.utm_term, 200),
       referrer: safeStr(utm.referrer ?? data.referrer, 500),
     }
+    // 자연 유입 추정 + 착지 경로 — notify 라우트와 동일 기준 (2026-08-04)
+    const landing = safeStr(utm.landing ?? data.landing, 300)
+    if (!utmFields.utm_source && utmFields.referrer) {
+      const inferred = inferOrganicUtm(utmFields.referrer)
+      if (inferred) {
+        utmFields.utm_source = inferred.utm_source
+        utmFields.utm_medium = utmFields.utm_medium || inferred.utm_medium
+      }
+    }
+    if (!utmFields.utm_content && landing) utmFields.utm_content = landing.slice(0, 200)
 
     // IP 기반 디바운스 (sendBeacon 중복 발사 방어)
     const ip = request.headers.get('x-real-ip') ?? null
@@ -109,6 +119,7 @@ export async function POST(request: NextRequest) {
         channel,
         ip,
         ...utmFields,
+        landing,
       },
     }
 
