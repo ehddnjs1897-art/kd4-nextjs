@@ -1,7 +1,8 @@
 import 'server-only'
 import { cache } from 'react'
 import { unstable_cache } from 'next/cache'
-import { supabaseAdmin } from '@/lib/supabase/admin'
+// 공개 게시분만 읽는 모듈이므로 anon+RLS 클라이언트 사용 — service 키 사고와 격리 (2026-08-05)
+import { supabasePublic } from '@/lib/supabase/public'
 
 export interface Monologue {
   id: string
@@ -47,7 +48,7 @@ const SELECT_COLUMNS =
  */
 export async function getMonologues(filters: MonologueFilters = {}): Promise<MonologueListItem[]> {
   // grade 정렬(S→A→B)은 문자열 순서와 안 맞아 DB에 안 맡기고 아래에서 JS로 보정
-  let query = supabaseAdmin
+  let query = supabasePublic
     .from('monologues')
     .select(LIST_COLUMNS)
     .eq('is_published', true)
@@ -77,7 +78,7 @@ export async function getMonologues(filters: MonologueFilters = {}): Promise<Mon
 }
 
 async function fetchMonologueTotalCount(): Promise<number> {
-  const { count, error } = await supabaseAdmin
+  const { count, error } = await supabasePublic
     .from('monologues')
     .select('id', { count: 'exact', head: true })
     .eq('is_published', true)
@@ -121,7 +122,7 @@ export const getMonologuesCached = cache(
 )
 
 export async function getMonologueById(id: string): Promise<Monologue | null> {
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await supabasePublic
     .from('monologues')
     .select(SELECT_COLUMNS)
     .eq('id', id)

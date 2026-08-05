@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next'
-import { supabaseAdmin } from '@/lib/supabase/admin'
+// 사이트맵은 공개분만 나열 — anon+RLS로 충분, service 키 사고와 격리 (2026-08-05)
+import { supabasePublic } from '@/lib/supabase/public'
 import { SITE_URL as BASE } from '@/lib/constants'
 import { CASTING_TAG_OPTIONS } from '@/lib/actor-tags'
 
@@ -37,7 +38,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 사이트맵 생성이 죽지 않도록 try/catch — 실패 시 정적 페이지만 반환.
   let actorPages: MetadataRoute.Sitemap = []
   try {
-    const { data: actors, error: actorsError } = await supabaseAdmin
+    const { data: actors, error: actorsError } = await supabasePublic
       .from('actors')
       .select('id, updated_at')
       .eq('is_public', true)
@@ -57,7 +58,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 독백 아카이브 상세 페이지 (공개분만)
   let monologuePages: MetadataRoute.Sitemap = []
   try {
-    const { data: monologues, error: monoError } = await supabaseAdmin
+    const { data: monologues, error: monoError } = await supabasePublic
       .from('monologues')
       .select('id, created_at')
       .eq('is_published', true)
