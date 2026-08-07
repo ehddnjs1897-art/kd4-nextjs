@@ -189,6 +189,14 @@ export default async function DashboardPage() {
   const memberType = user.user_metadata?.member_type as string | undefined
   const canRequestDirector = memberType === 'director' && ['user', 'member', 'actor'].includes(role)
 
+  // 서비스 동의 미기록 판정 — /consent 페이지 제출 요건과 동일 기준(member_type).
+  // 이전 조건(isActorMember && actorId)은 프로필 미연결 회원·디렉터에게 배너를 숨겨
+  // "안내 문자를 받았는데 마이페이지에 동의할 곳이 없다"는 문의 발생 (2026-08-06 수정)
+  const needsConsent =
+    typeof user.user_metadata?.consent_tos !== 'string' ||
+    typeof user.user_metadata?.consent_privacy !== 'string' ||
+    (memberType !== 'director' && typeof user.user_metadata?.consent_dist !== 'string')
+
   const thisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
   const nextDate = new Date(now.getFullYear(), now.getMonth() + 1, 1)
   const nextMonth = `${nextDate.getFullYear()}-${String(nextDate.getMonth() + 1).padStart(2, '0')}`
@@ -209,14 +217,20 @@ export default async function DashboardPage() {
           <a href="/enroll" style={{ display: 'inline-block', marginTop: 12, padding: '10px 18px', background: 'var(--gold)', color: '#fff', fontFamily: 'var(--font-sans)', fontSize: '0.9rem', fontWeight: 700, borderRadius: 'var(--radius)', textDecoration: 'none' }}>멤버 수강신청 →</a>
         </div>
 
-        {/* 서비스 동의 배너 — 방침·약관 v1 신설(2026-07-07), 기존 배우 멤버 1회 동의 수집 */}
-        {isActorMember && actorId && typeof user.user_metadata?.consent_dist !== 'string' && (
+        {/* 서비스 동의 배너 — 미동의 회원 전원에게 표시 (2026-08-06 조건 확대) */}
+        {needsConsent ? (
           <Link href="/consent" style={{ display: 'block', padding: '14px 18px', borderRadius: 8, background: 'rgba(21,72,138,0.06)', border: '1px solid rgba(21,72,138,0.3)', textDecoration: 'none' }}>
             <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: 700, color: 'var(--navy)' }}>서비스 이용 동의 한 번만 확인해 주세요 <span aria-hidden="true">→</span></p>
             <p style={{ margin: '5px 0 0', fontSize: '0.78rem', color: 'var(--gray)', lineHeight: 1.6 }}>
               개인정보처리방침·이용약관이 새로 생겼어요. 프로필 공개와 캐스팅 연결을 계속 받으려면 동의가 필요해요.
             </p>
           </Link>
+        ) : (
+          /* 이미 동의 완료한 멤버 — 안내 문자를 받고 들어와도 상태를 확인할 수 있게 */
+          <p style={{ fontSize: '0.78rem', color: 'var(--gray)', margin: 0, padding: '0 4px' }}>
+            <span aria-hidden="true" style={{ color: 'var(--navy)' }}>✓</span> 서비스 이용 동의 완료 —{' '}
+            <Link href="/consent" style={{ color: 'var(--navy)', fontWeight: 600 }}>동의 내역 확인</Link>
+          </p>
         )}
 
         {/* 내 계정 카드 */}
