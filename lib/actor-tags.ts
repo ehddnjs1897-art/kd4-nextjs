@@ -80,7 +80,7 @@ export async function classifyActor(input: ActorClassifyInput): Promise<ActorCla
 
   try {
     const res = await fetch(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-goog-api-key': GEMINI_KEY! },
@@ -90,9 +90,9 @@ export async function classifyActor(input: ActorClassifyInput): Promise<ActorCla
           contents: [{ parts: [{ text: actorData }] }],
           generationConfig: {
             temperature: 0.4,
-            // 한글 토큰 ≈ 2~3 토큰/자, 화이트리스트+요약 안전 여유 (256 → 512 상향)
-            maxOutputTokens: 512,
+            maxOutputTokens: 1024,
             responseMimeType: 'application/json',
+            thinkingConfig: { thinkingBudget: 0 },
           },
         }),
       }
