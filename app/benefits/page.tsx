@@ -165,7 +165,7 @@ export default function BenefitsPage() {
           name: '멤버 혜택 — KD4 액팅 스튜디오',
           description: 'KD4 멤버가 누리는 혜택과 커뮤니티 — 보강제도, 출연영상·프로필 편집 서비스, 레피티션 스터디.',
           about: { '@id': `${SITE_URL}#org` },
-          dateModified: '2026-06-11',
+          dateModified: '2026-08-12',
           speakableCssSelectors: ['h1', 'h2'],
         }),
         {
@@ -459,6 +459,23 @@ export default function BenefitsPage() {
               <span style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', fontWeight: 700, color: 'var(--white)' }}>배우 프로필 촬영 제휴</span>
               <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 600, color: 'var(--gold)' }}>KD4 멤버 최대 15% 할인</span>
               <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: 'var(--secondary)' }}>서우스튜디오 · 프로필 · 포트레이트 촬영</span>
+            </span>
+            <span aria-hidden style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 700, color: 'var(--gold)', whiteSpace: 'nowrap' }}>자세히 보기 →</span>
+          </Link>
+
+          {/* 엠오엠 피티&필라테스 신촌 */}
+          <Link
+            href="/benefits/mom-pt-pilates"
+            aria-label="엠오엠 피티&필라테스 재활PT·필라테스 제휴 혜택 자세히 보기"
+            className="kd4-card-hover"
+            style={{ display: 'flex', alignItems: 'center', gap: 'clamp(16px, 4vw, 24px)', background: '#ffffff', border: '1.5px solid rgba(21,72,138,0.18)', borderRadius: 12, padding: 'clamp(18px, 3vw, 24px)', textDecoration: 'none', position: 'relative', overflow: 'hidden', flexWrap: 'wrap' }}
+          >
+            <span aria-hidden style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 3, background: 'var(--gold)' }} />
+            <Image src="/partners/mom-pt-logo.webp" alt="엠오엠 피티&필라테스" width={72} height={72} style={{ borderRadius: 6, flexShrink: 0, objectFit: 'cover' }} />
+            <span style={{ display: 'flex', flexDirection: 'column', gap: 5, minWidth: 160, flex: 1 }}>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', fontWeight: 700, color: 'var(--white)' }}>재활PT · 필라테스 제휴</span>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 600, color: 'var(--gold)' }}>바디분석 2시간 무료(20만원 → 0원) + 정규 수업 31% 할인</span>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: 'var(--secondary)' }}>엠오엠 피티&필라테스 신촌 · KD4 멤버 박경수 배우 운영</span>
             </span>
             <span aria-hidden style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 700, color: 'var(--gold)', whiteSpace: 'nowrap' }}>자세히 보기 →</span>
           </Link>
