@@ -69,18 +69,21 @@ async function main() {
     .filter((i) => i.d >= 0)
     .sort((a, b) => a.d - b.d)
 
+  // 2026-08-14 대표 지시: 매일 SMS에 "무빙 대본 읽기" 루틴 동봉 — 영화제 목록이 비어도 루틴 문자는 매일 발송
+  const lines: string[] = []
   if (pending.length === 0) {
-    log('보낼 대상 없음 — 전부 제출완료 또는 마감 지남')
-    return
+    log('영화제 대상 없음 — 루틴 리마인더만 발송')
+    lines.push('[KD4 데일리]')
+  } else {
+    lines.push('[KD4 영화제 출품 알림]', '「경계선」 아직 안 낸 곳:')
+    pending.forEach((i, idx) => {
+      const md = new Date(i.deadline + 'T00:00:00Z')
+      const mdStr = `${md.getUTCMonth() + 1}/${md.getUTCDate()}`
+      lines.push(`${idx + 1}. ${i.name} — D-${i.d} (${mdStr}) ${i.fee}`)
+    })
+    lines.push('', '낸 곳 있으면 채팅으로 "OO 냈어" 알려주세요, 목록에서 뺄게요.', '전체 링크·준비물: 영화제출품_지원가능_전수.md')
   }
-
-  const lines = ['[KD4 영화제 출품 알림]', '「경계선」 아직 안 낸 곳:']
-  pending.forEach((i, idx) => {
-    const md = new Date(i.deadline + 'T00:00:00Z')
-    const mdStr = `${md.getUTCMonth() + 1}/${md.getUTCDate()}`
-    lines.push(`${idx + 1}. ${i.name} — D-${i.d} (${mdStr}) ${i.fee}`)
-  })
-  lines.push('', '낸 곳 있으면 채팅으로 "OO 냈어" 알려주세요, 목록에서 뺄게요.', '전체 링크·준비물: 영화제출품_지원가능_전수.md')
+  lines.push('', '📖 오늘 루틴: 무빙 대본 읽기')
 
   const text = lines.join('\n')
 
