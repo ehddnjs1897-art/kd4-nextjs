@@ -5,6 +5,7 @@
 import type { Metadata } from 'next'
 import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
+import { LAST_UPDATED } from '@/lib/last-updated'
 import { buildBreadcrumb, buildCourseFromClass, buildWebPage } from '@/lib/seo-schemas'
 import { CLASSES } from '@/lib/classes'
 
@@ -17,7 +18,7 @@ const CLASS_PAGE_URLS: Record<string, string> = {
 }
 
 export const metadata: Metadata = {
-  title: '연기 클래스 전체 보기',
+  title: '연기 클래스 9개 — 베이직·마이즈너·출연영상·1:1 연기 레슨',
   description:
     '베이직·마이즈너 정규·출연영상·심화·오디션·움직임·개인 레슨. 마이즈너 테크닉 기반 9개 클래스. 서울 신촌.',
   keywords: [
@@ -85,7 +86,7 @@ export default function ClassesLayout({ children }: { children: React.ReactNode 
           url: PAGE_URL,
           name: '연기 클래스 전체 보기 — KD4 액팅 스튜디오',
           description: '베이직·마이즈너 정규·출연영상·심화·오디션·움직임·개인 레슨. 마이즈너 테크닉 기반 9개 클래스.',
-          dateModified: '2026-06-11',
+          dateModified: LAST_UPDATED.classes,
           speakableCssSelectors: ['h1', 'h2'],
         }),
         classItemListSchema,

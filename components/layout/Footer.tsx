@@ -269,10 +269,10 @@ export default function Footer() {
               {[
                 { label: '스튜디오 소개', href: '/about' },
                 { label: '클래스 소개', href: '/classes' },
-                { label: '마이즈너 정규 클래스', href: '/meisner-technique-class' },
+                { label: '마이즈너 테크닉 정규 클래스', href: '/meisner-technique-class' },
                 { label: '출연영상 클래스', href: '/reel-production-class' },
                 { label: 'KD4 액팅 코치', href: '/acting-coaches' },
-                { label: '신촌 위치 안내', href: '/sinchon-acting-academy' },
+                { label: '신촌 연기학원 오시는 길', href: '/sinchon-acting-academy' },
                 { label: '배우 DB', href: '/actors' },
                 { label: '독백 대본 아카이브', href: '/monologues' },
                 { label: '커뮤니티', href: '/board' },

@@ -113,7 +113,7 @@
 .hero-title-wall-pos.is-ready .hero-title-wall {
   animation: heroTitleWallFade 11s cubic-bezier(.4, 0, .2, 1) forwards;
 }
-.hero-title-wall h1 {
+.hero-title-wall .hero-title-wall-main {
   /* KoPubWorldDotum — 한글 전용 오픈소스 폰트 (모던 고딕) */
   font-family: 'KoPubWorldDotum', 'KoPub World Dotum', 'KoPub Dotum', var(--font-display), sans-serif;
   font-weight: 700;
@@ -140,7 +140,7 @@
   text-transform: uppercase;
   display: block;
   white-space: nowrap;
-  /* JS가 letter-spacing 동적 계산해서 h1 가로폭에 맞춤 */
+  /* JS가 letter-spacing 동적 계산해서 메인 타이틀(.hero-title-wall-main) 가로폭에 맞춤 */
   text-shadow: 0 6px 18px rgba(21, 45, 80, 0.16);
 }
 

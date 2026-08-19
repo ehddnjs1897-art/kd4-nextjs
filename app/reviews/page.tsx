@@ -42,23 +42,16 @@ export type Review = {
 }
 
 // ── Schema.org JSON-LD ──
-function buildReviewSchema(reviews: Review[]) {
-  const textReviews = reviews.filter((r) => r.review_text)
-  // 자사 페이지의 self-serving 평점(aggregateRating/reviewRating)은 구글 리치결과 정책상 비권장 → 제거.
-  // 날짜는 실제 연도가 있을 때만 연도 단위로 기재(가짜 01-01 금지).
+// 자사 페이지에 우리 후기를 Review로 싣는 것(self-serving review)은 구글 리치결과 정책 위반 —
+// 평점(aggregateRating)에 이어 review 배열까지 제거하고, 이 페이지는 "후기를 모은 웹페이지"로만 선언한다.
+// 학원 엔티티(EducationalOrganization)는 전역 JsonLd.tsx의 #school 하나뿐이므로 여기선 @id로 참조만 한다(중복 정의 금지).
+function buildReviewSchema() {
   return {
     '@context': 'https://schema.org',
-    '@type': 'EducationalOrganization',
-    '@id': `${SITE_URL}#school`,
-    name: 'KD4 액팅 스튜디오',
-    url: SITE_URL,
-    description: '서울 신촌 마이즈너 테크닉 기반 연기학원. 배우의 성장을 운영하는 Actor Operating System.',
-    review: textReviews.slice(0, 10).map((r) => ({
-      '@type': 'Review',
-      author: { '@type': 'Person', name: r.reviewer_name },
-      reviewBody: r.review_text,
-      ...(r.review_year ? { datePublished: String(r.review_year) } : {}),
-    })),
+    '@type': 'WebPage',
+    '@id': `${SITE_URL}/reviews#webpage`,
+    name: '멤버 후기',
+    about: { '@id': `${SITE_URL}#school` },
   }
 }
 
@@ -93,7 +86,7 @@ async function getReviews(): Promise<Review[]> {
 // ── Page (Server Component) ──
 export default async function ReviewsPage() {
   const reviews = await getReviews()
-  const schema = buildReviewSchema(reviews)
+  const schema = buildReviewSchema()
 
   return (
     <>

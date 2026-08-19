@@ -15,9 +15,18 @@ function cardThumb(url: string) {
 interface Props {
   monologues: MonologueListItem[]
   initialQuery?: string
+  /** ?page=N (1-base) — SSR 시 N페이지까지(1~N) 한 번에 렌더해 크롤러에 목록 링크를 노출 */
+  initialPage?: number
+  /** 현재 필터 쿼리스트링(page 제외) — '더 보기' 앵커 href 조립용 */
+  filterQuery?: string
 }
 
-export default function MonologuesSearchGrid({ monologues, initialQuery = '' }: Props) {
+export default function MonologuesSearchGrid({
+  monologues,
+  initialQuery = '',
+  initialPage = 1,
+  filterQuery = '',
+}: Props) {
   const [query, setQuery] = useState(initialQuery)
   // 타이핑 즉시성 유지 + 필터링은 한 박자 뒤에 (디바운스 효과) — ActorsSearchGrid와 동일 패턴
   const deferredQuery = useDeferredValue(query)
@@ -63,8 +72,14 @@ export default function MonologuesSearchGrid({ monologues, initialQuery = '' }: 
   }, [monologues, deferredQuery])
 
   // 점진 렌더 — 731장 전량 DOM 대신 48장씩 (저사양 모바일 하이드레이션 비용 절감). 검색/필터 바뀌면 리셋.
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
-  useEffect(() => { setVisibleCount(PAGE_SIZE) }, [filtered])
+  // ?page=N으로 들어오면 N*48장까지 서버에서 렌더 → 크롤러가 '더 보기' 앵커를 따라 목록 링크를 다 본다.
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE * Math.max(1, initialPage))
+  // 마운트 직후 리셋은 건너뛴다 — ?page=N으로 펼쳐둔 화면이 하이드레이션 순간 48장으로 줄어들지 않게.
+  const mountedRef = useRef(false)
+  useEffect(() => {
+    if (!mountedRef.current) { mountedRef.current = true; return }
+    setVisibleCount(PAGE_SIZE)
+  }, [filtered])
   const sentinelRef = useRef<HTMLDivElement | null>(null)
   useEffect(() => {
     const el = sentinelRef.current
@@ -241,14 +256,19 @@ export default function MonologuesSearchGrid({ monologues, initialQuery = '' }: 
       )}
       {visibleCount < filtered.length && (
         <div ref={sentinelRef} style={{ textAlign: 'center', padding: '28px 0 8px' }}>
-          <button
-            type="button"
-            onClick={() => setVisibleCount((c) => Math.min(c + PAGE_SIZE, filtered.length))}
+          {/* 크롤러가 다음 페이지를 따라올 수 있게 <a href="?page=N+1"> — 사람이 누르면
+              기존처럼 페이지 이동 없이 48장만 더 펼친다(외형·클래스는 button 시절 그대로). */}
+          <a
+            href={`/monologues${filterQuery ? `?${filterQuery}&` : '?'}page=${Math.ceil(visibleCount / PAGE_SIZE) + 1}`}
+            onClick={(e) => {
+              e.preventDefault()
+              setVisibleCount((c) => Math.min(c + PAGE_SIZE, filtered.length))
+            }}
             className="btn-outline"
             style={{ minHeight: 44 }}
           >
             더 보기 (남은 {filtered.length - visibleCount}편)
-          </button>
+          </a>
         </div>
       )}
     </>

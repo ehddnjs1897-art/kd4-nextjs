@@ -169,20 +169,19 @@ interface ActorVideoInput {
   uploadDate?: string | null
 }
 
-/** uploadDate 미상·파싱 불가 시 폴백 — 시간대 포함 완전 ISO 8601 (KST 자정) */
-const UPLOAD_DATE_FALLBACK = '2024-01-01T00:00:00+09:00'
-
 /**
  * uploadDate를 시간대 포함 완전 ISO 8601로 정규화.
+ * 값이 없거나 파싱 불가면 undefined — 가짜 폴백 날짜(구 2024-01-01)를 내보내지 않는다.
+ * (없는 uploadDate보다 틀린 uploadDate가 더 나쁨 — 구조화데이터 신뢰도 문제)
  * Search Console 2026-07-20 지적 2건 대응:
  * ① "datetime 속성('uploadDate')에 시간대가 누락됨" ② "'uploadDate'의 datetime 값이 잘못됨"
  * — DB created_at 원본(마이크로초·'+00' 축약 오프셋 등 Google 파서가 거부할 수 있는 변형)을
  * 그대로 내보내지 않고 Date 파싱 → toISOString()으로 항상 'Z' 시간대가 붙은 유효값만 출력.
  */
-function normalizeUploadDate(raw?: string | null): string {
-  if (!raw?.trim()) return UPLOAD_DATE_FALLBACK
+function normalizeUploadDate(raw?: string | null): string | undefined {
+  if (!raw?.trim()) return undefined
   const parsed = new Date(raw)
-  if (Number.isNaN(parsed.getTime())) return UPLOAD_DATE_FALLBACK
+  if (Number.isNaN(parsed.getTime())) return undefined
   return parsed.toISOString()
 }
 
@@ -216,8 +215,10 @@ export function getActorVideoSchemas(
         },
       }
 
-      // Google VideoObject rich result requires uploadDate — 시간대 포함 완전 ISO 8601로 정규화
-      schema.uploadDate = normalizeUploadDate(v.uploadDate)
+      // Google VideoObject rich result requires uploadDate — 시간대 포함 완전 ISO 8601로 정규화.
+      // 값이 없으면 키를 만들지 않는다(가짜 날짜 금지 — 리치결과에서 빠질 뿐 오류 데이터는 안 남김).
+      const uploadDate = normalizeUploadDate(v.uploadDate)
+      if (uploadDate) schema.uploadDate = uploadDate
 
       return schema
     })

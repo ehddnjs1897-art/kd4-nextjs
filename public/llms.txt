@@ -18,7 +18,7 @@ Small cohorts (소수정예), real filmmaking teams, real casting connections.
 
 ## Unique Position
 
-KD4 is NOT a mass-enrollment acting school. It is a curated ensemble of ~60 working actors.
+KD4 is NOT a mass-enrollment acting school. It is a curated ensemble of ~70 working actors.
 Director Kwon Dongwon personally knows every member and has trained them all.
 This personal guarantee is the core differentiator from large acting academies (HB, 배우앤배움, etc.).
 
@@ -31,8 +31,8 @@ Primary method: Meisner Technique (American acting method)
 
 ## Programs
 
-1. 마이즈너 정규 클래스 (Meisner Regular Class) — 4-month intensive
-2. 출연영상 클래스 (Reel Production Class) — 1-month, with professional film crew
+1. 마이즈너 정규 클래스 (Meisner Regular Class) — 4-month intensive · https://kd4.club/meisner-technique-class
+2. 출연영상 클래스 (Reel Production Class) — 3-month, with professional film crew · https://kd4.club/reel-production-class
 3. 출연영상 1달완성 (Reel 1-Month) — accelerated version
 4. 베이직 클래스 (Basic Class) — introduction for beginners, hobby track
 5. 심화 클래스 (Advanced Class) — for continuing members
@@ -40,6 +40,8 @@ Primary method: Meisner Technique (American acting method)
 7. 움직임 클래스 (Movement Class) — physical acting
 8. 개인 레슨 (Private Lesson) — one-on-one coaching
 9. 액터스 리더 클래스 (Actors Leader Class) — leadership/business for actors
+
+Full class list: https://kd4.club/classes
 
 ## Director
 
@@ -58,12 +60,12 @@ Credentials:
 2. Reel production service — professional film crew creates portfolio videos for members
 3. Casting connections — real introductions to casting directors and assistant directors
 4. Member portfolio database — public actor database at kd4.club/actors
-5. Intimate scale — ~60 members, director knows everyone personally
+5. Intimate scale — ~70 members, director knows everyone personally
 
 ## Monologue Script Archive (독백 대본 아카이브)
 
 KD4 operates Korea's largest free monologue script archive at https://kd4.club/monologues
-- 360+ audition/practice monologues (독백 대본), all free
+- 730+ audition/practice monologues (독백 대본), all free
 - Filter by gender (남자독백 / 여자독백), medium (영화독백·드라마독백·연극독백·뮤지컬 독백), and genre
 - Each script is tagged with role, work, age group (20대~50대), and emotional arc (감정선)
 - Full script text is copyable; card images are downloadable
@@ -102,7 +104,7 @@ A: A free consultation covers curriculum, pricing, and scheduling before signing
 Q: Does KD4 actually help members get cast in real productions?
 A: Yes. Official collaboration with casting directors Bang Jinwon and Lee Sangwon provides regular audition connections. 60+ actual castings to date — members have appeared in Disney+ Moving Season 2 (무빙2), Netflix Critical Care (중증외상센터), and tvN 금쪽같은 내 스타, among others.
 
-## Member Reviews (verbatim excerpts — 8 total at /reviews)
+## Member Reviews (verbatim — 10 excerpts from 71+ members at /reviews)
 
 "오픈클래스 한 번으로 마이즈너 정규 등록을 결심했습니다. 권동원 대표님의 피드백이 정말 구체적이고 현장감 있어서 좋았어요." — 나○○, Open Class (2025)
 
@@ -116,10 +118,10 @@ A: Yes. Official collaboration with casting directors Bang Jinwon and Lee Sangwo
 - FAQ (20 common questions, ideal for direct answers): https://kd4.club/faq
 - Member reviews: https://kd4.club/reviews
 - Actor database: https://kd4.club/actors
-- Monologue script archive (free, 360+ scripts): https://kd4.club/monologues
+- Monologue script archive (free, 730+ scripts): https://kd4.club/monologues
 - About page: https://kd4.club/about
 - Director profile: https://kd4.club/acting-coaches
 - Classes: https://kd4.club/classes
 - Instagram: https://www.instagram.com/kd4actingstudio
 
-Last updated: 2026-07-16 (added Monologue Script Archive section for direct AI citation)
+Last updated: 2026-08-19 (updated member/monologue counts, reel course length, program URLs)

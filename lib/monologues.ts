@@ -19,6 +19,8 @@ export interface Monologue {
   card_image_url: string | null
   grade: 'S' | 'A' | 'B'
   created_at: string
+  /** 상세 SELECT에만 포함(목록 payload 유지) — Article dateModified용 */
+  updated_at?: string | null
 }
 
 export interface MonologueFilters {
@@ -38,7 +40,7 @@ export type MonologueListItem = Pick<
 
 const LIST_COLUMNS = 'id, role, work, medium, genre, target, emotion, card_image_url, grade'
 const SELECT_COLUMNS =
-  'id, role, work, medium, genre, target, emotion, body, full_body, source_url, source_platform, card_image_url, grade, created_at'
+  'id, role, work, medium, genre, target, emotion, body, full_body, source_url, source_platform, card_image_url, grade, created_at, updated_at'
 
 /**
  * 목록 페이지 전용 — 상세 전용 필드(body/full_body 등, 편당 최대 수백~수천자)는 안 가져온다.
@@ -55,7 +57,14 @@ export async function getMonologues(filters: MonologueFilters = {}): Promise<Mon
     .order('sort_weight', { ascending: false })
     .order('created_at', { ascending: false })
 
-  if (filters.gender) query = query.ilike('target', `${filters.gender}%`)
+  if (filters.gender) {
+    // target 표기 변형 흡수: 다수는 '여성 / 20대'지만 '여자 20대' 같은 비표준 표기도 섞여 있어
+    // 접두 ilike 하나만 쓰면 그 편들이 인덱스 페이지에서 통째로 빠진다(2026-08-19 실측 29편).
+    const altGender = filters.gender === '여성' ? '여자' : filters.gender === '남성' ? '남자' : null
+    query = altGender
+      ? query.or(`target.ilike.${filters.gender}%,target.ilike.${altGender}%`)
+      : query.ilike('target', `${filters.gender}%`)
+  }
   if (filters.genre) query = query.eq('genre', filters.genre)
   if (filters.medium) query = query.eq('medium', filters.medium)
   if (filters.age) {
@@ -134,6 +143,102 @@ export async function getMonologueById(id: string): Promise<Monologue | null> {
     return null
   }
   return data as Monologue | null
+}
+
+/**
+ * 상세페이지 하단 "같은 작품의 다른 독백" — 추가 DB 쿼리 0.
+ * 이미 5분 캐시된 전량 목록(getMonologuesCached)에서 골라 쓴다.
+ * 1) 같은 작품(work) 최대 12편 → 2) 한 편도 없으면 같은 장르+같은 성별 6편 폴백.
+ */
+export async function getRelatedMonologues(
+  m: Pick<Monologue, 'id' | 'work' | 'genre' | 'target'>
+): Promise<MonologueListItem[]> {
+  const all = await getMonologuesCached()
+
+  const sameWork = all.filter((x) => x.work === m.work && x.id !== m.id).slice(0, 12)
+  if (sameWork.length > 0) return sameWork
+
+  const gender = normalizeTarget(m.target).gender
+  return all
+    .filter(
+      (x) =>
+        x.id !== m.id &&
+        x.genre === m.genre &&
+        (!gender || normalizeTarget(x.target).gender === gender)
+    )
+    .slice(0, 6)
+}
+
+export interface NormalizedTarget {
+  gender?: '여성' | '남성'
+  age?: string
+  /** 표시용 라벨 — 다수 표기인 "여성 / 20대" 형태(연령 없으면 "여성") */
+  label: string
+}
+
+/**
+ * target 컬럼 표기 정규화.
+ * 실제 DB에는 "여성 / 20대"(다수) 외에 "여자 20대", "여성 40대", "남성 / 청년", "아동" 등이 섞여 있다.
+ */
+export function normalizeTarget(t: string | null | undefined): NormalizedTarget {
+  const raw = (t ?? '').replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\s+/g, ' ').trim()
+  if (!raw) return { label: '' }
+
+  const head = raw.match(/^(여성|여자|남성|남자)/)
+  if (!head) return { label: raw }
+
+  const gender: '여성' | '남성' = head[1].startsWith('여') ? '여성' : '남성'
+  const age = raw
+    .slice(head[1].length)
+    .replace(/^[\s/·,]+/, '')
+    .trim()
+
+  return {
+    gender,
+    ...(age ? { age } : {}),
+    label: age ? `${gender} / ${age}` : gender,
+  }
+}
+
+/** 크롤 원문 앞뒤에 붙는 블로그 안내문(예: "… 독백 대사 를 준비했어요 : )", "… 보러 가보실까요?") */
+const CRAWL_NOTE_HEAD = [
+  /준비했(?:어요|습니다)\s*(?::\s*\)|:\)|\^\^|~+)?\s*/g,
+  /(?:보러\s*)?가보실까요\s*[?？]\s*/g,
+]
+const CRAWL_NOTE_TAIL =
+  /(?:그럼|그러면)?\s*[^.!?？\n]{0,60}(?:독백(?:\s*대사)?\s*를?\s*준비했(?:어요|습니다)\s*(?::\s*\)|:\)|\^\^|~+)?|(?:보러\s*)?가보실까요\s*[?？])\s*$/
+
+/**
+ * 메타 title/description에 쓸 본문 앞부분 정리.
+ * 제로폭 문자·크롤 안내문·머리 지문·화자 라벨을 걷어내고 실제 대사 첫 줄만 남긴다(영향 ~70편).
+ */
+export function cleanBodyLead(body: string | null | undefined): string {
+  let s = (body ?? '').replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\s+/g, ' ').trim()
+  if (!s) return ''
+
+  // 1) 꼬리 안내문 먼저 — 뒤에 붙은 안내문을 앞머리 안내문으로 오인해 본문을 통째로 날리는 걸 막는다
+  s = s.replace(CRAWL_NOTE_TAIL, '').trim()
+
+  // 2) 앞머리 안내문 — 앞 300자 안의 마지막 안내문 종료 지점까지 잘라낸다(뒤에 남는 게 없으면 원문 유지)
+  const head = s.slice(0, 300)
+  let cut = 0
+  for (const re of CRAWL_NOTE_HEAD) {
+    re.lastIndex = 0
+    let hit: RegExpExecArray | null
+    while ((hit = re.exec(head)) !== null) cut = Math.max(cut, hit.index + hit[0].length)
+  }
+  if (cut > 0 && s.slice(cut).trim().length >= 8) s = s.slice(cut).trim()
+
+  // 3) 머리 지문 `(…)`과 화자 라벨 `이름 : ` — 순서가 뒤바뀐 편도 있어 안 줄어들 때까지 반복
+  for (let i = 0; i < 4; i += 1) {
+    const before = s
+    s = s.replace(/^(?:\([^)]*\)\s*)+/, '')
+    s = s.replace(/^[가-힣A-Za-z ]{1,12}\s*[:：\-–]\s+/, '')
+    s = s.replace(/^["'“”‘’]+\s*/, '')
+    if (s === before) break
+  }
+
+  return s.replace(/\s+/g, ' ').trim()
 }
 
 export const GENRE_OPTIONS = [

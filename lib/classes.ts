@@ -269,7 +269,7 @@ export interface DirectorProfile {
 
 export const DIRECTOR: DirectorProfile = {
   name: "권동원",
-  title: "KD4 액팅 코치 (리더) · 현역 배우",
+  title: "KD4 대표 · 액팅 코치 · 현역 배우",
   photo: "/director.jpg",
   quote:
     "같이 현장에서 일하는 동료로서 훈련을 리드합니다. 이론만이 아니라 지금 촬영장에서 통하는 연기와 노하우를 공유합니다.",
@@ -348,7 +348,7 @@ export interface InstructorProfile {
 export const DONGWON_COACH: InstructorProfile = {
   name: DIRECTOR.name,
   nameEn: "Kwon Dongwon",
-  title: "KD4 대표/리더 · 액팅 코치",
+  title: "KD4 대표 · 액팅 코치",
   photo: DIRECTOR.photo,
   photoAspect: "3 / 2",
   education: [...DIRECTOR.credentials.education],
@@ -365,7 +365,7 @@ export const DONGWON_COACH: InstructorProfile = {
 export const SEBIN: InstructorProfile = {
   name: "주세빈",
   nameEn: "Joo Se Bin",
-  title: "KD4 오디션 테크닉 강사",
+  title: "KD4 액팅 코치 · 오디션 테크닉",
   photo: "/sebin-joo.jpg",
   photoAspect: "532 / 771",
   birth: "1997.10.09",
@@ -397,7 +397,7 @@ export const SEBIN: InstructorProfile = {
 export const HYUNJAE: InstructorProfile = {
   name: "이현재",
   nameEn: "Lee Hyunjae",
-  title: "KD4 강사",
+  title: "KD4 액팅 코치",
   photo: "/hyunjae-lee.jpg",
   photoAspect: "1214 / 1832",
   awards: ["중국 iQIYI(아이치이) 영화부문 신인상 — 한국인 최초 수상"],

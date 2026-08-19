@@ -6,6 +6,7 @@ import { Eye, Film, Check, X } from 'lucide-react'
 import { CLASSES } from '@/lib/classes'
 import { REEL_FAQ } from '@/lib/landing-faqs'
 import PageJsonLd from '@/components/seo/PageJsonLd'
+import { LAST_UPDATED } from '@/lib/last-updated'
 import JoinCTALink from '@/components/join/JoinCTALink'
 import { buildBreadcrumb, buildFaqPage, buildCourseFromClass, buildWebPage } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
@@ -19,7 +20,7 @@ const PAGE_URL = `${SITE_URL}/reel-production-class`
 const FILM_CLASS = CLASSES.find((c) => c.nameKo === '출연영상 클래스')!
 
 export const metadata: Metadata = {
-  title: '출연영상 클래스 — 배우 포트폴리오 제작',
+  title: '출연영상 클래스 — 배우 프로필 영상·포트폴리오 제작',
   description:
     '전문 영화팀과 함께 만드는 출연영상 포트폴리오. 마이즈너 테크닉 + 맞춤 시나리오 + 현장 촬영. 현직 배우 100명+ 참여한 시그니처 클래스. 서울 신촌 이대역 도보 3분. 무료 상담 신청.',
   keywords: [
@@ -55,7 +56,7 @@ const WHY_REEL = [
   {
     Icon: Eye,
     title: '캐스팅 디렉터의 시선',
-    desc: '프로필 사진으로는 연기력이 보이지 않습니다. 캐스팅 디렉터는 영상으로 배우의 연기·표정·호흡을 한 번에 확인합니다.',
+    desc: '프로필 사진으로는 연기력이 보이지 않습니다. 캐스팅 디렉터는 영상으로 배우의 연기·표정·호흡을 한 번에 확인합니다. 배우 프로필 영상(자기소개·독백 촬영본)과 달리 출연영상은 맞춤 시나리오로 찍은 \'작품 속 연기\'입니다.',
   },
   {
     Icon: Film,
@@ -155,31 +156,18 @@ export default function ReelPage() {
             name: '출연영상 클래스 — 배우 포트폴리오 제작 | KD4 액팅 스튜디오',
             description: '전문 영화팀과 제작하는 배우 출연영상 포트폴리오 클래스. KD4 액팅 스튜디오.',
             mainEntity: { '@id': `${PAGE_URL}#course-intensive-class` },
-            dateModified: '2026-07-20',
+            dateModified: LAST_UPDATED.reel,
             speakableCssSelectors: ['h1', '.section-desc', '.faq-answer'],
           }),
           buildCourseFromClass(FILM_CLASS, { url: PAGE_URL, image: `${SITE_URL}/og-heart.jpg` }),
           buildFaqPage(REEL_FAQ, PAGE_URL),
-          {
-            '@context': 'https://schema.org',
-            '@type': 'HowTo',
-            '@id': `${PAGE_URL}#howto`,
-            name: '출연영상(배우 포트폴리오 영상) 만드는 방법',
-            description: '전문 영화팀이 제작하는 KD4 출연영상 4단계 프로세스 — 레퍼런스 큐레이션부터 편집 납품까지.',
-            step: PROCESS.map((p, i) => ({
-              '@type': 'HowToStep',
-              position: i + 1,
-              name: p.title,
-              text: p.desc,
-            })),
-          },
           ...PORTFOLIO_VIDEOS.map((v) => ({
             '@context': 'https://schema.org',
             '@type': 'VideoObject',
             name: `KD4 출연영상 포트폴리오 — ${v.title}`,
             description: `KD4 액팅 스튜디오 멤버가 제작한 출연영상 포트폴리오. 전문 영화팀이 촬영·편집한 배우 캐스팅용 영상입니다.`,
             thumbnailUrl: `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`,
-            uploadDate: '2024-01-01T00:00:00+09:00', // Search Console 7/20 지적 — 시간대 포함 완전 ISO 8601
+            // uploadDate: 7편 실제 업로드일 미확인 → 가짜 날짜(2024-01-01) 대신 키 자체를 생략
             contentUrl: `https://www.youtube.com/watch?v=${v.id}`,
             embedUrl: `https://www.youtube.com/embed/${v.id}`,
             inLanguage: 'ko',

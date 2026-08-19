@@ -6,6 +6,7 @@ import { Repeat2, DoorOpen, Heart } from 'lucide-react'
 import { CLASSES, DIRECTOR } from '@/lib/classes'
 import { MEISNER_FAQ } from '@/lib/landing-faqs'
 import PageJsonLd from '@/components/seo/PageJsonLd'
+import { LAST_UPDATED } from '@/lib/last-updated'
 import JoinCTALink from '@/components/join/JoinCTALink'
 import { buildBreadcrumb, buildFaqPage, buildCourseFromClass, buildWebPage } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
@@ -19,7 +20,7 @@ const PAGE_URL = `${SITE_URL}/meisner-technique-class`
 const MAIN_CLASS = CLASSES.find((c) => c.nameKo === '마이즈너 테크닉 정규 클래스')!
 
 export const metadata: Metadata = {
-  title: '마이즈너 테크닉 정규 클래스',
+  title: '마이즈너 테크닉 정규 클래스 — 4개월·정원 8명',
   description:
     '마이즈너 Repetition 훈련으로 억지 감정 없이 살아있는 연기를 만듭니다. 권동원 리더 직강, 4개월 코스, 정원 8명 소수정예. 감정 해방·이바나 처벅 테크닉·독백. 서울 신촌 이대역 도보 3분.',
   keywords: [
@@ -157,7 +158,7 @@ export default function MeisnerPage() {
             name: '마이즈너 테크닉 정규 클래스 — KD4 액팅 스튜디오',
             description: '마이즈너 테크닉으로 훈련하는 소수정예 연기 클래스. 권동원 대표 직강.',
             mainEntity: { '@id': `${PAGE_URL}#course-meisner-technique-class` },
-            dateModified: '2026-06-11',
+            dateModified: LAST_UPDATED.meisner,
             speakableCssSelectors: ['h1', '.section-desc', '.faq-answer'],
           }),
           buildCourseFromClass(MAIN_CLASS, { url: PAGE_URL, image: `${SITE_URL}/og-heart.jpg` }),
@@ -166,32 +167,14 @@ export default function MeisnerPage() {
             '@context': 'https://schema.org',
             '@type': 'VideoObject',
             '@id': `${PAGE_URL}#video-meisner-intro`,
-            name: '마이즈너 테크닉 — KD4 액팅 스튜디오',
-            description: 'KD4 액팅 스튜디오 마이즈너 테크닉 정규 클래스 소개 영상. 연기하지 않는 연기, 진짜 반응 훈련 방식을 담았습니다.',
+            // KD4가 만든 영상이 아니라 방송사 클립(참고 영상) — 소유권 오인 방지로 publisher 미기재,
+            // 업로드일은 확인된 값이 없어 키 자체를 생략(가짜 날짜 금지).
+            name: '[MBC 라디오스타] 김재화 마이즈너 레피티션 특강 (참고 영상)',
+            description: '배우 김재화가 방송에서 소개한 마이즈너 레피티션 훈련 장면. 연기하지 않는 연기, 진짜 반응을 훈련하는 방식을 보여주는 참고 영상입니다.',
             thumbnailUrl: 'https://i.ytimg.com/vi/6crvxRnBerk/hqdefault.jpg',
-            uploadDate: '2024-01-01T00:00:00+09:00', // Search Console 7/20 지적 — 시간대 포함 완전 ISO 8601
             contentUrl: 'https://www.youtube.com/watch?v=6crvxRnBerk',
             embedUrl: 'https://www.youtube.com/embed/6crvxRnBerk',
             inLanguage: 'ko',
-            publisher: {
-              '@type': 'Organization',
-              '@id': `${SITE_URL}#org`,
-              name: 'KD4 액팅 스튜디오',
-              url: SITE_URL,
-            },
-          },
-          {
-            '@context': 'https://schema.org',
-            '@type': 'HowTo',
-            '@id': `${PAGE_URL}#howto`,
-            name: '마이즈너 테크닉으로 연기하는 방법',
-            description: 'KD4 액팅 스튜디오의 마이즈너 테크닉 3가지 핵심 훈련 방법 — Repetition, Activity & Door, Emotional Preparation.',
-            step: PILLARS.map((p, i) => ({
-              '@type': 'HowToStep',
-              position: i + 1,
-              name: p.title,
-              text: p.desc,
-            })),
           },
           {
             '@context': 'https://schema.org',
@@ -478,7 +461,7 @@ export default function MeisnerPage() {
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>마이즈너 테크닉 소개</h2>
           </div>
           <div style={{ maxWidth: '780px', margin: '0 auto' }}>
-            <YouTubeFacade videoId="6crvxRnBerk" title="마이즈너 테크닉 — KD4 액팅 스튜디오" />
+            <YouTubeFacade videoId="6crvxRnBerk" title="[MBC 라디오스타] 김재화 마이즈너 레피티션 특강 (참고 영상)" />
           </div>
         </div>
       </section>

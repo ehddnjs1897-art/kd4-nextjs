@@ -190,19 +190,8 @@ export default function BenefitsPage() {
             },
           })),
         },
-        {
-          '@context': 'https://schema.org',
-          '@type': 'HowTo',
-          '@id': `${SITE_URL}/benefits#howto`,
-          name: 'KD4 연기 클래스 보강 신청하는 방법',
-          description: '결석 시 KD4의 보강제도를 통해 다른 클래스에서 보강 받는 4단계 방법.',
-          step: RESCHEDULE_STEPS.map((text, i) => ({
-            '@type': 'HowToStep',
-            position: i + 1,
-            name: ['보강 자격 확인', '보강 클래스 선택', '3일 전 사전 신청', '카카오채널 접수'][i],
-            text,
-          })),
-        },
+        // HowTo 제거 (2026-08-19) — 구글이 HowTo 리치결과를 중단해 표시 이득이 없고,
+        // 보강 절차는 페이지 본문(RESCHEDULE_STEPS)이 그대로 안내한다.
       ]} />
       {/* HERO */}
       <section

@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import { CLASSES, DONGWON_COACH, SEBIN, HYUNJAE, type InstructorProfile } from '@/lib/classes'
 import { COACH_FAQ } from '@/lib/landing-faqs'
 import PageJsonLd from '@/components/seo/PageJsonLd'
+import { LAST_UPDATED } from '@/lib/last-updated'
 import JoinCTALink from '@/components/join/JoinCTALink'
 import { buildBreadcrumb, buildFaqPage, buildPersonDongwonDetailed, buildPersonSebinDetailed, buildPersonHyunjaeDetailed, buildWebPage } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
@@ -21,7 +22,7 @@ const CLASS_LINK: Record<string, string> = {
 }
 
 export const metadata: Metadata = {
-  title: 'KD4 액팅 코치 — 권동원 · 주세빈 · 이현재',
+  title: '연기 코치진 권동원·주세빈·이현재 — 현역 배우 1:1 연기 레슨',
   description:
     'KD4 액팅 스튜디오 강사진. 권동원 리더 — 마이즈너 테크닉 코치, Disney+ 무빙2·Netflix 중증외상센터 출연 현역 배우, 프로 배우 400명+ 코칭. 주세빈 강사 — 오디션 테크닉·개인 레슨, TV조선 닥터신 주연. 이현재 코치 — 중국 iQIYI 영화부문 신인상(한국인 최초) 수상 현역 배우. 서울 신촌.',
   keywords: ['KD4 액팅 코치', '권동원', '권동원 배우', '권동원 KD4', '주세빈', '주세빈 배우', '주세빈 KD4', '이현재', '이현재 배우', '이현재 KD4', '마이즈너 강사', '오디션 테크닉 강사', '액팅 코치', '액팅 리더', '현역 배우 강사', '신촌 액팅코치', '서울 액팅 코치'],
@@ -59,7 +60,7 @@ export default function CoachPage() {
             url: PAGE_URL,
             name: 'KD4 액팅 코치 — 권동원 · 주세빈 · 이현재 | KD4 액팅 스튜디오',
             description: '현역 배우로 활동 중인 KD4 강사진. 권동원 리더(마이즈너 테크닉) · 주세빈 강사(오디션 테크닉·개인 레슨) · 이현재 코치.',
-            dateModified: '2026-07-21',
+            dateModified: LAST_UPDATED.coaches,
             speakableCssSelectors: ['h1', '.section-desc', '.faq-answer'],
           }),
           buildPersonDongwonDetailed(), // 권동원 Person 정본 (필모·수상·학력 포함)
@@ -147,7 +148,7 @@ export default function CoachPage() {
         background="var(--bg2)"
         cardBackground="var(--bg)"
         intro={
-          <>동국대학교 연극영화과 졸업. <span lang="en">TV</span>조선 &ldquo;닥터신&rdquo; 주연 등 드라마·연극·<span lang="en">CF</span>에서 활동 중인 현역 배우입니다.</>
+          <>동국대학교 연극영화과 졸업. <span lang="en">TV</span>조선 &ldquo;닥터신&rdquo; 주연 등 드라마·연극·<span lang="en">CF</span>에서 활동 중인 현역 배우입니다. 오디션 테크닉 클래스와 1:1 연기 레슨(개인 레슨)을 담당합니다.</>
         }
         classNames={['오디션 테크닉 클래스', '개인 레슨']}
       />

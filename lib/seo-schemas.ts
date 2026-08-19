@@ -333,6 +333,7 @@ export function buildMonologueArticle(m: {
   body: string
   card_image_url: string | null
   created_at: string
+  updated_at?: string | null
 }) {
   const url = `${SITE_URL}/monologues/${m.id}`
   const schema: Record<string, unknown> = {
@@ -345,10 +346,13 @@ export function buildMonologueArticle(m: {
     mainEntityOfPage: url,
     inLanguage: 'ko',
     isAccessibleForFree: true,
-    author: { '@id': `${SITE_URL}#org` },
+    // author는 @id 참조만 두면 일부 검사기가 Organization 이름을 못 붙인다 — 인라인으로 명시
+    author: { '@type': 'Organization', '@id': `${SITE_URL}#org`, name: 'KD4 액팅 스튜디오' },
     publisher: { '@id': `${SITE_URL}#org` },
     datePublished: m.created_at,
+    dateModified: m.updated_at ?? m.created_at,
     isPartOf: { '@id': `${SITE_URL}/monologues#webpage` },
+    mentions: [{ '@id': `${SITE_URL}/meisner-technique-class#course-meisner-technique-class` }],
   }
   if (m.genre) schema.genre = m.genre
   if (m.work) schema.about = { '@type': 'CreativeWork', name: m.work }
@@ -356,11 +360,50 @@ export function buildMonologueArticle(m: {
   return schema
 }
 
+/** 코치 이름 → 사이트 전역 Person @id (JsonLd.tsx·buildPerson*Detailed가 선언한 식별자) */
+const COACH_ID: Record<string, string> = {
+  권동원: '#dongwon',
+  주세빈: '#sebin',
+  이현재: '#hyunjae',
+}
+
+/**
+ * classes.ts의 instructor 문자열("권동원 대표", "주세빈·이현재 강사")을 Person 라벨로.
+ * 전역에 Person @id가 있는 코치는 @id 참조(중복 정의 금지), 없는 사람은 이름만 가진 Person.
+ */
+function buildInstructors(instructor: string) {
+  const people = instructor
+    .split('·')
+    .map((raw) => raw.replace(/\s*(대표|리더|강사|코치)\s*$/, '').trim())
+    .filter(Boolean)
+    .map((name) =>
+      COACH_ID[name] ? { '@id': `${SITE_URL}${COACH_ID[name]}` } : { '@type': 'Person', name }
+    )
+  if (people.length === 0) return undefined
+  return people.length === 1 ? people[0] : people
+}
+
+/**
+ * "월 4회" + "4시간" → ISO 8601 기간(PT16H, 월 단위 학습량).
+ * 숫자를 못 읽는 값("상시", "영상 제작 전용", "일정 협의")은 키를 만들지 않는다 —
+ * courseWorkload는 ISO 8601만 유효해서 한글 문구를 넣으면 구조화데이터 검사에서 에러.
+ */
+function buildCourseWorkload(schedule: string, duration: string): string | undefined {
+  const sessions = schedule.match(/(\d+)\s*회/)
+  const hours = duration.match(/(\d+)\s*시간/)
+  if (!sessions || !hours) return undefined
+  const total = Number(sessions[1]) * Number(hours[1])
+  if (!Number.isFinite(total) || total <= 0) return undefined
+  return `PT${total}H`
+}
+
 /** Course — ClassItem을 상세 Course 라벨로 변환 */
 export function buildCourseFromClass(cls: ClassItem, opts: { url: string; image?: string }) {
   const desc = [cls.quote, ...cls.bullets].join(' · ')
   const courseSlug = cls.nameEn.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-$/, '')
   const capacityNum = parseInt(cls.capacity)
+  const instructors = cls.instructor ? buildInstructors(cls.instructor) : undefined
+  const workload = buildCourseWorkload(cls.schedule, cls.duration)
   return {
     '@context': 'https://schema.org',
     '@type': 'Course',
@@ -385,7 +428,7 @@ export function buildCourseFromClass(cls: ClassItem, opts: { url: string; image?
       url: opts.url,
       ...(cls.originalPrice ? { priceValidUntil: PROMO_DEADLINE } : {}),
     },
-    ...(cls.instructor ? { instructor: { '@id': `${SITE_URL}#dongwon` } } : {}),
+    ...(instructors ? { instructor: instructors } : {}),
     potentialAction: {
       '@type': 'RegisterAction',
       target: `${SITE_URL}/join`,
@@ -402,9 +445,10 @@ export function buildCourseFromClass(cls: ClassItem, opts: { url: string; image?
       {
         '@type': 'CourseInstance',
         courseMode: 'Onsite',
-        ...(cls.instructor ? { instructor: { '@id': `${SITE_URL}#dongwon` } } : {}),
+        ...(instructors ? { instructor: instructors } : {}),
         inLanguage: 'ko',
-        courseWorkload: `${cls.schedule} · 회당 ${cls.duration}`,
+        // ISO 8601만 유효 — 한글 일정 문구("월 4회 · 회당 4시간")는 description·본문이 담당
+        ...(workload ? { courseWorkload: workload } : {}),
         ...(Number.isFinite(capacityNum) ? { maximumAttendeeCapacity: capacityNum } : {}),
         location: {
           '@type': 'Place',

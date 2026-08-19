@@ -3,11 +3,12 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
+import { LAST_UPDATED } from '@/lib/last-updated'
 import { buildBreadcrumb, buildWebPage } from '@/lib/seo-schemas'
 import YouTubeFacade from '@/components/youtube/YouTubeFacade'
 
 export const metadata: Metadata = {
-  title: '스튜디오 소개',
+  title: '스튜디오 소개 — 마이즈너 연기학원 KD4',
   description:
     '마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 배우의 성장을 운영합니다. 교육·실행·관리·커리어·커뮤니티 5개 레이어의 Actor Operating System. KD4 액팅 스튜디오 소개. 서울 신촌 이대역 도보 3분.',
   robots: { index: true, follow: true },
@@ -119,7 +120,7 @@ export default function AboutPage() {
           name: '스튜디오 소개 — KD4 액팅 스튜디오',
           description: '마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 현장에서 통하는 배우를 키웁니다.',
           about: { '@id': `${SITE_URL}#org` },
-          dateModified: '2026-06-11',
+          dateModified: LAST_UPDATED.about,
           speakableCssSelectors: ['h1', 'h2', '.section-desc'],
         }),
         {
@@ -129,7 +130,7 @@ export default function AboutPage() {
           name: 'KD4 연기하지 않는 연기',
           description: 'KD4 액팅 스튜디오의 마이즈너 테크닉 기반 연기 훈련 소개 영상. 연기하지 않는 연기, 진짜 반응을 훈련하는 KD4의 방식을 담았습니다.',
           thumbnailUrl: 'https://i.ytimg.com/vi/tB7f4VnC6rM/hqdefault.jpg',
-          uploadDate: '2024-01-01T00:00:00+09:00', // Search Console 7/20 지적 — 시간대 포함 완전 ISO 8601
+          // uploadDate: 실제 업로드일 미확인 → 가짜 날짜(2024-01-01) 대신 키 자체를 생략
           contentUrl: 'https://www.youtube.com/watch?v=tB7f4VnC6rM',
           embedUrl: 'https://www.youtube.com/embed/tB7f4VnC6rM',
           inLanguage: 'ko',
@@ -139,19 +140,6 @@ export default function AboutPage() {
             name: 'KD4 액팅 스튜디오',
             url: SITE_URL,
           },
-        },
-        {
-          '@context': 'https://schema.org',
-          '@type': 'HowTo',
-          '@id': `${SITE_URL}/about#howto`,
-          name: 'KD4 액팅 스튜디오로 배우 커리어를 만드는 방법',
-          description: '마이즈너 테크닉 훈련부터 출연영상 포트폴리오 제작, 캐스팅 연계까지 — 배우의 성장을 운영하는 KD4 3단계 시스템.',
-          step: STEPS.map((s, i) => ({
-            '@type': 'HowToStep',
-            position: i + 1,
-            name: s.title,
-            text: s.desc,
-          })),
         },
         {
           '@context': 'https://schema.org',

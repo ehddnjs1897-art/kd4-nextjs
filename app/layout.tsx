@@ -41,7 +41,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: 'KD4 액팅 스튜디오 | 배우의 성장을 운영하는 신촌 마이즈너 연기학원',
+    default: '신촌 연기학원 KD4 액팅 스튜디오 — 마이즈너·출연영상',
     template: '%s | KD4 액팅 스튜디오',
   },
   description:

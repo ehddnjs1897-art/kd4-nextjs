@@ -596,12 +596,10 @@ export async function POST(request: NextRequest) {
           .maybeSingle()
         const actorPhone = (inquiredActor?.phone ?? '').replace(/[^\d]/g, '')
         if (actorPhone.length >= 9) {
-          const safeName2 = name.replace(/[\r\n\t]/g, ' ')
-          const safePhone2 = phone.replace(/[\r\n\t]/g, '')
-          const safeProduction = typeof record.production === 'string' ? record.production.replace(/[\r\n\t]/g, ' ').slice(0, 40) : ''
-          const safeRole = typeof record.role === 'string' ? record.role.replace(/[\r\n\t]/g, ' ').slice(0, 30) : ''
-          const detail2 = [safeProduction, safeRole].filter(Boolean).join(' · ')
-          const actorMsg = `[KD4 캐스팅문의] ${inquiredActor?.name ?? ''}님께 문의 도착 — ${safeName2} ${safePhone2}${detail2 ? ` / ${detail2}` : ''}`
+          // 2026-08-12 대표 확정 고정 문안 — 문의자가 입력한 임의 문구(이름·전화·작품·역할)는 배우에게 직접 전달하지 않음.
+          //   상세 내용은 관리자 SMS(위)로만 가고, 배우에겐 '문의 도착' 사실만 알림 (스팸·사칭 문구 전달 차단)
+          const safeActorName = (inquiredActor?.name ?? '').replace(/[\r\n\t]/g, ' ').trim()
+          const actorMsg = `[KD4] ${safeActorName}님께 캐스팅 문의가 들어왔습니다. 내용은 KD4에서 확인 후 연락드립니다.`
           await sendSMS(actorPhone, actorMsg).catch((err) =>
             console.error('[notify] 배우 직통 SMS 실패:', err instanceof Error ? err.message : '알 수 없는 오류')
           )

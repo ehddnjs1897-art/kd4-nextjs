@@ -10,7 +10,7 @@ export const revalidate = 300 // 5분 ISR — 크롤러 파이프라인이 새 �
 
 // q(검색어)는 클라이언트 전용 필터라 데이터 쿼리(parseFilters)에는 안 씀 —
 // MonologuesSearchGrid의 초기값으로만 넘겨 공유 링크(예: ?genre=멜로&q=이별) 첫 렌더에 반영.
-type SearchParams = Promise<{ gender?: string; genre?: string; medium?: string; age?: string; q?: string }>
+type SearchParams = Promise<{ gender?: string; genre?: string; medium?: string; age?: string; q?: string; page?: string }>
 
 // 타겟 키워드 — 2026-07-17 네이버 자동완성 수요조사 반영:
 // 실수요는 "독백 대사"·"여자 독백 대사"·"자유연기 대본"·"연기 (연습) 대본" 계열이 압도적
@@ -39,6 +39,9 @@ const MEDIUM_KEYWORD: Record<string, string> = {
   '광고': '광고 독백',
 }
 
+/** 성별×연령대 조합 페이지에 self-canonical(전용 인덱스 페이지)을 줄 최소 편수 — sitemap.ts와 동일 기준 */
+const COMBO_MIN_COUNT = 10
+
 function parseFilters(params: { gender?: string; genre?: string; medium?: string; age?: string }) {
   return {
     gender: params.gender && ['남성', '여성'].includes(params.gender) ? params.gender : undefined,
@@ -58,7 +61,16 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
   let desc: string
   let canonicalUrl = baseUrl
 
-  if (gender && !genre && !medium && !age) {
+  if (gender && age && !genre && !medium && count >= COMBO_MIN_COUNT) {
+    // 성별 × 연령대 조합 — "10대 여자 독백 대사"·"30대 남자 독백" 등 실검색어 전용 (self-canonical).
+    // 편수가 너무 적은 조합(<10편)은 얇은 페이지가 되므로 self-canonical을 주지 않는다.
+    const g = gender === '남성' ? '남자' : '여자'
+    const ageLabel = AGE_OPTIONS.find((o) => o.value === age)?.label ?? age
+    title = `${ageLabel} ${g} 독백 대사·대본 ${count}편 무료 — 오디션·자유연기 ${ageLabel} ${g}독백 | KD4 액팅 스튜디오`
+    desc = `${ageLabel} ${g} 독백 대사·대본 ${count}편 무료, 매주 새 대본 추가. 영화·드라마·연극·뮤지컬 속 ${ageLabel} ${g} 배역 독백을 장르·감정선별로 찾아보세요. 오디션·자유연기 대본 선정에 바로 활용할 수 있습니다.`
+    // 파라미터 순서 고정(gender → age) — buildHref의 출력 순서와 동일해야 canonical이 어긋나지 않는다
+    canonicalUrl = `${baseUrl}?gender=${encodeURIComponent(gender)}&age=${encodeURIComponent(age)}`
+  } else if (gender && !genre && !medium && !age) {
     // 성별 단독 필터 — "남자독백 대본"·"여자독백 대본" 검색어 전용 인덱스 페이지 (self-canonical)
     const g = gender === '남성' ? '남자' : '여자'
     title = `${g} 독백 대사·대본 ${count}편 무료 — 오디션·자유연기 ${g}독백 모음 | KD4 액팅 스튜디오`
@@ -160,14 +172,29 @@ function FilterGroup({ label, first, children }: { label: string; first?: boolea
   )
 }
 
+/** 쿼리 파라미터 출력 순서 고정 — generateMetadata의 canonical(gender→age)과 어긋나면
+ *  같은 목록이 두 URL로 색인된다. 객체 키 순서에 의존하지 않도록 명시 순서로 직렬화. */
+const PARAM_ORDER = ['gender', 'age', 'medium', 'genre'] as const
+
 function buildHref(base: Record<string, string | undefined>, key: string, value: string | undefined) {
   const next = { ...base, [key]: value }
   const qs = new URLSearchParams()
-  for (const [k, v] of Object.entries(next)) {
+  for (const k of PARAM_ORDER) {
+    const v = next[k]
     if (v) qs.set(k, v)
   }
   const s = qs.toString()
   return s ? `/monologues?${s}` : '/monologues'
+}
+
+/** '더 보기' 앵커용 — 현재 필터를 유지한 쿼리스트링(page 제외, 없으면 빈 문자열) */
+function buildFilterQuery(base: Record<string, string | undefined>) {
+  const qs = new URLSearchParams()
+  for (const k of PARAM_ORDER) {
+    const v = base[k]
+    if (v) qs.set(k, v)
+  }
+  return qs.toString()
 }
 
 /** 하단 AEO 문답 — 질문 1개 = 답 1~2문장. 화면과 FAQPage JSON-LD가 같은 데이터를 씀.
@@ -210,6 +237,10 @@ export default async function MonologuesPage({ searchParams }: { searchParams: S
   const sp = await searchParams
   const { gender, genre, medium, age } = parseFilters(sp)
   const initialQuery = sp.q?.trim() || ''
+  // ?page=N — '더 보기' 앵커를 따라오는 크롤러용. N페이지까지 한 번에 SSR해서(1~N) 목록 링크를 노출.
+  // 사람 UX는 그대로(검색·무한스크롤). canonical은 generateMetadata가 page를 무시하므로 기본 URL 유지.
+  const pageParam = Number.parseInt(sp.page ?? '', 10)
+  const initialPage = Number.isFinite(pageParam) ? Math.min(Math.max(pageParam, 1), 20) : 1
 
   const [monologues, totalCount] = await Promise.all([
     getMonologuesCached(gender, genre, medium, age),
@@ -318,7 +349,12 @@ export default async function MonologuesPage({ searchParams }: { searchParams: S
         </FilterGroup>
       </section>
 
-      <MonologuesSearchGrid monologues={monologues} initialQuery={initialQuery} />
+      <MonologuesSearchGrid
+        monologues={monologues}
+        initialQuery={initialQuery}
+        initialPage={initialPage}
+        filterQuery={buildFilterQuery(current)}
+      />
 
       {/* 하단 AEO 안내 섹션 — 질문 소제목 + 한 줄 답변 구조.
           AI 검색엔진(ChatGPT·퍼플렉시티)이 문답 단위로 인용하기 좋고 사람도 스캔하기 좋게.

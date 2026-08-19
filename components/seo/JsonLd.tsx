@@ -4,7 +4,7 @@
  * AI 검색(ChatGPT, Perplexity, Google AI Overview)에서 KD4를 노출시키기 위함
  *
  * @id 체계 (그래프 연결):
- *   - kd4.club#website  → WebSite (SearchAction)
+ *   - kd4.club#website  → WebSite
  *   - kd4.club#org      → Organization
  *   - kd4.club#school   → EducationalOrganization
  *   - kd4.club#local    → LocalBusiness
@@ -20,11 +20,12 @@ import {
 import { SITE_URL } from '@/lib/constants'
 import { serializeJsonLd } from '@/lib/seo'
 
-/** LocalBusiness + PerformingArtsTheater — 실제 매장 위치 */
+/** LocalBusiness + EducationalOrganization — 실제 매장 위치.
+ *  극장(PerformingArtsTheater)이 아니라 학원이라 업종 타입을 교정 (2026-08-19). */
 function getLocalBusinessSchema() {
   return {
     '@context': 'https://schema.org',
-    '@type': ['LocalBusiness', 'PerformingArtsTheater'],
+    '@type': ['LocalBusiness', 'EducationalOrganization'],
     '@id': `${SITE_URL}#local`,
     name: 'KD4 액팅 스튜디오',
     alternateName: 'KD4 Acting Studio',
@@ -69,7 +70,9 @@ function getLocalBusinessSchema() {
 
 // Course·FAQPage는 각 페이지(PageJsonLd)에서만 출력 — 글로벌 중복 선언 방지
 
-/** WebSite schema — SearchAction for site search (AEO / Google Sitelinks Searchbox) */
+/** WebSite schema — 사이트 식별자(#website). 다른 페이지의 WebPage가 isPartOf로 참조한다.
+ *  SearchAction(Sitelinks Searchbox)은 제거 — /actors?q= 가 실제로 서버 검색을 하지 않아
+ *  선언대로 동작하지 않는 액션이었다(동작하는 검색 URL이 생기면 다시 넣을 것). */
 function getWebSiteSchema() {
   return {
     '@context': 'https://schema.org',
@@ -77,14 +80,6 @@ function getWebSiteSchema() {
     '@id': `${SITE_URL}#website`,
     name: 'KD4 액팅 스튜디오',
     url: SITE_URL,
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${SITE_URL}/actors?q={search_term_string}`,
-      },
-      'query-input': 'required name=search_term_string',
-    },
   }
 }
 

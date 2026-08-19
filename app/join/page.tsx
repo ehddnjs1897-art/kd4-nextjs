@@ -19,6 +19,7 @@ import { STAT_ICONS } from '@/lib/stat-icons'
 import DirectorFilmography from '@/components/director/DirectorFilmography'
 import { FAQ_ITEMS } from '@/lib/faq-items'
 import PageJsonLd from '@/components/seo/PageJsonLd'
+import { LAST_UPDATED } from '@/lib/last-updated'
 import { buildBreadcrumb, buildFaqPage, buildWebPage } from '@/lib/seo-schemas'
 import StickyTopBar from '@/components/join/StickyTopBar'
 import JoinCTALink from '@/components/join/JoinCTALink'
@@ -180,7 +181,7 @@ export default function JoinPage() {
           url: `${SITE_URL}/join`,
           name: '무료 상담 신청 — KD4 액팅 스튜디오',
           description: '마이즈너 테크닉 연기 훈련 무료 상담 신청. KD4 액팅 스튜디오 클래스 안내 및 Q&A.',
-          dateModified: '2026-06-11',
+          dateModified: LAST_UPDATED.join,
           speakableCssSelectors: ['h1', '.faq-answer'],
         }),
         buildFaqPage(FAQ_ITEMS, `${SITE_URL}/join`),

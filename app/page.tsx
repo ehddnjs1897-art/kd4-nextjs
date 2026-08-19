@@ -13,6 +13,7 @@ import { STAT_ICONS } from "@/lib/stat-icons";
 import DirectorFilmography from "@/components/director/DirectorFilmography";
 import { CASTING_PHOTOS } from "@/lib/casting-photos"
 import PageJsonLd from '@/components/seo/PageJsonLd'
+import { LAST_UPDATED } from '@/lib/last-updated'
 import { buildBreadcrumb, buildWebPage } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
 const HeroScene = dynamic(() => import("@/components/hero/HeroScene"), {
@@ -25,7 +26,7 @@ const HeroScene = dynamic(() => import("@/components/hero/HeroScene"), {
       style={{
         position: 'absolute', inset: 0,
         background: '#E8E4D8',
-        backgroundImage: 'url(/director.jpg)',
+        backgroundImage: 'url(/_next/image?url=%2Fdirector.jpg&w=1200&q=75)',
         backgroundSize: 'cover',
         backgroundPosition: 'center 15%',
         filter: 'brightness(0.7) grayscale(0.2)',
@@ -125,7 +126,8 @@ export default function HomePage() {
     let cancelled = false
     const container = heroTitleRef.current
     if (!container) return
-    const h1 = container.querySelector('h1') as HTMLElement | null
+    // 시각 타이틀은 aria-hidden div (실제 h1은 sr-only 1개 — 홈 h1 단일화)
+    const h1 = container.querySelector('.hero-title-wall-main') as HTMLElement | null
     const sub = container.querySelector('.hero-title-wall-sub') as HTMLElement | null
     if (!h1 || !sub) { setTitleReady(true); return }
 
@@ -321,21 +323,15 @@ export default function HomePage() {
 
   return (
     <>
+      <link
+        rel="preload"
+        as="image"
+        href="/_next/image?url=%2Fdirector.jpg&w=1200&q=75"
+        fetchPriority="high"
+      />
       <PageJsonLd schemas={[
         buildBreadcrumb([{ name: '홈', url: SITE_URL }]),
-        buildWebPage({ idPath: '#webpage', url: SITE_URL, name: 'KD4 액팅 스튜디오 | 서울 신촌 마이즈너 테크닉 연기학원', description: '서울 신촌 마이즈너 테크닉 기반 연기학원. 연기 훈련부터 출연영상 포트폴리오 제작, 캐스팅 연계까지. 배우를 성장시키는 KD4 액팅 스튜디오.', about: { '@id': `${SITE_URL}#org` }, dateModified: '2026-06-11', speakableCssSelectors: ['h1', 'h2'] }),
-        {
-          '@context': 'https://schema.org',
-          '@type': 'HowTo',
-          '@id': `${SITE_URL}#howto`,
-          name: 'KD4 액팅 스튜디오로 배우 커리어를 만드는 방법',
-          description: '마이즈너 테크닉 훈련부터 출연영상 포트폴리오, 캐스팅 연계까지 — 3단계 배우 액셀러레이팅 시스템.',
-          step: [
-            { '@type': 'HowToStep', position: 1, name: '아메리칸 액팅 메소드 트레이닝', text: '마이즈너 테크닉 · 이바나 처벅 테크닉 기반의 심층 연기 훈련' },
-            { '@type': 'HowToStep', position: 2, name: '포트폴리오 제작', text: '전문 영화팀과 함께 제작하는 출연영상으로 실전 포트폴리오 완성' },
-            { '@type': 'HowToStep', position: 3, name: '캐스팅 연계', text: '캐스팅 디렉터·조감독과 직접 연결되는 실전 캐스팅 지원' },
-          ],
-        },
+        buildWebPage({ idPath: '#webpage', url: SITE_URL, name: '신촌 연기학원 KD4 액팅 스튜디오 — 마이즈너·출연영상', description: '서울 신촌 마이즈너 테크닉 기반 연기학원. 연기 훈련부터 출연영상 포트폴리오 제작, 캐스팅 연계까지. 배우를 성장시키는 KD4 액팅 스튜디오.', about: { '@id': `${SITE_URL}#org` }, dateModified: LAST_UPDATED.home, speakableCssSelectors: ['h1', 'h2'] }),
       ]} />
       {/* ── 1. HERO (Dennis Snellenberg style) ───────────────────────────────── */}
       <section
@@ -389,7 +385,7 @@ export default function HomePage() {
              측정 완료 전(titleReady=false)에는 비가시 — letter-spacing 적용 후 등장 */}
         <div className={`hero-title-wall-pos ${titleReady ? 'is-ready' : ''}`}>
           <div className="hero-title-wall" ref={heroTitleRef}>
-            <h1 aria-hidden="true">KD4 액팅 스튜디오</h1>
+            <div className="hero-title-wall-main" aria-hidden="true">KD4 액팅 스튜디오</div>
             <p className="hero-title-wall-sub"><span lang="en">ACTOR ACCELERATING SYSTEM</span></p>
           </div>
           {/* 달리줌으로 KD4 타이틀이 사라지면 같은 자리에 마이즈너 문구가 떠오름 */}
@@ -907,7 +903,7 @@ export default function HomePage() {
               boxSizing: "border-box",
             } as React.CSSProperties}
           >
-            마이즈너 테크닉 알아보기 <span aria-hidden="true">→</span>
+            훈련 방식 알아보기 <span aria-hidden="true">→</span>
           </Link>
         </div>
       </div>
@@ -1140,7 +1136,7 @@ export default function HomePage() {
             <div style={{ display: "flex", gap: 24, justifyContent: "center", flexWrap: "wrap" }}>
               <Link href="/meisner-technique-class" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>마이즈너 테크닉 클래스 <span aria-hidden="true">→</span></Link>
               <Link href="/reel-production-class" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>출연영상 클래스 <span aria-hidden="true">→</span></Link>
-              <Link href="/acting-coaches" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>권동원 액팅코치 <span aria-hidden="true">→</span></Link>
+              <Link href="/acting-coaches" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>권동원 액팅 코치 <span aria-hidden="true">→</span></Link>
               <Link href="/sinchon-acting-academy" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>신촌 연기학원 오시는 길 <span aria-hidden="true">→</span></Link>
               <Link href="/benefits" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>멤버 혜택 <span aria-hidden="true">→</span></Link>
             </div>

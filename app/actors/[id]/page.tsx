@@ -858,6 +858,13 @@ export default async function ActorDetailPage({
           videoLocked={false}
           mainPhotoUrl={photoUrl !== '/placeholder-actor.svg' ? photoUrl : undefined}
         />
+        <p style={{ fontSize: '0.82rem', color: 'var(--gray)', marginTop: 28 }}>
+          KD4 멤버는{' '}
+          <Link href="/meisner-technique-class" style={{ color: 'var(--navy)', fontWeight: 600 }}>마이즈너 테크닉</Link>
+          ·
+          <Link href="/reel-production-class" style={{ color: 'var(--navy)', fontWeight: 600 }}>출연영상 클래스</Link>
+          로 훈련합니다.
+        </p>
       </div>
 
 
