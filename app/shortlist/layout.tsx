@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   description: '관심 배우로 담아둔 캐스팅 숏리스트입니다. 마음에 드는 배우를 모아 한눈에 비교하세요.',
   robots: { index: false, follow: true },
   alternates: { canonical: `${SITE_URL}/shortlist` },
+  openGraph: { url: `${SITE_URL}/shortlist` },
 }
 
 export default function ShortlistLayout({ children }: { children: React.ReactNode }) {

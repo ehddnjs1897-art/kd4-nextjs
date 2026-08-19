@@ -10,7 +10,7 @@ export const revalidate = 300
 
 // ── Metadata (SSR — SEO/GEO 최적화) ──
 export const metadata: Metadata = {
-  title: '수강생 후기',
+  title: '멤버 후기',
   description:
     'KD4 액팅 스튜디오에서 마이즈너 테크닉을 훈련한 실제 배우들의 생생한 후기입니다. 오픈클래스부터 정규 4개월 과정까지, 현역 배우들의 솔직한 경험을 확인하세요.',
   keywords: [
@@ -20,10 +20,12 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: `${SITE_URL}/reviews` },
   openGraph: {
-    title: '수강생 후기 | KD4 액팅 스튜디오',
+    title: '멤버 후기 | KD4 액팅 스튜디오',
     description: 'KD4에서 훈련한 실제 배우들의 생생한 후기를 확인하세요.',
     url: `${SITE_URL}/reviews`,
     type: 'website',
+    siteName: 'KD4 액팅 스튜디오',
+    images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오' }],
   },
 }
 
@@ -42,29 +44,20 @@ export type Review = {
 // ── Schema.org JSON-LD ──
 function buildReviewSchema(reviews: Review[]) {
   const textReviews = reviews.filter((r) => r.review_text)
+  // 자사 페이지의 self-serving 평점(aggregateRating/reviewRating)은 구글 리치결과 정책상 비권장 → 제거.
+  // 날짜는 실제 연도가 있을 때만 연도 단위로 기재(가짜 01-01 금지).
   return {
     '@context': 'https://schema.org',
     '@type': 'EducationalOrganization',
+    '@id': `${SITE_URL}#school`,
     name: 'KD4 액팅 스튜디오',
     url: SITE_URL,
     description: '서울 신촌 마이즈너 테크닉 기반 연기학원. 배우의 성장을 운영하는 Actor Operating System.',
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '5',
-      bestRating: '5',
-      worstRating: '1',
-      reviewCount: String(reviews.length > 0 ? reviews.length : 64),
-    },
     review: textReviews.slice(0, 10).map((r) => ({
       '@type': 'Review',
       author: { '@type': 'Person', name: r.reviewer_name },
       reviewBody: r.review_text,
-      reviewRating: {
-        '@type': 'Rating',
-        ratingValue: '5',
-        bestRating: '5',
-      },
-      datePublished: r.review_year ? `${r.review_year}-01-01` : '2025-01-01',
+      ...(r.review_year ? { datePublished: String(r.review_year) } : {}),
     })),
   }
 }
@@ -85,7 +78,12 @@ async function getReviews(): Promise<Review[]> {
       console.error('[reviews] Supabase error:', error.message)
       return []
     }
-    return (data as Review[]) ?? []
+    // 작성자 미기재('수강생' 기본값)는 브랜드 워딩 정책에 따라 '멤버'로 표기
+    return ((data as Review[]) ?? []).map((r) => ({
+      ...r,
+      reviewer_name:
+        !r.reviewer_name?.trim() || r.reviewer_name.trim() === '수강생' ? '멤버' : r.reviewer_name,
+    }))
   } catch (err) {
     console.error('[reviews] fetch failed:', err)
     return []

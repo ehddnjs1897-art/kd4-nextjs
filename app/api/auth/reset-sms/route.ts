@@ -21,6 +21,8 @@ import { SITE_URL } from '@/lib/constants'
 export const dynamic = 'force-dynamic'
 
 const cooldown = new Map<string, number>()
+// IP 단위 보조 한도(10분 5회) — 이메일만 바꿔가며 반복 호출하는 번호 대입 방어
+const ipHits = new Map<string, number[]>()
 const COOLDOWN_MS = 60_000
 
 const digits = (s: string) => s.replace(/\D/g, '')
@@ -47,6 +49,14 @@ export async function POST(req: Request) {
   if (last && Date.now() - last < COOLDOWN_MS) {
     return NextResponse.json({ ok: false, error: '잠시 후 다시 시도해 주세요. (1분 간격)' }, { status: 429 })
   }
+  // 실패(불일치) 요청에도 쿨다운 적용 — 성공 시에만 걸면 대입 시도엔 무방비
+  cooldown.set(email, Date.now())
+  const ip = req.headers.get('x-real-ip') ?? req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
+  const recent = (ipHits.get(ip) ?? []).filter((t) => Date.now() - t < 10 * 60_000)
+  if (recent.length >= 5) {
+    return NextResponse.json({ ok: false, error: '요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.' }, { status: 429 })
+  }
+  ipHits.set(ip, [...recent, Date.now()])
 
   // 이메일로 계정 찾기 — GoTrue admin listUsers의 email 필터는 미지원 버전이 있어 페이지 순회로 매칭
   let userId: string | null = null
@@ -122,6 +132,5 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: '문자 발송에 실패했습니다. 잠시 후 다시 시도하시거나 010-8564-0244로 문의해 주세요.' }, { status: 500 })
   }
 
-  cooldown.set(email, Date.now())
   return NextResponse.json({ ok: true, maskedPhone: maskPhone(matched) })
 }

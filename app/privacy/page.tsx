@@ -18,6 +18,13 @@ export const metadata: Metadata = {
   title: '개인정보처리방침',
   description: 'KD4 액팅 스튜디오(유익액터스) 개인정보처리방침 — 수집 항목, 이용 목적, 캐스팅 관계자 제공, 보유 기간, 정보주체 권리 안내.',
   alternates: { canonical: `${SITE_URL}/privacy` },
+  openGraph: {
+    title: '개인정보처리방침 | KD4 액팅 스튜디오',
+    url: `${SITE_URL}/privacy`,
+    type: 'website',
+    siteName: 'KD4 액팅 스튜디오',
+    images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오' }],
+  },
 }
 
 const H2: React.CSSProperties = {

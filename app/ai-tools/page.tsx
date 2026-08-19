@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -113,6 +114,9 @@ export default function AIToolsPage() {
         <p style={{ color: 'var(--gray)', fontSize: '0.88rem', lineHeight: 1.7 }}>
           AI 대본 분석은 KD4 크루 이상 회원만 이용할 수 있습니다.
         </p>
+        <Link href="/dashboard" style={{ display: 'inline-block', marginTop: 20, color: 'var(--gold)', fontSize: '0.88rem', textDecoration: 'underline' }}>
+          마이페이지로 돌아가기
+        </Link>
       </div>
     </div>
   )

@@ -130,7 +130,8 @@ export async function middleware(request: NextRequest) {
   if (!user && PROTECTED_PREFIXES.some((p) => pathname.startsWith(p))) {
     const url = request.nextUrl.clone()
     url.pathname = '/auth/login'
-    url.searchParams.set('next', pathname)
+    url.search = ''
+    url.searchParams.set('next', pathname + request.nextUrl.search)
     return NextResponse.redirect(url, 307)
   }
 

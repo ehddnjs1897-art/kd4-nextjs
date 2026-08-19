@@ -62,6 +62,18 @@ export async function GET(req: NextRequest) {
 }
 
 async function unsubscribeById(id: string, token: string) {
+  // 임의 page_id로 다른 DB의 페이지를 건드리지 못하도록, 상담자 DB 소속인지 먼저 확인
+  const probe = await fetch(`https://api.notion.com/v1/pages/${id}`, {
+    headers: { Authorization: `Bearer ${token}`, 'Notion-Version': '2022-06-28' },
+    signal: AbortSignal.timeout(10000),
+  })
+  if (!probe.ok) return false
+  const page = (await probe.json().catch(() => null)) as { parent?: { database_id?: string } } | null
+  const parentDb = (page?.parent?.database_id ?? '').replace(/-/g, '')
+  if (parentDb !== NOTION_DATABASE_ID.replace(/-/g, '')) {
+    console.warn('[unsubscribe] 상담자 DB 외 페이지 요청 차단:', id)
+    return false
+  }
   const res = await fetch(`https://api.notion.com/v1/pages/${id}`, {
     method: 'PATCH',
     headers: {

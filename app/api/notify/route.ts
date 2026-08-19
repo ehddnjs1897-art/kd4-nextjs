@@ -388,11 +388,18 @@ export async function POST(request: NextRequest) {
     // Rate limit: 연락처 + IP를 병렬 조회 (순차 2 round-trip → 1)
     // 연락처: 5분 내 3회 초과 차단 (SMS 비용 폭탄 방지) / IP: 5분 내 5회 초과 차단 (번호 열거 공격 방어)
     const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString()
+    // 표기(하이픈·공백)만 바꿔 한도를 우회하지 못하도록 숫자 기준 변형 3종을 함께 조회 (저장 형식은 불변)
+    const phoneDigits = phone.replace(/\D/g, '')
+    const phoneVariants = Array.from(new Set([
+      phone,
+      phoneDigits,
+      phoneDigits.replace(/^(\d{3})(\d{3,4})(\d{4})$/, '$1-$2-$3'),
+    ]))
     const [{ count }, { count: ipCount }] = await Promise.all([
       getSupabaseAdmin()
         .from('consultations')
         .select('id', { count: 'exact', head: true })
-        .eq('phone', phone)
+        .in('phone', phoneVariants)
         .gte('created_at', fiveMinAgo),
       ip
         ? getSupabaseAdmin()

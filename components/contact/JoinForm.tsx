@@ -897,7 +897,14 @@ export default function JoinForm() {
           {/* 마이즈너 경험 — 세그먼트 라디오 (select 대비 탭 1번 절약) */}
           <div className={styles.field}>
             <span className={styles.fieldLabel} id={`join-meisner-label-${uid}`}>마이즈너 테크닉 경험</span>
-            <div className={styles.segGroup} role="radiogroup" aria-labelledby={`join-meisner-label-${uid}`} aria-required="true">
+            <div
+              className={styles.segGroup}
+              role="radiogroup"
+              aria-labelledby={`join-meisner-label-${uid}`}
+              aria-required="true"
+              aria-invalid={Boolean(fieldErrors.meisnerExp)}
+              aria-describedby={fieldErrors.meisnerExp ? `join-meisner-err-${uid}` : undefined}
+            >
               {meisnerChoices.map((o, i) => (
                 <label
                   key={o.value}
@@ -917,7 +924,7 @@ export default function JoinForm() {
                 </label>
               ))}
             </div>
-            {fieldErrors.meisnerExp && <p className={styles.fieldError}>{fieldErrors.meisnerExp}</p>}
+            {fieldErrors.meisnerExp && <p id={`join-meisner-err-${uid}`} role="alert" className={styles.fieldError}>{fieldErrors.meisnerExp}</p>}
           </div>
 
           {/* 유입 경로 */}
@@ -928,6 +935,7 @@ export default function JoinForm() {
                 id={`join-source-${uid}`}
                 className={`${styles.input} ${fieldErrors.source ? styles.inputInvalid : ''}`}
                 aria-invalid={Boolean(fieldErrors.source)}
+                aria-describedby={fieldErrors.source ? `join-source-err-${uid}` : undefined}
                 value={source}
                 onChange={(e) => { setSource(e.target.value); setFieldError('source', '') }}
                 onFocus={fireFormStart}
@@ -942,7 +950,7 @@ export default function JoinForm() {
               </select>
               <span aria-hidden="true" className={styles.selectArrow}>▼</span>
             </div>
-            {fieldErrors.source && <p className={styles.fieldError}>{fieldErrors.source}</p>}
+            {fieldErrors.source && <p id={`join-source-err-${uid}`} role="alert" className={styles.fieldError}>{fieldErrors.source}</p>}
           </div>
 
           {/* 개인정보 수집·이용 동의 (필수) */}

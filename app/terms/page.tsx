@@ -13,6 +13,13 @@ export const metadata: Metadata = {
   title: '이용약관',
   description: 'KD4 액팅 스튜디오(유익액터스) kd4.club 이용약관 — 회원 유형, 배우 프로필 이용허락, 캐스팅 관계자 의무, 수강 신청 안내.',
   alternates: { canonical: `${SITE_URL}/terms` },
+  openGraph: {
+    title: '이용약관 | KD4 액팅 스튜디오',
+    url: `${SITE_URL}/terms`,
+    type: 'website',
+    siteName: 'KD4 액팅 스튜디오',
+    images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오' }],
+  },
 }
 
 const H2: React.CSSProperties = {
@@ -119,7 +126,7 @@ export default function TermsPage() {
         </p>
 
         <p style={{ ...P, marginTop: 28, color: 'var(--gray)' }}>
-          부칙 — 이 약관은 2026년 7월 7일부터 시행합니다. (v1)
+          부칙 — 이 약관(v1)은 2026년 7월 7일부터 시행하며, 개정 약관(v1.1)은 2026년 8월 10일부터 시행합니다.
         </p>
 
         <div style={{ marginTop: 40, paddingTop: 20, borderTop: '1px solid var(--border)', display: 'flex', gap: 16 }}>

@@ -496,7 +496,8 @@ export default function Navbar() {
                 회원가입
               </Link>
             )}
-            {authLoaded && isLoggedIn && (
+            {/* 배우 프로필이 있거나 편집 가능한 역할에만 — 디렉터·일반회원은 /dashboard/edit가 되돌려보내므로 숨김 */}
+            {authLoaded && isLoggedIn && (myActorId || ['actor', 'editor', 'admin'].includes(userRole as string)) && (
               <Link
                 href={myActorId ? `/actors/${myActorId}` : '/dashboard/edit'}
                 className="desktop-auth"

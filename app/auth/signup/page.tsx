@@ -48,6 +48,7 @@ function SignupContent() {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [errorField, setErrorField] = useState<'name' | 'email' | 'password' | 'passwordConfirm' | 'phone' | 'gender' | 'birth' | 'consent' | null>(null)
   const successRef = useRef<HTMLDivElement>(null)
   const errorRef = useRef<HTMLDivElement>(null)
 
@@ -68,17 +69,18 @@ function SignupContent() {
   }, [router, safeNext])
 
   function formatPhone(value: string) {
-    const digits = value.replace(/\D/g, '')
-    if (digits.length <= 3) return digits
-    if (digits.length <= 7) return `${digits.slice(0, 3)}-${digits.slice(3)}`
-    return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7, 11)}`
+    // 마지막 4자리 기준 분할 — 10자리(010-123-4567·02-xxx-xxxx) 번호도 검증 정규식과 일치하게 포맷
+    const d = value.replace(/\D/g, '').slice(0, 11)
+    if (d.length < 4) return d
+    if (d.length < 8) return `${d.slice(0, 3)}-${d.slice(3)}`
+    return `${d.slice(0, 3)}-${d.slice(3, d.length - 4)}-${d.slice(-4)}`
   }
 
   // 간편 가입(소셜) — 배우 회원 전용. OAuth 가입은 /api/auth/on-signup에서 기본 'actor'로
   // 등록되고, 세부 정보(전화·성별·출생연도)는 이후 프로필 접수에서 입력받는다.
   async function handleGoogleSignup() {
     setLoading(true)
-    setError('')
+    setError(''); setErrorField(null)
     const supabase = createClient()
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -92,7 +94,7 @@ function SignupContent() {
 
   async function handleKakaoSignup() {
     setLoading(true)
-    setError('')
+    setError(''); setErrorField(null)
     const supabase = createClient()
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: 'kakao',
@@ -106,41 +108,41 @@ function SignupContent() {
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault()
-    setError('')
+    setError(''); setErrorField(null)
 
     if (password.length < 8) {
-      setError('비밀번호는 8자 이상이어야 합니다.')
+      setErrorField('password'); setError('비밀번호는 8자 이상이어야 합니다.')
       return
     }
     if (!/\d/.test(password)) {
-      setError('비밀번호에 숫자를 1개 이상 포함해야 합니다.')
+      setErrorField('password'); setError('비밀번호에 숫자를 1개 이상 포함해야 합니다.')
       return
     }
     if (password !== passwordConfirm) {
-      setError('비밀번호가 일치하지 않습니다.')
+      setErrorField('passwordConfirm'); setError('비밀번호가 일치하지 않습니다.')
       return
     }
     if (memberType === 'actor' && phone && !/^0[0-9]{1,2}[\-\s]?[0-9]{3,4}[\-\s]?[0-9]{4}$/.test(phone.replace(/\s/g, ''))) {
-      setError('연락처 형식이 올바르지 않습니다. (예: 010-1234-5678)')
+      setErrorField('phone'); setError('연락처 형식이 올바르지 않습니다. (예: 010-1234-5678)')
       return
     }
     if (memberType === 'actor' && gender !== '남' && gender !== '여') {
-      setError('성별을 선택해 주세요.')
+      setErrorField('gender'); setError('성별을 선택해 주세요.')
       return
     }
     if (memberType === 'actor') {
       const by = Number(birthYear)
       if (!/^\d{4}$/.test(birthYear) || by < 1930 || by > new Date().getFullYear()) {
-        setError('출생연도 4자리를 입력해 주세요. (예: 1995)')
+        setErrorField('birth'); setError('출생연도 4자리를 입력해 주세요. (예: 1995)')
         return
       }
     }
     if (!agreeTos || !agreePrivacy) {
-      setError('이용약관과 개인정보 수집·이용 동의(필수)에 체크해 주세요.')
+      setErrorField('consent'); setError('이용약관과 개인정보 수집·이용 동의(필수)에 체크해 주세요.')
       return
     }
     if (memberType === 'actor' && !agreeDist) {
-      setError('프로필 공개·캐스팅 관계자 제공 동의(필수)에 체크해 주세요.')
+      setErrorField('consent'); setError('프로필 공개·캐스팅 관계자 제공 동의(필수)에 체크해 주세요.')
       return
     }
 
@@ -414,7 +416,7 @@ function SignupContent() {
               autoComplete="name"
               maxLength={50}
               spellCheck={false}
-              aria-invalid={!!error || undefined}
+              aria-invalid={errorField === 'name' || undefined}
               aria-describedby={error ? 'signup-error' : undefined}
               style={styles.input}
             />
@@ -435,7 +437,7 @@ function SignupContent() {
               disabled={loading}
               autoComplete="email"
               maxLength={254}
-              aria-invalid={!!error || undefined}
+              aria-invalid={errorField === 'email' || undefined}
               aria-describedby={error ? 'signup-error' : undefined}
               style={styles.input}
             />
@@ -457,7 +459,7 @@ function SignupContent() {
               disabled={loading}
               autoComplete="new-password"
               maxLength={128}
-              aria-invalid={!!error || undefined}
+              aria-invalid={errorField === 'password' || undefined}
               aria-describedby={error ? 'password-hint signup-error' : 'password-hint'}
               style={styles.input}
             />
@@ -478,7 +480,7 @@ function SignupContent() {
               disabled={loading}
               autoComplete="new-password"
               maxLength={128}
-              aria-invalid={!!error || (passwordConfirm ? password !== passwordConfirm : false) || undefined}
+              aria-invalid={errorField === 'passwordConfirm' || (passwordConfirm ? password !== passwordConfirm : false) || undefined}
               aria-describedby={[error ? 'signup-error' : '', 'signup-pw-mismatch'].filter(Boolean).join(' ')}
               style={{
                 ...styles.input,
@@ -568,6 +570,8 @@ function SignupContent() {
                 disabled={loading}
                 autoComplete="bday-year"
                 aria-describedby="birth-year-hint"
+                aria-required="true"
+                aria-invalid={errorField === 'birth' || undefined}
                 style={styles.input}
               />
               <p id="birth-year-hint" style={styles.hint}>
@@ -593,7 +597,7 @@ function SignupContent() {
                 maxLength={13}
                 required
                 autoComplete="tel"
-                aria-invalid={!!error || undefined}
+                aria-invalid={errorField === 'phone' || undefined}
                 aria-describedby={['phone-hint', error ? 'signup-error' : ''].filter(Boolean).join(' ') || undefined}
                 style={styles.input}
               />
@@ -617,7 +621,6 @@ function SignupContent() {
                 placeholder="제작사, 캐스팅사, 방송국 등"
                 disabled={loading}
                 autoComplete="organization"
-                aria-invalid={!!error || undefined}
                 aria-describedby={error ? 'signup-error' : undefined}
                 style={styles.input}
               />
@@ -627,20 +630,20 @@ function SignupContent() {
           {/* 서비스 동의 (필수) — /terms·/privacy v1 (2026-07-07) */}
           <div style={styles.consentGroup}>
             <label style={styles.consentRow}>
-              <input type="checkbox" checked={agreeTos} onChange={(e) => setAgreeTos(e.target.checked)} disabled={loading} style={styles.consentBox} />
+              <input type="checkbox" aria-required="true" checked={agreeTos} onChange={(e) => setAgreeTos(e.target.checked)} disabled={loading} style={styles.consentBox} />
               <span style={styles.consentText}>
                 <Link href="/terms" target="_blank" style={styles.consentLink}>이용약관</Link> 동의 <span aria-hidden="true" style={styles.required}>*</span>
               </span>
             </label>
             <label style={styles.consentRow}>
-              <input type="checkbox" checked={agreePrivacy} onChange={(e) => setAgreePrivacy(e.target.checked)} disabled={loading} style={styles.consentBox} />
+              <input type="checkbox" aria-required="true" checked={agreePrivacy} onChange={(e) => setAgreePrivacy(e.target.checked)} disabled={loading} style={styles.consentBox} />
               <span style={styles.consentText}>
                 <Link href="/privacy" target="_blank" style={styles.consentLink}>개인정보 수집·이용</Link> 동의 <span aria-hidden="true" style={styles.required}>*</span>
               </span>
             </label>
             {memberType === 'actor' && (
               <label style={styles.consentRow}>
-                <input type="checkbox" checked={agreeDist} onChange={(e) => setAgreeDist(e.target.checked)} disabled={loading} style={styles.consentBox} />
+                <input type="checkbox" aria-required="true" checked={agreeDist} onChange={(e) => setAgreeDist(e.target.checked)} disabled={loading} style={styles.consentBox} />
                 <span style={styles.consentText}>
                   프로필 공개 및 캐스팅 관계자 제공·사진영상 이용 동의 <span aria-hidden="true" style={styles.required}>*</span>
                   <br /><span style={styles.consentSub}>캐스팅 연결을 위한 동의예요 — 언제든 비공개 전환할 수 있어요</span>

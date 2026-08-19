@@ -10,6 +10,8 @@ import CopyTextButton from '@/components/monologues/CopyTextButton'
 import DownloadButton from '@/components/monologues/DownloadButton'
 
 export const revalidate = 300
+// cookies/headers/searchParams 미사용 → 정적 생성 강제(라이브에서 매 요청 dynamic으로 떨어지던 문제 복구)
+export const dynamic = 'force-static'
 
 type Params = Promise<{ id: string }>
 
@@ -29,7 +31,8 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   if (!m) return { title: '독백을 찾을 수 없습니다' }
 
   const title = `${m.role} - ${m.work} 독백 대사${m.target ? ` (${m.target})` : ''}`
-  const desc = `${m.medium}·${m.genre}${m.target ? ` ${m.target}` : ''} 독백 대본. ${(m.body ?? '').slice(0, 80)}`
+  const snippet = (m.body ?? '').replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\s+/g, ' ').trim().slice(0, 80)
+  const desc = `${m.medium}·${m.genre}${m.target ? ` ${m.target}` : ''} 독백 대본. ${snippet}`
   const canonicalUrl = `${SITE_URL}/monologues/${m.id}`
 
   return {
