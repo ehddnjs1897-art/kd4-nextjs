@@ -289,7 +289,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
             aria-pressed={videoOnly}
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 6,
-              padding: '6px 12px', borderRadius: 999, cursor: 'pointer',
+              padding: '0 12px', minHeight: 44, borderRadius: 999, cursor: 'pointer',
               fontSize: '0.78rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
               background: videoOnly ? 'var(--navy)' : 'var(--bg2)',
               color: videoOnly ? '#fff' : 'var(--gray)',
@@ -308,7 +308,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
             onClick={() => { setAgeFilter('all'); setGenderFilter('all'); setVideoOnly(false) }}
             aria-label="연령대·성별·영상 필터 초기화"
             style={{
-              padding: '6px 10px', borderRadius: 999, cursor: 'pointer',
+              padding: '0 10px', minHeight: 44, display: 'inline-flex', alignItems: 'center', borderRadius: 999, cursor: 'pointer',
               fontSize: '0.72rem', fontFamily: 'var(--font-sans)',
               background: 'none', color: 'var(--gray)',
               border: '1px solid var(--border)',
@@ -324,7 +324,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
             onChange={(e) => setSortBy(e.target.value as 'recommended' | 'name')}
             aria-label="배우 정렬 기준"
             style={{
-              padding: '6px 10px', borderRadius: 8, cursor: 'pointer',
+              padding: '0 10px', minHeight: 44, borderRadius: 8, cursor: 'pointer',
               fontSize: '0.78rem', fontFamily: 'var(--font-sans)', fontWeight: 600,
               background: 'var(--bg2)', color: 'var(--white)', border: '1px solid var(--border)',
             }}

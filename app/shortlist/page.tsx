@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useFavorites } from '@/lib/useFavorites'
 import { useUserRole } from '@/lib/useUserRole'
 import { SHOW_CASTING_TAGS } from '@/lib/access'
-import { getActorPhotoUrl, shouldOptimize } from '@/lib/actor-photo'
+import { getActorCardThumbUrl, shouldOptimize } from '@/lib/actor-photo'
 import ActorCardImage from '@/components/actors/ActorCardImage'
 import FavoriteButton from '@/components/actors/FavoriteButton'
 
@@ -22,7 +22,7 @@ interface Actor {
 }
 
 export default function ShortlistPage() {
-  const { role, isDirector, loaded: roleLoaded } = useUserRole()
+  const { role, isDirector, loaded: roleLoaded, memberType } = useUserRole()
   const { favorites, loaded, clearFavorites } = useFavorites()
   const [actors, setActors] = useState<Actor[]>([])
   const [fetching, setFetching] = useState(false)
@@ -48,7 +48,7 @@ export default function ShortlistPage() {
         if (err) throw err
         const rows: Actor[] = (data ?? []).map((a) => ({
           ...a,
-          photoSrc: getActorPhotoUrl(a),
+          photoSrc: getActorCardThumbUrl(a),
           unoptimized: !shouldOptimize(a),
         }))
         // localStorage 순서 보존
@@ -97,11 +97,19 @@ export default function ShortlistPage() {
           <>
             <p style={{ color: 'var(--gray)', fontFamily: 'var(--font-sans)', fontSize: '0.92rem', lineHeight: 1.7, marginBottom: 24 }}>
               숏리스트는 캐스팅 디렉터 회원만 이용할 수 있는 기능입니다.<br />
-              디렉터 권한이 필요하면 마이페이지에서 신청해주세요.
+              {memberType === 'director'
+                ? '디렉터 권한이 필요하면 마이페이지에서 신청해주세요.'
+                : '캐스팅 관계자(제작사·캐스팅사·감독) 전용 기능이에요. 캐스팅 관계자시면 카카오 채널로 문의해 주세요.'}
             </p>
-            <Link href="/dashboard" style={{ display: 'inline-flex', alignItems: 'center', padding: '10px 24px', border: '1px solid var(--gold)', borderRadius: 4, color: 'var(--gold)', fontFamily: 'var(--font-sans)', fontSize: '0.9rem', textDecoration: 'none' }}>
-              마이페이지로
-            </Link>
+            {memberType === 'director' ? (
+              <Link href="/dashboard" style={{ display: 'inline-flex', alignItems: 'center', padding: '10px 24px', border: '1px solid var(--gold)', borderRadius: 4, color: 'var(--gold)', fontFamily: 'var(--font-sans)', fontSize: '0.9rem', textDecoration: 'none' }}>
+                마이페이지로
+              </Link>
+            ) : (
+              <a href="https://pf.kakao.com/_ximxdqn" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', padding: '10px 24px', border: '1px solid var(--gold)', borderRadius: 4, color: 'var(--gold)', fontFamily: 'var(--font-sans)', fontSize: '0.9rem', textDecoration: 'none' }}>
+                카카오 채널로 문의
+              </a>
+            )}
           </>
         )}
       </main>

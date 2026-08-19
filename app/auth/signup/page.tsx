@@ -84,7 +84,7 @@ function SignupContent() {
     const supabase = createClient()
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${getRedirectOrigin()}/auth/callback` },
+      options: { redirectTo: `${getRedirectOrigin()}/auth/callback${nextQS}` }, // next 보존
     })
     if (authError) {
       setError('구글 가입 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.')
@@ -98,7 +98,7 @@ function SignupContent() {
     const supabase = createClient()
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: 'kakao',
-      options: { redirectTo: `${getRedirectOrigin()}/auth/callback` },
+      options: { redirectTo: `${getRedirectOrigin()}/auth/callback${nextQS}` }, // next 보존
     })
     if (authError) {
       setError('카카오 가입 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.')

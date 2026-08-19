@@ -35,7 +35,7 @@ export async function matchActorOnSignup(
   profileId: string,
   name: string,
   phone: string
-): Promise<{ matched: boolean; actorId?: string }> {
+): Promise<{ matched: boolean; actorId?: string; pendingSameName?: { actorId: string; name: string } }> {
   // 1. actors 테이블 전체 조회 (소규모 테이블이므로 full scan OK)
   const { data: actors, error: fetchError } = await supabaseAdmin
     .from('actors')
@@ -60,7 +60,7 @@ export async function matchActorOnSignup(
   }
 
   // 2-①. 이름 + 전화 완전 일치 (가장 강한 신호)
-  let matched = inputPhone
+  const matched = inputPhone
     ? actors.find(
         (actor) =>
           normalizeName(actor.name ?? '') === inputName &&
@@ -68,34 +68,28 @@ export async function matchActorOnSignup(
       )
     : undefined
 
-  // 2-②. 이름 단독 매칭 폴백 (2026-06-12 대표 지시: 이름 일치 멤버는 배우 멤버로)
-  //    actors.phone 공란이 많아 전화 매칭만으로는 대부분 실패 →
-  //    동명 actor가 정확히 1명이고 아직 어떤 계정과도 연결되지 않은 row만 허용 (기존 연결 탈취 방지)
+  // 2-②. 이름 단독 자동연결 — 2026-08-12 대표 지시로 폐지.
+  //    (구: 전화 미등록 동명 배우 1명이면 자동 연결 — 동명이인 가입자가 남의 프로필 편집권을 선점할 수 있는 구조)
+  //    이제 이름+전화 완전 일치만 자동 연결. 동명 후보가 있으면 호출자가 대표에게 알려 수동 연결하게 한다.
+  let pendingSameName: { actorId: string; name: string } | undefined
   if (!matched) {
     const sameName = actors.filter((a) => normalizeName(a.name ?? '') === inputName)
-    if (sameName.length === 1) {
+    if (sameName.length >= 1) {
       const candidate = sameName[0]
-      const candidatePhone = normalizePhone(candidate.phone ?? '')
-      // 🔒 보안(2026-06-13): 후보 배우에 전화가 등록돼 있으면 입력 전화와 일치할 때만 연결.
-      //    동명만으로 전화 등록된 배우 계정을 탈취(연락처 열람·프로필 편집권)하는 것 차단.
-      //    전화 미등록 배우는 기존대로 이름 단독 허용 (2026-06-12 대표 지시 — 데이터 미비 멤버 자동연결)
-      const phoneOk = !candidatePhone || (!!inputPhone && candidatePhone === inputPhone)
-      if (phoneOk) {
-        const { data: claimedBy } = await supabaseAdmin
-          .from('profiles')
-          .select('id')
-          .eq('actor_id', candidate.id)
-          .neq('id', profileId)
-          .limit(1)
-        if (!claimedBy || claimedBy.length === 0) {
-          matched = candidate
-        }
+      const { data: claimedBy } = await supabaseAdmin
+        .from('profiles')
+        .select('id')
+        .eq('actor_id', candidate.id)
+        .neq('id', profileId)
+        .limit(1)
+      if (!claimedBy || claimedBy.length === 0) {
+        pendingSameName = { actorId: candidate.id, name: candidate.name ?? inputName }
       }
     }
   }
 
   if (!matched) {
-    return { matched: false }
+    return { matched: false, pendingSameName }
   }
 
   // 3. profiles 업데이트 — actor_id 연결 + '일반 회원'(user) 잔재면 '배우 멤버'(actor)로 정리.

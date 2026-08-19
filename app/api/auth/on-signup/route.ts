@@ -110,6 +110,16 @@ export async function POST(request: NextRequest) {
     try {
       const res = await matchActorOnSignup(user.id, name, phone)
       actorId = res.actorId
+      // 이름만 같은 배우가 있는데 전화가 안 맞아 자동 연결을 안 한 경우 → 대표가 수동 확인·연결하도록 알림
+      // (2026-08-12: 이름 단독 자동연결 폐지 후 보완 경로. 재로그인 중복 방지는 alreadyLinked/existing 체크로 충분)
+      if (!actorId && res.pendingSameName && process.env.ADMIN_PHONE_NUMBER && !existing) {
+        const { sendSMS } = await import('@/lib/sms')
+        const who = `${name}${phone ? ` (${phone})` : ''}`
+        await sendSMS(
+          process.env.ADMIN_PHONE_NUMBER.trim(),
+          `[KD4] 배우 프로필 수동 연결 필요\n가입: ${who}\n동명 배우 DB 후보: ${res.pendingSameName.name}\n전화 불일치로 자동 연결 안 함 — 본인 확인 후 연결해 주세요.`
+        )
+      }
     } catch (e) {
       console.error('[on-signup] matching error:', e instanceof Error ? e.message : String(e))
     }

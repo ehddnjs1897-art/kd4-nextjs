@@ -1,8 +1,16 @@
 'use client'
 
-import { useState, useEffect, useMemo, useDeferredValue } from 'react'
+import { useState, useEffect, useMemo, useDeferredValue, useRef } from 'react'
 import Link from 'next/link'
 import type { MonologueListItem } from '@/lib/monologues'
+
+const PAGE_SIZE = 48
+// 카드 이미지(1400×1400 PNG ~230KB) → Supabase 변환 480×480 WebP(~16KB). 실패 시 onError로 원본 폴백.
+function cardThumb(url: string) {
+  const marker = '/storage/v1/object/public/'
+  if (!url.includes(marker)) return url
+  return url.replace(marker, '/storage/v1/render/image/public/') + '?width=480&height=480&resize=contain&quality=80&format=webp'
+}
 
 interface Props {
   monologues: MonologueListItem[]
@@ -53,6 +61,20 @@ export default function MonologuesSearchGrid({ monologues, initialQuery = '' }: 
       (m.emotion ?? '').toLowerCase().includes(word)
     return monologues.filter((m) => words.every((w) => wordMatches(m, w)))
   }, [monologues, deferredQuery])
+
+  // 점진 렌더 — 731장 전량 DOM 대신 48장씩 (저사양 모바일 하이드레이션 비용 절감). 검색/필터 바뀌면 리셋.
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
+  useEffect(() => { setVisibleCount(PAGE_SIZE) }, [filtered])
+  const sentinelRef = useRef<HTMLDivElement | null>(null)
+  useEffect(() => {
+    const el = sentinelRef.current
+    if (!el || visibleCount >= filtered.length) return
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) setVisibleCount((c) => Math.min(c + PAGE_SIZE, filtered.length))
+    }, { rootMargin: '600px 0px' })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [visibleCount, filtered.length])
 
   return (
     <>
@@ -149,7 +171,7 @@ export default function MonologuesSearchGrid({ monologues, initialQuery = '' }: 
             gap: 20,
           }}
         >
-          {filtered.map((m) => (
+          {filtered.slice(0, visibleCount).map((m) => (
             <Link
               key={m.id}
               href={`/monologues/${m.id}`}
@@ -167,9 +189,14 @@ export default function MonologuesSearchGrid({ monologues, initialQuery = '' }: 
                 {m.card_image_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={m.card_image_url}
+                    src={cardThumb(m.card_image_url)}
                     alt={`${m.role} - ${m.work} 독백 대본 카드${m.target ? ` (${m.target})` : ''}`}
                     loading="lazy"
+                    decoding="async"
+                    onError={(e) => {
+                      const img = e.currentTarget
+                      if (img.src !== m.card_image_url) img.src = m.card_image_url as string
+                    }}
                     style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                   />
                 ) : (
@@ -210,6 +237,18 @@ export default function MonologuesSearchGrid({ monologues, initialQuery = '' }: 
               </div>
             </Link>
           ))}
+        </div>
+      )}
+      {visibleCount < filtered.length && (
+        <div ref={sentinelRef} style={{ textAlign: 'center', padding: '28px 0 8px' }}>
+          <button
+            type="button"
+            onClick={() => setVisibleCount((c) => Math.min(c + PAGE_SIZE, filtered.length))}
+            className="btn-outline"
+            style={{ minHeight: 44 }}
+          >
+            더 보기 (남은 {filtered.length - visibleCount}편)
+          </button>
         </div>
       )}
     </>

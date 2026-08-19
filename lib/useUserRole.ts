@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react'
  */
 export function useUserRole() {
   const [role, setRole] = useState<string | null>(null)
+  const [memberType, setMemberType] = useState<string | null>(null)
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
@@ -23,7 +24,8 @@ export function useUserRole() {
         const supabase = createClient()
         const { data: { user } } = await supabase.auth.getUser()
         if (cancelled) return
-        if (!user) { setRole(null); setLoaded(true); return }
+        if (!user) { setRole(null); setMemberType(null); setLoaded(true); return }
+        setMemberType((user.user_metadata?.member_type as string | undefined) ?? null)
         const { data } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle()
         if (cancelled) return
         setRole((data?.role as string | null) ?? null)
@@ -37,5 +39,6 @@ export function useUserRole() {
 
   // 캐스팅 디렉터 전용 기능 게이트 — 연락처 열람과 동일 기준(director/admin)
   const isDirector = role === 'director' || role === 'admin'
-  return { role, loaded, isDirector }
+  // memberType: 가입 시 선택한 유형('actor'|'director') — 디렉터 신청 안내 분기용
+  return { role, loaded, isDirector, memberType }
 }

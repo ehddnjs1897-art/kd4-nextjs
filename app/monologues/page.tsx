@@ -115,8 +115,10 @@ function FilterPill({ label, href, active }: { label: string; href: string; acti
     <Link
       href={href}
       style={{
-        display: 'inline-block',
-        padding: '6px 14px',
+        display: 'inline-flex',
+        alignItems: 'center',
+        minHeight: 44, // 터치 타깃 44px (WCAG 2.5.8) — 글자·가로 패딩은 그대로
+        padding: '0 14px',
         borderRadius: 999,
         fontSize: '0.82rem',
         fontFamily: 'var(--font-sans)',

@@ -55,8 +55,20 @@ export async function GET(req: NextRequest) {
   )
 }
 
+// IP 단위 한도 — 공개 배우 UUID를 돌려가며 무차별 수신거부 처리하는 것 방지 (서버리스 인스턴스별 best-effort)
+const ipHits = new Map<string, number[]>()
+
 export async function POST(req: NextRequest) {
   const id = req.nextUrl.searchParams.get('id')?.trim() ?? ''
+  const ip = req.headers.get('x-real-ip') ?? req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
+  const recent = (ipHits.get(ip) ?? []).filter((t) => Date.now() - t < 10 * 60_000)
+  if (recent.length >= 5) {
+    return new NextResponse(htmlPage('<p>요청이 너무 많습니다. 잠시 후 다시 시도해주세요.</p>'), {
+      status: 429,
+      headers: { 'Content-Type': 'text/html; charset=utf-8' },
+    })
+  }
+  ipHits.set(ip, [...recent, Date.now()])
 
   if (!UUID_RE.test(id)) {
     return new NextResponse(htmlPage('<p>잘못된 요청입니다.</p>'), {

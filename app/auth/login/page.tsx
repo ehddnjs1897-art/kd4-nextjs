@@ -91,7 +91,8 @@ function LoginContent() {
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${getRedirectOrigin()}/auth/callback`,
+        // next 보존 — 소셜 로그인 후 원래 가려던 페이지로 (callback이 next를 검증·처리)
+        redirectTo: `${getRedirectOrigin()}/auth/callback${safeNext ? `?next=${encodeURIComponent(safeNext)}` : ''}`,
       },
     })
     if (authError) {
@@ -107,7 +108,8 @@ function LoginContent() {
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: 'kakao',
       options: {
-        redirectTo: `${getRedirectOrigin()}/auth/callback`,
+        // next 보존 — 소셜 로그인 후 원래 가려던 페이지로 (callback이 next를 검증·처리)
+        redirectTo: `${getRedirectOrigin()}/auth/callback${safeNext ? `?next=${encodeURIComponent(safeNext)}` : ''}`,
       },
     })
     if (authError) {

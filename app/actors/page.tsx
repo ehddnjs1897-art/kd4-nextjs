@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { unstable_cache } from 'next/cache'
 import type { Metadata } from 'next'
 import { supabaseAdmin } from '@/lib/supabase/admin'
-import { getActorPhotoUrl, shouldOptimize } from '@/lib/actor-photo'
+import { getActorCardThumbUrl, shouldOptimize } from '@/lib/actor-photo'
 import ActorsSearchGrid from '@/components/actors/ActorsSearchGrid'
 import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
@@ -629,7 +629,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
               age_group: actor.age_group,
               casting_tags: actor.casting_tags,
               casting_summary: actor.casting_summary,
-              photoSrc: getActorPhotoUrl(actor),
+              photoSrc: getActorCardThumbUrl(actor),
               unoptimized: !shouldOptimize(actor),
               hasVideo: videoIdSet.has(actor.id),
             }))}

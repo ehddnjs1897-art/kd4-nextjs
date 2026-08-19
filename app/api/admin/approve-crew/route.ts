@@ -1,7 +1,8 @@
 /**
- * GET /api/admin/approve-crew?uid=XXX
- * 관리자가 이메일 링크 클릭 → 해당 유저 role을 'crew'로 승인
- * 로그인한 관리자(admin)만 실행 가능
+ * /api/admin/approve-crew?uid=XXX
+ * - GET : 확인 페이지(승인 버튼) — 이메일 링크 클릭만으로는 실행되지 않음 (2026-08-12: 링크 유도 CSRF 차단)
+ * - POST: 실제 승인 — 로그인한 관리자(admin)만, 자사 Origin만
+ * 기존 이메일 링크(GET)는 그대로 열리며 버튼 1번 더 누르는 흐름으로 바뀐다.
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
@@ -14,7 +15,7 @@ import { SITE_URL } from '@/lib/constants'
 const approveCrewMap = new Map<string, number>()
 const APPROVE_COOLDOWN_MS = 60_000
 
-export async function GET(request: NextRequest) {
+async function approve(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   // Host-header 스푸핑 방지: 리다이렉트 base는 항상 SITE_URL 고정 (open redirect 방어)
   const origin = SITE_URL
@@ -25,9 +26,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/admin?error=invalid_uid`)
   }
 
-  // CSRF 방어: Origin 헤더가 존재하고 자사 도메인이 아니면 차단
-  // 이메일 링크 클릭 시 Origin 헤더가 없으므로 허용 (이메일 정상 플로우)
+  // CSRF 방어: POST는 자사 Origin이 아니면 차단 (확인 페이지의 form에서만 호출됨)
   const csrfOrigin = request.headers.get('origin') ?? ''
+  if (!csrfOrigin) {
+    return NextResponse.redirect(`${origin}/admin?error=csrf`)
+  }
   // Exact match — startsWith would allow kd4.club.evil.com subdomain bypass
   if (csrfOrigin && csrfOrigin !== SITE_URL && csrfOrigin !== SITE_URL.replace(/\/$/, '')) {
     return NextResponse.redirect(`${origin}/admin?error=csrf`)
@@ -129,4 +132,28 @@ export async function GET(request: NextRequest) {
     `${origin}/admin?approved=${encodeURIComponent(target.name ?? uid)}`,
     { headers: { 'Cache-Control': 'no-store' } }
   )
+}
+
+function confirmPage(uid: string) {
+  const safeUid = uid.replace(/[^0-9a-fA-F-]/g, '')
+  return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>크루/디렉터 승인 확인 | KD4</title>
+<style>body{font-family:-apple-system,system-ui,sans-serif;background:#F0F0E8;color:#111;display:flex;min-height:100vh;align-items:center;justify-content:center;margin:0}main{background:#fff;border:1px solid #e5e2d8;border-radius:12px;padding:32px 28px;max-width:420px;width:calc(100% - 32px);text-align:center}h1{font-size:1.1rem;margin:0 0 10px}p{font-size:.9rem;color:#555;line-height:1.6;margin:0 0 22px}button{background:#15488A;color:#fff;border:0;border-radius:8px;padding:12px 24px;font-size:.95rem;min-height:44px;cursor:pointer}a{display:inline-block;margin-top:14px;font-size:.85rem;color:#666}</style></head>
+<body><main><h1>회원 승인을 진행할까요?</h1><p>관리자 계정으로 로그인된 상태에서만 처리됩니다.<br>아래 버튼을 누르면 신청 상태의 회원이 크루/디렉터로 승인되고 본인에게 문자가 발송됩니다.</p>
+<form method="POST" action="/api/admin/approve-crew?uid=${safeUid}"><button type="submit">승인 진행</button></form>
+<a href="/admin">취소하고 관리자 페이지로</a></main></body></html>`
+}
+
+export async function GET(request: NextRequest) {
+  const uid = new URL(request.url).searchParams.get('uid') ?? ''
+  if (!/^[0-9a-fA-F-]{36}$/.test(uid)) {
+    return NextResponse.redirect(`${SITE_URL}/admin?error=invalid_uid`)
+  }
+  return new NextResponse(confirmPage(uid), {
+    status: 200,
+    headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' },
+  })
+}
+
+export async function POST(request: NextRequest) {
+  return approve(request)
 }

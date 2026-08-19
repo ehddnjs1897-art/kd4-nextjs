@@ -124,31 +124,10 @@ async function unsubscribeByPhone(phone: string, token: string) {
     console.error('[leads/unsubscribe] Notion 조회 실패:', queryRes.status, body.slice(0, 500))
   }
 
-  // 2) 없으면 "🚫 이탈" 상태로 신규 카드 생성 — 이후 캠페인 대조에서 자동 제외
-  const createRes = await fetch('https://api.notion.com/v1/pages', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-      'Notion-Version': '2022-06-28',
-    },
-    signal: AbortSignal.timeout(10000),
-    body: JSON.stringify({
-      parent: { database_id: NOTION_DATABASE_ID },
-      properties: {
-        '이름': { title: [{ type: 'text', text: { content: '(수신거부)' } }] },
-        '연락처': { phone_number: phone },
-        '상태': { select: { name: '🚫 이탈' } },
-        '접수일': { date: { start: new Date().toISOString() } },
-      },
-    }),
-  })
-  if (!createRes.ok) {
-    const body = await createRes.text().catch(() => '')
-    console.error('[leads/unsubscribe] Notion 신규 카드 생성 실패:', createRes.status, body.slice(0, 500))
-    return false
-  }
-  console.warn(`[leads/unsubscribe] 수신거부 확정(phone, 신규카드): ${phone}`)
+  // 2) 기존 카드가 없는 번호는 아무것도 만들지 않는다 (2026-08-12).
+  //    구: '🚫 이탈' 신규 카드 생성 — 비인증 엔드포인트라 임의 번호로 상담자 DB에 쓰레기 카드를 무한 생성할 수 있었음.
+  //    문자를 받은 사람은 반드시 카드가 있으므로(발송 대상 = DB 카드) 실사용엔 영향 없음.
+  console.warn(`[leads/unsubscribe] 해당 번호 카드 없음 — 무시: ${phone.slice(0, 3)}****${phone.slice(-4)}`)
   return true
 }
 

@@ -58,3 +58,18 @@ export function shouldOptimize(_actor: ActorPhotoSource): boolean {
   // 거치지 않고 Supabase CDN 원본을 직접 로드한다 (2026-07-01). 캐시된 옛 사진은 영향 없음.
   return false
 }
+
+/**
+ * 배우 목록 카드용 썸네일 URL — Supabase Storage 이미지 변환(render/image) 사용.
+ * 원본 1280×1920 JPG(80~240KB) 대신 480×720 WebP(~13~40KB)로 모바일 전송량 80%↓ (2026-08-12 실측).
+ * - Vercel 이미지 최적화기는 거치지 않으므로 402 한도 문제 없음.
+ * - Storage 공개 URL이 아닌 경우(외부 URL·빈 값)는 원본 그대로 반환.
+ * - height 미지정 시 480×1920으로 비율이 깨지므로 width+height+resize=cover 필수.
+ */
+export function getActorCardThumbUrl(actor: ActorPhotoSource): string {
+  const raw = getActorPhotoUrl(actor)
+  if (!raw) return ''
+  const marker = '/storage/v1/object/public/'
+  if (!raw.includes(marker)) return raw
+  return raw.replace(marker, '/storage/v1/render/image/public/') + '?width=480&height=720&resize=cover&quality=75&format=webp'
+}

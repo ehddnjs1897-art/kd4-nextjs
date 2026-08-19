@@ -52,22 +52,33 @@ function InitialFallback({ name }: { name: string }) {
 const CENTER_CROP: React.CSSProperties = { objectFit: 'cover', objectPosition: 'center 30%' }
 
 export default function ActorCardImage({ src, alt, unoptimized, priority }: Props) {
+  // 썸네일(변환 URL)이 실패하면 원본 URL로 1회 폴백 후, 그래도 실패하면 이니셜
+  const [current, setCurrent] = useState(src)
   const [hasError, setHasError] = useState(!src)
 
   if (hasError) {
     return <InitialFallback name={alt} />
   }
 
+  const handleError = () => {
+    const marker = '/storage/v1/render/image/public/'
+    if (current.includes(marker)) {
+      setCurrent(current.replace(marker, '/storage/v1/object/public/').split('?')[0])
+      return
+    }
+    setHasError(true)
+  }
+
   return (
     <Image
-      src={src}
+      src={current}
       alt={alt}
       fill
       sizes="(max-width:640px) 100vw, (max-width:1232px) calc(50vw - 22px), 578px"
       style={CENTER_CROP}
       unoptimized={unoptimized}
       priority={priority}
-      onError={() => setHasError(true)}
+      onError={handleError}
     />
   )
 }
