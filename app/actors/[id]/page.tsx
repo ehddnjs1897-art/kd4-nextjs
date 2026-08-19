@@ -279,9 +279,11 @@ export async function generateMetadata({
   params: Promise<{ id: string }>
 }): Promise<Metadata> {
   const { id } = await params
-  if (!UUID_RE_ACTOR.test(id)) return { title: '배우 프로필', robots: { index: false, follow: false } }
+  // 형식 불량·존재하지 않는 id는 metadata 단계에서 notFound() — 부모 loading.tsx 스트리밍으로
+  // 헤더가 200으로 먼저 나가는 soft 404 방지 (비공개 배우는 본인 열람 가능하므로 여기서 던지지 않음)
+  if (!UUID_RE_ACTOR.test(id)) notFound()
   const actor = await getActorCached(id)
-  if (!actor) return { title: '배우 프로필', robots: { index: false, follow: false } }
+  if (!actor) notFound()
   // 비공개 배우 — 크롤러가 메타데이터를 읽어도 인덱싱 차단 (페이지 컴포넌트는 notFound() 반환)
   if (!actor.is_public) return { title: '배우 프로필', robots: { index: false, follow: false } }
 
