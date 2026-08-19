@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useFavorites } from '@/lib/useFavorites'
 import { useUserRole } from '@/lib/useUserRole'
 import { SHOW_CASTING_TAGS } from '@/lib/access'
-import { getActorCardThumbUrl, shouldOptimize } from '@/lib/actor-photo'
+import { getActorPhotoUrl, shouldOptimize } from '@/lib/actor-photo'
 import ActorCardImage from '@/components/actors/ActorCardImage'
 import FavoriteButton from '@/components/actors/FavoriteButton'
 
@@ -48,7 +48,7 @@ export default function ShortlistPage() {
         if (err) throw err
         const rows: Actor[] = (data ?? []).map((a) => ({
           ...a,
-          photoSrc: getActorCardThumbUrl(a),
+          photoSrc: getActorPhotoUrl(a),
           unoptimized: !shouldOptimize(a),
         }))
         // localStorage 순서 보존
