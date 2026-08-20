@@ -5,11 +5,12 @@ import Link from 'next/link'
 import type { MonologueListItem } from '@/lib/monologues'
 
 const PAGE_SIZE = 48
-// 카드 이미지(1400×1400 PNG ~230KB) → Supabase 변환 480×480 WebP(~16KB). 실패 시 onError로 원본 폴백.
+// 카드 이미지(1400×1400 PNG ~230KB) → Vercel 이미지 최적화기 경유(640px WebP, ~20KB).
+// 2026-08-19 Vercel Pro 결제로 전환 — Supabase 이미지 변환(Pro 전용)과 달리 Supabase 무료 플랜에서도
+// 동작하고, 엣지 캐시(배포 후에도 유지)라 Supabase 전송량이 원본 1회분으로 준다. 실패 시 onError로 원본 폴백.
 function cardThumb(url: string) {
-  const marker = '/storage/v1/object/public/'
-  if (!url.includes(marker)) return url
-  return url.replace(marker, '/storage/v1/render/image/public/') + '?width=480&height=480&resize=contain&quality=80&format=webp'
+  if (!url.includes('/storage/v1/object/public/')) return url
+  return `/_next/image?url=${encodeURIComponent(url)}&w=640&q=75`
 }
 
 interface Props {

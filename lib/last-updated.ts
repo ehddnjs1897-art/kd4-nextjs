@@ -12,9 +12,12 @@ export const LAST_UPDATED = {
   home: '2026-07-21',
   about: '2026-07-23',
   classes: '2026-07-06',
+  basic: '2026-08-20',
   meisner: '2026-07-28',
+  // /meisner-technique — 정보형 가이드 (2026-08-20 신설)
+  meisnerGuide: '2026-08-20',
   reel: '2026-07-28',
-  sinchon: '2026-07-21',
+  sinchon: '2026-08-20',
   coaches: '2026-07-21',
   join: '2026-07-06',
 } as const

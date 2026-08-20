@@ -52,10 +52,13 @@ export function getActorPhotoUrl(actor: ActorPhotoSource): string {
  * Storage·profile_photo는 이미 최적화됨 → next/image 캐시 OK.
  * Drive는 unoptimized 권장 (외부 도메인 + 캐시 헤더 약함).
  */
-export function shouldOptimize(_actor: ActorPhotoSource): boolean {
-  // Vercel 이미지 최적화 한도(402)가 소진돼 새로 올린 사진(PNG·JPG·용량 무관)이
-  // 최적화기에서 전부 거부됨 → 카드·현재사진이 깨짐. 사용자 업로드 사진은 최적화기를
-  // 거치지 않고 Supabase CDN 원본을 직접 로드한다 (2026-07-01). 캐시된 옛 사진은 영향 없음.
+export function shouldOptimize(actor: ActorPhotoSource): boolean {
+  // 2026-07-01: Hobby 이미지 최적화 한도(402) 소진으로 전면 false 처리했었음.
+  // 2026-08-19: Vercel Pro 결제(대표)로 한도 해소 → 복구. Vercel이 리사이즈·WebP 변환 후
+  // 엣지에 캐시(배포해도 유지)하므로 Supabase 전송량이 원본 1회분으로 줄어든다.
+  // 리사이즈는 비율 보존 — 크롭 변환 금지 룰(8/19)과 무관 (표시는 기존 CSS 그대로).
+  // Drive 사진만 예외(외부 리다이렉트·약한 캐시 헤더): 원본 직접 로드 유지.
+  if (actor.profile_photo || actor.storage_photo_path) return true
   return false
 }
 

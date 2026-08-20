@@ -141,6 +141,27 @@ const NOTICE_ITEMS = [
   '원활한 학습을 돕기 위한 보강 제도가 준비되어 있으니 관련 규정을 확인 후 편하게 문의해 주시기 바랍니다.',
 ]
 
+/**
+ * 오픈클래스 후기 인용 — Supabase actor_reviews(is_public·course_type='오픈클래스')에서 발췌.
+ * 원문 그대로 인용하며 줄바꿈만 공백으로 합쳤다. 발췌 구간은 앞뒤에 …로 표시.
+ * ⚠️ 정규 클래스 후기가 아니라 오픈클래스(마이즈너 맛보기) 후기 — 출처 표기를 바꾸지 말 것.
+ * ⚠️ Review/AggregateRating JSON-LD 금지 (자사 페이지 자체 후기 = 구글 정책 위반).
+ */
+const OPEN_CLASS_QUOTES = [
+  {
+    text: '…이 오픈클래스를 통해 짧은 시간이었지만 마이즈너 테크닉이 현재 배우에게 어떤 무기가 될 수 있는지 이해하게 되었다. 충분히 가치있는 시간이었고, 무엇보다 배우님이 오픈클래스라고 힘을 빼서 하시는 것이 아니라 선배 배우로서 후배에게 진심으로 다가와 주신다고 느꼈다.',
+    author: '멤버',
+  },
+  {
+    text: '…단순히 자유독백 피드백으로 그치는 것이 아니라 이게 어떻게 계획적인 연기가 아닌 "되어지는"연기가 될 수 있는지 스스로 체험하게 해주셨습니다. 틀에박힌 연기가 늘 걱정이었던 제게 새로운 경험이었고, 또다른 도전에의 불씨를 다시 지피는 계기가 되었습니다.',
+    author: '멤버',
+  },
+  {
+    text: '…연기를 시도할 때마다 매번 달라야 하고 연기하는 매 순간 계획한 것을 다 버릴 용기로 현실에 존재해야 한다는, 단순하면서 중요한 내용을 가져가게 된 것이 가장 좋았습니다…',
+    author: '이OO 멤버',
+  },
+]
+
 export default function MeisnerPage() {
   return (
     <div style={{ paddingTop: '80px', background: 'var(--bg)', minHeight: '100vh', color: '#111111' }}>
@@ -243,6 +264,9 @@ export default function MeisnerPage() {
             <h2 className="section-title-serif" style={{ marginBottom: '16px' }}>마이즈너 테크닉이란</h2>
             <p className="section-desc">
               샌포드 마이즈너가 정립한 연기 훈련 방법. 핵심은 &ldquo;연기하지 않는 연기&rdquo;. 상대에 정직하게 반응하는 훈련으로 가짜 감정과 정형화된 습관을 해체하고 배우의 본능을 회복시킵니다.
+            </p>
+            <p style={{ fontSize: '0.9rem', marginTop: '12px' }}>
+              더 깊이: <Link href="/meisner-technique" style={{ color: 'var(--navy)', fontWeight: 600 }}>마이즈너 테크닉 완전 정리 <span aria-hidden="true">→</span></Link>
             </p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', maxWidth: '960px', margin: '0 auto' }}>
@@ -466,6 +490,34 @@ export default function MeisnerPage() {
         </div>
       </section>
 
+      {/* REVIEWS — 오픈클래스 후기 인용 (출처 정직 표기 · Review 스키마 금지) */}
+      <section aria-label="오픈클래스 멤버 후기" style={{ padding: 'clamp(64px, 10vw, 96px) 0 0', background: 'var(--bg2)' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
+            <p className="section-eyebrow" lang="en">07 — REVIEWS</p>
+            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>오픈클래스에 다녀간 멤버들의 말</h2>
+            <p className="section-desc">정규 클래스에 앞서 진행하는 오픈클래스(마이즈너 테크닉 맛보기 수업) 참여 멤버들이 직접 남긴 후기 중 일부입니다. 정규 클래스 후기가 아닙니다.</p>
+          </div>
+          <div className="meisner-quote-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', maxWidth: '1080px', margin: '0 auto' }}>
+            {OPEN_CLASS_QUOTES.map((quote) => (
+              <figure key={quote.author + quote.text.slice(0, 12)} style={{ margin: 0, background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', padding: '24px' }}>
+                <blockquote style={{ margin: 0, fontSize: '0.88rem', color: 'var(--gray-light)', lineHeight: 1.75, wordBreak: 'keep-all' }}>
+                  &ldquo;{quote.text}&rdquo;
+                </blockquote>
+                <figcaption style={{ fontSize: '0.82rem', color: 'var(--gray-light)', marginTop: '12px' }}>
+                  — {quote.author} · 오픈클래스
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+          <p style={{ textAlign: 'center', marginTop: '20px' }}>
+            <Link href="/reviews" style={{ fontSize: '0.88rem', color: 'var(--navy)', fontWeight: 600 }}>
+              후기 전체 보기 <span aria-hidden="true">→</span>
+            </Link>
+          </p>
+        </div>
+      </section>
+
       {/* FAQ */}
       <section aria-label="자주 묻는 질문" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
@@ -523,6 +575,7 @@ export default function MeisnerPage() {
             justify-items: center;
             text-align: center;
           }
+          .meisner-quote-grid { grid-template-columns: 1fr !important; }
         }
         /* 모바일: 비교표 셀 좌우 여백 축소 — 좁은 칸 글자 세로깨짐 완화 (데스크톱 무영향) */
         @media (max-width: 480px) {

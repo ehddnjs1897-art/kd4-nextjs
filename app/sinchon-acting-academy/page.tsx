@@ -3,7 +3,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { MapPin, Train, Clock, Navigation, Map as MapIcon } from 'lucide-react'
-import { SINCHON_FAQ } from '@/lib/landing-faqs'
+import { SINCHON_FAQ, type FaqItem } from '@/lib/landing-faqs'
+import { DONGWON_COACH, SEBIN, HYUNJAE } from '@/lib/classes'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { LAST_UPDATED } from '@/lib/last-updated'
 import JoinCTALink from '@/components/join/JoinCTALink'
@@ -26,6 +27,69 @@ const ACCESS_ITEMS = [
   { Icon: Train, title: '지하철 2호선 이대역', desc: '5번 출구에서 도보 약 3분' },
   { Icon: Train, title: '경의중앙선 신촌역', desc: '도보 약 5분' },
   { Icon: Clock, title: '운영시간', desc: '월~토 10:00–22:00 · 일요일 휴무' },
+]
+
+/**
+ * "신촌역? 이대역?" 직답 FAQ — ACCESS_ITEMS·SINCHON_FAQ의 실제 교통 정보만 재사용.
+ * 공용 lib/landing-faqs.ts는 다른 페이지와 공유하므로 이 페이지에서만 합쳐 쓴다.
+ */
+const STATION_FAQ: FaqItem = {
+  q: '신촌역에서 오는 게 빠른가요, 이대역에서 오는 게 빠른가요?',
+  a: '이대역이 가장 가깝습니다. 2호선 이대역 5번 출구에서 도보 약 3분, 경의중앙선 신촌역에서는 도보 약 5분입니다. 2호선 신촌역에서 오시면 도보 10분 정도 걸립니다.',
+}
+
+/** 페이지에 실제로 표시·구조화되는 FAQ 목록 (아코디언 + FAQPage 스키마 동일 소스) */
+const SINCHON_FAQ_ITEMS: FaqItem[] = [SINCHON_FAQ[0], STATION_FAQ, ...SINCHON_FAQ.slice(1)]
+
+/**
+ * 연기학원 선택 체크리스트 — 일반론(무엇을 확인해야 하는가) + KD4의 해당 사실 병기.
+ * KD4 값은 사이트에 이미 공개된 수치만 사용(정원 6~8명·마이즈너 정원 8명·4개월·이대역 3분 등).
+ */
+const CHECKLIST_ITEMS = [
+  {
+    title: '커리큘럼이 단계로 정리되어 있는가',
+    desc: '그날 분위기에 따라 수업 내용이 달라지는 곳에서는 배우 본인도 무엇이 늘었는지 확인하기 어렵습니다. 몇 달에 걸쳐 어떤 순서로 훈련하는지 미리 공개하는 곳이 안전합니다. KD4 마이즈너 테크닉 정규 클래스는 4개월 코스의 월별 목표와 회차별 훈련을 페이지에 그대로 공개합니다.',
+  },
+  {
+    title: '정말 소수정예인가',
+    desc: '정원이 스무 명을 넘으면 한 사람이 실제로 연기하고 피드백받는 시간은 몇 분 남지 않습니다. 등록 전에 "정원 몇 명"인지 숫자로 확인하세요. KD4는 클래스 정원이 6~8명이며, 마이즈너 정규 클래스는 정원 8명·회당 4시간으로 운영합니다.',
+  },
+  {
+    title: '가르치는 사람이 지금도 현장에 있는가',
+    desc: '카메라 앞에서 통하는 감각은 촬영 현장에서 계속 갱신됩니다. 강사가 최근 어떤 작품에 참여했는지 확인해 보세요. KD4는 현역 배우인 액팅 코치가 직접 클래스를 진행하며, 코치 프로필과 필모그래피를 사이트에 공개하고 있습니다.',
+  },
+  {
+    title: '수업이 포트폴리오로 남는가',
+    desc: '오디션 지원에는 사진이 아니라 연기하는 영상이 필요합니다. 수업이 끝났을 때 손에 남는 결과물이 있는지 물어보세요. KD4는 전문 영화팀이 촬영하는 출연영상 클래스를 별도로 운영하고, 완성된 영상은 캐스팅 연계에 사용합니다.',
+  },
+  {
+    title: '계속 다닐 수 있는 위치와 시간인가',
+    desc: '아무리 좋은 수업도 오가는 길이 부담되면 몇 달을 채우기 어렵습니다. 집·직장에서의 이동 시간과 수업 요일을 먼저 계산해 보세요. KD4는 2호선 이대역 5번 출구에서 도보 3분 거리이고, 월~토 10:00–22:00 운영에 평일 저녁·주말 클래스 중심입니다.',
+  },
+]
+
+/** 코치진 요약 — 이름·직함은 lib/classes.ts 정본을 그대로 사용 (중복 입력 금지) */
+const COACH_SUMMARY = [DONGWON_COACH, SEBIN, HYUNJAE]
+
+/**
+ * 오픈클래스 후기 인용 — Supabase actor_reviews(is_public·course_type='오픈클래스')에서 발췌.
+ * 원문 그대로 인용하며 줄바꿈만 공백으로 합쳤다. 발췌 구간은 앞뒤에 …로 표시.
+ * ⚠️ 정규 클래스 후기가 아니라 오픈클래스 후기 — 출처 표기를 바꾸지 말 것.
+ * ⚠️ Review/AggregateRating JSON-LD 금지 (자사 페이지 자체 후기 = 구글 정책 위반).
+ */
+const OPEN_CLASS_QUOTES = [
+  {
+    text: '자신을 들여다보고 인정하는 시간을 통해 연기를 떠나 일단 나 자체를 이해하고 위로해줄 수 있는 시간을 가졌습니다. 다른 연기학원과 달리 내면에서부터 시작되어 입체적으로 변화하는 과정이 정말 새롭고 신기한 경험이었던 것 같습니다.…',
+    author: '이OO 멤버',
+  },
+  {
+    text: "…'마이즈너 테크닉'을 기반으로 한 아메리칸 메소드 수업을 진행하며 내가 만들어둔 기계적인 연기가 아니라 내 안에 있는 것들을 인정하고 바라보며 활용하여 연기하는 시간을 가지게 되었고 내가 어떤 사람이였는지까지 알게 되는 유익한 시간이였습니다.",
+    author: '멤버',
+  },
+  {
+    text: '…의식, 혹은 감정의 흐름. 피부와 장기들에 둘러싸여 빠져나오지 못하고 있는 내면의 에너지가 의식의 변화에 의해 어떻게 자유롭게 표출되는지 그리고 그것이 연기에 어떤 변화와 다양성을 가져오는지를 체험했습니다. 경이로운 시간이었습니다.',
+    author: '김OO 멤버',
+  },
 ]
 
 export const metadata: Metadata = {
@@ -72,7 +136,7 @@ export default function SinchonPage() {
             speakableCssSelectors: ['h1', '.section-desc', '.faq-answer'],
             dateModified: LAST_UPDATED.sinchon,
           }),
-          buildFaqPage(SINCHON_FAQ, PAGE_URL),
+          buildFaqPage(SINCHON_FAQ_ITEMS, PAGE_URL),
         ]}
       />
 
@@ -214,6 +278,82 @@ export default function SinchonPage() {
         </div>
       </section>
 
+      {/* ===== CHECKLIST — 연기학원 고를 때 확인할 5가지 ===== */}
+      <section aria-label="연기학원 고를 때 확인할 5가지" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
+            <p className="section-eyebrow"><span lang="en">03 — CHECKLIST</span></p>
+            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>연기학원 고를 때 확인할 5가지</h2>
+            <p className="section-desc">신촌·서대문 근처만 해도 선택지가 많습니다. 등록 전에 아래 다섯 가지를 숫자로 확인하면 학원별 차이가 분명해집니다. 각 항목에 KD4의 현재 운영 방식도 함께 적었습니다.</p>
+          </div>
+          <ol role="list" style={{ display: 'flex', flexDirection: 'column', gap: '12px', listStyle: 'none', padding: 0, margin: '0 auto', maxWidth: '820px' }}>
+            {CHECKLIST_ITEMS.map((item, i) => (
+              <li key={item.title} style={{ display: 'flex', gap: '14px', alignItems: 'flex-start', background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '10px', padding: '16px 18px' }}>
+                <div aria-hidden={true} style={{ flexShrink: 0, width: '30px', height: '30px', borderRadius: '50%', background: 'var(--navy)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.9rem' }}>
+                  {i + 1}
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '0.98rem', fontWeight: 700, marginBottom: '6px', wordBreak: 'keep-all' }}>{item.title}</h3>
+                  <p style={{ fontSize: '0.88rem', color: 'var(--gray-light)', lineHeight: 1.75, wordBreak: 'keep-all' }}>{item.desc}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* ===== COACHES — 코치진 요약 (정본: lib/classes.ts) ===== */}
+      <section aria-label="코치진" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
+            <p className="section-eyebrow"><span lang="en">04 — COACHES</span></p>
+            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>코치진</h2>
+            <p className="section-desc">신촌 스튜디오에서 클래스를 진행하는 액팅 코치입니다.</p>
+          </div>
+          <ul role="list" style={{ display: 'flex', flexDirection: 'column', gap: '8px', listStyle: 'none', padding: 0, margin: '0 auto', maxWidth: '640px' }}>
+            {COACH_SUMMARY.map((coach) => (
+              <li key={coach.name} style={{ display: 'flex', gap: '12px', alignItems: 'baseline', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '10px', padding: '12px 14px' }}>
+                <span style={{ fontSize: '0.98rem', fontWeight: 700, flexShrink: 0 }}>{coach.name}</span>
+                <span style={{ fontSize: '0.85rem', color: 'var(--gray-light)', lineHeight: 1.5, wordBreak: 'keep-all' }}>{coach.title}</span>
+              </li>
+            ))}
+          </ul>
+          <p style={{ textAlign: 'center', marginTop: '20px' }}>
+            <Link href="/acting-coaches" style={{ fontSize: '0.88rem', color: 'var(--navy)', fontWeight: 600 }}>
+              액팅 코치 프로필·필모그래피 자세히 보기 <span aria-hidden="true">→</span>
+            </Link>
+          </p>
+        </div>
+      </section>
+
+      {/* ===== REVIEWS — 오픈클래스 후기 인용 (출처 정직 표기 · Review 스키마 금지) ===== */}
+      <section aria-label="오픈클래스 멤버 후기" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg)' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
+            <p className="section-eyebrow"><span lang="en">05 — REVIEWS</span></p>
+            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>오픈클래스에 다녀간 멤버들의 말</h2>
+            <p className="section-desc">아래는 KD4 오픈클래스(마이즈너 테크닉 맛보기 수업)에 참여한 멤버들이 직접 남긴 후기 중 일부입니다. 정규 클래스 후기가 아니라 오픈클래스 후기입니다.</p>
+          </div>
+          <div className="sinchon-quote-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', maxWidth: '1080px', margin: '0 auto' }}>
+            {OPEN_CLASS_QUOTES.map((quote) => (
+              <figure key={quote.author + quote.text.slice(0, 12)} style={{ margin: 0, background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '10px', padding: '20px' }}>
+                <blockquote style={{ margin: 0, fontSize: '0.88rem', color: 'var(--gray-light)', lineHeight: 1.75, wordBreak: 'keep-all' }}>
+                  &ldquo;{quote.text}&rdquo;
+                </blockquote>
+                <figcaption style={{ fontSize: '0.82rem', color: 'var(--gray-light)', marginTop: '12px' }}>
+                  — {quote.author} · 오픈클래스
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+          <p style={{ textAlign: 'center', marginTop: '20px' }}>
+            <Link href="/reviews" style={{ fontSize: '0.88rem', color: 'var(--navy)', fontWeight: 600 }}>
+              후기 전체 보기 <span aria-hidden="true">→</span>
+            </Link>
+          </p>
+        </div>
+      </section>
+
       {/* ===== RELATED CLASSES — 내부 교차 링크 ===== */}
       <section aria-label="신촌에서 배울 수 있는 클래스" style={{ padding: 'clamp(40px, 7vw, 64px) 0', background: 'var(--bg)' }}>
         <div className="container">
@@ -248,7 +388,7 @@ export default function SinchonPage() {
             <p className="section-eyebrow"><span lang="en">FAQ</span></p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>위치·교통 자주 묻는 질문</h2>
           </div>
-          <FaqAccordion items={SINCHON_FAQ} />
+          <FaqAccordion items={SINCHON_FAQ_ITEMS} />
         </div>
       </section>
 
@@ -275,6 +415,7 @@ export default function SinchonPage() {
           .sinchon-route-grid { grid-template-columns: 1fr !important; }
           .sinchon-info-grid { grid-template-columns: 1fr !important; }
           .sinchon-studio-grid { grid-template-columns: 1fr !important; }
+          .sinchon-quote-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
     </div>

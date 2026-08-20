@@ -9,9 +9,19 @@ import { ArrowRight } from 'lucide-react'
 
 /** 신규 SEO 상세 페이지 매핑 — 마이즈너/출연영상 카드 하단에 상세 페이지 링크 노출 */
 const CLASS_DETAIL_HREF: Record<string, string> = {
+  '베이직 클래스': '/basic-acting-class',
   '마이즈너 테크닉 정규 클래스': '/meisner-technique-class',
   '출연영상 클래스': '/reel-production-class',
 }
+
+/** 하단 "자주 묻는 결정" 직답용 — 가격·코스는 lib/classes.ts 실값만 인용 (하드코딩 금지) */
+const findClass = (nameKo: string) => CLASSES.find((c) => c.nameKo === nameKo)
+const BASIC_C = findClass('베이직 클래스')
+const MEISNER_C = findClass('마이즈너 테크닉 정규 클래스')
+const REEL_C = findClass('출연영상 클래스')
+const AUDITION_C = findClass('오디션 테크닉 클래스')
+const MOVEMENT_C = findClass('움직임 클래스')
+const PERSONAL_C = findClass('개인 레슨')
 
 function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
   // useEffect로 client-only 계산 — SSR/hydration mismatch 방지 (PROMO_DEADLINE 경계 순간)
@@ -455,6 +465,57 @@ export default function ClassesPage() {
                   <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.7, margin: 0 }}>{item.desc}</p>
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* 자주 묻는 결정 3가지 — 직답 섹션 (기존 HOW IT WORKS 블록 스타일 재사용) */}
+          <div style={{
+            marginTop: '0', marginBottom: '40px',
+            padding: 'clamp(28px, 6vw, 40px) clamp(20px, 5vw, 32px)',
+            background: 'var(--bg2)',
+            border: '1px solid var(--border)',
+            borderRadius: '12px',
+          }}>
+            <p className="section-eyebrow" style={{ textAlign: 'center', marginBottom: '8px' }}>
+              <span lang="en">DECIDE</span>
+            </p>
+            <h2 style={{ textAlign: 'center', fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)', fontWeight: 700, color: 'var(--navy)', marginBottom: '32px' }}>
+              자주 묻는 결정 3가지
+            </h2>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))',
+              gap: '24px',
+            }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <p style={{ fontWeight: 700, fontSize: '1rem', color: '#111111', margin: 0 }}>처음이면 뭐부터?</p>
+                <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.7, margin: 0 }}>
+                  연기 경험이 없고 취미로 시작하고 싶다면 베이직 클래스입니다. 정원 {BASIC_C?.capacity ?? ''}·{BASIC_C?.schedule ?? ''}·회당 {BASIC_C?.duration ?? ''}로, 연기 경험 없어도 참여할 수 있습니다.
+                  마이즈너 훈련이 어떤 것인지 먼저 겪어보고 싶다면 무료 오픈 클래스 1회로 체험해 보세요.
+                  연기를 진지하게 배우고 싶은 분이라면 마이즈너 테크닉 정규 클래스부터 시작하시길 추천드립니다.
+                </p>
+                <Link href="/basic-acting-class" style={{ fontSize: '0.85rem', color: 'var(--navy)', fontWeight: 600, textDecoration: 'none' }}>
+                  베이직 클래스 자세히 보기 <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <p style={{ fontWeight: 700, fontSize: '1rem', color: '#111111', margin: 0 }}>수강료는?</p>
+                <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.7, margin: 0 }}>
+                  클래스별로 다릅니다. 베이직 클래스 월 {BASIC_C?.price ?? ''}원, 마이즈너 테크닉 정규 클래스 월 {MEISNER_C?.price ?? ''}원({MEISNER_C?.course ?? ''}),
+                  출연영상 클래스 월 {REEL_C?.price ?? ''}원({REEL_C?.course ?? ''})입니다. 오디션 테크닉 클래스 {AUDITION_C?.price ?? ''}원,
+                  움직임 클래스 {MOVEMENT_C?.price ?? ''}원, 개인 레슨 {PERSONAL_C?.price ?? ''}원으로 클래스마다 다릅니다.
+                  마이즈너 정규·출연영상 클래스는 전체 수강료 일시납 시 10만원 추가 할인이 있습니다.
+                </p>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <p style={{ fontWeight: 700, fontSize: '1rem', color: '#111111', margin: 0 }}>환불·중도 변경은?</p>
+                <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.7, margin: 0 }}>
+                  첫 수업 이후 만족하지 않으시면 전액 환불됩니다. 그 외 중도 변경·환불 규정은 상담 시 안내드립니다.
+                </p>
+                <Link href="/faq" style={{ fontSize: '0.85rem', color: 'var(--navy)', fontWeight: 600, textDecoration: 'none' }}>
+                  자주 묻는 질문 전체 보기 <span aria-hidden="true">→</span>
+                </Link>
+              </div>
             </div>
           </div>
 

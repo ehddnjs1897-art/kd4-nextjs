@@ -1010,7 +1010,7 @@ export default function HomePage() {
           {/* 3개 미니 카드 — canonical 카드 패턴 (tag + 클래스명 + 한 줄) */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14, marginBottom: 40 }}>
             {[
-              { tag: "BEGINNER", num: "01", title: "베이직 클래스", desc: "취미로 연기를 시작하고 싶은 분", href: "/classes", hot: false },
+              { tag: "BEGINNER", num: "01", title: "베이직 클래스", desc: "취미로 연기를 시작하고 싶은 분", href: "/basic-acting-class", hot: false },
               { tag: "TRAINING", num: "02", title: "마이즈너 테크닉 정규 클래스", desc: "제대로 배우 훈련을 받고 싶은 분", href: "/meisner-technique-class", hot: true },
               { tag: "PORTFOLIO", num: "03", title: "출연영상 클래스", desc: "캐스팅되는 포트폴리오를 만들고 싶은 분", href: "/reel-production-class", hot: true },
             ].map(({ tag, num, title, desc, href, hot }) => (
