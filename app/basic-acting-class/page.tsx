@@ -149,7 +149,10 @@ export default function BasicActingClassPage() {
       <section aria-label="베이직 클래스 한눈에" style={{ padding: 'clamp(48px, 8vw, 72px) 0 clamp(24px, 4vw, 32px)', background: 'var(--bg)' }}>
         <div className="container">
           <p className="section-desc" style={{ maxWidth: '720px', margin: '0 auto', textAlign: 'center' }}>
-            연기를 처음 배우는 성인을 위한 취미 클래스입니다. 베이직 클래스는 연기 경험이 없어도 시작할 수 있고, 정원 {BASIC.capacity} 소수정예로 {BASIC.schedule}·회당 {BASIC.duration} 진행합니다. 월 수강료는 {BASIC.price}원이며 {BASIC.instructor}가 지도합니다. 수업은 서울 서대문구 이화여대1안길 12 아리움3차 1층 101호, 2호선 이대역 5번 출구에서 도보 약 3분 거리의 KD4 액팅 스튜디오에서 진행됩니다.
+            연기를 처음 배우는 성인을 위한 취미 클래스입니다. 연기 경험이 없어도 시작할 수 있습니다.
+          </p>
+          <p className="section-desc" style={{ maxWidth: '640px', margin: '16px auto 0', textAlign: 'left' }}>
+            정원 {BASIC.capacity} 소수정예로 {BASIC.schedule}·회당 {BASIC.duration} 진행하며, 월 수강료는 {BASIC.price}원, {BASIC.instructor}가 지도합니다. 수업 장소는 서울 서대문구 이화여대1안길 12 아리움3차 1층 101호 KD4 액팅 스튜디오 — 2호선 이대역 5번 출구에서 도보 약 3분입니다.
           </p>
         </div>
       </section>
@@ -205,7 +208,7 @@ export default function BasicActingClassPage() {
             <p className="section-eyebrow" lang="en">03 — CLASS INFO</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>수업 방식과 수강료</h2>
             <p className="section-desc">
-              수업은 {BASIC.schedule}, 회당 {BASIC.duration}입니다. 정원 {BASIC.capacity}으로 운영하며 {BASIC.instructor}가 지도합니다. 월 수강료는 {BASIC.price}원이고, 납부는 월납 또는 전체 수강료 일시납 중 선택할 수 있습니다. 계좌이체·카드결제 모두 가능합니다. 요일과 시간은 기수마다 달라 상담 시 안내드립니다.
+              {BASIC.schedule}·회당 {BASIC.duration}, 정원 {BASIC.capacity} — 핵심 정보를 아래 표에 정리했습니다.
             </p>
           </div>
           <div style={{ maxWidth: '640px', margin: '0 auto', background: 'var(--bg)', border: '1.5px solid var(--navy)', borderRadius: '12px', padding: '24px' }}>
@@ -220,6 +223,9 @@ export default function BasicActingClassPage() {
               ))}
             </div>
           </div>
+          <p className="section-desc" style={{ maxWidth: '640px', margin: '16px auto 0', textAlign: 'left', fontSize: '0.92rem' }}>
+            납부는 월납 또는 전체 수강료 일시납 중 선택할 수 있고, 계좌이체·카드결제 모두 가능합니다. 요일과 시간은 기수마다 달라 상담 시 안내드립니다.
+          </p>
         </div>
       </section>
 
@@ -230,8 +236,19 @@ export default function BasicActingClassPage() {
             <p className="section-eyebrow" lang="en">04 — NEXT STEP</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>베이직 다음 단계</h2>
             <p className="section-desc">
-              KD4 클래스는 STEP 1(베이직·마이즈너 정규·출연영상) → STEP 2(출연영상 심화) → STEP 3(액터스 리더·오디션 테크닉) 구조로 이어집니다. 베이직에서 감정 해방과 마이즈너 기초를 경험한 뒤 연기를 더 진지하게 배우고 싶다면, 같은 STEP 1의 마이즈너 테크닉 정규 클래스로 이어가시길 추천드립니다. {MEISNER.instructor} 직강, {MEISNER.schedule}·회당 {MEISNER.duration}, 정원 {MEISNER.capacity}, {MEISNER.course}, 월 {MEISNER.price}원입니다. 어떤 트랙이 맞을지는 무료 상담에서 함께 찾아드립니다.
+              베이직에서 감정 해방과 마이즈너 기초를 경험한 뒤, 연기를 더 진지하게 배우고 싶다면 마이즈너 테크닉 정규 클래스로 이어가시길 추천드립니다.
             </p>
+          </div>
+          <div style={{ maxWidth: '640px', margin: '0 auto 28px', background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '12px', padding: '20px 24px', textAlign: 'left' }}>
+            <p style={{ fontSize: '0.85rem', color: 'var(--gray)', marginBottom: '10px', wordBreak: 'keep-all' }}>
+              KD4 클래스 구조 — STEP 1 베이직·마이즈너 정규·출연영상 → STEP 2 출연영상 심화 → STEP 3 액터스 리더·오디션 테크닉
+            </p>
+            <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.02rem', fontWeight: 700, marginBottom: '8px' }}>마이즈너 테크닉 정규 클래스</p>
+            <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: '4px', fontSize: '0.92rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
+              <li>{MEISNER.instructor} 직강 · {MEISNER.course}</li>
+              <li>{MEISNER.schedule} · 회당 {MEISNER.duration} · 정원 {MEISNER.capacity}</li>
+              <li>월 {MEISNER.price}원 · 어떤 트랙이 맞을지는 무료 상담에서 함께 찾아드립니다</li>
+            </ul>
           </div>
           <nav aria-label="다음 단계 클래스 바로가기" style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link href="/meisner-technique-class" style={{ display: 'inline-block', padding: '11px 22px', background: 'var(--bg2)', border: '1px solid var(--border-strong)', borderRadius: '8px', fontSize: '0.88rem', fontWeight: 600, color: 'var(--navy)', textDecoration: 'none' }}>
