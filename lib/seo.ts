@@ -137,12 +137,13 @@ export function getActorPersonSchema(actor: ActorPersonInput) {
   }
 
   // 필모그래피 → performerIn (카테고리별 세부 타입)
-  // schema.org 권장 매핑: drama→TVSeries, film→Movie, musical→MusicEvent, theater→TheaterEvent, cf/etc→CreativeWork
+  // schema.org 매핑: drama→TVSeries, film→Movie, musical/theater→CreativeWork
+  // musical/theater를 MusicEvent/TheaterEvent(Event 하위타입)로 쓰면 startDate·location 등
+  // 실제 공연 일정 필드가 필수가 되어 Search Console 구조화 데이터 오류 발생 — 필모그래피는
+  // 지난 출연 이력이라 그런 값이 없으므로 Event 계열 타입을 쓰지 않는다.
   const categoryTypeMap: Record<string, string> = {
     drama: 'TVSeries',
     film: 'Movie',
-    musical: 'MusicEvent',
-    theater: 'TheaterEvent',
   }
   if (actor.filmography && actor.filmography.length > 0) {
     personSchema.performerIn = actor.filmography.slice(0, 10).map((f) => ({

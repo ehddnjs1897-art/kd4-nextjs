@@ -213,7 +213,7 @@ export function buildPersonSebinDetailed() {
     ],
     performerIn: [
       ...(SEBIN.filmographySections.find((sec) => sec.label === 'DRAMA')?.items ?? []).map((title) => ({ '@type': 'CreativeWork', name: title })),
-      ...(SEBIN.filmographySections.find((sec) => sec.label === 'PLAY')?.items ?? []).map((title) => ({ '@type': 'TheaterEvent', name: title })),
+      ...(SEBIN.filmographySections.find((sec) => sec.label === 'PLAY')?.items ?? []).map((title) => ({ '@type': 'CreativeWork', name: title })),
     ],
     knowsLanguage: ['Korean', 'English'],
     subjectOf: { '@type': 'WebPage', '@id': `${SITE_URL}/acting-coaches#webpage` },
