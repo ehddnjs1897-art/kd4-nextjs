@@ -50,10 +50,10 @@ function renderPartnerName(name: string) {
 const STEPS = [
   {
     num: '01',
-    title: '마이즈너 테크닉 / 이바나 처벅 테크닉 훈련',
+    title: '마이즈너 테크닉 훈련',
     sub: '연기력 확장 · 카메라 연기 최적화',
-    desc: '마이즈너의 Repetition 훈련과 이바나 처벅 테크닉을 결합하여, 억지로 짜내는 감정 없이 상대방의 반응에 진정성 있게 살아있는 연기를 만듭니다.',
-    descNode: (<>마이즈너의 <span lang="en">Repetition</span> 훈련과 이바나 처벅 테크닉을 결합하여, 억지로 짜내는 감정 없이 상대방의 반응에 진정성 있게 살아있는 연기를 만듭니다.</>),
+    desc: '마이즈너의 Repetition 훈련으로, 억지로 짜내는 감정 없이 상대방의 반응에 진정성 있게 살아있는 연기를 만듭니다.',
+    descNode: (<>마이즈너의 <span lang="en">Repetition</span> 훈련으로, 억지로 짜내는 감정 없이 상대방의 반응에 진정성 있게 살아있는 연기를 만듭니다.</>),
   },
   {
     num: '02',
@@ -140,16 +140,6 @@ export default function AboutPage() {
             name: 'KD4 액팅 스튜디오',
             url: SITE_URL,
           },
-        },
-        {
-          '@context': 'https://schema.org',
-          '@type': 'DefinedTerm',
-          '@id': `${SITE_URL}/about#term-ivana-chubbuck`,
-          name: '이바나 처벅 테크닉',
-          alternateName: 'Ivana Chubbuck Technique',
-          description: '이바나 처벅이 개발한 목표 지향적 연기 방법론. 캐릭터의 슈퍼 오브젝티브(최상위 목표)를 중심에 놓고 감정을 욕망 달성의 동력으로 삼는다. 마이즈너 테크닉과 함께 KD4 심화 과정에서 활용된다.',
-          url: `${SITE_URL}/about`,
-          sameAs: 'https://en.wikipedia.org/wiki/Ivana_Chubbuck',
         },
       ]} />
 

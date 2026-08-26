@@ -22,7 +22,7 @@ const MAIN_CLASS = CLASSES.find((c) => c.nameKo === '마이즈너 테크닉 정�
 export const metadata: Metadata = {
   title: '마이즈너 테크닉 정규 클래스 — 4개월·정원 8명',
   description:
-    '마이즈너 Repetition 훈련으로 억지 감정 없이 살아있는 연기를 만듭니다. 권동원 리더 직강, 4개월 코스, 정원 8명 소수정예. 감정 해방·이바나 처벅 테크닉·독백. 서울 신촌 이대역 도보 3분.',
+    '마이즈너 Repetition 훈련으로 억지 감정 없이 살아있는 연기를 만듭니다. 권동원 리더 직강, 4개월 코스, 정원 8명 소수정예. 감정 해방·독백. 서울 신촌 이대역 도보 3분.',
   keywords: [
     '마이즈너 테크닉',
     '마이즈너 정규반',
@@ -30,7 +30,6 @@ export const metadata: Metadata = {
     '신촌 마이즈너 테크닉',
     '연기 입문',
     '연기학원 신촌',
-    '이바나 처벅 테크닉',
     '연기하지 않는 연기',
   ],
   robots: { index: true, follow: true },

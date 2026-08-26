@@ -112,7 +112,7 @@ function formatPhone(raw: string): string {
   return `${d.slice(0, 3)}-${d.slice(3, d.length - 4)}-${d.slice(-4)}`
 }
 
-export default function JoinForm() {
+export default function JoinForm({ initialClass }: { initialClass?: string } = {}) {
   const uid = useId()
   const consentId = `join-consent-${uid}`
   const errorId = `join-form-error-${uid}`
@@ -123,7 +123,10 @@ export default function JoinForm() {
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
   const [source, setSource] = useState('')
-  const [selectedClass, setSelectedClass] = useState('')
+  // 클래스 전용 랜딩(베이직 등)에서 해당 클래스가 미리 선택된 채 시작 — 유효한 클래스명일 때만
+  const [selectedClass, setSelectedClass] = useState(
+    initialClass && CLASSES.some((c) => c.nameKo === initialClass) ? initialClass : ''
+  )
   const [meisnerExp, setMeisnerExp] = useState('')
   const [consent, setConsent] = useState(false)
   const [moreOpen, setMoreOpen] = useState(false)

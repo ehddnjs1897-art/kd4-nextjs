@@ -22,10 +22,6 @@ interface AnalysisResult {
     title: string
     items: AnalysisItem[]
   }
-  ivanaChubbuck: {
-    title: string
-    items: AnalysisItem[]
-  }
   meisner: {
     title: string
     items: AnalysisItem[]
@@ -40,17 +36,16 @@ interface AnalysisResult {
   }
 }
 
-type TabKey = 'utaHagen' | 'ivanaChubbuck' | 'meisner' | 'lineByLine' | 'onSetSummary'
+type TabKey = 'utaHagen' | 'meisner' | 'lineByLine' | 'onSetSummary'
 
 const TAB_LABELS: Record<TabKey, string> = {
   utaHagen: 'Uta Hagen',
-  ivanaChubbuck: 'Ivana Chubbuck',
   meisner: 'Meisner',
   lineByLine: '대사별 노트',
   onSetSummary: '현장 요약',
 }
 // 영어 탭은 lang="en" 마킹 필요 (WCAG 3.1.2)
-const ENGLISH_TAB_KEYS = new Set<TabKey>(['utaHagen', 'ivanaChubbuck', 'meisner'])
+const ENGLISH_TAB_KEYS = new Set<TabKey>(['utaHagen', 'meisner'])
 
 // ─── 메인 컴포넌트 ───────────────────────────────────────────────────────────
 
@@ -157,7 +152,7 @@ export default function AIToolsPage() {
         const parsed = JSON.parse(text)
         // 필수 키 존재 여부 검증 — 구조 불일치 시 rawText 폴백
         if (
-          parsed?.utaHagen && parsed?.ivanaChubbuck && parsed?.meisner &&
+          parsed?.utaHagen && parsed?.meisner &&
           parsed?.lineByLine && parsed?.onSetSummary
         ) {
           setResult(parsed as AnalysisResult)
@@ -187,7 +182,6 @@ export default function AIToolsPage() {
         items.forEach(({ label, content }) => lines.push(`${label}: ${content}`))
       }
       addSection(result.utaHagen.title, result.utaHagen.items)
-      addSection(result.ivanaChubbuck.title, result.ivanaChubbuck.items)
       addSection(result.meisner.title, result.meisner.items)
       lines.push(`\n── ${result.lineByLine.title} ──`)
       result.lineByLine.lines.forEach(({ line, note }) => lines.push(`"${line}" → ${note}`))
@@ -219,7 +213,7 @@ export default function AIToolsPage() {
           <p style={s.eyebrow}><span lang="en">AI TOOLS</span></p>
           <h1 style={s.pageTitle}>AI 대본 분석</h1>
           <p style={s.pageDesc}>
-            대본을 붙여넣으면 <span lang="en">Uta Hagen, Ivana Chubbuck, Meisner</span> 등 5가지 연기 메소드로 분석합니다.
+            대본을 붙여넣으면 <span lang="en">Uta Hagen, Meisner</span> 등 4가지 연기 메소드로 분석합니다.
           </p>
         </div>
 
@@ -374,16 +368,6 @@ export default function AIToolsPage() {
                     </TabPanel>
                   )}
 
-                  {/* Ivana Chubbuck */}
-                  {activeTab === 'ivanaChubbuck' && (
-                    <TabPanel title={result.ivanaChubbuck.title}>
-                      {result.ivanaChubbuck.items.map((item, i) => (
-                        <ItemCard key={i} label={item.label} content={item.content} />
-                      ))}
-                    </TabPanel>
-                  )}
-
-                  {/* Meisner */}
                   {activeTab === 'meisner' && (
                     <TabPanel title={result.meisner.title}>
                       {result.meisner.items.map((item, i) => (

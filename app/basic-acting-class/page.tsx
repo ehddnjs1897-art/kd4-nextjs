@@ -182,7 +182,7 @@ export default function BasicActingClassPage() {
             <p className="section-eyebrow" lang="en">02 — CURRICULUM</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>무엇을 배우나</h2>
             <p className="section-desc">
-              감정 해방 훈련에서 시작해 마이즈너 테크닉 기초와 이바나 처벅 테크닉 입문, 독백과 장면연기까지 다룹니다. 정원 {BASIC.capacity} 소수정예라 매 회차 직접 해보는 시간이 충분합니다.
+              감정 해방 훈련에서 시작해 마이즈너 테크닉 기초, 독백과 장면연기까지 다룹니다. 정원 {BASIC.capacity} 소수정예라 매 회차 직접 해보는 시간이 충분합니다.
             </p>
           </div>
           <ul role="list" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px', maxWidth: '900px', margin: '0 auto', listStyle: 'none', padding: 0 }}>
@@ -268,7 +268,7 @@ export default function BasicActingClassPage() {
                 이름·연락처만 남기시면 24시간 이내 SMS로 연락드립니다.
               </p>
             </div>
-            <JoinForm />
+            <JoinForm initialClass="베이직 클래스" />
           </div>
         </div>
       </section>

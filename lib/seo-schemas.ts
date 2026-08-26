@@ -127,7 +127,6 @@ export function buildPersonDongwon() {
     worksFor: { '@id': `${SITE_URL}#org` },
     knowsAbout: [
       '마이즈너 테크닉',
-      '이바나 처벅 테크닉',
       '연기 코칭',
       '캐스팅',
       '연기 훈련',
@@ -156,7 +155,6 @@ export function buildPersonDongwonDetailed() {
     worksFor: { '@id': `${SITE_URL}#org` },
     knowsAbout: [
       '마이즈너 테크닉',
-      '이바나 처벅 테크닉',
       '연기 코칭',
       '캐스팅',
       '오디션 독백',

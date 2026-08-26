@@ -89,16 +89,6 @@ export async function POST(request: NextRequest) {
       { "label": "What do I do?", "content": "..." }
     ]
   },
-  "ivanaChubbuck": {
-    "title": "Ivana Chubbuck 분석",
-    "items": [
-      { "label": "Overriding goal", "content": "..." },
-      { "label": "Scene objective", "content": "..." },
-      { "label": "Obstacles", "content": "..." },
-      { "label": "Substitution", "content": "..." },
-      { "label": "Actions/tools", "content": "..." }
-    ]
-  },
   "meisner": {
     "title": "Meisner 테크닉 분석",
     "items": [
