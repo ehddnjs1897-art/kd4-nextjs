@@ -247,7 +247,7 @@ export default function BasicActingClassPage() {
             <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: '4px', fontSize: '0.92rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
               <li>{MEISNER.instructor} 직강 · {MEISNER.course}</li>
               <li>{MEISNER.schedule} · 회당 {MEISNER.duration} · 정원 {MEISNER.capacity}</li>
-              <li>월 {MEISNER.price}원 · 어떤 트랙이 맞을지는 무료 상담에서 함께 찾아드립니다</li>
+              <li>월 {MEISNER.price}원</li>
             </ul>
           </div>
           <nav aria-label="다음 단계 클래스 바로가기" style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
