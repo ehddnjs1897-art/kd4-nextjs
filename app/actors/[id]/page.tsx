@@ -68,6 +68,7 @@ interface ActorVideo {
   r2_key: string | null
   title: string | null
   created_at?: string | null
+  uploaded_at?: string | null
   video_type?: string | null
 }
 
@@ -108,7 +109,7 @@ function actorSelect(opts: { casting: boolean; videoType: boolean; filmExtra: bo
         opts.casting ? ',\n      casting_tags, casting_summary, profile_pdf_url' : ''
       }${opts.advancedSkills ? ',\n      advanced_skills' : ''},
       actor_photos ( id, drive_photo_id, url, storage_path, caption, sort_order, photo_type, label ),
-      actor_videos ( id, youtube_id, r2_key, title${opts.videoType ? ', video_type' : ''}${opts.vimeo ? ', vimeo_id, vimeo_hash' : ''} ),
+      actor_videos ( id, youtube_id, r2_key, title, uploaded_at, created_at${opts.videoType ? ', video_type' : ''}${opts.vimeo ? ', vimeo_id, vimeo_hash' : ''} ),
       actor_filmography ( id, category, title, role, year, production${
         opts.filmExtra ? ', broadcaster, film_type, award' : ''
       }${opts.featured ? ', is_featured' : ''} )
@@ -502,7 +503,8 @@ export default async function ActorDetailPage({
     (actor.actor_videos ?? []).filter((v) => v.youtube_id).map((v) => ({
       youtubeId: v.youtube_id as string,
       title: v.title,
-      uploadDate: v.created_at ?? null, // VideoObject.uploadDate — Google Rich Results 권장
+      // 유튜브 실제 업로드일(uploaded_at, 8/30 실측 백필) 우선, 없으면 사이트 등록일 폴백
+      uploadDate: v.uploaded_at ?? v.created_at ?? null,
     }))
   )
 
