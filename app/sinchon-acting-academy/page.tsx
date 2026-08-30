@@ -103,7 +103,7 @@ export const metadata: Metadata = {
     type: 'website',
     url: PAGE_URL,
     title: '신촌 연기학원 — KD4 액팅 스튜디오',
-    description: '이대역 도보 3분. 마이즈너 테크닉 정규반·출연영상·오디션 클래스 9종. 소수정예 연기 훈련, 무료 상담.',
+    description: '이대역 도보 3분. 마이즈너 테크닉 정규·출연영상·오디션 클래스 9종. 소수정예 연기 훈련, 무료 상담.',
     images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 — 신촌 연기학원', type: 'image/jpeg' }],
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
@@ -111,7 +111,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: '신촌 연기학원 — KD4 액팅 스튜디오',
-    description: '이대역 도보 3분. 마이즈너 테크닉 정규반·출연영상·오디션 클래스 9종. 소수정예 연기 훈련, 무료 상담.',
+    description: '이대역 도보 3분. 마이즈너 테크닉 정규·출연영상·오디션 클래스 9종. 소수정예 연기 훈련, 무료 상담.',
     images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 — 신촌 연기학원', type: 'image/jpeg' }],
   },
 }
@@ -130,7 +130,7 @@ export default function SinchonPage() {
             idPath: '/sinchon-acting-academy#webpage',
             url: PAGE_URL,
             name: '신촌 연기학원 — KD4 액팅 스튜디오',
-            description: '이대역 도보 3분. 마이즈너 테크닉 정규반·출연영상·오디션 클래스. 소수정예 연기 훈련.',
+            description: '이대역 도보 3분. 마이즈너 테크닉 정규·출연영상·오디션 클래스. 소수정예 연기 훈련.',
             about: { '@id': `${SITE_URL}#school` },
             mainEntity: { '@id': `${SITE_URL}#local` },
             speakableCssSelectors: ['h1', '.section-desc', '.faq-answer'],
