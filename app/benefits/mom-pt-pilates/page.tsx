@@ -9,7 +9,7 @@ import { SITE_URL } from '@/lib/constants'
 export const metadata: Metadata = {
   title: '엠오엠 피티&필라테스 제휴',
   description:
-    'KD4 액팅 스튜디오 × 엠오엠 피티&필라테스 신촌 공식 제휴 — KD4 멤버 전용 바디&퍼포먼스 분석 2시간 무료 체험(20만원 → 0원), 정규 수업 등록 시 31% 할인. KD4 멤버 박경수 배우가 운영하는 재활PT 전문 트레이닝 스튜디오.',
+    'KD4 액팅 스튜디오 × 엠오엠 피티&필라테스 신촌 공식 제휴 — KD4 멤버 전용 바디&퍼포먼스 분석 2시간 무료 체험(20만원 → 0원), 분석+PT·필라테스 수업 1회 무료 체험, 정규 수업 등록 시 31% 할인. KD4 멤버 박경수 배우가 운영하는 재활PT 전문 트레이닝 스튜디오.',
   robots: { index: true, follow: true },
   alternates: { canonical: `${SITE_URL}/benefits/mom-pt-pilates` },
   keywords: ['엠오엠 피티앤필라테스', 'KD4 멤버 혜택', '배우 트레이닝', '신촌 PT', '신촌 필라테스', '재활PT', '바디 퍼포먼스 분석', 'KD4 제휴'],
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${SITE_URL}/benefits/mom-pt-pilates`,
     title: '엠오엠 피티&필라테스 제휴 | KD4 액팅 스튜디오',
-    description: 'KD4 멤버 전용 바디&퍼포먼스 분석 2시간 무료 체험(20만원 → 0원) + 정규 수업 31% 할인',
+    description: 'KD4 멤버 전용 바디&퍼포먼스 분석 2시간 무료 체험 + PT·필라테스 1회 무료 체험 + 정규 수업 31% 할인',
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
     images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: 'KD4 × 엠오엠 피티&필라테스' }],
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: '엠오엠 피티&필라테스 제휴 | KD4 액팅 스튜디오',
-    description: 'KD4 멤버 전용 바디분석 2시간 무료 체험 + 정규 수업 31% 할인',
+    description: 'KD4 멤버 전용 바디분석 2시간 무료 체험 + PT·필라테스 1회 무료 체험 + 정규 수업 31% 할인',
     images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: 'KD4 × 엠오엠 피티&필라테스' }],
   },
 }
@@ -36,6 +36,7 @@ const NAVER_MAP_URL = 'https://naver.me/x1uAyyMm'
 
 const BENEFITS = [
   { label: '내 몸 알아가기 2시간', note: '바디&퍼포먼스 분석 무료 체험', strike: '20만원', value: '0', unit: '원' },
+  { label: '분석 + PT·필라테스 체험', note: '바디 분석과 수업 1회 무료 체험', strike: null, value: '1', unit: '회 무료' },
   { label: '정규 수업 등록 시', note: 'PT · 필라테스 정규 수업 할인', strike: null, value: '31', unit: '%' },
 ]
 
@@ -152,7 +153,7 @@ export default function MomPtPartnershipPage() {
           idPath: '/benefits/mom-pt-pilates#webpage',
           url: `${SITE_URL}/benefits/mom-pt-pilates`,
           name: '엠오엠 피티&필라테스 제휴 — KD4 액팅 스튜디오',
-          description: 'KD4 멤버 전용 바디&퍼포먼스 분석 2시간 무료 체험(20만원 → 0원), 정규 수업 등록 시 31% 할인.',
+          description: 'KD4 멤버 전용 바디&퍼포먼스 분석 2시간 무료 체험(20만원 → 0원), 분석+PT·필라테스 수업 1회 무료 체험, 정규 수업 등록 시 31% 할인.',
           dateModified: '2026-08-12',
           speakableCssSelectors: ['h1', 'h2'],
         }),
