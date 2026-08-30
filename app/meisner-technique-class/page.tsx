@@ -22,10 +22,10 @@ const MAIN_CLASS = CLASSES.find((c) => c.nameKo === '마이즈너 테크닉 정�
 export const metadata: Metadata = {
   title: '마이즈너 테크닉 정규 클래스 — 4개월·정원 8명',
   description:
-    '마이즈너 Repetition 훈련으로 억지 감정 없이 살아있는 연기를 만듭니다. 권동원 리더 직강, 4개월 코스, 정원 8명 소수정예. 감정 해방·독백. 서울 신촌 이대역 도보 3분.',
+    '마이즈너 Repetition 훈련으로 억지 감정 없이 살아있는 연기를 만듭니다. 권동원 대표 직강, 4개월 코스, 정원 8명 소수정예. 감정 해방·독백. 서울 신촌 이대역 도보 3분.',
   keywords: [
     '마이즈너 테크닉',
-    '마이즈너 정규반',
+    '마이즈너 테크닉 정규 클래스',
     'KD4 마이즈너 클래스',
     '신촌 마이즈너 테크닉',
     '연기 입문',
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     type: 'website',
     url: PAGE_URL,
     title: '마이즈너 테크닉 정규 클래스 — KD4 액팅 스튜디오',
-    description: '권동원 리더 직강, 4개월 코스, 정원 8명 소수정예. Repetition 훈련으로 억지 감정 없는 살아있는 연기를 만듭니다.',
+    description: '권동원 대표 직강, 4개월 코스, 정원 8명 소수정예. Repetition 훈련으로 억지 감정 없는 살아있는 연기를 만듭니다.',
     images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: '마이즈너 테크닉 정규 클래스 — KD4 액팅 스튜디오', type: 'image/jpeg' }],
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: '마이즈너 테크닉 정규 클래스 — KD4',
-    description: '권동원 리더 직강, 4개월 코스, 정원 8명. Repetition 훈련으로 억지 감정 없는 살아있는 연기.',
+    description: '권동원 대표 직강, 4개월 코스, 정원 8명. Repetition 훈련으로 억지 감정 없는 살아있는 연기.',
     images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: '마이즈너 테크닉 정규 클래스 — KD4 액팅 스튜디오', type: 'image/jpeg' }],
   },
 }
@@ -55,7 +55,7 @@ const PILLARS = [
   {
     Icon: Repeat2,
     title: 'Repetition',
-    desc: '두 명이 짧은 대사를 반복하며 상대의 미세한 변화에 반응하는 훈련. 머리로 연기하는 습관을 벗고 본능을 회복하는 7단계.',
+    desc: '두 명이 짧은 대사를 반복하며 상대의 미세한 변화에 반응하는 훈련. 머리로 연기하는 습관을 벗고 본능을 회복합니다. 레피티션 3단계로 시작해 Activity & Door로 확장합니다.',
   },
   {
     Icon: DoorOpen,
@@ -70,10 +70,9 @@ const PILLARS = [
 ]
 
 const COMPARISON_ROWS = [
-  { label: '1인 피드백 시간', normal: '회당 5~10분', kd4: '회당 30분+' },
   { label: '정원', normal: '15~25명', kd4: '6~8명' },
   { label: '수업 길이', normal: '1.5~2시간', kd4: '4시간' },
-  { label: '리더', normal: '전임 강사 중심', kd4: '현역 배우·전문 액팅 코치' },
+  { label: '가르치는 사람', normal: '전임 강사 중심', kd4: '현역 배우·전문 액팅 코치' },
 ]
 
 const CLASS_GOALS = [
@@ -136,7 +135,7 @@ const CURRICULUM_MONTHS: CurriculumMonth[] = [
 const NOTICE_ITEMS = [
   '마이즈너 정규 클래스는 4개월간 원팀으로 진행됩니다.',
   '원팀 과정의 특성상 협의되지 않은 중도 하차는 원칙적으로 불가하며, 불가피한 경우 규정에 따라 패널티가 부과됩니다.',
-  '일정이 생겨 참여가 어려우시다면, 수업 5일 전까지 미리 말씀해 주세요.',
+  '일정이 생겨 참여가 어려우시다면, 수업 3일 전까지 미리 말씀해 주세요.',
   '원활한 학습을 돕기 위한 보강 제도가 준비되어 있으니 관련 규정을 확인 후 편하게 문의해 주시기 바랍니다.',
 ]
 
@@ -422,7 +421,7 @@ export default function MeisnerPage() {
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
             <p className="section-eyebrow" lang="en">04 — INSTRUCTOR</p>
-            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>액팅 코치 — 권동원 (리더)</h2>
+            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>액팅 코치 — 권동원 (KD4 대표)</h2>
           </div>
           <div className="meisner-director-grid" style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '32px', alignItems: 'start', maxWidth: '780px', margin: '0 auto' }}>
             <div style={{ position: 'relative', width: '200px', height: '266px', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--border)' }}>
@@ -535,7 +534,7 @@ export default function MeisnerPage() {
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
               <p className="section-eyebrow">무료 상담 신청</p>
               <h2 className="section-title-serif" style={{ fontSize: 'clamp(1.4rem, 3.6vw, 1.9rem)', marginBottom: '8px' }}>
-                마이즈너 정규반 등록 상담
+                마이즈너 테크닉 정규 클래스 등록 상담
               </h2>
               <p style={{ fontSize: '0.88rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
                 이름·연락처만 남기시면 24시간 이내 SMS로 연락드립니다.

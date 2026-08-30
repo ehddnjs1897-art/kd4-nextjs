@@ -68,7 +68,7 @@ export async function generateMetadata(
   const descBody = segments.length > 0
     ? `마이즈너 테크닉으로 훈련한 ${segments.join(' ')} 배우들의 프로필·필모그래피·출연영상`
     : '마이즈너 테크닉으로 훈련한 배우들의 프로필·필모그래피·출연영상을 확인하세요'
-  const desc = `${descPrefix}. ${descBody}. 캐스팅 디렉터 전용 연락처 열람 가능.`
+  const desc = `${descPrefix}. ${descBody}. 캐스팅 디렉터 전용 연락처 열람·프로필 다운로드·숏리스트.`
 
   // 필터 특화 키워드 — 상위 필터 키워드를 앞에 배치
   const filterKeywords: string[] = []

@@ -280,7 +280,7 @@ function SignupContent() {
               <span style={styles.typeLabel}>디렉터 회원</span>
               <span style={styles.typeDesc}>
                 캐스팅 디렉터, 조감독, 제작사
-                <br />승인 후 배우 연락처·프로필 열람
+                <br />승인 후 배우 연락처 열람·프로필/영상 다운로드·캐스팅 숏리스트 이용
               </span>
             </button>
           </div>

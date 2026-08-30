@@ -433,7 +433,7 @@ export default function AboutPage() {
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {[
-                '최근 캐스팅 60건',
+                '최근 캐스팅 80건',
                 '누적 코칭 배우 400명+',
                 '현직 배우 멤버들과 함께하는 커뮤니티',
                 '디즈니+ · 넷플릭스 · tvN · MBC · KBS · 상업영화 100여편 출연',
@@ -665,7 +665,7 @@ export default function AboutPage() {
           지금 바로 시작하세요
         </h2>
         <p style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', color: 'var(--secondary)', marginBottom: '32px' }}>
-          무료 오픈 클래스로 먼저 체험해 보세요.
+          무료 오픈클래스로 먼저 체험해 보세요.
         </p>
         <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
           <a

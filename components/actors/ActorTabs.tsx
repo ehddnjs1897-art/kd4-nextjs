@@ -70,13 +70,14 @@ interface Props {
   mainPhotoUrl?: string
 }
 
-/** 비로그인용 영상 잠금 카드 — 썸네일 위 잠금 오버레이, 클릭 시 회원가입 안내 */
+/** 비로그인용 영상 잠금 카드 — 썸네일 위 잠금 오버레이, 클릭 시 회원가입 안내.
+ *  현정책(2026-08-30): videoLocked=false 고정이라 미노출 — 롤백 대비 문구만 현행화 유지 */
 function LockedVideoCard({ thumbUrl, title, onClick }: { thumbUrl: string | null; title: string; onClick: () => void }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      aria-label={`${title} — 회원 전용 영상, 회원가입 안내 보기`}
+      aria-label={`${title} — 출연 영상 안내 보기`}
       style={{
         position: 'relative',
         width: '100%',
@@ -99,10 +100,10 @@ function LockedVideoCard({ thumbUrl, title, onClick }: { thumbUrl: string | null
       }}>
         <span aria-hidden="true" style={{ fontSize: '1.6rem' }}>🔒</span>
         <span style={{ color: '#fff', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.02em' }}>
-          회원 전용 영상
+          출연 영상 안내
         </span>
         <span style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.72rem' }}>
-          무료 회원가입 후 시청 가능
+          로그인 후 바로 시청할 수 있어요
         </span>
       </span>
     </button>
@@ -774,7 +775,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
       <SignupPromptModal
         open={signupPromptOpen}
         onClose={() => setSignupPromptOpen(false)}
-        message="출연 영상은 KD4 회원 전용입니다. 무료 회원가입 후 모든 배우의 영상을 바로 보실 수 있어요."
+        message="무료 회원가입 후 모든 배우의 출연 영상을 바로 보실 수 있어요."
         nextUrl={`/actors/${actor.id}`}
       />
     </div>

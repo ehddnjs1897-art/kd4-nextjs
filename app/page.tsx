@@ -529,7 +529,7 @@ export default function HomePage() {
       {/* ── 3. DIRECTOR ──────────────────────────────────────────────────────── */}
       <section
         id="director"
-        aria-label="강사 소개"
+        aria-label="액팅 코치 소개"
         className="section"
         style={{ background: "var(--bg2)", borderTop: "1px solid var(--border)" }}
       >

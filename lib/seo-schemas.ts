@@ -372,7 +372,7 @@ const COACH_ID: Record<string, string> = {
 function buildInstructors(instructor: string) {
   const people = instructor
     .split('·')
-    .map((raw) => raw.replace(/\s*(대표|리더|강사|코치)\s*$/, '').trim())
+    .map((raw) => raw.replace(/\s*(액팅\s*)?(대표|리더|강사|코치)(\s*·\s*액팅\s*코치)?\s*$/, '').trim())
     .filter(Boolean)
     .map((name) =>
       COACH_ID[name] ? { '@id': `${SITE_URL}${COACH_ID[name]}` } : { '@type': 'Person', name }

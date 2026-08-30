@@ -10,7 +10,6 @@ import {
   Handshake,
   ArrowRight,
   MessageCircle,
-  ShieldCheck,
   HeartHandshake,
 } from 'lucide-react'
 import { CLASSES, DIRECTOR } from '@/lib/classes'
@@ -138,17 +137,12 @@ const REVIEW_MARQUEE_ROW1 = [
   { text: '안 보이던 업계의 길이 보였습니다. 현역 배우가 현실적으로 설명해주는 곳.', author: '한*윤' },
 ]
 
-/* ── Risk Reversal 3가지 보장 ─────────────────────────────── */
+/* ── Risk Reversal 보장 (2026-08-30 대표 확정: 전액 환불 항목 삭제) ── */
 const GUARANTEES = [
   {
     Icon: HeartHandshake,
     title: '상담 후 바로 가셔도 돼요',
     desc: '30분 부담 없는 대화. 본인에게 맞는지 확인만 하고 가세요.',
-  },
-  {
-    Icon: ShieldCheck,
-    title: '첫 수업 이후 불만족 시 전액 환불',
-    desc: '한 번 수업을 경험해보시고 결정하셔도 됩니다.',
   },
   {
     Icon: FileText,

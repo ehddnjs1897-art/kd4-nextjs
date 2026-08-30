@@ -287,7 +287,7 @@ export default async function DashboardPage() {
                   </Link>
                 ) : (
                   <p style={{ fontSize: '0.8rem', color: 'var(--gray)', padding: '4px 0' }}>
-                    <span aria-hidden="true">⏳</span> 프로필 검토 준비 중 — 자료를 등록하면 관리자 검토 후 공개됩니다.
+                    <span aria-hidden="true">⏳</span> 프로필 준비 중 — 자료를 등록하면 배우 DB에 바로 공개됩니다.
                   </p>
                 )}
                 {/* 완성도 카드 안에 편집 버튼이 이미 있으므로, 카드가 없을 때만 별도 타일 노출 (중복 방지) */}
@@ -301,7 +301,7 @@ export default async function DashboardPage() {
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.6 }}>
-                  사진·영상·필모그래피를 등록하면 관리자 검토 후 배우 DB에 공개됩니다.
+                  사진·영상·필모그래피를 등록하면 배우 DB에 바로 공개됩니다(동명 확인이 필요한 경우만 검토 후 공개).
                 </p>
                 <div style={{
                   padding: '10px 14px', borderRadius: 6,
@@ -352,7 +352,7 @@ export default async function DashboardPage() {
           <section aria-label="디렉터 승인 완료" style={{ ...card, borderColor: 'rgba(196,165,90,0.3)' }}>
             <h2 style={{ ...sectionTitle, color: 'var(--gold)' }}>디렉터 승인 완료</h2>
             <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.6 }}>
-              배우 DB에서 <strong style={{ color: 'var(--gold)' }}>연락처 열람 + 사진·프로필 다운로드</strong>가 가능합니다.
+              배우 DB에서 <strong style={{ color: 'var(--gold)' }}>연락처 열람 + 사진·프로필 다운로드 + 캐스팅 숏리스트</strong>가 가능합니다.
             </p>
           </section>
         )}
@@ -376,7 +376,7 @@ export default async function DashboardPage() {
           <section aria-label="디렉터 권한 신청" style={{ ...card, borderColor: 'rgba(196,165,90,0.2)' }}>
             <h2 style={sectionTitle}>디렉터 권한 신청</h2>
             <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 8 }}>
-              승인 시 배우 <strong style={{ color: 'var(--gold)' }}>연락처 열람 + 사진·프로필 다운로드</strong> 가능.
+              승인 시 배우 <strong style={{ color: 'var(--gold)' }}>연락처 열람 + 사진·프로필 다운로드 + 캐스팅 숏리스트</strong> 가능.
             </p>
             <DirectorRequestButton />
           </section>

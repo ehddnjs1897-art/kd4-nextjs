@@ -155,7 +155,7 @@ export default function ReelPage() {
             url: PAGE_URL,
             name: '출연영상 클래스 — 배우 포트폴리오 제작 | KD4 액팅 스튜디오',
             description: '전문 영화팀과 제작하는 배우 출연영상 포트폴리오 클래스. KD4 액팅 스튜디오.',
-            mainEntity: { '@id': `${PAGE_URL}#course-intensive-class` },
+            mainEntity: { '@id': `${PAGE_URL}#course-reel-production-class` },
             dateModified: LAST_UPDATED.reel,
             speakableCssSelectors: ['h1', '.section-desc', '.faq-answer'],
           }),
@@ -488,10 +488,10 @@ export default function ReelPage() {
           <span aria-hidden="true">← </span>마이즈너 정규 클래스
         </Link>
         <Link href="/acting-coaches" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
-          권동원 리더 소개
+          권동원 액팅 코치
         </Link>
         <Link href="/sinchon-acting-academy" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
-          신촌 스튜디오 오시는 길
+          신촌 연기학원 오시는 길
         </Link>
         <Link href="/classes" style={{ fontSize: '0.9rem', color: 'var(--navy)' }}>
           전체 클래스 보기 <span aria-hidden="true">→</span>

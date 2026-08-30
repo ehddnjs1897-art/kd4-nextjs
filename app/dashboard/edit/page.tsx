@@ -141,7 +141,7 @@ export default async function GalleryEditPage() {
             <p style={styles.eyebrow}><span lang="en">PROFILE SETUP</span></p>
             <h1 style={styles.pageTitle}>프로필 등록</h1>
             <p style={styles.subtitle}>
-              자료를 올려 주세요. 검토 후 배우 DB에 공개됩니다.
+              자료를 올려 주세요. 등록하면 배우 DB에 바로 공개됩니다.
             </p>
           </header>
           <OnboardingForm userId={user.id} userName={userName} />

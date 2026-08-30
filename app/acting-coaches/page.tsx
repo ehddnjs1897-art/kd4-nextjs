@@ -24,7 +24,7 @@ const CLASS_LINK: Record<string, string> = {
 export const metadata: Metadata = {
   title: '연기 코치진 권동원·주세빈·이현재 — 현역 배우 1:1 연기 레슨',
   description:
-    'KD4 액팅 스튜디오 강사진. 권동원 리더 — 마이즈너 테크닉 코치, Disney+ 무빙2·Netflix 중증외상센터 출연 현역 배우, 프로 배우 400명+ 코칭. 주세빈 강사 — 오디션 테크닉·개인 레슨, TV조선 닥터신 주연. 이현재 코치 — 중국 iQIYI 영화부문 신인상(한국인 최초) 수상 현역 배우. 서울 신촌.',
+    'KD4 액팅 스튜디오 액팅 코치진. 권동원 액팅 코치 — 마이즈너 테크닉, Disney+ 무빙2·Netflix 중증외상센터 출연 현역 배우, 프로 배우 400명+ 코칭. 주세빈 액팅 코치 — 오디션 테크닉·개인 레슨, TV조선 닥터신 주연. 이현재 액팅 코치 — 중국 iQIYI 영화부문 신인상(한국인 최초) 수상 현역 배우. 서울 신촌.',
   keywords: ['KD4 액팅 코치', '권동원', '권동원 배우', '권동원 KD4', '주세빈', '주세빈 배우', '주세빈 KD4', '이현재', '이현재 배우', '이현재 KD4', '마이즈너 강사', '오디션 테크닉 강사', '액팅 코치', '액팅 리더', '현역 배우 강사', '신촌 액팅코치', '서울 액팅 코치'],
   robots: { index: true, follow: true },
   alternates: { canonical: PAGE_URL },
@@ -59,13 +59,13 @@ export default function CoachPage() {
             idPath: '/acting-coaches#webpage',
             url: PAGE_URL,
             name: 'KD4 액팅 코치 — 권동원 · 주세빈 · 이현재 | KD4 액팅 스튜디오',
-            description: '현역 배우로 활동 중인 KD4 강사진. 권동원 리더(마이즈너 테크닉) · 주세빈 강사(오디션 테크닉·개인 레슨) · 이현재 코치.',
+            description: '현역 배우로 활동 중인 KD4 액팅 코치진. 권동원 액팅 코치(마이즈너 테크닉) · 주세빈 액팅 코치(오디션 테크닉·개인 레슨) · 이현재 액팅 코치.',
             dateModified: LAST_UPDATED.coaches,
             speakableCssSelectors: ['h1', '.section-desc', '.faq-answer'],
           }),
           buildPersonDongwonDetailed(), // 권동원 Person 정본 (필모·수상·학력 포함)
-          buildPersonSebinDetailed(), // 주세빈 강사 (오디션 테크닉·개인 레슨)
-          buildPersonHyunjaeDetailed(), // 이현재 코치
+          buildPersonSebinDetailed(), // 주세빈 액팅 코치 (오디션 테크닉·개인 레슨)
+          buildPersonHyunjaeDetailed(), // 이현재 액팅 코치
           buildFaqPage(COACH_FAQ, PAGE_URL),
         ]}
       />
@@ -107,7 +107,7 @@ export default function CoachPage() {
                 주세빈 — 오디션 테크닉 <span aria-hidden="true" style={{ color: '#F0A8A8' }}>↓</span>
               </a>
               <a href="#hyunjae" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 18px', minHeight: '44px', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.22)', borderRadius: '999px', color: '#fff', fontSize: '0.88rem', fontWeight: 600, textDecoration: 'none' }}>
-                이현재 — 강사 <span aria-hidden="true" style={{ color: '#F0A8A8' }}>↓</span>
+                이현재 — 액팅 코치 <span aria-hidden="true" style={{ color: '#F0A8A8' }}>↓</span>
               </a>
             </div>
 
@@ -128,7 +128,7 @@ export default function CoachPage() {
         person={DONGWON_COACH}
         sectionId="dongwon"
         eyebrow="01 — MEISNER TECHNIQUE COACH"
-        heading="권동원 — 대표/리더 · 액팅 코치"
+        heading={`${DONGWON_COACH.name} — ${DONGWON_COACH.title}`}
         background="var(--bg)"
         cardBackground="var(--bg2)"
         photoWide
@@ -144,7 +144,7 @@ export default function CoachPage() {
         person={SEBIN}
         sectionId="sebin"
         eyebrow="02 — AUDITION TECHNIQUE COACH"
-        heading="주세빈 — 오디션 테크닉 강사"
+        heading={`${SEBIN.name} — ${SEBIN.title}`}
         background="var(--bg2)"
         cardBackground="var(--bg)"
         intro={
@@ -158,7 +158,7 @@ export default function CoachPage() {
         person={HYUNJAE}
         sectionId="hyunjae"
         eyebrow="03 — ACTING COACH"
-        heading="이현재 — 강사"
+        heading={`${HYUNJAE.name} — ${HYUNJAE.title}`}
         background="var(--bg)"
         cardBackground="var(--bg2)"
         intro={
@@ -208,7 +208,7 @@ export default function CoachPage() {
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
               <p className="section-eyebrow">무료 상담 신청</p>
               <h2 className="section-title-serif" style={{ fontSize: 'clamp(1.4rem, 3.6vw, 1.9rem)', marginBottom: '8px' }}>
-                권동원 리더 직강 상담
+                권동원 대표 직강 상담
               </h2>
               <p style={{ fontSize: '0.88rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
                 이름·연락처만 남기시면 24시간 이내 SMS로 연락드립니다.

@@ -7,7 +7,8 @@
  *
  * 안전장치:
  *  - 로그인 사용자만
- *  - 본인 actor_id가 없으면 새 배우 row를 "비공개(is_public=false)"로 생성 → 관리자 검토 후 공개
+ *  - 본인 actor_id가 없으면 새 배우 row를 생성해 즉시 공개(is_public=true).
+ *    단, 동일인 중복 의심 건만 비공개(is_public=false)로 두고 관리자 검토 후 공개
  *  - actors 직접 INSERT는 막혀 있으므로 service_role 로만 처리
  *
  * Body(JSON):

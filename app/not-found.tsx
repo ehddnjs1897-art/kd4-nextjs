@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 const QUICK_LINKS = [
   { href: '/about', label: '스튜디오 소개', desc: 'KD4 철학과 마이즈너 테크닉' },
-  { href: '/classes', label: '클래스 둘러보기', desc: '마이즈너 정규반·출연영상 외 9개' },
+  { href: '/classes', label: '클래스 둘러보기', desc: '마이즈너 정규·출연영상 외 9개' },
   { href: '/actors', label: '배우 DB', desc: 'KD4 멤버 프로필' },
   { href: '/join', label: '무료 상담 신청', desc: '30분 부담 없이' },
 ]

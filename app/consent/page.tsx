@@ -75,7 +75,7 @@ export default function ConsentPage() {
         <p style={s.eyebrow}><span lang="en">SERVICE CONSENT</span></p>
         <h1 style={s.title}>서비스 이용 동의</h1>
         <p style={s.desc}>
-          개인정보처리방침과 이용약관이 새로 마련됐어요. (2026년 7월 7일 시행)
+          개인정보처리방침과 이용약관이 새로 마련됐어요. (v1.1 · 2026년 8월 10일 시행)
           <br />프로필 공개와 캐스팅 연결을 계속 받으시려면 아래 동의가 필요합니다.
         </p>
 

@@ -87,7 +87,7 @@ const SPEC_ITEMS = [
   { label: '시간', value: BASIC.duration },
   { label: '정원', value: BASIC.capacity },
   { label: '월 수강료', value: `₩${BASIC.price}` },
-  { label: '리더', value: BASIC.instructor ?? '' },
+  { label: '액팅 코치', value: BASIC.instructor ?? '' },
 ]
 
 export default function BasicActingClassPage() {

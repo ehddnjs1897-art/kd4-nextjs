@@ -46,7 +46,7 @@ export const CLASSES: ClassItem[] = [
     duration: "3시간",
     capacity: "6명",
     price: "250,000",
-    instructor: "박우진 리더",
+    instructor: "박우진 액팅 코치",
     isNewMemberOpen: true,
     isHobby: true,
   },
@@ -75,7 +75,7 @@ export const CLASSES: ClassItem[] = [
   {
     step: "STEP 1",
     nameKo: "출연영상 클래스",
-    nameEn: "Intensive Class",
+    nameEn: "Reel Production Class",
     quote: "실제 영화 현장의 퀄리티로 당신의 포트폴리오를 만듭니다.",
     subtitle: "마이즈너 테크닉 / 포트폴리오 제작",
     bullets: [
@@ -163,7 +163,7 @@ export const CLASSES: ClassItem[] = [
     duration: "3시간",
     capacity: "6명",
     price: "250,000",
-    instructor: "주세빈·이현재 강사"
+    instructor: "주세빈·이현재 액팅 코치"
   },
   {
     step: "별도",
@@ -179,7 +179,7 @@ export const CLASSES: ClassItem[] = [
     duration: "3시간",
     capacity: "8명",
     price: "150,000",
-    instructor: "고서현 리더"
+    instructor: "고서현 액팅 코치"
   },
   {
     step: "별도",
@@ -195,7 +195,7 @@ export const CLASSES: ClassItem[] = [
     duration: "2시간 (1:1)",
     capacity: "1:1",
     price: "400,000",
-    instructor: "주세빈·이현재 강사"
+    instructor: "주세빈·이현재 액팅 코치"
   }
 ];
 

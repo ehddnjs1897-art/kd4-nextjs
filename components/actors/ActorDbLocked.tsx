@@ -3,7 +3,7 @@ import type { UserRole } from '@/lib/types'
 
 /**
  * 배우 개인 프로필 페이지에 비로그인/권한 없음 접근 시 보여주는 안내 화면.
- * - 비로그인: 로그인 / 회원가입 유도 (목록은 누구나 볼 수 있고, 개별 프로필만 회원 전용)
+ * - 비로그인: 로그인 / 회원가입 유도 (현정책: 프로필 공개 — 일부 기능만 로그인 필요. 2026-08-30 문구 현행화)
  * - 디렉터 승인대기: 승인 대기 안내
  */
 export default function ActorDbLocked({
@@ -16,9 +16,9 @@ export default function ActorDbLocked({
   const loggedOut = !role
   const pending = role === 'director_pending'
 
-  let title = '배우 프로필은 KD4 회원 전용입니다'
+  let title = '로그인이 필요한 기능입니다'
   let desc =
-    '배우 목록은 누구나 둘러볼 수 있지만, 개별 프로필 열람은 로그인 후 가능합니다. 연락처는 승인된 디렉터만 확인할 수 있습니다.'
+    '배우 목록과 프로필은 누구나 둘러볼 수 있지만, 일부 기능은 로그인 후 이용할 수 있습니다. 연락처는 승인된 디렉터만 확인할 수 있습니다.'
   if (pending) {
     title = '디렉터 승인 대기 중입니다'
     desc =

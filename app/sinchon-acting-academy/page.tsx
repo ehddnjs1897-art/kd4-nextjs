@@ -95,7 +95,7 @@ const OPEN_CLASS_QUOTES = [
 export const metadata: Metadata = {
   title: '신촌 연기학원 — 이대역·서대문구 오시는 길·클래스 안내',
   description:
-    '서대문구 이화여대1안길, 이대역 도보 3분. KD4 액팅 스튜디오는 마이즈너 테크닉 정규반과 출연영상 클래스 등 9개 클래스를 소수정예로 운영하는 신촌 연기학원입니다. 무료 상담 가능.',
+    '서대문구 이화여대1안길, 이대역 도보 3분. KD4 액팅 스튜디오는 마이즈너 테크닉 정규 클래스와 출연영상 클래스 등 9개 클래스를 소수정예로 운영하는 신촌 연기학원입니다. 무료 상담 가능.',
   keywords: ['신촌 연기학원', '서대문 연기학원', '이대 연기학원', '아현 연기학원', '충정로 연기학원', '이대역 연기학원', '서대문구 연기학원', '신촌 연기학원 오시는 길', 'KD4 액팅 스튜디오'],
   robots: { index: true, follow: true },
   alternates: { canonical: PAGE_URL },
@@ -151,7 +151,7 @@ export default function SinchonPage() {
             이대역 도보 3분,<br />신촌 연기학원 KD4 액팅 스튜디오
           </h1>
           <p style={{ fontSize: 'clamp(0.95rem, 2.6vw, 1.05rem)', color: 'rgba(255,255,255,0.86)', lineHeight: 1.7, marginBottom: '32px', maxWidth: '560px', margin: '0 auto 32px', wordBreak: 'keep-all' }}>
-            신촌 연기학원 KD4는 서대문구 이화여대1안길에 있습니다. 권동원 리더 직강, 마이즈너 테크닉 정규반과 출연영상 클래스를 운영합니다.
+            신촌 연기학원 KD4는 서대문구 이화여대1안길에 있습니다. 권동원 대표 직강, 마이즈너 테크닉 정규 클래스와 출연영상 클래스를 운영합니다.
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <JoinCTALink href="#form" location="sinchon-hero" label="무료 상담 신청" className="btn-primary" style={{ background: '#fff', color: 'var(--navy)' }}>

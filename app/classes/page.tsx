@@ -376,8 +376,8 @@ export default function ClassesPage() {
               background: 'rgba(21,72,138,0.04)',
             }}>
               <p style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.25em', color: 'var(--navy)', fontFamily: 'var(--font-display)', margin: 0 }}><span lang="en">STEP 1</span></p>
-              <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', fontWeight: 800, color: '#111111', fontFamily: 'var(--font-serif)', margin: 0 }}>A 코스</h2>
-              <p style={{ fontSize: 'clamp(0.9rem, 2vw, 1rem)', color: 'var(--navy)', fontWeight: 600, margin: 0 }}>신규 멤버 신청 가능</p>
+              <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', fontWeight: 800, color: '#111111', fontFamily: 'var(--font-serif)', margin: 0 }}>신규 멤버 클래스</h2>
+              <p style={{ fontSize: 'clamp(0.9rem, 2vw, 1rem)', color: 'var(--navy)', fontWeight: 600, margin: 0 }}>지금 바로 신청할 수 있어요</p>
             </div>
             <div id="class-cards-step1" className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))', gap: '16px', scrollMarginTop: 80 }}>
               {CLASSES.filter(c => c.isNewMemberOpen).map((cls) => <ClassCard key={cls.nameEn} cls={cls} />)}
@@ -386,8 +386,8 @@ export default function ClassesPage() {
 
           {/* STEP 2·3·Extra 아코디언 */}
           {[
-            { label: 'STEP 2', title: 'B 코스', desc: 'STEP 1 수료 후 참여할 수 있는 클래스입니다.', open: step2Open, setOpen: setStep2Open, filter: 'step2' },
-            { label: 'STEP 3', title: 'C 코스', desc: 'STEP 2 수료 후 참여할 수 있는 클래스입니다.', open: step3Open, setOpen: setStep3Open, filter: 'step3' },
+            { label: 'STEP 2', title: '', desc: 'STEP 1 수료 후 참여할 수 있는 클래스입니다.', open: step2Open, setOpen: setStep2Open, filter: 'step2' },
+            { label: 'STEP 3', title: '', desc: 'STEP 2 수료 후 참여할 수 있는 클래스입니다.', open: step3Open, setOpen: setStep3Open, filter: 'step3' },
             { label: 'EXTRA',  title: '별도 코스', desc: '별도로 운영되는 클래스입니다.', open: extraOpen, setOpen: setExtraOpen, filter: 'extra' },
           ].map(({ label, title, desc, open, setOpen, filter }) => (
             <div key={filter} style={{ marginBottom: '16px' }}>
@@ -406,7 +406,9 @@ export default function ClassesPage() {
                 }}
               >
                 <p style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.25em', color: 'var(--navy)', fontFamily: 'var(--font-display)', margin: 0 }}><span lang="en">{label}</span></p>
-                <span style={{ fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', fontWeight: 800, color: 'var(--gray-light)', fontFamily: 'var(--font-serif)', margin: 0 }}>{title}</span>
+                {title && (
+                  <span style={{ fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', fontWeight: 800, color: 'var(--gray-light)', fontFamily: 'var(--font-serif)', margin: 0 }}>{title}</span>
+                )}
                 <p style={{ fontSize: '0.8rem', color: 'var(--gray)', margin: 0 }}>{desc}</p>
                 <span aria-hidden="true" style={{ fontSize: '0.85rem', color: 'var(--gray)', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s', display: 'inline-block', marginTop: '4px' }}>▼</span>
               </button>
@@ -439,18 +441,18 @@ export default function ClassesPage() {
               {[
                 {
                   step: '01',
-                  title: '수업 수료',
-                  desc: '클래스를 성실히 수료한 멤버에게 배우 DB 등록 자격이 주어집니다.',
+                  title: '클래스 수강',
+                  desc: 'KD4 클래스를 수강하면 KD4 멤버가 됩니다.',
                 },
                 {
                   step: '02',
                   title: '배우 DB 등록',
-                  desc: '사진·필모그래피·영상을 포함한 프로필이 KD4 배우 DB에 올라갑니다.',
+                  desc: 'KD4 멤버는 프로필을 등록하면 배우 DB에 공개됩니다. 사진·필모그래피·영상이 함께 올라갑니다.',
                 },
                 {
                   step: '03',
                   title: '캐스팅 연결',
-                  desc: '캐스팅 디렉터가 배우 DB를 통해 직접 연락합니다. 최근 캐스팅 60건이 이뤄졌습니다.',
+                  desc: '캐스팅 디렉터가 배우 DB를 통해 직접 연락합니다. 최근 캐스팅 80건이 이뤄졌습니다.',
                 },
               ].map((item) => (
                 <div key={item.step} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -491,7 +493,7 @@ export default function ClassesPage() {
                 <p style={{ fontWeight: 700, fontSize: '1rem', color: '#111111', margin: 0 }}>처음이면 뭐부터?</p>
                 <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.7, margin: 0 }}>
                   연기 경험이 없고 취미로 시작하고 싶다면 베이직 클래스입니다. 정원 {BASIC_C?.capacity ?? ''}·{BASIC_C?.schedule ?? ''}·회당 {BASIC_C?.duration ?? ''}로, 연기 경험 없어도 참여할 수 있습니다.
-                  마이즈너 훈련이 어떤 것인지 먼저 겪어보고 싶다면 무료 오픈 클래스 1회로 체험해 보세요.
+                  마이즈너 훈련이 어떤 것인지 먼저 겪어보고 싶다면 무료 오픈클래스 1회로 체험해 보세요.
                   연기를 진지하게 배우고 싶은 분이라면 마이즈너 테크닉 정규 클래스부터 시작하시길 추천드립니다.
                 </p>
                 <Link href="/basic-acting-class" style={{ fontSize: '0.85rem', color: 'var(--navy)', fontWeight: 600, textDecoration: 'none' }}>
@@ -510,7 +512,7 @@ export default function ClassesPage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <p style={{ fontWeight: 700, fontSize: '1rem', color: '#111111', margin: 0 }}>환불·중도 변경은?</p>
                 <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.7, margin: 0 }}>
-                  첫 수업 이후 만족하지 않으시면 전액 환불됩니다. 그 외 중도 변경·환불 규정은 상담 시 안내드립니다.
+                  중도 변경·환불 규정은 클래스별 수강 동의서와 상담 시 안내를 따릅니다.
                 </p>
                 <Link href="/faq" style={{ fontSize: '0.85rem', color: 'var(--navy)', fontWeight: 600, textDecoration: 'none' }}>
                   자주 묻는 질문 전체 보기 <span aria-hidden="true">→</span>

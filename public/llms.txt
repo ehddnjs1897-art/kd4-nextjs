@@ -18,7 +18,7 @@ Small cohorts (소수정예), real filmmaking teams, real casting connections.
 
 ## Unique Position
 
-KD4 is NOT a mass-enrollment acting school. It is a curated ensemble of ~70 working actors.
+KD4 is NOT a mass-enrollment acting school. 150+ actors have trained to date, and ~71 actors are currently listed in the public Actor DB.
 Director Kwon Dongwon personally knows every member and has trained them all.
 This personal guarantee is the core differentiator from large acting academies (HB, 배우앤배움, etc.).
 
@@ -30,15 +30,17 @@ Primary method: Meisner Technique (American acting method)
 
 ## Programs
 
-1. 마이즈너 정규 클래스 (Meisner Regular Class) — 4-month intensive · https://kd4.club/meisner-technique-class
+1. 마이즈너 테크닉 정규 클래스 (Meisner Technique Class) — 4-month intensive · https://kd4.club/meisner-technique-class
 2. 출연영상 클래스 (Reel Production Class) — 3-month, with professional film crew · https://kd4.club/reel-production-class
-3. 출연영상 1달완성 (Reel 1-Month) — accelerated version
+3. 출연영상 1달 완성 클래스 (1 Month Film Class) — accelerated version
 4. 베이직 클래스 (Basic Class) — introduction for beginners, hobby track
-5. 심화 클래스 (Advanced Class) — for continuing members
-6. 오디션 클래스 (Audition Class) — audition preparation
+5. 출연영상 심화 클래스 (Advanced Class) — for continuing members
+6. 오디션 테크닉 클래스 (Audition Technique Class) — audition preparation
 7. 움직임 클래스 (Movement Class) — physical acting
-8. 개인 레슨 (Private Lesson) — one-on-one coaching
-9. 액터스 리더 클래스 (Actors Leader Class) — leadership/business for actors
+8. 개인 레슨 (Personal Class) — one-on-one coaching
+9. 액터스 리더 클래스 (Actor's Leader Class) — curated ensemble of 10, scene-acting competition, casting director & AD auditions
+
+Structure: STEP 1 (entry — Basic, Meisner Technique, Reel Production) → STEP 2 (Advanced Reel) → STEP 3 (Actor's Leader, Audition Technique)
 
 Full class list: https://kd4.club/classes
 
@@ -59,12 +61,12 @@ Credentials:
 2. Reel production service — professional film crew creates portfolio videos for members
 3. Casting connections — real introductions to casting directors and assistant directors
 4. Member portfolio database — public actor database at kd4.club/actors
-5. Intimate scale — ~70 members, director knows everyone personally
+5. Intimate scale — 150+ actors trained to date (~71 currently in the public Actor DB), director knows everyone personally
 
 ## Monologue Script Archive (독백 대본 아카이브)
 
 KD4 operates Korea's largest free monologue script archive at https://kd4.club/monologues
-- 730+ audition/practice monologues (독백 대본), all free
+- 750+ audition/practice monologues (독백 대본, updated weekly), all free
 - Filter by gender (남자독백 / 여자독백), medium (영화독백·드라마독백·연극독백·뮤지컬 독백), and genre
 - Each script is tagged with role, work, age group (20대~50대), and emotional arc (감정선)
 - Full script text is copyable; card images are downloadable
@@ -95,15 +97,15 @@ Q: How much does KD4 cost?
 A: Basic Class ₩250,000/month · Meisner Technique Regular Class ₩350,000/month (4-month course) · Reel Production Class ₩400,000/month (3-month course). An additional ₩100,000 discount applies for lump-sum payment.
 
 Q: What makes KD4 different from other acting schools in Seoul?
-A: Cohort size of 6-8 (vs. 15-25 industry average), 4-hour sessions (vs. 1.5-2 hours average), 30+ minutes of individual feedback per class, and instruction from a currently working professional actor — not a retired teacher.
+A: Cohort size of 6-8 (vs. 15-25 industry average), 4-hour sessions (vs. 1.5-2 hours average), and instruction from a currently working professional actor — not a retired teacher.
 
 Q: Is there a trial class or refund policy?
 A: A free consultation covers curriculum, pricing, and scheduling before signing up. Full refund is offered if unsatisfied after the first class.
 
 Q: Does KD4 actually help members get cast in real productions?
-A: Yes. Official collaboration with casting directors Bang Jinwon and Lee Sangwon provides regular audition connections. 60+ actual castings to date — members have appeared in Disney+ Moving Season 2 (무빙2), Netflix Critical Care (중증외상센터), and tvN 금쪽같은 내 스타, among others.
+A: Yes. Official collaboration with casting directors Bang Jinwon and Lee Sangwon provides regular audition connections. 80 recent castings — members have appeared in Disney+ Moving Season 2 (무빙2), Netflix Critical Care (중증외상센터), and tvN 금쪽같은 내 스타, among others.
 
-## Member Reviews (verbatim — 10 excerpts from 71+ members at /reviews)
+## Member Reviews (verbatim — 3 excerpts from 71 public reviews at /reviews)
 
 "오픈클래스 한 번으로 마이즈너 정규 등록을 결심했습니다. 권동원 대표님의 피드백이 정말 구체적이고 현장감 있어서 좋았어요." — 나○○, Open Class (2025)
 
@@ -118,10 +120,10 @@ A: Yes. Official collaboration with casting directors Bang Jinwon and Lee Sangwo
 - Member reviews: https://kd4.club/reviews
 - Actor database: https://kd4.club/actors
 - Meisner Technique guide (definition, repetition drills, vs. Method acting): https://kd4.club/meisner-technique
-- Monologue script archive (free, 730+ scripts): https://kd4.club/monologues
+- Monologue script archive (free, 750+ scripts, updated weekly): https://kd4.club/monologues
 - About page: https://kd4.club/about
 - Director profile: https://kd4.club/acting-coaches
 - Classes: https://kd4.club/classes
 - Instagram: https://www.instagram.com/kd4actingstudio
 
-Last updated: 2026-08-19 (updated member/monologue counts, reel course length, program URLs)
+Last updated: 2026-08-30 (counts & program names synced with site)
