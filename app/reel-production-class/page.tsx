@@ -80,13 +80,13 @@ const INCLUDES = [
 ]
 
 const PORTFOLIO_VIDEOS = [
-  { id: 's_AE-Vy0Ka0', title: '출연영상 대표 샘플' },
-  { id: '7Q62XeyVLbc', title: '출연영상 샘플 1' },
-  { id: 'IWL6hlOrU-w', title: '출연영상 샘플 2' },
-  { id: 'PUlrhjOkvjA', title: '출연영상 샘플 3' },
-  { id: 'qwD63hTNQLs', title: '출연영상 샘플 4' },
-  { id: 'tLAZZOGd3FA', title: '출연영상 샘플 5' },
-  { id: 'zoDJtGT3aQM', title: '출연영상 샘플 6' },
+  { id: 's_AE-Vy0Ka0', title: '출연영상 대표 샘플', uploadDate: '2026-05-21T00:17:11-07:00' },
+  { id: '7Q62XeyVLbc', title: '출연영상 샘플 1', uploadDate: '2026-08-08T06:48:27-07:00' },
+  { id: 'IWL6hlOrU-w', title: '출연영상 샘플 2', uploadDate: '2026-05-13T20:42:36-07:00' },
+  { id: 'PUlrhjOkvjA', title: '출연영상 샘플 3', uploadDate: '2026-04-29T23:55:02-07:00' },
+  { id: 'qwD63hTNQLs', title: '출연영상 샘플 4', uploadDate: '2026-07-10T17:00:21-07:00' },
+  { id: 'tLAZZOGd3FA', title: '출연영상 샘플 5', uploadDate: '2026-05-29T01:00:29-07:00' },
+  { id: 'zoDJtGT3aQM', title: '출연영상 샘플 6', uploadDate: '2026-05-25T05:00:30-07:00' },
 ]
 
 const PORTFOLIO_PLAYLIST = 'https://www.youtube.com/playlist?list=PLMbZlnkLfP7iaE41p_g9dzGKp5eU9VZk2'
@@ -167,7 +167,8 @@ export default function ReelPage() {
             name: `KD4 출연영상 포트폴리오 — ${v.title}`,
             description: `KD4 액팅 스튜디오 멤버가 제작한 출연영상 포트폴리오. 전문 영화팀이 촬영·편집한 배우 캐스팅용 영상입니다.`,
             thumbnailUrl: `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`,
-            // uploadDate: 7편 실제 업로드일 미확인 → 가짜 날짜(2024-01-01) 대신 키 자체를 생략
+            // uploadDate = 유튜브 실제 업로드일 실측 (2026-08-30)
+            uploadDate: v.uploadDate,
             contentUrl: `https://www.youtube.com/watch?v=${v.id}`,
             embedUrl: `https://www.youtube.com/embed/${v.id}`,
             inLanguage: 'ko',

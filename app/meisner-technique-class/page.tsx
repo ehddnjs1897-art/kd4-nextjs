@@ -186,9 +186,10 @@ export default function MeisnerPage() {
             '@context': 'https://schema.org',
             '@type': 'VideoObject',
             '@id': `${PAGE_URL}#video-meisner-intro`,
-            // KD4가 만든 영상이 아니라 방송사 클립(참고 영상) — 소유권 오인 방지로 publisher 미기재,
-            // 업로드일은 확인된 값이 없어 키 자체를 생략(가짜 날짜 금지).
+            // KD4가 만든 영상이 아니라 방송사 클립(참고 영상) — 소유권 오인 방지로 publisher 미기재.
+            // uploadDate는 유튜브 공개 페이지의 실제 업로드일 실측값 (2026-08-30 GSC 'uploadDate 누락' 해소)
             name: '[MBC 라디오스타] 김재화 마이즈너 레피티션 특강 (참고 영상)',
+            uploadDate: '2025-03-05T07:28:04-08:00',
             description: '배우 김재화가 방송에서 소개한 마이즈너 레피티션 훈련 장면. 연기하지 않는 연기, 진짜 반응을 훈련하는 방식을 보여주는 참고 영상입니다.',
             thumbnailUrl: 'https://i.ytimg.com/vi/6crvxRnBerk/hqdefault.jpg',
             contentUrl: 'https://www.youtube.com/watch?v=6crvxRnBerk',

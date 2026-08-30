@@ -130,7 +130,8 @@ export default function AboutPage() {
           name: 'KD4 연기하지 않는 연기',
           description: 'KD4 액팅 스튜디오의 마이즈너 테크닉 기반 연기 훈련 소개 영상. 연기하지 않는 연기, 진짜 반응을 훈련하는 KD4의 방식을 담았습니다.',
           thumbnailUrl: 'https://i.ytimg.com/vi/tB7f4VnC6rM/hqdefault.jpg',
-          // uploadDate: 실제 업로드일 미확인 → 가짜 날짜(2024-01-01) 대신 키 자체를 생략
+          // uploadDate = 유튜브 실제 업로드일 실측 (2026-08-30)
+          uploadDate: '2026-04-01T08:50:44-07:00',
           contentUrl: 'https://www.youtube.com/watch?v=tB7f4VnC6rM',
           embedUrl: 'https://www.youtube.com/embed/tB7f4VnC6rM',
           inLanguage: 'ko',
