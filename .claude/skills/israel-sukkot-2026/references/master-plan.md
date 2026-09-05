@@ -243,8 +243,24 @@ Yehud = 입국 첫날 / Jerusalem = 장막절·Old City·샤밧 / Dead Sea 친�
 
 **B-D (교회=중부, D 선택)**: 9/27 일 Yehud→예루살렘 오전, 오후 감람산·겟세마네(14:30~) · 9/28 월 **엠마오 트레일 20km**(185로 Abu Ghosh 07:30 출발, Latrun 복귀) · 9/29 화 486→Ein Gedi→**광야 1박** · 9/30 수 광야 일출→예루살렘 11시→March/Ramparts · 10/1 목 베들레헴 06:30~11:00(게이트) or Via Dolorosa → 13:00 기차 · 10/2~10/4 동일. 갈릴리 없음.
 
+### C-6. 3차 입력 (2026-09-05) — 교회 위치 확정 + 친구 부모님 저녁 초대
+> 사용자: "26일 교회는 갈릴리 주변 / This is in the Sea of Galilee area." + 친구 WhatsApp 원문: "We're also coming back to Israel on September 25th. My parents would love to invite you for dinner. Just let us know where you'll be staying and for how long. (Just a reminder, we live in Haggor.) We're still not sure what we're going to do when we get back to Israel, so let us know how long you'll be here and we'll try to arrange something."
+
+#### 판정
+1. **시나리오 A 확정.** 첫 주말(9/25 오후~9/28 오전) = 갈릴리, Tiberias 베이스. B-J/B-D는 보관안으로 격하. Jesus Trail(9/27)과 광야 1박(9/29)은 택일 없이 둘 다 편성. 렌터카 불필요 확정.
+2. **9/26 교회 이동**: 욤토브+샤밧이라 버스 없음. 교회가 Tiberias 숙소 도보권이 아니면 친구 픽업(친구가 9/25 귀국해 9/26 교회에 갈 가능성 높음) 또는 택시 전날 예약. 교회명·주소는 아직 미확인(Peniel HaMasor 15일 수도, 다른 교회일 수도).
+3. **저녁 초대 슬롯**(갈릴리 체류 중 저녁이 비는 날만):
+   - 9/25(금): 친구도 이날 귀국 + 절기 전야 → 제외.
+   - **9/26(토) 교회 후 점심 또는 저녁** — 욤토브 식사를 수카에서 → 1순위 "장막절 체험"에 가장 부합. 교통 없음이므로 친구 차량 전제.
+   - **9/27(일) 저녁** — Jesus Trail 종점 Capernaum(17시 전 도착)에서 픽업 → 저녁 → Tiberias 귀환. 52번 배차 문제까지 해결. Haggor가 Capernaum 인근이면 최적.
+   - 9/28(월) 이후는 예루살렘 이동 → 갈릴리 슬롯 없음.
+4. **"Haggor" 위치 = 확인 필요.** 사용자는 갈릴리 호수 주변이라 했으나, 지명 후보가 둘: ① **Almagor**(אלמגור, 갈릴리 호수 북동안 모샤브, Korazim·Capernaum 인근 — 철자 유사, 갈릴리 진술과 일치) ② **Hagor**(חגור, 중부 샤론 Drom HaSharon 모샤브, Kfar Saba·Rosh HaAyin 인근 — 철자 가장 근접, 갈릴리 진술과 불일치). ①이면 위 슬롯 그대로. ②면 갈릴리 슬롯 불가 → 10/3(토) 하브달라 후 밤(예루살렘→샤론 기차·택시, 무거움) 또는 10/4(일) 오전(항공편 시각 의존)만 남음. 친구에게 직접 물어 확정.
+   - ① Almagor는 "가버나움 이북"에 해당할 수 있어 외교부 3단계 표기 구역인지 확인 필요(B-5 여행경보 참조). 친구 집 방문 자체는 대표 판단.
+5. **답장에 담을 것**(영문, 한 번에): 체류 기간 9/24~10/4 · 밤마다 있을 곳 요약 · 9/26 10:30 참석 확정 + 교회 주소·도보 가능 여부·픽업 가능 여부 질문 · 저녁 가능일 9/26 또는 9/27 제안 · Haggor 정확한 위치 질문.
+
 ---
 
 ## PART D. 변경 이력
 - **2026-09-05** 원문 계획(1~18절) 등록. 9/26(토) 10:30 교회 장막절 모임 초대 반영 → PART C 시나리오 A/B/C 작성. 2026 절기 달력·교통·현장 정보 검증(PART B).
 - **2026-09-05 (2차)** 1순위 교체("장막절 + 예수님이 실제 걸으신 거리 체험"). 베들레헴 예수탄생교회(조건부·외교부 3단계 게이트), 겟세마네 만국교회 개방시간, 광야캠핑 옵션(Ein Gedi / Kfar Hanokdim), 엠마오 트레일, Wadi Qelt 비권장 판정 추가(B-5, C-5). Jesus Trail vs 광야캠핑 택일 구조 정리 → 시나리오 A는 택일 불필요, B에서만 강제, 기본 추천 J. 일자표 A-J / B-J / B-D 갱신.
+- **2026-09-05 (3차)** 9/26 교회 위치 = 갈릴리 호수 주변 확정 → 시나리오 A 고정, B안 보관 격하, J/D 택일 해소, 렌터카 불필요 확정. 친구 부모님 저녁 초대(친구 9/25 귀국, "Haggor" 거주) 반영 — 슬롯 후보 9/26 저녁·9/27 저녁, Haggor 위치(Almagor vs Hagor) 확인 항목 신설(C-6). HTML 일정표 아티팩트 갱신.
