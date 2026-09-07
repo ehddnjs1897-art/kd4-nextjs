@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
 
   const { error } = await supabaseAdmin.storage
     .from('casting')
-    .upload(fileName, outBytes, { contentType: outType, upsert: false })
+    .upload(fileName, outBytes, { contentType: outType, upsert: false, cacheControl: '31536000' })
 
   if (error) return NextResponse.json({ error: '업로드 실패: ' + error.message }, { status: 500 })
 

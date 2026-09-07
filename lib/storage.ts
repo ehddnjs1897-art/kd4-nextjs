@@ -39,6 +39,7 @@ export async function uploadFile(
   if (PROVIDER === 'supabase') {
     const { error } = await supabaseAdmin.storage.from(bucket).upload(path, file, {
       upsert: false,
+      cacheControl: '31536000', // 타임스탬프 경로 → 원본 1년 캐시 안전
     })
 
     if (error) {

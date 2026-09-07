@@ -324,7 +324,7 @@ export async function GET(
       width: 1200,
       height: 630,
       headers: {
-        'Cache-Control': 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400',
+        'Cache-Control': 'public, max-age=604800, s-maxage=604800, stale-while-revalidate=86400', // 7일 — URL 버전 파라미터로 무효화되므로 안전 (9/7 이그레스 절감)
         'X-Robots-Tag': 'noindex',
       },
     }

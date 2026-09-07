@@ -487,7 +487,8 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={url}
+                  // 갤러리 썸네일은 Vercel 최적화기 경유(엣지 캐시) — Supabase 직링크 이그레스 절감. 라이트박스는 원본 url 그대로.
+                  src={url.includes('/storage/v1/object/public/') ? `/_next/image?url=${encodeURIComponent(url)}&w=750&q=75` : url}
                   alt={`${actor.name} 프로필 ${i + 1}`}
                   loading="lazy"
                   draggable={false}

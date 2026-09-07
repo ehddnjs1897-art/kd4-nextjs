@@ -30,7 +30,10 @@ const nextConfig: NextConfig = {
       },
     ],
     formats: ['image/avif', 'image/webp'],
-    minimumCacheTTL: 60,  // 대표사진 편집 후 빠른 반영 (24h→1분). 배우 52명 규모라 재최적화 비용 무시 가능
+    // 2026-09-07: 60초 → 30일. 60초 TTL이 Supabase 이그레스 폭증(2주 27GB)의 주원인 —
+    // 원본(cache-control: no-cache)을 요청마다 재수집. 업로드 경로에 타임스탬프가 있어 새 사진=새 URL이므로
+    // 긴 캐시가 편집 반영을 막지 않음. (7/1 '빠른 반영' 사유는 URL 불변 전제였으나 실제론 불변 아님)
+    minimumCacheTTL: 2592000,
     // 실제 렌더폭 기준으로 좁혀 변환본 수 최소화 (성능)
     deviceSizes: [640, 750, 828, 1080, 1200],
     imageSizes: [200, 300, 360, 720],

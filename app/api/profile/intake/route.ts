@@ -475,6 +475,7 @@ export async function POST(request: NextRequest) {
         await supabaseAdmin.storage.from('actor-photos').upload(path, compressed.buffer, {
           contentType: compressed.contentType,
           upsert: true,
+          cacheControl: '31536000', // 경로에 타임스탬프 → 새 사진=새 URL, 원본 1년 캐시 안전 (9/7 이그레스 절감)
         })
       } catch { /* 개별 파일 압축 실패 무시 — 원본 유지 */ }
     }

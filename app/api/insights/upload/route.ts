@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
 
     const { error: uploadError } = await supabaseAdmin.storage
       .from(BUCKET)
-      .upload(filename, buffer, { contentType: file.type, upsert: false })
+      .upload(filename, buffer, { contentType: file.type, upsert: false, cacheControl: '31536000' })
 
     if (uploadError) {
       console.error('[insights/upload] Storage 업로드 실패:', uploadError.message)
