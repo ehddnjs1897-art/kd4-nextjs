@@ -93,6 +93,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/basic-acting-class`,           lastModified: new Date(LAST_UPDATED.basic),   changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/meisner-technique-class`,      lastModified: new Date(LAST_UPDATED.meisner), changeFrequency: 'monthly', priority: 0.85 },
     { url: `${BASE}/meisner-technique`,            lastModified: new Date(LAST_UPDATED.meisnerGuide), changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${BASE}/meisner-technique/repetition-emotion-words`, lastModified: new Date(LAST_UPDATED.repetitionWords), changeFrequency: 'yearly', priority: 0.7 },
     { url: `${BASE}/reel-production-class`,        lastModified: new Date(LAST_UPDATED.reel),    changeFrequency: 'monthly', priority: 0.85 },
     { url: `${BASE}/sinchon-acting-academy`,       lastModified: new Date(LAST_UPDATED.sinchon), changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/acting-coaches`,               lastModified: new Date(LAST_UPDATED.coaches), changeFrequency: 'monthly', priority: 0.75 },

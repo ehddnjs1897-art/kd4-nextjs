@@ -266,6 +266,8 @@ export default function MeisnerPage() {
             </p>
             <p style={{ fontSize: '0.9rem', marginTop: '12px' }}>
               더 깊이: <Link href="/meisner-technique" style={{ color: 'var(--navy)', fontWeight: 600 }}>마이즈너 테크닉 완전 정리 <span aria-hidden="true">→</span></Link>
+              <span aria-hidden="true" style={{ margin: '0 10px', color: 'var(--border)' }}>|</span>
+              <Link href="/meisner-technique/repetition-emotion-words" style={{ color: 'var(--navy)', fontWeight: 600 }}>레피티션 감정 어휘표 <span aria-hidden="true">→</span></Link>
             </p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', maxWidth: '960px', margin: '0 auto' }}>

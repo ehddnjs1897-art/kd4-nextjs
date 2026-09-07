@@ -59,6 +59,7 @@ interface CommunityItem {
   leader: string
   desc: string
   pricing?: { label: string; price: string; note?: string }[]
+  link?: { href: string; label: string }
 }
 
 const COMMUNITIES: CommunityItem[] = [
@@ -72,6 +73,7 @@ const COMMUNITIES: CommunityItem[] = [
       { label: '액팅 코치 수업 수강 중', price: '50,000원', note: '오디션 테크닉·베이직 클래스 (50% 할인)' },
       { label: '일반', price: '100,000원' },
     ],
+    link: { href: '/meisner-technique/repetition-emotion-words', label: '레피티션 감정 어휘표 보기' },
   },
   {
     emoji: '🎥',
@@ -598,6 +600,11 @@ export default function BenefitsPage() {
                     ))}
                   </ul>
                 </>
+              )}
+              {item.link && (
+                <Link href={item.link.href} style={{ marginTop: 10, fontFamily: 'var(--font-sans)', fontSize: '0.85rem', fontWeight: 700, color: 'var(--gold)', textDecoration: 'none' }}>
+                  {item.link.label} <span aria-hidden="true">→</span>
+                </Link>
               )}
             </div>
           ))}

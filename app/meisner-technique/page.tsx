@@ -211,6 +211,13 @@ export default function MeisnerTechniqueGuidePage() {
                     <p key={i} style={proseStyle}>{para}</p>
                   ))}
                 </div>
+                {title === 'Repetition' && (
+                  <p style={{ marginTop: '14px', fontSize: '0.9rem' }}>
+                    <Link href="/meisner-technique/repetition-emotion-words" style={{ color: 'var(--navy)', fontWeight: 600 }}>
+                      레피티션 감정 어휘 정리 — 12가지 감정의 단계별 표현과 관찰 문장 <span aria-hidden="true">→</span>
+                    </Link>
+                  </p>
+                )}
               </article>
             ))}
           </div>
@@ -295,6 +302,9 @@ export default function MeisnerTechniqueGuidePage() {
         <div className="container" style={{ display: 'flex', justifyContent: 'center', gap: '24px', flexWrap: 'wrap' }}>
           <Link href={CLASS_URL} style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
             마이즈너 테크닉 정규 클래스 <span aria-hidden="true">→</span>
+          </Link>
+          <Link href="/meisner-technique/repetition-emotion-words" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+            레피티션 감정 어휘표
           </Link>
           <Link href="/acting-coaches" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
             액팅 코치 소개

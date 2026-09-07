@@ -17,6 +17,8 @@ export const LAST_UPDATED = {
   meisner: '2026-08-30',
   // /meisner-technique — 정보형 가이드 (2026-08-20 신설)
   meisnerGuide: '2026-08-20',
+  // /meisner-technique/repetition-emotion-words — 레피티션 감정 어휘표 (2026-09-08 신설)
+  repetitionWords: '2026-09-08',
   reel: '2026-08-30',
   sinchon: '2026-08-20',
   coaches: '2026-08-30',
