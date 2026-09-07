@@ -110,7 +110,7 @@ export default function RepetitionEmotionWordsPage() {
             레피티션 감정 어휘 정리
           </h1>
           <p className="section-desc" style={{ color: 'rgba(255,255,255,0.88)', maxWidth: '720px' }}>
-            {REPETITION_INTRO.what} &ldquo;너 지금 ○○하네&rdquo; / &ldquo;○○해 보이네&rdquo; 형태로 사용합니다. 12가지 감정을 약한 단계에서 강한 단계로 정리했고, 감정 단어 대신 쓸 수 있는 신체 관찰 문장을 함께 실었습니다.
+            {REPETITION_INTRO.what}{' '}&ldquo;너 지금 ○○하네&rdquo; / &ldquo;○○해 보이네&rdquo; 형태로 사용합니다. 12가지 감정을 약한 단계에서 강한 단계로 정리했고, 감정 단어 대신 쓸 수 있는 신체 관찰 문장을 함께 실었습니다.
           </p>
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '28px' }}>
             <a href="#words" className="btn-outline" style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.6)' }}>
@@ -150,7 +150,7 @@ export default function RepetitionEmotionWordsPage() {
           <p className="section-eyebrow"><span lang="en">02 — WORDS</span></p>
           <h2 className="section-title-serif" style={{ marginBottom: '10px' }}>12가지 감정, 약함에서 강함으로</h2>
           <p style={{ ...proseStyle, marginBottom: '24px' }}>
-            {REPETITION_INTRO.order} 색이 짙어질수록 강한 상태입니다. 아래 두 줄은 감정 이름을 붙이기 전에 먼저 말할 수 있는 &ldquo;본 것&rdquo;의 예시입니다.
+            {REPETITION_INTRO.order}{' '}색이 짙어질수록 강한 상태입니다. 아래 두 줄은 감정 이름을 붙이기 전에 먼저 말할 수 있는 &ldquo;본 것&rdquo;의 예시입니다.
           </p>
           <div className="rep-words-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '14px' }}>
             {EMOTION_GROUPS.map((g) => (
