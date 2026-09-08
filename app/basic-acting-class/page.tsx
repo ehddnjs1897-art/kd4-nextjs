@@ -15,6 +15,9 @@ const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
 const PAGE_URL = `${SITE_URL}/basic-acting-class`
 
 /** 데이터 원본은 lib/classes.ts 하나 — 가격·정원·시간을 이 파일에 다시 적지 않는다 */
+/** 베이직 클래스 3개월 커리큘럼 상세 (노션) — 원본은 노션에서만 갱신한다 */
+const BASIC_CURRICULUM_URL = 'https://puzzle-pick-ffc.notion.site/3d571cf4488e815c8866f89c9df0607f'
+
 const BASIC = CLASSES.find((c) => c.nameKo === '베이직 클래스')!
 const MEISNER = CLASSES.find((c) => c.nameKo === '마이즈너 테크닉 정규 클래스')!
 
@@ -194,6 +197,17 @@ export default function BasicActingClassPage() {
               </li>
             ))}
           </ul>
+          <p style={{ textAlign: 'center', marginTop: '24px' }}>
+            <a
+              href={BASIC_CURRICULUM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '0.92rem', fontWeight: 600, color: 'var(--navy)', border: '1.5px solid var(--navy)', borderRadius: '999px', padding: '10px 22px', textDecoration: 'none' }}
+            >
+              3개월 전체 커리큘럼 보기
+              <span aria-hidden="true">→</span>
+            </a>
+          </p>
         </div>
       </section>
 
