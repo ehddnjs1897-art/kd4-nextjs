@@ -471,6 +471,26 @@ export default function BenefitsPage() {
             <span aria-hidden style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 700, color: 'var(--gold)', whiteSpace: 'nowrap' }}>자세히 보기 →</span>
           </Link>
 
+          {/* 무브원 댄스스튜디오 */}
+          <Link
+            href="/benefits/move1-dance-studio"
+            aria-label="무브원 댄스스튜디오 연습실 대관 제휴 혜택 자세히 보기"
+            className="kd4-card-hover"
+            style={{ display: 'flex', alignItems: 'center', gap: 'clamp(16px, 4vw, 24px)', background: '#ffffff', border: '1.5px solid rgba(21,72,138,0.18)', borderRadius: 12, padding: 'clamp(18px, 3vw, 24px)', textDecoration: 'none', position: 'relative', overflow: 'hidden', flexWrap: 'wrap' }}
+          >
+            <span aria-hidden style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 3, background: 'var(--gold)' }} />
+            <span aria-hidden style={{ width: 72, height: 72, flexShrink: 0, borderRadius: 6, background: 'var(--navy)', color: '#fff', display: 'inline-flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 1, fontFamily: 'var(--font-display), Oswald, sans-serif', letterSpacing: '0.08em', lineHeight: 1 }}>
+              <span style={{ fontSize: '1.05rem', fontWeight: 700 }}>MOVE1</span>
+              <span style={{ fontSize: '0.5rem', opacity: 0.75 }}>DANCE</span>
+            </span>
+            <span style={{ display: 'flex', flexDirection: 'column', gap: 5, minWidth: 160, flex: 1 }}>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', fontWeight: 700, color: 'var(--white)' }}>댄스 연습실 대관 제휴</span>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 600, color: 'var(--gold)' }}>KD4 멤버 시간당 15,000원 → 10,000원</span>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: 'var(--secondary)' }}>무브원 댄스스튜디오 · KD4 스튜디오 바로 지하 · 거울 있는 단독 연습실</span>
+            </span>
+            <span aria-hidden style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 700, color: 'var(--gold)', whiteSpace: 'nowrap' }}>자세히 보기 →</span>
+          </Link>
+
           {/* 방진원 캐스팅 디렉터 */}
           <div
             style={{ display: 'flex', alignItems: 'center', gap: 'clamp(16px, 4vw, 24px)', background: '#ffffff', border: '1.5px solid rgba(21,72,138,0.18)', borderRadius: 12, padding: 'clamp(18px, 3vw, 24px)', position: 'relative', overflow: 'hidden', flexWrap: 'wrap' }}
