@@ -15,6 +15,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { canViewActorContact } from '@/lib/access'
+import { logActorAccess } from '@/lib/actor-access-log'
 import { getObjectStream, getObjectMeta, isR2Configured } from '@/lib/r2'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -95,6 +96,10 @@ export async function GET(
   if (!canViewActorContact(role) && !isOwner) {
     return NextResponse.json({ error: '프로필 다운로드 권한이 없습니다.' }, { status: 403 })
   }
+
+  // 감사 로그 — 권한 통과 직후 1회. 아래 다운로드 경로가 3갈래(Supabase/R2/외부URL)라
+  // 여기서 한 번만 남기면 전부 커버된다. 실패해도 다운로드는 그대로 진행 (fire-and-forget).
+  logActorAccess({ request, userId: user.id, actorId: id, action: 'profile_doc' })
 
   // 레이트 리밋: 1분 20회 (R2/Drive egress 남용 방어)
   const nowPD = Date.now()

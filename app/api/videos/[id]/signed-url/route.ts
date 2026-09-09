@@ -13,6 +13,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { getVideoSignedUrl, isR2Configured } from '@/lib/r2'
+import { logActorAccess } from '@/lib/actor-access-log'
 
 const MAX_EXPIRY_SEC = 7 * 24 * 60 * 60 // 7일
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -114,6 +115,13 @@ export async function GET(
       { error: '영상 다운로드는 디렉터/관리자만 가능합니다.' },
       { status: 403 }
     )
+  }
+
+  // 감사 로그 — 다운로드 게이트 통과 직후. 스트리밍 시청(download=0)은 기록하지 않는다
+  // (재생마다 발급돼 로그가 폭증하고, 감사 대상은 "파일을 가져간" 행위이므로).
+  // 실패해도 URL 발급은 그대로 진행 (fire-and-forget).
+  if (download && video.actor_id) {
+    logActorAccess({ request, userId: user.id, actorId: video.actor_id, action: 'video' })
   }
 
   try {

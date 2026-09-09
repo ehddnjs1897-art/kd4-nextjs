@@ -9,6 +9,7 @@ import { revalidateTag } from '@/lib/revalidate'
 import { sanitizeDialects } from '@/lib/dialects'
 import { sanitizeCastingTypes } from '@/lib/casting-preferences'
 import { isMissingColumnError, findMissingOptionalCol } from '@/lib/db-missing-column'
+import { logActorAccess } from '@/lib/actor-access-log'
 import type { Actor, ActorDetail } from '@/lib/types'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -121,6 +122,13 @@ export async function GET(
         ...safe
       } = typedActor as Actor & ActorDetail
       return NextResponse.json({ actor: safe as ActorDetail }, { headers: cacheHeaders })
+    }
+
+    // 감사 로그 — 연락처(phone/email) 포함 응답이 실제로 나가는 지점.
+    // canSeeContact 게이트를 통과하고 배우 행도 존재하는 경우만 (위 404/500은 여기 못 옴).
+    // user는 canSeeContact=true면 반드시 존재. 실패해도 응답은 그대로 진행 (fire-and-forget).
+    if (user) {
+      logActorAccess({ request, userId: user.id, actorId: id, action: 'contact' })
     }
 
     return NextResponse.json({ actor: typedActor }, { headers: cacheHeaders })
