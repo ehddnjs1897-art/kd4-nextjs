@@ -87,7 +87,8 @@ function classTag(cls: (typeof CLASSES)[number]): string {
   return '정규 클래스'
 }
 
-const STEPS = ['클래스 선택', '신청 정보', '확인'] as const
+/* 2026-09-10 대표 승인: 이름·연락처를 먼저 받고 클래스는 두 번째 화면으로 (화면 순서만 교체, 6개 입력 전부 필수 유지) */
+const STEPS = ['연락처', '희망 클래스', '확인'] as const
 
 /* ── 실시간 유효성 검사 ── */
 function validateName(v: string): string {
@@ -117,7 +118,7 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
   const consentId = `join-consent-${uid}`
   const errorId = `join-form-error-${uid}`
 
-  /* 멀티스텝: 0 클래스 선택 → 1 신청 정보 → 2 확인 */
+  /* 멀티스텝: 0 연락처(이름·연락처·동의) → 1 희망 클래스(+이메일·경험·경로) → 2 확인 */
   const [step, setStep] = useState(0)
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
@@ -195,36 +196,46 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
     setFieldError(field, validator(value))
   }
 
-  function goNextFromClass() {
-    if (!selectedClass) {
-      setFieldError('className', '클래스를 선택해 주세요. 아직 못 정하셨으면 "기타 / 상담 후 결정"도 괜찮아요.')
-      return
-    }
-    analytics.custom('form_step', { step: 2, step_name: 'info' })
-    setStep(1)
+  /** 오류 필드 → 포커스 이동용 id 매핑 (화면 순서: 연락처 → 클래스) */
+  const fieldIdMap: Record<string, string> = {
+    name: `join-name-${uid}`,
+    phone: `join-phone-${uid}`,
+    consent: consentId,
+    className: `join-class-${uid}`,
+    email: `join-email-${uid}`,
+    meisnerExp: `join-meisner-${uid}-0`,
+    source: `join-source-${uid}`,
   }
 
-  function goNextFromInfo() {
+  /** 1화면 → 2화면: 이름·연락처·개인정보 동의 검증 (저장·제출 없음) */
+  function goNextFromContact() {
     const errors: Record<string, string> = {
       name: validateName(name),
       phone: validatePhone(phone),
+      consent: consent ? '' : '개인정보 수집·이용에 동의해 주세요.',
+    }
+    setFieldErrors((prev) => ({ ...prev, ...errors }))
+    const firstInvalid = Object.keys(errors).find((k) => errors[k])
+    if (firstInvalid) {
+      document.getElementById(fieldIdMap[firstInvalid])?.focus()
+      return
+    }
+    analytics.custom('form_step', { step: 2, step_name: 'class' })
+    setStep(1)
+  }
+
+  /** 2화면 → 3화면: 클래스 선택 + 이메일·마이즈너 경험·유입 경로 검증 (저장·제출 없음) */
+  function goNextFromClass() {
+    const errors: Record<string, string> = {
+      className: selectedClass ? '' : '클래스를 선택해 주세요. 아직 못 정하셨으면 "기타 / 상담 후 결정"도 괜찮아요.',
       email: validateEmail(email),
       meisnerExp: meisnerExp ? '' : '경험 여부를 선택해 주세요.',
       source: source ? '' : '유입 경로를 선택해 주세요.',
-      consent: consent ? '' : '개인정보 수집·이용에 동의해 주세요.',
     }
-    setFieldErrors(errors)
+    setFieldErrors((prev) => ({ ...prev, ...errors }))
     const firstInvalid = Object.keys(errors).find((k) => errors[k])
     if (firstInvalid) {
-      const idMap: Record<string, string> = {
-        name: `join-name-${uid}`,
-        phone: `join-phone-${uid}`,
-        email: `join-email-${uid}`,
-        meisnerExp: `join-meisner-${uid}-0`,
-        source: `join-source-${uid}`,
-        consent: consentId,
-      }
-      document.getElementById(idMap[firstInvalid])?.focus()
+      document.getElementById(fieldIdMap[firstInvalid])?.focus()
       return
     }
     analytics.custom('form_step', { step: 3, step_name: 'confirm' })
@@ -719,9 +730,127 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
         ))}
       </ol>
 
-      {/* ━━━ STEP 1 — 클래스 선택 ━━━ */}
+      {/* ━━━ STEP 1 — 연락처 (이름·연락처·개인정보 동의) ━━━ */}
       {step === 0 && (
-        <div className={styles.stepPane} role="group" aria-label="1단계 — 클래스 선택">
+        <div className={styles.stepPane} role="group" aria-label="1단계 — 연락처 입력">
+          <h3 ref={stepTitleRef} tabIndex={-1} className={styles.stepTitle}>
+            연락받을 정보를 알려주세요
+          </h3>
+          <p className={styles.stepHint}>
+            먼저 이름과 연락처부터 알려주세요. 상담은 무료, 24시간 이내 SMS로 연락드려요.
+          </p>
+
+          {/* 이름 */}
+          <div className={styles.field}>
+            <label htmlFor={`join-name-${uid}`} className={styles.fieldLabel}>이름</label>
+            <input
+              id={`join-name-${uid}`}
+              className={`${styles.input} ${fieldErrors.name ? styles.inputInvalid : name.trim() ? styles.inputValid : ''}`}
+              aria-invalid={Boolean(fieldErrors.name)}
+              aria-describedby={fieldErrors.name ? `join-name-err-${uid}` : undefined}
+              type="text"
+              placeholder="홍길동"
+              value={name}
+              onChange={(e) => { setName(e.target.value); liveValidate('name', e.target.value) }}
+              onFocus={fireFormStart}
+              onBlur={() => setFieldError('name', validateName(name))}
+              autoComplete="name"
+              enterKeyHint="next"
+              maxLength={50}
+              spellCheck={false}
+              required
+              aria-required="true"
+            />
+            {fieldErrors.name && <p id={`join-name-err-${uid}`} className={styles.fieldError}>{fieldErrors.name}</p>}
+          </div>
+
+          {/* 연락처 — 자동 하이픈 + 숫자 키보드 */}
+          <div className={styles.field}>
+            <label htmlFor={`join-phone-${uid}`} className={styles.fieldLabel}>연락처</label>
+            <input
+              id={`join-phone-${uid}`}
+              className={`${styles.input} ${fieldErrors.phone ? styles.inputInvalid : phone && !validatePhone(phone) ? styles.inputValid : ''}`}
+              aria-invalid={Boolean(fieldErrors.phone)}
+              aria-describedby={fieldErrors.phone ? `join-phone-err-${uid}` : undefined}
+              type="tel"
+              inputMode="numeric"
+              placeholder="010-0000-0000"
+              value={phone}
+              onChange={(e) => { const v = formatPhone(e.target.value); setPhone(v); liveValidate('phone', v) }}
+              onFocus={fireFormStart}
+              onBlur={() => setFieldError('phone', validatePhone(phone))}
+              autoComplete="tel"
+              enterKeyHint="next"
+              maxLength={13}
+              required
+              aria-required="true"
+            />
+            {fieldErrors.phone && <p id={`join-phone-err-${uid}`} className={styles.fieldError}>{fieldErrors.phone}</p>}
+          </div>
+
+          {/* 개인정보 수집·이용 동의 (필수) */}
+          <label
+            htmlFor={consentId}
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '10px',
+              padding: '12px 14px',
+              background: consent ? 'rgba(21,72,138,0.04)' : '#ffffff',
+              border: `1px solid ${fieldErrors.consent ? '#b91c1c' : consent ? 'var(--navy)' : 'var(--border)'}`,
+              borderRadius: '12px',
+              cursor: 'pointer',
+              transition: 'background 0.15s, border-color 0.15s',
+            }}
+          >
+            <input
+              id={consentId}
+              type="checkbox"
+              checked={consent}
+              onChange={(e) => { setConsent(e.target.checked); if (e.target.checked) setFieldError('consent', '') }}
+              required
+              aria-invalid={Boolean(fieldErrors.consent)}
+              style={{
+                width: '24px',
+                height: '24px',
+                marginTop: '2px',
+                accentColor: 'var(--navy)',
+                cursor: 'pointer',
+                flexShrink: 0,
+              }}
+            />
+            <span
+              style={{
+                fontSize: '0.85rem',
+                color: '#111111',
+                lineHeight: 1.6,
+              }}
+            >
+              <strong style={{ color: 'var(--navy)' }}>[필수]</strong> 개인정보 수집·이용에 동의합니다.
+              <br />
+              <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>
+                상담 연락 목적으로만 사용됩니다 · 언제든 삭제 요청 가능 ·{' '}
+                <a href="/privacy" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--navy)', textDecoration: 'underline' }}>
+                  처리방침
+                </a>
+              </span>
+            </span>
+          </label>
+          {fieldErrors.consent && <p className={styles.fieldError} role="alert">{fieldErrors.consent}</p>}
+
+          {/* 1화면에서는 저장·제출·API 호출 없음 — 다음 화면으로 이동만 */}
+          <div className={styles.navRow}>
+            <button type="button" className={styles.btnPrimary} onClick={goNextFromContact}>
+              다음 — 희망 클래스 선택
+              <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ━━━ STEP 2 — 희망 클래스 (+ 이메일·마이즈너 경험·유입 경로) ━━━ */}
+      {step === 1 && (
+        <div className={styles.stepPane} role="group" aria-label="2단계 — 희망 클래스 선택">
           <h3 ref={stepTitleRef} tabIndex={-1} className={styles.stepTitle}>
             어떤 클래스로 시작할까요?
           </h3>
@@ -729,11 +858,12 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
             카드를 누르면 커리큘럼·가격·일정이 펼쳐져요. 연기 경험 없어도 OK.
           </p>
 
-          {FEATURED_CLASSES.map((cls) => {
+          {FEATURED_CLASSES.map((cls, idx) => {
             const selected = selectedClass === cls.nameKo
             return (
               <button
                 key={cls.nameKo}
+                id={idx === 0 ? `join-class-${uid}` : undefined}
                 type="button"
                 className={`${styles.classCard} ${selected ? styles.classCardSelected : ''}`}
                 onClick={() => selectClass(cls.nameKo)}
@@ -799,77 +929,7 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
             <p className={styles.fieldError} role="alert">{fieldErrors.className}</p>
           )}
 
-          <div className={styles.navRow}>
-            <button
-              type="button"
-              className={styles.btnPrimary}
-              onClick={goNextFromClass}
-              disabled={!selectedClass}
-            >
-              다음 — 신청 정보 입력
-              <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} />
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ━━━ STEP 2 — 신청 정보 ━━━ */}
-      {step === 1 && (
-        <div className={styles.stepPane} role="group" aria-label="2단계 — 신청 정보 입력">
-          <h3 ref={stepTitleRef} tabIndex={-1} className={styles.stepTitle}>
-            연락받을 정보를 알려주세요
-          </h3>
-          <p className={styles.stepHint}>
-            선택한 클래스 — <strong style={{ color: 'var(--navy)' }}>{selectedClass}</strong>
-          </p>
-
-          {/* 이름 */}
-          <div className={styles.field}>
-            <label htmlFor={`join-name-${uid}`} className={styles.fieldLabel}>이름</label>
-            <input
-              id={`join-name-${uid}`}
-              className={`${styles.input} ${fieldErrors.name ? styles.inputInvalid : name.trim() ? styles.inputValid : ''}`}
-              aria-invalid={Boolean(fieldErrors.name)}
-              aria-describedby={fieldErrors.name ? `join-name-err-${uid}` : undefined}
-              type="text"
-              placeholder="홍길동"
-              value={name}
-              onChange={(e) => { setName(e.target.value); liveValidate('name', e.target.value) }}
-              onFocus={fireFormStart}
-              onBlur={() => setFieldError('name', validateName(name))}
-              autoComplete="name"
-              enterKeyHint="next"
-              maxLength={50}
-              spellCheck={false}
-              required
-              aria-required="true"
-            />
-            {fieldErrors.name && <p id={`join-name-err-${uid}`} className={styles.fieldError}>{fieldErrors.name}</p>}
-          </div>
-
-          {/* 연락처 — 자동 하이픈 + 숫자 키보드 */}
-          <div className={styles.field}>
-            <label htmlFor={`join-phone-${uid}`} className={styles.fieldLabel}>연락처</label>
-            <input
-              id={`join-phone-${uid}`}
-              className={`${styles.input} ${fieldErrors.phone ? styles.inputInvalid : phone && !validatePhone(phone) ? styles.inputValid : ''}`}
-              aria-invalid={Boolean(fieldErrors.phone)}
-              aria-describedby={fieldErrors.phone ? `join-phone-err-${uid}` : undefined}
-              type="tel"
-              inputMode="numeric"
-              placeholder="010-0000-0000"
-              value={phone}
-              onChange={(e) => { const v = formatPhone(e.target.value); setPhone(v); liveValidate('phone', v) }}
-              onFocus={fireFormStart}
-              onBlur={() => setFieldError('phone', validatePhone(phone))}
-              autoComplete="tel"
-              enterKeyHint="next"
-              maxLength={13}
-              required
-              aria-required="true"
-            />
-            {fieldErrors.phone && <p id={`join-phone-err-${uid}`} className={styles.fieldError}>{fieldErrors.phone}</p>}
-          </div>
+          {/* 클래스 아래 추가 정보 3개 — 전부 필수 (2026-05-20 대표 지시 유지). 중간 안내문은 stepHint 음수여백 때문에 뺌 */}
 
           {/* 이메일 — 필수 (2026-05-20: 대표 지시로 필수 복귀) */}
           <div className={styles.field}>
@@ -956,62 +1016,12 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
             {fieldErrors.source && <p id={`join-source-err-${uid}`} role="alert" className={styles.fieldError}>{fieldErrors.source}</p>}
           </div>
 
-          {/* 개인정보 수집·이용 동의 (필수) */}
-          <label
-            htmlFor={consentId}
-            style={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: '10px',
-              padding: '12px 14px',
-              background: consent ? 'rgba(21,72,138,0.04)' : '#ffffff',
-              border: `1px solid ${fieldErrors.consent ? '#b91c1c' : consent ? 'var(--navy)' : 'var(--border)'}`,
-              borderRadius: '12px',
-              cursor: 'pointer',
-              transition: 'background 0.15s, border-color 0.15s',
-            }}
-          >
-            <input
-              id={consentId}
-              type="checkbox"
-              checked={consent}
-              onChange={(e) => { setConsent(e.target.checked); if (e.target.checked) setFieldError('consent', '') }}
-              required
-              aria-invalid={Boolean(fieldErrors.consent)}
-              style={{
-                width: '24px',
-                height: '24px',
-                marginTop: '2px',
-                accentColor: 'var(--navy)',
-                cursor: 'pointer',
-                flexShrink: 0,
-              }}
-            />
-            <span
-              style={{
-                fontSize: '0.85rem',
-                color: '#111111',
-                lineHeight: 1.6,
-              }}
-            >
-              <strong style={{ color: 'var(--navy)' }}>[필수]</strong> 개인정보 수집·이용에 동의합니다.
-              <br />
-              <span style={{ fontSize: '0.76rem', color: 'var(--gray)' }}>
-                상담 연락 목적으로만 사용됩니다 · 언제든 삭제 요청 가능 ·{' '}
-                <a href="/privacy" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--navy)', textDecoration: 'underline' }}>
-                  처리방침
-                </a>
-              </span>
-            </span>
-          </label>
-          {fieldErrors.consent && <p className={styles.fieldError} role="alert">{fieldErrors.consent}</p>}
-
           <div className={styles.navRow}>
             <button type="button" className={styles.btnGhost} onClick={() => setStep(0)}>
               <ArrowLeft aria-hidden={true} size={15} strokeWidth={2.2} />
               이전
             </button>
-            <button type="button" className={styles.btnPrimary} onClick={goNextFromInfo}>
+            <button type="button" className={styles.btnPrimary} onClick={goNextFromClass}>
               다음 — 신청 내용 확인
               <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} />
             </button>
@@ -1029,19 +1039,19 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
 
           <div className={styles.summary}>
             <div className={styles.summaryRow}>
-              <span className={styles.summaryKey}>희망 클래스</span>
-              <span className={styles.summaryVal}>{selectedClass}</span>
-              <button type="button" className={styles.summaryEdit} onClick={() => setStep(0)} aria-label="희망 클래스 수정">수정</button>
-            </div>
-            <div className={styles.summaryRow}>
               <span className={styles.summaryKey}>이름</span>
               <span className={styles.summaryVal}>{name}</span>
-              <button type="button" className={styles.summaryEdit} onClick={() => setStep(1)} aria-label="이름 수정">수정</button>
+              <button type="button" className={styles.summaryEdit} onClick={() => setStep(0)} aria-label="이름 수정">수정</button>
             </div>
             <div className={styles.summaryRow}>
               <span className={styles.summaryKey}>연락처</span>
               <span className={styles.summaryVal}>{phone}</span>
-              <button type="button" className={styles.summaryEdit} onClick={() => setStep(1)} aria-label="연락처 수정">수정</button>
+              <button type="button" className={styles.summaryEdit} onClick={() => setStep(0)} aria-label="연락처 수정">수정</button>
+            </div>
+            <div className={styles.summaryRow}>
+              <span className={styles.summaryKey}>희망 클래스</span>
+              <span className={styles.summaryVal}>{selectedClass}</span>
+              <button type="button" className={styles.summaryEdit} onClick={() => setStep(1)} aria-label="희망 클래스 수정">수정</button>
             </div>
             <div className={styles.summaryRow}>
               <span className={styles.summaryKey}>이메일</span>

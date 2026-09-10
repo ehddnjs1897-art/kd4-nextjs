@@ -1422,7 +1422,7 @@ export default function JoinPage() {
                 무료 상담 신청
               </h2>
               <p style={{ fontSize: '0.9rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-                클래스 선택부터 확인까지 3단계 — 24시간 이내 SMS로 연락드립니다.
+                연락처부터 확인까지 3단계 — 24시간 이내 SMS로 연락드립니다.
               </p>
             </div>
             <JoinForm />
