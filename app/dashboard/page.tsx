@@ -91,6 +91,12 @@ export default async function DashboardPage() {
     if (!profile) console.error('[dashboard] 프로필 행 자가복구 실패 — user.id:', user.id)
   }
 
+  // ── 휴대폰 번호 필수 (2026-09-12 대표 지시) ─────────────────────────────
+  // Google·카카오 가입자와 디렉터 가입자는 번호 없이 들어올 수 있었다(번호 없는 가입자 116명).
+  // 번호가 없으면 /auth/setup 에서 번호를 받는다. setup 은 metadata.phone 이 생기면 다시 여기로 보낸다.
+  const hasPhone = !!(String(profile?.phone ?? '').trim() || String(user.user_metadata?.phone ?? '').trim())
+  if (!hasPhone && profile?.role !== 'admin') redirect('/auth/setup')
+
   // ── 자가 복구 (2026-06-12 대표 지시) ────────────────────────────────────
   // 가입 마지막 단계(on-signup) 호출이 끊겨 '일반 회원'으로 남았거나, actors 전화번호
   // 공란으로 자동 연결이 실패한 멤버 → 대시보드 방문만 해도 이름 매칭으로 재연결.

@@ -122,7 +122,12 @@ function SignupContent() {
       setErrorField('passwordConfirm'); setError('비밀번호가 일치하지 않습니다.')
       return
     }
-    if (memberType === 'actor' && phone && !/^0[0-9]{1,2}[\-\s]?[0-9]{3,4}[\-\s]?[0-9]{4}$/.test(phone.replace(/\s/g, ''))) {
+    // 휴대폰 번호 필수 — 배우·디렉터 모두 (2026-09-12 대표 지시 «번호 안 남기면 가입 못 하게». 번호 없는 가입자 116명 발생)
+    if (!phone.trim()) {
+      setErrorField('phone'); setError('휴대폰 번호를 입력해 주세요.')
+      return
+    }
+    if (!/^0[0-9]{1,2}[\-\s]?[0-9]{3,4}[\-\s]?[0-9]{4}$/.test(phone.replace(/\s/g, ''))) {
       setErrorField('phone'); setError('연락처 형식이 올바르지 않습니다. (예: 010-1234-5678)')
       return
     }
@@ -153,9 +158,7 @@ function SignupContent() {
       name,
       member_type: memberType,
     }
-    if (memberType === 'actor' && phone) {
-      metadata.phone = phone
-    }
+    metadata.phone = phone
     if (memberType === 'actor' && stageName.trim()) {
       metadata.stage_name = stageName.trim()
     }
@@ -580,8 +583,8 @@ function SignupContent() {
             </div>
           )}
 
-          {/* 배우 회원: 전화번호 */}
-          {memberType === 'actor' && (
+          {/* 전화번호 — 배우·디렉터 공통 필수 (2026-09-12) */}
+          {(
             <div style={styles.fieldGroup}>
               <label htmlFor="phone" style={styles.label}>
                 전화번호 <span aria-hidden="true" style={styles.required}>*</span>
@@ -602,7 +605,9 @@ function SignupContent() {
                 style={styles.input}
               />
               <p id="phone-hint" style={styles.hint}>
-                <span aria-hidden="true">📌</span> KD4에 등록된 번호와 동일해야 배우 프로필과 자동 연결됩니다.
+                <span aria-hidden="true">📌</span> {memberType === 'actor'
+                  ? 'KD4에 등록된 번호와 동일해야 배우 프로필과 자동 연결됩니다.'
+                  : '승인 안내와 배우 연락 관련 연락을 드릴 번호예요.'}
               </p>
             </div>
           )}
