@@ -129,7 +129,8 @@ const AUDITION_FAQ: FaqItem[] = [
 ]
 
 const SPEC_ITEMS: { label: string; value: string; note?: string }[] = [
-  { label: '일정', value: `${AUDITION.schedule} · 현재 기수는 매주 화요일 진행` },
+  // 2026-09-17 대표 확정 — 매주 화요일 12:00~16:00 (상담정리문자_발송.md §오디션 테크닉)
+  { label: '일정', value: `매주 화요일 12:00~16:00 · ${AUDITION.schedule}` },
   { label: '시간', value: `회당 ${AUDITION.duration}`, note: '*인원에 따라 유동적' },
   { label: '정원', value: `${AUDITION.capacity} (소수정예)` },
   { label: '월 수강료', value: `₩${AUDITION.price}` },
