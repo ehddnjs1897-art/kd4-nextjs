@@ -215,7 +215,7 @@ async function sendNotionConsultation(payload: {
             type: 'text',
             text: {
               content:
-                `안녕하세요 배우님\n환영합니다!\n\n` +
+                `안녕하세요, KD4 액팅 스튜디오 에이전트 비서입니다.\n환영합니다!\n\n` +
                 `성함: ${payload.name} 배우님\n` +
                 `클래스: ${payload.class_name ?? '{클래스명}'} {기수}기 / {수업요일} {시간대} ({시작월} 시작)\n` +
                 `{첫 수업일} {요일} {시간}\n\n` +
@@ -263,8 +263,8 @@ async function sendNotionConsultation(payload: {
 async function sendConsultationCallTimeSMS(name: string, phone: string) {
   const safeName = name.replace(/[\r\n\t]/g, ' ')
   const msg =
-    `안녕하세요 ${safeName}배우님,\n` +
-    `KD4 액팅 스튜디오입니다.\n\n` +
+    `안녕하세요, KD4 액팅 스튜디오 에이전트 비서입니다.\n\n` +
+    `${safeName} 배우님,\n` +
     `사전상담을 위해 통화 가능한 시간을\n` +
     `2~3개 남겨주시면 맞춰 연락드리겠습니다.\n\n` +
     `*상담 전 카카오 채널로\n` +
@@ -599,7 +599,7 @@ export async function POST(request: NextRequest) {
           // 2026-08-12 대표 확정 고정 문안 — 문의자가 입력한 임의 문구(이름·전화·작품·역할)는 배우에게 직접 전달하지 않음.
           //   상세 내용은 관리자 SMS(위)로만 가고, 배우에겐 '문의 도착' 사실만 알림 (스팸·사칭 문구 전달 차단)
           const safeActorName = (inquiredActor?.name ?? '').replace(/[\r\n\t]/g, ' ').trim()
-          const actorMsg = `[KD4] ${safeActorName}님께 캐스팅 문의가 들어왔습니다. 내용은 KD4에서 확인 후 연락드립니다.`
+          const actorMsg = `안녕하세요, KD4 액팅 스튜디오 에이전트 비서입니다.\n${safeActorName}님께 캐스팅 문의가 들어왔습니다. 내용은 KD4에서 확인 후 연락드립니다.`
           await sendSMS(actorPhone, actorMsg).catch((err) =>
             console.error('[notify] 배우 직통 SMS 실패:', err instanceof Error ? err.message : '알 수 없는 오류')
           )
