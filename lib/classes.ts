@@ -164,7 +164,8 @@ export const CLASSES: ClassItem[] = [
     duration: "4시간",
     capacity: "6명",
     price: "250,000",
-    instructor: "주세빈·이현재 액팅 코치"
+    // 2026-09-17 대표 확정: 오디션 테크닉은 주세빈 액팅 코치 단독 진행
+    instructor: "주세빈 액팅 코치"
   },
   {
     step: "별도",

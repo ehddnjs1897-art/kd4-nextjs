@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-import { CLASSES } from '@/lib/classes'
+import Image from 'next/image'
+import { CLASSES, SEBIN } from '@/lib/classes'
 import type { FaqItem } from '@/lib/landing-faqs'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { LAST_UPDATED } from '@/lib/last-updated'
@@ -268,16 +269,49 @@ export default function AuditionTechniqueClassPage() {
             <p className="section-eyebrow"><span lang="en">COACH</span></p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>액팅 코치</h2>
           </div>
-          <div style={cardStyle}>
-            <p style={proseStyle}>
-              오디션 테크닉 클래스는 <strong style={{ color: '#111' }}>{AUDITION.instructor}</strong>가 진행합니다. 심사하는 자리와 오디션을 보는 자리를 모두 겪은 현역 배우가, 캐스팅 관계자에게 실제로 어떻게 보이는지를 기준으로 코멘트합니다.
-            </p>
-            <Link href="/acting-coaches#sebin" className="btn-outline" style={{ display: 'inline-block', marginTop: '18px' }}>
-              액팅 코치 이력 보기
-            </Link>
+          <div style={{ ...cardStyle, display: 'grid', gridTemplateColumns: 'minmax(0, 220px) minmax(0, 1fr)', gap: 'clamp(20px, 4vw, 32px)', alignItems: 'start' }} className="audition-coach">
+            <Image
+              src={SEBIN.photo}
+              alt={`${SEBIN.name} 액팅 코치`}
+              width={532}
+              height={771}
+              sizes="(max-width: 720px) 60vw, 220px"
+              style={{ width: '100%', height: 'auto', aspectRatio: SEBIN.photoAspect, objectFit: 'cover', borderRadius: '10px', display: 'block' }}
+            />
+            <div>
+              <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.25rem', fontWeight: 700, marginBottom: '4px' }}>
+                {SEBIN.name} <span style={{ fontSize: '0.8rem', color: 'var(--gray)', fontWeight: 400 }} lang="en">{SEBIN.nameEn}</span>
+              </h3>
+              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '14px' }}>{SEBIN.title}</p>
+              <p style={{ ...proseStyle, marginBottom: '16px' }}>
+                심사하는 자리와 오디션을 보는 자리를 모두 겪은 현역 배우가, 캐스팅 관계자에게 실제로 어떻게 보이는지를 기준으로 코멘트합니다.
+              </p>
+              <dl style={{ margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div>
+                  <dt style={{ fontFamily: 'var(--font-display)', fontSize: '0.7rem', letterSpacing: '0.12em', color: 'var(--navy)', fontWeight: 700, marginBottom: '4px' }} lang="en">EDUCATION</dt>
+                  <dd style={{ ...proseStyle, margin: 0, fontSize: '0.88rem' }}>{SEBIN.education.join(' · ')}</dd>
+                </div>
+                {SEBIN.filmographySections.map((sec) => (
+                  <div key={sec.label}>
+                    <dt style={{ fontFamily: 'var(--font-display)', fontSize: '0.7rem', letterSpacing: '0.12em', color: 'var(--navy)', fontWeight: 700, marginBottom: '4px' }} lang="en">{sec.label}</dt>
+                    <dd style={{ ...proseStyle, margin: 0, fontSize: '0.88rem' }}>{sec.items.join(' · ')}</dd>
+                  </div>
+                ))}
+              </dl>
+              <Link href="/acting-coaches#sebin" className="btn-outline" style={{ display: 'inline-block', marginTop: '18px' }}>
+                코치 소개 자세히 보기
+              </Link>
+            </div>
           </div>
         </div>
       </section>
+
+      <style>{`
+        @media (max-width: 640px) {
+          .audition-coach { grid-template-columns: 1fr !important; justify-items: center; }
+          .audition-coach > div { width: 100%; }
+        }
+      `}</style>
 
       {/* ===== 후기 ===== */}
       <section aria-label="참여 배우 후기" style={{ padding: 'clamp(48px, 9vw, 80px) 0', background: 'var(--bg)' }}>
