@@ -15,6 +15,8 @@ export const LAST_UPDATED = {
   classes: '2026-08-30',
   basic: '2026-08-30',
   meisner: '2026-08-30',
+  // /audition-technique-class — 오디션 테크닉 클래스 (2026-09-17 신설)
+  audition: '2026-09-17',
   // /meisner-technique — 정보형 가이드 (2026-08-20 신설)
   meisnerGuide: '2026-08-20',
   // /meisner-technique/repetition-emotion-words — 레피티션 감정 어휘표 (2026-09-08 신설)

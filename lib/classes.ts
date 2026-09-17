@@ -160,7 +160,8 @@ export const CLASSES: ClassItem[] = [
       "독백 영상 촬영 제공"
     ],
     schedule: "월 4회",
-    duration: "3시간",
+    // 2026-09-17 대표 지시: 3시간 → 4시간, 인원에 따라 유동적
+    duration: "4시간",
     capacity: "6명",
     price: "250,000",
     instructor: "주세빈·이현재 액팅 코치"

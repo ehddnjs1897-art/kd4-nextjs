@@ -12,6 +12,7 @@ const CLASS_DETAIL_HREF: Record<string, string> = {
   '베이직 클래스': '/basic-acting-class',
   '마이즈너 테크닉 정규 클래스': '/meisner-technique-class',
   '출연영상 클래스': '/reel-production-class',
+  '오디션 테크닉 클래스': '/audition-technique-class',
 }
 
 /** 하단 "자주 묻는 결정" 직답용 — 가격·코스는 lib/classes.ts 실값만 인용 (하드코딩 금지) */
@@ -570,6 +571,9 @@ export default function ClassesPage() {
           </Link>
           <Link href="/reel-production-class" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
             출연영상 클래스 <span aria-hidden="true">→</span>
+          </Link>
+          <Link href="/audition-technique-class" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
+            오디션 테크닉 클래스 <span aria-hidden="true">→</span>
           </Link>
           <Link href="/acting-coaches" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
             권동원 액팅 코치 <span aria-hidden="true">→</span>
