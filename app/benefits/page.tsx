@@ -484,8 +484,8 @@ export default function BenefitsPage() {
               <span style={{ fontSize: '0.5rem', opacity: 0.75 }}>DANCE</span>
             </span>
             <span style={{ display: 'flex', flexDirection: 'column', gap: 5, minWidth: 160, flex: 1 }}>
-              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', fontWeight: 700, color: 'var(--white)' }}>댄스 연습실 대관 제휴</span>
-              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 600, color: 'var(--gold)' }}>KD4 멤버 시간당 15,000원 → 10,000원</span>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', fontWeight: 700, color: 'var(--white)' }}>댄스 연습실 대관 · 바디컨디셔닝 클래스 제휴</span>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 600, color: 'var(--gold)' }}>연습실 대관 시간당 15,000원 → 10,000원 · 바디컨디셔닝 클래스 10% 할인</span>
               <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.82rem', color: 'var(--secondary)' }}>무브원 댄스스튜디오 · KD4 스튜디오 바로 지하 · 거울 있는 단독 연습실</span>
             </span>
             <span aria-hidden style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 700, color: 'var(--gold)', whiteSpace: 'nowrap' }}>자세히 보기 →</span>

@@ -133,19 +133,21 @@ export default async function DashboardPage() {
   // actor_id가 있어도 실제 DB row가 없으면 404 → 미리 확인
   // + 존재하면 프로필 완성도 표시용 데이터(메타 + 카운트)를 가볍게 함께 조회
   let actorExists = false
+  /** 프로필은 있는데 비공개 — 수강 확인 전 보관 상태 (2026-09-17 «배우 DB는 수강 이후 등록») */
+  let actorPrivate = false
   let completeness: import('@/lib/profile-completeness').CompletenessInput | null = null
   if (actorId) {
     // 메타(특기·소개·사투리). dialects 컬럼 미적용(42703) 시 단계적 fallback — edit 페이지와 동일 패턴
     const metaPromise = supabaseAdmin
       .from('actors')
-      .select('id, casting_summary, skills, dialects, profile_photo, storage_photo_path')
+      .select('id, casting_summary, skills, dialects, profile_photo, storage_photo_path, is_public')
       .eq('id', actorId)
       .maybeSingle()
       .then(async (r) => {
         if (r.error && r.error.code === '42703') {
           const f = await supabaseAdmin
             .from('actors')
-            .select('id, casting_summary, skills, profile_photo, storage_photo_path')
+            .select('id, casting_summary, skills, profile_photo, storage_photo_path, is_public')
             .eq('id', actorId)
             .maybeSingle()
           if (f.data) return { data: { ...f.data, dialects: null }, error: null, hasDialects: false }
@@ -164,6 +166,7 @@ export default async function DashboardPage() {
     ])
 
     actorExists = !!meta.data
+    actorPrivate = !!meta.data && (meta.data as { is_public?: boolean | null }).is_public === false
     if (meta.data) {
       const m = meta.data as { casting_summary: string | null; skills: string[] | null; dialects: string[] | null; profile_photo: string | null; storage_photo_path: string | null }
       const hasProfilePhotoRes = await supabaseAdmin
@@ -287,13 +290,24 @@ export default async function DashboardPage() {
                 {actorExists && completeness && (
                   <ProfileCompletenessCard {...completeness} />
                 )}
-                {actorExists ? (
+                {actorExists && actorPrivate ? (
+                  <div style={{ padding: '14px 16px', borderRadius: 8, background: 'rgba(21,72,138,0.06)', border: '1px solid rgba(21,72,138,0.25)', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    <p style={{ fontSize: '0.88rem', color: 'var(--navy)', fontWeight: 700, lineHeight: 1.6 }}>
+                      프로필이 보관되었습니다 — 배우 DB에는 KD4 수업 수강 이후 등록됩니다.
+                    </p>
+                    <p style={{ fontSize: '0.82rem', color: 'var(--gray)', lineHeight: 1.7 }}>
+                      수강이 확인되면 올려두신 자료 그대로 배우 DB에 공개되고, 공식 협업 캐스팅 디렉터와 연계됩니다. 이미 수강 중인데 이 안내가 보인다면 내 정보의 전화번호가 KD4에 등록된 번호와 같은지 확인해 주세요.
+                    </p>
+                    <a href="/join" style={primaryBtn}>무료 상담 신청 <span aria-hidden="true">→</span></a>
+                    <Link href="/classes" style={listRow}><span>클래스 둘러보기</span><span aria-hidden="true" style={chevron}>›</span></Link>
+                  </div>
+                ) : actorExists ? (
                   <Link href={`/actors/${actorId}`} style={primaryBtn}>
                     내 배우 페이지 보기 <span aria-hidden="true">→</span>
                   </Link>
                 ) : (
                   <p style={{ fontSize: '0.8rem', color: 'var(--gray)', padding: '4px 0' }}>
-                    <span aria-hidden="true">⏳</span> 프로필 준비 중 — 자료를 등록하면 배우 DB에 바로 공개됩니다.
+                    <span aria-hidden="true">⏳</span> 프로필 준비 중 — 자료를 등록해 주세요. KD4 수업 수강이 확인된 멤버의 프로필이 배우 DB에 공개됩니다.
                   </p>
                 )}
                 {/* 완성도 카드 안에 편집 버튼이 이미 있으므로, 카드가 없을 때만 별도 타일 노출 (중복 방지) */}
@@ -306,9 +320,10 @@ export default async function DashboardPage() {
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.6 }}>
-                  사진·영상·필모그래피를 등록하면 배우 DB에 바로 공개됩니다(동명 확인이 필요한 경우만 검토 후 공개).
+                <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.7 }}>
+                  <strong style={{ color: 'var(--navy)' }}>배우 DB는 KD4 수업 수강 이후 등록됩니다.</strong> 수강이 확인된 멤버의 프로필이 배우 DB에 공개되고 공식 협업 캐스팅 디렉터와 연계됩니다. 자료는 미리 올려둘 수 있어요.
                 </p>
+                <a href="/join" style={primaryBtn}>무료 상담 신청 <span aria-hidden="true">→</span></a>
                 <div style={{
                   padding: '10px 14px', borderRadius: 6,
                   background: 'rgba(196,165,90,0.06)', border: '1px solid rgba(196,165,90,0.18)',
@@ -317,7 +332,7 @@ export default async function DashboardPage() {
                   <span aria-hidden="true">📌</span> 기존 KD4 멤버라면 — 가입 시 KD4에 등록된 전화번호와 동일하게 입력해야 프로필이 자동 연결됩니다.
                   전화번호를 수정하려면 내 정보 &gt; 전화번호를 변경해 주세요.
                 </div>
-                <Link href="/dashboard/edit" style={primaryBtn}>프로필 자료 올리기</Link>
+                <Link href="/dashboard/edit" style={listRow}><span>프로필 자료 미리 올리기</span><span aria-hidden="true" style={chevron}>›</span></Link>
               </div>
             )}
           </section>

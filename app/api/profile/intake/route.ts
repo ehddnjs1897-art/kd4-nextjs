@@ -261,6 +261,8 @@ export async function POST(request: NextRequest) {
 
   // 1. 대상 배우 row 결정 — 없으면 이름 매칭 재시도 후 그래도 없으면 비공개로 신규 생성
   let actorId = profile.actor_id as string | null
+  /** 새로 만든 프로필이 수강 미확인으로 비공개 보관됐는지 — 응답·대표 알림에 사용 */
+  let pendingEnrollment = false
   if (!actorId) {
     // 온보딩 직전 마지막 매칭 시도 — 서린 케이스 재발 방지
     // (on-signup 시점에 phone 없어서 실패했을 수 있음 → 이름 단독 폴백으로 재시도)
@@ -287,14 +289,18 @@ export async function POST(request: NextRequest) {
         // 예명 활동 배우가 본명으로 가입해 이력이 두 이름으로 흩어지는 문제 방지).
         // 매칭(matchActorOnSignup/ForIntake)은 계속 실명+전화 기준 — 표시명만 예명.
         const stageName = (user.user_metadata?.stage_name ?? '').toString().trim().slice(0, 50)
+        const { hasEnrollmentHistory } = await import('@/lib/enrollment-verify')
+        const enrollmentVerified = await hasEnrollmentHistory(profile.phone)
+        pendingEnrollment = enrollmentVerified !== true
         const { data: created, error: createErr } = await supabaseAdmin
           .from('actors')
           .insert({
             name: stageName || profile.name || '(이름 미입력)',
             phone: profile.phone ?? null,
-            // 신규 등록 즉시 공개 (2026-07-10 대표 지시 — 관리자 검토 대기 없이 바로 노출).
-            // 단, 동일인 중복 의심 시에만 비공개 유지 (관리자 대시보드 대기배너에서 검토).
-            is_public: !isDuplicateSuspicious,
+            // 2026-09-17 대표 지시 «배우 DB는 수강 이후에 등록» — 노션 수강현황에 이 번호가 있을 때만 즉시 공개.
+            // (종전 2026-07-10 «신규 등록 즉시 공개»는 멤버 전제였음. 비수강 가입자까지 공개되던 구멍을 막는다.)
+            // 수강 이력 없음/확인 실패 → 비공개 보관 + 대표 알림. 동일인 중복 의심도 종전대로 비공개.
+            is_public: !isDuplicateSuspicious && enrollmentVerified === true,
             self_managed: true,
             source: 'manual',
             intake_submitted_at: nowIso,
@@ -487,8 +493,19 @@ export async function POST(request: NextRequest) {
   // RESEND_API_KEY 없으면 내부 silent skip. 실패해도 접수 성공에 영향 없음.
   if (user.email) {
     const { sendProfileIntakeDoneEmail } = await import('@/lib/email')
-    await sendProfileIntakeDoneEmail(profile.name || '배우', user.email).catch((err) =>
+    await sendProfileIntakeDoneEmail(profile.name || '배우', user.email, { pendingEnrollment }).catch((err) =>
       console.error('[profile/intake] 접수완료 이메일 실패:', err instanceof Error ? err.message : String(err))
+    )
+  }
+
+  // 수강 미확인으로 비공개 보관된 신규 프로필 → 대표에게 알림(수강 확인되면 /admin/actors 에서 공개).
+  // sendSMS 는 throw 하지 않음. 실패해도 접수 성공에는 영향 없음.
+  if (pendingEnrollment && process.env.ADMIN_PHONE_NUMBER) {
+    const { sendSMS } = await import('@/lib/sms')
+    const who = `${profile.name ?? '(이름 미입력)'}${profile.phone ? ` (${profile.phone})` : ''}`
+    await sendSMS(
+      process.env.ADMIN_PHONE_NUMBER.trim(),
+      `[KD4] 배우 프로필 등록 — 수강 확인 필요\n${who}\n수강현황에 없는 번호라 비공개로 보관했습니다. 수강이 확인되면 관리자 페이지(배우 관리)에서 공개해 주세요.`,
     )
   }
 
@@ -497,6 +514,7 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({
     ok: true,
     actorId,
+    ...(pendingEnrollment && { pendingEnrollment: true }),
     ...(partialErrors.length > 0 && { warnings: partialErrors }),
   }, { headers: { 'Cache-Control': 'private, no-store' } })
   } catch (err) {

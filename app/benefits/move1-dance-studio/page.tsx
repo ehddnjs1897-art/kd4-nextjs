@@ -19,7 +19,7 @@ const SPACECLOUD_URL = 'https://www.spacecloud.kr/space/81160'
 export const metadata: Metadata = {
   title: '무브원 댄스스튜디오 제휴',
   description:
-    'KD4 액팅 스튜디오 × 무브원 댄스스튜디오 공식 제휴 — KD4 멤버는 스튜디오 바로 지하의 댄스 연습실을 시간당 10,000원(정가 15,000원)에 대관할 수 있습니다. 거울과 컨디션을 갖춘 연습실에서 수업 외 시간에도 연습하세요.',
+    'KD4 액팅 스튜디오 × 무브원 댄스스튜디오 공식 제휴 — KD4 멤버는 스튜디오 바로 지하의 댄스 연습실을 시간당 10,000원(정가 15,000원)에 대관할 수 있습니다. 배우를 위한 바디컨디셔닝 + 무용 클래스(최진 강사)도 KD4 멤버 10% 할인.',
   robots: { index: true, follow: true },
   alternates: { canonical: PAGE_URL },
   keywords: ['무브원 댄스스튜디오', 'KD4 멤버 혜택', '신촌 연습실', '이대역 연습실', '배우 연습실 대관', 'KD4 제휴'],
@@ -42,8 +42,9 @@ export const metadata: Metadata = {
 
 /** 멤버 전용 — 무브원 요청으로 비로그인 노출 금지 */
 const MEMBER_ONLY = {
-  phoneDisplay: '010-5905-9805',
-  phoneTel: 'tel:01059059805',
+  // 2026-09-17 정정: 9805 → 9850 (무브원 전단 3곳·제안서 정본 모두 9850. 9/8 대관 공지의 9805는 오타)
+  phoneDisplay: '010-5905-9850',
+  phoneTel: 'tel:01059059850',
   keyword: 'KD4 멤버입니다',
 }
 
@@ -57,6 +58,37 @@ const CAUTIONS = [
   '사용 후 깨끗이 정리해 주세요.',
   '이 할인은 KD4 멤버만 받을 수 있습니다. 예약 연락처와 이용 방법을 외부에 공유하지 말아 주세요. 확인될 경우 패널티 금액이 청구됩니다.',
 ]
+
+/** 10월 바디컨디셔닝 + 무용 클래스 (2026-09-17 대표 공지·무브원 전단 기준). 달이 바뀌면 이 블록만 갱신 */
+const BODY_CLASS = {
+  month: '10월',
+  place: 'KD4 액팅 스튜디오 지하 1층 연습실',
+  // 무브원 전단에 공개된 상담 번호 — 대관 할인 예약법(멤버 전용)과 달리 공개 모집 정보
+  phoneDisplay: '010-5905-9850',
+  phoneTel: 'tel:01059059850',
+  instagram: '@move1._.studio',
+  kakao: '무브원 댄스 스튜디오',
+  sessions: [
+    { day: '월', time: '12:10~13:00', piece: '스물다섯, 스물하나', dates: '10/12 · 10/19 · 10/26 · 11/2' },
+    { day: '수', time: '13:10~14:00', piece: 'To Build A Home', dates: '10/7 · 10/14 · 10/20(화) · 10/28' },
+  ],
+  prices: [
+    { label: '주 1회 · 50분 · 4회', before: '140,000원', after: '126,000원' },
+    { label: '주 2회 · 50분 · 8회', before: '240,000원', after: '216,000원' },
+  ],
+  curriculum: [
+    { en: 'MAT TRAINING', ko: '매트 훈련', desc: '매트 훈련을 통해 몸의 가동 범위를 넓히고, 움직임에 필요한 코어와 신체의 기본 감각을 깨웁니다.' },
+    { en: 'CENTER', ko: '센터', desc: '무게 이동과 방향 전환, 리듬과 공간을 활용하는 방법을 훈련합니다.' },
+    { en: 'COMBINATION', ko: '컴비네이션', desc: '현대무용의 다양한 스텝과 움직임을 익히며 음악과 움직임의 연결을 이해하고, 표현력을 단계적으로 키워갑니다.' },
+  ],
+  coach: {
+    name: '최진',
+    title: '무브원 댄스 스튜디오 대표',
+    education: '이화여자대학교 무용과 · 선화예술고등학교 무용과 · 한국예술종합학교 영재교육원',
+    career: '뮤지컬 겨울왕국 · 물랑루즈 · 알라딘 · 오페라의 유령 · 마타하리',
+  },
+  conditions: ['4인 이상 모집 시 개설 · 정원 최대 6명', '법정공휴일 · 임시공휴일은 휴무'],
+}
 
 const eyebrowStyle: React.CSSProperties = {
   fontFamily: 'var(--font-display), Oswald, sans-serif',
@@ -221,6 +253,82 @@ export default async function Move1PartnershipPage() {
               </div>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* ===== 바디컨디셔닝 + 무용 클래스 (2026-09-17) ===== */}
+      <section id="body-class" aria-label="배우를 위한 바디컨디셔닝 무용 클래스" style={{ scrollMarginTop: 80, maxWidth: 900, margin: '0 auto', padding: '0 24px clamp(48px, 8vw, 76px)' }}>
+        <SectionHeader
+          eyebrow="BODY CONDITIONING"
+          title={`배우를 위한 바디컨디셔닝 + 무용 클래스 (${BODY_CLASS.month})`}
+          desc="몸의 기본기를 다지고 표현의 폭을 넓히는 수업입니다. 춤을 처음 접하는 분도 부담 없이 참여할 수 있습니다."
+        />
+        <div style={{ maxWidth: 640, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {/* 제휴 혜택 */}
+          <div style={{ background: '#ffffff', border: '1.5px solid rgba(21,72,138,0.18)', borderRadius: 12, padding: 'clamp(20px, 3.5vw, 26px)', position: 'relative', overflow: 'hidden' }}>
+            <span aria-hidden style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 3, background: 'var(--gold)' }} />
+            <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }}>KD4 멤버 제휴 혜택 — 10% 할인</p>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {BODY_CLASS.prices.map((p) => (
+                <li key={p.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12, flexWrap: 'wrap' }}>
+                  <span style={{ ...proseStyle, lineHeight: 1.5 }}>{p.label}</span>
+                  <span style={{ fontFamily: 'var(--font-sans)', whiteSpace: 'nowrap' }}>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--gray)', textDecoration: 'line-through', marginRight: 8 }}>{p.before}</span>
+                    <strong style={{ fontSize: '1.05rem', color: 'var(--navy)' }}>{p.after}</strong>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* 일정 */}
+          {BODY_CLASS.sessions.map((s) => (
+            <div key={s.day} style={{ display: 'flex', gap: 16, background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 12, padding: '16px 20px', flexWrap: 'wrap' }}>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', fontWeight: 700, color: 'var(--navy)', minWidth: 110, flexShrink: 0 }}>[{s.day}] {s.time}</span>
+              <span style={{ ...proseStyle, flex: 1, minWidth: 180, lineHeight: 1.6 }}>
+                <strong style={{ color: 'var(--white)' }}>{s.piece}</strong><br />{s.dates}
+              </span>
+            </div>
+          ))}
+          <div style={{ display: 'flex', gap: 16, background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 12, padding: '16px 20px', flexWrap: 'wrap' }}>
+            <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', fontWeight: 700, color: 'var(--navy)', minWidth: 110, flexShrink: 0 }}>장소</span>
+            <span style={{ ...proseStyle, flex: 1, minWidth: 180 }}>{BODY_CLASS.place}</span>
+          </div>
+
+          {/* 3단계 커리큘럼 */}
+          <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 12, padding: 'clamp(18px, 3vw, 24px)' }}>
+            <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', fontWeight: 700, color: 'var(--navy)', marginBottom: 12 }}>3단계 커리큘럼</p>
+            <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {BODY_CLASS.curriculum.map((c) => (
+                <li key={c.en}>
+                  <strong style={{ display: 'block', fontFamily: 'var(--font-sans)', fontSize: '0.88rem', color: 'var(--white)', marginBottom: 2 }}><span lang="en">{c.en}</span> | {c.ko}</strong>
+                  <span style={{ ...proseStyle, fontSize: '0.86rem' }}>{c.desc}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          {/* 강사 */}
+          <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 12, padding: 'clamp(18px, 3vw, 24px)' }}>
+            <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9rem', fontWeight: 700, color: 'var(--navy)', marginBottom: 8 }}>강사 — {BODY_CLASS.coach.name} <span style={{ fontWeight: 400, color: 'var(--gray)' }}>({BODY_CLASS.coach.title})</span></p>
+            <p style={{ ...proseStyle, fontSize: '0.86rem' }}>{BODY_CLASS.coach.education}</p>
+            <p style={{ ...proseStyle, fontSize: '0.86rem' }}>{BODY_CLASS.coach.career}</p>
+          </div>
+
+          {/* 개설 조건·신청 */}
+          <div style={{ background: '#ffffff', border: '1.5px solid rgba(21,72,138,0.18)', borderRadius: 12, padding: 'clamp(18px, 3vw, 24px)' }}>
+            <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 14px', display: 'flex', flexDirection: 'column', gap: 4 }}>
+              {BODY_CLASS.conditions.map((c) => (
+                <li key={c} style={{ ...proseStyle, fontSize: '0.86rem' }}>· {c}</li>
+              ))}
+            </ul>
+            <p style={{ ...proseStyle, fontSize: '0.9rem' }}>
+              신청 · 문의 — 전화{' '}
+              <a href={BODY_CLASS.phoneTel} style={{ color: 'var(--navy)', fontWeight: 700, textDecoration: 'underline', textUnderlineOffset: 3 }}>{BODY_CLASS.phoneDisplay}</a>
+              {' '}· 인스타그램 {BODY_CLASS.instagram} · 카카오톡 채널 &ldquo;{BODY_CLASS.kakao}&rdquo;
+            </p>
+            <p style={{ ...proseStyle, fontSize: '0.82rem', marginTop: 6 }}>신청할 때 KD4 멤버임을 알려주시면 제휴 할인가가 적용됩니다.</p>
+          </div>
         </div>
       </section>
 

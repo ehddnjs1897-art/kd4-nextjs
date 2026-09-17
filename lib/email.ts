@@ -154,8 +154,26 @@ export async function sendConsultationReceivedEmail(name: string, email: string)
 }
 
 /** 배우 프로필 접수 완료 메일 (멤버 본인) */
-export async function sendProfileIntakeDoneEmail(name: string, email: string) {
+export async function sendProfileIntakeDoneEmail(name: string, email: string, opts: { pendingEnrollment?: boolean } = {}) {
   const n = esc(name)
+  // 2026-09-17 «배우 DB는 수강 이후 등록» — 수강 미확인이면 자료 보관 안내 + 상담 신청 링크
+  if (opts.pendingEnrollment) {
+    const pendingHtml = kd4Layout(
+      `${n}님, 프로필 자료를 잘 받았습니다`,
+      `<p>보내주신 프로필 자료는 안전하게 보관되었습니다.<br>
+       <strong>KD4 배우 DB에는 KD4 액팅 스튜디오 수업 수강 이후 등록됩니다.</strong> 수강이 확인되면 올려두신 자료 그대로 배우 DB에 공개되고, 공식 협업 캐스팅 디렉터와 연계됩니다.</p>
+       <p style="margin:22px 0;">
+         <a href="https://kd4.club/join" style="display:inline-block;background:#15488A;color:#fff;text-decoration:none;padding:12px 24px;border-radius:4px;font-weight:700;font-size:14px;">무료 상담 신청하기</a>
+       </p>
+       <p style="font-size:13px;color:#5A5550;">이미 수강 중이시라면 마이페이지의 전화번호가 KD4에 등록된 번호와 같은지 확인해 주세요. 클래스 안내: https://kd4.club/classes</p>`
+    )
+    try {
+      await sendEmail(email, safeSubject(`[KD4 액팅 스튜디오] ${name}님, 프로필 자료를 잘 받았습니다`), pendingHtml)
+    } catch (err) {
+      console.error('[sendProfileIntakeDoneEmail] 실패:', err instanceof Error ? err.message : err)
+    }
+    return
+  }
   const html = kd4Layout(
     `${n}님, 배우 프로필이 등록되었습니다`,
     `<p>보내주신 프로필 자료가 KD4 배우 DB에 정상 등록되었습니다.<br>

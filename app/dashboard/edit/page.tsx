@@ -141,7 +141,7 @@ export default async function GalleryEditPage() {
             <p style={styles.eyebrow}><span lang="en">PROFILE SETUP</span></p>
             <h1 style={styles.pageTitle}>프로필 등록</h1>
             <p style={styles.subtitle}>
-              자료를 올려 주세요. 등록하면 배우 DB에 바로 공개됩니다.
+              자료를 올려 주세요. KD4 수업 수강이 확인된 멤버의 프로필이 배우 DB에 공개됩니다(수강 전이라면 자료는 보관되고, 수강 후 공개됩니다).
             </p>
           </header>
           <OnboardingForm userId={user.id} userName={userName} />
