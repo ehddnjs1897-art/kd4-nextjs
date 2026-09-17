@@ -6,7 +6,7 @@ import PageJsonLd from '@/components/seo/PageJsonLd'
 import { buildBreadcrumb, buildWebPage } from '@/lib/seo-schemas'
 
 export const metadata: Metadata = {
-  title: '멤버 혜택',
+  title: '멤버 혜택 — 보강제도·제휴 할인·배우 커뮤니티',
   description:
     'KD4 멤버가 누리는 혜택과 커뮤니티 — 보강제도, 출연영상·프로필 편집 서비스(편집 5만원·프로필 3만원), 레피티션 스터디, 굿무비 굿액팅, 크리스쳔 액터스 커뮤니티, 다양한 할인 혜택.',
   robots: { index: true, follow: true },
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     url: `${SITE_URL}/benefits`,
-    title: '멤버 혜택 | KD4 액팅 스튜디오',
+    title: '멤버 혜택 — 보강제도·제휴 할인·배우 커뮤니티 | KD4 액팅 스튜디오',
     description: 'KD4 멤버가 누리는 혜택과 커뮤니티 — 보강제도, 출연영상·프로필 편집 서비스, 레피티션 스터디, 굿무비 굿액팅, 크리스쳔 액터스.',
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: '멤버 혜택 | KD4 액팅 스튜디오',
+    title: '멤버 혜택 — 보강제도·제휴 할인·배우 커뮤니티 | KD4 액팅 스튜디오',
     description: 'KD4 멤버가 누리는 혜택과 커뮤니티 — 보강제도, 출연영상·프로필 편집 서비스, 레피티션 스터디.',
     images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: 'KD4 액팅 스튜디오 멤버 혜택' }],
   },

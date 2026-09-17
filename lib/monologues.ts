@@ -50,12 +50,17 @@ const SELECT_COLUMNS =
  */
 export async function getMonologues(filters: MonologueFilters = {}): Promise<MonologueListItem[]> {
   // grade 정렬(S→A→B)은 문자열 순서와 안 맞아 DB에 안 맡기고 아래에서 JS로 보정
+  // 2026-09-17: PostgREST는 한 번에 최대 1,000행만 돌려준다 → 1,000편 넘자 목록·제목의 편수·
+  // ItemList가 1000에서 잘렸음(실제 1,067편). 아래에서 1,000행씩 range로 끝까지 읽는다.
+  // id를 마지막 정렬 키로 둬 페이지 경계에서 행이 겹치거나 빠지지 않게 한다.
+  const buildQuery = () => {
   let query = supabasePublic
     .from('monologues')
     .select(LIST_COLUMNS)
     .eq('is_published', true)
     .order('sort_weight', { ascending: false })
     .order('created_at', { ascending: false })
+    .order('id', { ascending: true })
 
   if (filters.gender) {
     // target 표기 변형 흡수: 다수는 '여성 / 20대'지만 '여자 20대' 같은 비표준 표기도 섞여 있어
@@ -73,14 +78,22 @@ export async function getMonologues(filters: MonologueFilters = {}): Promise<Mon
     const opt = AGE_OPTIONS.find((o) => o.value === filters.age)
     if (opt) query = query.or(opt.patterns.map((p) => `target.ilike.%${p}%`).join(','))
   }
-
-  const { data, error } = await query
-  if (error) {
-    console.error('[monologues] 목록 조회 실패:', error.message)
-    return []
+  return query
   }
 
-  const rows = (data ?? []) as MonologueListItem[]
+  const PAGE = 1000
+  const rows: MonologueListItem[] = []
+  for (let from = 0; from < 20000; from += PAGE) {
+    const { data, error } = await buildQuery().range(from, from + PAGE - 1)
+    if (error) {
+      console.error('[monologues] 목록 조회 실패:', error.message)
+      if (rows.length === 0) return []
+      break
+    }
+    const batch = (data ?? []) as unknown as MonologueListItem[]
+    rows.push(...batch)
+    if (batch.length < PAGE) break
+  }
   // grade 정렬 보정: S → A → B
   const gradeOrder: Record<string, number> = { S: 0, A: 1, B: 2 }
   return rows.sort((a, b) => (gradeOrder[a.grade] ?? 9) - (gradeOrder[b.grade] ?? 9))

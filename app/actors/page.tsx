@@ -53,14 +53,17 @@ export async function generateMetadata(
   if (genreOpt) segments.push(genreOpt.label)
   if (activeTags.length > 0) segments.push(activeTags.join('·'))
   if (ageGroup !== 'all') segments.push(ageGroup)
-  const titlePrefix = segments.length > 0 ? `${segments.join(' ')} 배우 DB` : '배우 DB'
+  // 2026-09-17 SEO: 19~23자 짧은 제목 → 검색 의도(캐스팅·프로필·출연영상) 포함
+  const titlePrefix = segments.length > 0
+    ? `${segments.join(' ')} 배우 캐스팅 — 프로필·출연영상 배우 DB`
+    : '배우 DB — 캐스팅 가능한 현역 배우 프로필·출연영상'
 
   const qs = new URLSearchParams()
   if (gender !== 'all') qs.set('gender', gender)
   if (ageGroup !== 'all') qs.set('ageGroup', ageGroup)
   if (genreOpt) qs.set('genre', genreOpt.value)
   if (activeTags.length > 0) qs.set('tag', activeTags.join(','))
-  const qsStr = qs.toString()
+  const qsStr = qs.toString().replace(/\+/g, '%20')
   const canonicalUrl = qsStr ? `${SITE_URL}/actors?${qsStr}` : `${SITE_URL}/actors`
 
   // 필터 특화 설명 — 중복 콘텐츠 방지, 각 필터 페이지가 고유한 meta description 보유

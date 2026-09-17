@@ -10,7 +10,7 @@ export const revalidate = 300
 
 // ── Metadata (SSR — SEO/GEO 최적화) ──
 export const metadata: Metadata = {
-  title: '멤버 후기',
+  title: 'KD4 멤버 후기 — 마이즈너 테크닉·출연영상 클래스 실제 후기',
   description:
     'KD4 액팅 스튜디오에서 마이즈너 테크닉을 훈련한 실제 배우들의 생생한 후기입니다. 오픈클래스부터 정규 4개월 과정까지, 현역 배우들의 솔직한 경험을 확인하세요.',
   keywords: [
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: `${SITE_URL}/reviews` },
   openGraph: {
-    title: '멤버 후기 | KD4 액팅 스튜디오',
+    title: 'KD4 멤버 후기 — 마이즈너 테크닉·출연영상 클래스 실제 후기 | KD4 액팅 스튜디오',
     description: 'KD4에서 훈련한 실제 배우들의 생생한 후기를 확인하세요.',
     url: `${SITE_URL}/reviews`,
     type: 'website',

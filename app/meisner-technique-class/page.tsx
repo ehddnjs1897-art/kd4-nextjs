@@ -557,6 +557,9 @@ export default function MeisnerPage() {
           <Link href="/reel-production-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
             출연영상 클래스 <span aria-hidden="true">→</span>
           </Link>
+          <Link href="/audition-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+            오디션 테크닉 클래스 <span aria-hidden="true">→</span>
+          </Link>
           <Link href="/sinchon-acting-academy" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
             신촌 스튜디오 오시는 길
           </Link>

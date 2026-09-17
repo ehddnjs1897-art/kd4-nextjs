@@ -62,12 +62,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 독백 아카이브 (공개분만) — 상세 URL + 필터 페이지 lastmod 계산을 이 한 번의 조회로 모두 처리
   let monologues: MonologueRow[] = []
   try {
-    const { data, error: monoError } = await supabasePublic
-      .from('monologues')
-      .select('id, created_at, updated_at, target, medium')
-      .eq('is_published', true)
-      .order('created_at', { ascending: false })
-    if (monoError) console.error('[sitemap] monologues 조회 실패:', monoError.message)
+    // 2026-09-17: PostgREST 1,000행 상한 — 한 번만 조회하면 1,000편에서 잘려 나머지가 사이트맵에서 빠진다.
+    // 1,000행씩 끝까지 읽는다(id 보조 정렬로 페이지 경계 안정화).
+    const data: (MonologueRow & { updated_at?: string | null })[] = []
+    for (let from = 0; from < 20000; from += 1000) {
+      const { data: batch, error: monoError } = await supabasePublic
+        .from('monologues')
+        .select('id, created_at, updated_at, target, medium')
+        .eq('is_published', true)
+        .order('created_at', { ascending: false })
+        .order('id', { ascending: true })
+        .range(from, from + 999)
+      if (monoError) { console.error('[sitemap] monologues 조회 실패:', monoError.message); break }
+      data.push(...((batch ?? []) as (MonologueRow & { updated_at?: string | null })[]))
+      if ((batch ?? []).length < 1000) break
+    }
     // monologues.updated_at은 트리거로 자동 갱신됨(2026-07-10 마이그레이션) — 수정일 우선
     monologues = ((data ?? []) as (MonologueRow & { updated_at?: string | null })[]).map((m) => ({
       id: m.id,

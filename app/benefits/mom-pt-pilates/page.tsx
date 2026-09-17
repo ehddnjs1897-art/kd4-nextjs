@@ -9,7 +9,7 @@ import { SITE_URL } from '@/lib/constants'
 export const metadata: Metadata = {
   title: '엠오엠 피티&필라테스 제휴',
   description:
-    'KD4 액팅 스튜디오 × 엠오엠 피티&필라테스 신촌 공식 제휴 — KD4 멤버 전용 바디&퍼포먼스 분석 2시간 무료 체험(20만원 → 0원), 분석+PT·필라테스 수업 1회 무료 체험, 정규 수업 등록 시 31% 할인. KD4 멤버 박경수 배우가 운영하는 재활PT 전문 트레이닝 스튜디오.',
+    'KD4 액팅 스튜디오 × 엠오엠 피티&필라테스 신촌 공식 제휴 — KD4 멤버 전용 바디&퍼포먼스 분석 2시간 무료 체험(20만원 → 0원), 분석+PT·필라테스 수업 1회 무료 체험, 정규 수업 31% 할인. KD4 멤버 박경수 배우가 운영하는 재활PT 전문 스튜디오.',
   robots: { index: true, follow: true },
   alternates: { canonical: `${SITE_URL}/benefits/mom-pt-pilates` },
   keywords: ['엠오엠 피티앤필라테스', 'KD4 멤버 혜택', '배우 트레이닝', '신촌 PT', '신촌 필라테스', '재활PT', '바디 퍼포먼스 분석', 'KD4 제휴'],
