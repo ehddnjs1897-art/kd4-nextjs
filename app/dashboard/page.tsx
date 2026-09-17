@@ -1,3 +1,4 @@
+import MarketingOptInCard from '@/components/dashboard/MarketingOptInCard'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
@@ -225,6 +226,11 @@ export default async function DashboardPage() {
           {/* 공개 네비에서 /enroll 제거(무료 상담으로 교체)됨 — 멤버 수강신청은 여기서만 진입 */}
           <a href="/enroll" style={{ display: 'inline-block', marginTop: 12, padding: '10px 18px', background: 'var(--gold)', color: '#fff', fontFamily: 'var(--font-sans)', fontSize: '0.9rem', fontWeight: 700, borderRadius: 'var(--radius)', textDecoration: 'none' }}>멤버 수강신청 →</a>
         </div>
+
+        {/* 오디션·개강 소식 수신 동의(선택) — 기존 가입자에게 한 번 권유, 동의 후엔 끄기 링크 (2026-09-17) */}
+        {role !== 'admin' && (
+          <MarketingOptInCard initialConsented={typeof user.user_metadata?.consent_marketing === 'string'} />
+        )}
 
         {/* 서비스 동의 배너 — 미동의 회원 전원에게 표시 (2026-08-06 조건 확대) */}
         {needsConsent ? (

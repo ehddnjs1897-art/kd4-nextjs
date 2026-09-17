@@ -180,6 +180,7 @@ function SignupContent() {
     }
     if (agreeMarketing) {
       metadata.consent_marketing = CONSENT_VERSION
+      metadata.consent_marketing_at = new Date().toISOString() // 수신 동의 입증용 시각
     }
 
     const { data: signUpData, error: authError } = await supabase.auth.signUp({
@@ -634,6 +635,24 @@ function SignupContent() {
 
           {/* 서비스 동의 (필수) — /terms·/privacy v1 (2026-07-07) */}
           <div style={styles.consentGroup}>
+            {/* 전체 동의 (2026-09-17 대표 승인) — 선택 항목(소식 수신)까지 한 번에 체크. 항목은 아래에 따로 보이고
+                개별 해제 가능. 소식 수신은 끝까지 선택 — 미동의로도 가입된다(개인정보 보호법 §22⑤). */}
+            <label style={{ ...styles.consentRow, padding: '10px 12px', border: '1.5px solid var(--navy)', borderRadius: 8, background: '#fff', marginBottom: 4 }}>
+              <input
+                type="checkbox"
+                checked={agreeTos && agreePrivacy && agreeMarketing && (memberType !== 'actor' || agreeDist)}
+                onChange={(e) => {
+                  const v = e.target.checked
+                  setAgreeTos(v); setAgreePrivacy(v); setAgreeMarketing(v)
+                  if (memberType === 'actor') setAgreeDist(v)
+                }}
+                disabled={loading}
+                style={styles.consentBox}
+              />
+              <span style={{ ...styles.consentText, fontWeight: 700, color: 'var(--navy)' }}>
+                전체 동의하기 <span style={styles.consentSub}>(선택 항목 포함)</span>
+              </span>
+            </label>
             <label style={styles.consentRow}>
               <input type="checkbox" aria-required="true" checked={agreeTos} onChange={(e) => setAgreeTos(e.target.checked)} disabled={loading} style={styles.consentBox} />
               <span style={styles.consentText}>
@@ -658,8 +677,8 @@ function SignupContent() {
             <label style={styles.consentRow}>
               <input type="checkbox" checked={agreeMarketing} onChange={(e) => setAgreeMarketing(e.target.checked)} disabled={loading} style={styles.consentBox} />
               <span style={styles.consentText}>
-                소식·혜택 안내 수신 동의 <span style={styles.consentSub}>(선택)</span>
-                <br /><span style={styles.consentSub}>클래스 소식·캐스팅 기회·이벤트 안내를 받아요 — 언제든 수신 거부할 수 있어요</span>
+                <strong>오디션·캐스팅 기회, 개강 소식 받기</strong> <span style={styles.consentSub}>(선택)</span>
+                <br /><span style={styles.consentSub}>놓치기 쉬운 오디션 정보와 새 클래스 개강 소식을 문자·메일로 알려드려요 — 언제든 끌 수 있어요</span>
               </span>
             </label>
             {memberType === 'director' && (
