@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect, useMemo, useDeferredValue, useRef } from 'react'
+import { useState, useEffect, useMemo, useDeferredValue, useRef, Fragment } from 'react'
 import Link from 'next/link'
 import type { MonologueListItem } from '@/lib/monologues'
+import VisitorCTA from '@/components/monologues/VisitorCTA'
 
 const PAGE_SIZE = 48
 // 카드 이미지(1400×1400 PNG ~230KB) → Vercel 이미지 최적화기 경유(640px WebP, ~20KB).
@@ -187,9 +188,9 @@ export default function MonologuesSearchGrid({
             gap: 20,
           }}
         >
-          {filtered.slice(0, visibleCount).map((m) => (
+          {filtered.slice(0, visibleCount).map((m, i) => (
+            <Fragment key={m.id}>
             <Link
-              key={m.id}
               href={`/monologues/${m.id}`}
               style={{
                 display: 'block',
@@ -252,6 +253,9 @@ export default function MonologuesSearchGrid({
                 </div>
               </div>
             </Link>
+            {/* 첫 48장(또는 목록 끝) 뒤에 상담·가입 안내 한 줄 — 카드 흐름은 그대로 */}
+            {i === Math.min(PAGE_SIZE, filtered.length) - 1 && filtered.length >= 8 && <VisitorCTA variant="list" />}
+            </Fragment>
           ))}
         </div>
       )}

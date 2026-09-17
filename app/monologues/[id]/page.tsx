@@ -8,6 +8,7 @@ import PageJsonLd from '@/components/seo/PageJsonLd'
 import { buildBreadcrumb, buildMonologueArticle } from '@/lib/seo-schemas'
 import CopyTextButton from '@/components/monologues/CopyTextButton'
 import DownloadButton from '@/components/monologues/DownloadButton'
+import VisitorCTA from '@/components/monologues/VisitorCTA'
 
 export const revalidate = 300
 // cookies/headers/searchParams 미사용 → 정적 생성 강제(라이브에서 매 요청 dynamic으로 떨어지던 문제 복구)
@@ -241,28 +242,8 @@ export default async function MonologueDetailPage({ params }: { params: Params }
         </section>
       )}
 
-      <p
-        style={{
-          fontFamily: 'var(--font-serif)',
-          fontSize: '1rem',
-          lineHeight: 1.9,
-          color: 'var(--black)',
-        }}
-      >
-        이 독백으로 오디션을 준비한다면 —{' '}
-        <Link href="/meisner-technique-class" style={{ color: 'var(--navy)', fontWeight: 600 }}>
-          마이즈너 테크닉 정규 클래스
-        </Link>
-        에서 레피티션으로 장면을 살리고,{' '}
-        <Link href="/reel-production-class" style={{ color: 'var(--navy)', fontWeight: 600 }}>
-          출연영상 제작
-        </Link>
-        으로 포트폴리오를 남깁니다.{' '}
-        <Link href="/sinchon-acting-academy" style={{ color: 'var(--navy)', fontWeight: 600 }}>
-          신촌 연기학원 KD4
-        </Link>{' '}
-        무료 상담.
-      </p>
+      {/* 2026-09-17: 글자 링크 한 줄 → 상담·회원가입 카드 (본문은 가리지 않음) */}
+      <VisitorCTA variant="detail" nextPath={`/monologues/${m.id}`} />
 
       <div style={{ textAlign: 'center', marginTop: 48 }}>
         <Link

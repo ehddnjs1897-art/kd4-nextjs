@@ -685,7 +685,7 @@ function SignupContent() {
 
         <p style={styles.loginText}>
           이미 계정이 있으신가요?{' '}
-          <Link href="/auth/login" style={styles.loginLink}>
+          <Link href={`/auth/login${nextQS}`} style={styles.loginLink}>
             로그인
           </Link>
         </p>

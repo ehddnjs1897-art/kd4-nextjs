@@ -35,7 +35,7 @@ export default function DownloadButton({ monologueId }: Props) {
   const loggedIn = isLoggedIn === true
   const href = loggedIn
     ? `/api/monologues/${monologueId}/download`
-    : `/auth/login?next=${encodeURIComponent(`/monologues/${monologueId}`)}`
+    : `/auth/signup?next=${encodeURIComponent(`/monologues/${monologueId}`)}` // 비회원 = 회원가입 유도 (2026-09-17 대표 지시, 가입 화면에 로그인 링크 있음)
 
   return (
     <a
@@ -56,7 +56,7 @@ export default function DownloadButton({ monologueId }: Props) {
         textDecoration: 'none',
       }}
     >
-      ↓ 독백 다운로드
+      ↓ 독백 다운로드{isLoggedIn === false && <span style={{ fontWeight: 400, opacity: 0.85 }}> · 무료 회원가입 후</span>}
     </a>
   )
 }
