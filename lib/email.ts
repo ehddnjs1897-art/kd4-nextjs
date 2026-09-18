@@ -78,7 +78,7 @@ export async function notifyCrewRequest(name: string, email: string, userId: str
 }
 
 /** KD4 디렉터 권한 신청 관리자 알림 (승인 시 배우 연락처·다운로드 열람 가능) */
-export async function notifyDirectorRequest(name: string, email: string, userId: string) {
+export async function notifyDirectorRequest(name: string, email: string, userId: string, extra: { affiliation?: string; purpose?: string } = {}) {
   const approveUrl = `${SITE_URL}/api/admin/approve-crew?uid=${userId}`
   const html = `
     <div style="font-family:sans-serif;max-width:480px;margin:0 auto">
@@ -87,6 +87,8 @@ export async function notifyDirectorRequest(name: string, email: string, userId:
       <table style="width:100%;border-collapse:collapse">
         <tr><td style="padding:6px 0;color:#888;width:80px">이름</td><td style="padding:6px 0"><strong>${esc(name)}</strong></td></tr>
         <tr><td style="padding:6px 0;color:#888">이메일</td><td style="padding:6px 0">${esc(email)}</td></tr>
+        <tr><td style="padding:6px 0;color:#888">소속</td><td style="padding:6px 0"><strong>${esc(extra.affiliation || '(미입력)')}</strong></td></tr>
+        <tr><td style="padding:6px 0;color:#888;vertical-align:top">용도</td><td style="padding:6px 0">${esc(extra.purpose || '(미입력)')}</td></tr>
         <tr><td style="padding:6px 0;color:#888">시각</td><td style="padding:6px 0">${new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}</td></tr>
       </table>
       <hr style="margin:20px 0"/>

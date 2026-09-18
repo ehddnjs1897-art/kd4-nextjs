@@ -90,10 +90,12 @@ export async function POST(request: NextRequest) {
     memberType === 'director' && newRole === 'member' && existingRole !== 'member'
   if (isNewDirectorRequest && process.env.ADMIN_PHONE_NUMBER) {
     const affiliation: string = (user.user_metadata?.affiliation ?? '').toString().slice(0, 60)
+    const purposeText: string = (user.user_metadata?.purpose ?? '').toString().replace(/[\r\n\t]/g, ' ').slice(0, 120)
     const adminText = [
       '[KD4] 디렉터 회원 가입 신청',
       `이름: ${name || '(미입력)'}`,
       affiliation ? `소속: ${affiliation}` : null,
+      purposeText ? `용도: ${purposeText}` : null,
       '승인 대기 중입니다.',
     ].filter(Boolean).join('\n')
     // await 필수 — 서버리스에서 응답 반환 후 미완료 발송은 잘릴 수 있음.

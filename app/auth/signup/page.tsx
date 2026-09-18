@@ -38,7 +38,8 @@ function SignupContent() {
   const [phone, setPhone] = useState('')
   const [gender, setGender] = useState('') // 배우: 성별 '남'|'여' (필수 — 성별 필터 노출)
   const [birthYear, setBirthYear] = useState('') // 배우: 출생연도 4자리 (필수 — 카톡 공유 썸네일 실제 나이, 2026-07-21 대표 지시)
-  const [affiliation, setAffiliation] = useState('') // 디렉터: 소속 (선택)
+  const [affiliation, setAffiliation] = useState('') // 디렉터: 소속 (필수 — 2026-09-19 대표 지시, 승인 판단 근거)
+  const [purpose, setPurpose] = useState('') // 디렉터: 이용 용도 (필수)
 
   // 서비스 동의 (방침·약관 v1, 2026-07-07) — 기록은 auth metadata(consent_*)
   const [agreeTos, setAgreeTos] = useState(false)
@@ -48,7 +49,7 @@ function SignupContent() {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [errorField, setErrorField] = useState<'name' | 'email' | 'password' | 'passwordConfirm' | 'phone' | 'gender' | 'birth' | 'consent' | null>(null)
+  const [errorField, setErrorField] = useState<'name' | 'email' | 'password' | 'passwordConfirm' | 'phone' | 'gender' | 'birth' | 'consent' | 'affiliation' | 'purpose' | null>(null)
   const successRef = useRef<HTMLDivElement>(null)
   const errorRef = useRef<HTMLDivElement>(null)
 
@@ -131,6 +132,15 @@ function SignupContent() {
       setErrorField('phone'); setError('연락처 형식이 올바르지 않습니다. (예: 010-1234-5678)')
       return
     }
+    // 디렉터: 소속·용도 필수 — 대표가 이 내용을 보고 승인한다 (2026-09-19)
+    if (memberType === 'director' && affiliation.trim().length < 2) {
+      setErrorField('affiliation'); setError('소속을 입력해 주세요. (예: ○○캐스팅, ○○제작사 조감독)')
+      return
+    }
+    if (memberType === 'director' && purpose.trim().length < 5) {
+      setErrorField('purpose'); setError('이용 용도를 입력해 주세요. (예: 진행 중인 작품의 배역 캐스팅)')
+      return
+    }
     if (memberType === 'actor' && gender !== '남' && gender !== '여') {
       setErrorField('gender'); setError('성별을 선택해 주세요.')
       return
@@ -168,8 +178,9 @@ function SignupContent() {
     if (memberType === 'actor' && /^\d{4}$/.test(birthYear)) {
       metadata.birth_year = birthYear
     }
-    if (memberType === 'director' && affiliation) {
-      metadata.affiliation = affiliation
+    if (memberType === 'director') {
+      metadata.affiliation = affiliation.trim().slice(0, 60)
+      metadata.purpose = purpose.trim().slice(0, 300)
     }
     // 동의 기록 — 버전·시각 (재동의 필요 시 lib/consent.ts CONSENT_VERSION을 올림)
     metadata.consent_tos = CONSENT_VERSION
@@ -617,7 +628,7 @@ function SignupContent() {
           {memberType === 'director' && (
             <div style={styles.fieldGroup}>
               <label htmlFor="affiliation" style={styles.label}>
-                소속 <span style={styles.optional}>(선택)</span>
+                소속 <span aria-hidden="true" style={styles.required}>*</span>
               </label>
               <input
                 id="affiliation"
@@ -627,9 +638,33 @@ function SignupContent() {
                 placeholder="제작사, 캐스팅사, 방송국 등"
                 disabled={loading}
                 autoComplete="organization"
+                maxLength={60}
+                required
+                aria-required="true"
+                aria-invalid={errorField === 'affiliation' || undefined}
                 aria-describedby={error ? 'signup-error' : undefined}
                 style={styles.input}
               />
+              <label htmlFor="purpose" style={{ ...styles.label, marginTop: 14 }}>
+                이용 용도 <span aria-hidden="true" style={styles.required}>*</span>
+              </label>
+              <textarea
+                id="purpose"
+                value={purpose}
+                onChange={(e) => setPurpose(e.target.value)}
+                placeholder="어떤 작품·배역 캐스팅에 쓰실지 적어 주세요. (예: 웹드라마 ○○ 20대 여자 조연 캐스팅)"
+                disabled={loading}
+                maxLength={300}
+                rows={3}
+                required
+                aria-required="true"
+                aria-invalid={errorField === 'purpose' || undefined}
+                aria-describedby="purpose-hint"
+                style={{ ...styles.input, height: 'auto', minHeight: 84, resize: 'vertical', lineHeight: 1.6, paddingTop: 10, paddingBottom: 10 }}
+              />
+              <p id="purpose-hint" style={styles.hint}>
+                적어주신 소속과 용도를 확인한 뒤 승인해 드립니다. 승인 후 배우 연락처·프로필을 열람할 수 있어요.
+              </p>
             </div>
           )}
 

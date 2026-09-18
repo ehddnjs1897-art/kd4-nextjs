@@ -17,6 +17,8 @@ export default function SetupPage() {
   const router = useRouter()
   const [memberType, setMemberType] = useState<MemberType>('actor')
   const [phone, setPhone] = useState('')
+  const [affiliation, setAffiliation] = useState('')
+  const [purpose, setPurpose] = useState('')
   // 이미 회원 유형이 정해진 기존 가입자(번호만 없음) → 유형 선택 숨기고 번호만 받음
   const [typeLocked, setTypeLocked] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -57,6 +59,11 @@ export default function SetupPage() {
       setError('연락처 형식이 올바르지 않습니다. (예: 010-1234-5678)')
       return
     }
+    // 디렉터(신규 설정): 소속·용도 필수 — 대표가 보고 승인 (2026-09-19)
+    if (memberType === 'director' && !typeLocked) {
+      if (affiliation.trim().length < 2) { setError('소속을 입력해 주세요. (예: ○○캐스팅, ○○제작사 조감독)'); return }
+      if (purpose.trim().length < 5) { setError('이용 용도를 입력해 주세요. (예: 진행 중인 작품의 배역 캐스팅)'); return }
+    }
     setLoading(true)
 
     const supabase = createClient()
@@ -65,7 +72,9 @@ export default function SetupPage() {
 
     // member_type은 user_metadata에만 저장 (role은 관리자만 변경 가능)
     const { error: updateErr } = await supabase.auth.updateUser({
-      data: { member_type: memberType, phone }
+      data: memberType === 'director' && !typeLocked
+        ? { member_type: memberType, phone, affiliation: affiliation.trim().slice(0, 60), purpose: purpose.trim().slice(0, 300) }
+        : { member_type: memberType, phone }
     })
 
     if (updateErr) {
@@ -171,6 +180,16 @@ export default function SetupPage() {
               </span>
             </button>
           </div>
+          )}
+
+          {memberType === 'director' && !typeLocked && (
+            <div style={styles.fieldGroup}>
+              <label htmlFor="setup-affiliation" style={styles.label}>소속 <span aria-hidden="true" style={{ color: 'var(--gold)' }}>*</span></label>
+              <input id="setup-affiliation" type="text" value={affiliation} onChange={(e) => setAffiliation(e.target.value)} placeholder="제작사, 캐스팅사, 방송국 등" disabled={loading} maxLength={60} required aria-required="true" autoComplete="organization" style={styles.input} />
+              <label htmlFor="setup-purpose" style={{ ...styles.label, marginTop: 8 }}>이용 용도 <span aria-hidden="true" style={{ color: 'var(--gold)' }}>*</span></label>
+              <textarea id="setup-purpose" value={purpose} onChange={(e) => setPurpose(e.target.value)} placeholder="어떤 작품·배역 캐스팅에 쓰실지 적어 주세요." disabled={loading} maxLength={300} rows={3} required aria-required="true" style={{ ...styles.input, minHeight: 84, resize: 'vertical', lineHeight: 1.6 }} />
+              <p style={styles.hint}>적어주신 소속과 용도를 확인한 뒤 승인해 드립니다.</p>
+            </div>
           )}
 
           <div style={styles.fieldGroup}>

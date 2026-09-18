@@ -9,6 +9,8 @@ interface Profile {
   role: string
   created_at: string
   actor_id: string | null
+  affiliation?: string | null
+  purpose?: string | null
 }
 
 interface Props {
@@ -190,6 +192,16 @@ export default function UsersManagementTable({ profiles: initialProfiles }: Prop
               <tr key={p.id} style={{ borderBottom: '1px solid var(--border)' }}>
                 <td style={{ padding: '10px 12px', color: 'var(--white)', fontWeight: 500 }}>
                   {p.name || '—'}
+                  {/* 디렉터 신청자가 직접 적은 소속·용도 — 이 내용을 보고 승인 (2026-09-19) */}
+                  {(p.affiliation || p.purpose) && (
+                    <div style={{ marginTop: 4, fontWeight: 400, fontSize: '0.76rem', lineHeight: 1.55, color: 'var(--gray)', maxWidth: 320, whiteSpace: 'normal' }}>
+                      {p.affiliation && <div><strong style={{ color: 'var(--navy)' }}>소속</strong> {p.affiliation}</div>}
+                      {p.purpose && <div><strong style={{ color: 'var(--navy)' }}>용도</strong> {p.purpose}</div>}
+                    </div>
+                  )}
+                  {['director_pending', 'member'].includes(p.role) && !p.affiliation && !p.purpose && (
+                    <div style={{ marginTop: 4, fontWeight: 400, fontSize: '0.74rem', color: '#b45309' }}>소속·용도 미입력</div>
+                  )}
                 </td>
                 <td style={{ padding: '10px 12px', color: 'var(--gray)' }}>
                   {p.email || '—'}

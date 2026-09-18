@@ -405,7 +405,10 @@ export default async function DashboardPage() {
             <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.6, marginBottom: 8 }}>
               승인 시 배우 <strong style={{ color: 'var(--gold)' }}>연락처 열람 + 사진·프로필 다운로드 + 캐스팅 숏리스트</strong> 가능.
             </p>
-            <DirectorRequestButton />
+            <DirectorRequestButton
+              initialAffiliation={String(user.user_metadata?.affiliation ?? '')}
+              initialPurpose={String(user.user_metadata?.purpose ?? '')}
+            />
           </section>
         )}
 

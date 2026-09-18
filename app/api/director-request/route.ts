@@ -70,6 +70,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // 소속·용도 필수 (2026-09-19 대표 지시 — 대표가 이 내용을 보고 승인). 값은 가입/신청 화면이 user_metadata에 저장.
+    const affiliation = String(user.user_metadata?.affiliation ?? '').replace(/[\r\n\t]/g, ' ').trim().slice(0, 60)
+    const purpose = String(user.user_metadata?.purpose ?? '').replace(/[\r\t]/g, ' ').trim().slice(0, 300)
+    if (affiliation.length < 2 || purpose.length < 5) {
+      requestMap.delete(user.id) // 입력 후 바로 다시 신청할 수 있게 쿨다운 해제
+      return NextResponse.json({ error: '소속과 이용 용도를 입력해 주세요.' }, { status: 400 })
+    }
+
     // actor/member 역할(기본 가입 역할)인 행만 원자적으로 업데이트 — 관리자 승인 경쟁 조건 방지
     const applicantName = profile?.name ?? user.user_metadata?.name ?? null
     const { data: updated, error: updateErr } = await supabaseAdmin
@@ -95,7 +103,7 @@ export async function POST(request: NextRequest) {
     const displayName = applicantName ?? '(이름 없음)'
     const applicantEmail = user.email ?? '(이메일 없음)'
 
-    notifyDirectorRequest(displayName, applicantEmail, user.id).catch(
+    notifyDirectorRequest(displayName, applicantEmail, user.id, { affiliation, purpose }).catch(
       (err: unknown) => console.error('[director-request] 이메일 알림 실패:', err instanceof Error ? err.message : '(unknown)')
     )
 
@@ -103,7 +111,7 @@ export async function POST(request: NextRequest) {
       const safeName = displayName.replace(/[\r\n\t]/g, ' ').slice(0, 30)
       sendSMS(
         ADMIN_PHONE,
-        `[KD4] 디렉터 권한 신청\n${safeName}\n승인 시 배우 연락처 열람 가능. 관리자 페이지에서 승인 처리`,
+        `[KD4] 디렉터 권한 신청\n${safeName}\n소속: ${affiliation}\n용도: ${purpose.replace(/\n/g, ' ').slice(0, 120)}\n승인 시 배우 연락처 열람 가능. 관리자 페이지에서 승인 처리`,
       ).catch(
         (err: unknown) => console.error('[director-request] SMS 실패:', err instanceof Error ? err.message : '(unknown)')
       )

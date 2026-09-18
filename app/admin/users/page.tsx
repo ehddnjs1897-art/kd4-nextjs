@@ -21,6 +21,9 @@ interface Profile {
   role: string
   created_at: string
   actor_id: string | null
+  /** 디렉터 신청자가 직접 적은 소속·용도 (auth user_metadata) — 승인 판단용 */
+  affiliation?: string | null
+  purpose?: string | null
 }
 
 async function fetchProfiles(): Promise<Profile[]> {
@@ -33,7 +36,18 @@ async function fetchProfiles(): Promise<Profile[]> {
     console.error('[admin/users] profiles 조회 오류:', error.message)
     return []
   }
-  return (data ?? []) as Profile[]
+  const rows = (data ?? []) as Profile[]
+  // 디렉터 관련 역할만 auth 메타데이터를 붙인다 (대상이 소수라 개별 조회로 충분)
+  const targets = rows.filter((r) => ['director_pending', 'director', 'member'].includes(r.role))
+  await Promise.all(targets.map(async (r) => {
+    try {
+      const { data: u } = await supabaseAdmin.auth.admin.getUserById(r.id)
+      const m = (u?.user?.user_metadata ?? {}) as Record<string, unknown>
+      r.affiliation = typeof m.affiliation === 'string' ? m.affiliation : null
+      r.purpose = typeof m.purpose === 'string' ? m.purpose : null
+    } catch { /* 메타 조회 실패는 표시만 생략 */ }
+  }))
+  return rows
 }
 
 export default async function AdminUsersPage() {
