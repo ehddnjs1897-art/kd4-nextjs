@@ -68,7 +68,8 @@ export async function POST(request: NextRequest) {
     {
       id: user.id,
       name: name || null,
-      phone: memberType === 'actor' ? (phone || null) : null,
+      // 2026-09-19: 디렉터도 번호 저장 — 9/12부터 디렉터도 번호 필수인데 여기서 버려져 승인 안내 문자(approve-crew)가 못 나갔음(김상인 사례)
+      phone: phone || null,
       email: user.email || null,
       role: newRole,
     },
