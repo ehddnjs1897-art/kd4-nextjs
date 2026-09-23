@@ -256,17 +256,60 @@ async function sendNotionConsultation(payload: {
   }
 }
 
+/* 신청 클래스별 안내 블록 (2026-09-23 대표 지시)
+ * 폼에서 고른 희망 클래스에 맞는 한 줄 소개 + 홈페이지 안내 링크를 접수 문자에 넣는다.
+ * ⚠️ 수강료·기수·개강일은 넣지 않는다 — 바뀔 때마다 낡은 값이 자동 발송되는 사고 방지.
+ *    금액·기수는 대표 통화 후 상담 문자(04-ops/playbooks/상담정리문자_발송.md)에서 안내. */
+const CLASS_GUIDE: Record<string, { desc: string; url: string }> = {
+  '베이직 클래스': {
+    desc: '연기가 처음인 분을 위한 입문 과정입니다.',
+    url: 'https://kd4.club/basic-acting-class',
+  },
+  '마이즈너 테크닉 정규 클래스': {
+    desc: '배우의 듣기와 반응을 훈련하는 KD4 대표 정규 과정입니다.',
+    url: 'https://kd4.club/meisner-technique-class',
+  },
+  '출연영상 클래스': {
+    desc: '캐스팅에 바로 쓰는 출연영상 한 편을 완성하는 과정입니다.',
+    url: 'https://kd4.club/reel-production-class',
+  },
+  '오디션 테크닉 클래스': {
+    desc: '나만의 오디션 독백과 현장 에티튜드를 완성하는 과정입니다.',
+    url: 'https://kd4.club/audition-technique-class',
+  },
+  '움직임 클래스': {
+    desc: '몸으로 감정을 여는 훈련입니다.',
+    url: 'https://kd4.club/classes',
+  },
+  '개인 레슨': {
+    desc: '1:1 맞춤 집중 훈련입니다.',
+    url: 'https://kd4.club/classes',
+  },
+}
+
+function classGuideBlock(className?: string | null): string {
+  const name = (className ?? '').trim()
+  if (!name) return ''
+  const info = CLASS_GUIDE[name]
+  if (!info) {
+    // 「기타 / 상담 후 결정」 등 미등록 값 — 전체 클래스 페이지로 안내
+    return `[신청하신 클래스]\n${name}\n클래스 한눈에 보기 https://kd4.club/classes\n\n`
+  }
+  return `[신청하신 클래스]\n${name}\n${info.desc}\n클래스 안내 ${info.url}\n\n`
+}
+
 /* ── 신청자 본인에게 사전상담 안내 SMS ────────────────────────────────
  * 기존 Make.com "KD4.club 상담 접수 자동화" 시나리오가 담당하던 로직을
  * 코드로 이관 (2026-07-16). Make 시나리오는 비활성화됨 — 이 함수가 유일한 발신처.
  * ──────────────────────────────────────────────────────────────────── */
-async function sendConsultationCallTimeSMS(name: string, phone: string) {
+async function sendConsultationCallTimeSMS(name: string, phone: string, className?: string | null) {
   const safeName = name.replace(/[\r\n\t]/g, ' ')
   const msg =
     `안녕하세요, KD4 액팅 스튜디오 에이전트 비서입니다.\n\n` +
     `${safeName} 배우님,\n` +
     `사전상담을 위해 통화 가능한 시간을\n` +
     `2~3개 남겨주시면 맞춰 연락드리겠습니다.\n\n` +
+    classGuideBlock(className) +
     `*상담 전 카카오 채널로\n` +
     `프로필과 출연영상을 보내주세요.\n` +
     `(없을시 생략가능)\n\n` +
@@ -492,7 +535,7 @@ export async function POST(request: NextRequest) {
     // 1-b. 신청자 본인에게 사전상담(통화가능시간) 안내 SMS
     //      기존엔 Make.com "KD4.club 상담 접수 자동화" 웹훅이 이 SMS를 보냈으나
     //      2026-07-16 대표 지시로 Make 시나리오 비활성화 + 코드로 이관.
-    await sendConsultationCallTimeSMS(name, phone).catch((err) =>
+    await sendConsultationCallTimeSMS(name, phone, typeof record?.class_name === 'string' ? record.class_name : null).catch((err) =>
       console.error('[notify] 사전상담 안내 SMS 실패:', err instanceof Error ? err.message : String(err))
     )
 
