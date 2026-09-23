@@ -68,7 +68,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (let from = 0; from < 20000; from += 1000) {
       const { data: batch, error: monoError } = await supabasePublic
         .from('monologues')
-        .select('id, created_at, updated_at, target, medium')
+        .select('id, created_at, target, medium')
         .eq('is_published', true)
         .order('created_at', { ascending: false })
         .order('id', { ascending: true })
@@ -77,11 +77,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       data.push(...((batch ?? []) as (MonologueRow & { updated_at?: string | null })[]))
       if ((batch ?? []).length < 1000) break
     }
-    // monologues.updated_at은 트리거로 자동 갱신됨(2026-07-10 마이그레이션) — 수정일 우선
+    // 2026-09-24: lastmod는 등록일(created_at)만 쓴다. updated_at은 크롤러 업로드(import_to_supabase.py)가
+    // 매주 전 행을 다시 저장할 때 트리거로 일괄 갱신돼 1,049편 전부 같은 날짜(9/17)로 찍혔다 — 거짓 "변경됨" 신호.
     monologues = ((data ?? []) as (MonologueRow & { updated_at?: string | null })[]).map((m) => ({
       id: m.id,
-      // 상세 페이지 lastmod는 "수정일 우선, 없으면 생성일"
-      created_at: m.updated_at ?? m.created_at,
+      created_at: m.created_at,
       target: m.target,
       medium: m.medium,
     }))
@@ -128,7 +128,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.75,
   }))
 
-  // 독백 아카이브 상세 페이지 — lastmod = updated_at ?? created_at (위 매핑에서 이미 해결)
+  // 독백 아카이브 상세 페이지 — lastmod = created_at(등록일, 위 매핑 참고)
   const monologuePages: MetadataRoute.Sitemap = monologues.map((m) => ({
     url: `${BASE}/monologues/${m.id}`,
     lastModified: m.created_at ? new Date(m.created_at) : monologuesLastMod,

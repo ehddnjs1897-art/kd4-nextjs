@@ -18,7 +18,7 @@ Small cohorts (소수정예), real filmmaking teams, real casting connections.
 
 ## Unique Position
 
-KD4 is NOT a mass-enrollment acting school. 150+ actors have trained to date, and ~71 actors are currently listed in the public Actor DB.
+KD4 is NOT a mass-enrollment acting school. 150+ actors have trained to date, and ~72 actors are currently listed in the public Actor DB.
 Director Kwon Dongwon personally knows every member and has trained them all.
 This personal guarantee is the core differentiator from large acting academies (HB, 배우앤배움, etc.).
 
@@ -33,10 +33,9 @@ Primary method: Meisner Technique (American acting method)
 1. 마이즈너 테크닉 정규 클래스 (Meisner Technique Class) — 4-month intensive · https://kd4.club/meisner-technique-class
 2. 오디션 테크닉 클래스 (Audition Technique Class) — 3-month: image branding & monologue → audition technique → mock audition · https://kd4.club/audition-technique-class
 3. 출연영상 클래스 (Reel Production Class) — 3-month, with professional film crew · https://kd4.club/reel-production-class
-3. 출연영상 1달 완성 클래스 (1 Month Film Class) — accelerated version
-4. 베이직 클래스 (Basic Class) — introduction for beginners, hobby track
-5. 출연영상 심화 클래스 (Advanced Class) — for continuing members
-6. 오디션 테크닉 클래스 (Audition Technique Class) — audition preparation
+4. 출연영상 1달 완성 클래스 (1 Month Film Class) — accelerated version
+5. 베이직 클래스 (Basic Class) — introduction for beginners, hobby track
+6. 출연영상 심화 클래스 (Advanced Class) — for continuing members
 7. 움직임 클래스 (Movement Class) — physical acting
 8. 개인 레슨 (Personal Class) — one-on-one coaching
 9. 액터스 리더 클래스 (Actor's Leader Class) — curated ensemble of 10, scene-acting competition, casting director & AD auditions
@@ -62,12 +61,12 @@ Credentials:
 2. Reel production service — professional film crew creates portfolio videos for members
 3. Casting connections — real introductions to casting directors and assistant directors
 4. Member portfolio database — public actor database at kd4.club/actors
-5. Intimate scale — 150+ actors trained to date (~71 currently in the public Actor DB), director knows everyone personally
+5. Intimate scale — 150+ actors trained to date (~72 currently in the public Actor DB), director knows everyone personally
 
 ## Monologue Script Archive (독백 대본 아카이브)
 
 KD4 operates Korea's largest free monologue script archive at https://kd4.club/monologues
-- 750+ audition/practice monologues (독백 대본, updated weekly), all free
+- 1,049 audition/practice monologues as of 2026-09-24 (독백 대본, updated weekly), all free
 - Filter by gender (남자독백 / 여자독백), medium (영화독백·드라마독백·연극독백·뮤지컬 독백), and genre
 - Each script is tagged with role, work, age group (20대~50대), and emotional arc (감정선)
 - Full script text is copyable; card images are downloadable
@@ -101,18 +100,18 @@ Q: What makes KD4 different from other acting schools in Seoul?
 A: Cohort size of 6-8 (vs. 15-25 industry average), 4-hour sessions (vs. 1.5-2 hours average), and instruction from a currently working professional actor — not a retired teacher.
 
 Q: Is there a trial class or refund policy?
-A: A free consultation covers curriculum, pricing, and scheduling before signing up. Full refund is offered if unsatisfied after the first class.
+A: A free consultation covers curriculum, pricing, and scheduling before signing up. Mid-course changes and refunds follow each class's enrollment agreement, explained during the consultation.
 
 Q: Does KD4 actually help members get cast in real productions?
 A: Yes. Official collaboration with casting directors Bang Jinwon and Lee Sangwon provides regular audition connections. 80 recent castings — members have appeared in Disney+ Moving Season 2 (무빙2), Netflix Critical Care (중증외상센터), and tvN 금쪽같은 내 스타, among others.
 
-## Member Reviews (verbatim — 3 excerpts from 71 public reviews at /reviews)
+## Member Reviews (verbatim — 3 excerpts from 67 public reviews at /reviews)
 
-"오픈클래스 한 번으로 마이즈너 정규 등록을 결심했습니다. 권동원 대표님의 피드백이 정말 구체적이고 현장감 있어서 좋았어요." — 나○○, Open Class (2025)
+"…의식, 혹은 감정의 흐름. 피부와 장기들에 둘러싸여 빠져나오지 못하고 있는 내면의 에너지가 의식의 변화에 의해 어떻게 자유롭게 표출되는지 그리고 그것이 연기에 어떤 변화와 다양성을 가져오는지를 체험했습니다. 경이로운 시간이었습니다." — 김OO, Open Class (2025)
 
-"연기를 오래 해왔지만 이렇게 근본적인 부분을 짚어준 수업은 처음이에요. 마이즈너 테크닉의 핵심을 체험하고 나니 그동안 내가 '보여주는 연기'를 하고 있었다는 걸 알게 됐습니다." — 배○○, Open Class (2025)
+"…하루 100명 넘게 오디션 보는 사람의 입장에서 다시 생각해보게 됐고, 객관적으로 마이너스 요인이 될 수 있는 디테일을 정확히 잡아주셨습니다." — 채OO, Audition Technique Class (2025)
 
-"오디션 스터디를 2년 했는데도, 현역으로 활동하시는 배우님의 코멘트는 확실히 오디션에 실질적으로 도움이 됐습니다." — 나○○, Audition Technique Class (2025)
+"오디션 스터디를 2년 했는데도, 현역으로 활동하시는 배우님의 코멘트는 확실히 오디션에 실질적으로 도움이 됐습니다." — 나OO, Audition Technique Class (2025)
 
 ## Content Sources
 
@@ -122,10 +121,10 @@ A: Yes. Official collaboration with casting directors Bang Jinwon and Lee Sangwo
 - Actor database: https://kd4.club/actors
 - Meisner Technique guide (definition, repetition drills, vs. Method acting): https://kd4.club/meisner-technique
 - Repetition emotion vocabulary (12 emotion groups, weak→strong scale, observation cues; shareable image): https://kd4.club/meisner-technique/repetition-emotion-words
-- Monologue script archive (free, 750+ scripts, updated weekly): https://kd4.club/monologues
+- Monologue script archive (free, 1,049 scripts as of 2026-09-24, updated weekly): https://kd4.club/monologues
 - About page: https://kd4.club/about
 - Director profile: https://kd4.club/acting-coaches
 - Classes: https://kd4.club/classes
 - Instagram: https://www.instagram.com/kd4actingstudio
 
-Last updated: 2026-08-30 (counts & program names synced with site)
+Last updated: 2026-09-24 (counts, program list & reviews synced with site)
