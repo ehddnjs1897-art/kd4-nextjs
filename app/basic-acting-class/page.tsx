@@ -15,8 +15,46 @@ const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
 const PAGE_URL = `${SITE_URL}/basic-acting-class`
 
 /** 데이터 원본은 lib/classes.ts 하나 — 가격·정원·시간을 이 파일에 다시 적지 않는다 */
-/** 베이직 클래스 3개월 커리큘럼 상세 (노션) — 원본은 노션에서만 갱신한다 */
-const BASIC_CURRICULUM_URL = 'https://puzzle-pick-ffc.notion.site/3d571cf4488e815c8866f89c9df0607f'
+/** 베이직 클래스 3개월 커리큘럼 — 노션 「🎭 베이직 클래스 커리큘럼 (3개월 과정)」(3d571cf4…607f) 원문을 그대로 옮김.
+ *  2026-09-23 대표 지시: 문자·사이트에서 노션 링크 대신 이 페이지에 기록. 내용 수정 시 노션과 이 배열을 함께 고칠 것. */
+const BASIC_CURRICULUM: { month: string; theme: string; lead: string; items: string[] }[] = [
+  {
+    month: 'MONTH 1',
+    theme: 'PLAY',
+    lead: '놀면서 연기와 친해진다.',
+    items: [
+      '1주차 · 어색함 깨기 — 핑거태그 · 코미디임프라브 · 거울놀이 · 마피아',
+      '2주차 · 표현하고 받아들이기 — 핑거태그 · 코미디임프라브 · 감정해방 · Yes, And Then...',
+      '3주차 · 상황과 목적을 가지고 놀기 — 의자 빼앗기 (처음 만난 사이)',
+      '4주차 · 관계를 가지고 놀기 — 관계가 있는 의자 빼앗기',
+    ],
+  },
+  {
+    month: 'MONTH 2',
+    theme: 'PARTNER',
+    lead: '상대방과 실제로 연기해본다. 실제 대본을 사용합니다.',
+    items: [
+      '실제 2인 대본 사용',
+      '상대방을 보며 연기하기',
+      '대사를 혼자 준비해서 보여주는 방식에서 벗어나기',
+      '상대에 따라 연기가 달라지는 경험하기',
+      '짧은 장면을 반복해서 경험하기',
+    ],
+  },
+  {
+    month: 'MONTH 3',
+    theme: 'SCENE',
+    lead: '하나의 장면을 만들어 완성한다.',
+    items: [
+      '실제 대본 선택',
+      '관계와 상황 이해',
+      '상대와 장면 맞추기',
+      '동선과 행동 만들기',
+      '반복 연습',
+      '촬영 또는 발표',
+    ],
+  },
+]
 
 const BASIC = CLASSES.find((c) => c.nameKo === '베이직 클래스')!
 const MEISNER = CLASSES.find((c) => c.nameKo === '마이즈너 테크닉 정규 클래스')!
@@ -197,17 +235,29 @@ export default function BasicActingClassPage() {
               </li>
             ))}
           </ul>
-          <p style={{ textAlign: 'center', marginTop: '24px' }}>
-            <a
-              href={BASIC_CURRICULUM_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '0.92rem', fontWeight: 600, color: 'var(--navy)', border: '1.5px solid var(--navy)', borderRadius: '999px', padding: '10px 22px', textDecoration: 'none' }}
-            >
-              3개월 전체 커리큘럼 보기
-              <span aria-hidden="true">→</span>
-            </a>
-          </p>
+          <div style={{ maxWidth: '900px', margin: '40px auto 0' }}>
+            <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.1rem', fontWeight: 700, textAlign: 'center', marginBottom: '8px' }}>3개월 커리큘럼</h3>
+            <p className="section-desc" style={{ textAlign: 'center', marginBottom: '20px' }}>
+              PLAY → PARTNER → SCENE — 놀면서 연기와 친해지고, 상대와 실제로 연기하고, 하나의 장면을 완성합니다.
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
+              {BASIC_CURRICULUM.map(({ month, theme, lead, items }) => (
+                <div key={month} style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '12px', padding: '24px' }}>
+                  <p lang="en" style={{ fontFamily: 'var(--font-display)', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', color: 'var(--navy)', marginBottom: '4px' }}>{month}</p>
+                  <h4 lang="en" style={{ fontFamily: 'var(--font-serif)', fontSize: '1.02rem', fontWeight: 700, marginBottom: '8px' }}>{theme}</h4>
+                  <p style={{ fontSize: '0.88rem', color: '#111', lineHeight: 1.7, marginBottom: '12px', wordBreak: 'keep-all' }}>{lead}</p>
+                  <ul role="list" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: '6px' }}>
+                    {items.map((it) => (
+                      <li key={it} style={{ fontSize: '0.85rem', color: 'var(--gray-light)', lineHeight: 1.65, wordBreak: 'keep-all' }}>· {it}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+            <p style={{ fontSize: '0.85rem', color: 'var(--gray-light)', lineHeight: 1.7, textAlign: 'center', marginTop: '16px', wordBreak: 'keep-all' }}>
+              첫 달에는 장면을 만들거나 대본 연기를 시키지 않습니다. 연기 이론이나 대본 분석보다 몸을 쓰고, 표현하고, 상대와 반응하며 노는 경험에 집중합니다.
+            </p>
+          </div>
         </div>
       </section>
 
