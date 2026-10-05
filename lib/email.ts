@@ -144,7 +144,6 @@ export async function sendConsultationReceivedEmail(name: string, email: string)
      </p>
      <p style="font-size:13px;color:#5A5550;">
        · 웹사이트: <a href="https://kd4.club" style="color:#15488A;">kd4.club</a><br>
-       · 캐스팅 포트폴리오: <a href="https://www.youtube.com/playlist?list=PLMbZlnkLfP7iaE41p_g9dzGKp5eU9VZk2" style="color:#15488A;">유튜브 재생목록</a><br>
        · 위치·시설 안내: <a href="https://kd4.club/sinchon-acting-academy" style="color:#15488A;">신촌 스튜디오</a>
      </p>`
   )
