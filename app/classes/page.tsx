@@ -127,12 +127,6 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             </div>
           ))}
         </div>
-        {cls.scheduleNote && (
-          <p style={{
-            margin: 0, fontSize: '0.78rem', color: 'var(--navy)', fontWeight: 600, lineHeight: 1.5,
-            padding: '6px 10px', background: 'rgba(21,72,138,0.08)', borderRadius: '2px', borderLeft: '2px solid var(--gold)',
-          }}>{cls.scheduleNote}</p>
-        )}
 
         {/* 가격 */}
         <div>
