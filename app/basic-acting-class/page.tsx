@@ -104,7 +104,7 @@ const BASIC_FAQ: FaqItem[] = [
   },
   {
     q: '직장인도 병행할 수 있나요?',
-    a: '가능합니다. 베이직 클래스는 매주 토요일 12:00–15:00, 회당 3시간 진행되어 평일 일정이 있는 직장인도 부담 없이 병행할 수 있습니다. 저녁 클래스(토 16:00–19:00)도 오픈 예정입니다.',
+    a: '가능합니다. 베이직 클래스는 매주 토요일, 회당 3시간 진행되어 평일 일정이 있는 직장인도 부담 없이 병행할 수 있습니다. 저녁 클래스(토 16:00–19:00)도 오픈 예정입니다.',
   },
 ]
 
@@ -119,12 +119,12 @@ const AUDIENCE = [
   },
   {
     title: '주말에 시간을 내는 직장인',
-    desc: '베이직 클래스는 매주 토요일 12:00–15:00에 진행되고, 저녁 클래스(16:00–19:00)도 오픈 예정입니다. 평일 일정과 겹치지 않습니다.',
+    desc: '베이직 클래스는 매주 토요일에 진행되고, 저녁 클래스(16:00–19:00)도 오픈 예정입니다. 평일 일정과 겹치지 않습니다.',
   },
 ]
 
 const SPEC_ITEMS = [
-  { label: '일정', value: `매주 토요일 12:00–15:00 (${BASIC.schedule})` }, // 2026-08-26 대표 확정
+  { label: '일정', value: '매주 토요일' }, // 2026-10-05 대표: 요일만 표기
   { label: '저녁 클래스', value: '오픈 예정 · (토) 16:00–19:00' }, // 2026-10-05 대표
   { label: '시간', value: BASIC.duration },
   { label: '정원', value: BASIC.capacity },
@@ -190,7 +190,7 @@ export default function BasicActingClassPage() {
             연기를 처음 배우는 성인을 위한 취미 클래스입니다. 연기 경험이 없어도 시작할 수 있습니다.
           </p>
           <p className="section-desc" style={{ maxWidth: '640px', margin: '16px auto 0', textAlign: 'left' }}>
-            정원 {BASIC.capacity} 소수정예로 매주 토요일 12:00–15:00({BASIC.schedule}·회당 {BASIC.duration}) 진행하며, 월 수강료는 {BASIC.price}원, {BASIC.instructor}가 지도합니다. 수업 장소는 서울 서대문구 이화여대1안길 12 아리움3차 1층 101호 KD4 액팅 스튜디오 — 2호선 이대역 5번 출구에서 도보 약 3분입니다.
+            정원 {BASIC.capacity} 소수정예로 매주 토요일({BASIC.schedule}·회당 {BASIC.duration}) 진행하며, 월 수강료는 {BASIC.price}원, {BASIC.instructor}가 지도합니다. 수업 장소는 서울 서대문구 이화여대1안길 12 아리움3차 1층 101호 KD4 액팅 스튜디오 — 2호선 이대역 5번 출구에서 도보 약 3분입니다.
           </p>
         </div>
       </section>
@@ -269,7 +269,7 @@ export default function BasicActingClassPage() {
             <p className="section-eyebrow" lang="en">03 — CLASS INFO</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>수업 방식과 수강료</h2>
             <p className="section-desc">
-              매주 토요일 12:00–15:00, 회당 {BASIC.duration}·정원 {BASIC.capacity} — 핵심 정보를 아래 표에 정리했습니다.
+              매주 토요일, 회당 {BASIC.duration}·정원 {BASIC.capacity} — 핵심 정보를 아래 표에 정리했습니다.
             </p>
           </div>
           <div style={{ maxWidth: '640px', margin: '0 auto', background: 'var(--bg)', border: '1.5px solid var(--navy)', borderRadius: '12px', padding: '24px' }}>
