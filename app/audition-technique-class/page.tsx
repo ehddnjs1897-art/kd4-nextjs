@@ -284,7 +284,7 @@ export default function AuditionTechniqueClassPage() {
               </h3>
               <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '14px' }}>{SEBIN.title}</p>
               <p style={{ ...proseStyle, marginBottom: '16px' }}>
-                심사하는 자리와 오디션을 보는 자리를 모두 겪은 현역 배우가, 캐스팅 관계자에게 실제로 어떻게 보이는지를 기준으로 코멘트합니다.
+                대형 기획사·매니지먼트 소속부터 드라마 여주인공까지, 상업 프로덕션 현장을 두루 경험한 현역 배우가 실질적인 오디션 테크닉을 코칭하고 피드백합니다.
               </p>
               <dl style={{ margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <div>
