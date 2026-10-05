@@ -104,7 +104,7 @@ const BASIC_FAQ: FaqItem[] = [
   },
   {
     q: '직장인도 병행할 수 있나요?',
-    a: '가능합니다. 베이직 클래스는 매주 토요일, 회당 3시간 진행되어 평일 일정이 있는 직장인도 부담 없이 병행할 수 있습니다. 현재 12:00–15:00 클래스는 정원 마감이며, 저녁 클래스(토 16:00–19:00)가 오픈 예정입니다.',
+    a: '가능합니다. 베이직 클래스는 매주 토요일 12:00–15:00, 회당 3시간 진행되어 평일 일정이 있는 직장인도 부담 없이 병행할 수 있습니다. 저녁 클래스(토 16:00–19:00)도 오픈 예정입니다.',
   },
 ]
 
@@ -119,12 +119,12 @@ const AUDIENCE = [
   },
   {
     title: '주말에 시간을 내는 직장인',
-    desc: '베이직 클래스는 매주 토요일에 진행됩니다. 12:00–15:00 클래스는 마감, 저녁 클래스(16:00–19:00) 오픈 예정. 평일 일정과 겹치지 않습니다.',
+    desc: '베이직 클래스는 매주 토요일 12:00–15:00에 진행되고, 저녁 클래스(16:00–19:00)도 오픈 예정입니다. 평일 일정과 겹치지 않습니다.',
   },
 ]
 
 const SPEC_ITEMS = [
-  { label: '일정', value: `매주 토요일 12:00–15:00 (${BASIC.schedule}) · 마감` }, // 2026-08-26 대표 확정 · 2026-10-05 마감
+  { label: '일정', value: `매주 토요일 12:00–15:00 (${BASIC.schedule})` }, // 2026-08-26 대표 확정
   { label: '저녁 클래스', value: '오픈 예정 · (토) 16:00–19:00' }, // 2026-10-05 대표
   { label: '시간', value: BASIC.duration },
   { label: '정원', value: BASIC.capacity },
@@ -284,7 +284,7 @@ export default function BasicActingClassPage() {
               ))}
             </div>
             <p style={{ margin: '16px 0 0', padding: '10px 12px', background: 'rgba(21,72,138,0.08)', borderLeft: '2px solid var(--gold)', borderRadius: '2px', fontSize: '0.9rem', color: 'var(--navy)', fontWeight: 600, lineHeight: 1.55 }}>
-              토 12:00–15:00 클래스는 정원 마감되었습니다. 저녁 클래스 (토) 16:00–19:00 오픈 예정입니다.
+              저녁 클래스 (토) 16:00–19:00 오픈 예정입니다.
             </p>
           </div>
           <p className="section-desc" style={{ maxWidth: '640px', margin: '16px auto 0', textAlign: 'left', fontSize: '0.92rem' }}>

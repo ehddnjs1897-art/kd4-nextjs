@@ -44,7 +44,7 @@ export const CLASSES: ClassItem[] = [
       "소수정예"
     ],
     schedule: "월 4회",
-    scheduleNote: "토 12:00–15:00 마감 · 저녁 클래스 오픈 예정 (토) 16:00–19:00", // 2026-10-05 대표
+    scheduleNote: "저녁 클래스 오픈 예정 (토) 16:00–19:00", // 2026-10-05 대표 (마감 표기는 빼기)
     duration: "3시간",
     capacity: "6명",
     price: "250,000",
