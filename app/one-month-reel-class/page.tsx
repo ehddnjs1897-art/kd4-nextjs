@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import type { CSSProperties } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
@@ -12,18 +13,22 @@ import { buildBreadcrumb, buildFaqPage, buildCourseFromClass, buildWebPage } fro
 import { SITE_URL } from '@/lib/constants'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
-const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
 const YouTubeFacade = dynamic(() => import('@/components/youtube/YouTubeFacade'))
 
 const PAGE_URL = `${SITE_URL}/one-month-reel-class`
+const KAKAO_URL = 'https://pf.kakao.com/_ximxdqn'
 
 /** 데이터 원본은 lib/classes.ts 하나 — 가격·정원을 이 파일에 다시 적지 않는다 */
 const ONE_MONTH = CLASSES.find((c) => c.nameKo === '출연영상 1달 완성 클래스')!
 
+/** 신청 자격 — 2026-10-06 대표: «마이즈너 테크닉 정규 및 출연영상 클래스 수료한 배우들만 신청가능, *훈련된 배우들의 포트폴리오 만들기 프로젝트» */
+const ELIGIBILITY = '마이즈너 테크닉 정규 클래스 및 출연영상 클래스를 수료한 배우만 신청할 수 있습니다.'
+const TAGLINE = '훈련된 배우들의 포트폴리오 만들기 프로젝트'
+
 export const metadata: Metadata = {
   title: '출연영상 1달 완성 클래스 — 수업 없이 포트폴리오 촬영만, 1개월',
   description:
-    '출연영상 클래스 수료자를 위한 1개월 촬영 전용 워크숍. 별도 수업 없이 레퍼런스 취합 → 맞춤형 시나리오 → 테스트 촬영 → 본 촬영. 컷 편집 스타일 / 롱테이크 택 1. 클래스 비용 400,000원. 서울 신촌 이대역 도보 3분 KD4 액팅 스튜디오.',
+    '훈련된 배우들의 포트폴리오 만들기 프로젝트. 마이즈너 테크닉 정규·출연영상 클래스 수료자를 위한 1개월 촬영 전용 워크숍. 별도 수업 없이 레퍼런스 취합 → 맞춤형 시나리오 → 테스트 촬영 → 본 촬영. 컷 편집 / 롱테이크 택 1. 클래스 비용 400,000원. 서울 신촌 KD4 액팅 스튜디오.',
   keywords: [
     '출연영상 1달',
     '출연영상 1달 완성',
@@ -38,26 +43,26 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     url: PAGE_URL,
-    title: '출연영상 1달 완성 클래스 — 수업 없이 촬영만 | KD4',
-    description: '출연영상 클래스 수료자를 위한 1개월 촬영 전용 워크숍. 레퍼런스 → 맞춤 시나리오 → 테스트 촬영 → 본 촬영.',
-    images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: '출연영상 1달 완성 클래스 — 수업 없이 촬영만 | KD4', type: 'image/jpeg' }],
+    title: '출연영상 1달 완성 클래스 — 훈련된 배우들의 포트폴리오 만들기 | KD4',
+    description: '마이즈너 테크닉 정규·출연영상 클래스 수료자를 위한 1개월 촬영 전용 워크숍. 레퍼런스 → 맞춤 시나리오 → 테스트 촬영 → 본 촬영.',
+    images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: '출연영상 1달 완성 클래스 — 훈련된 배우들의 포트폴리오 만들기 | KD4', type: 'image/jpeg' }],
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
   },
   twitter: {
     card: 'summary_large_image',
     title: '출연영상 1달 완성 클래스 — KD4',
-    description: '출연영상 클래스 수료자를 위한 1개월 촬영 전용 워크숍. 레퍼런스 → 맞춤 시나리오 → 테스트 촬영 → 본 촬영.',
+    description: '마이즈너 테크닉 정규·출연영상 클래스 수료자를 위한 1개월 촬영 전용 워크숍. 레퍼런스 → 맞춤 시나리오 → 테스트 촬영 → 본 촬영.',
     images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: '출연영상 1달 완성 클래스 — KD4', type: 'image/jpeg' }],
   },
 }
 
-/** 노션 원본 「출연영상 1달」 안내 callout 기준 */
+/** 노션 원본 「출연영상 1달」·단톡방 안내 공지 기준 */
 const WHAT_IS = [
   {
     Icon: Clapperboard,
     title: '수업 없이 촬영만',
-    desc: '별도의 정규 수업 없이 포트폴리오 촬영에만 집중하는 워크숍입니다. 이미 출연영상 클래스에서 훈련을 마친 멤버가 새 작품을 한 편 더 만드는 과정입니다.',
+    desc: '별도의 정규 수업 없이 포트폴리오 촬영에만 집중하는 워크숍입니다. 마이즈너 테크닉 정규·출연영상 클래스에서 이미 훈련을 마친 배우가 대상입니다.',
   },
   {
     Icon: Scissors,
@@ -87,17 +92,17 @@ const INCLUDES = [
   '한 달 안에 완성하는 출연영상 한 편',
 ]
 
-/** 유의사항 — 노션 원본 기준 */
-const NOTICE_ITEMS = [
-  '출연영상 클래스를 1회 이상 수료한 멤버만 신청할 수 있습니다.',
-  '1개월 집중 과정이며, 파트너와 함께 호흡을 맞추는 촬영 특성상 중간 드랍이 어렵습니다.',
-  '레퍼런스는 구글독스로 취합해 전달해 주세요. 공유 권한이 「링크가 있는 모든 사용자 · 편집자」가 아니면 검토가 어렵습니다.',
+/** 유의사항 — 노션 원본·단톡방 공지 기준, 신청 자격은 2026-10-06 대표 지시 */
+const NOTICE_ITEMS: { text: string; note?: string }[] = [
+  { text: ELIGIBILITY, note: `*${TAGLINE}` },
+  { text: '1개월 집중 과정이며, 파트너와 함께 호흡을 맞추는 촬영 특성상 중간 드랍이 어렵습니다.' },
+  { text: '레퍼런스는 구글독스로 취합해 전달해 주세요. 공유 권한이 「링크가 있는 모든 사용자 · 편집자」가 아니면 검토가 어렵습니다.' },
 ]
 
 const ONE_MONTH_FAQ: FaqItem[] = [
   {
     q: '누가 신청할 수 있나요?',
-    a: '출연영상 클래스를 1회 이상 수료한 KD4 멤버만 신청할 수 있습니다. 처음이라면 출연영상 클래스(3개월)부터 시작해 주세요.',
+    a: `${TAGLINE}라서, 마이즈너 테크닉 정규 클래스 및 출연영상 클래스를 수료한 배우만 신청할 수 있습니다. 신청은 카카오채널로 받습니다. 처음이라면 마이즈너 테크닉 정규 클래스나 출연영상 클래스부터 시작해 주세요.`,
   },
   {
     q: '수업이 없다는 건 무슨 뜻인가요?',
@@ -113,8 +118,29 @@ const ONE_MONTH_FAQ: FaqItem[] = [
   },
 ]
 
-/** 1달 클래스 결과물 — 작품명·기수는 /join 포트폴리오 표기, uploadDate는 유튜브 실측 */
-const PORTFOLIO_VIDEO = { id: 'tLAZZOGd3FA', title: '출연영상 1달 클래스 — 단편 「백만 원에 난리난 현실남매」', uploadDate: '2026-05-29T01:00:29-07:00' }
+/** 1달 클래스 결과물 — 2026-10-06 대표 추가 2편 + /join 표기 1편. 제목·uploadDate는 유튜브 실측 */
+const PORTFOLIO_VIDEOS = [
+  { id: 'AMcMn4UgJp4', title: '저 혼자 뒤집어쓸 줄 아셨어요?', uploadDate: '2026-10-05T03:00:13-07:00' },
+  { id: 'lYdllWYftG0', title: '테토녀와 사내연애', uploadDate: '2026-07-29T22:00:08-07:00' },
+  { id: 'tLAZZOGd3FA', title: '단편 「백만 원에 난리난 현실남매」', uploadDate: '2026-05-29T01:00:29-07:00' },
+]
+
+const KAKAO_BUTTON: CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: 8,
+  minHeight: 48,
+  padding: '12px 20px',
+  background: '#FEE500',
+  color: '#3C1E1E',
+  fontFamily: 'var(--font-sans)',
+  fontSize: '0.9rem',
+  fontWeight: 700,
+  borderRadius: 10,
+  textDecoration: 'none',
+  letterSpacing: '0.01em',
+}
 
 export default function OneMonthReelPage() {
   return (
@@ -130,26 +156,26 @@ export default function OneMonthReelPage() {
             type: 'ItemPage',
             idPath: '/one-month-reel-class#webpage',
             url: PAGE_URL,
-            name: '출연영상 1달 완성 클래스 — 수업 없이 포트폴리오 촬영만 | KD4 액팅 스튜디오',
-            description: '출연영상 클래스 수료자를 위한 1개월 촬영 전용 워크숍. 레퍼런스 취합 → 맞춤형 시나리오 → 테스트 촬영 → 본 촬영.',
+            name: '출연영상 1달 완성 클래스 — 훈련된 배우들의 포트폴리오 만들기 | KD4 액팅 스튜디오',
+            description: '마이즈너 테크닉 정규·출연영상 클래스 수료자를 위한 1개월 촬영 전용 워크숍. 레퍼런스 취합 → 맞춤형 시나리오 → 테스트 촬영 → 본 촬영.',
             mainEntity: { '@id': `${PAGE_URL}#course-1-month-film-class` },
             dateModified: LAST_UPDATED.oneMonthReel,
             speakableCssSelectors: ['h1', '.section-desc', '.faq-answer'],
           }),
           buildCourseFromClass(ONE_MONTH, { url: PAGE_URL, image: `${SITE_URL}/og-heart.jpg` }),
           buildFaqPage(ONE_MONTH_FAQ, PAGE_URL),
-          {
+          ...PORTFOLIO_VIDEOS.map((v) => ({
             '@context': 'https://schema.org',
             '@type': 'VideoObject',
-            name: `KD4 출연영상 포트폴리오 — ${PORTFOLIO_VIDEO.title}`,
+            name: `KD4 출연영상 포트폴리오 — ${v.title}`,
             description: 'KD4 액팅 스튜디오 출연영상 1달 완성 클래스 멤버가 촬영한 배우 캐스팅용 출연영상입니다.',
-            thumbnailUrl: `https://i.ytimg.com/vi/${PORTFOLIO_VIDEO.id}/hqdefault.jpg`,
-            uploadDate: PORTFOLIO_VIDEO.uploadDate,
-            contentUrl: `https://www.youtube.com/watch?v=${PORTFOLIO_VIDEO.id}`,
-            embedUrl: `https://www.youtube.com/embed/${PORTFOLIO_VIDEO.id}`,
+            thumbnailUrl: `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`,
+            uploadDate: v.uploadDate,
+            contentUrl: `https://www.youtube.com/watch?v=${v.id}`,
+            embedUrl: `https://www.youtube.com/embed/${v.id}`,
             inLanguage: 'ko',
             publisher: { '@type': 'Organization', '@id': `${SITE_URL}#org`, name: 'KD4 액팅 스튜디오', url: SITE_URL },
-          },
+          })),
         ]}
       />
 
@@ -163,18 +189,21 @@ export default function OneMonthReelPage() {
           <h1 className="section-title-serif" style={{ color: '#fff', fontSize: 'clamp(1.7rem, 4.5vw, 2.8rem)', lineHeight: 1.35, marginBottom: '16px', maxWidth: '720px', margin: '0 auto 16px', wordBreak: 'keep-all' }}>
             출연영상 1달 완성 클래스
           </h1>
-          <p style={{ fontSize: 'clamp(0.95rem, 2.6vw, 1.05rem)', color: 'rgba(255,255,255,0.86)', lineHeight: 1.7, marginBottom: '8px', maxWidth: '600px', margin: '0 auto 8px', wordBreak: 'keep-all', fontStyle: 'italic' }}>
+          <p style={{ fontSize: 'clamp(0.95rem, 2.6vw, 1.05rem)', color: 'rgba(255,255,255,0.86)', lineHeight: 1.7, maxWidth: '600px', margin: '0 auto 8px', wordBreak: 'keep-all', fontStyle: 'italic' }}>
             &ldquo;{ONE_MONTH.quote}&rdquo;
           </p>
-          <p style={{ fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)', color: 'rgba(255,255,255,0.7)', marginBottom: '32px', letterSpacing: '0.03em' }}>
-            1개월 촬영 전용 워크숍 · 클래스 비용 ₩{ONE_MONTH.price} · 출연영상 클래스 수료자 전용
+          <p style={{ fontSize: 'clamp(0.9rem, 2.4vw, 1rem)', color: 'rgba(255,255,255,0.86)', fontWeight: 600, lineHeight: 1.6, maxWidth: '600px', margin: '0 auto 6px', wordBreak: 'keep-all' }}>
+            {TAGLINE}
+          </p>
+          <p style={{ fontSize: 'clamp(0.82rem, 2.1vw, 0.92rem)', color: 'rgba(255,255,255,0.7)', marginBottom: '32px', letterSpacing: '0.02em', wordBreak: 'keep-all' }}>
+            마이즈너 테크닉 정규·출연영상 클래스 수료자 전용 · 클래스 비용 ₩{ONE_MONTH.price}
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <JoinCTALink href="#form" location="one-month-reel-hero" label="상담 신청" className="btn-primary" style={{ background: '#fff', color: 'var(--navy)' }}>
-              상담 신청
+            <JoinCTALink href={KAKAO_URL} kind="external" channel="kakao" location="one-month-reel-hero" label="카카오채널로 신청" className="btn-primary" style={{ background: '#fff', color: 'var(--navy)' }}>
+              카카오채널로 신청
             </JoinCTALink>
-            <JoinCTALink href="https://pf.kakao.com/_ximxdqn" kind="external" channel="kakao" location="one-month-reel-hero" label="카카오 채널 문의" className="btn-outline" style={{ borderColor: 'rgba(255,255,255,0.4)', color: 'rgba(255,255,255,0.95)' }}>
-              카카오 채널 문의
+            <JoinCTALink href="#apply" location="one-month-reel-hero" label="신청 방법" className="btn-outline" style={{ borderColor: 'rgba(255,255,255,0.4)', color: 'rgba(255,255,255,0.95)' }}>
+              신청 방법
             </JoinCTALink>
           </div>
         </div>
@@ -187,7 +216,7 @@ export default function OneMonthReelPage() {
             <p className="section-eyebrow" lang="en">01 — WHAT IS</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>수업 없이, 영상 한 편만</h2>
             <p className="section-desc">
-              출연영상 클래스를 마친 멤버가 포트폴리오를 한 편 더 만들 때 선택하는 과정입니다. 정규 수업 없이, 한 달 동안 촬영 준비와 촬영에만 집중합니다.
+              {TAGLINE}입니다. 마이즈너 테크닉 정규·출연영상 클래스를 마친 배우가 정규 수업 없이, 한 달 동안 촬영 준비와 촬영에만 집중합니다.
             </p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', maxWidth: '1040px', margin: '0 auto' }}>
@@ -210,12 +239,16 @@ export default function OneMonthReelPage() {
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>1달 완성 클래스 결과물</h2>
             <p className="section-desc">출연영상 1달 완성 클래스 멤버가 촬영한 출연영상입니다.</p>
           </div>
-          <div style={{ maxWidth: '720px', margin: '0 auto', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden' }}>
-            <YouTubeFacade videoId={PORTFOLIO_VIDEO.id} title={PORTFOLIO_VIDEO.title} />
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px', maxWidth: '1040px', margin: '0 auto' }}>
+            {PORTFOLIO_VIDEOS.map((v) => (
+              <div key={v.id} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden' }}>
+                <YouTubeFacade videoId={v.id} title={v.title} />
+              </div>
+            ))}
           </div>
           <div style={{ textAlign: 'center', marginTop: '28px' }}>
             <Link href="/reel-production-class#portfolio" className="btn-outline" style={{ borderColor: 'var(--navy)', color: 'var(--navy)' }}>
-              출연영상 클래스 포트폴리오 더보기 <span aria-hidden="true">→</span>
+              출연영상 클래스 커리큘럼·포트폴리오 보기 <span aria-hidden="true">→</span>
             </Link>
           </div>
         </div>
@@ -253,33 +286,14 @@ export default function OneMonthReelPage() {
               {NOTICE_ITEMS.map((item, i) => (
                 <li key={i} style={{ fontSize: 'clamp(0.86rem, 2.1vw, 0.9rem)', color: 'var(--gray-light)', lineHeight: 1.75, paddingLeft: '16px', position: 'relative', wordBreak: 'keep-all' }}>
                   <span aria-hidden="true" style={{ position: 'absolute', left: 0, top: '0.6em', width: '8px', height: '1px', background: 'var(--navy)' }} />
-                  {item}
+                  {item.text}
+                  {item.note && (
+                    <span style={{ display: 'block', fontSize: '0.82rem', color: 'var(--navy)', fontWeight: 600, marginTop: '2px' }}>{item.note}</span>
+                  )}
                 </li>
               ))}
             </ul>
-            <JoinCTALink
-              href="https://pf.kakao.com/_ximxdqn"
-              kind="external"
-              channel="kakao"
-              location="one-month-reel-notice"
-              label="카카오채널 문의"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 8,
-                minHeight: 48,
-                padding: '12px 20px',
-                background: '#FEE500',
-                color: '#3C1E1E',
-                fontFamily: 'var(--font-sans)',
-                fontSize: '0.9rem',
-                fontWeight: 700,
-                borderRadius: 10,
-                textDecoration: 'none',
-                letterSpacing: '0.01em',
-              }}
-            >
+            <JoinCTALink href={KAKAO_URL} kind="external" channel="kakao" location="one-month-reel-notice" label="카카오채널 문의" style={KAKAO_BUTTON}>
               <Image src="/icons/kakao.png" alt="" aria-hidden="true" width={18} height={18} style={{ objectFit: 'contain' }} />
               카카오채널로 문의하기
             </JoinCTALink>
@@ -312,7 +326,7 @@ export default function OneMonthReelPage() {
                 { label: '정원', value: ONE_MONTH.capacity },
                 { label: '촬영 형식', value: '컷 편집 / 롱테이크 택 1' },
                 { label: '클래스 비용', value: `₩${ONE_MONTH.price}` },
-                { label: '신청 자격', value: '출연영상 클래스 수료자' },
+                { label: '신청 자격', value: '마이즈너 정규·출연영상 수료자' },
               ].map((info) => (
                 <div key={info.label}>
                   <span style={{ fontSize: '0.7rem', color: 'var(--gray)', display: 'block' }}>{info.label}</span>
@@ -356,20 +370,38 @@ export default function OneMonthReelPage() {
         </div>
       </section>
 
-      {/* FORM */}
-      <section id="form" aria-label="상담 신청" style={{ scrollMarginTop: '80px', padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg)' }}>
+      {/* APPLY — 수료자 전용이라 상담 폼(신규 멤버용: 베이직·출연영상·마이즈너 정규만) 대신 카카오채널 신청 (2026-10-06 대표) */}
+      <section id="apply" aria-label="신청 방법" style={{ scrollMarginTop: '80px', padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg)' }}>
         <div className="container">
-          <div style={{ maxWidth: '520px', margin: '0 auto' }}>
-            <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-              <p className="section-eyebrow">상담 신청</p>
-              <h2 className="section-title-serif" style={{ fontSize: 'clamp(1.4rem, 3.6vw, 1.9rem)', marginBottom: '8px' }}>
-                출연영상 1달 완성 클래스 상담
-              </h2>
-              <p style={{ fontSize: '0.88rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-                이름·연락처만 남기시면 24시간 이내 SMS로 연락드립니다.
-              </p>
+          <div style={{ maxWidth: '560px', margin: '0 auto', textAlign: 'center' }}>
+            <p className="section-eyebrow" lang="en">HOW TO APPLY</p>
+            <h2 className="section-title-serif" style={{ fontSize: 'clamp(1.4rem, 3.6vw, 1.9rem)', marginBottom: '12px' }}>
+              신청은 카카오채널로
+            </h2>
+            <p className="section-desc" style={{ marginBottom: '24px' }}>
+              마이즈너 테크닉 정규·출연영상 클래스를 수료한 배우 전용 클래스라, 상담 폼 대신 카카오채널로 신청을 받습니다.
+            </p>
+            <JoinCTALink href={KAKAO_URL} kind="external" channel="kakao" location="one-month-reel-apply" label="카카오채널로 신청하기" style={KAKAO_BUTTON}>
+              <Image src="/icons/kakao.png" alt="" aria-hidden="true" width={18} height={18} style={{ objectFit: 'contain' }} />
+              카카오채널로 신청하기
+            </JoinCTALink>
+            <p style={{ fontSize: '0.92rem', color: 'var(--gray-light)', lineHeight: 1.75, marginTop: '32px', wordBreak: 'keep-all' }}>
+              배우님의 최고의 결과물을 위해 함께 고민하고 달리겠습니다.
+            </p>
+            <p style={{ fontFamily: 'var(--font-serif)', fontSize: '0.92rem', fontWeight: 700, color: '#111', marginTop: '6px' }}>
+              KD4 액팅 스튜디오 대표 권동원 드림
+            </p>
+            <div style={{ marginTop: '32px', paddingTop: '20px', borderTop: '1px solid var(--border)' }}>
+              <p style={{ fontSize: '0.86rem', color: 'var(--gray)', marginBottom: '10px' }}>아직 수료 전이라면</p>
+              <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <Link href="/meisner-technique-class#form" style={{ color: 'var(--navy)', fontWeight: 700, fontSize: '0.92rem' }}>
+                  마이즈너 테크닉 정규 클래스 상담 <span aria-hidden="true">→</span>
+                </Link>
+                <Link href="/reel-production-class#form" style={{ color: 'var(--navy)', fontWeight: 700, fontSize: '0.92rem' }}>
+                  출연영상 클래스 상담 <span aria-hidden="true">→</span>
+                </Link>
+              </div>
             </div>
-            <JoinForm initialClass="출연영상 1달 완성 클래스" />
           </div>
         </div>
       </section>
@@ -378,6 +410,9 @@ export default function OneMonthReelPage() {
       <section aria-label="관련 클래스 바로가기" style={{ padding: '24px', background: 'var(--bg)', textAlign: 'center', borderTop: '1px solid var(--border)' }}>
         <Link href="/reel-production-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
           <span aria-hidden="true">← </span>출연영상 클래스
+        </Link>
+        <Link href="/meisner-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
+          마이즈너 정규 클래스
         </Link>
         <Link href="/advanced-reel-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
           출연영상 심화 클래스

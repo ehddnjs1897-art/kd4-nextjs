@@ -128,15 +128,6 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
   const [selectedClass, setSelectedClass] = useState(
     initialClass && CLASSES.some((c) => c.nameKo === initialClass) ? initialClass : ''
   )
-  // 클래스 전용 페이지(출연영상 심화·1달 등)에서 미리 고른 클래스가 기본 선택지에 없으면 칩 맨 앞에 보여준다 (2026-10-06)
-  // — 선택은 돼 있는데 화면에 안 보이던 문제 방지. initialClass 없는 기본 폼(/join 등)은 그대로
-  const moreOptions =
-    initialClass &&
-    CLASSES.some((c) => c.nameKo === initialClass) &&
-    !FEATURED_CLASS_NAMES.includes(initialClass) &&
-    !MORE_OPTIONS.includes(initialClass)
-      ? [initialClass, ...MORE_OPTIONS]
-      : MORE_OPTIONS
   const [meisnerExp, setMeisnerExp] = useState('')
   const [consent, setConsent] = useState(false)
   const [moreOpen, setMoreOpen] = useState(false)
@@ -918,9 +909,9 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
           >
             다른 클래스를 찾으세요? {moreOpen ? '접기 ▲' : '펼치기 ▼'}
           </button>
-          {(moreOpen || moreOptions.includes(selectedClass)) && (
+          {(moreOpen || MORE_OPTIONS.includes(selectedClass)) && (
             <div className={styles.chipRow} role="group" aria-label="다른 클래스 선택">
-              {moreOptions.map((nameKo) => (
+              {MORE_OPTIONS.map((nameKo) => (
                 <button
                   key={nameKo}
                   type="button"

@@ -12,7 +12,6 @@ import { buildBreadcrumb, buildFaqPage, buildCourseFromClass, buildWebPage } fro
 import { SITE_URL } from '@/lib/constants'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
-const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
 const YouTubeFacade = dynamic(() => import('@/components/youtube/YouTubeFacade'))
 
 const PAGE_URL = `${SITE_URL}/advanced-reel-class`
@@ -122,7 +121,7 @@ const NOTICE_ITEMS = [
 const ADVANCED_FAQ: FaqItem[] = [
   {
     q: '누가 신청할 수 있나요?',
-    a: '출연영상 클래스를 1회 이상 수료한 KD4 멤버만 신청할 수 있습니다. 처음이라면 출연영상 클래스(3개월)부터 시작해 주세요.',
+    a: '출연영상 클래스를 1회 이상 수료한 KD4 멤버만 신청할 수 있습니다. 신청은 카카오채널로 받습니다. 처음이라면 출연영상 클래스(3개월)부터 시작해 주세요.',
   },
   {
     q: '출연영상 클래스와 무엇이 다른가요?',
@@ -140,6 +139,7 @@ const ADVANCED_FAQ: FaqItem[] = [
 
 /** 심화 클래스 결과물 — 기수·작품명은 /join 포트폴리오 표기, uploadDate는 유튜브 실측 */
 const PORTFOLIO_VIDEOS = [
+  { id: 'Cr4-qwVDkBc', title: '각자의 이유', uploadDate: '2026-02-25T02:16:13-08:00' }, // 2026-10-06 대표 (기수 미확인 — 유튜브 제목 그대로)
   { id: '7Q62XeyVLbc', title: '심화 1기 — 단편 「여배우들」', uploadDate: '2026-08-08T06:48:27-07:00' }, // 2026-10-06 대표
   { id: 'zoDJtGT3aQM', title: '심화 2기 — 단편 「그 사람이 떠나기 전날 밤」', uploadDate: '2026-05-25T05:00:30-07:00' },
   { id: 's_AE-Vy0Ka0', title: '심화 1기 — 단편 「우리들의 로맨스」', uploadDate: '2026-05-21T00:17:11-07:00' },
@@ -199,11 +199,11 @@ export default function AdvancedReelPage() {
             {ADVANCED.course} 집중 코스 · 정원 {ADVANCED.capacity} · 출연영상 클래스 수료자 전용
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <JoinCTALink href="#form" location="advanced-reel-hero" label="상담 신청" className="btn-primary" style={{ background: '#fff', color: 'var(--navy)' }}>
-              상담 신청
+            <JoinCTALink href="https://pf.kakao.com/_ximxdqn" kind="external" channel="kakao" location="advanced-reel-hero" label="카카오채널로 신청" className="btn-primary" style={{ background: '#fff', color: 'var(--navy)' }}>
+              카카오채널로 신청
             </JoinCTALink>
-            <JoinCTALink href="https://pf.kakao.com/_ximxdqn" kind="external" channel="kakao" location="advanced-reel-hero" label="카카오 채널 문의" className="btn-outline" style={{ borderColor: 'rgba(255,255,255,0.4)', color: 'rgba(255,255,255,0.95)' }}>
-              카카오 채널 문의
+            <JoinCTALink href="#apply" location="advanced-reel-hero" label="신청 방법" className="btn-outline" style={{ borderColor: 'rgba(255,255,255,0.4)', color: 'rgba(255,255,255,0.95)' }}>
+              신청 방법
             </JoinCTALink>
           </div>
         </div>
@@ -237,9 +237,9 @@ export default function AdvancedReelPage() {
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
             <p className="section-eyebrow" lang="en">02 — PORTFOLIO</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>심화 클래스 결과물</h2>
-            <p className="section-desc">출연영상 심화 1기·2기 멤버가 롱테이크로 촬영한 출연영상입니다.</p>
+            <p className="section-desc">출연영상 심화 클래스 멤버가 롱테이크로 촬영한 출연영상입니다.</p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px', maxWidth: '1040px', margin: '0 auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '12px', maxWidth: '820px', margin: '0 auto' }}>
             {PORTFOLIO_VIDEOS.map((v) => (
               <div key={v.id} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden' }}>
                 <YouTubeFacade videoId={v.id} title={v.title} />
@@ -450,20 +450,57 @@ export default function AdvancedReelPage() {
         </div>
       </section>
 
-      {/* FORM */}
-      <section id="form" aria-label="상담 신청" style={{ scrollMarginTop: '80px', padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg2)' }}>
+      {/* APPLY — 수료자 전용이라 상담 폼(신규 멤버용: 베이직·출연영상·마이즈너 정규만) 대신 카카오채널 신청 (2026-10-06 대표) */}
+      <section id="apply" aria-label="신청 방법" style={{ scrollMarginTop: '80px', padding: 'clamp(56px, 9vw, 80px) 0', background: 'var(--bg2)' }}>
         <div className="container">
-          <div style={{ maxWidth: '520px', margin: '0 auto' }}>
-            <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-              <p className="section-eyebrow">상담 신청</p>
-              <h2 className="section-title-serif" style={{ fontSize: 'clamp(1.4rem, 3.6vw, 1.9rem)', marginBottom: '8px' }}>
-                출연영상 심화 클래스 상담
-              </h2>
-              <p style={{ fontSize: '0.88rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-                이름·연락처만 남기시면 24시간 이내 SMS로 연락드립니다.
-              </p>
+          <div style={{ maxWidth: '560px', margin: '0 auto', textAlign: 'center' }}>
+            <p className="section-eyebrow" lang="en">HOW TO APPLY</p>
+            <h2 className="section-title-serif" style={{ fontSize: 'clamp(1.4rem, 3.6vw, 1.9rem)', marginBottom: '12px' }}>
+              신청은 카카오채널로
+            </h2>
+            <p className="section-desc" style={{ marginBottom: '24px' }}>
+              출연영상 클래스를 수료한 멤버 전용 클래스라, 상담 폼 대신 카카오채널로 신청을 받습니다.
+            </p>
+            <JoinCTALink
+              href="https://pf.kakao.com/_ximxdqn"
+              kind="external"
+              channel="kakao"
+              location="advanced-reel-apply"
+              label="카카오채널로 신청하기"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                minHeight: 48,
+                padding: '12px 20px',
+                background: '#FEE500',
+                color: '#3C1E1E',
+                fontFamily: 'var(--font-sans)',
+                fontSize: '0.9rem',
+                fontWeight: 700,
+                borderRadius: 10,
+                textDecoration: 'none',
+                letterSpacing: '0.01em',
+              }}
+            >
+              <Image src="/icons/kakao.png" alt="" aria-hidden="true" width={18} height={18} style={{ objectFit: 'contain' }} />
+              카카오채널로 신청하기
+            </JoinCTALink>
+            {/* 노션 「출연영상 심화 클래스 안내」 맺음말 그대로 */}
+            <p style={{ fontSize: '0.92rem', color: 'var(--gray-light)', lineHeight: 1.75, marginTop: '32px', wordBreak: 'keep-all' }}>
+              문의사항은 언제든 유무선으로 연락주세요.<br />
+              언제나 배우분들의 성장과 동행하겠습니다.
+            </p>
+            <p style={{ fontFamily: 'var(--font-serif)', fontSize: '0.92rem', fontWeight: 700, color: '#111', marginTop: '6px' }}>
+              KD4 액팅 스튜디오 · 유익액터스 대표 권동원 드림
+            </p>
+            <div style={{ marginTop: '32px', paddingTop: '20px', borderTop: '1px solid var(--border)' }}>
+              <p style={{ fontSize: '0.86rem', color: 'var(--gray)', marginBottom: '10px' }}>아직 출연영상 클래스를 수료하지 않았다면</p>
+              <Link href="/reel-production-class#form" style={{ color: 'var(--navy)', fontWeight: 700, fontSize: '0.92rem' }}>
+                출연영상 클래스 상담 <span aria-hidden="true">→</span>
+              </Link>
             </div>
-            <JoinForm initialClass="출연영상 심화 클래스" />
           </div>
         </div>
       </section>
