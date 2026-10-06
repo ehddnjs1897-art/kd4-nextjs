@@ -232,7 +232,7 @@ export default function ReelPage() {
       </section>
 
       {/* PORTFOLIO */}
-      <section aria-label="포트폴리오" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
+      <section id="portfolio" aria-label="포트폴리오" style={{ scrollMarginTop: '80px', padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
             <p className="section-eyebrow" lang="en">02 — PORTFOLIO</p>
@@ -487,6 +487,9 @@ export default function ReelPage() {
       <section aria-label="관련 클래스 바로가기" style={{ padding: '24px', background: 'var(--bg)', textAlign: 'center', borderTop: '1px solid var(--border)' }}>
         <Link href="/meisner-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
           <span aria-hidden="true">← </span>마이즈너 정규 클래스
+        </Link>
+        <Link href="/advanced-reel-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
+          출연영상 심화 클래스 (수료 후)
         </Link>
         <Link href="/audition-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
           오디션 테크닉 클래스

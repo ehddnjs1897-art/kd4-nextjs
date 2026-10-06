@@ -13,6 +13,7 @@ const CLASS_DETAIL_HREF: Record<string, string> = {
   '마이즈너 테크닉 정규 클래스': '/meisner-technique-class',
   '출연영상 클래스': '/reel-production-class',
   '오디션 테크닉 클래스': '/audition-technique-class',
+  '출연영상 심화 클래스': '/advanced-reel-class',
 }
 
 /** 하단 "자주 묻는 결정" 직답용 — 가격·코스는 lib/classes.ts 실값만 인용 (하드코딩 금지) */

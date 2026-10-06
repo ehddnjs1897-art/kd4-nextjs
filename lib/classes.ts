@@ -110,7 +110,8 @@ export const CLASSES: ClassItem[] = [
     duration: "4시간",
     capacity: "6명",
     course: "2개월",
-    price: "450,000"
+    price: "450,000",
+    instructor: "권동원 대표", // 대표 직강 (2026-10-06)
   },
   {
     step: "STEP 2",

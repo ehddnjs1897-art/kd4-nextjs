@@ -21,7 +21,9 @@ export const LAST_UPDATED = {
   meisnerGuide: '2026-08-20',
   // /meisner-technique/repetition-emotion-words — 레피티션 감정 어휘표 (2026-09-08 신설)
   repetitionWords: '2026-09-08',
-  reel: '2026-08-30',
+  reel: '2026-10-06',
+  // /advanced-reel-class — 출연영상 심화 클래스 (2026-10-06 신설)
+  advancedReel: '2026-10-06',
   sinchon: '2026-08-20',
   coaches: '2026-08-30',
   join: '2026-08-30',
