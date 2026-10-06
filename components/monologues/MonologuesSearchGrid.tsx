@@ -4,8 +4,13 @@ import { useState, useEffect, useMemo, useDeferredValue, useRef, Fragment } from
 import Link from 'next/link'
 import type { MonologueListItem } from '@/lib/monologues'
 import VisitorCTA from '@/components/monologues/VisitorCTA'
+import PosterAd, { POSTER_ROTATION } from '@/components/monologues/PosterAd'
 
 const PAGE_SIZE = 48
+// 포스터 광고 칸 (2026-10-06 대표 지시 «상담 CTA를 늘리고 포스터처럼 띄워라») — 6번째 카드 뒤부터 12장마다 한 칸,
+// 상담·마이즈너·출연영상·베이직·캐스팅 순으로 돌린다. 결과가 8편 미만인 검색에는 끼우지 않는다.
+const POSTER_FIRST = 6
+const POSTER_EVERY = 12
 // 카드 이미지(1400×1400 PNG ~230KB) → Vercel 이미지 최적화기 경유(640px WebP, ~20KB).
 // 2026-08-19 Vercel Pro 결제로 전환 — Supabase 이미지 변환(Pro 전용)과 달리 Supabase 무료 플랜에서도
 // 동작하고, 엣지 캐시(배포 후에도 유지)라 Supabase 전송량이 원본 1회분으로 준다. 실패 시 onError로 원본 폴백.
@@ -253,6 +258,13 @@ export default function MonologuesSearchGrid({
                 </div>
               </div>
             </Link>
+            {filtered.length >= 8 && i >= POSTER_FIRST - 1 && (i - (POSTER_FIRST - 1)) % POSTER_EVERY === 0 && (
+              <PosterAd
+                posterKey={POSTER_ROTATION[((i - (POSTER_FIRST - 1)) / POSTER_EVERY) % POSTER_ROTATION.length]}
+                layout="cell"
+                placement="list"
+              />
+            )}
             {/* 첫 48장(또는 목록 끝) 뒤에 상담·가입 안내 한 줄 — 카드 흐름은 그대로 */}
             {i === Math.min(PAGE_SIZE, filtered.length) - 1 && filtered.length >= 8 && <VisitorCTA variant="list" />}
             </Fragment>
