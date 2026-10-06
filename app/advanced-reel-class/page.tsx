@@ -140,6 +140,7 @@ const ADVANCED_FAQ: FaqItem[] = [
 
 /** 심화 클래스 결과물 — 기수·작품명은 /join 포트폴리오 표기, uploadDate는 유튜브 실측 */
 const PORTFOLIO_VIDEOS = [
+  { id: '7Q62XeyVLbc', title: '심화 1기 — 단편 「여배우들」', uploadDate: '2026-08-08T06:48:27-07:00' }, // 2026-10-06 대표
   { id: 'zoDJtGT3aQM', title: '심화 2기 — 단편 「그 사람이 떠나기 전날 밤」', uploadDate: '2026-05-25T05:00:30-07:00' },
   { id: 's_AE-Vy0Ka0', title: '심화 1기 — 단편 「우리들의 로맨스」', uploadDate: '2026-05-21T00:17:11-07:00' },
 ]
