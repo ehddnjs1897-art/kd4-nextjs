@@ -476,6 +476,9 @@ export default function AdvancedReelPage() {
         <Link href="/meisner-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
           마이즈너 정규 클래스
         </Link>
+        <Link href="/one-month-reel-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
+          출연영상 1달 완성 클래스
+        </Link>
         <Link href="/acting-coaches" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
           권동원 액팅 코치
         </Link>

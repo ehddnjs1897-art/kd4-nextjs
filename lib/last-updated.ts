@@ -24,6 +24,8 @@ export const LAST_UPDATED = {
   reel: '2026-10-06',
   // /advanced-reel-class — 출연영상 심화 클래스 (2026-10-06 신설)
   advancedReel: '2026-10-06',
+  // /one-month-reel-class — 출연영상 1달 완성 클래스 (2026-10-06 신설)
+  oneMonthReel: '2026-10-06',
   sinchon: '2026-08-20',
   coaches: '2026-08-30',
   join: '2026-08-30',

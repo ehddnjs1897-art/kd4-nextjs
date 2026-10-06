@@ -495,6 +495,9 @@ export default function ReelPage() {
         <Link href="/advanced-reel-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
           출연영상 심화 클래스 (수료 후)
         </Link>
+        <Link href="/one-month-reel-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
+          출연영상 1달 완성 클래스 (수료 후)
+        </Link>
         <Link href="/audition-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
           오디션 테크닉 클래스
         </Link>

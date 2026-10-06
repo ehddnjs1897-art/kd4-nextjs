@@ -106,6 +106,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/meisner-technique/repetition-emotion-words`, lastModified: new Date(LAST_UPDATED.repetitionWords), changeFrequency: 'yearly', priority: 0.7 },
     { url: `${BASE}/reel-production-class`,        lastModified: new Date(LAST_UPDATED.reel),    changeFrequency: 'monthly', priority: 0.85 },
     { url: `${BASE}/advanced-reel-class`,          lastModified: new Date(LAST_UPDATED.advancedReel), changeFrequency: 'monthly', priority: 0.75 },
+    { url: `${BASE}/one-month-reel-class`,         lastModified: new Date(LAST_UPDATED.oneMonthReel), changeFrequency: 'monthly', priority: 0.7 },
     { url: `${BASE}/sinchon-acting-academy`,       lastModified: new Date(LAST_UPDATED.sinchon), changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/acting-coaches`,               lastModified: new Date(LAST_UPDATED.coaches), changeFrequency: 'monthly', priority: 0.75 },
     { url: `${BASE}/actors`,                       lastModified: actorsLastMod,          changeFrequency: 'weekly',  priority: 0.8 },

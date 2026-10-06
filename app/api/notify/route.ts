@@ -268,6 +268,8 @@ const CLASS_GUIDE_URL: Record<string, string> = {
   '마이즈너 테크닉 정규 클래스': 'https://kd4.club/meisner-technique-class',
   '출연영상 클래스': 'https://kd4.club/reel-production-class',
   '오디션 테크닉 클래스': 'https://kd4.club/audition-technique-class',
+  '출연영상 심화 클래스': 'https://kd4.club/advanced-reel-class',
+  '출연영상 1달 완성 클래스': 'https://kd4.club/one-month-reel-class',
   '움직임 클래스': 'https://kd4.club/classes',
   '개인 레슨': 'https://kd4.club/classes',
 }
