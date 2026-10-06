@@ -138,8 +138,11 @@ const ADVANCED_FAQ: FaqItem[] = [
   },
 ]
 
-/** 출연영상 심화 1기 결과물 — 유튜브 실측 (출연영상 클래스 페이지 포트폴리오와 동일 ID) */
-const PORTFOLIO_VIDEO = { id: 's_AE-Vy0Ka0', title: '출연영상 심화 1기 — 롱테이크 출연영상', uploadDate: '2026-05-21T00:17:11-07:00' }
+/** 심화 클래스 결과물 — 기수·작품명은 /join 포트폴리오 표기, uploadDate는 유튜브 실측 */
+const PORTFOLIO_VIDEOS = [
+  { id: 'zoDJtGT3aQM', title: '심화 2기 — 단편 「그 사람이 떠나기 전날 밤」', uploadDate: '2026-05-25T05:00:30-07:00' },
+  { id: 's_AE-Vy0Ka0', title: '심화 1기 — 단편 「우리들의 로맨스」', uploadDate: '2026-05-21T00:17:11-07:00' },
+]
 
 export default function AdvancedReelPage() {
   return (
@@ -163,18 +166,18 @@ export default function AdvancedReelPage() {
           }),
           buildCourseFromClass(ADVANCED, { url: PAGE_URL, image: `${SITE_URL}/og-heart.jpg` }),
           buildFaqPage(ADVANCED_FAQ, PAGE_URL),
-          {
+          ...PORTFOLIO_VIDEOS.map((v) => ({
             '@context': 'https://schema.org',
             '@type': 'VideoObject',
-            name: `KD4 출연영상 포트폴리오 — ${PORTFOLIO_VIDEO.title}`,
+            name: `KD4 출연영상 포트폴리오 — ${v.title}`,
             description: 'KD4 액팅 스튜디오 출연영상 심화 클래스 멤버가 제작한 롱테이크 출연영상. 전문 영화팀이 촬영·편집한 배우 캐스팅용 영상입니다.',
-            thumbnailUrl: `https://i.ytimg.com/vi/${PORTFOLIO_VIDEO.id}/hqdefault.jpg`,
-            uploadDate: PORTFOLIO_VIDEO.uploadDate,
-            contentUrl: `https://www.youtube.com/watch?v=${PORTFOLIO_VIDEO.id}`,
-            embedUrl: `https://www.youtube.com/embed/${PORTFOLIO_VIDEO.id}`,
+            thumbnailUrl: `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`,
+            uploadDate: v.uploadDate,
+            contentUrl: `https://www.youtube.com/watch?v=${v.id}`,
+            embedUrl: `https://www.youtube.com/embed/${v.id}`,
             inLanguage: 'ko',
             publisher: { '@type': 'Organization', '@id': `${SITE_URL}#org`, name: 'KD4 액팅 스튜디오', url: SITE_URL },
-          },
+          })),
         ]}
       />
 
@@ -232,11 +235,15 @@ export default function AdvancedReelPage() {
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
             <p className="section-eyebrow" lang="en">02 — PORTFOLIO</p>
-            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>심화 1기 결과물</h2>
-            <p className="section-desc">출연영상 심화 1기 멤버가 롱테이크로 촬영한 출연영상입니다.</p>
+            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>심화 클래스 결과물</h2>
+            <p className="section-desc">출연영상 심화 1기·2기 멤버가 롱테이크로 촬영한 출연영상입니다.</p>
           </div>
-          <div style={{ maxWidth: '720px', margin: '0 auto', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden' }}>
-            <YouTubeFacade videoId={PORTFOLIO_VIDEO.id} title={PORTFOLIO_VIDEO.title} />
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px', maxWidth: '1040px', margin: '0 auto' }}>
+            {PORTFOLIO_VIDEOS.map((v) => (
+              <div key={v.id} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden' }}>
+                <YouTubeFacade videoId={v.id} title={v.title} />
+              </div>
+            ))}
           </div>
           <div style={{ textAlign: 'center', marginTop: '28px' }}>
             <Link href="/reel-production-class#portfolio" className="btn-outline" style={{ borderColor: 'var(--navy)', color: 'var(--navy)' }}>

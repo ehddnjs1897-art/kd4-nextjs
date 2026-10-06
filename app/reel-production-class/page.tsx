@@ -80,6 +80,10 @@ const INCLUDES = [
 ]
 
 const PORTFOLIO_VIDEOS = [
+  // 2026-10-06 대표 추가 3편 — 제목·uploadDate는 유튜브 실측
+  { id: 'AMcMn4UgJp4', title: '저 혼자 뒤집어쓸 줄 아셨어요?', uploadDate: '2026-10-05T03:00:13-07:00' },
+  { id: '4Cc3L2IGRu8', title: '사건 덮고 얼마 받았어?', uploadDate: '2026-10-01T03:00:17-07:00' },
+  { id: 'RV1yvKguTy4', title: '오늘 많이 까불더라?', uploadDate: '2026-08-21T16:00:39-07:00' },
   { id: 's_AE-Vy0Ka0', title: '출연영상 대표 샘플', uploadDate: '2026-05-21T00:17:11-07:00' },
   { id: '7Q62XeyVLbc', title: '출연영상 샘플 1', uploadDate: '2026-08-08T06:48:27-07:00' },
   { id: 'IWL6hlOrU-w', title: '출연영상 샘플 2', uploadDate: '2026-05-13T20:42:36-07:00' },
