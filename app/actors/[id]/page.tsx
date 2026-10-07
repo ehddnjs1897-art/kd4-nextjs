@@ -32,6 +32,7 @@ interface Actor {
   dialects: string[] | null
   school: string | null
   major: string | null
+  agency: string | null            // 소속사 — 2026-10-07 신설 컬럼(마이그레이션 전엔 null)
   drive_photo_id: string | null
   storage_photo_path: string | null
   profile_photo: string | null
@@ -119,10 +120,12 @@ function actorSelect(opts: { casting: boolean; videoType: boolean; filmExtra: bo
 async function getActor(id: string): Promise<Actor | null> {
   // core/dialects/school+major는 서로 독립적인 조회 — 병렬화로 왕복을 3회→1회로 단축 (2026-07-10)
   // dialects·school·major는 신규 컬럼이라 core의 단일 select 문자열에 합치면 컬럼 미존재 시 전체 조회가 깨짐 → 별도 안전 조회 유지.
-  const [core, dialectsResult, schoolResult] = await Promise.all([
+  const [core, dialectsResult, schoolResult, agencyResult] = await Promise.all([
     getActorCore(id),
     Promise.resolve(supabaseAdmin.from('actors').select('dialects').eq('id', id).maybeSingle()).catch(() => null),
     Promise.resolve(supabaseAdmin.from('actors').select('school, major').eq('id', id).maybeSingle()).catch(() => null),
+    // agency(소속사) — 2026-10-07 신설. 마이그레이션 전엔 컬럼이 없어 error → null(표시 안 함), 핵심 조회는 영향 없음
+    Promise.resolve(supabaseAdmin.from('actors').select('agency').eq('id', id).maybeSingle()).catch(() => null),
   ])
   if (!core) return null
 
@@ -140,7 +143,11 @@ async function getActor(id: string): Promise<Actor | null> {
     if (typeof row.major === 'string') major = row.major
   }
 
-  return { ...core, dialects, school, major } as Actor
+  let agency: string | null = null
+  const ag = (agencyResult?.data as { agency?: unknown } | null)?.agency
+  if (!agencyResult?.error && typeof ag === 'string' && ag.trim()) agency = ag.trim()
+
+  return { ...core, dialects, school, major, agency } as Actor
 }
 
 async function getActorCore(id: string, allowPrivate = false): Promise<Actor | null> {
@@ -649,6 +656,13 @@ export default async function ActorDetailPage({
                 {actor.weight ? ` · ${actor.weight}kg` : ''}
                 {actor.name_en ? <> · <span lang="en">{actor.name_en}</span></> : ''}
               </p>
+
+              {/* 소속사 — 값이 있을 때만 (2026-10-07 대표 «소속사는 넣어») */}
+              {actor.agency && (
+                <p style={{ fontSize: '0.85rem', color: 'var(--gray-light)', letterSpacing: '0.03em', margin: '-8px 0 14px' }}>
+                  소속 <span style={{ color: 'var(--white)', fontWeight: 600 }}>{actor.agency}</span>
+                </p>
+              )}
 
               {/* 한줄소개 */}
               {actor.casting_summary && (
