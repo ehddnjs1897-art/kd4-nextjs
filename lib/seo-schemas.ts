@@ -23,12 +23,26 @@ const ADDRESS = {
   addressCountry: 'KR',
 } as const
 
-const SAMEAS = [
+/** 기관(KD4) 공식 채널 — Organization·EducationalOrganization·LocalBusiness 전용.
+ *  사람(Person) 노드에는 쓰지 않는다: 코치 Person이 KD4 기관 채널을 가리키면
+ *  "이 사람 = KD4 인스타" 라는 잘못된 동일인 신호가 된다(2026-10-11 AEO 감사).
+ *  당근은 프로필 정보가 사이트와 달라(업계 탑·notion 링크 등) 정정 전까지 넣지 않는다.
+ *  TODO: 유튜브 채널 소개도 '홍대'로 적혀 있음 — 채널 정보 정정은 대표 화면 작업(AEO 감사 C2). */
+export const ORG_SAMEAS = [
   'https://www.instagram.com/kd4actingstudio',
   'https://pf.kakao.com/_ximxdqn',
   'https://blog.naver.com/kd4actingstudio',
   'https://www.youtube.com/@kd4actingstudio',
+  'https://map.naver.com/p/entry/place/2046656507',
+  'https://place.map.kakao.com/702739563',
 ] as const
+
+/** 브랜드 표기 이름 — #org·#school·#local 공통 (법인명 '유익액터스'는 #org에만) */
+export const BRAND_ALT_NAMES = ['KD4 Acting Studio', 'KD4 액팅스튜디오'] as const
+
+/** 신규 멤버가 아닌 수료자 전용 클래스 — 상담 폼(/join) 대신 카카오채널로 신청 (대표 2026-10-06) */
+const KAKAO_CHANNEL = 'https://pf.kakao.com/_ximxdqn'
+const KAKAO_APPLY_CLASSES = new Set(['출연영상 심화 클래스', '출연영상 1달 완성 클래스'])
 
 /** Organization — 사이트 전체 식별자 (다른 schema가 @id로 참조) */
 export function buildOrganization() {
@@ -37,7 +51,12 @@ export function buildOrganization() {
     '@type': 'Organization',
     '@id': `${SITE_URL}#org`,
     name: 'KD4 액팅 스튜디오',
-    alternateName: 'KD4 Acting Studio',
+    // 검색·AI가 같은 곳으로 묶어 읽도록 실제로 쓰이는 이름만 나열 (2026-10-11)
+    alternateName: [...BRAND_ALT_NAMES, '유익액터스'],
+    // 사업자 정보 — 사이트 푸터 공개값과 동일. 사업자 구조가 바뀌면 함께 갱신
+    legalName: '유익액터스',
+    taxID: '284-11-02669',
+    disambiguatingDescription: '서울 서대문구 이대역 인근의 마이즈너 테크닉 기반 연기 스튜디오. 유익액터스가 운영한다.',
     url: SITE_URL,
     logo: {
       '@type': 'ImageObject',
@@ -48,7 +67,7 @@ export function buildOrganization() {
     image: `${SITE_URL}/og-image.jpg`,
     description:
       '서울 신촌 마이즈너 테크닉 기반 연기학원. 마이즈너 정규 클래스·출연영상 제작·캐스팅 연계 운영.',
-    sameAs: [...SAMEAS],
+    sameAs: [...ORG_SAMEAS],
     address: ADDRESS,
     founder: { '@id': `${SITE_URL}#dongwon` },
     contactPoint: {
@@ -81,7 +100,7 @@ export function buildEducationalOrganization() {
     '@type': 'EducationalOrganization',
     '@id': `${SITE_URL}#school`,
     name: 'KD4 액팅 스튜디오',
-    alternateName: 'KD4 Acting Studio',
+    alternateName: [...BRAND_ALT_NAMES],
     description:
       '마이즈너 테크닉 기반의 연기 훈련, 출연영상 포트폴리오 제작, 캐스팅 연계를 운영하는 서울 신촌의 연기학원.',
     url: SITE_URL,
@@ -94,7 +113,7 @@ export function buildEducationalOrganization() {
     image: `${SITE_URL}/og-image.jpg`,
     address: ADDRESS,
     founder: { '@id': `${SITE_URL}#dongwon` },
-    sameAs: [...SAMEAS],
+    sameAs: [...ORG_SAMEAS],
     areaServed: ['서울특별시', '서대문구', '신촌', '이화여대', '아현', '충정로'],
     knowsAbout: ['마이즈너 테크닉', '연기 훈련', '출연영상 포트폴리오', '오디션 준비', '캐스팅 연계'],
     telephone: '+82-10-8564-0244',
@@ -133,7 +152,7 @@ export function buildPersonDongwon() {
     ],
     knowsLanguage: ['Korean', 'English'],
     subjectOf: { '@type': 'WebPage', '@id': `${SITE_URL}/acting-coaches#webpage` },
-    sameAs: [...SAMEAS],
+    // sameAs 없음 — 기관 채널을 사람에 붙이지 않는다(본인 확인된 개인 프로필만 추가)
   }
 }
 
@@ -182,7 +201,7 @@ export function buildPersonDongwonDetailed() {
     ],
     knowsLanguage: ['Korean', 'English'],
     subjectOf: { '@type': 'WebPage', '@id': `${SITE_URL}/acting-coaches#webpage` },
-    sameAs: [...SAMEAS],
+    // sameAs 없음 — 기관 채널을 사람에 붙이지 않는다(본인 확인된 개인 프로필만 추가)
   }
 }
 
@@ -215,7 +234,7 @@ export function buildPersonSebinDetailed() {
     ],
     knowsLanguage: ['Korean', 'English'],
     subjectOf: { '@type': 'WebPage', '@id': `${SITE_URL}/acting-coaches#webpage` },
-    sameAs: [...SAMEAS],
+    // sameAs 없음 — 기관 채널을 사람에 붙이지 않는다(본인 확인된 개인 프로필만 추가)
   }
 }
 
@@ -248,7 +267,7 @@ export function buildPersonHyunjaeDetailed() {
       ...(HYUNJAE.filmographySections.find((sec) => sec.label === 'KOREA FILM & DRAMA')?.items ?? []).map((title) => ({ '@type': 'CreativeWork', name: title })),
     ],
     subjectOf: { '@type': 'WebPage', '@id': `${SITE_URL}/acting-coaches#webpage` },
-    sameAs: [...SAMEAS],
+    // sameAs 없음 — 기관 채널을 사람에 붙이지 않는다(본인 확인된 개인 프로필만 추가)
   }
 }
 
@@ -375,7 +394,8 @@ function buildInstructors(instructor: string) {
     .map((raw) => raw.replace(/\s*(액팅\s*)?(대표|리더|강사|코치)(\s*·\s*액팅\s*코치)?\s*$/, '').trim())
     .filter(Boolean)
     .map((name) =>
-      COACH_ID[name] ? { '@id': `${SITE_URL}${COACH_ID[name]}` } : { '@type': 'Person', name }
+      // 코치 상세 Person은 /acting-coaches에만 있어서 다른 페이지에선 @id만으로는 이름이 안 보인다 → 이름을 함께 둔다
+      COACH_ID[name] ? { '@type': 'Person', '@id': `${SITE_URL}${COACH_ID[name]}`, name } : { '@type': 'Person', name }
     )
   if (people.length === 0) return undefined
   return people.length === 1 ? people[0] : people
@@ -393,6 +413,13 @@ function buildCourseWorkload(schedule: string, duration: string): string | undef
   const total = Number(sessions[1]) * Number(hours[1])
   if (!Number.isFinite(total) || total <= 0) return undefined
   return `PT${total}H`
+}
+
+function registerTarget(cls: ClassItem, pageUrl: string): string | undefined {
+  if (cls.isNewMemberOpen) return `${SITE_URL}/join`
+  if (KAKAO_APPLY_CLASSES.has(cls.nameKo)) return KAKAO_CHANNEL
+  if (cls.nameKo === '오디션 테크닉 클래스' && pageUrl.endsWith('/audition-technique-class')) return pageUrl
+  return undefined
 }
 
 /** Course — ClassItem을 상세 Course 라벨로 변환 */
@@ -427,10 +454,11 @@ export function buildCourseFromClass(cls: ClassItem, opts: { url: string; image?
       ...(cls.originalPrice ? { priceValidUntil: PROMO_DEADLINE } : {}),
     },
     ...(instructors ? { instructor: instructors } : {}),
-    potentialAction: {
-      '@type': 'RegisterAction',
-      target: `${SITE_URL}/join`,
-    },
+    // 신청 경로를 실제와 맞춘다: 신규 멤버 클래스 = 상담 폼, 수료자 전용 = 카카오채널,
+    // 오디션 테크닉 = 페이지 안 신청 폼. 그 외(리더·움직임·개인 레슨)는 신청 경로가 정해지지 않아 생략
+    ...(registerTarget(cls, opts.url)
+      ? { potentialAction: { '@type': 'RegisterAction', target: registerTarget(cls, opts.url) } }
+      : {}),
     courseMode: 'Onsite',
     inLanguage: 'ko',
     educationalLevel: cls.isHobby ? 'Beginner' : 'Intermediate',

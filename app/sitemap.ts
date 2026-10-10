@@ -115,7 +115,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/benefits/move1-dance-studio`,  lastModified: new Date('2026-09-08'), changeFrequency: 'monthly', priority: 0.65 },
     { url: `${BASE}/benefits/seowoo-studio`,       lastModified: new Date('2026-06-11'), changeFrequency: 'monthly', priority: 0.65 },
     // 2026-07-10 신설 페이지 — AEO 핵심 (FAQ=AI 답변엔진 인용 타깃, reviews=신뢰 신호)
-    { url: `${BASE}/faq`,                          lastModified: new Date('2026-07-10'), changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${BASE}/faq`,                          lastModified: new Date(LAST_UPDATED.faq), changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/reviews`,                      lastModified: new Date('2026-07-10'), changeFrequency: 'weekly',  priority: 0.7 },
     // 독백 아카이브 — 남자독백·여자독백 등 실검색 키워드 타깃 핵심 페이지 (2026-07-16 SEO 강화로 0.7→0.85)
     { url: `${BASE}/monologues`,                   lastModified: monologuesLastMod,      changeFrequency: 'daily',   priority: 0.85 },

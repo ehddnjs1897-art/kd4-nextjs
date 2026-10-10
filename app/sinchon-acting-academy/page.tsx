@@ -18,10 +18,9 @@ const PAGE_URL = `${SITE_URL}/sinchon-acting-academy`
 
 // 위치 / 길찾기 (구글 지도 임베드 제거 — 약도가 메인)
 const ADDRESS_FULL = '서울시 서대문구 이화여대1안길 12 아리움3차 1층 101호'
-const PLACE_Q = encodeURIComponent('KD4 액팅 스튜디오')
-// 길찾기 버튼은 상호명으로 검색 (주소로 하면 '아리움3차오피스텔'이 떠서)
-const NAVER_MAP = `https://map.naver.com/p/search/${PLACE_Q}`
-const KAKAO_MAP = `https://map.kakao.com/?q=${PLACE_Q}`
+// 검색 결과 대신 KD4 플레이스 상세로 바로 연결 (2026-10-11)
+const NAVER_MAP = 'https://map.naver.com/p/entry/place/2046656507'
+const KAKAO_MAP = 'https://place.map.kakao.com/702739563'
 
 const ACCESS_ITEMS = [
   { Icon: Train, title: '지하철 2호선 이대역', desc: '5번 출구에서 도보 약 3분' },

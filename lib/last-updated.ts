@@ -29,4 +29,6 @@ export const LAST_UPDATED = {
   sinchon: '2026-08-20',
   coaches: '2026-08-30',
   join: '2026-08-30',
+  // /faq — 화면 «최종 수정일»·JSON-LD dateModified·sitemap이 모두 이 값을 쓴다
+  faq: '2026-08-30',
 } as const

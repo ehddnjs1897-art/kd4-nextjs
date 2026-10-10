@@ -15,6 +15,10 @@ const PAGE_URL = `${SITE_URL}/classes`
 const CLASS_PAGE_URLS: Record<string, string> = {
   '마이즈너 테크닉 정규 클래스': `${SITE_URL}/meisner-technique-class`,
   '출연영상 클래스': `${SITE_URL}/reel-production-class`,
+  '베이직 클래스': `${SITE_URL}/basic-acting-class`,
+  '오디션 테크닉 클래스': `${SITE_URL}/audition-technique-class`,
+  '출연영상 심화 클래스': `${SITE_URL}/advanced-reel-class`,
+  '출연영상 1달 완성 클래스': `${SITE_URL}/one-month-reel-class`,
 }
 
 export const metadata: Metadata = {

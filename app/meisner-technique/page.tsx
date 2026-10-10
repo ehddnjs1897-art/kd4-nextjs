@@ -7,6 +7,7 @@ import { LAST_UPDATED } from '@/lib/last-updated'
 import { buildBreadcrumb, buildFaqPage } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
 import type { FaqItem } from '@/lib/landing-faqs'
+import { wonOf } from '@/lib/class-price'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
 
@@ -266,7 +267,7 @@ export default function MeisnerTechniqueGuidePage() {
           <h2 className="section-title-serif" style={{ marginBottom: '16px' }}>KD4에서 배우기</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             <p style={proseStyle}>
-              KD4 액팅 스튜디오는 서울 신촌에서 마이즈너 테크닉 정규 클래스를 4개월 코스로 운영합니다. 정원 8명 소수정예이며, 월 수강료는 350,000원입니다.
+              KD4 액팅 스튜디오는 서울 신촌에서 마이즈너 테크닉 정규 클래스를 4개월 코스로 운영합니다. 정원 8명 소수정예이며, 월 수강료는 {wonOf('마이즈너 테크닉 정규 클래스')}입니다.
             </p>
             <p style={proseStyle}>
               진행 순서는 위에서 설명한 훈련 그대로입니다. 첫째 달에 레피티션 3단계로 상대에게 주의를 옮기고, 둘째·셋째 달에 Activity &amp; Door로 가상의 상황에서 실제로 하는 감각을 쌓은 뒤, 넷째 달에 장면 연기로 완성합니다. 회차별 커리큘럼과 일정은 정규 클래스 페이지에서 확인할 수 있습니다.

@@ -11,6 +11,7 @@ import { LAST_UPDATED } from '@/lib/last-updated'
 import JoinCTALink from '@/components/join/JoinCTALink'
 import { buildBreadcrumb, buildFaqPage, buildCourseFromClass, buildWebPage } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
+import { wonOf } from '@/lib/class-price'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
 const YouTubeFacade = dynamic(() => import('@/components/youtube/YouTubeFacade'))
@@ -28,7 +29,7 @@ const TAGLINE = '훈련된 배우들의 포트폴리오 만들기 프로젝트'
 export const metadata: Metadata = {
   title: '출연영상 1달 완성 클래스 — 수업 없이 포트폴리오 촬영만, 1개월',
   description:
-    '훈련된 배우들의 포트폴리오 만들기 프로젝트. 마이즈너 테크닉 정규·출연영상 클래스 수료자를 위한 1개월 촬영 전용 워크숍. 별도 수업 없이 레퍼런스 취합 → 맞춤형 시나리오 → 테스트 촬영 → 본 촬영. 컷 편집 / 롱테이크 택 1. 클래스 비용 400,000원. 서울 신촌 KD4 액팅 스튜디오.',
+    `훈련된 배우들의 포트폴리오 만들기 프로젝트. 마이즈너 테크닉 정규·출연영상 클래스 수료자를 위한 1개월 촬영 전용 워크숍. 별도 수업 없이 레퍼런스 취합 → 맞춤형 시나리오 → 테스트 촬영 → 본 촬영. 컷 편집 / 롱테이크 택 1. 클래스 비용 ${wonOf('출연영상 1달 완성 클래스')}. 서울 신촌 KD4 액팅 스튜디오.`,
   keywords: [
     '출연영상 1달',
     '출연영상 1달 완성',

@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
+import { LAST_UPDATED } from '@/lib/last-updated'
 import Link from 'next/link'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { serializeJsonLd } from '@/lib/seo'
 import { SITE_URL } from '@/lib/constants'
+import { wonOf } from '@/lib/class-price'
 
 export const metadata: Metadata = {
   // layout.tsx 템플릿('%s | KD4 액팅 스튜디오')이 사이트명을 붙이므로 여기엔 페이지명만
@@ -49,7 +51,7 @@ const faqs = [
   },
   {
     q: '수업료는 얼마인가요?',
-    a: '클래스별로 다릅니다. 베이직 클래스 월 250,000원, 마이즈너 테크닉 정규 클래스 월 350,000원(4개월 코스), 출연영상 클래스 월 400,000원(3개월 코스)입니다. 일시납 패키지 선택 시 10만원 추가 할인이 있으며, 재수강·앰배서더 등 다양한 할인 혜택도 운영합니다. 상담 시 자세히 안내드립니다.',
+    a: `클래스별로 다릅니다. 베이직 클래스 월 ${wonOf('베이직 클래스')}, 마이즈너 테크닉 정규 클래스 월 ${wonOf('마이즈너 테크닉 정규 클래스')}(4개월 코스), 출연영상 클래스 월 ${wonOf('출연영상 클래스')}(3개월 코스)입니다. 일시납 패키지 선택 시 10만원 추가 할인이 있으며, 재수강·앰배서더 등 다양한 할인 혜택도 운영합니다. 상담 시 자세히 안내드립니다.`,
   },
   {
     q: '체험할 수 있는 방법이 있나요?',
@@ -120,7 +122,7 @@ const faqs = [
 // 최종 수정일 — FAQ 문항·답변 내용을 실제로 고칠 때마다 이 날짜를 갱신할 것.
 // (자동 NOW 금지 — 내용 변화 없이 매일 "갱신됨" 거짓 신호를 주면 검색·AI 엔진 신뢰도 하락,
 //  sitemap.ts lastModified와 같은 원칙. 2026-07-10 대표 지시로 화면+스키마 동시 표기)
-const FAQ_UPDATED = '2026-08-30'
+const FAQ_UPDATED = LAST_UPDATED.faq
 const [fy, fm, fd] = FAQ_UPDATED.split('-')
 const FAQ_UPDATED_LABEL = `${fy}년 ${Number(fm)}월 ${Number(fd)}일`
 

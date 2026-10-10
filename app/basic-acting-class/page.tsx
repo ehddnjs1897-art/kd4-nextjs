@@ -8,6 +8,7 @@ import { LAST_UPDATED } from '@/lib/last-updated'
 import JoinCTALink from '@/components/join/JoinCTALink'
 import { buildBreadcrumb, buildFaqPage, buildCourseFromClass, buildWebPage } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
+import { wonOf } from '@/lib/class-price'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
 const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
@@ -62,7 +63,7 @@ const MEISNER = CLASSES.find((c) => c.nameKo === '마이즈너 테크닉 정규 
 export const metadata: Metadata = {
   title: '성인 취미 연기 입문 — 베이직 클래스 (연기 경험 없어도 OK)',
   description:
-    '연기를 처음 배우는 성인을 위한 취미 연기 입문 클래스. 연기 경험 없어도 OK, 정원 6명 소수정예, 월 4회·회당 3시간, 월 250,000원. 서울 신촌 이대역 도보 3분 KD4 액팅 스튜디오.',
+    `연기를 처음 배우는 성인을 위한 취미 연기 입문 클래스. 연기 경험 없어도 OK, 정원 6명 소수정예, 월 4회·회당 3시간, 월 ${wonOf('베이직 클래스')}. 서울 신촌 이대역 도보 3분 KD4 액팅 스튜디오.`,
   keywords: [
     '성인 취미 연기',
     '연기 입문',
@@ -79,7 +80,7 @@ export const metadata: Metadata = {
     type: 'website',
     url: PAGE_URL,
     title: '성인 취미 연기 입문 — 베이직 클래스 | KD4 액팅 스튜디오',
-    description: '연기 경험 없어도 OK. 정원 6명 소수정예, 월 4회·회당 3시간, 월 250,000원. 서울 신촌 이대역 도보 3분.',
+    description: `연기 경험 없어도 OK. 정원 6명 소수정예, 월 4회·회당 3시간, 월 ${wonOf('베이직 클래스')}. 서울 신촌 이대역 도보 3분.`,
     images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: '성인 취미 연기 입문 베이직 클래스 — KD4 액팅 스튜디오', type: 'image/jpeg' }],
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
@@ -87,7 +88,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: '성인 취미 연기 입문 — 베이직 클래스 | KD4',
-    description: '연기 경험 없어도 OK. 정원 6명 소수정예, 월 4회·회당 3시간, 월 250,000원.',
+    description: `연기 경험 없어도 OK. 정원 6명 소수정예, 월 4회·회당 3시간, 월 ${wonOf('베이직 클래스')}.`,
     images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: '성인 취미 연기 입문 베이직 클래스 — KD4 액팅 스튜디오', type: 'image/jpeg' }],
   },
 }

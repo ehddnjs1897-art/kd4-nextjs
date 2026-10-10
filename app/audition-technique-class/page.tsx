@@ -8,6 +8,7 @@ import PageJsonLd from '@/components/seo/PageJsonLd'
 import { LAST_UPDATED } from '@/lib/last-updated'
 import { buildBreadcrumb, buildFaqPage, buildCourseFromClass, buildWebPage } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
+import { wonOf } from '@/lib/class-price'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
 const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
@@ -20,7 +21,7 @@ const AUDITION = CLASSES.find((c) => c.nameKo === '오디션 테크닉 클래스
 export const metadata: Metadata = {
   title: '오디션 테크닉 클래스 — 오디션 독백·에티튜드·모의 오디션 3개월',
   description:
-    '오디션에서 통하는 나만의 독백을 만들고, 오디션 현장 에티튜드와 실전 변수 대응까지 훈련하는 3개월 클래스. 이미지 브랜딩 → 연기 고도화 → 모의 오디션. 정원 6명 소수정예, 월 4회·회당 4시간, 월 250,000원. 서울 신촌 이대역 도보 3분 KD4 액팅 스튜디오.',
+    `오디션에서 통하는 나만의 독백을 만들고, 오디션 현장 에티튜드와 실전 변수 대응까지 훈련하는 3개월 클래스. 이미지 브랜딩 → 연기 고도화 → 모의 오디션. 정원 6명 소수정예, 월 4회·회당 4시간, 월 ${wonOf('오디션 테크닉 클래스')}. 서울 신촌 이대역 도보 3분 KD4 액팅 스튜디오.`,
   keywords: [
     '오디션 테크닉',
     '오디션 준비',
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
     type: 'website',
     url: PAGE_URL,
     title: '오디션 테크닉 클래스 | KD4 액팅 스튜디오',
-    description: '오디션 독백 만들기 · 현장 에티튜드 · 모의 오디션까지 3개월. 정원 6명 소수정예, 월 4회·회당 4시간, 월 250,000원.',
+    description: `오디션 독백 만들기 · 현장 에티튜드 · 모의 오디션까지 3개월. 정원 6명 소수정예, 월 4회·회당 4시간, 월 ${wonOf('오디션 테크닉 클래스')}.`,
     images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: '오디션 테크닉 클래스 — KD4 액팅 스튜디오', type: 'image/jpeg' }],
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
@@ -46,7 +47,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: '오디션 테크닉 클래스 | KD4 액팅 스튜디오',
-    description: '오디션 독백 만들기 · 현장 에티튜드 · 모의 오디션까지 3개월. 정원 6명 소수정예, 월 250,000원.',
+    description: `오디션 독백 만들기 · 현장 에티튜드 · 모의 오디션까지 3개월. 정원 6명 소수정예, 월 ${wonOf('오디션 테크닉 클래스')}.`,
     images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: '오디션 테크닉 클래스 — KD4 액팅 스튜디오', type: 'image/jpeg' }],
   },
 }

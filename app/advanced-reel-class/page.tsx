@@ -10,6 +10,7 @@ import { LAST_UPDATED } from '@/lib/last-updated'
 import JoinCTALink from '@/components/join/JoinCTALink'
 import { buildBreadcrumb, buildFaqPage, buildCourseFromClass, buildWebPage } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
+import { wonOf } from '@/lib/class-price'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
 const YouTubeFacade = dynamic(() => import('@/components/youtube/YouTubeFacade'))
@@ -22,7 +23,7 @@ const ADVANCED = CLASSES.find((c) => c.nameKo === '출연영상 심화 클래스
 export const metadata: Metadata = {
   title: '출연영상 심화 클래스 — 롱테이크 출연영상 제작 2개월',
   description:
-    '출연영상 클래스 수료자를 위한 2개월 심화 코스. 마이즈너 테크닉 심화 훈련으로 밀도 높은 롱테이크 출연영상을 제작합니다. 정원 6명 소수정예, 월 4회·회당 4시간, 월 450,000원. 서울 신촌 이대역 도보 3분 KD4 액팅 스튜디오.',
+    `출연영상 클래스 수료자를 위한 2개월 심화 코스. 마이즈너 테크닉 심화 훈련으로 밀도 높은 롱테이크 출연영상을 제작합니다. 정원 6명 소수정예, 월 4회·회당 4시간, 월 ${wonOf('출연영상 심화 클래스')}. 서울 신촌 이대역 도보 3분 KD4 액팅 스튜디오.`,
   keywords: [
     '출연영상 심화',
     '롱테이크 출연영상',
