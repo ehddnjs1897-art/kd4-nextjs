@@ -391,11 +391,11 @@ export default function ReviewsClient({ reviews }: { reviews: Review[] }) {
               margin: '0 0 12px',
             }}
           >
-            무료 오픈클래스로 직접 경험하세요
+            무료 상담으로 먼저 확인하세요
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.95rem', margin: '0 0 28px', lineHeight: 1.6 }}>
-            등록 부담 없이 한 번의 수업으로 마이즈너 테크닉을 체험하고<br />
-            당신에게 맞는 훈련인지 확인하세요.
+            등록 부담 없이 수업 내용·일정을 안내받고<br />
+            체험 수업 가능 여부와 조건도 함께 확인하세요.
           </p>
           <a
             href="/join"

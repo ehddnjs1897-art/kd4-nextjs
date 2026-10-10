@@ -666,7 +666,7 @@ export default function AboutPage() {
           지금 바로 시작하세요
         </h2>
         <p style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', color: 'var(--secondary)', marginBottom: '32px' }}>
-          무료 오픈클래스로 먼저 체험해 보세요.
+          체험 수업 가능 여부와 조건은 무료 상담에서 먼저 확인해 보세요.
         </p>
         <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
           <a

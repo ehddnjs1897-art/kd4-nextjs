@@ -5,18 +5,29 @@ import PageJsonLd from '@/components/seo/PageJsonLd'
 import { serializeJsonLd } from '@/lib/seo'
 import { SITE_URL } from '@/lib/constants'
 import { wonOf } from '@/lib/class-price'
+import { CLASSES } from '@/lib/classes'
+
+/** 정원·회당 시간은 lib/classes.ts에서 읽는다 — 손으로 옮겨 적지 않는다 (2026-10-11 AEO F03) */
+const classOf = (nameKo: string) => {
+  const c = CLASSES.find((x) => x.nameKo === nameKo)
+  if (!c) throw new Error(`faq: lib/classes.ts에 «${nameKo}» 없음`)
+  return c
+}
+const FAQ_BASIC = classOf('베이직 클래스')
+const FAQ_MEISNER = classOf('마이즈너 테크닉 정규 클래스')
+const FAQ_REEL = classOf('출연영상 클래스')
 
 export const metadata: Metadata = {
   // layout.tsx 템플릿('%s | KD4 액팅 스튜디오')이 사이트명을 붙이므로 여기엔 페이지명만
   // — 'FAQ | KD4 액팅 스튜디오'로 넣으면 사이트명이 2번 붙음 (7/10 점검 발견·수정)
   title: '연기학원 FAQ — 수업료·직장인 수강·마이즈너',
   description:
-    '연기 훈련, 배우 되는 법, KD4 수업에 대해 자주 묻는 질문과 답변입니다. 마이즈너 테크닉, 오디션 준비, 수업료, 체험 수업까지 한 번에 확인하세요.',
+    '연기 훈련, 배우 되는 법, KD4 수업에 대해 자주 묻는 질문과 답변입니다. 마이즈너 테크닉, 오디션 준비, 수업료, 무료 상담까지 한 번에 확인하세요.',
   robots: { index: true, follow: true },
   alternates: { canonical: `${SITE_URL}/faq` },
   keywords: [
     'KD4 FAQ', '연기학원 자주묻는질문', '마이즈너 테크닉 설명', '연기 수업료',
-    '무료 체험 수업', '배우 되는 법', '오디션 준비', '연기 초보', '카메라 연기',
+    '무료 상담', '배우 되는 법', '오디션 준비', '연기 초보', '카메라 연기',
     '신촌 연기학원 FAQ', '레피티션이란', '출연영상 제작',
   ],
   openGraph: {
@@ -43,7 +54,8 @@ const faqs = [
   },
   {
     q: '다른 연기학원과 KD4의 차이는 무엇인가요?',
-    a: '정원, 수업 시간, 피드백 밀도가 다릅니다. 일반 학원 평균 정원이 15~25명인 반면 KD4는 6~8명 소수정예입니다. 정규 클래스 수업 시간도 회당 4시간으로 일반 학원 평균(1.5~2시간)보다 깁니다. 또한 현역 배우·전문 액팅 코치가 직접 지도합니다. 수업 외에도 출연영상 제작, 캐스팅 연계까지 하나의 시스템으로 운영합니다.',
+    // 근거 없는 «일반 학원 평균» 비교는 뺐다 — KD4 실제 조건만 (2026-10-11 AEO F03)
+    a: `KD4는 수강 목적에 따라 과정을 나누고 소수정예로 운영합니다. 베이직 클래스는 정원 ${FAQ_BASIC.capacity}·회당 ${FAQ_BASIC.duration}, 마이즈너 테크닉 정규 클래스는 정원 ${FAQ_MEISNER.capacity}·회당 ${FAQ_MEISNER.duration}, 출연영상 클래스는 정원 ${FAQ_REEL.capacity}·회당 ${FAQ_REEL.duration}입니다. 현역 배우·전문 액팅 코치가 직접 지도하며, 수업 외에도 출연영상 제작과 캐스팅 연계까지 하나의 시스템으로 운영합니다.`,
   },
   {
     q: '마이즈너 테크닉이 카메라 연기에 왜 유리한가요?',
@@ -55,7 +67,8 @@ const faqs = [
   },
   {
     q: '체험할 수 있는 방법이 있나요?',
-    a: '무료 상담을 신청하면 클래스 커리큘럼·가격·일정을 상세히 안내받으실 수 있습니다. 상담 후 가셔도 괜찮습니다.',
+    // 체험(오픈클래스)은 현재 운영 근거가 확인될 때까지 약속하지 않는다 — 확정된 무료 상담만 (2026-10-11 AEO F04)
+    a: '현재 수업 내용·일정·등록 조건은 무료 상담으로 안내받으실 수 있습니다. 상담만 받고 돌아가셔도 괜찮습니다. 별도 체험 수업(오픈클래스)의 모집 여부와 참여 조건은 상담 때 안내해 드립니다.',
   },
   {
     q: '오디션 준비를 도와주나요?',
@@ -111,7 +124,7 @@ const faqs = [
   },
   {
     q: '수업은 몇 명이 함께 하나요?',
-    a: '클래스별로 다르지만 소수정예로 운영합니다. 마이즈너 테크닉 정규 클래스·출연영상 클래스는 정원 8명, 베이직 클래스는 정원 6명입니다. 일반 학원 평균(15~25명)보다 훨씬 적은 인원으로 진행해 한 사람에게 돌아가는 피드백 시간이 깁니다.',
+    a: `클래스별로 다르지만 소수정예로 운영합니다. 마이즈너 테크닉 정규 클래스는 정원 ${FAQ_MEISNER.capacity}, 출연영상 클래스는 정원 ${FAQ_REEL.capacity}, 베이직 클래스는 정원 ${FAQ_BASIC.capacity}입니다. 인원이 적어 회차마다 한 사람이 직접 해 보고 피드백을 받는 시간이 충분합니다.`,
   },
   {
     q: '등록하려면 어떻게 하면 되나요?',
@@ -386,7 +399,7 @@ export default function FaqPage() {
               marginBottom: '12px',
             }}
           >
-            직접 경험해보는 것이 가장 빠릅니다
+            직접 물어보는 것이 가장 빠릅니다
           </h2>
           <p
             style={{
@@ -397,7 +410,7 @@ export default function FaqPage() {
               lineHeight: 1.7,
             }}
           >
-            무료 오픈클래스 1회로 KD4 마이즈너 훈련을 직접 체험해보세요.
+            무료 상담에서 커리큘럼·일정·등록 조건과 체험 수업 가능 여부를 먼저 확인해 보세요.
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link

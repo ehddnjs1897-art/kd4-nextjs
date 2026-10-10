@@ -69,10 +69,14 @@ const PILLARS = [
   },
 ]
 
+/** 비교표 — 출처 없는 «일반 학원 평균» 대신 KD4 안의 두 입문 경로를 실제 조건으로 비교 (2026-10-11 AEO F03).
+ *  정원·시간·코치는 lib/classes.ts, «이런 분께»는 /classes·홈 카드와 같은 문장 */
+const BASIC_CLASS = CLASSES.find((c) => c.nameKo === '베이직 클래스')!
 const COMPARISON_ROWS = [
-  { label: '정원', normal: '15~25명', kd4: '6~8명' },
-  { label: '수업 길이', normal: '1.5~2시간', kd4: '4시간' },
-  { label: '가르치는 사람', normal: '전임 강사 중심', kd4: '현역 배우·전문 액팅 코치' },
+  { label: '이런 분께', basic: '취미로 연기를 시작하고 싶은 분', meisner: '제대로 배우 훈련을 받고 싶은 분' },
+  { label: '정원', basic: BASIC_CLASS.capacity, meisner: MAIN_CLASS.capacity },
+  { label: '회당 수업 시간', basic: BASIC_CLASS.duration, meisner: MAIN_CLASS.duration },
+  { label: '지도', basic: BASIC_CLASS.instructor ?? '', meisner: MAIN_CLASS.instructor ?? '' },
 ]
 
 const CLASS_GOALS = [
@@ -451,26 +455,26 @@ export default function MeisnerPage() {
       </section>
 
       {/* COMPARISON */}
-      <section aria-label="일반 학원 평균과 KD4 비교" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
+      <section aria-label="베이직 클래스와 마이즈너 정규 클래스 비교" style={{ padding: 'clamp(64px, 10vw, 96px) 0', background: 'var(--bg2)' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 24px', textAlign: 'center' }}>
             <p className="section-eyebrow" lang="en">05 — DIFFERENCE</p>
-            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>일반 학원 평균과 비교</h2>
+            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>베이직 클래스와 무엇이 다른가요</h2>
           </div>
-          <div role="table" aria-label="일반 학원 평균 vs KD4 비교" style={{ maxWidth: '720px', margin: '0 auto', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden' }}>
+          <div role="table" aria-label="베이직 클래스 vs 마이즈너 정규 클래스 비교" style={{ maxWidth: '720px', margin: '0 auto', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden' }}>
             <div role="rowgroup">
               <div role="row" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr', background: 'var(--navy-tint-1)', fontFamily: 'var(--font-display)', fontSize: '0.78rem', letterSpacing: '0.1em', fontWeight: 700, color: 'var(--navy)' }}>
                 <div role="columnheader" style={{ padding: '14px 16px' }}>항목</div>
-                <div role="columnheader" style={{ padding: '14px 16px', textAlign: 'center' }}>일반 학원 평균</div>
-                <div role="columnheader" style={{ padding: '14px 16px', textAlign: 'center', background: 'var(--navy)', color: '#fff' }}>KD4</div>
+                <div role="columnheader" style={{ padding: '14px 16px', textAlign: 'center' }}>베이직 클래스</div>
+                <div role="columnheader" style={{ padding: '14px 16px', textAlign: 'center', background: 'var(--navy)', color: '#fff' }}>마이즈너 정규</div>
               </div>
             </div>
             <div role="rowgroup">
               {COMPARISON_ROWS.map((row, i) => (
                 <div role="row" key={row.label} style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr', borderTop: i === 0 ? 'none' : '1px solid var(--border)', fontSize: '0.88rem' }}>
                   <div role="rowheader" style={{ padding: '14px 16px', fontWeight: 600 }}>{row.label}</div>
-                  <div role="cell" style={{ padding: '14px 16px', textAlign: 'center', color: 'var(--gray)' }}>{row.normal}</div>
-                  <div role="cell" style={{ padding: '14px 16px', textAlign: 'center', color: 'var(--navy)', fontWeight: 700, background: 'var(--navy-tint-1)' }}>{row.kd4}</div>
+                  <div role="cell" style={{ padding: '14px 16px', textAlign: 'center', color: 'var(--gray)' }}>{row.basic}</div>
+                  <div role="cell" style={{ padding: '14px 16px', textAlign: 'center', color: 'var(--navy)', fontWeight: 700, background: 'var(--navy-tint-1)' }}>{row.meisner}</div>
                 </div>
               ))}
             </div>

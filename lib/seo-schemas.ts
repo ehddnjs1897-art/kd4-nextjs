@@ -429,6 +429,12 @@ export function buildCourseFromClass(cls: ClassItem, opts: { url: string; image?
   const capacityNum = parseInt(cls.capacity)
   const instructors = cls.instructor ? buildInstructors(cls.instructor) : undefined
   const workload = buildCourseWorkload(cls.schedule, cls.duration)
+  // 월 N회 클래스는 가격이 «월 수강료», courseWorkload가 «월 기준 수업 시간»이다 (2026-10-11 AEO F01)
+  const monthly = /^월\s*\d+\s*회/.test(cls.schedule)
+  const monthlyHours = workload ? Number(workload.replace(/\D/g, '')) : NaN
+  const workloadNote = monthly && Number.isFinite(monthlyHours)
+    ? `${cls.schedule} · 회당 ${cls.duration} · 월 ${monthlyHours}시간 기준${cls.course ? ` · ${cls.course}` : ''}`
+    : undefined
   return {
     '@context': 'https://schema.org',
     '@type': 'Course',
@@ -448,6 +454,20 @@ export function buildCourseFromClass(cls: ClassItem, opts: { url: string; image?
       '@type': 'Offer',
       price: Number(cls.price.replace(/,/g, '')),
       priceCurrency: 'KRW',
+      // 월 수강료임을 단위로 밝힌다 — 총 코스 금액은 계산해 넣지 않는다(일시납·할인은 정본 확인 사항)
+      ...(monthly
+        ? {
+            description: `월 수강료 (${cls.schedule}${cls.course ? ` · ${cls.course}` : ''})`,
+            priceSpecification: {
+              '@type': 'UnitPriceSpecification',
+              price: Number(cls.price.replace(/,/g, '')),
+              priceCurrency: 'KRW',
+              unitCode: 'MON',
+              unitText: '월',
+              referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitCode: 'MON' },
+            },
+          }
+        : {}),
       availability: 'https://schema.org/InStock',
       category: 'Paid',
       url: opts.url,
@@ -473,8 +493,9 @@ export function buildCourseFromClass(cls: ClassItem, opts: { url: string; image?
         courseMode: 'Onsite',
         ...(instructors ? { instructor: instructors } : {}),
         inLanguage: 'ko',
-        // ISO 8601만 유효 — 한글 일정 문구("월 4회 · 회당 4시간")는 description·본문이 담당
+        // courseWorkload(ISO 8601)는 «월 기준» 수업 시간 — 총 코스 시간이 아님을 description이 함께 밝힌다
         ...(workload ? { courseWorkload: workload } : {}),
+        ...(workloadNote ? { description: workloadNote } : {}),
         ...(Number.isFinite(capacityNum) ? { maximumAttendeeCapacity: capacityNum } : {}),
         location: {
           '@type': 'Place',

@@ -496,7 +496,7 @@ export default function ClassesPage() {
                 <p style={{ fontWeight: 700, fontSize: '1rem', color: '#111111', margin: 0 }}>처음이면 뭐부터?</p>
                 <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.7, margin: 0 }}>
                   연기 경험이 없고 취미로 시작하고 싶다면 베이직 클래스입니다. 정원 {BASIC_C?.capacity ?? ''}·{BASIC_C?.schedule ?? ''}·회당 {BASIC_C?.duration ?? ''}로, 연기 경험 없어도 참여할 수 있습니다.
-                  마이즈너 훈련이 어떤 것인지 먼저 겪어보고 싶다면 무료 오픈클래스 1회로 체험해 보세요.
+                  마이즈너 훈련이 어떤 것인지 먼저 겪어보고 싶다면, 체험 수업 가능 여부와 조건을 무료 상담에서 확인해 보세요.
                   연기를 진지하게 배우고 싶은 분이라면 마이즈너 테크닉 정규 클래스부터 시작하시길 추천드립니다.
                 </p>
                 <Link href="/basic-acting-class" style={{ fontSize: '0.85rem', color: 'var(--navy)', fontWeight: 600, textDecoration: 'none' }}>
