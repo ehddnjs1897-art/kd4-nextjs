@@ -6,6 +6,20 @@
  */
 
 import { wonOf } from './class-price'
+import { CLASSES } from './classes'
+
+/** 정원·시간·코스·코치는 lib/classes.ts에서 읽는다 — 손으로 옮겨 적지 않는다 (2026-10-11 AEO B3) */
+const classInfo = (nameKo: string) => {
+  const c = CLASSES.find((x) => x.nameKo === nameKo)
+  if (!c) throw new Error(`landing-faqs: lib/classes.ts에 «${nameKo}» 없음`)
+  return c
+}
+/** 값이 비면 «undefined»가 화면에 찍히지 않게 빌드에서 멈춘다 */
+const need = (v: string | undefined, label: string): string => {
+  if (!v) throw new Error(`landing-faqs: lib/classes.ts ${label} 값 없음`)
+  return v
+}
+const MEISNER_C = classInfo('마이즈너 테크닉 정규 클래스')
 
 export interface FaqItem {
   q: string
@@ -51,6 +65,11 @@ export const MEISNER_FAQ: FaqItem[] = [
     a: '캐스팅을 미끼로 붙잡아두는 방식이 아닙니다. 배우훈련을 중심에 두고 포트폴리오 제작과 캐스팅 연계 시스템을 연결해 만든 배우 성장 시스템입니다. 정원 8명·회당 4시간 수업으로 1인당 피드백도 충분히 확보합니다.',
   },
   {
+    // 질문형 답변 보강 (2026-10-11 AEO B3②) — KD4 사실만, 타 학원 비교 없음
+    q: '마이즈너 수업을 고를 때 무엇을 확인해야 하나요?',
+    a: `레피티션에서 장면 연기까지 단계적으로 이어지는지, 정원과 회당 시간, 누가 직접 지도하는지를 확인해 보세요. KD4 마이즈너 테크닉 정규 클래스는 Repetition·Activity & Door 훈련에서 텍스트 분석과 장면 연기로 이어지는 ${need(MEISNER_C.course, '마이즈너 course')}입니다. 정원 ${MEISNER_C.capacity}·${MEISNER_C.schedule}·회당 ${MEISNER_C.duration}이며 ${need(MEISNER_C.instructor, '마이즈너 instructor')}가 직접 지도합니다.`,
+  },
+  {
     q: '코스 기간과 비용은 어떻게 되나요?',
     a: `주 1회·월 4회·회당 4시간, 4개월 코스. 월 수강료 ${wonOf('마이즈너 테크닉 정규 클래스')}이며 전체 수강료 일시납 시 추가 할인이 있습니다. 평일 저녁·주말 중심 운영, 자세한 일정은 상담 시 안내드립니다.`,
   },
@@ -91,8 +110,18 @@ export const REEL_FAQ: FaqItem[] = [
     a: `3개월 코스 월 ${wonOf('출연영상 클래스')}에 시나리오·연기 훈련·전문 영화팀 촬영·편집·납품이 모두 포함됩니다. 추가 촬영 회차·재편집은 별도 견적입니다.`,
   },
   {
+    // 질문형 답변 보강 (2026-10-11 AEO B3③) — 이 페이지의 제작 과정·결과물·비용 FAQ와 같은 사실만
+    q: '출연영상 클래스를 고를 때 무엇을 확인해야 하나요?',
+    a: '시나리오를 본인에게 맞춰 쓰는지, 누가 촬영·편집하는지, 결과물 편수와 추가 비용을 확인해 보세요. KD4 출연영상 클래스는 레퍼런스를 바탕으로 맞춤 시나리오를 쓰고 전문 영화팀이 촬영·편집해 단편 출연영상 1편을 납품합니다. 추가 촬영 회차·재편집은 별도 견적입니다.',
+  },
+  {
     q: '클래스를 마치면 영상이 몇 편 나오나요?',
     a: '기본 1편. 본인 매력에 최적화된 단편 출연영상 1편을 완성하는 것이 기본 코스입니다. 추가 영상이 필요하면 별도 추가 회차로 상담 가능합니다.',
+  },
+  {
+    // 질문형 답변 보강 (2026-10-11 AEO B3⑤) — 이 페이지 3개월 커리큘럼(리딩 → 감독 참관 테스트 촬영 → 장면 디벨롭 → 촬영) 순서 그대로
+    q: '카메라(매체) 연기 수업에서는 무엇을 배우나요?',
+    a: 'KD4에서는 출연영상 클래스에서 카메라 앞 연기를 실제 촬영으로 훈련합니다. 마이즈너 훈련을 병행하며 대본 리딩, 감독이 참관하는 테스트 촬영과 리허설, 장면 디벨롭을 거쳐 본 촬영까지 진행하고, 완성본은 전문 영화팀이 편집합니다.',
   },
 ]
 
