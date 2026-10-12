@@ -16,11 +16,13 @@ export const LAST_UPDATED = {
   basic: '2026-10-13',
   meisner: '2026-10-13',
   // /audition-technique-class — 오디션 테크닉 클래스 (2026-09-17 신설)
-  audition: '2026-10-11',
+  audition: '2026-10-13',
   // /meisner-technique — 정보형 가이드 (2026-08-20 신설)
   meisnerGuide: '2026-08-20',
   // /meisner-technique/repetition-emotion-words — 레피티션 감정 어휘표 (2026-09-08 신설)
   repetitionWords: '2026-09-08',
+  // /actor-reel-guide — 배우 출연영상 정보형 가이드 (2026-10-13 신설)
+  reelGuide: '2026-10-13',
   reel: '2026-10-11',
   // /advanced-reel-class — 출연영상 심화 클래스 (2026-10-06 신설)
   advancedReel: '2026-10-06',

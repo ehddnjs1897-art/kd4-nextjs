@@ -1,8 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
-import { CLASSES, PROMO_DEADLINE } from '@/lib/classes'
+import { useState, useEffect, type CSSProperties } from 'react'
+import { CLASSES, PROMO_DEADLINE, type ClassItem } from '@/lib/classes'
 
 import { analytics } from '@/lib/analytics'
 import { ArrowRight } from 'lucide-react'
@@ -26,13 +26,111 @@ const AUDITION_C = findClass('오디션 테크닉 클래스')
 const MOVEMENT_C = findClass('움직임 클래스')
 const PERSONAL_C = findClass('개인 레슨')
 
+/* ── B2 클래스 비교표 (2026-10 AEO) ──────────────────────────────
+ * 값은 전부 lib/classes.ts(CLASSES)에서 읽는다. 가격·정원·코치를 여기 글자로 적지 말 것.
+ * 스타일은 styles/globals.css의 .comparison-wrap / .comparison-table 재사용
+ * (원래 /join 옛 비교표용, 지금은 사이트 어디서도 안 쓰는 클래스라 다른 화면 영향 없음).
+ * page.tsx라 export 금지(Next App Router 페이지 export 제한). */
+
+/** 행 순서 = STEP 1 → STEP 2 → STEP 3 → 별도. 같은 STEP 안에서는 CLASSES 배열 순서 유지 */
+const STEP_RANK: Record<string, number> = { 'STEP 1': 1, 'STEP 2': 2, 'STEP 3': 3, '별도': 4 }
+const COMPARE_ROWS: ClassItem[] = CLASSES
+  .map((cls, i) => ({ cls, i }))
+  .sort((a, b) => (STEP_RANK[a.cls.step] ?? 9) - (STEP_RANK[b.cls.step] ?? 9) || a.i - b.i)
+  .map(({ cls }) => cls)
+
+/** «월 N회» 클래스만 월 수강료. lib/seo-schemas.ts buildCourseFromClass의 monthly 기준과 동일 */
+const isMonthly = (cls: ClassItem) => /^월\s*\d+\s*회/.test(cls.schedule)
+
+/** 단계 칸 아래 작은 글씨. 사이트에 이미 있는 표현만 쓴다(새 문구 금지)
+ *  신규 신청 가능: isNewMemberOpen · 취미반: 카드 딱지(isHobby)
+ *  수료자 전용: 심화 quote «수료자만 선택할 수 있는» · 선별 참여: 리더 bullets «선별된 인원 참여» */
+function stageNote(cls: ClassItem): string {
+  if (cls.isNewMemberOpen) return cls.isHobby ? '신규 신청 가능 · 취미반' : '신규 신청 가능'
+  if (cls.category === 'step2') return '수료자 전용'
+  if (cls.category === 'step3') return '선별 참여'
+  return ''
+}
+
+const CELL_NOTE: CSSProperties = { display: 'block', fontSize: '0.72rem', color: 'var(--gray)', marginTop: 2 }
+/** 행 제목(th scope=row)은 .comparison-table th(머리줄 모양) 대신 본문 첫 칸 모양으로 */
+const ROW_HEAD: CSSProperties = {
+  textAlign: 'left', background: 'transparent', textTransform: 'none', letterSpacing: 'normal',
+  fontFamily: 'var(--font-sans)', fontSize: '0.85rem', fontWeight: 700, color: 'var(--white)',
+}
+
+function ClassCompareTable() {
+  return (
+    <div id="class-compare" style={{ marginTop: '64px', scrollMarginTop: 80 }}>
+      <p className="section-eyebrow" style={{ textAlign: 'center', marginBottom: '8px' }}>
+        <span lang="en">COMPARE</span>
+      </p>
+      <h2 style={{ textAlign: 'center', fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)', fontWeight: 700, color: 'var(--navy)', marginBottom: '12px' }}>
+        클래스 한눈에 비교
+      </h2>
+      <p style={{ textAlign: 'center', fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.7, marginBottom: '24px' }}>
+        KD4 클래스 {CLASSES.length}개의 단계, 기간, 횟수, 정원, 수강료, 담당 코치를 한 표에 모았습니다.
+      </p>
+      <div className="comparison-wrap" role="region" aria-label="클래스 비교표, 옆으로 밀어서 볼 수 있습니다" tabIndex={0}>
+        <table className="comparison-table" style={{ minWidth: 760 }}>
+          <caption style={{ captionSide: 'bottom', textAlign: 'left', fontSize: '0.75rem', color: 'var(--gray)', paddingTop: 10, lineHeight: 1.6 }}>
+            KD4 액팅 스튜디오 클래스 {CLASSES.length}개 비교표. «-»는 이 표에 따로 적지 않은 칸으로, 커리큘럼 기간은 각 클래스 페이지에서 확인할 수 있습니다.
+          </caption>
+          <thead>
+            <tr>
+              {['클래스', '단계', '기간', '월 횟수 · 회당 시간', '정원', '수강료', '담당 코치'].map((h) => (
+                <th key={h} scope="col">{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {COMPARE_ROWS.map((cls) => {
+              const href = CLASS_DETAIL_HREF[cls.nameKo]
+              const note = stageNote(cls)
+              return (
+                <tr key={cls.nameEn}>
+                  <th scope="row" style={ROW_HEAD}>
+                    {href ? (
+                      <Link
+                        href={href}
+                        onClick={() => analytics.ctaClick('class_compare_table', cls.nameKo)}
+                        style={{ color: 'var(--navy)', textDecoration: 'underline', textUnderlineOffset: 3 }}
+                      >
+                        {cls.nameKo}
+                      </Link>
+                    ) : (
+                      cls.nameKo
+                    )}
+                  </th>
+                  <td>
+                    {cls.step === '별도' ? '별도 코스' : cls.step}
+                    {note && <span style={CELL_NOTE}>{note}</span>}
+                  </td>
+                  <td>{cls.course ?? '-'}</td>
+                  <td>{isMonthly(cls) ? `${cls.schedule} · 회당 ${cls.duration}` : `${cls.schedule} · ${cls.duration}`}</td>
+                  <td>{cls.capacity}</td>
+                  <td style={{ whiteSpace: 'nowrap' }}>{isMonthly(cls) ? `월 ${cls.price}원` : `${cls.price}원`}</td>
+                  <td>{cls.instructor ?? '-'}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
 function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
   // useEffect로 client-only 계산 — SSR/hydration mismatch 방지 (PROMO_DEADLINE 경계 순간)
   // SSR에서는 false(프로모 활성)로 렌더, 클라이언트 mount 시 실제 시각 반영
   const [isPromoExpired, setIsPromoExpired] = useState(false)
+  // 현재 시각은 SSR에서 확정할 수 없는 외부 값 → 마운트 후 1회 동기화가 hydration-safe (ActorsSearchGrid와 같은 패턴)
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     setIsPromoExpired(Date.now() > new Date(PROMO_DEADLINE).getTime())
   }, [])
+  /* eslint-enable react-hooks/set-state-in-effect */
   const detailHref = CLASS_DETAIL_HREF[cls.nameKo]
   return (
     <div
@@ -104,7 +202,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
 
         {/* bullets */}
         <ul role="list" style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '20px' }}>
-          {cls.bullets.map((b, i) => (
+          {cls.bullets.map((b) => (
             <li key={b} style={{ fontSize: '0.82rem', color: 'var(--gray-light)', lineHeight: 1.5, paddingLeft: '14px', position: 'relative' }}>
               <span style={{ position: 'absolute', left: 0, top: '0.45em', width: '5px', height: '1px', background: 'var(--gold)', display: 'inline-block' }} />
               {b}
@@ -132,7 +230,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
 
         {/* 가격 */}
         <div>
-          <span style={{ fontSize: '0.75rem', color: 'var(--gray)', letterSpacing: '0.06em' }}>월 수강료</span>
+          <span style={{ fontSize: '0.75rem', color: 'var(--gray)', letterSpacing: '0.06em' }}>{isMonthly(cls) ? '월 수강료' : '수강료'}</span>
           {cls.originalPrice && (
             <p style={{ margin: '4px 0 0', lineHeight: 1 }}>
               <span className="sr-only">(이전 가격)</span><span style={{ fontSize: '0.78rem', color: 'var(--gray)', textDecoration: 'line-through' }}>₩{cls.originalPrice}</span>
@@ -153,7 +251,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
               fontWeight: 900, color: cls.originalPrice ? 'var(--navy)' : 'var(--white)',
               lineHeight: 1, letterSpacing: '-0.02em',
             }}>₩{cls.price}</span>
-            <span style={{ fontSize: '0.7rem', color: 'var(--gray)', marginLeft: '2px' }}>/월</span>
+            {isMonthly(cls) && <span style={{ fontSize: '0.7rem', color: 'var(--gray)', marginLeft: '2px' }}>/월</span>}
           </p>
           {cls.promoLabel && !isPromoExpired && (
             <p style={{ fontSize: '0.7rem', color: 'var(--gold)', fontWeight: 600, marginTop: '4px' }}>{cls.promoLabel}</p>
@@ -421,6 +519,9 @@ export default function ClassesPage() {
               </div>
             </div>
           ))}
+
+          {/* B2 (2026-10 AEO): 클래스 비교표. 카드 아래, «수업 후 캐스팅까지» 블록 위 */}
+          <ClassCompareTable />
 
           {/* QW2 (R292): 수강→배우 DB 등록→캐스팅 연결 3단계 흐름 블록 */}
           <div style={{

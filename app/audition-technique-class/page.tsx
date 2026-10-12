@@ -98,6 +98,51 @@ const CURRICULUM = [
   },
 ]
 
+/** 오디션 준비 체크리스트 (2026-10 AEO B8). 항목은 위 CURRICULUM 주차 내용·첫수업 과제·후기에서만 가져온다.
+ *  합격·캐스팅 약속 문구 금지. 첫 수업 준비물·독백 영상 촬영 제공·캐스팅 연계는 대표 확인 전이라 쓰지 않는다 */
+const CHECKLIST = [
+  {
+    no: '01',
+    title: '독백 고르기',
+    when: '수업에서는 1~3주차 · 9주차',
+    items: [
+      '내가 보여주고 싶은 이미지와 다른 사람이 보는 첫인상이 같은지 먼저 정리합니다.',
+      '지금 드라마·영화에서 나와 같은 포지션의 배우가 연기하는 역할에 가까운 독백인지 확인합니다.',
+      '대본 전체를 읽고 인물의 목적과 서브텍스트를 정리합니다. 결이 다른 2차 독백도 하나 준비하면 좋습니다.',
+    ],
+  },
+  {
+    no: '02',
+    title: '셀프테이프',
+    when: '수업에서는 4~5주차 · 11주차',
+    items: [
+      '독백을 카메라 앞에서 찍어 보고, 다시 보며 시선 처리·톤·습관을 점검합니다.',
+      '카메라 앞에서는 작은 차이도 크게 보입니다. 표정과 몸의 움직임이 과하지 않은지 확인합니다.',
+      '의상과 메이크업이 배역과 내 이미지에 맞는지 화면으로 확인합니다.',
+    ],
+  },
+  {
+    no: '03',
+    title: '자기소개',
+    when: '수업에서는 1~2주차 · 10주차',
+    items: [
+      '내 이미지와 포지션이 짧게 전해지도록 자기소개를 정리합니다.',
+      '입장부터 자기소개, 자유 독백, 지정 대사, 질문, 나가는 순간까지 실제 순서대로 이어서 연습합니다.',
+      '질문에는 솔직하게 답하되, 그 솔직함이 어떻게 들리는지 영상으로 찍거나 다른 사람에게 보여 확인합니다.',
+    ],
+  },
+  {
+    no: '04',
+    title: '현장 에티튜드',
+    when: '수업에서는 6~8주차',
+    items: [
+      '문을 열고 들어와 나갈 때까지 워킹·인사·아이컨택을 미리 연습합니다.',
+      '현장에서 처음 받는 대본이나 예상하지 못한 디렉션에도 바로 반영할 수 있도록, 짧은 시간 안에 대본을 읽고 정리하는 연습을 합니다.',
+      '긴장을 풀고 자신 있게 보이는 나만의 방법을 미리 정합니다.',
+    ],
+  },
+]
+
 /** 참여 배우 후기 — 노션 원문 그대로 인용 */
 const REVIEWS = [
   {
@@ -132,6 +177,11 @@ const AUDITION_FAQ: FaqItem[] = [
     // 질문형 답변 보강 (2026-10-11 AEO B3⑥) — 이 페이지 3개월 커리큘럼·수업 정보 그대로. 첫 항목 기본 펼침을 바꾸지 않게 맨 뒤
     q: '오디션 준비 수업에서는 무엇을 하나요?',
     a: `KD4 오디션 테크닉 클래스는 3개월 과정입니다. 1개월 차에 배우 포지셔닝과 독백을 정하고, 2개월 차에 독백 완성도와 지정 대사·디렉션 변경 대응을 훈련하며, 3개월 차에 실제 오디션 환경을 재현한 모의 오디션을 봅니다. 매주 화요일 12:00~16:00 수업${AUDITION.instructor ? `이며 ${AUDITION.instructor}가 지도합니다` : '입니다'}.`,
+  },
+  {
+    // 질문형 답변 보강 (2026-10-13 AEO B8). 이 페이지 커리큘럼 4·7~8·10~11주차 그대로. 셀프테이프 촬영 기술(구도·조명·소리)은 코치 확인 전 쓰지 않는다
+    q: '셀프테이프나 영상 오디션도 준비할 수 있나요?',
+    a: '셀프테이프는 배우가 직접 찍어 보내는 영상 오디션입니다. 오디션 테크닉 클래스에서는 4주차 카메라 테스트에서 확정한 독백을 찍고 모니터링하며 시선 처리·톤·습관을 교정하고, 7~8주차에 2차 카메라 테스트를 합니다. 10~11주차에는 오디션 전 과정을 영상으로 찍어 프레임 단위로 수정합니다.',
   },
 ]
 
@@ -265,6 +315,41 @@ export default function AuditionTechniqueClassPage() {
               </article>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ===== 오디션 준비 체크리스트 (B8, 커리큘럼과 같은 배경으로 이어 붙임) ===== */}
+      <section aria-label="오디션 준비 체크리스트" style={{ padding: '0 0 clamp(48px, 9vw, 80px)', background: 'var(--bg)' }}>
+        <div className="container" style={{ maxWidth: '860px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+            <p className="section-eyebrow"><span lang="en">CHECKLIST</span></p>
+            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>오디션 준비 체크리스트</h2>
+            <p className="section-desc" style={{ maxWidth: '620px', margin: '0 auto' }}>
+              오디션을 앞두고 스스로 점검해 볼 네 가지입니다. 항목마다 3개월 커리큘럼의 어느 주차에서 다루는지 함께 적었습니다.
+            </p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '14px' }}>
+            {CHECKLIST.map((c) => (
+              <article key={c.no} style={{ ...cardStyle, background: 'var(--bg2)' }}>
+                <header style={{ marginBottom: '14px', paddingBottom: '12px', borderBottom: '1px solid var(--border)' }}>
+                  <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.75rem', letterSpacing: '0.12em', color: 'var(--navy)', fontWeight: 700, marginBottom: '6px' }}>{c.no}</p>
+                  <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.15rem', fontWeight: 700, marginBottom: '8px', wordBreak: 'keep-all' }}>{c.title}</h3>
+                  <p style={{ ...proseStyle, fontSize: '0.88rem' }}>{c.when}</p>
+                </header>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {c.items.map((it) => (
+                    <li key={it} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                      <span aria-hidden="true" style={{ color: 'var(--navy)', fontWeight: 700, flexShrink: 0 }}>·</span>
+                      <span style={{ ...proseStyle, fontSize: '0.88rem', lineHeight: 1.7 }}>{it}</span>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+          <p style={{ ...proseStyle, fontSize: '0.82rem', textAlign: 'center', marginTop: '20px' }}>
+            오디션 결과는 작품과 배역마다 다릅니다. 이 체크리스트는 준비 과정을 스스로 점검하기 위한 것입니다.
+          </p>
         </div>
       </section>
 

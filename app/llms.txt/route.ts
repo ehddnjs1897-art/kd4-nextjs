@@ -168,6 +168,7 @@ A: KD4 works with casting directors Bang Jinwon and Lee Sangwon to provide regul
 - Actor database: ${SITE_URL}/actors
 - Meisner Technique guide (definition, repetition drills, vs. Method acting): ${SITE_URL}/meisner-technique
 - Repetition emotion vocabulary: ${SITE_URL}/meisner-technique/repetition-emotion-words
+- Actor reel guide (what an acting reel is, vs. profile video and self-tape, what casting directors look for): ${SITE_URL}/actor-reel-guide
 - Monologue script archive: ${SITE_URL}/monologues
 - Studio in Sinchon (directions, map): ${SITE_URL}/sinchon-acting-academy
 - About: ${SITE_URL}/about

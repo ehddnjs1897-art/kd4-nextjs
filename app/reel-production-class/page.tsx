@@ -501,6 +501,9 @@ export default function ReelPage() {
         <Link href="/audition-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
           오디션 테크닉 클래스
         </Link>
+        <Link href="/actor-reel-guide" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
+          출연영상이란? 가이드
+        </Link>
         <Link href="/acting-coaches" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
           권동원 액팅 코치
         </Link>
