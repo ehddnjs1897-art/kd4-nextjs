@@ -19,7 +19,7 @@ const ADDRESS = {
   streetAddress: '이화여대1안길 12 아리움3차 1층 101호',
   addressLocality: '서대문구',
   addressRegion: '서울특별시',
-  postalCode: '03760',
+  postalCode: '03766', // 우체국·카카오 확인(10/13) — 03760은 이화여대 본교 번호
   addressCountry: 'KR',
 } as const
 

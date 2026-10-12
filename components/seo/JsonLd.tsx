@@ -43,7 +43,7 @@ function getLocalBusinessSchema() {
       streetAddress: '이화여대1안길 12 아리움3차 1층 101호',
       addressLocality: '서대문구',
       addressRegion: '서울특별시',
-      postalCode: '03760',
+      postalCode: '03766', // 우체국·카카오 확인(10/13) — 03760은 이화여대 본교 번호
       addressCountry: 'KR',
     },
     // 네이버 플레이스·카카오맵 핀 좌표 (2026-10-11 실측 — 이전 값은 약 180m 동쪽이었음)
