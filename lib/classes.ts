@@ -149,9 +149,9 @@ export const CLASSES: ClassItem[] = [
     price: "200,000"
   },
   {
-    step: "STEP 3",
+    // 2026-10-13 대표: 정규 클래스 이수 조건 폐지 — 신규도 바로 신청 (상담 폼·신규 등록·/classes «신규 멤버 클래스»에 노출)
+    step: "STEP 1",
     nameKo: "오디션 테크닉 클래스",
-    category: "step3",
     nameEn: "Audition Technique Class",
     quote: "캐스팅 관계자의 시선을 멈추게 할 독백 만들기",
     bullets: [
@@ -166,7 +166,8 @@ export const CLASSES: ClassItem[] = [
     capacity: "6명",
     price: "250,000",
     // 2026-09-17 대표 확정: 오디션 테크닉은 주세빈 액팅 코치 단독 진행
-    instructor: "주세빈 액팅 코치"
+    instructor: "주세빈 액팅 코치",
+    isNewMemberOpen: true,
   },
   {
     step: "별도",

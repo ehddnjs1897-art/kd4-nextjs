@@ -12,9 +12,9 @@
 export const LAST_UPDATED = {
   home: '2026-08-30',
   about: '2026-10-11',
-  classes: '2026-10-11',
-  basic: '2026-08-30',
-  meisner: '2026-10-11',
+  classes: '2026-10-13',
+  basic: '2026-10-13',
+  meisner: '2026-10-13',
   // /audition-technique-class — 오디션 테크닉 클래스 (2026-09-17 신설)
   audition: '2026-10-11',
   // /meisner-technique — 정보형 가이드 (2026-08-20 신설)
@@ -30,5 +30,5 @@ export const LAST_UPDATED = {
   coaches: '2026-08-30',
   join: '2026-08-30',
   // /faq — 화면 «최종 수정일»·JSON-LD dateModified·sitemap이 모두 이 값을 쓴다
-  faq: '2026-10-11',
+  faq: '2026-10-13',
 } as const

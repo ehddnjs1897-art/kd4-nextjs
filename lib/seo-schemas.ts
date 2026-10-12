@@ -475,7 +475,7 @@ export function buildCourseFromClass(cls: ClassItem, opts: { url: string; image?
     },
     ...(instructors ? { instructor: instructors } : {}),
     // 신청 경로를 실제와 맞춘다: 신규 멤버 클래스 = 상담 폼, 수료자 전용 = 카카오채널,
-    // 오디션 테크닉 = 페이지 안 신청 폼. 그 외(리더·움직임·개인 레슨)는 신청 경로가 정해지지 않아 생략
+    // 오디션 테크닉은 2026-10-13부터 신규 신청 가능(isNewMemberOpen) → 상담 폼. 그 외(리더·움직임·개인 레슨)는 신청 경로가 정해지지 않아 생략
     ...(registerTarget(cls, opts.url)
       ? { potentialAction: { '@type': 'RegisterAction', target: registerTarget(cls, opts.url) } }
       : {}),

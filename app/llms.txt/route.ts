@@ -94,8 +94,8 @@ Primary method: Meisner Technique
 8. ${line('개인 레슨')} — one-on-one coaching · ${SITE_URL}/classes
 9. ${line('액터스 리더 클래스')} — ensemble of 10, scene-acting competition, casting director & AD auditions · ${SITE_URL}/classes
 
-Structure: STEP 1 (Basic, Meisner Technique, Reel Production) → STEP 2 (Advanced Class) → STEP 3 (Actor's Leader, Audition Technique)
-New members start with the Basic, Meisner Technique, or Reel Production Class. The Advanced Class and 1 Month Film Class are for graduates and are applied for via the KakaoTalk channel.
+Structure: STEP 1 (Basic, Meisner Technique, Reel Production, Audition Technique) → STEP 2 (Advanced Class) → STEP 3 (Actor's Leader). The Audition Technique Class has no prerequisite.
+New members start with the Basic, Meisner Technique, Reel Production, or Audition Technique Class. The Advanced Class and 1 Month Film Class are for graduates and are applied for via the KakaoTalk channel.
 Full class list with prices: ${SITE_URL}/classes
 
 ## Director

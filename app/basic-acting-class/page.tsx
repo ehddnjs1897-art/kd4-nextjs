@@ -302,7 +302,7 @@ export default function BasicActingClassPage() {
           </div>
           <div style={{ maxWidth: '640px', margin: '0 auto 28px', background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '12px', padding: '20px 24px', textAlign: 'left' }}>
             <p style={{ fontSize: '0.85rem', color: 'var(--gray)', marginBottom: '10px', wordBreak: 'keep-all' }}>
-              KD4 클래스 구조 — STEP 1 베이직·마이즈너 정규·출연영상 → STEP 2 출연영상 심화 → STEP 3 액터스 리더·오디션 테크닉
+              KD4 클래스 구조 — STEP 1 베이직·마이즈너 정규·출연영상·오디션 테크닉 → STEP 2 출연영상 심화 → STEP 3 액터스 리더
             </p>
             <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.02rem', fontWeight: 700, marginBottom: '8px' }}>마이즈너 테크닉 정규 클래스</p>
             <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: '4px', fontSize: '0.92rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
