@@ -275,8 +275,6 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⓪ FORM-HERO — Hero 직후 즉시 신청 (스크롤 거리 0)         */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* 옛 아래쪽 폼 주소(/join#form)도 여기로 — 2026-10-15 */}
-      <span id="form" aria-hidden="true" style={{ display: 'block', height: 0, scrollMarginTop: '80px' }} />
       <section
         id="form-hero"
         aria-label="즉시 무료 상담 신청"
@@ -321,7 +319,7 @@ export default function JoinPage() {
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow"><span lang="en">01 — KD4 ONLY</span></p>
-            {/* 섹션 번호(2026-10-15 줄이기 후): 01 KD4 ONLY · 02 LEADER · 03 PORTFOLIO · 04 REVIEWS · 05 PROMISE */}
+            {/* 섹션 번호(2026-10-15 줄이기 후): 01 KD4 ONLY · 02 METHOD · 03 LEADER · 04 PORTFOLIO · 05 REVIEWS · 06 PROMISE · 07 CONTACT */}
             <h2
               className="section-title-serif"
               style={{
@@ -410,14 +408,50 @@ export default function JoinPage() {
 
       {/* COMPARE 섹션 — 광고 압축으로 제거 (5/6) */}
 
-      {/* ③ 마이즈너 소개 · ④ 숫자 4칸 · ⑦ 훈련 3단계 · ⑨ 시그니처 클래스·할인 — 2026-10-15 대표 «반드시 있어야 할 것만»으로 제거.
-          가격·일정은 상담 폼 클래스 카드(누르면 펼침)에, 상세는 /classes·/benefits·각 클래스 페이지에 그대로 있음 */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* ③ SOLUTION — 마이즈너 테크닉 (광고 압축: 영상 + 1줄 + 링크) */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section aria-label="마이즈너 테크닉 소개" className="section" style={{ background: 'var(--bg)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
+        <div className="container">
+          <div style={{ maxWidth: '720px', margin: '0 auto', textAlign: 'center' }}>
+            <p className="section-eyebrow"><span lang="en">02 — THE METHOD</span></p>
+            <h2
+              className="section-title-serif"
+              style={{ fontSize: 'clamp(1.5rem, 3.6vw, 2.1rem)', marginBottom: '12px' }}
+            >
+              <span style={{ color: 'var(--navy)' }}>마이즈너 테크닉</span>
+            </h2>
+            <p
+              className="section-desc"
+              style={{ margin: '0 auto 28px', textAlign: 'center', maxWidth: '520px' }}
+            >
+              감정을 만드는 것이 아니라, 상대에게 반응하는 훈련법입니다. <br />
+              머리로 짜낸 연기가 아닌, 충동에서 시작되는 살아있는 연기.
+            </p>
+
+            <YouTubeFacade
+              videoId="6crvxRnBerk"
+              title="마이즈너 테크닉 — KD4 액팅 스튜디오"
+              containerStyle={{
+                borderRadius: 'var(--radius)',
+                boxShadow: '0 8px 28px rgba(21,72,138,0.12)',
+                border: '1px solid var(--border)',
+                background: 'var(--bg2)',
+              }}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ④ 숫자 4칸 · ⑦ 훈련 3단계 · ⑨ 시그니처 클래스·할인 — 2026-10-15 대표 «반드시 있어야 할 것만»으로 제거.
+          가격·일정은 상담 폼 클래스 카드(누르면 펼침)에, 상세는 /classes·/benefits·각 클래스 페이지에 그대로 있음.
+          마이즈너 소개(③)는 같은 날 대표 «마이즈너 테크닉 소개는 넣어»로 되살림 */}
 
       {/* ⑥ DIRECTOR — 강사 크레딧 (광고 압축: highlights 3개 + 링크) */}
       <section aria-label="강사 권동원 소개" className="section" style={{ background: 'var(--bg)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
-            <p className="section-eyebrow"><span lang="en">02 — THE LEADER</span></p>
+            <p className="section-eyebrow"><span lang="en">03 — THE LEADER</span></p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.5rem, 3.6vw, 2.1rem)', marginBottom: '10px' }}
@@ -508,7 +542,7 @@ export default function JoinPage() {
       <section aria-label="출연영상 포트폴리오" className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 48px', textAlign: 'center' }}>
-            <p className="section-eyebrow"><span lang="en">03 — PORTFOLIO</span></p>
+            <p className="section-eyebrow"><span lang="en">04 — PORTFOLIO</span></p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
@@ -542,7 +576,7 @@ export default function JoinPage() {
             }}
           >
             {([
-              /* 2026-10-15 대표 줄이기: 신규가 들을 수 있는 출연영상 클래스 결과물 2편만 (심화·1달 영상은 각 페이지와 전체 보기 재생목록에) */
+              /* 2026-10-15 대표 줄이기: 신규가 들을 수 있는 출연영상 클래스 결과물 2편만 (심화·1달 영상은 각 클래스 페이지에) */
               { youtubeId: 'IWL6hlOrU-w', genre: '드라마', subtitle: '「메소드 연기」', cohort: '출연영상 17기' },
               { youtubeId: 'PUlrhjOkvjA', genre: '드라마', subtitle: '단편 「외사랑」', cohort: '출연영상 16기' },
             ] as const).map(({ youtubeId, genre, subtitle, cohort }) => (
@@ -603,31 +637,7 @@ export default function JoinPage() {
             ))}
           </div>
 
-          {/* 플레이리스트 링크 */}
-          <div style={{ textAlign: 'center', marginTop: '40px' }}>
-            <a
-              href="https://youtube.com/playlist?list=PLMbZlnkLfP7iaE41p_g9dzGKp5eU9VZk2"
-              target="_blank" rel="noopener noreferrer"
-              aria-label="출연영상 포트폴리오 전체 보기 (새 탭에서 열림)"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontFamily: 'var(--font-display)',
-                fontSize: '0.82rem',
-                fontWeight: 600,
-                letterSpacing: '0.08em',
-                color: 'var(--navy)',
-                borderBottom: '1px solid var(--navy)',
-                padding: '4px 0',
-                textDecoration: 'none',
-                textTransform: 'uppercase',
-              }}
-            >
-              출연영상 포트폴리오 전체 보기
-              <ArrowRight aria-hidden={true} size={14} strokeWidth={2.2} />
-            </a>
-          </div>
+          {/* «포트폴리오 전체 보기» 링크 — 2026-10-15 대표 «포트폴리오 보기도 빼»로 제거 (유튜브 재생목록으로 나가는 길) */}
         </div>
       </section>
 
@@ -637,7 +647,7 @@ export default function JoinPage() {
       <section aria-label="멤버 후기" className="section" style={{ background: 'var(--bg2)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 28px', textAlign: 'center' }}>
-            <p className="section-eyebrow"><span lang="en">04 — REAL REVIEWS</span></p>
+            <p className="section-eyebrow"><span lang="en">05 — REAL REVIEWS</span></p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.5rem, 3.6vw, 2.1rem)', marginBottom: 0 }}
@@ -700,7 +710,7 @@ export default function JoinPage() {
       <section aria-label="KD4 약속" className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow"><span lang="en">05 — OUR PROMISE</span></p>
+            <p className="section-eyebrow"><span lang="en">06 — OUR PROMISE</span></p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.6rem, 4vw, 2.3rem)', marginBottom: 0 }}
@@ -778,7 +788,38 @@ export default function JoinPage() {
         </div>
       </section>
 
-      {/* 아래쪽 상담 폼 — 2026-10-15 제거 (같은 폼 두 번). /join#form 링크는 위쪽 폼 앞 앵커로 그대로 연결 */}
+      {/* 아래쪽 상담 폼 — 2026-10-15 한때 뺐다가 같은 날 대표 «하단에 상담 신청 하나 더 넣어»로 되살림 */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* ⑫ FORM — 신청 폼                                          */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section
+        id="form"
+        aria-label="무료 상담 신청"
+        className="section"
+        style={{
+          scrollMarginTop: '80px',
+          background: 'radial-gradient(ellipse at 50% 0%, rgba(21,72,138,0.08) 0%, var(--bg) 70%)',
+          padding: 'clamp(64px, 12vw, 100px) 0',
+        }}
+      >
+        <div className="container">
+          <div style={{ maxWidth: '520px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+              <p className="section-eyebrow"><span lang="en">07 — CONTACT</span></p>
+              <h2
+                className="section-title-serif"
+                style={{ fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', marginBottom: '10px' }}
+              >
+                무료 상담 신청
+              </h2>
+              <p style={{ fontSize: '0.9rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
+                연락처부터 확인까지 3단계 — 24시간 이내 SMS로 연락드립니다.
+              </p>
+            </div>
+            <JoinForm />
+          </div>
+        </div>
+      </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑬ FOOTER 안심 문구                                         */}
