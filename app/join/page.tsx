@@ -319,7 +319,7 @@ export default function JoinPage() {
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow"><span lang="en">01 — KD4 ONLY</span></p>
-            {/* 섹션 번호(2026-10-15 줄이기 후): 01 KD4 ONLY · 02 METHOD · 03 LEADER · 04 PORTFOLIO · 05 REVIEWS · 06 PROMISE · 07 CONTACT */}
+            {/* 섹션 번호(2026-10-15 줄이기 후): 01 KD4 ONLY · 02 METHOD · 03 LEADER · 04 REVIEWS · 05 PROMISE · 06 CONTACT */}
             <h2
               className="section-title-serif"
               style={{
@@ -426,7 +426,8 @@ export default function JoinPage() {
               style={{ margin: '0 auto 28px', textAlign: 'center', maxWidth: '520px' }}
             >
               감정을 만드는 것이 아니라, 상대에게 반응하는 훈련법입니다. <br />
-              머리로 짜낸 연기가 아닌, 충동에서 시작되는 살아있는 연기.
+              머리로 짜낸 연기가 아닌, 충동에서 시작되는 살아있는 연기를 위한 <br />
+              보편적인 테크닉입니다.
             </p>
 
             <YouTubeFacade
@@ -538,108 +539,7 @@ export default function JoinPage() {
         </div>
       </section>
 
-      {/* ⑦ PORTFOLIO — 출연영상 결과물 */}
-      <section aria-label="출연영상 포트폴리오" className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
-        <div className="container">
-          <div style={{ maxWidth: '720px', margin: '0 auto 48px', textAlign: 'center' }}>
-            <p className="section-eyebrow"><span lang="en">04 — PORTFOLIO</span></p>
-            <h2
-              className="section-title-serif"
-              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
-            >
-              KD4 멤버들의{' '}
-              <span style={{ color: 'var(--gold)' }}>실제 출연영상</span>
-            </h2>
-            <p
-              style={{
-                fontSize: '0.95rem',
-                color: 'var(--gray-light)',
-                lineHeight: 1.7,
-                maxWidth: '480px',
-                margin: '0 auto',
-              }}
-            >
-              전문 영화팀과 함께 제작한 포트폴리오입니다.
-              <br />
-              이 영상으로 캐스팅이 연결됩니다.
-            </p>
-          </div>
-
-          {/* 2-column video grid */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
-              gap: 'clamp(16px, 3vw, 28px)',
-              maxWidth: '980px',
-              margin: '0 auto',
-            }}
-          >
-            {([
-              /* 2026-10-15 대표 줄이기: 신규가 들을 수 있는 출연영상 클래스 결과물 2편만 (심화·1달 영상은 각 클래스 페이지에) */
-              { youtubeId: 'IWL6hlOrU-w', genre: '드라마', subtitle: '「메소드 연기」', cohort: '출연영상 17기' },
-              { youtubeId: 'PUlrhjOkvjA', genre: '드라마', subtitle: '단편 「외사랑」', cohort: '출연영상 16기' },
-            ] as const).map(({ youtubeId, genre, subtitle, cohort }) => (
-              <div key={youtubeId}>
-                {/* 장르 뱃지 */}
-                <div style={{ marginBottom: '10px' }}>
-                  <span
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '5px',
-                      fontFamily: 'var(--font-display)',
-                      fontSize: '0.75rem',
-                      fontWeight: 700,
-                      letterSpacing: '0.12em',
-                      textTransform: 'uppercase',
-                      color: 'var(--navy)',
-                      background: 'rgba(21,72,138,0.08)',
-                      border: '1px solid rgba(21,72,138,0.2)',
-                      borderRadius: '999px',
-                      padding: '4px 10px',
-                    }}
-                  >
-                    <Film aria-hidden={true} size={11} strokeWidth={2} />
-                    {genre}
-                  </span>
-                </div>
-
-                {/* 영상 임베드 — 클릭 시 로드 */}
-                <YouTubeFacade
-                  videoId={youtubeId}
-                  title={`${genre} — ${subtitle}`}
-                  containerStyle={{
-                    borderRadius: 'var(--radius)',
-                    boxShadow: '0 8px 32px rgba(21,72,138,0.14)',
-                    border: '1px solid var(--border)',
-                    background: '#0a0a0a',
-                    marginBottom: '14px',
-                  }}
-                />
-
-                {/* 캡션 */}
-                <p
-                  style={{
-                    fontFamily: 'var(--font-serif)',
-                    fontSize: '0.95rem',
-                    fontWeight: 700,
-                    marginBottom: '4px',
-                    color: '#111111',
-                  }}
-                >
-                  {subtitle}
-                </p>
-                <p style={{ fontSize: '0.8rem', color: 'var(--gray-light)' }}>
-                  {cohort}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {/* «포트폴리오 전체 보기» 링크 — 2026-10-15 대표 «포트폴리오 보기도 빼»로 제거 (유튜브 재생목록으로 나가는 길) */}
-        </div>
-      </section>
+      {/* 출연영상 포트폴리오 — 2026-10-15 대표 «배우들의 실제출연영상 항목 빼라니까»로 구간 전체 제거 (영상은 /reel-production-class 등에 그대로) */}
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑥ PROOF — 후기 (광고 압축: 마퀴 1행 + 더보기 링크)         */}
@@ -647,7 +547,7 @@ export default function JoinPage() {
       <section aria-label="멤버 후기" className="section" style={{ background: 'var(--bg2)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 28px', textAlign: 'center' }}>
-            <p className="section-eyebrow"><span lang="en">05 — REAL REVIEWS</span></p>
+            <p className="section-eyebrow"><span lang="en">04 — REAL REVIEWS</span></p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.5rem, 3.6vw, 2.1rem)', marginBottom: 0 }}
@@ -710,7 +610,7 @@ export default function JoinPage() {
       <section aria-label="KD4 약속" className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow"><span lang="en">06 — OUR PROMISE</span></p>
+            <p className="section-eyebrow"><span lang="en">05 — OUR PROMISE</span></p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.6rem, 4vw, 2.3rem)', marginBottom: 0 }}
@@ -805,7 +705,7 @@ export default function JoinPage() {
         <div className="container">
           <div style={{ maxWidth: '520px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-              <p className="section-eyebrow"><span lang="en">07 — CONTACT</span></p>
+              <p className="section-eyebrow"><span lang="en">06 — CONTACT</span></p>
               <h2
                 className="section-title-serif"
                 style={{ fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', marginBottom: '10px' }}
