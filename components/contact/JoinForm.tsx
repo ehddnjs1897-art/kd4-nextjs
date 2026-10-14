@@ -69,14 +69,14 @@ const SOURCE_OPTIONS = [
 ]
 
 /* ── 클래스 선택지 — lib/classes.ts 단일 소스 (명칭 임의 변경 금지) ──
- * 카드형 4종: 신규 신청 가능(isNewMemberOpen) 메인 클래스 (오디션 테크닉은 2026-10-13 대표 결정으로 추가)
+ * 카드형 5종: 신규 상담 신청 메인 클래스 (오디션 테크닉 2026-10-13 · 개인 레슨 2026-10-14 대표 결정으로 추가)
  * 칩형: 나머지 클래스 + 기타/상담 후 결정 — 기존 select 선택지와 동일 값 유지 (DB 분석 연속성) */
-const FEATURED_CLASS_NAMES = ['베이직 클래스', '마이즈너 테크닉 정규 클래스', '출연영상 클래스', '오디션 테크닉 클래스']
+const FEATURED_CLASS_NAMES = ['베이직 클래스', '마이즈너 테크닉 정규 클래스', '출연영상 클래스', '오디션 테크닉 클래스', '개인 레슨']
 const FEATURED_CLASSES = FEATURED_CLASS_NAMES
   .map((name) => CLASSES.find((c) => c.nameKo === name))
   .filter((c): c is NonNullable<typeof c> => Boolean(c))
 
-const MORE_CLASS_NAMES = ['움직임 클래스', '개인 레슨']
+const MORE_CLASS_NAMES = ['움직임 클래스']
 const ETC_OPTION = '기타 / 상담 후 결정'
 const MORE_OPTIONS = [...MORE_CLASS_NAMES, ETC_OPTION]
 
@@ -85,6 +85,7 @@ function classTag(cls: (typeof CLASSES)[number]): string {
   if (cls.isHobby) return '취미 · 입문'
   if (cls.nameKo === '출연영상 클래스') return '정규 · 포트폴리오'
   if (cls.nameKo === '오디션 테크닉 클래스') return '정규 · 오디션 준비'
+  if (cls.nameKo === '개인 레슨') return '1:1 · 맞춤 지도'
   return '정규 클래스'
 }
 
