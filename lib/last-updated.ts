@@ -28,7 +28,7 @@ export const LAST_UPDATED = {
   oneMonthReel: '2026-10-06',
   sinchon: '2026-08-20',
   coaches: '2026-08-30',
-  join: '2026-08-30',
+  join: '2026-10-15',
   // /faq — 화면 «최종 수정일»·JSON-LD dateModified·sitemap이 모두 이 값을 쓴다
   faq: '2026-10-13',
 } as const

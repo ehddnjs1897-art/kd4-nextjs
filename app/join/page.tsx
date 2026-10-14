@@ -4,7 +4,6 @@ import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import {
   Users,
-  Flame,
   FileText,
   Film,
   Handshake,
@@ -13,13 +12,10 @@ import {
   HeartHandshake,
 } from 'lucide-react'
 import { CLASSES, DIRECTOR } from '@/lib/classes'
-import { KD4_STATS } from '@/lib/stats'
-import { STAT_ICONS } from '@/lib/stat-icons'
 import DirectorFilmography from '@/components/director/DirectorFilmography'
-import { FAQ_ITEMS } from '@/lib/faq-items'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { LAST_UPDATED } from '@/lib/last-updated'
-import { buildBreadcrumb, buildFaqPage, buildWebPage } from '@/lib/seo-schemas'
+import { buildBreadcrumb, buildWebPage } from '@/lib/seo-schemas'
 import StickyTopBar from '@/components/join/StickyTopBar'
 import JoinCTALink from '@/components/join/JoinCTALink'
 import { SITE_URL } from '@/lib/constants'
@@ -29,7 +25,6 @@ const JoinPageView = dynamic(() => import('@/components/analytics/JoinPageView')
 const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
 const StickyBottomCTA = dynamic(() => import('@/components/join/StickyBottomCTA'))
 const ScrollDepth = dynamic(() => import('@/components/analytics/ScrollDepth'))
-const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
 const YouTubeFacade = dynamic(() => import('@/components/youtube/YouTubeFacade'))
 
 export const metadata: Metadata = {
@@ -69,59 +64,6 @@ const FILM_CLASS = CLASSES.find((c) => c.nameKo === '출연영상 클래스')!
 const OPEN_COHORTS = [
   { name: '마이즈너', cohort: '3기', seats: MAIN_CLASS.remainingSeats ?? 0, price: parseInt(MAIN_CLASS.price.replace(/,/g, ''), 10) },
   { name: '출연영상', cohort: '19기', seats: FILM_CLASS.remainingSeats ?? 0, price: parseInt(FILM_CLASS.price.replace(/,/g, ''), 10) },
-]
-
-/* ── 할인 혜택 목록 ─────────────────────────────────────────── */
-const DISCOUNTS = [
-  {
-    tag: '컴백 할인',
-    title: '첫 달 5만원 할인',
-    desc: '6개월 이상 휴면 후 복귀 시 적용',
-    isNew: false,
-  },
-  {
-    tag: '앰배서더 할인',
-    title: '지인 소개로 등록 시 두 분 모두 각 3만원 할인',
-    desc: '지인 소개로 등록 시, 소개한 분과 등록한 분 모두 각 3만원씩 할인',
-    isNew: true,
-  },
-  {
-    tag: '재수강 할인',
-    title: '2번째 수강부터 월 3만원 할인',
-    desc: '같은 클래스를 재수강하는 경우, 두 번째 수강하는 달부터 매월 3만원 할인',
-    isNew: true,
-  },
-  {
-    tag: 'KD4 매니아 할인',
-    title: '같은 달 2개 이상 수강 시 추가 클래스 15% 할인',
-    desc: '같은 달에 두 개 이상의 클래스를 함께 수강하면, 추가하는 클래스 수강료를 15% 할인해 드립니다.',
-    isNew: true,
-  },
-]
-
-/* ── 커리큘럼 6단계 로드맵 ─────────────────────────────────── */
-const CURRICULUM = [
-  {
-    Icon: Flame,
-    num: '01',
-    step: 'STEP 01',
-    title: '아메리칸 액팅 메소드\n트레이닝',
-    desc: '마이즈너 테크닉 기반의 심층 연기 훈련',
-  },
-  {
-    Icon: Film,
-    num: '02',
-    step: 'STEP 02',
-    title: '포트폴리오 제작',
-    desc: '전문 영화팀과 함께하는 실전 출연영상 포트폴리오',
-  },
-  {
-    Icon: Handshake,
-    num: '03',
-    step: 'STEP 03',
-    title: '캐스팅 연계',
-    desc: '캐스팅 디렉터 · 인물 조감독과 직접 연결되는 실전 캐스팅 지원',
-  },
 ]
 
 /* ── 후기 마퀴 (2행 교차) ── */
@@ -168,11 +110,10 @@ export default function JoinPage() {
           idPath: '/join#webpage',
           url: `${SITE_URL}/join`,
           name: '무료 상담 신청 — KD4 액팅 스튜디오',
-          description: '마이즈너 테크닉 연기 훈련 무료 상담 신청. KD4 액팅 스튜디오 클래스 안내 및 Q&A.',
+          description: '마이즈너 테크닉 연기 훈련 무료 상담 신청. KD4 액팅 스튜디오 클래스 안내.',
           dateModified: LAST_UPDATED.join,
-          speakableCssSelectors: ['h1', '.faq-answer'],
+          speakableCssSelectors: ['h1'],
         }),
-        buildFaqPage(FAQ_ITEMS, `${SITE_URL}/join`),
       ]} />
 
       <StickyTopBar cohorts={OPEN_COHORTS} />
@@ -334,6 +275,8 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⓪ FORM-HERO — Hero 직후 즉시 신청 (스크롤 거리 0)         */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* 옛 아래쪽 폼 주소(/join#form)도 여기로 — 2026-10-15 */}
+      <span id="form" aria-hidden="true" style={{ display: 'block', height: 0, scrollMarginTop: '80px' }} />
       <section
         id="form-hero"
         aria-label="즉시 무료 상담 신청"
@@ -378,7 +321,7 @@ export default function JoinPage() {
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
             <p className="section-eyebrow"><span lang="en">01 — KD4 ONLY</span></p>
-            {/* 섹션 번호: 01 KD4 ONLY · 02 METHOD · 03 CURRICULUM · 04 OFFER · 05 DISCOUNT · 06 LEADER · 07 PORTFOLIO · 08 REVIEWS · 09 FAQ · 10 PROMISE · 11 CONTACT */}
+            {/* 섹션 번호(2026-10-15 줄이기 후): 01 KD4 ONLY · 02 LEADER · 03 PORTFOLIO · 04 REVIEWS · 05 PROMISE */}
             <h2
               className="section-title-serif"
               style={{
@@ -467,554 +410,14 @@ export default function JoinPage() {
 
       {/* COMPARE 섹션 — 광고 압축으로 제거 (5/6) */}
 
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ③ SOLUTION — 마이즈너 테크닉 (광고 압축: 영상 + 1줄 + 링크) */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section aria-label="마이즈너 테크닉 소개" className="section" style={{ background: 'var(--bg)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
-        <div className="container">
-          <div style={{ maxWidth: '720px', margin: '0 auto', textAlign: 'center' }}>
-            <p className="section-eyebrow"><span lang="en">02 — THE METHOD</span></p>
-            <h2
-              className="section-title-serif"
-              style={{ fontSize: 'clamp(1.5rem, 3.6vw, 2.1rem)', marginBottom: '12px' }}
-            >
-              <span style={{ color: 'var(--navy)' }}>마이즈너 테크닉</span>
-            </h2>
-            <p
-              className="section-desc"
-              style={{ margin: '0 auto 28px', textAlign: 'center', maxWidth: '520px' }}
-            >
-              감정을 만드는 것이 아니라, 상대에게 반응하는 훈련법입니다. <br />
-              머리로 짜낸 연기가 아닌, 충동에서 시작되는 살아있는 연기.
-            </p>
-
-            <YouTubeFacade
-              videoId="6crvxRnBerk"
-              title="마이즈너 테크닉 — KD4 액팅 스튜디오"
-              containerStyle={{
-                borderRadius: 'var(--radius)',
-                boxShadow: '0 8px 28px rgba(21,72,138,0.12)',
-                border: '1px solid var(--border)',
-                background: 'var(--bg2)',
-              }}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ④ STATS                                                    */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ── STATS — 메인 페이지(/)와 동일한 4카드 (lib/stats.ts 단일 소스) ─── */}
-      <section aria-label="KD4 주요 통계" className="stats-banner">
-        <div className="container">
-          <div className="stats-grid">
-            {KD4_STATS.map((stat, i) => (
-              <div key={stat.label} className="stats-card">
-                <div className="stats-icon-wrap">{STAT_ICONS[i]}</div>
-                <div className="stat-num">{stat.value}</div>
-                <div className="stat-label">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑦ CURRICULUM — 6단계 훈련 과정 (감정 해방 → 캐스팅 연계) */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section aria-label="6단계 훈련 커리큘럼" className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
-        <div className="container">
-          <div style={{ maxWidth: '720px', margin: '0 auto 48px', textAlign: 'center' }}>
-            <p className="section-eyebrow"><span lang="en">03 — CURRICULUM</span></p>
-            <h2
-              className="section-title-serif"
-              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '10px' }}
-            >
-              배우지망생 <span aria-hidden="true">→</span> <span style={{ color: 'var(--gold)' }}>진짜 배우</span>
-            </h2>
-            <p
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: '0.78rem',
-                letterSpacing: '0.18em',
-                color: 'var(--navy)',
-                marginBottom: '14px',
-                textTransform: 'uppercase',
-              }}
-            >
-              단계별 훈련 과정
-            </p>
-          </div>
-
-          {/* 3단계 도식 — 메인 페이지 ALL IN ONE SYSTEM과 일관 */}
-          <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
-            <div className="steps-journey">
-              {CURRICULUM.map((s, i) => (
-                <Fragment key={s.num}>
-                  <div
-                    className="step-card"
-                    style={{
-                      position: 'relative',
-                      background: 'var(--bg2)',
-                      border: s.num === '03' ? '1px solid var(--navy)' : '1px solid var(--border)',
-                      borderRadius: 'var(--radius)',
-                      padding: 'clamp(40px, 6vw, 56px) clamp(20px, 4vw, 36px) clamp(36px, 5vw, 48px)',
-                      textAlign: 'center',
-                      overflow: 'hidden',
-                    }}
-                  >
-                    {/* 대형 배경 숫자 */}
-                    <span
-                      aria-hidden
-                      style={{
-                        position: 'absolute',
-                        top: '12px',
-                        right: '20px',
-                        fontFamily: 'var(--font-display)',
-                        fontSize: 'clamp(3rem, 7vw, 5.5rem)',
-                        fontWeight: 700,
-                        color: 'rgba(21,72,138,0.08)',
-                        lineHeight: 1,
-                        userSelect: 'none',
-                        pointerEvents: 'none',
-                      }}
-                    >
-                      {s.num}
-                    </span>
-
-                    {/* STEP 라벨 */}
-                    <p
-                      style={{
-                        fontFamily: 'var(--font-display)',
-                        fontSize: 'clamp(0.7rem, 1.6vw, 0.8rem)',
-                        letterSpacing: '0.2em',
-                        fontWeight: 700,
-                        color: 'var(--navy)',
-                        marginBottom: '14px',
-                        textTransform: 'uppercase',
-                      }}
-                    >
-                      <span lang="en">{s.step}</span>
-                    </p>
-
-                    {/* 아이콘 */}
-                    <div
-                      className="step-icon-glow"
-                      style={{ margin: '0 auto 18px' }}
-                    >
-                      <s.Icon aria-hidden={true} size={26} color="var(--navy)" strokeWidth={1.6} />
-                    </div>
-
-                    {/* 제목 */}
-                    <h3
-                      style={{
-                        fontFamily: 'var(--font-serif)',
-                        fontSize: 'clamp(1rem, 2.3vw, 1.2rem)',
-                        fontWeight: 700,
-                        marginBottom: '12px',
-                        lineHeight: 1.4,
-                        whiteSpace: 'pre-line',
-                        wordBreak: 'keep-all',
-                      }}
-                    >
-                      {s.title}
-                    </h3>
-
-                    {/* 설명 */}
-                    <p
-                      style={{
-                        fontSize: 'clamp(0.78rem, 1.7vw, 0.88rem)',
-                        color: 'var(--gray-light)',
-                        lineHeight: 1.7,
-                        wordBreak: 'keep-all',
-                      }}
-                    >
-                      {s.desc}
-                    </p>
-                  </div>
-
-                  {/* 화살표 (마지막 제외) */}
-                  {i < CURRICULUM.length - 1 && (
-                    <div className="step-journey-arrow" aria-hidden>
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <path
-                          d="M4 10h12M11 5l5 5-5 5"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </div>
-                  )}
-                </Fragment>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑨ OFFER — 가격 + 카운트다운 + Anchor Price 배지           */}
-      {/* C. 풀스크린 섹션 (Preview) — 100vw + 강조 그라데이션 배경 */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section aria-label="KD4 시그니처 클래스" className="section uplift-fullscreen-offer" style={{ padding: 'clamp(64px, 12vw, 100px) 0' }}>
-        <div className="container">
-          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow">
-              <span lang="en">04 — SIGNATURE CLASSES</span>
-            </p>
-            <h2
-              className="section-title-serif"
-              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
-            >
-              KD4 시그니처 클래스
-            </h2>
-            <p style={{ fontSize: '0.95rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-              현역 배우들이 선택한 KD4의 대표 정규 클래스
-            </p>
-          </div>
-
-          {/* 클래스 카드 */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: '20px',
-              maxWidth: '720px',
-              margin: '0 auto 56px',
-            }}
-          >
-            {[MAIN_CLASS, FILM_CLASS].map((cls) => (
-              <div key={cls.nameKo} className="class-card" style={{ position: 'relative' }}>
-                {/* HOT 뱃지 — 우측 상단 (인기 클래스) */}
-                {cls.hot && (
-                  <span
-                    style={{
-                      position: 'absolute',
-                      top: '12px',
-                      right: '12px',
-                      zIndex: 2,
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      fontSize: '0.72rem',
-                      fontWeight: 800,
-                      color: '#fff',
-                      background: 'var(--accent-red)',
-                      borderRadius: '999px',
-                      padding: '4px 12px',
-                      letterSpacing: '0.05em',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    🔥 HOT
-                  </span>
-                )}
-
-                <div className="class-card-header">
-                  <p className="class-step">{cls.step}</p>
-                  <h3 className="class-name-ko">{cls.nameKo}</h3>
-                  <p className="class-name-en" lang="en">{cls.nameEn}</p>
-                </div>
-                <div className="class-card-body">
-                  {cls.quote && <p className="class-quote">{cls.quote}</p>}
-                  <div className="class-bullets">
-                    {cls.bullets.slice(0, 3).map((b) => (
-                      <div key={b} className="class-bullet">
-                        {b}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="class-card-footer">
-                  {/* 월 수강료 */}
-                  <div style={{ marginBottom: '8px' }}>
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'baseline',
-                        gap: '10px',
-                        flexWrap: 'wrap',
-                      }}
-                    >
-                      <span className="class-price">
-                        {cls.price}<span>원</span>
-                      </span>
-                      {cls.originalPrice && (
-                        <span
-                          style={{
-                            fontSize: '0.82rem',
-                            color: 'var(--gray)',
-                            textDecoration: 'line-through',
-                          }}
-                        >
-                          {cls.originalPrice}원
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* 코스 총액 (첫달 할인 반영) */}
-                  {cls.course && (() => {
-                    const months = parseInt(cls.course.match(/\d+/)?.[0] ?? '1', 10)
-                    const first = parseInt(cls.price.replace(/,/g, ''), 10)
-                    const regular = cls.originalPrice
-                      ? parseInt(cls.originalPrice.replace(/,/g, ''), 10)
-                      : first
-                    const total = first + regular * (months - 1)
-                    const lumpSumDiscount = cls.lumpSumDiscount ?? 100000
-                    const lumpSumPrice = total - lumpSumDiscount
-                    const lumpSumManwon = Math.round(lumpSumDiscount / 10000)
-                    return (
-                      <>
-                        <p style={{ fontSize: '0.78rem', color: 'var(--gray-light)', marginBottom: '6px' }}>
-                          {cls.course} 총{' '}
-                          <strong style={{ color: 'var(--navy)' }}>
-                            {total.toLocaleString()}원
-                          </strong>
-                          {' '}· 기본 월납 (할부 가능)
-                        </p>
-                        {/* 일시납 패키지 강조 박스 — 캐시플로 회수 가속 (2026-05-23)
-                            카드 안에 추가 컴포넌트로만 삽입, 기존 카드 디자인은 유지.
-                            색상 토큰(--accent-red / --bg2) 그대로 사용. */}
-                        <div
-                          aria-label="일시납 패키지 혜택"
-                          style={{
-                            background: 'var(--bg2)',
-                            border: '1.5px solid var(--accent-red)',
-                            borderRadius: '12px',
-                            padding: '16px 14px 14px',
-                            marginBottom: '10px',
-                            position: 'relative',
-                          }}
-                        >
-                          <span
-                            aria-hidden="true"
-                            style={{
-                              position: 'absolute',
-                              top: '-10px',
-                              left: '12px',
-                              background: 'var(--accent-red)',
-                              color: '#fff',
-                              fontSize: '0.66rem',
-                              fontWeight: 800,
-                              letterSpacing: '0.04em',
-                              padding: '3px 10px',
-                              borderRadius: '999px',
-                              whiteSpace: 'nowrap',
-                            }}
-                          >
-                            일시납 패키지
-                          </span>
-                          <p
-                            style={{
-                              fontSize: '0.8rem',
-                              color: 'var(--accent-red)',
-                              fontWeight: 700,
-                              marginBottom: '8px',
-                              lineHeight: 1.5,
-                            }}
-                          >
-                            한번에 결제 시 {lumpSumManwon}만원 할인
-                          </p>
-                          <p
-                            style={{
-                              fontSize: '0.88rem',
-                              color: 'var(--navy)',
-                              fontWeight: 700,
-                              marginBottom: '8px',
-                              lineHeight: 1.4,
-                            }}
-                          >
-                            <strong>{lumpSumPrice.toLocaleString()}원</strong>
-                            <span
-                              style={{
-                                fontSize: '0.72rem',
-                                color: 'var(--gray-light)',
-                                fontWeight: 500,
-                                marginLeft: '6px',
-                              }}
-                            >
-                              ({cls.course} 일시납가)
-                            </span>
-                          </p>
-                          <p style={{ fontSize: '0.72rem', color: 'var(--gray-light)', lineHeight: 1.6, margin: 0 }}>
-                            자리 확정 + 캐시 부담 한번에 정리
-                          </p>
-                        </div>
-                      </>
-                    )
-                  })()}
-                  <p style={{ fontSize: '0.75rem', color: 'var(--gray)' }}>
-                    {cls.schedule} · {cls.duration} · 정원 {cls.capacity}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* 할인 혜택 섹션 타이틀 */}
-          <div
-            style={{
-              maxWidth: '520px',
-              margin: '56px auto 0',
-              paddingTop: '36px',
-              borderTop: '1px solid var(--border)',
-              textAlign: 'center',
-            }}
-          >
-            <p
-              className="section-eyebrow"
-              style={{ color: 'var(--navy)', marginBottom: '10px' }}
-            >
-              <span lang="en">05 — DISCOUNT BENEFITS</span>
-            </p>
-            <h3
-              className="section-title-serif"
-              style={{
-                fontSize: 'clamp(1.4rem, 3.5vw, 1.9rem)',
-                marginBottom: '10px',
-              }}
-            >
-              할인 혜택
-            </h3>
-            <p
-              style={{
-                fontSize: '0.88rem',
-                color: 'var(--gray-light)',
-                lineHeight: 1.6,
-                marginBottom: '20px',
-              }}
-            >
-              해당하는 조건이 있다면 추가로 적용받을 수 있어요
-            </p>
-          </div>
-
-          {/* 할인 혜택 목록 */}
-          <div
-            style={{
-              maxWidth: '520px',
-              margin: '0 auto 36px',
-              background: 'var(--bg2)',
-              border: '2px solid var(--accent-red)',
-              borderRadius: 'var(--radius)',
-              overflow: 'hidden',
-              boxShadow: '0 4px 20px rgba(199,62,62,0.08)',
-            }}
-          >
-            {DISCOUNTS.map(({ tag, title, desc, isNew }, i) => (
-              <div
-                key={tag}
-                style={{
-                  padding: '18px 20px',
-                  borderTop: i > 0 ? '1px solid var(--border)' : undefined,
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '5px' }}>
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-serif)',
-                      fontSize: 'clamp(1.05rem, 2.8vw, 1.25rem)',
-                      fontWeight: 700,
-                      lineHeight: 1.3,
-                      wordBreak: 'keep-all',
-                      margin: 0,
-                    }}
-                  >
-                    {tag}
-                  </p>
-                  {isNew && (
-                    <span
-                      lang="en"
-                      style={{
-                        fontFamily: 'var(--font-display)',
-                        fontSize: '0.75rem',
-                        fontWeight: 700,
-                        letterSpacing: '0.08em',
-                        textTransform: 'uppercase',
-                        color: '#ffffff',
-                        background: 'var(--accent-red)',
-                        borderRadius: '4px',
-                        padding: '2px 6px',
-                      }}
-                    >
-                      NEW
-                    </span>
-                  )}
-                </div>
-                <p
-                  style={{
-                    fontSize: 'clamp(0.9rem, 2.3vw, 1rem)',
-                    fontWeight: 600,
-                    color: 'var(--navy)',
-                    marginBottom: '3px',
-                    lineHeight: 1.4,
-                    wordBreak: 'keep-all',
-                  }}
-                >
-                  {title}
-                </p>
-                <p style={{ fontSize: '0.8rem', color: 'var(--gray-light)', lineHeight: 1.5 }}>
-                  {desc}
-                </p>
-              </div>
-            ))}
-            <div style={{ padding: '14px 20px', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
-              <JoinCTALink
-                href="#form-hero"
-                location="offer_discount"
-                label="지금 신청하기"
-                fireLead
-                className="btn-primary"
-                style={{ background: 'var(--navy)', color: '#ffffff', width: '100%', justifyContent: 'center' }}
-              >
-                지금 신청하기
-                <ArrowRight aria-hidden={true} size={15} strokeWidth={2.2} />
-              </JoinCTALink>
-              <p style={{ fontSize: '0.72rem', color: 'var(--gray)', marginTop: '8px' }}>
-                * 모든 할인은 중복 적용되지 않으며, 가장 큰 혜택 하나만 적용됩니다
-              </p>
-            </div>
-          </div>
-
-          <div style={{ textAlign: 'center', marginTop: '40px' }}>
-            <JoinCTALink
-              href="#form-hero"
-              location="offer_bottom"
-              label="무료 상담 신청"
-              fireLead
-              className="btn-primary"
-              style={{ background: 'var(--navy)', color: '#ffffff' }}
-            >
-              무료 상담 신청
-              <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} />
-            </JoinCTALink>
-            {/* 일시납 보조 안내 — CTA 직하 강조 카피 (2026-05-23) */}
-            <p
-              style={{
-                fontSize: '0.8rem',
-                color: 'var(--accent-red)',
-                fontWeight: 700,
-                marginTop: '12px',
-                lineHeight: 1.5,
-              }}
-            >
-              일시납 = 자리 확정 + 추가 할인
-            </p>
-            <p style={{ fontSize: '0.72rem', color: 'var(--gray-light)', marginTop: '4px' }}>
-              상담 시 일시납 패키지를 선택하시면 추가 혜택을 받을 수 있어요
-            </p>
-          </div>
-        </div>
-      </section>
+      {/* ③ 마이즈너 소개 · ④ 숫자 4칸 · ⑦ 훈련 3단계 · ⑨ 시그니처 클래스·할인 — 2026-10-15 대표 «반드시 있어야 할 것만»으로 제거.
+          가격·일정은 상담 폼 클래스 카드(누르면 펼침)에, 상세는 /classes·/benefits·각 클래스 페이지에 그대로 있음 */}
 
       {/* ⑥ DIRECTOR — 강사 크레딧 (광고 압축: highlights 3개 + 링크) */}
       <section aria-label="강사 권동원 소개" className="section" style={{ background: 'var(--bg)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
-            <p className="section-eyebrow"><span lang="en">06 — THE LEADER</span></p>
+            <p className="section-eyebrow"><span lang="en">02 — THE LEADER</span></p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.5rem, 3.6vw, 2.1rem)', marginBottom: '10px' }}
@@ -1105,7 +508,7 @@ export default function JoinPage() {
       <section aria-label="출연영상 포트폴리오" className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 48px', textAlign: 'center' }}>
-            <p className="section-eyebrow"><span lang="en">07 — PORTFOLIO</span></p>
+            <p className="section-eyebrow"><span lang="en">03 — PORTFOLIO</span></p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: '14px' }}
@@ -1139,12 +542,9 @@ export default function JoinPage() {
             }}
           >
             {([
-              { youtubeId: '7Q62XeyVLbc', genre: '드라마', subtitle: '단편 「여배우들」', cohort: '심화 1기' },
+              /* 2026-10-15 대표 줄이기: 신규가 들을 수 있는 출연영상 클래스 결과물 2편만 (심화·1달 영상은 각 페이지와 전체 보기 재생목록에) */
               { youtubeId: 'IWL6hlOrU-w', genre: '드라마', subtitle: '「메소드 연기」', cohort: '출연영상 17기' },
               { youtubeId: 'PUlrhjOkvjA', genre: '드라마', subtitle: '단편 「외사랑」', cohort: '출연영상 16기' },
-              { youtubeId: 'zoDJtGT3aQM', genre: '드라마', subtitle: '단편 「그 사람이 떠나기 전날 밤」', cohort: '심화 2기' },
-              { youtubeId: 'tLAZZOGd3FA', genre: '드라마', subtitle: '단편 「백만 원에 난리난 현실남매」', cohort: '출연영상 1달 클래스' },
-              { youtubeId: 's_AE-Vy0Ka0', genre: '드라마', subtitle: '단편 「우리들의 로맨스」', cohort: '심화 1기' },
             ] as const).map(({ youtubeId, genre, subtitle, cohort }) => (
               <div key={youtubeId}>
                 {/* 장르 뱃지 */}
@@ -1237,7 +637,7 @@ export default function JoinPage() {
       <section aria-label="멤버 후기" className="section" style={{ background: 'var(--bg2)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 28px', textAlign: 'center' }}>
-            <p className="section-eyebrow"><span lang="en">08 — REAL REVIEWS</span></p>
+            <p className="section-eyebrow"><span lang="en">04 — REAL REVIEWS</span></p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.5rem, 3.6vw, 2.1rem)', marginBottom: 0 }}
@@ -1292,21 +692,7 @@ export default function JoinPage() {
           </div>
         </div>
       </section>
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section aria-label="자주 묻는 질문" className="section" style={{ background: 'var(--bg2)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
-        <div className="container">
-          <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow"><span lang="en">09 — FAQ</span></p>
-            <h2
-              className="section-title-serif"
-              style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)' }}
-            >
-              자주 묻는 질문
-            </h2>
-          </div>
-          <FaqAccordion items={FAQ_ITEMS} />
-        </div>
-      </section>
+      {/* FAQ — 2026-10-15 제거 (답이 상담 폼 카드·문의 안내에 있음, /join은 검색 비노출). 질문 모음은 /faq */}
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑪ RISK REVERSAL — 신규 (Form 직전 리스크 제거)            */}
@@ -1314,7 +700,7 @@ export default function JoinPage() {
       <section aria-label="KD4 약속" className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
         <div className="container">
           <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-            <p className="section-eyebrow"><span lang="en">10 — OUR PROMISE</span></p>
+            <p className="section-eyebrow"><span lang="en">05 — OUR PROMISE</span></p>
             <h2
               className="section-title-serif"
               style={{ fontSize: 'clamp(1.6rem, 4vw, 2.3rem)', marginBottom: 0 }}
@@ -1392,37 +778,7 @@ export default function JoinPage() {
         </div>
       </section>
 
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑫ FORM — 신청 폼                                          */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section
-        id="form"
-        aria-label="무료 상담 신청"
-        className="section"
-        style={{
-          scrollMarginTop: '80px',
-          background: 'radial-gradient(ellipse at 50% 0%, rgba(21,72,138,0.08) 0%, var(--bg) 70%)',
-          padding: 'clamp(64px, 12vw, 100px) 0',
-        }}
-      >
-        <div className="container">
-          <div style={{ maxWidth: '520px', margin: '0 auto' }}>
-            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-              <p className="section-eyebrow"><span lang="en">11 — CONTACT</span></p>
-              <h2
-                className="section-title-serif"
-                style={{ fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', marginBottom: '10px' }}
-              >
-                무료 상담 신청
-              </h2>
-              <p style={{ fontSize: '0.9rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-                연락처부터 확인까지 3단계 — 24시간 이내 SMS로 연락드립니다.
-              </p>
-            </div>
-            <JoinForm />
-          </div>
-        </div>
-      </section>
+      {/* 아래쪽 상담 폼 — 2026-10-15 제거 (같은 폼 두 번). /join#form 링크는 위쪽 폼 앞 앵커로 그대로 연결 */}
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑬ FOOTER 안심 문구                                         */}
@@ -1523,7 +879,7 @@ export default function JoinPage() {
         </div>
       </section>
 
-      {/* 폼 아래 탈출구 — CLEAN_ROUTE라 네비 없음, 결심 전 방문자에게 탐색 경로 제공 */}
+      {/* 맨 아래 탈출구 — CLEAN_ROUTE라 네비 없음. 2026-10-15 대표 줄이기: «클래스 자세히 보기» 1개만 남김 (스튜디오 소개 링크 제거) */}
       <nav aria-label="추가 탐색" style={{ textAlign: 'center', padding: '24px 24px 48px', borderTop: '1px solid var(--border)' }}>
         <p style={{ color: 'var(--gray)', fontSize: '0.78rem', marginBottom: '14px', letterSpacing: '0.03em' }}>
           더 알아보고 싶다면
@@ -1531,9 +887,6 @@ export default function JoinPage() {
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
           <a href="/classes" style={{ padding: '9px 18px', borderRadius: 8, border: '1px solid var(--border)', color: 'var(--gray)', fontSize: '0.82rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             클래스 자세히 보기
-          </a>
-          <a href="/about" style={{ padding: '9px 18px', borderRadius: 8, border: '1px solid var(--border)', color: 'var(--gray)', fontSize: '0.82rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
-            스튜디오 소개
           </a>
         </div>
       </nav>

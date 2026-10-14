@@ -7,8 +7,8 @@ import { analytics } from '@/lib/analytics'
 /**
  * 하단 고정 CTA — UX 개선 2차
  * - 스크롤 30% 이후에만 노출 (너무 일찍 떠서 방해 안 되도록)
- * - Hero 직후 폼(#form-hero) 또는 마지막 폼(#form) 진입 시 자동 숨김
- * - 점프 대상: 가까운 #form-hero (도달 거리 짧음)
+ * - Hero 직후 폼(#form-hero) 진입 시 자동 숨김 (아래쪽 폼은 2026-10-15 제거)
+ * - 점프 대상: #form-hero
  */
 export default function StickyBottomCTA() {
   const [visible, setVisible] = useState(false)
@@ -24,8 +24,8 @@ export default function StickyBottomCTA() {
     window.addEventListener('scroll', handleScroll, { passive: true })
     handleScroll()
 
-    /* 폼 두 개(form-hero, form) 진입 감지 → 둘 중 하나라도 보이면 sticky 숨김 */
-    const formIds = ['form-hero', 'form']
+    /* 상담 폼(form-hero) 진입 감지 → 보이면 sticky 숨김. #form은 옛 주소용 빈 앵커라 감지 대상 아님 */
+    const formIds = ['form-hero']
     const targets = formIds
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => el !== null)
