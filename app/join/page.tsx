@@ -423,11 +423,11 @@ export default function JoinPage() {
             </h2>
             <p
               className="section-desc"
-              style={{ margin: '0 auto 28px', textAlign: 'center', maxWidth: '520px' }}
+              style={{ margin: '0 auto 28px', textAlign: 'center', maxWidth: '600px' }}
             >
+              {/* 2026-10-15 대표 원문 — 두 번째 문장은 한 문장(PC 한 줄, 폭 520→600). 휴대폰은 구절 단위로 줄바꿈 */}
               감정을 만드는 것이 아니라, <span style={{ whiteSpace: 'nowrap' }}>상대에게 반응하는 훈련법입니다.</span> <br />
-              머리로 짜낸 연기가 아닌, 충동에서 시작되는 <span style={{ whiteSpace: 'nowrap' }}>살아있는 연기를 위한</span> <br />
-              보편적인 테크닉입니다.
+              머리로 짜낸 연기가 아닌, 충동에서 시작되는 <span style={{ whiteSpace: 'nowrap' }}>살아있는 연기를 위한</span> 보편적인 테크닉입니다.
             </p>
 
             <YouTubeFacade
