@@ -425,8 +425,8 @@ export default function JoinPage() {
               className="section-desc"
               style={{ margin: '0 auto 28px', textAlign: 'center', maxWidth: '520px' }}
             >
-              감정을 만드는 것이 아니라, 상대에게 반응하는 훈련법입니다. <br />
-              머리로 짜낸 연기가 아닌, 충동에서 시작되는 살아있는 연기를 위한 <br />
+              감정을 만드는 것이 아니라, <span style={{ whiteSpace: 'nowrap' }}>상대에게 반응하는 훈련법입니다.</span> <br />
+              머리로 짜낸 연기가 아닌, 충동에서 시작되는 <span style={{ whiteSpace: 'nowrap' }}>살아있는 연기를 위한</span> <br />
               보편적인 테크닉입니다.
             </p>
 
