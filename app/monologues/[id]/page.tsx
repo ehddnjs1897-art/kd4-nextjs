@@ -10,6 +10,7 @@ import CopyTextButton from '@/components/monologues/CopyTextButton'
 import DownloadButton from '@/components/monologues/DownloadButton'
 import VisitorCTA from '@/components/monologues/VisitorCTA'
 import PosterAd, { posterForSeed } from '@/components/monologues/PosterAd'
+import PracticeSteps from '@/components/monologues/PracticeSteps'
 
 export const revalidate = 300
 // cookies/headers/searchParams 미사용 → 정적 생성 강제(라이브에서 매 요청 dynamic으로 떨어지던 문제 복구)
@@ -205,6 +206,9 @@ export default async function MonologueDetailPage({ params }: { params: Params }
           </p>
         </section>
       )}
+
+      {/* 2026-10-16: 대본을 읽은 바로 그 자리에 연습 3단계 (배역·감정선으로 자동 생성) */}
+      <PracticeSteps role={m.role} emotion={m.emotion} />
 
       {/* 2026-10-06: 본문을 다 읽은 자리에 포스터 광고 1장 (본문은 가리지 않음, 독백마다 고정된 포스터) */}
       <div style={{ marginBottom: 40 }}>
