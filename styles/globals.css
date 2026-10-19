@@ -2102,3 +2102,27 @@ main {
 .post-html-content em { font-style: italic; }
 .post-html-content img { max-width: 100%; height: auto; border-radius: var(--radius); margin: 12px 0; display: block; }
 .post-html-content a { color: var(--gold); text-decoration: underline; }
+
+/* === /join «더 알아보기» (2026-10-19) — 크림+네이비, 흰 카드+얇은 테두리 === */
+.join-more { background: var(--bg2); padding: clamp(56px, 10vw, 88px) 0; border-top: 1px solid var(--border); }
+.join-more-head { max-width: 720px; margin: 0 auto 28px; text-align: center; }
+.join-more-title { font-size: clamp(1.5rem, 3.6vw, 2.1rem); margin-bottom: 10px; }
+.join-more-sub { font-size: 0.9rem; color: var(--gray-light); line-height: 1.7; word-break: keep-all; }
+.join-more-studio { display: grid; gap: 6px; max-width: 880px; margin: 0 auto 14px; padding: 26px 28px; border-radius: 14px; background: var(--navy); color: #fff; text-decoration: none; box-shadow: 0 10px 30px rgba(21,72,138,0.18); transition: transform var(--transition), box-shadow var(--transition); }
+.join-more-studio:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(21,72,138,0.26); }
+.join-more-studio-label { font-family: var(--font-display); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.22em; color: rgba(255,255,255,0.6); }
+.join-more-studio-title { font-family: var(--font-serif); font-size: clamp(1.25rem, 3vw, 1.5rem); font-weight: 700; }
+.join-more-studio-desc { font-size: 0.86rem; line-height: 1.65; color: rgba(255,255,255,0.82); word-break: keep-all; }
+.join-more-studio-go { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.04em; }
+.join-more-grid { list-style: none; margin: 0 auto; padding: 0; max-width: 880px; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 270px), 1fr)); }
+.join-more-card { height: 100%; display: flex; flex-direction: column; gap: 6px; padding: 20px 22px; background: #fff; border: 1px solid var(--border); border-radius: 14px; color: var(--black); text-decoration: none; transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition); }
+.join-more-card:hover { border-color: var(--navy); transform: translateY(-2px); box-shadow: 0 8px 22px rgba(21,72,138,0.10); }
+.join-more-tag { align-self: flex-start; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; color: var(--navy); background: var(--navy-tint-1); border: 1px solid var(--navy-tint-3); border-radius: 999px; padding: 3px 10px; }
+.join-more-name { font-family: var(--font-serif); font-size: 1.05rem; font-weight: 700; margin-top: 4px; }
+.join-more-quote { font-size: 0.82rem; color: var(--gray); line-height: 1.6; word-break: keep-all; flex: 1; }
+.join-more-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--bg2); }
+.join-more-price { font-size: 0.84rem; font-weight: 700; color: var(--navy); }
+.join-more-arrow { color: var(--navy); transition: transform var(--transition); }
+.join-more-card:hover .join-more-arrow { transform: translateX(3px); }
+.join-more-all { text-align: center; margin-top: 24px; }
+.join-more-all a { display: inline-flex; align-items: center; gap: 6px; font-size: 0.84rem; font-weight: 700; color: var(--navy); text-decoration: none; border-bottom: 1px solid var(--navy); padding: 4px 0; min-height: 44px; }

@@ -66,6 +66,15 @@ const OPEN_COHORTS = [
   { name: '출연영상', cohort: '19기', seats: FILM_CLASS.remainingSeats ?? 0, price: parseInt(FILM_CLASS.price.replace(/,/g, ''), 10) },
 ]
 
+/* ── 더 알아보기 링크 (2026-10-19 대표: 스튜디오 소개 + 클래스·각 페이지 링크) — 이름·한 줄·가격은 lib/classes.ts 그대로 ── */
+const MORE_LINKS = [
+  { nameKo: '베이직 클래스', href: '/basic-acting-class', tag: '취미 · 입문' },
+  { nameKo: '마이즈너 테크닉 정규 클래스', href: '/meisner-technique-class', tag: '정규 클래스' },
+  { nameKo: '출연영상 클래스', href: '/reel-production-class', tag: '정규 · 포트폴리오' },
+  { nameKo: '오디션 테크닉 클래스', href: '/audition-technique-class', tag: '정규 · 오디션 준비' },
+  { nameKo: '개인 레슨', href: '/acting-coaches', tag: '1:1 · 맞춤 지도' },
+].map((l) => ({ ...l, cls: CLASSES.find((c) => c.nameKo === l.nameKo)! }))
+
 /* ── 후기 마퀴 (2행 교차) ── */
 const REVIEW_MARQUEE_ROW1 = [
   { text: '내 의지로 만들어진 연기가 아니라 의식 깊은 곳에서 건드려진 감정이 자연스럽게 뱉어지는 경험을 했습니다.', author: '강*경' },
@@ -712,6 +721,48 @@ export default function JoinPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* ⑫-2 MORE — 더 알아보기 (2026-10-19 대표 «스튜디오 소개 + 클래스 소개·각 페이지 링크», 폼 아래라 신청 흐름 방해 없음) */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section aria-label="더 알아보기" className="section join-more">
+        <div className="container">
+          <div className="join-more-head">
+            <p className="section-eyebrow"><span lang="en">MORE ABOUT KD4</span></p>
+            <h2 className="section-title-serif join-more-title">KD4를 더 알아보고 싶다면</h2>
+            <p className="join-more-sub">스튜디오 이야기와 클래스별 커리큘럼·일정을 자세히 볼 수 있어요.</p>
+          </div>
+
+          <a href="/about" className="join-more-studio">
+            <span className="join-more-studio-label" lang="en">STUDIO</span>
+            <span className="join-more-studio-title">스튜디오 소개</span>
+            <span className="join-more-studio-desc">마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 배우의 성장을 운영합니다.</span>
+            <span className="join-more-studio-go" aria-hidden="true">
+              자세히 보기 <ArrowRight size={15} strokeWidth={2.2} />
+            </span>
+          </a>
+
+          <ul className="join-more-grid" role="list">
+            {MORE_LINKS.map(({ nameKo, href, tag, cls }) => (
+              <li key={nameKo}>
+                <a href={href} className="join-more-card">
+                  <span className="join-more-tag">{tag}</span>
+                  <span className="join-more-name">{nameKo}</span>
+                  <span className="join-more-quote">{cls.quote}</span>
+                  <span className="join-more-foot">
+                    <span className="join-more-price">월 {cls.price}원</span>
+                    <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} className="join-more-arrow" />
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <p className="join-more-all">
+            <a href="/classes">클래스 전체 한눈에 보기 <ArrowRight aria-hidden={true} size={14} strokeWidth={2.2} /></a>
+          </p>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑬ FOOTER 안심 문구                                         */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section aria-label="문의 안내" className="section" style={{ background: 'var(--bg)', padding: '60px 0 40px' }}>
@@ -810,17 +861,7 @@ export default function JoinPage() {
         </div>
       </section>
 
-      {/* 맨 아래 탈출구 — CLEAN_ROUTE라 네비 없음. 2026-10-15 대표 줄이기: «클래스 자세히 보기» 1개만 남김 (스튜디오 소개 링크 제거) */}
-      <nav aria-label="추가 탐색" style={{ textAlign: 'center', padding: '24px 24px 48px', borderTop: '1px solid var(--border)' }}>
-        <p style={{ color: 'var(--gray)', fontSize: '0.78rem', marginBottom: '14px', letterSpacing: '0.03em' }}>
-          더 알아보고 싶다면
-        </p>
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <a href="/classes" style={{ padding: '9px 18px', borderRadius: 8, border: '1px solid var(--border)', color: 'var(--gray)', fontSize: '0.82rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
-            클래스 자세히 보기
-          </a>
-        </div>
-      </nav>
+      {/* 맨 아래 «클래스 자세히 보기» 줄 — 2026-10-19 «더 알아보기» 구간으로 합침 */}
 
       <StickyBottomCTA />
       </div>
