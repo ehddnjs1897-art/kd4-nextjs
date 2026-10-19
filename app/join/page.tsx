@@ -459,17 +459,7 @@ export default function JoinPage() {
             >
               배우의 성장을 가이드합니다
             </h2>
-            <p
-              style={{
-                fontSize: 'clamp(0.82rem, 2.2vw, 0.95rem)',
-                color: 'var(--gray-light)',
-                lineHeight: 1.6,
-                margin: 0,
-                wordBreak: 'keep-all',
-              }}
-            >
-              건명원(建明苑) 창의인재 출신 배우
-            </p>
+            {/* 부제 «건명원(建明苑) 창의인재 출신 배우» — 2026-10-19 대표 «빼»로 제거 */}
           </div>
 
           <div className="director-card" style={{ maxWidth: '720px', margin: '0 auto' }}>
