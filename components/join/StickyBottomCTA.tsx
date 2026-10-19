@@ -8,9 +8,9 @@ import { analytics } from '@/lib/analytics'
  * 하단 고정 CTA — UX 개선 2차
  * - 스크롤 30% 이후에만 노출 (너무 일찍 떠서 방해 안 되도록)
  * - Hero 직후 폼(#form-hero) 또는 마지막 폼(#form) 진입 시 자동 숨김
- * - 점프 대상: 가까운 #form-hero (도달 거리 짧음)
+ * - 점프 대상: 가까운 #form-hero (도달 거리 짧음) — 광고 전용 랜딩(/ad/[cls])은 href·label을 넘겨 #form으로 (2026-10-19)
  */
-export default function StickyBottomCTA() {
+export default function StickyBottomCTA({ href = '#form-hero', label = '무료 상담 신청' }: { href?: string; label?: string } = {}) {
   const [visible, setVisible] = useState(false)
   const [formInView, setFormInView] = useState(false)
 
@@ -72,10 +72,10 @@ export default function StickyBottomCTA() {
       aria-hidden={!shouldShow}
     >
       <a
-        href="#form-hero"
+        href={href}
         className="pulse-cta"
         tabIndex={shouldShow ? 0 : -1}
-        onClick={() => analytics.ctaClick('sticky_bottom', '무료 상담 신청')}
+        onClick={() => analytics.ctaClick('sticky_bottom', label)}
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -97,7 +97,7 @@ export default function StickyBottomCTA() {
           textDecoration: 'none',
         }}
       >
-        무료 상담 신청
+        {label}
         <ArrowRight aria-hidden={true} size={15} strokeWidth={2.5} />
       </a>
     </div>

@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-import { Repeat2, DoorOpen, Heart } from 'lucide-react'
 import { CLASSES, DIRECTOR } from '@/lib/classes'
 import { MEISNER_FAQ } from '@/lib/landing-faqs'
 import PageJsonLd from '@/components/seo/PageJsonLd'
@@ -10,6 +9,7 @@ import { LAST_UPDATED } from '@/lib/last-updated'
 import JoinCTALink from '@/components/join/JoinCTALink'
 import { buildBreadcrumb, buildFaqPage, buildCourseFromClass, buildWebPage } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
+import { MEISNER_PILLARS as PILLARS, MEISNER_GOALS as CLASS_GOALS, MEISNER_CURRICULUM as CURRICULUM_MONTHS, MEISNER_NOTICE as NOTICE_ITEMS, MEISNER_QUOTES as OPEN_CLASS_QUOTES } from '@/lib/class-landing-content'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
 const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
@@ -51,23 +51,6 @@ export const metadata: Metadata = {
   },
 }
 
-const PILLARS = [
-  {
-    Icon: Repeat2,
-    title: 'Repetition',
-    desc: '두 명이 짧은 대사를 반복하며 상대의 미세한 변화에 반응하는 훈련. 머리로 연기하는 습관을 벗고 본능을 회복합니다. 레피티션 3단계로 시작해 Activity & Door로 확장합니다.',
-  },
-  {
-    Icon: DoorOpen,
-    title: 'Activity & Door',
-    desc: '주어진 활동에 몰입한 상태에서 상대의 갑작스러운 등장에 반응하는 훈련. 계산이 아니라 지금 이 순간의 진짜 반응.',
-  },
-  {
-    Icon: Heart,
-    title: 'Emotional Preparation',
-    desc: '장면 직전 상상력으로 필요한 감정을 미리 준비하는 법. 억지 감정이 아니라 자기 안에서 솟아나는 정직한 감정.',
-  },
-]
 
 /** 비교표 — 출처 없는 «일반 학원 평균» 대신 KD4 안의 두 입문 경로를 실제 조건으로 비교 (2026-10-11 AEO F03).
  *  정원·시간·코치는 lib/classes.ts, «이런 분께»는 /classes·홈 카드와 같은 문장 */
@@ -79,90 +62,10 @@ const COMPARISON_ROWS = [
   { label: '지도', basic: BASIC_CLASS.instructor ?? '', meisner: MAIN_CLASS.instructor ?? '' },
 ]
 
-const CLASS_GOALS = [
-  '“연기는 하는 것이 아니라 반응하는 것이다”라는 철학 아래, 자의식을 넘어 상대에게 온전히 집중하는 법을 배웁니다.',
-  '레피티션 3단계와 Activity & Door 훈련을 통해 가상의 상황 속에서도 ‘실제로 존재하는’ 생생한 감각을 체득합니다.',
-  '4개월의 정교한 과정을 거쳐 분석이 아닌 충동으로 움직이는 가장 본질적이고 진실한 장면 연기를 완성합니다.',
-]
 
-type CurriculumSession = { title: string; detail: string | null; highlight?: boolean }
-type CurriculumMonth = { month: string; emoji: string; goal: string | null; sessions: CurriculumSession[] }
 
-/** 월별 커리큘럼 — highlight: true 인 회차는 레피티션 3단계(강조 카드로 렌더) */
-const CURRICULUM_MONTHS: CurriculumMonth[] = [
-  {
-    month: '첫째 달',
-    emoji: '🌒',
-    goal: '자의식(Self-consciousness)을 뒤로하고, 상대방에게서 연기의 근거를 찾는 법',
-    sessions: [
-      { title: 'OT · 억압된 감정으로부터 해방되기 1', detail: 'Finger tag, comedy improve, pinch & ouch, liberation of emotions' },
-      { title: 'Meisner Technique — Repetition 1', detail: '기계적 반복 — 상대의 외적 사실을 그대로 반복, 100% 집중', highlight: true },
-      { title: 'Meisner Technique — Repetition 2', detail: '관점의 변화 — 주관적 느낌 포함, “I” to “You”', highlight: true },
-      { title: 'Meisner Technique — Repetition 3', detail: '충동의 수용 — 감정 변화 허용, 상대에 의해 변화되는 경험', highlight: true },
-    ],
-  },
-  {
-    month: '둘째 달',
-    emoji: '🌓',
-    goal: '가상의 상황 속에서 ‘실제로 무언가를 하는’ 능력과 집중력',
-    sessions: [
-      { title: 'Activity & Door Presentation 1', detail: '카드쌓기' },
-      { title: 'Activity & Door Presentation 2', detail: '개인적 오브제' },
-      { title: 'Activity & Door Presentation 3', detail: '룸메이트' },
-      { title: 'Activity & Door Presentation 4', detail: '관계' },
-    ],
-  },
-  {
-    month: '셋째 달',
-    emoji: '🌔',
-    goal: null,
-    sessions: [
-      { title: 'Activity & Door Presentation 5', detail: '오랜만에 만난 사이' },
-      { title: 'Activity & Door Presentation 6', detail: '모르는 사이' },
-      { title: '억압된 감정으로부터 해방되기 2', detail: 'Repetition, liberation of emotions' },
-      { title: 'Activity & Door Presentation 7', detail: '장애' },
-    ],
-  },
-  {
-    month: '넷째 달',
-    emoji: '🌕',
-    goal: '장면 연기 완성',
-    sessions: [
-      { title: '대본 선정, 콜드리딩', detail: null },
-      { title: '대본 분석', detail: 'Perspective Repetition, Actor’s paraphrase' },
-      { title: 'Scene Acting Technique', detail: null },
-      { title: 'Scene Acting Presentation', detail: null },
-    ],
-  },
-]
 
-const NOTICE_ITEMS = [
-  '마이즈너 정규 클래스는 4개월간 원팀으로 진행됩니다.',
-  '원팀 과정의 특성상 협의되지 않은 중도 하차는 원칙적으로 불가하며, 불가피한 경우 규정에 따라 패널티가 부과됩니다.',
-  '일정이 생겨 참여가 어려우시다면, 수업 3일 전까지 미리 말씀해 주세요.',
-  '원활한 학습을 돕기 위한 보강 제도가 준비되어 있으니 관련 규정을 확인 후 편하게 문의해 주시기 바랍니다.',
-]
 
-/**
- * 오픈클래스 후기 인용 — Supabase actor_reviews(is_public·course_type='오픈클래스')에서 발췌.
- * 원문 그대로 인용하며 줄바꿈만 공백으로 합쳤다. 발췌 구간은 앞뒤에 …로 표시.
- * ⚠️ 정규 클래스 후기가 아니라 오픈클래스(마이즈너 맛보기) 후기 — 출처 표기를 바꾸지 말 것.
- * ⚠️ Review/AggregateRating JSON-LD 금지 (자사 페이지 자체 후기 = 구글 정책 위반).
- */
-const OPEN_CLASS_QUOTES = [
-  {
-    text: '…이 오픈클래스를 통해 짧은 시간이었지만 마이즈너 테크닉이 현재 배우에게 어떤 무기가 될 수 있는지 이해하게 되었다. 충분히 가치있는 시간이었고, 무엇보다 배우님이 오픈클래스라고 힘을 빼서 하시는 것이 아니라 선배 배우로서 후배에게 진심으로 다가와 주신다고 느꼈다.',
-    author: '멤버',
-  },
-  {
-    text: '…단순히 자유독백 피드백으로 그치는 것이 아니라 이게 어떻게 계획적인 연기가 아닌 "되어지는"연기가 될 수 있는지 스스로 체험하게 해주셨습니다. 틀에박힌 연기가 늘 걱정이었던 제게 새로운 경험이었고, 또다른 도전에의 불씨를 다시 지피는 계기가 되었습니다.',
-    author: '멤버',
-  },
-  {
-    text: '…연기를 시도할 때마다 매번 달라야 하고 연기하는 매 순간 계획한 것을 다 버릴 용기로 현실에 존재해야 한다는, 단순하면서 중요한 내용을 가져가게 된 것이 가장 좋았습니다…',
-    author: '이OO 멤버',
-  },
-]
 
 export default function MeisnerPage() {
   return (

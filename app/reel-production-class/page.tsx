@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-import { Eye, Film, Check, X } from 'lucide-react'
+import { Check, X } from 'lucide-react'
 import { CLASSES } from '@/lib/classes'
 import { REEL_FAQ } from '@/lib/landing-faqs'
 import PageJsonLd from '@/components/seo/PageJsonLd'
@@ -10,6 +10,7 @@ import { LAST_UPDATED } from '@/lib/last-updated'
 import JoinCTALink from '@/components/join/JoinCTALink'
 import { buildBreadcrumb, buildFaqPage, buildCourseFromClass, buildWebPage } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
+import { REEL_WHY as WHY_REEL, REEL_PROCESS as PROCESS, REEL_INCLUDES as INCLUDES, REEL_CURRICULUM as CURRICULUM_MONTHS, REEL_NOTICE as NOTICE_ITEMS } from '@/lib/class-landing-content'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
 const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
@@ -52,32 +53,8 @@ export const metadata: Metadata = {
   },
 }
 
-const WHY_REEL = [
-  {
-    Icon: Eye,
-    title: '캐스팅 디렉터의 시선',
-    desc: '프로필 사진으로는 연기력이 보이지 않습니다. 캐스팅 디렉터는 영상으로 배우의 연기·표정·호흡을 한 번에 확인합니다. 배우 프로필 영상(자기소개·독백 촬영본)과 달리 출연영상은 맞춤 시나리오로 찍은 \'작품 속 연기\'입니다.',
-  },
-  {
-    Icon: Film,
-    title: '실제 영화 현장의 퀄리티',
-    desc: '핸드폰이나 학원 자체 영상이 아닌 실제 영화팀(촬영감독·조명·사운드) 셋업으로 제작. 그대로 오디션 제출 가능.',
-  },
-]
 
-const PROCESS = [
-  { num: '01', title: '레퍼런스 취합', desc: '본인 톤·매력에 맞는 영상 레퍼런스를 함께 큐레이션.' },
-  { num: '02', title: '시나리오 작성', desc: '레퍼런스 기반 본인 전용 시나리오. 단순 독백이 아닌 임팩트 장면.' },
-  { num: '03', title: '전문 영화팀 촬영', desc: '영화 현장의 카메라·조명·사운드 셋업. 마이즈너 훈련 병행.' },
-  { num: '04', title: '편집·납품', desc: '컬러 그레이딩·사운드 디자인 완료. 오디션 제출에 바로 사용.' },
-]
 
-const INCLUDES = [
-  { yes: true, text: '시나리오 작성 (본인 톤 맞춤)' },
-  { yes: true, text: '전문 영화팀 촬영 (카메라·조명·사운드)' },
-  { yes: true, text: '편집·컬러 그레이딩·사운드 디자인' },
-  { yes: true, text: '캐스팅·오디션 제출용 영상 납품' },
-]
 
 const PORTFOLIO_VIDEOS = [
   // 2026-10-06 대표 추가 3편 — 제목·uploadDate는 유튜브 실측
@@ -95,53 +72,8 @@ const PORTFOLIO_VIDEOS = [
 
 const PORTFOLIO_PLAYLIST = 'https://www.youtube.com/playlist?list=PLMbZlnkLfP7iaE41p_g9dzGKp5eU9VZk2'
 
-type CurriculumSession = { title: string; detail: string | null; highlight?: boolean }
-type CurriculumMonth = { month: string; emoji: string; goal: string | null; sessions: CurriculumSession[] }
 
-/** 월별 커리큘럼 — 노션 원본("출연영상 클래스 안내") 그대로. 3개월 코스 월 4회.
- *  goal(월별 목표 문구)은 원본에 없어 임의 작성하지 않고 null. highlight: true = 촬영 회차. */
-const CURRICULUM_MONTHS: CurriculumMonth[] = [
-  {
-    month: '첫째 달',
-    emoji: '🌒',
-    goal: null,
-    sessions: [
-      { title: 'OT · 억압된 감정으로부터 해방되기', detail: 'Finger tag · Comedy improv · Pinch & ouch · Liberation of emotions' },
-      { title: '맞춤형 시나리오 작성을 위한 전략 컨설팅', detail: '레퍼런스 취합 · 자유연기' },
-      { title: '마이즈너 테크닉 훈련', detail: 'Repetition · Presentation 1 — 카드 쌓기' },
-      { title: '마이즈너 테크닉 훈련', detail: 'Repetition · Presentation 2 — 카드 쌓기' },
-    ],
-  },
-  {
-    month: '둘째 달',
-    emoji: '🌓',
-    goal: null,
-    sessions: [
-      { title: '마이즈너 테크닉 훈련', detail: 'Repetition · Presentation 2 — 개인적 오브제' },
-      { title: '1차 대본 배부 및 리딩', detail: '스탠딩 리딩 훈련 · Repetition · Cold reading' },
-      { title: '캐릭터 라이징', detail: '마이즈너 테크닉 분석 훈련' },
-      { title: '마이즈너 테크닉 훈련', detail: 'Perspective Repetition · Text Repetition' },
-    ],
-  },
-  {
-    month: '셋째 달',
-    emoji: '🌔',
-    goal: null,
-    sessions: [
-      { title: '감독 참관 테스트 촬영 및 리허설', detail: 'Test shooting', highlight: true },
-      { title: '장면 디벨롭', detail: "Actor's paraphrase · Perspective repetition · Text repetition · Rehearsal" },
-      { title: '장면 디벨롭', detail: null },
-      { title: '촬영', detail: null, highlight: true },
-    ],
-  },
-]
 
-// 수강 유의사항 — 출연영상 동의서(개인정보·초상권·수강 규정 확인서) 내용 기준 (2026-07-28)
-const NOTICE_ITEMS = [
-  '출연영상 클래스는 3개월 코스이며, 파트너와의 협업으로 진행됩니다.',
-  '협업 과정의 특성상 2회차 수업 이후에는 중도 하차가 원칙적으로 불가하며, 부득이한 경우 규정에 따라 패널티가 부과됩니다.',
-  '수업 중 촬영되는 사진·영상은 홍보 목적으로 활용될 수 있습니다. 자세한 내용은 아래 동의서를 확인해 주세요.',
-]
 
 export default function ReelPage() {
   return (

@@ -2,13 +2,13 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { CLASSES } from '@/lib/classes'
-import type { FaqItem } from '@/lib/landing-faqs'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { LAST_UPDATED } from '@/lib/last-updated'
 import JoinCTALink from '@/components/join/JoinCTALink'
 import { buildBreadcrumb, buildFaqPage, buildCourseFromClass, buildWebPage } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
 import { wonOf } from '@/lib/class-price'
+import { BASIC_CURRICULUM, BASIC_FAQ, BASIC_AUDIENCE as AUDIENCE } from '@/lib/class-landing-content'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
 const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
@@ -16,46 +16,6 @@ const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
 const PAGE_URL = `${SITE_URL}/basic-acting-class`
 
 /** 데이터 원본은 lib/classes.ts 하나 — 가격·정원·시간을 이 파일에 다시 적지 않는다 */
-/** 베이직 클래스 3개월 커리큘럼 — 노션 「🎭 베이직 클래스 커리큘럼 (3개월 과정)」(3d571cf4…607f) 원문을 그대로 옮김.
- *  2026-09-23 대표 지시: 문자·사이트에서 노션 링크 대신 이 페이지에 기록. 내용 수정 시 노션과 이 배열을 함께 고칠 것. */
-const BASIC_CURRICULUM: { month: string; theme: string; lead: string; items: string[] }[] = [
-  {
-    month: 'MONTH 1',
-    theme: 'PLAY',
-    lead: '놀면서 연기와 친해진다.',
-    items: [
-      '1주차 · 어색함 깨기 — 핑거태그 · 코미디임프라브 · 거울놀이 · 마피아',
-      '2주차 · 표현하고 받아들이기 — 핑거태그 · 코미디임프라브 · 감정해방 · Yes, And Then...',
-      '3주차 · 상황과 목적을 가지고 놀기 — 의자 빼앗기 (처음 만난 사이)',
-      '4주차 · 관계를 가지고 놀기 — 관계가 있는 의자 빼앗기',
-    ],
-  },
-  {
-    month: 'MONTH 2',
-    theme: 'PARTNER',
-    lead: '상대방과 실제로 연기해본다. 실제 대본을 사용합니다.',
-    items: [
-      '실제 2인 대본 사용',
-      '상대방을 보며 연기하기',
-      '대사를 혼자 준비해서 보여주는 방식에서 벗어나기',
-      '상대에 따라 연기가 달라지는 경험하기',
-      '짧은 장면을 반복해서 경험하기',
-    ],
-  },
-  {
-    month: 'MONTH 3',
-    theme: 'SCENE',
-    lead: '하나의 장면을 만들어 완성한다.',
-    items: [
-      '실제 대본 선택',
-      '관계와 상황 이해',
-      '상대와 장면 맞추기',
-      '동선과 행동 만들기',
-      '반복 연습',
-      '촬영 또는 발표',
-    ],
-  },
-]
 
 const BASIC = CLASSES.find((c) => c.nameKo === '베이직 클래스')!
 const MEISNER = CLASSES.find((c) => c.nameKo === '마이즈너 테크닉 정규 클래스')!
@@ -93,36 +53,7 @@ export const metadata: Metadata = {
   },
 }
 
-/** 이 페이지 전용 FAQ — 답변은 /faq 기존 답변을 요약해 재사용 (새 사실 추가 금지) */
-const BASIC_FAQ: FaqItem[] = [
-  {
-    q: '연기 경험이 전혀 없어도 되나요?',
-    a: '괜찮습니다. 베이직 클래스는 연기 경험 없어도 OK · 취미 참여 환영인 입문 트랙입니다. 마이즈너 테크닉은 "반응"을 훈련하는 방식이라 기존에 배운 습관이 없는 분이 오히려 더 빠르게 체화되는 경우가 많습니다.',
-  },
-  {
-    q: '나이 제한이 있나요?',
-    a: '연령 제한은 없습니다. 성인 취미 연기부터 지망생·직장인·경력 배우까지 다양한 연령대가 함께 훈련합니다.',
-  },
-  {
-    q: '직장인도 병행할 수 있나요?',
-    a: '가능합니다. 베이직 클래스는 매주 토요일, 회당 3시간 진행되어 평일 일정이 있는 직장인도 부담 없이 병행할 수 있습니다.',
-  },
-]
 
-const AUDIENCE = [
-  {
-    title: '연기를 처음 접하는 성인',
-    desc: '연기 경험 없어도 OK · 취미 참여 환영. 카메라 앞이 처음이어도 처음부터 함께 시작합니다.',
-  },
-  {
-    title: '취미로 가볍게 시작하고 싶은 분',
-    desc: '취미 클래스 · 연기 입문 트랙입니다. KD4는 입시 전문 학원이 아닙니다.',
-  },
-  {
-    title: '주말에 시간을 내는 직장인',
-    desc: '베이직 클래스는 매주 토요일에 진행됩니다. 평일 일정과 겹치지 않습니다.',
-  },
-]
 
 const SPEC_ITEMS = [
   { label: '일정', value: '매주 토요일' }, // 2026-10-05 대표: 요일만 표기
