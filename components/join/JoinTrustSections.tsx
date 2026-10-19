@@ -30,7 +30,8 @@ const GUARANTEES = [
   },
 ]
 
-export function WhyKD4Section() {
+/** numbered=false → 광고 전용 랜딩처럼 /join 순서 번호(01·03…)가 맞지 않는 곳 */
+export function WhyKD4Section({ numbered = true }: { numbered?: boolean } = {}) {
   return (
     <section
       aria-label="KD4 고유 자산 — 캐스팅 연계 시스템"
@@ -41,7 +42,7 @@ export function WhyKD4Section() {
     >
       <div className="container">
         <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-          <p className="section-eyebrow"><span lang="en">01 — KD4 ONLY</span></p>
+          <p className="section-eyebrow"><span lang="en">{numbered ? "01 — KD4 ONLY" : "KD4 ONLY"}</span></p>
           {/* 섹션 번호(2026-10-15 줄이기 후): 01 KD4 ONLY · 02 METHOD · 03 LEADER · 04 REVIEWS · 05 PROMISE · 06 CONTACT */}
           <h2
             className="section-title-serif"
@@ -131,12 +132,12 @@ export function WhyKD4Section() {
   )
 }
 
-export function DirectorSection() {
+export function DirectorSection({ numbered = true }: { numbered?: boolean } = {}) {
   return (
     <section aria-label="강사 권동원 소개" className="section" style={{ background: 'var(--bg)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
       <div className="container">
         <div style={{ maxWidth: '720px', margin: '0 auto 32px', textAlign: 'center' }}>
-          <p className="section-eyebrow"><span lang="en">03 — THE LEADER</span></p>
+          <p className="section-eyebrow"><span lang="en">{numbered ? "03 — THE LEADER" : "THE LEADER"}</span></p>
           <h2
             className="section-title-serif"
             style={{ fontSize: 'clamp(1.5rem, 3.6vw, 2.1rem)', marginBottom: '10px' }}
@@ -215,12 +216,12 @@ export function DirectorSection() {
   )
 }
 
-export function ReviewsSection({ ctaHref = '#form-hero' }: { ctaHref?: string } = {}) {
+export function ReviewsSection({ ctaHref = '#form-hero', numbered = true }: { ctaHref?: string; numbered?: boolean } = {}) {
   return (
     <section aria-label="멤버 후기" className="section" style={{ background: 'var(--bg2)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
       <div className="container">
         <div style={{ maxWidth: '720px', margin: '0 auto 28px', textAlign: 'center' }}>
-          <p className="section-eyebrow"><span lang="en">04 — REAL REVIEWS</span></p>
+          <p className="section-eyebrow"><span lang="en">{numbered ? "04 — REAL REVIEWS" : "REAL REVIEWS"}</span></p>
           <h2
             className="section-title-serif"
             style={{ fontSize: 'clamp(1.5rem, 3.6vw, 2.1rem)', marginBottom: 0 }}
@@ -278,12 +279,12 @@ export function ReviewsSection({ ctaHref = '#form-hero' }: { ctaHref?: string } 
   )
 }
 
-export function PromiseSection() {
+export function PromiseSection({ numbered = true }: { numbered?: boolean } = {}) {
   return (
     <section aria-label="KD4 약속" className="section" style={{ background: 'var(--bg)', padding: 'clamp(64px, 12vw, 100px) 0' }}>
       <div className="container">
         <div style={{ maxWidth: '720px', margin: '0 auto 40px', textAlign: 'center' }}>
-          <p className="section-eyebrow"><span lang="en">05 — OUR PROMISE</span></p>
+          <p className="section-eyebrow"><span lang="en">{numbered ? "05 — OUR PROMISE" : "OUR PROMISE"}</span></p>
           <h2
             className="section-title-serif"
             style={{ fontSize: 'clamp(1.6rem, 4vw, 2.3rem)', marginBottom: 0 }}

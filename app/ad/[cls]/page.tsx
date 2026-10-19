@@ -167,10 +167,10 @@ export default async function AdLandingPage({ params }: { params: Params }) {
       <AdClassDetail adKey={key} />
 
       {/* ⑤ KD4를 믿을 이유 — /join과 같은 부품 */}
-      <WhyKD4Section />
-      <DirectorSection />
-      <ReviewsSection ctaHref="#form" />
-      <PromiseSection />
+      <WhyKD4Section numbered={false} />
+      <DirectorSection numbered={false} />
+      <ReviewsSection ctaHref="#form" numbered={false} />
+      <PromiseSection numbered={false} />
 
       {/* ⑥ 다른 클래스 포스터 */}
       <AdOtherClasses current={key} />
