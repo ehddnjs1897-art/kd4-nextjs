@@ -21,6 +21,9 @@ const YouTubeFacade = dynamic(() => import('@/components/youtube/YouTubeFacade')
  * 개인 레슨은 전용 페이지가 없어 lib/classes.ts 개인 레슨 정보 + 집행 중인 광고 본문(대표 게시 승인)만 쓴다.
  */
 
+/** 광고 랜딩 출연영상 포트폴리오 4편 — 2026-10-19 대표 «우리들의 로맨스(s_AE-Vy0Ka0) 말고 다른걸로» → 메소드 연기로 교체 */
+const AD_REEL_PICKS = ['AMcMn4UgJp4', '4Cc3L2IGRu8', 'RV1yvKguTy4', 'IWL6hlOrU-w']
+
 const card: React.CSSProperties = {
   background: 'var(--bg)',
   border: '1px solid var(--border)',
@@ -243,13 +246,13 @@ export default function AdClassDetail({ adKey }: { adKey: AdKey }) {
   if (adKey === 'reel') {
     return (
       <>
-        {/* 2026-10-19 대표 «출연영상 클래스는 포트폴리오도 넣어» — 클래스 페이지와 같은 영상, 최근 4편 + 재생목록 */}
+        {/* 2026-10-19 대표 «출연영상 클래스는 포트폴리오도 넣어» — 클래스 페이지와 같은 영상 중 4편(AD_REEL_PICKS) + 재생목록 */}
         <Sec id="portfolio" eyebrow="PORTFOLIO" title="포트폴리오" alt>
           <p style={{ ...body, textAlign: 'center', marginTop: -12, marginBottom: 20 }}>
             KD4 멤버가 전문 영화팀과 촬영·편집한 출연영상입니다.
           </p>
           <div style={{ display: 'grid', gap: 12, gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))' }}>
-            {REEL_PORTFOLIO_VIDEOS.slice(0, 4).map((v) => (
+            {AD_REEL_PICKS.flatMap((id) => REEL_PORTFOLIO_VIDEOS.filter((v) => v.id === id)).map((v) => (
               <div key={v.id} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 12, overflow: 'hidden' }}>
                 <YouTubeFacade videoId={v.id} title={v.title} />
               </div>
