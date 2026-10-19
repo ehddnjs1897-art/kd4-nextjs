@@ -10,7 +10,7 @@ import { LAST_UPDATED } from '@/lib/last-updated'
 import JoinCTALink from '@/components/join/JoinCTALink'
 import { buildBreadcrumb, buildFaqPage, buildCourseFromClass, buildWebPage } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
-import { REEL_WHY as WHY_REEL, REEL_PROCESS as PROCESS, REEL_INCLUDES as INCLUDES, REEL_CURRICULUM as CURRICULUM_MONTHS, REEL_NOTICE as NOTICE_ITEMS } from '@/lib/class-landing-content'
+import { REEL_WHY as WHY_REEL, REEL_PROCESS as PROCESS, REEL_INCLUDES as INCLUDES, REEL_CURRICULUM as CURRICULUM_MONTHS, REEL_NOTICE as NOTICE_ITEMS, REEL_PORTFOLIO_VIDEOS as PORTFOLIO_VIDEOS, REEL_PORTFOLIO_PLAYLIST as PORTFOLIO_PLAYLIST } from '@/lib/class-landing-content'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
 const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
@@ -56,21 +56,6 @@ export const metadata: Metadata = {
 
 
 
-const PORTFOLIO_VIDEOS = [
-  // 2026-10-06 대표 추가 3편 — 제목·uploadDate는 유튜브 실측
-  { id: 'AMcMn4UgJp4', title: '저 혼자 뒤집어쓸 줄 아셨어요?', uploadDate: '2026-10-05T03:00:13-07:00' },
-  { id: '4Cc3L2IGRu8', title: '사건 덮고 얼마 받았어?', uploadDate: '2026-10-01T03:00:17-07:00' },
-  { id: 'RV1yvKguTy4', title: '오늘 많이 까불더라?', uploadDate: '2026-08-21T16:00:39-07:00' },
-  { id: 's_AE-Vy0Ka0', title: '출연영상 대표 샘플', uploadDate: '2026-05-21T00:17:11-07:00' },
-  { id: '7Q62XeyVLbc', title: '출연영상 샘플 1', uploadDate: '2026-08-08T06:48:27-07:00' },
-  { id: 'IWL6hlOrU-w', title: '출연영상 샘플 2', uploadDate: '2026-05-13T20:42:36-07:00' },
-  { id: 'PUlrhjOkvjA', title: '출연영상 샘플 3', uploadDate: '2026-04-29T23:55:02-07:00' },
-  { id: 'qwD63hTNQLs', title: '출연영상 샘플 4', uploadDate: '2026-07-10T17:00:21-07:00' },
-  { id: 'tLAZZOGd3FA', title: '출연영상 샘플 5', uploadDate: '2026-05-29T01:00:29-07:00' },
-  { id: 'zoDJtGT3aQM', title: '출연영상 샘플 6', uploadDate: '2026-05-25T05:00:30-07:00' },
-]
-
-const PORTFOLIO_PLAYLIST = 'https://www.youtube.com/playlist?list=PLMbZlnkLfP7iaE41p_g9dzGKp5eU9VZk2'
 
 
 

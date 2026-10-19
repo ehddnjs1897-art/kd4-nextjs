@@ -7,11 +7,13 @@ import {
   AUDITION_AUDIENCE, AUDITION_CURRICULUM, AUDITION_REVIEWS, AUDITION_FAQ,
   MEISNER_GOALS, MEISNER_PILLARS, MEISNER_CURRICULUM, MEISNER_NOTICE, MEISNER_QUOTES,
   REEL_WHY, REEL_PROCESS, REEL_CURRICULUM, REEL_INCLUDES, REEL_NOTICE,
+  REEL_PORTFOLIO_VIDEOS, REEL_PORTFOLIO_PLAYLIST,
   type CurriculumMonth,
 } from '@/lib/class-landing-content'
 import type { AdKey } from '@/lib/ad-classes'
 
 const FaqAccordion = dynamic(() => import('@/components/join/FaqAccordion'))
+const YouTubeFacade = dynamic(() => import('@/components/youtube/YouTubeFacade'))
 
 /**
  * 광고 전용 랜딩 «이 클래스 자세히» (2026-10-19 대표 «/join 형식 붙여서 구체적으로 볼 수 있게»).
@@ -28,9 +30,9 @@ const card: React.CSSProperties = {
 const body: React.CSSProperties = { fontSize: '0.92rem', color: 'var(--gray-light)', lineHeight: 1.75, wordBreak: 'keep-all' }
 const strong: React.CSSProperties = { fontFamily: 'var(--font-serif)', fontSize: '1rem', fontWeight: 700, color: 'var(--black)', lineHeight: 1.45, wordBreak: 'keep-all' }
 
-function Sec({ eyebrow, title, alt, children }: { eyebrow: string; title: string; alt?: boolean; children: React.ReactNode }) {
+function Sec({ id, eyebrow, title, alt, children }: { id?: string; eyebrow: string; title: string; alt?: boolean; children: React.ReactNode }) {
   return (
-    <section className="section" style={{ background: alt ? 'var(--bg2)' : 'var(--bg)', padding: 'clamp(48px, 9vw, 80px) 0' }}>
+    <section id={id} className="section" style={{ scrollMarginTop: 16,  background: alt ? 'var(--bg2)' : 'var(--bg)', padding: 'clamp(48px, 9vw, 80px) 0' }}>
       <div className="container">
         <div style={{ maxWidth: 760, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 28 }}>
@@ -235,7 +237,25 @@ export default function AdClassDetail({ adKey }: { adKey: AdKey }) {
   if (adKey === 'reel') {
     return (
       <>
-        <Sec eyebrow="WHY REEL" title="왜 출연영상이 필요한가" alt>
+        {/* 2026-10-19 대표 «출연영상 클래스는 포트폴리오도 넣어» — 클래스 페이지와 같은 영상, 최근 4편 + 재생목록 */}
+        <Sec id="portfolio" eyebrow="PORTFOLIO" title="포트폴리오" alt>
+          <p style={{ ...body, textAlign: 'center', marginTop: -12, marginBottom: 20 }}>
+            KD4 멤버가 전문 영화팀과 촬영·편집한 출연영상입니다.
+          </p>
+          <div style={{ display: 'grid', gap: 12, gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))' }}>
+            {REEL_PORTFOLIO_VIDEOS.slice(0, 4).map((v) => (
+              <div key={v.id} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 12, overflow: 'hidden' }}>
+                <YouTubeFacade videoId={v.id} title={v.title} />
+              </div>
+            ))}
+          </div>
+          <div style={{ textAlign: 'center', marginTop: 24 }}>
+            <a href={REEL_PORTFOLIO_PLAYLIST} target="_blank" rel="noopener noreferrer" aria-label="출연영상 포트폴리오 YouTube 재생목록 (새 탭에서 열림)" className="btn-primary" style={{ background: 'var(--navy)', color: '#fff' }}>
+              포트폴리오 더보기 (유튜브 재생목록) <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </Sec>
+        <Sec eyebrow="WHY REEL" title="왜 출연영상이 필요한가">
           <div style={{ display: 'grid', gap: 12 }}>
             {REEL_WHY.map(({ Icon, title, desc }) => (
               <div key={title} style={{ ...card, display: 'flex', gap: 14 }}>
@@ -248,7 +268,7 @@ export default function AdClassDetail({ adKey }: { adKey: AdKey }) {
             ))}
           </div>
         </Sec>
-        <Sec eyebrow="PROCESS" title="제작 4단계">
+        <Sec eyebrow="PROCESS" title="제작 4단계" alt>
           <div style={{ display: 'grid', gap: 12, gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))' }}>
             {REEL_PROCESS.map((p) => (
               <div key={p.num} style={card}>
@@ -259,11 +279,11 @@ export default function AdClassDetail({ adKey }: { adKey: AdKey }) {
             ))}
           </div>
         </Sec>
-        <Sec eyebrow="3 MONTHS" title="3개월 코스" alt>
+        <Sec eyebrow="3 MONTHS" title="3개월 코스">
           <Months months={REEL_CURRICULUM} />
           <Notice items={REEL_NOTICE} />
         </Sec>
-        <Sec eyebrow="INCLUDED" title="포함 사항">
+        <Sec eyebrow="INCLUDED" title="포함 사항" alt>
           <Checks items={REEL_INCLUDES.filter((i) => i.yes).map((i) => i.text)} />
         </Sec>
         <Faq items={REEL_FAQ} />

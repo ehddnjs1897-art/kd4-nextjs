@@ -137,6 +137,11 @@ export default async function AdLandingPage({ params }: { params: Params }) {
           >
             {c.nameKo} 무료 상담 신청 ↓
           </a>
+          {key === 'reel' && (
+            <a href="#portfolio" style={{ display: 'block', textAlign: 'center', marginTop: 12, fontFamily: 'var(--font-sans)', fontSize: '0.9rem', fontWeight: 700, color: 'var(--navy)', textDecoration: 'underline', textUnderlineOffset: 3 }}>
+              포트폴리오 영상 먼저 보기 ↓
+            </a>
+          )}
         </section>
 
         {/* ③ 신청서 — 지금과 같은 3단계, 클래스만 미리 선택 */}

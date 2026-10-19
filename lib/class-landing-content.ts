@@ -343,3 +343,20 @@ export const REEL_NOTICE = [
   '협업 과정의 특성상 2회차 수업 이후에는 중도 하차가 원칙적으로 불가하며, 부득이한 경우 규정에 따라 패널티가 부과됩니다.',
   '수업 중 촬영되는 사진·영상은 홍보 목적으로 활용될 수 있습니다. 자세한 내용은 아래 동의서를 확인해 주세요.',
 ]
+
+// 출연영상 포트폴리오 — 클래스 페이지(/reel-production-class)·광고 전용 랜딩(/ad/reel) 공용
+export const REEL_PORTFOLIO_VIDEOS = [
+  // 2026-10-06 대표 추가 3편 — 제목·uploadDate는 유튜브 실측
+  { id: 'AMcMn4UgJp4', title: '저 혼자 뒤집어쓸 줄 아셨어요?', uploadDate: '2026-10-05T03:00:13-07:00' },
+  { id: '4Cc3L2IGRu8', title: '사건 덮고 얼마 받았어?', uploadDate: '2026-10-01T03:00:17-07:00' },
+  { id: 'RV1yvKguTy4', title: '오늘 많이 까불더라?', uploadDate: '2026-08-21T16:00:39-07:00' },
+  { id: 's_AE-Vy0Ka0', title: '출연영상 대표 샘플', uploadDate: '2026-05-21T00:17:11-07:00' },
+  { id: '7Q62XeyVLbc', title: '출연영상 샘플 1', uploadDate: '2026-08-08T06:48:27-07:00' },
+  { id: 'IWL6hlOrU-w', title: '출연영상 샘플 2', uploadDate: '2026-05-13T20:42:36-07:00' },
+  { id: 'PUlrhjOkvjA', title: '출연영상 샘플 3', uploadDate: '2026-04-29T23:55:02-07:00' },
+  { id: 'qwD63hTNQLs', title: '출연영상 샘플 4', uploadDate: '2026-07-10T17:00:21-07:00' },
+  { id: 'tLAZZOGd3FA', title: '출연영상 샘플 5', uploadDate: '2026-05-29T01:00:29-07:00' },
+  { id: 'zoDJtGT3aQM', title: '출연영상 샘플 6', uploadDate: '2026-05-25T05:00:30-07:00' },
+]
+
+export const REEL_PORTFOLIO_PLAYLIST = 'https://www.youtube.com/playlist?list=PLMbZlnkLfP7iaE41p_g9dzGKp5eU9VZk2'
