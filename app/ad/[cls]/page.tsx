@@ -29,6 +29,12 @@ const EXTRA_NOTE: Partial<Record<AdKey, string>> = {
   audition: '회당 시간은 인원에 따라 변동될 수 있어요.', // 2026-10-15 대표 «인원수에 따라 시간 변경될 수 있음 명시»
 }
 
+/** 상단 신청 버튼 아래 «영상 먼저 보기» — 아래 클래스 자세히 구간의 영상으로 이동 (AdClassDetail id) */
+const VIDEO_JUMP: Partial<Record<AdKey, { href: string; label: string }>> = {
+  reel: { href: '#portfolio', label: '포트폴리오 영상 먼저 보기 ↓' },
+  meisner: { href: '#showcase', label: '쇼케이스 영상 먼저 보기 ↓' },
+}
+
 type Params = Promise<{ cls: string }>
 
 export const dynamicParams = false
@@ -137,9 +143,9 @@ export default async function AdLandingPage({ params }: { params: Params }) {
           >
             {c.nameKo} 무료 상담 신청 ↓
           </a>
-          {key === 'reel' && (
-            <a href="#portfolio" style={{ display: 'block', textAlign: 'center', marginTop: 12, fontFamily: 'var(--font-sans)', fontSize: '0.9rem', fontWeight: 700, color: 'var(--navy)', textDecoration: 'underline', textUnderlineOffset: 3 }}>
-              포트폴리오 영상 먼저 보기 ↓
+          {VIDEO_JUMP[key] && (
+            <a href={VIDEO_JUMP[key].href} style={{ display: 'block', textAlign: 'center', marginTop: 12, fontFamily: 'var(--font-sans)', fontSize: '0.9rem', fontWeight: 700, color: 'var(--navy)', textDecoration: 'underline', textUnderlineOffset: 3 }}>
+              {VIDEO_JUMP[key].label}
             </a>
           )}
         </section>

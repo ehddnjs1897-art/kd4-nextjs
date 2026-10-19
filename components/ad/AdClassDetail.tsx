@@ -5,7 +5,7 @@ import { MEISNER_FAQ, REEL_FAQ } from '@/lib/landing-faqs'
 import {
   BASIC_AUDIENCE, BASIC_CURRICULUM, BASIC_FAQ,
   AUDITION_AUDIENCE, AUDITION_CURRICULUM, AUDITION_REVIEWS, AUDITION_FAQ,
-  MEISNER_GOALS, MEISNER_PILLARS, MEISNER_CURRICULUM, MEISNER_NOTICE, MEISNER_QUOTES,
+  MEISNER_GOALS, MEISNER_PILLARS, MEISNER_CURRICULUM, MEISNER_NOTICE, MEISNER_QUOTES, MEISNER_SHOWCASE_VIDEO,
   REEL_WHY, REEL_PROCESS, REEL_CURRICULUM, REEL_INCLUDES, REEL_NOTICE,
   REEL_PORTFOLIO_VIDEOS, REEL_PORTFOLIO_PLAYLIST,
   type CurriculumMonth,
@@ -206,10 +206,16 @@ export default function AdClassDetail({ adKey }: { adKey: AdKey }) {
   if (adKey === 'meisner') {
     return (
       <>
-        <Sec eyebrow="CLASS GOALS" title="수업 목표" alt>
+        {/* 2026-10-19 대표 «마이즈너 정규 클래스 소개에는 이 링크도 넣어» */}
+        <Sec id="showcase" eyebrow="SHOWCASE" title={MEISNER_SHOWCASE_VIDEO.title} alt>
+          <div style={{ maxWidth: 640, margin: '0 auto', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 12, overflow: 'hidden' }}>
+            <YouTubeFacade videoId={MEISNER_SHOWCASE_VIDEO.id} title={MEISNER_SHOWCASE_VIDEO.title} />
+          </div>
+        </Sec>
+        <Sec eyebrow="CLASS GOALS" title="수업 목표">
           <Checks items={MEISNER_GOALS} />
         </Sec>
-        <Sec eyebrow="THE METHOD" title="마이즈너 테크닉이란">
+        <Sec eyebrow="THE METHOD" title="마이즈너 테크닉이란" alt>
           <div style={{ display: 'grid', gap: 12 }}>
             {MEISNER_PILLARS.map(({ Icon, title, desc }) => (
               <div key={title} style={{ ...card, display: 'flex', gap: 14 }}>
@@ -222,11 +228,11 @@ export default function AdClassDetail({ adKey }: { adKey: AdKey }) {
             ))}
           </div>
         </Sec>
-        <Sec eyebrow="4 MONTHS" title="4개월 정규 코스" alt>
+        <Sec eyebrow="4 MONTHS" title="4개월 정규 코스">
           <Months months={MEISNER_CURRICULUM} />
           <Notice items={MEISNER_NOTICE} />
         </Sec>
-        <Sec eyebrow="VOICES" title="오픈클래스에 다녀간 멤버들의 말">
+        <Sec eyebrow="VOICES" title="오픈클래스에 다녀간 멤버들의 말" alt>
           <Quotes items={MEISNER_QUOTES.map((q) => ({ text: q.text, who: q.author }))} />
         </Sec>
         <Faq items={MEISNER_FAQ} />

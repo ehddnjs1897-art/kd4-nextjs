@@ -360,3 +360,6 @@ export const REEL_PORTFOLIO_VIDEOS = [
 ]
 
 export const REEL_PORTFOLIO_PLAYLIST = 'https://www.youtube.com/playlist?list=PLMbZlnkLfP7iaE41p_g9dzGKp5eU9VZk2'
+
+// 마이즈너 정규 쇼케이스 영상 — 2026-10-19 대표 «마이즈너 정규 클래스 소개에는 이 링크도 넣어», 제목은 유튜브 실측
+export const MEISNER_SHOWCASE_VIDEO = { id: 'SOpMlunkY94', title: '마이즈너 테크닉 정규 2기 쇼케이스' }
