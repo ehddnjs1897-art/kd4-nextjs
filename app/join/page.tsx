@@ -331,6 +331,162 @@ export default function JoinPage() {
         </div>
       </section>
 
+      {/* ALL IN ONE SYSTEM — 배우지망생 → 진짜 배우 3단계 (2026-10-19 대표 «이것도 넣고», 홈페이지 같은 구간 그대로) */}
+      <section aria-label="배우지망생에서 진짜 배우까지 3단계" className="section" style={{ background: "var(--bg)" }}>
+        <div className="container">
+          {/* 헤더 영역은 중앙 정렬 720px 유지 (가독성) */}
+          <div style={{ maxWidth: "720px", margin: "0 auto", textAlign: "center" }}>
+            <p
+              className="section-eyebrow"
+            >
+              <span lang="en">ALL IN ONE SYSTEM</span>
+            </p>
+            <h2
+              style={{
+                fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
+                fontWeight: 700,
+                marginBottom: "16px",
+                lineHeight: 1.2,
+              }}
+            >
+              배우지망생 <span aria-hidden="true">→</span>{" "}
+              <span style={{ color: "var(--gold)" }}>진짜 배우</span>
+            </h2>
+            <p
+              style={{
+                color: "var(--gray-light)",
+                fontSize: "0.95rem",
+                marginBottom: "48px",
+                lineHeight: 1.7,
+              }}
+            >
+              연기 훈련부터 캐스팅까지, 배우 액셀러레이팅 시스템
+            </p>
+          </div>
+
+          {/* 3단계 — 진행 느낌 (컨테이너 전체 폭 사용해서 카드 크게) */}
+          <div style={{ maxWidth: "1080px", margin: "0 auto" }}>
+            <div className="steps-journey">
+              {[
+                {
+                  num: "01",
+                  step: "STEP 01",
+                  title: "아메리칸 액팅 메소드\n트레이닝",
+                  desc: "마이즈너 테크닉 기반의 심층 연기 훈련",
+                  icon: "🎭",
+                },
+                {
+                  num: "02",
+                  step: "STEP 02",
+                  title: "포트폴리오 제작",
+                  desc: "전문 영화팀과 함께 제작하는 출연영상으로 실전 포트폴리오 완성",
+                  icon: "🎬",
+                },
+                {
+                  num: "03",
+                  step: "STEP 03",
+                  title: "캐스팅 연계",
+                  desc: "캐스팅 디렉터·조감독과 직접 연결되는 실전 캐스팅 지원",
+                  icon: "🌟",
+                },
+              ].map((s, i) => (
+                <Fragment key={s.num}>
+                  <div
+                    className="step-card"
+                    style={{
+                      position: "relative",
+                      background: "var(--bg3)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "8px",
+                      padding: "56px 36px 48px",
+                      textAlign: "center",
+                      overflow: "hidden",
+                      transition: "border-color var(--transition)",
+                    }}
+                  >
+                    {/* 대형 배경 숫자 */}
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: "12px",
+                        right: "24px",
+                        fontFamily: "var(--font-display)",
+                        fontSize: "5.5rem",
+                        fontWeight: 700,
+                        color: "rgba(21,72,138,0.07)",
+                        lineHeight: 1,
+                        userSelect: "none",
+                        pointerEvents: "none",
+                      }}
+                    >
+                      {s.num}
+                    </span>
+
+                    {/* STEP 라벨 */}
+                    <p
+                      style={{
+                        fontFamily: "var(--font-display)",
+                        fontSize: "1.3rem",
+                        letterSpacing: "0.2em",
+                        fontWeight: 600,
+                        color: "var(--gold)",
+                        marginBottom: "16px",
+                      }}
+                    >
+                      <span lang="en">{s.step}</span>
+                    </p>
+
+                    {/* 이모지 아이콘 */}
+                    <div className="step-icon-glow" aria-hidden="true" style={{ margin: "0 auto 20px" }}>
+                      <span style={{ position: "relative", zIndex: 1 }}>{s.icon}</span>
+                    </div>
+
+                    {/* 제목 */}
+                    <h3
+                      style={{
+                        fontSize: "1rem",
+                        fontWeight: 700,
+                        marginBottom: "12px",
+                        lineHeight: 1.4,
+                        whiteSpace: "pre-line",
+                      }}
+                    >
+                      {s.title}
+                    </h3>
+
+                    {/* 설명 */}
+                    <p
+                      style={{
+                        fontSize: "0.82rem",
+                        color: "var(--text-warm)",
+                        lineHeight: 1.7,
+                      }}
+                    >
+                      {s.desc}
+                    </p>
+                  </div>
+
+                  {/* 화살표 (마지막 제외) */}
+                  {i < 2 && (
+                    <div key={`arrow-${i}`} className="step-journey-arrow">
+                      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path
+                          d="M4 10h12M11 5l5 5-5 5"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  )}
+                </Fragment>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ④ 숫자 4칸 · ⑦ 훈련 3단계 · ⑨ 시그니처 클래스·할인 — 2026-10-15 대표 «반드시 있어야 할 것만»으로 제거.
           가격·일정은 상담 폼 클래스 카드(누르면 펼침)에, 상세는 /classes·/benefits·각 클래스 페이지에 그대로 있음.
           마이즈너 소개(③)는 같은 날 대표 «마이즈너 테크닉 소개는 넣어»로 되살림 */}
