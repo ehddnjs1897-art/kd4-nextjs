@@ -6,7 +6,7 @@ import Footer from '@/components/layout/Footer'
 import FloatingCTA from '@/components/layout/FloatingCTA'
 
 /** 광고 랜딩 등 클린 라우트에서 Navbar/Footer/FloatingCTA를 완전 제거 */
-const CLEAN_ROUTES = ['/join', '/game']
+const CLEAN_ROUTES = ['/join', '/game', '/ad/'] // '/ad/' = 광고 전용 랜딩(2026-10-19) — 슬래시까지 붙여 /admin과 구분
 
 export default function ConditionalShell({
   children,

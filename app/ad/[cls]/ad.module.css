@@ -1,0 +1,72 @@
+/* 광고 전용 랜딩 — 휴대폰 우선, 넓은 화면은 포스터(왼쪽 고정) + 정보·신청서(오른쪽) 2단 */
+
+.page {
+  background: var(--bg);
+  min-height: 100vh;
+}
+
+.wrap {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.poster {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.info {
+  padding: 24px 20px 8px;
+}
+
+.formSec {
+  scroll-margin-top: 16px;
+  padding: 28px 16px 8px;
+}
+
+.kakao {
+  padding: 8px 16px 0;
+}
+
+.addr {
+  padding: 28px 20px 12px;
+}
+
+@media (min-width: 900px) {
+  .wrap {
+    max-width: 1120px;
+    display: grid;
+    grid-template-columns: minmax(360px, 460px) minmax(0, 1fr);
+    gap: 56px;
+    align-items: start;
+    padding: 48px 32px 40px;
+  }
+
+  .posterCol {
+    position: sticky;
+    top: 32px;
+  }
+
+  .poster {
+    border-radius: 12px;
+    box-shadow: 0 14px 36px rgba(22, 35, 59, 0.18);
+  }
+
+  .info {
+    padding: 4px 0 8px;
+  }
+
+  .formSec {
+    padding: 28px 0 8px;
+  }
+
+  .kakao {
+    padding: 8px 0 0;
+  }
+
+  .addr {
+    padding: 28px 0 12px;
+    text-align: left !important;
+  }
+}

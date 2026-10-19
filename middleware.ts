@@ -60,7 +60,7 @@ export async function middleware(request: NextRequest) {
   // 잘 캐싱돼 있어도(revalidate·unstable_cache) 이 미들웨어 단계에서 캐싱이 전부 무효화됨.
   // 실측: /monologues·/reviews TTFB가 페이지 캐싱 수정 후에도 0.5~1.5초로 안 줄던 원인이
   // 바로 이거였음. 세션이 전혀 필요 없는 순수 공개 목록/상세 페이지를 여기 추가해 우회.
-  const PUBLIC_PATHS = ['/', '/join', '/monologues', '/reviews', '/classes', '/about', '/faq', '/benefits', '/acting-coaches']
+  const PUBLIC_PATHS = ['/', '/join', '/ad', '/monologues', '/reviews', '/classes', '/about', '/faq', '/benefits', '/acting-coaches']
   if (PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + '/'))) {
     return NextResponse.next()
   }
