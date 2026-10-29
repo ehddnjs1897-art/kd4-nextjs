@@ -10,6 +10,7 @@ import StickyTopBar from '@/components/join/StickyTopBar'
 import JoinCTALink from '@/components/join/JoinCTALink'
 import { WhyKD4Section, DirectorSection, ReviewsSection, PromiseSection } from '@/components/join/JoinTrustSections'
 import { SITE_URL } from '@/lib/constants'
+import { REEL_PORTFOLIO_VIDEOS } from '@/lib/class-landing-content'
 
 /* 폴드 아래 / 비즈니스 크리티컬하지 않은 컴포넌트 — 지연 로딩 */
 const JoinPageView = dynamic(() => import('@/components/analytics/JoinPageView'))
@@ -56,6 +57,13 @@ const OPEN_COHORTS = [
   { name: '마이즈너', cohort: '3기', seats: MAIN_CLASS.remainingSeats ?? 0, price: parseInt(MAIN_CLASS.price.replace(/,/g, ''), 10) },
   { name: '출연영상', cohort: '19기', seats: FILM_CLASS.remainingSeats ?? 0, price: parseInt(FILM_CLASS.price.replace(/,/g, ''), 10) },
 ]
+
+/* ── 출연영상 클래스 + 포트폴리오 베스트 3 (2026-10-29 대표 «출연영상클래스와 포트폴리오 베스트 3개정도 넣는게좋겠어»)
+ *    영상 = 대표가 10/19 출연영상 광고 랜딩에 고른 4편(AD_REEL_PICKS) 중 앞 3편(가장 최근). 클래스 사실은 lib/classes.ts ── */
+const REEL_CLASS = CLASSES.find((c) => c.nameKo === '출연영상 클래스')!
+const REEL_BEST_IDS = ['AMcMn4UgJp4', '4Cc3L2IGRu8', 'RV1yvKguTy4']
+const REEL_BEST = REEL_BEST_IDS.flatMap((id) => REEL_PORTFOLIO_VIDEOS.filter((v) => v.id === id))
+const REEL_FACTS = [REEL_CLASS.schedule, `회당 ${REEL_CLASS.duration}`, `정원 ${REEL_CLASS.capacity}`, REEL_CLASS.course].filter(Boolean)
 
 /* ── 더 알아보기 링크 (2026-10-19 대표: 스튜디오 소개 + 클래스·각 페이지 링크) — 이름·한 줄·가격은 lib/classes.ts 그대로 ── */
 const MORE_LINKS = [
@@ -491,10 +499,57 @@ export default function JoinPage() {
           가격·일정은 상담 폼 클래스 카드(누르면 펼침)에, 상세는 /classes·/benefits·각 클래스 페이지에 그대로 있음.
           마이즈너 소개(③)는 같은 날 대표 «마이즈너 테크닉 소개는 넣어»로 되살림 */}
 
+      {/* REEL — 출연영상 클래스 + 포트폴리오 베스트 3 (2026-10-29 대표, 3단계의 «STEP 02 포트폴리오 제작» 바로 다음) */}
+      <section id="reel" aria-label="출연영상 클래스와 포트폴리오" className="section join-reel">
+        <div className="container">
+          <div className="join-reel-head">
+            <p className="section-eyebrow"><span lang="en">REEL PRODUCTION CLASS</span></p>
+            <h2 className="section-title-serif join-reel-title">출연영상 클래스</h2>
+            <p className="join-reel-quote">{REEL_CLASS.quote}</p>
+          </div>
+
+          <div className="join-reel-card">
+            <div className="join-reel-card-top">
+              <span className="join-more-tag">정규 · 포트폴리오</span>
+              {REEL_CLASS.hot && <span className="join-reel-hot">🔥 HOT</span>}
+            </div>
+            <ul className="join-reel-bullets" role="list">
+              {REEL_CLASS.bullets.map((b) => (
+                <li key={b}><span aria-hidden="true">✓</span>{b}</li>
+              ))}
+            </ul>
+            <div className="join-reel-facts">
+              <span className="join-reel-price">월 {REEL_CLASS.price}원</span>
+              <span className="join-reel-meta">{REEL_FACTS.join(' · ')}</span>
+            </div>
+          </div>
+
+          <h3 className="join-reel-sub">포트폴리오 베스트 3</h3>
+          <p className="join-reel-subdesc">KD4 멤버가 전문 영화팀과 촬영·편집한 출연영상입니다.</p>
+          <ul className="join-reel-grid" role="list">
+            {REEL_BEST.map((v) => (
+              <li key={v.id} className="join-reel-video">
+                <YouTubeFacade videoId={v.id} title={v.title} />
+                <p className="join-reel-vtitle">「{v.title}」</p>
+              </li>
+            ))}
+          </ul>
+
+          <div className="join-reel-cta">
+            <JoinCTALink href="#form-hero" location="reel_section" label="출연영상 클래스 무료 상담 신청" fireLead className="join-reel-btn">
+              출연영상 클래스 상담 신청 <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} />
+            </JoinCTALink>
+            <a href="/reel-production-class" className="join-reel-link">
+              커리큘럼 자세히 보기 <ArrowRight aria-hidden={true} size={14} strokeWidth={2.2} />
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* ⑥ DIRECTOR — 강사 크레딧 (광고 압축: highlights 3개 + 링크) */}
       <DirectorSection />
 
-      {/* 출연영상 포트폴리오 — 2026-10-15 대표 «배우들의 실제출연영상 항목 빼라니까»로 구간 전체 제거 (영상은 /reel-production-class 등에 그대로) */}
+      {/* 옛 출연영상 포트폴리오 6편 구간 — 10/15 제거, 10/29 위 «출연영상 클래스 + 베스트 3»으로 대체 */}
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑥ PROOF — 후기 (광고 압축: 마퀴 1행 + 더보기 링크)         */}

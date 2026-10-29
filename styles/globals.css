@@ -2126,3 +2126,26 @@ main {
 .join-more-card:hover .join-more-arrow { transform: translateX(3px); }
 .join-more-all { text-align: center; margin-top: 24px; }
 .join-more-all a { display: inline-flex; align-items: center; gap: 6px; font-size: 0.84rem; font-weight: 700; color: var(--navy); text-decoration: none; border-bottom: 1px solid var(--navy); padding: 4px 0; min-height: 44px; }
+
+/* === /join 출연영상 클래스 + 포트폴리오 베스트 3 (2026-10-29) === */
+.join-reel { background: var(--bg2); padding: clamp(56px, 10vw, 88px) 0; border-top: 1px solid var(--border); }
+.join-reel-head { max-width: 720px; margin: 0 auto 24px; text-align: center; }
+.join-reel-title { font-size: clamp(1.6rem, 4vw, 2.3rem); margin-bottom: 10px; }
+.join-reel-quote { font-size: 0.95rem; color: var(--gray-light); line-height: 1.7; word-break: keep-all; }
+.join-reel-card { max-width: 880px; margin: 0 auto; background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 22px 24px; }
+.join-reel-card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.join-reel-hot { font-size: 0.68rem; font-weight: 700; color: #fff; background: var(--accent-red); border-radius: 999px; padding: 3px 10px; }
+.join-reel-bullets { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+.join-reel-bullets li { display: flex; gap: 10px; font-size: 0.92rem; line-height: 1.6; color: var(--black); word-break: keep-all; }
+.join-reel-bullets li span { color: var(--navy); font-weight: 700; }
+.join-reel-facts { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--bg2); }
+.join-reel-price { font-family: var(--font-serif); font-size: 1.25rem; font-weight: 700; color: var(--navy); }
+.join-reel-meta { font-size: 0.84rem; color: var(--gray); }
+.join-reel-sub { text-align: center; font-family: var(--font-serif); font-size: clamp(1.15rem, 2.8vw, 1.4rem); font-weight: 700; margin: 40px 0 6px; }
+.join-reel-subdesc { text-align: center; font-size: 0.86rem; color: var(--gray-light); margin-bottom: 18px; word-break: keep-all; }
+.join-reel-grid { list-style: none; margin: 0 auto; padding: 0; max-width: 980px; display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+.join-reel-video { background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.join-reel-vtitle { font-family: var(--font-serif); font-size: 0.92rem; font-weight: 700; padding: 12px 14px; word-break: keep-all; }
+.join-reel-cta { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 28px; }
+.join-reel-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--navy); color: #fff; font-weight: 700; font-size: 0.95rem; padding: 14px 26px; border-radius: 10px; text-decoration: none; min-height: 48px; }
+.join-reel-link { display: inline-flex; align-items: center; gap: 6px; font-size: 0.84rem; font-weight: 700; color: var(--navy); text-decoration: none; border-bottom: 1px solid var(--navy); padding: 4px 0; }
