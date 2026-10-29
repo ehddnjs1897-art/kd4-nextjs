@@ -364,6 +364,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true, dbSaved: false })
     }
 
+    // 메타 인스턴트 양식 신청 (2026-10-30 대표 «메이크연결해봐»): Make가 페이스북 리드를 받아 이 창구로 넘긴다.
+    // 양식에 이메일이 없을 수 있고 번호가 +82 형식으로 온다. Meta가 이미 리드로 집계하므로 CAPI는 보내지 않는다.
+    const isMetaInstant = typeof record?.inquiry_type === 'string' && record.inquiry_type === 'meta_instant_form'
+    if (isMetaInstant && typeof record?.phone === 'string') {
+      record.phone = record.phone.replace(/[\s-]/g, '').replace(/^\+?82/, '0').replace(/^00/, '0')
+    }
+
     // 필수 필드 검증 — 상담 폼은 항상 name + phone 포함
     const name = typeof record?.name === 'string' ? record.name.trim().slice(0, 100) : null
     const phone = typeof record?.phone === 'string' ? record.phone.trim().slice(0, 20) : null
@@ -378,7 +385,7 @@ export async function POST(request: NextRequest) {
     // casting_inquiry는 전화 + 작품/역할 정보로 충분 — 마찰 최소화 목적.
     const isCastingInquiry = typeof record?.inquiry_type === 'string' && record.inquiry_type === 'casting_inquiry'
     const emailRaw = typeof record?.email === 'string' ? record.email.trim() : null
-    if (!isCastingInquiry) {
+    if (!isCastingInquiry && !isMetaInstant) {
       if (!emailRaw) {
         return NextResponse.json({ error: '이메일은 필수입니다.' }, { status: 400 })
       }
@@ -386,7 +393,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: '이메일 형식이 올바르지 않습니다.' }, { status: 400 })
       }
     } else if (emailRaw && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailRaw)) {
-      // 캐스팅 문의에서도 이메일을 제공했다면 형식 검증
+      // 캐스팅 문의·인스턴트 양식에서도 이메일을 제공했다면 형식 검증
       return NextResponse.json({ error: '이메일 형식이 올바르지 않습니다.' }, { status: 400 })
     }
 
@@ -637,7 +644,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 4. Meta CAPI (서버사이드 Lead 이벤트) — iOS14 ATT 추적 누락 회복
-    if (record) {
+    if (record && !isMetaInstant) {
       await sendMetaCAPI({ name, phone, email: emailRaw, event_id: typeof record?.event_id === 'string' ? record.event_id : null }).catch((err) =>
         console.error('[notify] Meta CAPI 실패:', err instanceof Error ? err.message : String(err))
       )
