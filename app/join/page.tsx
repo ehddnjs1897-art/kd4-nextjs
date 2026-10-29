@@ -61,8 +61,10 @@ const OPEN_COHORTS = [
 /* ── 출연영상 클래스 + 포트폴리오 베스트 3 (2026-10-29 대표 «출연영상클래스와 포트폴리오 베스트 3개정도 넣는게좋겠어»)
  *    영상 = 대표가 10/19 출연영상 광고 랜딩에 고른 4편(AD_REEL_PICKS) 중 앞 3편(가장 최근). 클래스 사실은 lib/classes.ts ── */
 const REEL_CLASS = CLASSES.find((c) => c.nameKo === '출연영상 클래스')!
-const REEL_BEST_IDS = ['AMcMn4UgJp4', '4Cc3L2IGRu8', 'RV1yvKguTy4']
-const REEL_BEST = REEL_BEST_IDS.flatMap((id) => REEL_PORTFOLIO_VIDEOS.filter((v) => v.id === id))
+const REEL_BEST_IDS = ['AMcMn4UgJp4', '4Cc3L2IGRu8', 'RV1yvKguTy4', 'IWL6hlOrU-w', 'PUlrhjOkvjA', 'qwD63hTNQLs']
+/* 10/29 대표 «포트폴리오 3개 더» → 출연영상 클래스 결과물 3편 추가(심화·1달 영상 제외). 데이터 제목이 «출연영상 샘플 N»이라 유튜브 실제 제목으로 표시 */
+const REEL_TITLE_FIX: Record<string, string> = { 'IWL6hlOrU-w': '메소드 연기', 'PUlrhjOkvjA': '외사랑', 'qwD63hTNQLs': '엄마 곁을 지킨 5년' }
+const REEL_BEST = REEL_BEST_IDS.flatMap((id) => REEL_PORTFOLIO_VIDEOS.filter((v) => v.id === id)).map((v) => ({ ...v, title: REEL_TITLE_FIX[v.id] ?? v.title }))
 const REEL_FACTS = [REEL_CLASS.schedule, `회당 ${REEL_CLASS.duration}`, `정원 ${REEL_CLASS.capacity}`, REEL_CLASS.course].filter(Boolean)
 
 /* ── 더 알아보기 링크 (2026-10-19 대표: 스튜디오 소개 + 클래스·각 페이지 링크) — 이름·한 줄·가격은 lib/classes.ts 그대로 ── */
@@ -524,7 +526,7 @@ export default function JoinPage() {
             </div>
           </div>
 
-          <h3 className="join-reel-sub">포트폴리오 베스트 3</h3>
+          <h3 className="join-reel-sub">포트폴리오 베스트 6</h3>
           <p className="join-reel-subdesc">KD4 멤버가 전문 영화팀과 촬영·편집한 출연영상입니다.</p>
           <ul className="join-reel-grid" role="list">
             {REEL_BEST.map((v) => (
