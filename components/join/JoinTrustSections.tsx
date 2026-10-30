@@ -73,7 +73,7 @@ export function WhyKD4Section({ numbered = true }: { numbered?: boolean } = {}) 
             {
               Icon: Handshake,
               title: '캐스팅 디렉터 공식 협업',
-              desc: '방진원·이상원 캐스팅 디렉터와 정기 오디션·캐스팅 연계.',
+              desc: '이상원 캐스팅 디렉터와 정기 오디션·캐스팅 연계.',
             },
             {
               Icon: Film,

@@ -152,7 +152,7 @@ Q: Is there a trial class or refund policy?
 A: A free consultation covers curriculum, pricing, and scheduling before signing up. Mid-course changes and refunds follow each class's enrollment agreement, explained during the consultation.
 
 Q: Does KD4 help members connect with real productions?
-A: KD4 works with casting directors Bang Jinwon and Lee Sangwon to provide regular audition opportunities. The website lists ${stat('최근 캐스팅')} recent castings.
+A: KD4 works with casting director Lee Sangwon to provide regular audition opportunities. The website lists ${stat('최근 캐스팅')} recent castings.
 
 ## Member Reviews (verbatim excerpts from public reviews at ${SITE_URL}/reviews)
 
