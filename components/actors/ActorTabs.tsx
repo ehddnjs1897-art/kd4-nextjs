@@ -103,7 +103,7 @@ function LockedVideoCard({ thumbUrl, title, onClick }: { thumbUrl: string | null
         <span style={{ color: '#fff', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.02em' }}>
           출연 영상 안내
         </span>
-        <span style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.72rem' }}>
+        <span style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.75rem' }}>
           로그인 후 바로 시청할 수 있어요
         </span>
       </span>
@@ -283,6 +283,8 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
   )
   const reelVideos = sortedVideos.filter(v => !v.video_type || v.video_type === 'reel')
   const monologueVideos = sortedVideos.filter(v => v.video_type === 'monologue')
+  // 영상 표지 — 첫 프레임이 뜨기 전(로딩·비로그인 안내)과 Vimeo 재생 전에 깔리는 프로필 사진 (2026-11-10)
+  const posterUrl = mainPhotoUrl ?? actor.profile_photo
 
 
   // 카테고리별 필모 (memoized Map — 렌더마다 6번 filter 방지)
@@ -400,6 +402,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                     hash={video.vimeo_hash ?? ''}
                     title={video.title || `${actor.name} 출연영상`}
                     containerStyle={{ borderRadius: 6, background: '#000' }}
+                    posterUrl={posterUrl}
                   />
                   {video.title && <p style={s.videoTitle}>{video.title}</p>}
                 </div>
@@ -408,7 +411,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                   key={video.id}
                   videoId={video.id}
                   title={video.title}
-                  poster={actor.profile_photo}
+                  poster={posterUrl}
                   allowDownload={canViewContact}
                 />
               ) : null
@@ -450,6 +453,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                     hash={video.vimeo_hash ?? ''}
                     title={video.title || '독백'}
                     containerStyle={{ borderRadius: 6, background: '#000' }}
+                    posterUrl={posterUrl}
                   />
                 </div>
               ) : video.r2_key ? (
@@ -457,7 +461,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                   key={video.id}
                   videoId={video.id}
                   title="독백"
-                  poster={actor.profile_photo}
+                  poster={posterUrl}
                   allowDownload={canViewContact}
                 />
               ) : null
@@ -588,7 +592,7 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
                       </div>
                     )}
                   </div>
-                  <p style={{ fontSize: '0.72rem', color: 'var(--gray)', textAlign: 'center', letterSpacing: '0.05em' }}>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--gray)', textAlign: 'center', letterSpacing: '0.05em' }}>
                     {labelText}
                   </p>
                 </div>
@@ -811,7 +815,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   sectionNum: {
     fontFamily: 'var(--font-display), Oswald, sans-serif',
-    fontSize: '0.72rem',
+    fontSize: '0.75rem',
     fontWeight: 700,
     color: 'var(--gold)',
     letterSpacing: '0.12em',
@@ -825,7 +829,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   sectionEn: {                                 // 영어 보조 eyebrow
     fontFamily: 'var(--font-display), Oswald, sans-serif',
-    fontSize: '0.66rem',
+    fontSize: '0.75rem',
     fontWeight: 600,
     color: 'var(--gray)',
     letterSpacing: '0.18em',
@@ -886,7 +890,7 @@ const s: Record<string, React.CSSProperties> = {
   th: {
     padding: '10px 14px',
     textAlign: 'left' as const,
-    fontSize: '0.72rem',
+    fontSize: '0.75rem',
     color: 'var(--gray)',
     letterSpacing: '0.08em',
     textTransform: 'uppercase' as const,
@@ -923,7 +927,7 @@ const s: Record<string, React.CSSProperties> = {
     border: '1px solid var(--border)',
     borderRadius: 4,
     color: 'var(--gold)',
-    fontSize: '0.72rem',
+    fontSize: '0.75rem',
     fontFamily: 'var(--font-display), inherit',
     letterSpacing: '0.06em',
     cursor: 'pointer',

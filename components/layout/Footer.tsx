@@ -146,7 +146,7 @@ export default function Footer() {
               style={{
                 color: 'var(--gold)',
                 fontFamily: 'var(--font-display), Oswald, sans-serif',
-                fontSize: '0.7rem',
+                fontSize: '0.75rem',
                 fontWeight: 400,
                 letterSpacing: '0.2em',
                 textTransform: 'uppercase',
@@ -166,7 +166,7 @@ export default function Footer() {
               style={{
                 color: 'var(--gold)',
                 fontFamily: 'var(--font-display), Oswald, sans-serif',
-                fontSize: '0.7rem',
+                fontSize: '0.75rem',
                 fontWeight: 400,
                 letterSpacing: '0.2em',
                 textTransform: 'uppercase',
@@ -256,7 +256,7 @@ export default function Footer() {
               style={{
                 color: 'var(--gold)',
                 fontFamily: 'var(--font-display), Oswald, sans-serif',
-                fontSize: '0.7rem',
+                fontSize: '0.75rem',
                 fontWeight: 400,
                 letterSpacing: '0.2em',
                 textTransform: 'uppercase',

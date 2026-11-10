@@ -3,7 +3,8 @@
 /**
  * R2에 저장된 출연영상 재생
  * - 마운트 즉시 signed URL 미리 발급 → 재생 버튼 클릭 즉시 영상 시작
- * - poster: 재생 전 썸네일 이미지 (배우 프로필 사진 등)
+ * - poster: 영상 첫 프레임이 뜨기 전(로딩 중·비로그인 안내 상태)에 깔리는 표지 = 배우 프로필 사진.
+ *   첫 프레임이 그려지면 영상이 표지를 덮는다. 사진은 자르지 않고 통째로(contain) 보여준다. (2026-11-10)
  * - preload="auto"(2026-07-08): "재생하면 로딩이 길다" 제보 — signed URL만 미리
  *   받고 실제 영상 바이트는 재생 클릭 시점에야 받기 시작해 체감 버퍼링 발생.
  *   URL 확보 즉시 실제 영상 데이터도 미리 받아두게 변경.
@@ -14,15 +15,17 @@ import { useState, useEffect, useRef } from 'react'
 export default function R2Video({
   videoId,
   title,
+  poster,
   allowDownload,
 }: {
   videoId: string
   title?: string | null
-  poster?: string | null  // 미사용(영상 첫 프레임을 썸네일로 사용) — 호출부 호환 위해 type만 유지
+  poster?: string | null  // 첫 프레임이 뜨기 전에만 보이는 표지 (없으면 기존처럼 어두운 배경)
   allowDownload?: boolean
 }) {
   const [url, setUrl] = useState<string | null>(null)
   const [playing, setPlaying] = useState(false)
+  const [frameReady, setFrameReady] = useState(false)
   const [prefetching, setPrefetching] = useState(true)
   const [error, setError] = useState('')
   const [downloading, setDownloading] = useState(false)
@@ -76,7 +79,20 @@ export default function R2Video({
   return (
     <div style={s.item}>
       <div style={s.wrapper}>
-        {/* 영상 (항상 렌더, playing일 때만 보임) */}
+        {/* 표지 — 영상 첫 프레임이 준비되기 전까지 보임 */}
+        {poster && !frameReady && !playing && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={poster}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            draggable={false}
+            onContextMenu={(e) => e.preventDefault()}
+            style={s.poster}
+          />
+        )}
+        {/* 영상 (항상 렌더 — 첫 프레임이 그려지면 표지를 덮음) */}
         {url && (
           <>
             <video
@@ -89,7 +105,10 @@ export default function R2Video({
               controlsList="nodownload"
               onContextMenu={(e) => e.preventDefault()}
               tabIndex={playing ? 0 : -1}
-              style={{ ...s.video, opacity: 1 }}
+              onLoadedData={() => setFrameReady(true)}
+              // 첫 프레임 전에는 배경을 비워 뒤의 표지가 비치게 한다. loadeddata가 안 오는 기기(iOS)에서도
+              // 프레임이 그려지면 그대로 표지를 덮으므로, 이벤트에 기대어 영상을 숨기지 않는다.
+              style={{ ...s.video, background: frameReady || playing || !poster ? '#000' : 'transparent' }}
             />
             {/* WCAG 1.2.2: 자막 미제공 안내 — 배우 오디션 영상은 자막 미제공 */}
             <p className="sr-only">이 영상은 자막을 제공하지 않습니다.</p>
@@ -100,7 +119,7 @@ export default function R2Video({
         {!playing && (
           <div style={s.overlay}>
             {/* 영상 첫 프레임 위 살짝 어둡게 — 재생버튼 대비 */}
-            <div style={s.scrim} />
+            <div style={{ ...s.scrim, background: error ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.28)' }} />
 
             {/* 재생 버튼 — 에러 텍스트는 버튼 바깥에 별도 배치 (버튼 accessible name 오염 방지) */}
             <button
@@ -121,7 +140,7 @@ export default function R2Video({
               )}
             </button>
             {error && (
-              <p role="status" aria-live="polite" style={{ position: 'absolute', bottom: 8, left: 0, right: 0, textAlign: 'center', fontSize: '0.7rem', color: '#ff6b6b', padding: '0 8px', zIndex: 3 }}>{error}</p>
+              <p role="status" aria-live="polite" style={{ position: 'absolute', bottom: 8, left: 0, right: 0, textAlign: 'center', fontSize: '0.75rem', color: '#ff6b6b', padding: '0 8px', zIndex: 3 }}>{error}</p>
             )}
           </div>
         )}
@@ -154,6 +173,12 @@ const s: Record<string, React.CSSProperties> = {
     overflow: 'hidden',
     borderRadius: 6,
     background: '#111',
+  },
+  poster: {
+    position: 'absolute', top: 0, left: 0,
+    width: '100%', height: '100%',
+    objectFit: 'contain',
+    userSelect: 'none',
   },
   video: {
     position: 'absolute', top: 0, left: 0,

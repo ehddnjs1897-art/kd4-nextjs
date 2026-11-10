@@ -10,6 +10,8 @@ type Props = {
   allow?: string
   /** facade 컨테이너 추가 스타일 (border, shadow 등) */
   containerStyle?: CSSProperties
+  /** 재생 전 표지 이미지 (예: 배우 프로필 사진) — 없으면 어두운 배경 */
+  posterUrl?: string | null
 }
 
 const DEFAULT_ALLOW = 'autoplay; fullscreen; picture-in-picture'
@@ -51,9 +53,10 @@ const playButtonStyle: CSSProperties = {
 /**
  * Vimeo는 YouTube(i.ytimg.com)처럼 예측 가능한 썸네일 URL 패턴이 없다 —
  * oEmbed API 호출이 필요하고, 비공개 영상은 그마저도 실패할 수 있다.
- * 따라서 썸네일 이미지 없이 어두운 배경 + 재생 버튼만으로 facade를 구성한다.
+ * 따라서 Vimeo 썸네일 없이 어두운 배경 + 재생 버튼으로 facade를 구성하고,
+ * posterUrl이 오면 그 이미지를 자르지 않고(contain) 표지로 깐다.
  */
-export default function VimeoFacade({ videoId, hash, title, allow, containerStyle }: Props) {
+export default function VimeoFacade({ videoId, hash, title, allow, containerStyle, posterUrl }: Props) {
   const [loaded, setLoaded] = useState(false)
   const mergedWrapperStyle = { ...wrapperStyle, ...containerStyle }
 
@@ -74,9 +77,25 @@ export default function VimeoFacade({ videoId, hash, title, allow, containerStyl
 
   return (
     <div style={mergedWrapperStyle}>
-      <div style={{ ...fillStyle, background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <span style={{ color: '#999', fontSize: '0.8rem' }}>동영상</span>
-      </div>
+      {posterUrl ? (
+        <div style={{ ...fillStyle, background: '#111' }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={posterUrl}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            draggable={false}
+            onContextMenu={(e) => e.preventDefault()}
+            style={{ ...fillStyle, objectFit: 'contain' }}
+          />
+          <div style={{ ...fillStyle, background: 'rgba(0,0,0,0.28)' }} />
+        </div>
+      ) : (
+        <div style={{ ...fillStyle, background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <span style={{ color: '#999', fontSize: '0.8rem' }}>동영상</span>
+        </div>
+      )}
       <button
         type="button"
         onClick={() => setLoaded(true)}

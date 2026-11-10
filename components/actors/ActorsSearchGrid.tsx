@@ -48,7 +48,7 @@ function CopyLinkButton({ actorId, actorName }: { actorId: string; actorName: st
         border: 'none',
         borderRadius: '0 0 8px 0',
         padding: '0 8px',
-        fontSize: '0.68rem',
+        fontSize: '0.75rem',
         cursor: 'pointer',
         lineHeight: 1.4,
         letterSpacing: '-0.01em',
@@ -309,7 +309,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
             aria-label="연령대·성별·영상 필터 초기화"
             style={{
               padding: '0 10px', minHeight: 44, display: 'inline-flex', alignItems: 'center', borderRadius: 999, cursor: 'pointer',
-              fontSize: '0.72rem', fontFamily: 'var(--font-sans)',
+              fontSize: '0.75rem', fontFamily: 'var(--font-sans)',
               background: 'none', color: 'var(--gray)',
               border: '1px solid var(--border)',
             }}
@@ -419,7 +419,7 @@ export default function ActorsSearchGrid({ actors, totalBeforeSearch }: Props) {
               <div aria-hidden="true" style={{
                 position: 'absolute', top: 8, left: 10,
                 zIndex: 2, pointerEvents: 'none',
-                fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.06em',
+                fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.06em',
                 color: 'rgba(255,255,255,0.92)',
                 background: 'rgba(0,0,0,0.55)',
                 border: '1px solid rgba(255,255,255,0.18)',
@@ -492,7 +492,7 @@ const tagsStyle: React.CSSProperties = {
 }
 
 const tagStyle: React.CSSProperties = {
-  fontSize: '0.65rem',
+  fontSize: '0.75rem',
   fontWeight: 600,
   color: 'rgba(255,255,255,0.92)',
   background: 'rgba(255,255,255,0.16)',

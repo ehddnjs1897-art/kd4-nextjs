@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { getActorPhotoUrl, shouldOptimize } from '@/lib/actor-photo'
 import ActorsSearchGrid from '@/components/actors/ActorsSearchGrid'
+import FilterCollapse from '@/components/actors/FilterCollapse'
 import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { buildBreadcrumb } from '@/lib/seo-schemas'
@@ -346,6 +347,13 @@ export default async function ActorsPage({ searchParams }: PageProps) {
   }
   const videoIdSet = new Set(videoActorIds)
 
+  // 폰에서 접힌 검색 조건 버튼에 보여줄 요약 — 걸린 조건만 (예: «여 · 30대 · 코미디»)
+  const filterSummary = [
+    gender !== 'all' ? gender : null,
+    ageGroup !== 'all' ? (AGE_OPTIONS.find((o) => o.value === ageGroup)?.label ?? ageGroup) : null,
+    activeGenre?.label ?? null,
+  ].filter(Boolean).join(' · ')
+
   // 동적 H1 — 필터 활성 시 "여자 멜로·로맨스 30대 배우 DB", 기본 "배우 DB"
   const h1Segments: string[] = []
   if (gender === '남') h1Segments.push('남자')
@@ -440,6 +448,25 @@ export default async function ActorsPage({ searchParams }: PageProps) {
           border-color: rgba(21,72,138,0.5) !important;
           transform: translateY(-2px);
         }
+        /* 검색 조건 접기 — 폰에서만 한 줄 버튼으로 접고, 넓은 화면은 항상 펼침 (2026-11-10) */
+        .actors-filter-toggle { display: none; }
+        @media (max-width: 640px) {
+          .actors-header { margin-bottom: 20px !important; }
+          .actors-filter-toggle {
+            display: flex; align-items: center; gap: 10px;
+            width: 100%; min-height: 48px; padding: 0 16px; margin-bottom: 12px;
+            background: var(--bg2); border: 1px solid var(--border); border-radius: 8px;
+            color: var(--navy); font-family: inherit; cursor: pointer; text-align: left;
+          }
+          .actors-filter-toggle-label { font-size: 0.88rem; font-weight: 700; flex-shrink: 0; }
+          .actors-filter-toggle-summary {
+            flex: 1; min-width: 0; font-size: 0.8rem; color: var(--gray);
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+          }
+          .actors-filter-toggle-summary.is-active { color: var(--navy); font-weight: 700; }
+          .actors-filter-body { display: none; }
+          .actors-filter-body.is-open { display: block; }
+        }
       `}</style>
       <div className="container">
         {/* 브레드크럼 */}
@@ -460,7 +487,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
         </nav>
 
         {/* 페이지 헤더 */}
-        <div style={styles.header}>
+        <div className="actors-header" style={styles.header}>
           <p style={styles.eyebrow}><span lang="en">AMS · CAREER LAYER</span></p>
           <h1 style={styles.pageTitle}>{dynamicH1}</h1>
           <p style={styles.subtitle}>{dynamicSubtitle}</p>
@@ -511,7 +538,8 @@ export default async function ActorsPage({ searchParams }: PageProps) {
           </a>
         </div>
 
-        {/* 필터바 */}
+        {/* 필터바 — 폰에서는 한 줄로 접힘(FilterCollapse), 넓은 화면은 항상 펼침 */}
+        <FilterCollapse summary={filterSummary}>
         <div style={styles.filterSection}>
           <div style={styles.filterGroup}>
             <span id="filter-label-gender" style={styles.filterLabel}>성별</span>
@@ -589,6 +617,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
             </div>
           </div>
         </div>
+        </FilterCollapse>
 
         {/* 배우 그리드 + 검색 (클라이언트 컴포넌트) */}
         {dbError ? (
@@ -658,7 +687,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   eyebrow: {
     fontFamily: 'var(--font-display)',
-    fontSize: '0.7rem',
+    fontSize: '0.75rem',
     fontWeight: 300,
     letterSpacing: '0.35em',
     color: 'var(--gold)',

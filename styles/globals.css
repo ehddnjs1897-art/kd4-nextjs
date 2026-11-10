@@ -148,7 +148,7 @@ ul, ol { list-style: none; }
 .section-eyebrow {
   color: var(--gold);
   font-family: var(--font-display);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 300;
   letter-spacing: 0.35em;
   text-transform: uppercase;
@@ -237,7 +237,7 @@ ul, ol { list-style: none; }
 /* === TAGS === */
 .tag {
   display: inline-block;
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   letter-spacing: 0.05em;
   padding: 3px 8px;
   border-radius: 2px;
@@ -570,7 +570,7 @@ ul, ol { list-style: none; }
 
 .class-step {
   font-family: var(--font-display);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   letter-spacing: 0.22em;
   color: var(--gold);
   text-transform: uppercase;
@@ -586,7 +586,7 @@ ul, ol { list-style: none; }
 }
 
 .class-name-en {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   color: var(--gray);
   letter-spacing: 0.08em;
 }
@@ -633,7 +633,7 @@ ul, ol { list-style: none; }
 }
 
 .class-note {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   color: var(--gold);
   background: rgba(21,72,138,0.08);
   border: 1px solid rgba(21,72,138,0.18);
@@ -668,7 +668,7 @@ ul, ol { list-style: none; }
 }
 
 .class-meta-label {
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   color: var(--gray);
   letter-spacing: 0.08em;
   margin-top: 1px;
@@ -848,7 +848,7 @@ ul, ol { list-style: none; }
 }
 
 .testimonial-class {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   color: var(--gold);
   margin-top: 3px;
 }
@@ -973,7 +973,7 @@ ul, ol { list-style: none; }
 }
 
 .contact-label {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   color: var(--gold);
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -1068,7 +1068,7 @@ ul, ol { list-style: none; }
 }
 
 .actor-meta {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   color: var(--gray);
 }
 
@@ -1173,12 +1173,12 @@ ul, ol { list-style: none; }
 }
 
 .footer-copy {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   color: var(--gray);
 }
 
 .footer-biz {
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   color: var(--gray);
   text-align: right;
   line-height: 1.6;
@@ -1210,7 +1210,7 @@ ul, ol { list-style: none; }
 
 .about-step-num {
   font-family: var(--font-display);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   letter-spacing: 0.2em;
   color: var(--gold);
   text-transform: uppercase;
@@ -1252,7 +1252,7 @@ ul, ol { list-style: none; }
 
 .director-role {
   font-family: var(--font-display);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   letter-spacing: 0.2em;
   color: var(--gold);
   text-transform: uppercase;
@@ -1303,7 +1303,7 @@ ul, ol { list-style: none; }
   .stats-card { padding: 20px 6px; gap: 6px; border-radius: 12px; min-width: 0; }
   .stats-icon-wrap { width: 36px; height: 36px; border-radius: 10px; font-size: 1rem; }
   .stat-num { font-size: clamp(1.4rem, 6.5vw, 2rem); }
-  .stat-label { font-size: 0.68rem; letter-spacing: 0.02em; word-break: keep-all; line-height: 1.3; }
+  .stat-label { font-size: 0.75rem; letter-spacing: 0.02em; word-break: keep-all; line-height: 1.3; }
   .about-steps { grid-template-columns: 1fr; }
 .cta-card { padding: 40px 24px; }
   .footer-grid { grid-template-columns: 1fr; gap: 28px; }
@@ -1403,8 +1403,8 @@ ul, ol { list-style: none; }
   }
   /* STEP 라벨 */
   .step-card > p:first-of-type {
-    font-size: 0.58rem !important;
-    letter-spacing: 0.12em !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.06em !important;
     margin-bottom: 8px !important;
   }
   /* 아이콘 박스 축소 + 중앙정렬 */
@@ -1417,7 +1417,7 @@ ul, ol { list-style: none; }
   }
   /* 제목 — 두 줄 허용 */
   .step-card h3 {
-    font-size: 0.65rem !important;
+    font-size: 0.75rem !important;
     line-height: 1.35 !important;
     margin-bottom: 0 !important;
     white-space: pre-line !important;

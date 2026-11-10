@@ -88,7 +88,7 @@ export default function FavoriteButton({ actorId, actorName, variant = 'overlay'
         border: 'none',
         borderRadius: '0 0 0 8px',
         padding: '0 8px',
-        fontSize: '0.68rem',
+        fontSize: '0.75rem',
         cursor: 'pointer',
         lineHeight: 1.4,
         letterSpacing: '-0.01em',

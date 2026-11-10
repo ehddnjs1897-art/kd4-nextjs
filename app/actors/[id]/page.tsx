@@ -16,6 +16,7 @@ import { canViewActorContact, canViewActorDb, ACTOR_DB_PUBLIC_PROFILE, SHOW_CAST
 import { getActorPersonSchema, getActorVideoSchemas, getActorProfilePageSchema, serializeJsonLd, normalizeInstagramHandle } from '@/lib/seo'
 import { buildBreadcrumb } from '@/lib/seo-schemas'
 import { SITE_URL } from '@/lib/constants'
+import { withDisplayTitles } from '@/lib/videoTitle'
 
 /* ---- 타입 정의 ---- */
 interface Actor {
@@ -458,7 +459,10 @@ export default async function ActorDetailPage({
   // phone/email 필드를 삭제해 Client Component 번들에 PII가 포함되지 않도록 함
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { phone: _actorPhone, email: _actorEmail, ...actorWithoutPII } = actor
-  const actorForClient = (canContact ? actor : actorWithoutPII) as unknown as typeof actor
+  // 영상 제목은 표시용으로 다듬어 내보낸다 — 파일 이름(확장자·기기 일련번호, 드물게 전화번호 포함)이
+  // 화면·Client Component 직렬화·JSON-LD 어디로도 나가지 않게 서버에서 교체 (2026-11-10)
+  const displayVideos = withDisplayTitles(actor.actor_videos, actor.name)
+  const actorForClient = { ...(canContact ? actor : actorWithoutPII), actor_videos: displayVideos } as unknown as typeof actor
 
   // 다운로드용 URL/ID (디렉터/관리자만)
   // 프로필 문서는 same-origin 프록시(/api/actors/[id]/profile)로 받는다.
@@ -507,7 +511,7 @@ export default async function ActorDetailPage({
   const profilePageSchema = getActorProfilePageSchema({ id: actor.id, name: actor.name, description: profilePageDescription, updatedAt: actor.updated_at })
   const videoSchemas = getActorVideoSchemas(
     { id: actor.id, name: actor.name },
-    (actor.actor_videos ?? []).filter((v) => v.youtube_id).map((v) => ({
+    displayVideos.filter((v) => v.youtube_id).map((v) => ({
       youtubeId: v.youtube_id as string,
       title: v.title,
       // 유튜브 실제 업로드일(uploaded_at, 8/30 실측 백필) 우선, 없으면 사이트 등록일 폴백
@@ -565,14 +569,14 @@ export default async function ActorDetailPage({
         /* 정보 카드 — 최근출연·수상·특기 구간을 한눈에 들어오게 카드로 묶음 (Apple/Tesla식 여백 + 구분) */
         .kd-infocard { background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:16px 18px; }
         .kd-infocard + .kd-infocard { margin-top:12px; }
-        .kd-card-head { display:flex; align-items:center; gap:8px; font-family:var(--font-display); font-size:0.66rem; font-weight:800; letter-spacing:0.14em; color:var(--gold); text-transform:uppercase; margin:0 0 12px; }
+        .kd-card-head { display:flex; align-items:center; gap:8px; font-family:var(--font-display); font-size:0.75rem; font-weight:800; letter-spacing:0.14em; color:var(--gold); text-transform:uppercase; margin:0 0 12px; }
         .kd-card-head::after { content:''; flex:1; height:1px; background:var(--border); }
         /* 작품 행 — 좌 연도 뱃지 / 우 정보 */
         .kd-work-row { display:flex; align-items:center; gap:12px; padding:8px 0; }
         .kd-work-row + .kd-work-row { border-top:1px solid var(--border); }
         .kd-year-chip { flex:0 0 auto; min-width:46px; text-align:center; font-family:var(--font-display); font-size:0.9rem; font-weight:800; color:var(--gold); line-height:1; }
-        .kd-year-chip small { display:block; font-size:0.56rem; font-weight:700; letter-spacing:0.1em; color:var(--gray); margin-top:3px; }
-        .kd-badge { display:inline-flex; align-items:center; font-size:0.62rem; font-weight:800; letter-spacing:0.04em; padding:2px 7px; border-radius:5px; margin-right:7px; vertical-align:middle; }
+        .kd-year-chip small { display:block; font-size:0.75rem; font-weight:700; letter-spacing:0.1em; color:var(--gray); margin-top:3px; }
+        .kd-badge { display:inline-flex; align-items:center; font-size:0.75rem; font-weight:800; letter-spacing:0.04em; padding:2px 7px; border-radius:5px; margin-right:7px; vertical-align:middle; }
         .kd-badge-drama { background:rgba(21,72,138,0.1); color:var(--navy); border:1px solid rgba(21,72,138,0.22); }
         .kd-badge-film { background:rgba(199,62,62,0.08); color:var(--accent-red); border:1px solid rgba(199,62,62,0.22); }
         .kd-pill { display:inline-flex; align-items:center; padding:5px 12px; border-radius:999px; font-size:0.78rem; font-weight:600; letter-spacing:0.02em; background:var(--bg); border:1px solid var(--border-strong); color:var(--gray-light); }
@@ -626,7 +630,7 @@ export default async function ActorDetailPage({
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
                   {actor.casting_tags.map(t => (
                     <Link key={t} href={`/actors?tag=${encodeURIComponent(t)}`} style={{
-                      fontSize: '0.67rem', fontWeight: 700, letterSpacing: '0.09em',
+                      fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.09em',
                       color: 'var(--gold)',
                       background: 'rgba(21,72,138,0.08)',
                       border: '1px solid rgba(21,72,138,0.20)',
@@ -694,7 +698,7 @@ export default async function ActorDetailPage({
                             {typeTag && <span className={`kd-badge ${isFilm ? 'kd-badge-film' : 'kd-badge-drama'}`}>{typeTag}</span>}
                             <strong style={{ fontWeight: 700, color: 'var(--white)', fontSize: '0.92rem' }}>{f.title}</strong>
                             {(bcast || f.role) && (
-                              <span style={{ display: 'block', fontSize: '0.72rem', color: 'var(--gray)', marginTop: 2 }}>
+                              <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--gray)', marginTop: 2 }}>
                                 {[bcast, f.role].filter(Boolean).join(' · ')}
                               </span>
                             )}
@@ -772,7 +776,7 @@ export default async function ActorDetailPage({
                     {/* 전화번호는 텍스트로 노출하지 않음 — 아래 '직통 전화' 버튼으로만 연결 (2026-07-01 대표 지시: 개인 전화번호 비노출) */}
                     {actor.email && (
                       <>
-                        <span style={{ fontSize: '0.72rem', color: 'var(--gray)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>이메일</span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--gray)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>이메일</span>
                         <a href={`mailto:${actor.email}`} aria-label={`이메일 보내기 ${actor.email}`} style={{ fontSize: '0.9rem', color: 'var(--gold)', textDecoration: 'none', fontWeight: 600, wordBreak: 'break-all' }}>{actor.email}</a>
                       </>
                     )}
@@ -795,7 +799,7 @@ export default async function ActorDetailPage({
                 )}
                 {normalizeInstagramHandle(actor.instagram) && (
                   <>
-                    <span style={{ fontSize: '0.72rem', color: 'var(--gray)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>인스타그램</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--gray)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>인스타그램</span>
                     <a href={`https://www.instagram.com/${normalizeInstagramHandle(actor.instagram)}/`} target="_blank" rel="noopener noreferrer"
                       aria-label={`인스타그램 @${normalizeInstagramHandle(actor.instagram)} (새 탭에서 열림)`}
                       style={{ fontSize: '0.9rem', color: 'var(--gold)', textDecoration: 'none', fontWeight: 600 }}>

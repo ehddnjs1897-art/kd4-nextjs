@@ -64,7 +64,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
           <span style={{
             padding: '3px 10px', background: 'rgba(21,72,138,0.08)',
             border: '1px solid rgba(21,72,138,0.35)', borderRadius: '2px',
-            fontSize: '0.7rem', letterSpacing: '0.1em', color: 'var(--navy)', fontWeight: 700,
+            fontSize: '0.75rem', letterSpacing: '0.1em', color: 'var(--navy)', fontWeight: 700,
           }}>
             {cls.step}
           </span>
@@ -72,7 +72,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             <span style={{
               padding: '2px 8px', background: 'rgba(255,255,255,0.06)',
               border: '1px solid var(--border)', borderRadius: '2px',
-              fontSize: '0.68rem', color: 'var(--gray)',
+              fontSize: '0.75rem', color: 'var(--gray)',
             }}>취미반</span>
           )}
         </div>
@@ -124,7 +124,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             ...(cls.course ? [{ label: '코스', value: cls.course }] : []),
           ].map(info => (
             <div key={info.label}>
-              <span style={{ fontSize: '0.68rem', color: 'var(--gray)', display: 'block' }}>{info.label}</span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--gray)', display: 'block' }}>{info.label}</span>
               <span style={{ fontSize: '0.82rem', color: 'var(--gray-light)' }}>{info.value}</span>
             </div>
           ))}
@@ -140,7 +140,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
                 const diff = parseInt(cls.originalPrice.replace(/,/g, ''), 10) - parseInt(cls.price.replace(/,/g, ''), 10)
                 const label = diff >= 10000 ? `-${Math.round(diff / 10000)}만원` : `-${diff.toLocaleString()}원`
                 return (
-                  <span style={{ marginLeft: '8px', fontSize: '0.68rem', fontWeight: 700, color: 'var(--accent-red)', padding: '2px 6px', background: 'rgba(199,62,62,0.12)', borderRadius: '3px' }}>
+                  <span style={{ marginLeft: '8px', fontSize: '0.75rem', fontWeight: 700, color: 'var(--accent-red)', padding: '2px 6px', background: 'rgba(199,62,62,0.12)', borderRadius: '3px' }}>
                     {label}
                   </span>
                 )
@@ -153,14 +153,14 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
               fontWeight: 900, color: cls.originalPrice ? 'var(--navy)' : 'var(--white)',
               lineHeight: 1, letterSpacing: '-0.02em',
             }}>₩{cls.price}</span>
-            <span style={{ fontSize: '0.7rem', color: 'var(--gray)', marginLeft: '2px' }}>/월</span>
+            <span style={{ fontSize: '0.75rem', color: 'var(--gray)', marginLeft: '2px' }}>/월</span>
           </p>
           {cls.promoLabel && !isPromoExpired && (
-            <p style={{ fontSize: '0.7rem', color: 'var(--gold)', fontWeight: 600, marginTop: '4px' }}>{cls.promoLabel}</p>
+            <p style={{ fontSize: '0.75rem', color: 'var(--gold)', fontWeight: 600, marginTop: '4px' }}>{cls.promoLabel}</p>
           )}
           {/* 2027 수강료 조정 예고 — lib/classes.ts priceChangeNote, 1/1 지나면 자동으로 사라짐 */}
           {cls.priceChangeNote && (
-            <p style={{ fontSize: '0.7rem', color: 'var(--gold)', fontWeight: 600, marginTop: '4px', lineHeight: 1.5, wordBreak: 'keep-all' }}>{cls.priceChangeNote}</p>
+            <p style={{ fontSize: '0.75rem', color: 'var(--gold)', fontWeight: 600, marginTop: '4px', lineHeight: 1.5, wordBreak: 'keep-all' }}>{cls.priceChangeNote}</p>
           )}
         </div>
 
@@ -320,7 +320,7 @@ export default function ClassesPage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
                   <span style={{
                     fontFamily: 'var(--font-display), Oswald, sans-serif',
-                    fontSize: '0.65rem',
+                    fontSize: '0.75rem',
                     letterSpacing: '0.15em',
                     color: 'var(--gold)',
                     textTransform: 'uppercase',
@@ -382,7 +382,7 @@ export default function ClassesPage() {
               border: '1px solid rgba(21,72,138,0.35)', borderRadius: '12px',
               background: 'rgba(21,72,138,0.04)',
             }}>
-              <p style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.25em', color: 'var(--navy)', fontFamily: 'var(--font-display)', margin: 0 }}><span lang="en">STEP 1</span></p>
+              <p style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.25em', color: 'var(--navy)', fontFamily: 'var(--font-display)', margin: 0 }}><span lang="en">STEP 1</span></p>
               <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', fontWeight: 800, color: '#111111', fontFamily: 'var(--font-serif)', margin: 0 }}>신규 멤버 클래스</h2>
               <p style={{ fontSize: 'clamp(0.9rem, 2vw, 1rem)', color: 'var(--navy)', fontWeight: 600, margin: 0 }}>지금 바로 신청할 수 있어요</p>
             </div>
@@ -412,7 +412,7 @@ export default function ClassesPage() {
                   textAlign: 'center', gap: '8px', transition: 'border-color 0.2s, background 0.2s',
                 }}
               >
-                <p style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.25em', color: 'var(--navy)', fontFamily: 'var(--font-display)', margin: 0 }}><span lang="en">{label}</span></p>
+                <p style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.25em', color: 'var(--navy)', fontFamily: 'var(--font-display)', margin: 0 }}><span lang="en">{label}</span></p>
                 {title && (
                   <span style={{ fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', fontWeight: 800, color: 'var(--gray-light)', fontFamily: 'var(--font-serif)', margin: 0 }}>{title}</span>
                 )}

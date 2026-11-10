@@ -566,7 +566,7 @@ export default function HomePage() {
               <div>
                 <p
                   style={{
-                    fontSize: "0.7rem",
+                    fontSize: "0.75rem",
                     letterSpacing: "0.15em",
                     color: "var(--gold)",
                     marginBottom: "16px",
@@ -783,6 +783,25 @@ export default function HomePage() {
                 </React.Fragment>
               ))}
             </div>
+
+            {/* 시작하는 방법 — 옛 «How It Works» 3단계(상담 → 첫 수업 → 성장·캐스팅) 구간을 여기로 합침 (2026-11-10).
+                세 번째 단계(포트폴리오·캐스팅 연결)는 위 STEP 02·03과 같은 내용이라 한 번만 말한다. */}
+            <p
+              style={{
+                marginTop: "32px",
+                textAlign: "center",
+                fontSize: "0.9rem",
+                color: "var(--text-warm)",
+                lineHeight: 1.8,
+                wordBreak: "keep-all",
+              }}
+            >
+              <strong style={{ display: "block", color: "var(--navy)", fontWeight: 700, marginBottom: "4px" }}>
+                시작하는 방법
+              </strong>
+              온라인 상담 신청 <span aria-hidden="true">→</span> 맞는 클래스 안내{" "}
+              <span aria-hidden="true">→</span> 첫 수업에서 진단·맞춤 피드백
+            </p>
           </div>
         </div>
       </section>
@@ -821,7 +840,7 @@ export default function HomePage() {
             style={{
               background: 'none', border: '1px solid var(--border)',
               color: 'var(--gray)', borderRadius: 6, padding: '4px 12px',
-              minHeight: 44, fontSize: '0.72rem', cursor: 'pointer', letterSpacing: '0.05em',
+              minHeight: 44, fontSize: '0.75rem', cursor: 'pointer', letterSpacing: '0.05em',
             }}
           >
             {marqueePaused ? <><span aria-hidden="true">▶</span> 재생</> : <><span aria-hidden="true">⏸</span> 일시정지</>}
@@ -908,91 +927,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── 6. HOW IT WORKS ──────────────────────────────────────────────────── */}
-      <section id="how" aria-label="수업 방식" className="section" style={{ background: "var(--bg)" }}>
-        <div className="container">
-          <div style={{ textAlign: "center", marginBottom: "60px" }}>
-            <p
-              className="section-eyebrow"
-            >
-              <span lang="en">PROCESS</span>
-            </p>
-            <h2 style={{ fontSize: "clamp(1.6rem, 4vw, 2.4rem)", fontWeight: 700 }}>
-              <span lang="en">How It Works</span>
-            </h2>
-          </div>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-              gap: "2px",
-              maxWidth: "800px",
-              margin: "0 auto",
-            }}
-          >
-            {[
-              {
-                num: "01",
-                title: "상담 & 수강신청",
-                desc: "온라인 폼으로 간편하게 신청하고, 본인에게 맞는 클래스를 안내받으세요.",
-              },
-              {
-                num: "02",
-                title: "첫 수업 & 피드백",
-                desc: "첫 수업에서 본인의 연기 상태를 진단하고 맞춤 피드백을 받습니다.",
-              },
-              {
-                num: "03",
-                title: "성장 & 캐스팅",
-                desc: "포트폴리오를 완성하고 캐스팅 디렉터와의 연결을 통해 실전에 나섭니다.",
-              },
-            ].map((step, i) => (
-              <div
-                key={i}
-                style={{
-                  background: "var(--bg3)",
-                  padding: "36px 28px",
-                  position: "relative",
-                }}
-              >
-                <p
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    fontSize: "3rem",
-                    fontWeight: 700,
-                    color: "rgba(21,72,138,0.12)",
-                    lineHeight: 1,
-                    marginBottom: "16px",
-                  }}
-                >
-                  {step.num}
-                </p>
-                <h3
-                  style={{
-                    fontSize: "1rem",
-                    fontWeight: 700,
-                    marginBottom: "12px",
-                    color: "var(--white)",
-                  }}
-                >
-                  {step.title}
-                </h3>
-                <p
-                  style={{
-                    fontSize: "0.82rem",
-                    color: "var(--text-warm)",
-                    lineHeight: 1.7,
-                  }}
-                >
-                  {step.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ── 7. CLASSES — 압축 버전 (전체 보기는 /classes로) ─────────────────── */}
       <section id="classes" aria-label="클래스 소개" className="section" style={{ background: "var(--bg)" }}>
         <div className="container" style={{ maxWidth: 980 }}>
@@ -1053,7 +987,7 @@ export default function HomePage() {
                     {hot && (
                       <span style={{
                         fontFamily: "var(--font-sans)",
-                        fontSize: "0.68rem",
+                        fontSize: "0.75rem",
                         fontWeight: 800,
                         color: "#fff",
                         background: "var(--accent-red)",
@@ -1179,7 +1113,7 @@ export default function HomePage() {
             style={{
               background: 'none', border: '1px solid var(--border)',
               color: 'var(--gray)', borderRadius: 6, padding: '4px 12px',
-              minHeight: 44, fontSize: '0.72rem', cursor: 'pointer', letterSpacing: '0.05em',
+              minHeight: 44, fontSize: '0.75rem', cursor: 'pointer', letterSpacing: '0.05em',
             }}
           >
             {reviewPaused ? <><span aria-hidden="true">▶</span> 재생</> : <><span aria-hidden="true">⏸</span> 일시정지</>}
@@ -1224,7 +1158,7 @@ export default function HomePage() {
       {/*
       <section id="partners" aria-label="함께한 기업" style={{ padding: '48px 0', borderTop: '1px solid var(--border)' }}>
         <h2 className="sr-only">함께한 기업</h2>
-        <p style={{ fontFamily: 'var(--font-display), "Noto Sans KR", sans-serif', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.2em', color: 'var(--secondary)', textAlign: 'center', marginBottom: '24px', opacity: 0.6 }}>
+        <p style={{ fontFamily: 'var(--font-display), "Noto Sans KR", sans-serif', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.2em', color: 'var(--secondary)', textAlign: 'center', marginBottom: '24px', opacity: 0.6 }}>
           함께한 기업
         </p>
         <ul role="list" className="sr-only">
