@@ -110,7 +110,7 @@ function actorSelect(opts: { casting: boolean; videoType: boolean; filmExtra: bo
         opts.casting ? ',\n      casting_tags, casting_summary, profile_pdf_url' : ''
       }${opts.advancedSkills ? ',\n      advanced_skills' : ''},
       actor_photos ( id, drive_photo_id, url, storage_path, caption, sort_order, photo_type, label ),
-      actor_videos ( id, youtube_id, r2_key, title, uploaded_at, created_at${opts.videoType ? ', video_type' : ''}${opts.vimeo ? ', vimeo_id, vimeo_hash' : ''} ),
+      actor_videos ( id, youtube_id, r2_key, title, uploaded_at, created_at, sort_order${opts.videoType ? ', video_type' : ''}${opts.vimeo ? ', vimeo_id, vimeo_hash' : ''} ),
       actor_filmography ( id, category, title, role, year, production${
         opts.filmExtra ? ', broadcaster, film_type, award' : ''
       }${opts.featured ? ', is_featured' : ''} )

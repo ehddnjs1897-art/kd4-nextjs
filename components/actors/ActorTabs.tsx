@@ -28,6 +28,7 @@ interface ActorVideo {
   r2_key?: string | null
   title: string | null
   video_type?: string | null  // 'reel' | 'monologue'
+  sort_order?: number | null
 }
 
 interface FilmoEntry {
@@ -275,8 +276,13 @@ export default function ActorTabs({ actor, canViewContact, imageProtected, canEd
   const CURRENT_LABELS = ['정면', '좌측', '우측', '후면', '전신']
 
   // 영상 분리
-  const reelVideos = (actor.actor_videos ?? []).filter(v => !v.video_type || v.video_type === 'reel').slice(0, 2)
-  const monologueVideos = (actor.actor_videos ?? []).filter(v => v.video_type === 'monologue').slice(0, 1)
+  // 업로드한 영상은 개수 제한 없이 전부 노출 (2026-11-10 대표 지시 — 이전엔 출연영상 2개·독백 1개로 잘려
+  // 3개 이상 올린 멤버 10명의 영상이 숨어 있었음). 순서는 sort_order(등록 순) 기준.
+  const sortedVideos = [...(actor.actor_videos ?? [])].sort(
+    (a, b) => (a.sort_order ?? Number.MAX_SAFE_INTEGER) - (b.sort_order ?? Number.MAX_SAFE_INTEGER)
+  )
+  const reelVideos = sortedVideos.filter(v => !v.video_type || v.video_type === 'reel')
+  const monologueVideos = sortedVideos.filter(v => v.video_type === 'monologue')
 
 
   // 카테고리별 필모 (memoized Map — 렌더마다 6번 filter 방지)
