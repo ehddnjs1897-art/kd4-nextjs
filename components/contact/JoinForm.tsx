@@ -892,6 +892,9 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
                         월 {cls.price}원
                         {cls.course && <span>{cls.course}</span>}
                       </span>
+                      {cls.priceChangeNote && (
+                        <span style={{ display: 'block', fontSize: '0.74rem', color: 'var(--navy)', fontWeight: 600, marginTop: 4, lineHeight: 1.5, wordBreak: 'keep-all' }}>{cls.priceChangeNote}</span>
+                      )}
                       <span className={styles.detailMeta} style={{ display: 'block' }}>
                         {cls.schedule} · {cls.duration} · 정원 {cls.capacity}
                       </span>

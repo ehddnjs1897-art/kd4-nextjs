@@ -347,6 +347,9 @@ export default function ReelPage() {
                 </div>
               ))}
             </div>
+            {FILM_CLASS.priceChangeNote && (
+              <p style={{ fontSize: '0.8rem', color: 'var(--navy)', fontWeight: 600, marginTop: '12px', lineHeight: 1.5, wordBreak: 'keep-all' }}>{FILM_CLASS.priceChangeNote}</p>
+            )}
           </div>
         </div>
       </section>

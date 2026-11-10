@@ -158,6 +158,10 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
           {cls.promoLabel && !isPromoExpired && (
             <p style={{ fontSize: '0.7rem', color: 'var(--gold)', fontWeight: 600, marginTop: '4px' }}>{cls.promoLabel}</p>
           )}
+          {/* 2027 수강료 조정 예고 — lib/classes.ts priceChangeNote, 1/1 지나면 자동으로 사라짐 */}
+          {cls.priceChangeNote && (
+            <p style={{ fontSize: '0.7rem', color: 'var(--gold)', fontWeight: 600, marginTop: '4px', lineHeight: 1.5, wordBreak: 'keep-all' }}>{cls.priceChangeNote}</p>
+          )}
         </div>
 
         {/* CTA */}

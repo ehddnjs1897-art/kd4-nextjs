@@ -56,12 +56,13 @@ export const metadata: Metadata = {
 
 
 
-const SPEC_ITEMS: { label: string; value: string; note?: string }[] = [
+// 렌더 때 계산 — 모듈 상수로 두면 1/1 가격 전환(lib/classes.ts)이 서버 재시작 전까지 안 보인다
+const specItems = (): { label: string; value: string; note?: string; noteAccent?: boolean }[] => [
   // 2026-09-17 대표 확정 — 매주 화요일 12:00~16:00 (상담정리문자_발송.md §오디션 테크닉)
   { label: '일정', value: `매주 화요일 12:00~16:00 · ${AUDITION.schedule}` },
   { label: '시간', value: `회당 ${AUDITION.duration}`, note: '*인원에 따라 유동적' },
   { label: '정원', value: `${AUDITION.capacity} (소수정예)` },
-  { label: '월 수강료', value: `₩${AUDITION.price}` },
+  { label: '월 수강료', value: `₩${AUDITION.price}`, note: AUDITION.priceChangeNote, noteAccent: true },
   { label: '액팅 코치', value: AUDITION.instructor ?? '' },
 ]
 
@@ -123,12 +124,12 @@ export default function AuditionTechniqueClassPage() {
       <section aria-label="오디션 테크닉 클래스 한눈에" style={{ padding: 'clamp(48px, 8vw, 72px) 0 clamp(24px, 4vw, 32px)', background: 'var(--bg)' }}>
         <div className="container" style={{ maxWidth: '760px' }}>
           <dl style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px', margin: 0 }}>
-            {SPEC_ITEMS.map((s) => (
+            {specItems().map((s) => (
               <div key={s.label} style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '12px', padding: '16px 18px' }}>
                 <dt style={{ fontFamily: 'var(--font-sans)', fontSize: '0.78rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '6px' }}>{s.label}</dt>
                 <dd style={{ margin: 0, fontFamily: 'var(--font-sans)', fontSize: '0.95rem', color: '#111', wordBreak: 'keep-all' }}>
                   {s.value}
-                  {s.note && <span style={{ display: 'block', marginTop: 4, fontSize: '0.78rem', color: 'var(--gray)' }}>{s.note}</span>}
+                  {s.note && <span style={{ display: 'block', marginTop: 4, fontSize: '0.78rem', color: s.noteAccent ? 'var(--navy)' : 'var(--gray)', fontWeight: s.noteAccent ? 600 : undefined }}>{s.note}</span>}
                 </dd>
               </div>
             ))}

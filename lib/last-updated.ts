@@ -12,23 +12,23 @@
 export const LAST_UPDATED = {
   home: '2026-08-30',
   about: '2026-10-11',
-  classes: '2026-10-13',
+  classes: '2026-11-10',
   basic: '2026-10-13',
-  meisner: '2026-10-13',
+  meisner: '2026-11-10',
   // /audition-technique-class — 오디션 테크닉 클래스 (2026-09-17 신설)
-  audition: '2026-10-11',
+  audition: '2026-11-10',
   // /meisner-technique — 정보형 가이드 (2026-08-20 신설)
   meisnerGuide: '2026-08-20',
   // /meisner-technique/repetition-emotion-words — 레피티션 감정 어휘표 (2026-09-08 신설)
   repetitionWords: '2026-09-08',
-  reel: '2026-10-11',
+  reel: '2026-11-10',
   // /advanced-reel-class — 출연영상 심화 클래스 (2026-10-06 신설)
   advancedReel: '2026-10-06',
   // /one-month-reel-class — 출연영상 1달 완성 클래스 (2026-10-06 신설)
-  oneMonthReel: '2026-10-06',
+  oneMonthReel: '2026-11-10',
   sinchon: '2026-08-20',
   coaches: '2026-08-30',
-  join: '2026-10-15',
+  join: '2026-11-10',
   // /faq — 화면 «최종 수정일»·JSON-LD dateModified·sitemap이 모두 이 값을 쓴다
   faq: '2026-10-13',
 } as const

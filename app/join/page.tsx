@@ -524,6 +524,9 @@ export default function JoinPage() {
               <span className="join-reel-price">월 {REEL_CLASS.price}원</span>
               <span className="join-reel-meta">{REEL_FACTS.join(' · ')}</span>
             </div>
+            {REEL_CLASS.priceChangeNote && (
+              <p style={{ fontSize: '0.8rem', color: 'var(--navy)', fontWeight: 600, marginTop: '10px', lineHeight: 1.5, wordBreak: 'keep-all' }}>{REEL_CLASS.priceChangeNote}</p>
+            )}
           </div>
 
           <h3 className="join-reel-sub">포트폴리오 베스트 6</h3>

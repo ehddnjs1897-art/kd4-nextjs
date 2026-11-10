@@ -267,6 +267,9 @@ export default function MeisnerPage() {
                 </div>
               ))}
             </div>
+            {MAIN_CLASS.priceChangeNote && (
+              <p style={{ fontSize: '0.8rem', color: 'var(--navy)', fontWeight: 600, marginTop: '12px', lineHeight: 1.5, wordBreak: 'keep-all' }}>{MAIN_CLASS.priceChangeNote}</p>
+            )}
           </div>
         </div>
       </section>

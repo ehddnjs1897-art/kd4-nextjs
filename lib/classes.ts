@@ -21,6 +21,12 @@ export interface ClassItem {
   isNewMemberOpen?: boolean;    // 신규 신청 가능 클래스
   isHobby?: boolean;            // 취미반 딱지
   category?: "step2" | "step3" | "extra"; // 이후 클래스 분류
+  /** 예정된 새 가격 (2027 수강료 조정, 2026-11-10 대표). 아래 withScheduledPrice 참고 */
+  nextPrice?: string;
+  /** 새 가격으로 바뀌는 시각(ISO). 없으면 자동으로 안 바뀌고 예고 문구만 보인다(리더 = 시즌4 시작일 미정) */
+  priceChangeAt?: string;
+  /** 가격 아래 예고 문구 — priceChangeAt이 지나면 자동으로 사라진다 */
+  priceChangeNote?: string;
 }
 
 /** 프로모션 마감일 — 다음 프로모션 시작 시 미래 시각으로 갱신 (2026-05-30 봄맞이 종료)
@@ -28,7 +34,12 @@ export interface ClassItem {
  *    다음 프로모션 시 미래 날짜로 반드시 업데이트할 것 (과거 priceValidUntil → Google 경고) */
 export const PROMO_DEADLINE = '2026-05-31T23:59:59'
 
-export const CLASSES: ClassItem[] = [
+/** 2027 수강료 조정 시각 (2026-11-10 대표 «웹사이트도 수정해»). 정본 = KD4-HUB/05-content/announcements/수강료조정_2027_발송프롬프트.md
+ *  이 시각부터 nextPrice가 price가 되고 예고 문구는 사라진다. 정적 페이지는 app/api/cron/price-change가 다시 그린다. */
+export const PRICE_CHANGE_AT = '2027-01-01T00:00:00+09:00'
+const PRICE_CHANGE_NOTE = (next: string) => `🔔 2027년 1월 1일부터 ${next} · 12월 31일까지 등록하면 현재 금액`
+
+const CLASS_DATA: ClassItem[] = [
   {
     step: "STEP 1",
     nameKo: "베이직 클래스",
@@ -66,6 +77,9 @@ export const CLASSES: ClassItem[] = [
     capacity: "8명",
     course: "4개월 코스",
     price: "350,000",
+    nextPrice: "390,000",
+    priceChangeAt: PRICE_CHANGE_AT,
+    priceChangeNote: PRICE_CHANGE_NOTE("월 390,000원"),
     instructor: "권동원 대표",
     highlight: true,
     isNewMemberOpen: true,
@@ -89,6 +103,9 @@ export const CLASSES: ClassItem[] = [
     capacity: "8명",
     course: "3개월 코스",
     price: "400,000",
+    nextPrice: "475,000",
+    priceChangeAt: PRICE_CHANGE_AT,
+    priceChangeNote: PRICE_CHANGE_NOTE("월 475,000원"),
     instructor: "권동원 대표",
     highlight: true,
     isNewMemberOpen: true,
@@ -129,7 +146,11 @@ export const CLASSES: ClassItem[] = [
     schedule: "상시",
     duration: "영상 제작 전용",
     capacity: "소수정예",
-    price: "400,000"
+    price: "400,000",
+    // 2026-11-10 대표 «1달 영상반은 43만원으로» — 월 단위가 아닌 1회 비용
+    nextPrice: "430,000",
+    priceChangeAt: PRICE_CHANGE_AT,
+    priceChangeNote: PRICE_CHANGE_NOTE("430,000원"),
   },
   {
     step: "STEP 3",
@@ -146,7 +167,10 @@ export const CLASSES: ClassItem[] = [
     duration: "3시간",
     capacity: "10명",
     course: "5개월 시즌제",
-    price: "200,000"
+    price: "200,000",
+    // 2026-11-10 대표 «리더클래스는 25만원»·«시즌 4부터 오름, 기존 멤버 동결» — 시즌4 시작일이 정해지면 priceChangeAt 추가
+    nextPrice: "250,000",
+    priceChangeNote: "🔔 시즌4부터 월 250,000원",
   },
   {
     // 2026-10-13 대표: 정규 클래스 이수 조건 폐지 — 신규도 바로 신청 (상담 폼·신규 등록·/classes «신규 멤버 클래스»에 노출)
@@ -165,6 +189,9 @@ export const CLASSES: ClassItem[] = [
     duration: "4시간",
     capacity: "6명",
     price: "250,000",
+    nextPrice: "290,000",
+    priceChangeAt: PRICE_CHANGE_AT,
+    priceChangeNote: PRICE_CHANGE_NOTE("월 290,000원"),
     // 2026-09-17 대표 확정: 오디션 테크닉은 주세빈 액팅 코치 단독 진행
     instructor: "주세빈 액팅 코치",
     isNewMemberOpen: true,
@@ -199,9 +226,30 @@ export const CLASSES: ClassItem[] = [
     duration: "2시간 (1:1)",
     capacity: "1:1",
     price: "400,000",
+    nextPrice: "450,000",
+    priceChangeAt: PRICE_CHANGE_AT,
+    priceChangeNote: PRICE_CHANGE_NOTE("월 450,000원"),
     instructor: "주세빈·이현재 액팅 코치"
   }
 ];
+
+/** 예정된 가격을 «읽는 순간» 시각으로 고른다 — priceChangeAt이 지나면 price = nextPrice, 예고 문구는 없음.
+ *  모듈을 읽을 때 한 번 계산하면 서버가 켜져 있는 동안 옛 가격이 남으므로 getter로 둔다.
+ *  priceChangeAt이 없으면 가격은 그대로, 예고 문구만 계속 보인다. */
+function withScheduledPrice(c: ClassItem): ClassItem {
+  if (!c.nextPrice) return c
+  const before = c.price
+  const after = c.nextPrice
+  const note = c.priceChangeNote
+  const at = c.priceChangeAt ? new Date(c.priceChangeAt).getTime() : null
+  const switched = () => at !== null && Date.now() >= at
+  return Object.defineProperties({ ...c }, {
+    price: { get: () => (switched() ? after : before), enumerable: true, configurable: true },
+    priceChangeNote: { get: () => (switched() ? undefined : note), enumerable: true, configurable: true },
+  })
+}
+
+export const CLASSES: ClassItem[] = CLASS_DATA.map(withScheduledPrice)
 
 /** 퍼스널 브랜딩 서비스(출연영상 편집·프로필 편집) — 의도적으로 CLASSES 밖에 별도 보관.
  *  CLASSES에 합치면 app/classes(공개 가격표 페이지 + layout.tsx의 JSON-LD 구조화 데이터)와

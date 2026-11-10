@@ -472,6 +472,10 @@ export function buildCourseFromClass(cls: ClassItem, opts: { url: string; image?
       category: 'Paid',
       url: opts.url,
       ...(cls.originalPrice ? { priceValidUntil: PROMO_DEADLINE } : {}),
+      // 예정된 가격 전환(lib/classes.ts) 전에는 현재 가격의 마지막 날을 밝힌다 — 전환 뒤엔 예고 문구가 없어 자동으로 빠진다
+      ...(!cls.originalPrice && cls.priceChangeAt && cls.priceChangeNote
+        ? { priceValidUntil: new Date(new Date(cls.priceChangeAt).getTime() - 1).toLocaleDateString('sv-SE', { timeZone: 'Asia/Seoul' }) }
+        : {}),
     },
     ...(instructors ? { instructor: instructors } : {}),
     // 신청 경로를 실제와 맞춘다: 신규 멤버 클래스 = 상담 폼, 수료자 전용 = 카카오채널,

@@ -335,6 +335,9 @@ export default function OneMonthReelPage() {
                 </div>
               ))}
             </div>
+            {ONE_MONTH.priceChangeNote && (
+              <p style={{ fontSize: '0.8rem', color: 'var(--navy)', fontWeight: 600, marginTop: '12px', lineHeight: 1.5, wordBreak: 'keep-all' }}>{ONE_MONTH.priceChangeNote}</p>
+            )}
           </div>
         </div>
       </section>
