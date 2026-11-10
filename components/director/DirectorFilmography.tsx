@@ -22,7 +22,7 @@ export default function DirectorFilmography({ labelColor = 'var(--gold)' }: Prop
     <>
       <p
         style={{
-          fontSize: '0.7rem',
+          fontSize: '0.75rem',
           letterSpacing: '0.15em',
           color: labelColor,
           marginBottom: '16px',
@@ -34,7 +34,7 @@ export default function DirectorFilmography({ labelColor = 'var(--gold)' }: Prop
         <div key={group.cat} style={{ marginBottom: '14px' }}>
           <p
             style={{
-              fontSize: '0.72rem',
+              fontSize: '0.75rem',
               color: 'var(--gray)',
               marginBottom: '6px',
               letterSpacing: '0.05em',
