@@ -498,28 +498,32 @@ export default function ClassesPage() {
             }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <p style={{ fontWeight: 700, fontSize: '1rem', color: '#111111', margin: 0 }}>처음이면 뭐부터?</p>
-                <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.7, margin: 0 }}>
-                  연기 경험이 없고 취미로 시작하고 싶다면 베이직 클래스입니다. 정원 {BASIC_C?.capacity ?? ''}·{BASIC_C?.schedule ?? ''}·회당 {BASIC_C?.duration ?? ''}로, 연기 경험 없어도 참여할 수 있습니다.
-                  마이즈너 훈련이 어떤 것인지 먼저 겪어보고 싶다면, 체험 수업 가능 여부와 조건을 무료 상담에서 확인해 보세요.
-                  연기를 진지하게 배우고 싶은 분이라면 마이즈너 테크닉 정규 클래스부터 시작하시길 추천드립니다.
-                </p>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.6 }}>
+                  <li><strong style={{ color: '#111111', fontWeight: 600 }}>취미로 가볍게</strong> — 베이직 클래스. 정원 {BASIC_C?.capacity ?? ''}·{BASIC_C?.schedule ?? ''}·회당 {BASIC_C?.duration ?? ''}, 경험이 없어도 됩니다.</li>
+                  <li><strong style={{ color: '#111111', fontWeight: 600 }}>진지하게 배우고 싶다면</strong> — 마이즈너 테크닉 정규 클래스부터.</li>
+                  <li><strong style={{ color: '#111111', fontWeight: 600 }}>먼저 겪어보고 싶다면</strong> — 무료 상담에서 체험 수업 가능 여부를 확인하세요.</li>
+                </ul>
                 <Link href="/basic-acting-class" style={{ fontSize: '0.85rem', color: 'var(--navy)', fontWeight: 600, textDecoration: 'none' }}>
                   베이직 클래스 자세히 보기 <span aria-hidden="true">→</span>
                 </Link>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <p style={{ fontWeight: 700, fontSize: '1rem', color: '#111111', margin: 0 }}>수강료는?</p>
-                <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.7, margin: 0 }}>
-                  클래스별로 다릅니다. 베이직 클래스 월 {BASIC_C?.price ?? ''}원, 마이즈너 테크닉 정규 클래스 월 {MEISNER_C?.price ?? ''}원({MEISNER_C?.course ?? ''}),
-                  출연영상 클래스 월 {REEL_C?.price ?? ''}원({REEL_C?.course ?? ''})입니다. 오디션 테크닉 클래스 {AUDITION_C?.price ?? ''}원,
-                  움직임 클래스 {MOVEMENT_C?.price ?? ''}원, 개인 레슨 {PERSONAL_C?.price ?? ''}원으로 클래스마다 다릅니다.
-                  마이즈너 정규·출연영상 클래스는 전체 수강료 일시납 시 10만원 추가 할인이 있습니다.
-                </p>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.6 }}>
+                  <li>클래스별 월 수강료입니다.</li>
+                  <li style={{ display: 'flex', justifyContent: 'space-between', gap: '12px' }}><span>베이직 클래스</span><strong style={{ color: '#111111', fontWeight: 600 }}>{BASIC_C?.price ?? ''}원</strong></li>
+                  <li style={{ display: 'flex', justifyContent: 'space-between', gap: '12px' }}><span>마이즈너 테크닉 정규 클래스 ({MEISNER_C?.course ?? ''})</span><strong style={{ color: '#111111', fontWeight: 600 }}>{MEISNER_C?.price ?? ''}원</strong></li>
+                  <li style={{ display: 'flex', justifyContent: 'space-between', gap: '12px' }}><span>출연영상 클래스 ({REEL_C?.course ?? ''})</span><strong style={{ color: '#111111', fontWeight: 600 }}>{REEL_C?.price ?? ''}원</strong></li>
+                  <li style={{ display: 'flex', justifyContent: 'space-between', gap: '12px' }}><span>오디션 테크닉 클래스</span><strong style={{ color: '#111111', fontWeight: 600 }}>{AUDITION_C?.price ?? ''}원</strong></li>
+                  <li style={{ display: 'flex', justifyContent: 'space-between', gap: '12px' }}><span>움직임 클래스</span><strong style={{ color: '#111111', fontWeight: 600 }}>{MOVEMENT_C?.price ?? ''}원</strong></li>
+                  <li style={{ display: 'flex', justifyContent: 'space-between', gap: '12px' }}><span>개인 레슨</span><strong style={{ color: '#111111', fontWeight: 600 }}>{PERSONAL_C?.price ?? ''}원</strong></li>
+                  <li>마이즈너 정규·출연영상 클래스는 일시납 시 10만원 추가 할인.</li>
+                </ul>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <p style={{ fontWeight: 700, fontSize: '1rem', color: '#111111', margin: 0 }}>환불·중도 변경은?</p>
-                <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.7, margin: 0 }}>
-                  중도 변경·환불 규정은 클래스별 수강 동의서와 상담 시 안내를 따릅니다.
+                <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.6, margin: 0 }}>
+                  클래스별 수강 동의서와 상담 안내를 따릅니다.
                 </p>
                 <Link href="/faq" style={{ fontSize: '0.85rem', color: 'var(--navy)', fontWeight: 600, textDecoration: 'none' }}>
                   자주 묻는 질문 전체 보기 <span aria-hidden="true">→</span>
