@@ -110,6 +110,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/sinchon-acting-academy`,       lastModified: new Date(LAST_UPDATED.sinchon), changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/acting-coaches`,               lastModified: new Date(LAST_UPDATED.coaches), changeFrequency: 'monthly', priority: 0.75 },
     { url: `${BASE}/actors`,                       lastModified: actorsLastMod,          changeFrequency: 'weekly',  priority: 0.8 },
+    { url: `${BASE}/directors`,                    lastModified: new Date('2026-11-12'), changeFrequency: 'monthly', priority: 0.75 },
     { url: `${BASE}/benefits`,                     lastModified: new Date('2026-08-12'), changeFrequency: 'monthly', priority: 0.7 },
     { url: `${BASE}/benefits/mom-pt-pilates`,      lastModified: new Date('2026-08-12'), changeFrequency: 'monthly', priority: 0.65 },
     { url: `${BASE}/benefits/move1-dance-studio`,  lastModified: new Date('2026-09-08'), changeFrequency: 'monthly', priority: 0.65 },

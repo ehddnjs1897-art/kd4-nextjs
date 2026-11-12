@@ -27,8 +27,10 @@ function SignupContent() {
   const rawNext = searchParams.get('next')
   const safeNext = rawNext && rawNext.startsWith('/') && !rawNext.startsWith('//') && !rawNext.startsWith('/\\') ? rawNext : null
   const nextQS = safeNext ? `?next=${encodeURIComponent(safeNext)}` : ''
-  const [step, setStep] = useState<Step>('type-select')
-  const [memberType, setMemberType] = useState<MemberType>('actor')
+  // 감독용 안내(/directors)에서 온 경우(?type=director) 유형 선택을 건너뛰고 디렉터 가입 폼으로 바로 (2026-11-12)
+  const presetDirector = searchParams.get('type') === 'director'
+  const [step, setStep] = useState<Step>(presetDirector ? 'form' : 'type-select')
+  const [memberType, setMemberType] = useState<MemberType>(presetDirector ? 'director' : 'actor')
 
   const [name, setName] = useState('')
   const [stageName, setStageName] = useState('') // 배우: 활동명(예명) — 프로필 표시명 (선택, 2026-07-10 대표 지시)
@@ -134,7 +136,7 @@ function SignupContent() {
     }
     // 디렉터: 소속·용도 필수 — 대표가 이 내용을 보고 승인한다 (2026-09-19)
     if (memberType === 'director' && affiliation.trim().length < 2) {
-      setErrorField('affiliation'); setError('소속을 입력해 주세요. (예: ○○캐스팅, ○○제작사 조감독)')
+      setErrorField('affiliation'); setError('소속을 입력해 주세요. (예: ○○캐스팅, ○○제작사 조감독, ○○대 영화과)')
       return
     }
     if (memberType === 'director' && purpose.trim().length < 5) {
@@ -236,6 +238,17 @@ function SignupContent() {
         setLoading(false)
         return
       }
+      // 디렉터 가입 = 승인 신청까지 한 번에 (2026-11-12 «당일 승인»).
+      // 전에는 가입 뒤 마이페이지에서 «디렉터 권한 신청하기»를 한 번 더 눌러야 대표에게 승인 요청이 갔다.
+      // 실패해도 가입은 유지 — 마이페이지의 신청 버튼이 그대로 남아 있어 다시 신청할 수 있다.
+      if (memberType === 'director') {
+        try {
+          const reqRes = await fetch('/api/director-request?from=signup', { method: 'POST', signal: AbortSignal.timeout(10_000) })
+          if (!reqRes.ok) console.error('[signup] director-request failed:', reqRes.status)
+        } catch (e) {
+          console.error('[signup] director-request error:', e instanceof Error ? e.message : String(e))
+        }
+      }
     }
 
     setLoading(false)
@@ -294,7 +307,7 @@ function SignupContent() {
               <span style={styles.typeIcon} aria-hidden="true">🎥</span>
               <span style={styles.typeLabel}>디렉터 회원</span>
               <span style={styles.typeDesc}>
-                캐스팅 디렉터, 조감독, 제작사
+                캐스팅 디렉터, 조감독, 제작사, 영화과 학생 감독
                 <br />승인 후 배우 연락처 열람·프로필/영상 다운로드·캐스팅 숏리스트 이용
               </span>
             </button>
@@ -635,7 +648,7 @@ function SignupContent() {
                 type="text"
                 value={affiliation}
                 onChange={(e) => setAffiliation(e.target.value)}
-                placeholder="제작사, 캐스팅사, 방송국 등"
+                placeholder="제작사·캐스팅사·방송국, 학교·학과 등"
                 disabled={loading}
                 autoComplete="organization"
                 maxLength={60}
@@ -652,7 +665,7 @@ function SignupContent() {
                 id="purpose"
                 value={purpose}
                 onChange={(e) => setPurpose(e.target.value)}
-                placeholder="어떤 작품·배역 캐스팅에 쓰실지 적어 주세요. (예: 웹드라마 ○○ 20대 여자 조연 캐스팅)"
+                placeholder="어떤 작품·배역 캐스팅에 쓰실지 적어 주세요. (예: 웹드라마 ○○ 20대 여자 조연, ○○대 졸업영화 주연)"
                 disabled={loading}
                 maxLength={300}
                 rows={3}
@@ -663,7 +676,7 @@ function SignupContent() {
                 style={{ ...styles.input, height: 'auto', minHeight: 84, resize: 'vertical', lineHeight: 1.6, paddingTop: 10, paddingBottom: 10 }}
               />
               <p id="purpose-hint" style={styles.hint}>
-                적어주신 소속과 용도를 확인한 뒤 승인해 드립니다. 승인 후 배우 연락처·프로필을 열람할 수 있어요.
+                적어주신 소속과 용도를 확인한 뒤 신청 당일 승인해 드립니다. 승인 후 배우 연락처·프로필을 열람할 수 있어요.
               </p>
             </div>
           )}

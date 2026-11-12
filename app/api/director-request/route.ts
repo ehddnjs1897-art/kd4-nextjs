@@ -107,7 +107,10 @@ export async function POST(request: NextRequest) {
       (err: unknown) => console.error('[director-request] 이메일 알림 실패:', err instanceof Error ? err.message : '(unknown)')
     )
 
-    if (ADMIN_PHONE) {
+    // 가입 화면에서 자동으로 들어온 신청(?from=signup)은 on-signup이 방금 같은 내용의 문자를 대표에게 보냈으므로
+    // 문자는 한 번 더 보내지 않는다 (승인 버튼이 든 메일은 위에서 그대로 발송).
+    const fromSignup = new URL(request.url).searchParams.get('from') === 'signup'
+    if (ADMIN_PHONE && !fromSignup) {
       const safeName = displayName.replace(/[\r\n\t]/g, ' ').slice(0, 30)
       sendSMS(
         ADMIN_PHONE,

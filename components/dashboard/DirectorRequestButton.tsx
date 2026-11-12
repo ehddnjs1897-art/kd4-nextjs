@@ -18,7 +18,7 @@ export default function DirectorRequestButton({ initialAffiliation = '', initial
   async function handleRequest() {
     setError('')
     // 소속·용도 필수 — 대표가 이 내용을 보고 승인한다 (2026-09-19 대표 지시)
-    if (affiliation.trim().length < 2) { setError('소속을 입력해 주세요. (예: ○○캐스팅, ○○제작사 조감독)'); return }
+    if (affiliation.trim().length < 2) { setError('소속을 입력해 주세요. (예: ○○캐스팅, ○○제작사 조감독, ○○대 영화과)'); return }
     if (purpose.trim().length < 5) { setError('이용 용도를 입력해 주세요. (예: 진행 중인 작품의 배역 캐스팅)'); return }
     setLoading(true)
     try {
@@ -82,7 +82,7 @@ export default function DirectorRequestButton({ initialAffiliation = '', initial
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 10 }}>
         <label htmlFor="dir-affiliation" style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--white)' }}>소속 <span aria-hidden="true" style={{ color: 'var(--gold)' }}>*</span></label>
-        <input id="dir-affiliation" type="text" value={affiliation} onChange={(e) => setAffiliation(e.target.value)} maxLength={60} disabled={loading} required aria-required="true" placeholder="제작사, 캐스팅사, 방송국 등" style={{ padding: '10px 12px', fontSize: '0.9rem', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, color: 'var(--white)', fontFamily: 'inherit' }} />
+        <input id="dir-affiliation" type="text" value={affiliation} onChange={(e) => setAffiliation(e.target.value)} maxLength={60} disabled={loading} required aria-required="true" placeholder="제작사·캐스팅사·방송국, 학교·학과 등" style={{ padding: '10px 12px', fontSize: '0.9rem', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, color: 'var(--white)', fontFamily: 'inherit' }} />
         <label htmlFor="dir-purpose" style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--white)', marginTop: 4 }}>이용 용도 <span aria-hidden="true" style={{ color: 'var(--gold)' }}>*</span></label>
         <textarea id="dir-purpose" value={purpose} onChange={(e) => setPurpose(e.target.value)} maxLength={300} rows={3} disabled={loading} required aria-required="true" placeholder="어떤 작품·배역 캐스팅에 쓰실지 적어 주세요." style={{ padding: '10px 12px', fontSize: '0.9rem', lineHeight: 1.6, background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, color: 'var(--white)', fontFamily: 'inherit', resize: 'vertical', minHeight: 80 }} />
         <p style={{ fontSize: '0.75rem', color: 'var(--gray)', margin: 0 }}>적어주신 소속과 용도를 확인한 뒤 승인해 드립니다.</p>

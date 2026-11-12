@@ -516,12 +516,11 @@ export default async function ActorsPage({ searchParams }: PageProps) {
           >
             배우 등록 신청 →
           </a>
-          {/* 캐스팅 문의 → 카카오 채널 (주 CTA: 네이비 채움) */}
+          {/* 캐스팅 안내 → 감독·캐스팅 담당자 안내(/directors) (주 CTA: 네이비 채움).
+              2026-11-12: 카카오 채널 직행 → 안내 페이지 경유(열람 범위·가입·당일 승인 설명, 카카오 문의는 그 페이지 끝에 있음) */}
           <a
-            href="https://pf.kakao.com/_ximxdqn"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="캐스팅 문의 (카카오 채널로 이동)"
+            href="/directors"
+            aria-label="캐스팅 안내 (감독·캐스팅 담당자 안내 페이지로 이동)"
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 7,
               padding: '11px 22px', borderRadius: 8,
@@ -534,7 +533,7 @@ export default async function ActorsPage({ searchParams }: PageProps) {
               whiteSpace: 'nowrap',
             }}
           >
-            캐스팅 문의 →
+            캐스팅 안내 →
           </a>
         </div>
 
