@@ -5,8 +5,8 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { analytics } from '@/lib/analytics'
 
-/** 배우DB · 커뮤니티 · 대본분석 · 인증 · 상담신청 페이지에서는 CTA 표시 안 함 */
-const HIDE_ON: string[] = ['/actors', '/board', '/ai-tools', '/auth', '/dashboard', '/admin', '/join']
+/** 배우DB · 감독용 안내 · 커뮤니티 · 대본분석 · 인증 · 상담신청 페이지에서는 CTA 표시 안 함 */
+const HIDE_ON: string[] = ['/actors', '/directors', '/board', '/ai-tools', '/auth', '/dashboard', '/admin', '/join']
 
 export default function FloatingCTA() {
   const pathname = usePathname()

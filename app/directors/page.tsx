@@ -271,7 +271,7 @@ export default async function DirectorsPage() {
               color: 'var(--secondary)',
               lineHeight: 1.85,
               margin: '0 auto 30px',
-              maxWidth: 540,
+              maxWidth: 680,
               wordBreak: 'keep-all',
             }}
           >
