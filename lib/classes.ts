@@ -21,6 +21,9 @@ export interface ClassItem {
   isNewMemberOpen?: boolean;    // 신규 신청 가능 클래스
   isHobby?: boolean;            // 취미반 딱지
   category?: "step2" | "step3" | "extra"; // 이후 클래스 분류
+  /** 클래스 카드 맨 위 수업 사진 (2026-11-12 대표 확정 · 흑백 16:9 통일). public/class-photos/ */
+  photo?: string;
+  photoAlt?: string;
   /** 예정된 새 가격 (2027 수강료 조정, 2026-11-10 대표). 아래 withScheduledPrice 참고 */
   nextPrice?: string;
   /** 새 가격으로 바뀌는 시각(ISO). 없으면 자동으로 안 바뀌고 예고 문구만 보인다(리더 = 시즌4 시작일 미정) */
@@ -43,6 +46,8 @@ const CLASS_DATA: ClassItem[] = [
   {
     step: "STEP 1",
     nameKo: "베이직 클래스",
+    photo: "/class-photos/basic.jpg",
+    photoAlt: "베이직 클래스 — 함께 움직이며 웃는 멤버들",
     nameEn: "Basic Class",
     quote: "취미로 가볍게 시작하는 연기",
     subtitle: "취미 클래스 · 연기 입문",
@@ -64,6 +69,8 @@ const CLASS_DATA: ClassItem[] = [
   {
     step: "STEP 1",
     nameKo: "마이즈너 테크닉 정규 클래스",
+    photo: "/class-photos/meisner.jpg",
+    photoAlt: "마이즈너 테크닉 정규 클래스 — 마주 서서 장면 연기를 하는 두 멤버",
     nameEn: "Meisner Technique Class",
     quote: "막혀있던 감정의 둑을 터뜨리는 수업, 배우로 다시 태어나는 시간",
     subtitle: "마이즈너 테크닉 / 장면연기",
@@ -89,6 +96,8 @@ const CLASS_DATA: ClassItem[] = [
   {
     step: "STEP 1",
     nameKo: "출연영상 클래스",
+    photo: "/class-photos/reel.jpg",
+    photoAlt: "출연영상 클래스 — 카메라 앞에서 연기하는 멤버",
     nameEn: "Reel Production Class",
     quote: "실제 영화 현장의 퀄리티로 당신의 포트폴리오를 만듭니다.",
     subtitle: "마이즈너 테크닉 / 포트폴리오 제작",
@@ -155,6 +164,8 @@ const CLASS_DATA: ClassItem[] = [
   {
     step: "STEP 3",
     nameKo: "액터스 리더 클래스",
+    photo: "/class-photos/leader.jpg",
+    photoAlt: "액터스 리더 클래스 — 멤버들 앞에서 장면 연기를 하는 멤버",
     category: "step3",
     nameEn: "Actor's Leader Class",
     quote: "KD4가 엄선한 정예 멤버 10명, 캐스팅 전폭 지원",

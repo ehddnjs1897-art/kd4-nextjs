@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { CLASSES, PROMO_DEADLINE } from '@/lib/classes'
 
@@ -56,6 +57,18 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
         }}>
           🔥 HOT
         </span>
+      )}
+
+      {/* 수업 사진 — 흑백 16:9 통일 (2026-11-12 대표 확정) */}
+      {cls.photo && (
+        <Image
+          src={cls.photo}
+          alt={cls.photoAlt ?? `${cls.nameKo} 수업 장면`}
+          width={1280}
+          height={720}
+          sizes="(max-width: 700px) 100vw, 420px"
+          style={{ display: 'block', width: '100%', height: 'auto', aspectRatio: '16 / 9', objectFit: 'cover', borderBottom: '1px solid var(--border)' }}
+        />
       )}
 
       <div style={{ padding: '28px 24px 20px', flex: 1 }}>
