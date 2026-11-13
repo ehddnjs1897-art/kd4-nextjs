@@ -558,7 +558,12 @@ export default async function ActorDetailPage({
       ])) }} />
       {/* 반응형 헬퍼 — HERO 2컬럼 (사진 좌 / 정보 우), 680px 이하 세로 스택 (2026-06-12 대표 지시 리디자인) */}
       <style>{`
-        .actor-hero { display:grid; grid-template-columns:minmax(260px,380px) minmax(0,1fr); gap:clamp(24px,4vw,44px); align-items:start; }
+        .actor-hero { display:grid; grid-template-columns:minmax(260px,380px) minmax(0,1fr); grid-template-rows:auto 1fr; column-gap:clamp(24px,4vw,44px); row-gap:16px; align-items:start; }
+        /* PC 배치 — 왼쪽 열: 사진(1행) + 연락·버튼(2행) / 오른쪽 열: 정보(1~2행 통째). 2026-11-13 대표 지시 */
+        .actor-hero-photo { grid-column:1; grid-row:1; }
+        .actor-hero-info { grid-column:2; grid-row:1 / span 2; }
+        .actor-hero-actions { grid-column:1; grid-row:2; display:flex; flex-direction:column; gap:16px; align-items:stretch; width:100%; max-width:380px; margin:0 auto; }
+        .actor-hero-actions-divider { display:none; }
         /* 프로필 사진 — 원본 비율 유지(가로 사진은 가로 그대로, 세로 사진은 세로 그대로).
            고정 프레임을 없애 letterbox(검정 여백) 발생을 원천 차단 (2026-07-01 대표 지시). */
         .actor-hero-photo { position:relative; width:100%; max-width:380px; margin:0 auto; border-radius:14px; overflow:hidden; background:var(--bg2); box-shadow:0 6px 24px rgba(21,72,138,0.12); border:1px solid var(--border); }
@@ -582,7 +587,11 @@ export default async function ActorDetailPage({
         .kd-pill { display:inline-flex; align-items:center; padding:5px 12px; border-radius:999px; font-size:0.78rem; font-weight:600; letter-spacing:0.02em; background:var(--bg); border:1px solid var(--border-strong); color:var(--gray-light); }
         .kd-pill-gold { background:rgba(21,72,138,0.08); border-color:rgba(21,72,138,0.28); color:var(--gold); }
         @media (max-width:680px) {
-          .actor-hero { grid-template-columns:1fr; gap:20px; }
+          .actor-hero { grid-template-columns:1fr; grid-template-rows:none; gap:20px; }
+          /* 모바일: 사진 → 정보 → 연락·버튼 순서 그대로 (구분선 유지) */
+          .actor-hero-photo, .actor-hero-info, .actor-hero-actions { grid-column:auto; grid-row:auto; }
+          .actor-hero-actions { max-width:100%; margin-top:-4px; }
+          .actor-hero-actions-divider { display:block; }
           /* 모바일: 사진이 화면을 다 먹지 않게 상한(세로 최대 62vh) — 가로 사진은 원본비율 그대로 */
           .actor-hero-photo { max-width:100%; }
           .actor-hero-photo img { max-height:62vh; object-position:center 20%; }
@@ -710,26 +719,7 @@ export default async function ActorDetailPage({
                 </div>
               )}
 
-              {/* 수상 · 영화제 — 트로피 카드, 골드 강조. 각 작품 분리 (2026-07-01 대표 지시 리디자인) */}
-              {heroAwards.length > 0 && (
-                <div className="kd-infocard" style={{ background: 'rgba(21,72,138,0.05)', borderColor: 'rgba(21,72,138,0.22)' }}>
-                  <p className="kd-card-head"><span aria-hidden="true">🏆</span> 수상 · 영화제</p>
-                  <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
-                    {heroAwards.map((f) => (
-                      <li key={`hero-award-${f.id}`} style={{ display: 'flex', gap: 11, alignItems: 'flex-start' }}>
-                        <span aria-hidden="true" style={{ flex: '0 0 auto', fontSize: '1.05rem', lineHeight: 1.2 }}>🏆</span>
-                        <span style={{ minWidth: 0 }}>
-                          <span style={{ display: 'block', color: 'var(--gold)', fontWeight: 800, fontSize: '0.9rem', lineHeight: 1.35 }}>{f.award}</span>
-                          <span style={{ fontSize: '0.78rem', color: 'var(--gray)' }}>
-                            {[f.title, f.year].filter(Boolean).join(' · ')}
-                          </span>
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
+              {/* 특기 · 수상 순서 — 특기 카드를 수상 카드 위로 (2026-11-13 대표 지시) */}
               {/* 특기 · 사투리 — pill 태그 카드로 통합 (한눈에 들어오게, 2026-07-01 리디자인) */}
               {((actor.skills && actor.skills.length > 0) || (actor.dialects && actor.dialects.some((d) => d !== '없음'))) && (
                 <div className="kd-infocard">
@@ -765,8 +755,32 @@ export default async function ActorDetailPage({
                 </div>
               )}
 
-              {/* 구분선 */}
-              <div style={{ borderTop: '1px solid var(--border)', marginBottom: 14 }} />
+              {/* 수상 · 영화제 — 트로피 카드, 골드 강조. 각 작품 분리 (2026-07-01 대표 지시 리디자인) */}
+              {heroAwards.length > 0 && (
+                <div className="kd-infocard" style={{ background: 'rgba(21,72,138,0.05)', borderColor: 'rgba(21,72,138,0.22)' }}>
+                  <p className="kd-card-head"><span aria-hidden="true">🏆</span> 수상 · 영화제</p>
+                  <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {heroAwards.map((f) => (
+                      <li key={`hero-award-${f.id}`} style={{ display: 'flex', gap: 11, alignItems: 'flex-start' }}>
+                        <span aria-hidden="true" style={{ flex: '0 0 auto', fontSize: '1.05rem', lineHeight: 1.2 }}>🏆</span>
+                        <span style={{ minWidth: 0 }}>
+                          <span style={{ display: 'block', color: 'var(--gold)', fontWeight: 800, fontSize: '0.9rem', lineHeight: 1.35 }}>{f.award}</span>
+                          <span style={{ fontSize: '0.78rem', color: 'var(--gray)' }}>
+                            {[f.title, f.year].filter(Boolean).join(' · ')}
+                          </span>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            {/* 연락처 · 공유/다운로드 · 캐스팅 문의 — PC는 사진 바로 아래(왼쪽 열), 모바일은 정보 아래 그대로.
+                사진 아래 빈 공간에 한눈에 보이게 (2026-11-13 대표 지시) */}
+            <div className="actor-hero-actions">
+              {/* 구분선 — 모바일에서만 (PC는 사진 아래로 옮겨져 필요 없음) */}
+              <div className="actor-hero-actions-divider" style={{ borderTop: '1px solid var(--border)', marginBottom: 14 }} />
 
               {/* 연락처 — 라벨+값 행 구조 (전화·이메일·인스타 구분.
                   2026-06-12 대표 지시: 한 줄 뭉침 ☎✉@ 가 구분이 안 가 재디자인) */}
