@@ -496,7 +496,7 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
           <p
             style={{
               fontFamily: 'var(--font-display)',
-              fontSize: '0.7rem',
+              fontSize: '0.75rem',
               letterSpacing: '0.2em',
               color: 'var(--gray)',
               textTransform: 'uppercase',
@@ -547,7 +547,7 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
                 </p>
                 <p
                   style={{
-                    fontSize: '0.72rem',
+                    fontSize: '0.75rem',
                     color: 'var(--navy)',
                     fontWeight: 600,
                     display: 'inline-flex',
@@ -599,7 +599,7 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
                 </p>
                 <p
                   style={{
-                    fontSize: '0.72rem',
+                    fontSize: '0.75rem',
                     color: 'var(--navy)',
                     fontWeight: 600,
                     display: 'inline-flex',
@@ -651,7 +651,7 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
                 </p>
                 <p
                   style={{
-                    fontSize: '0.72rem',
+                    fontSize: '0.75rem',
                     color: 'var(--navy)',
                     fontWeight: 600,
                     display: 'inline-flex',
@@ -703,7 +703,7 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
                 </p>
                 <p
                   style={{
-                    fontSize: '0.72rem',
+                    fontSize: '0.75rem',
                     color: 'var(--navy)',
                     fontWeight: 600,
                     display: 'inline-flex',
@@ -760,7 +760,7 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
             연락받을 정보를 알려주세요
           </h3>
           <p className={styles.stepHint}>
-            먼저 이름과 연락처부터 알려주세요. 상담은 무료, 24시간 이내 SMS로 연락드려요.
+            먼저 이름과 연락처부터 알려주세요. 상담은 무료, 접수하면 바로 안내 문자를 보내드려요.
           </p>
 
           {/* 이름 */}
@@ -914,7 +914,7 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
                         {cls.course && <span>{cls.course}</span>}
                       </span>
                       {cls.priceChangeNote && (
-                        <span style={{ display: 'block', fontSize: '0.74rem', color: 'var(--navy)', fontWeight: 600, marginTop: 4, lineHeight: 1.5, wordBreak: 'keep-all' }}>{cls.priceChangeNote}</span>
+                        <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--navy)', fontWeight: 600, marginTop: 4, lineHeight: 1.5, wordBreak: 'keep-all' }}>{cls.priceChangeNote}</span>
                       )}
                       <span className={styles.detailMeta} style={{ display: 'block' }}>
                         {cls.schedule} · {cls.duration} · 정원 {cls.capacity}
@@ -1093,7 +1093,7 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
           </div>
 
           <p style={{ fontSize: '0.78rem', color: 'var(--gray)', lineHeight: 1.6, margin: '2px 2px 0', wordBreak: 'keep-all' }}>
-            제출하시면 <strong style={{ color: 'var(--navy)' }}>24시간 이내 SMS</strong>로 연락드려요.
+            제출하시면 <strong style={{ color: 'var(--navy)' }}>바로 안내 문자</strong>를 보내고, 1~2일 안에 대표가 직접 전화드려요.
             상담은 무료이고, 상담 후 바로 가셔도 괜찮아요.
           </p>
 

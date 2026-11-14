@@ -103,7 +103,7 @@ export default async function AdLandingPage({ params }: { params: Params }) {
 
         {/* ② 클래스 정보 */}
         <section className={styles.info}>
-          <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.14em', color: 'var(--navy)', margin: 0 }}>
+          <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.14em', color: 'var(--navy)', margin: 0 }}>
             KD4 ACTING STUDIO · {c.nameEn.toUpperCase()}
           </p>
           <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.6rem', fontWeight: 700, color: 'var(--navy-deep)', margin: '8px 0 6px', wordBreak: 'keep-all' }}>

@@ -224,17 +224,17 @@ export default function RepetitionEmotionWordsPage() {
 
       {/* ===== 관련 페이지 크로스링크 ===== */}
       <section aria-label="관련 페이지 바로가기" style={{ padding: '32px 24px', background: 'var(--bg)', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'center', gap: '24px', flexWrap: 'wrap' }}>
-          <Link href={GUIDE_URL} style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+        <div className="container" style={{ display: 'flex', justifyContent: 'center', gap: '0 24px', flexWrap: 'wrap' }}>
+          <Link href={GUIDE_URL} style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             <span aria-hidden="true">← </span>마이즈너 테크닉이란
           </Link>
-          <Link href={CLASS_URL} style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+          <Link href={CLASS_URL} style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             마이즈너 테크닉 정규 클래스 <span aria-hidden="true">→</span>
           </Link>
-          <Link href="/monologues" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+          <Link href="/monologues" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             독백 대본 모음
           </Link>
-          <Link href="/faq" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+          <Link href="/faq" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             전체 FAQ
           </Link>
         </div>

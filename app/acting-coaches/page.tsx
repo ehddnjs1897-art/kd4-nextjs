@@ -284,7 +284,7 @@ function InstructorSection({
             <dl style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '10px', maxWidth: '820px', margin: '0 auto 20px' }}>
               {profileRows.map(({ label, value }) => (
                 <div key={label} style={{ background: cardBackground, border: '1px solid var(--border)', borderLeft: '3px solid var(--navy)', borderRadius: '8px', padding: '14px 16px' }}>
-                  <dt style={{ fontFamily: 'var(--font-display)', fontSize: '0.72rem', letterSpacing: '0.12em', color: 'var(--navy)', fontWeight: 700, marginBottom: '6px' }}>
+                  <dt style={{ fontFamily: 'var(--font-display)', fontSize: '0.75rem', letterSpacing: '0.12em', color: 'var(--navy)', fontWeight: 700, marginBottom: '6px' }}>
                     <span lang="en">{label}</span>
                   </dt>
                   <dd style={{ fontSize: '0.92rem', color: '#111', lineHeight: 1.6, wordBreak: 'keep-all' }}>{value}</dd>
@@ -309,7 +309,7 @@ function InstructorSection({
           <dl style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {profileRows.map(({ label, value }) => (
               <div key={label} style={{ background: cardBackground, border: '1px solid var(--border)', borderLeft: '3px solid var(--navy)', borderRadius: '8px', padding: '14px 16px' }}>
-                <dt style={{ fontFamily: 'var(--font-display)', fontSize: '0.72rem', letterSpacing: '0.12em', color: 'var(--navy)', fontWeight: 700, marginBottom: '6px' }}>
+                <dt style={{ fontFamily: 'var(--font-display)', fontSize: '0.75rem', letterSpacing: '0.12em', color: 'var(--navy)', fontWeight: 700, marginBottom: '6px' }}>
                   <span lang="en">{label}</span>
                 </dt>
                 <dd style={{ fontSize: '0.92rem', color: '#111', lineHeight: 1.6, wordBreak: 'keep-all' }}>{value}</dd>
@@ -346,7 +346,7 @@ function InstructorSection({
               const inner = (
                 <>
                   <div>
-                    <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.7rem', letterSpacing: '0.14em', color: 'var(--navy)', fontWeight: 700, marginBottom: '4px' }}>{classCardLabel}</p>
+                    <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.75rem', letterSpacing: '0.14em', color: 'var(--navy)', fontWeight: 700, marginBottom: '4px' }}>{classCardLabel}</p>
                     <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.02rem', fontWeight: 700, color: '#111' }}>{cls.nameKo}</p>
                     <p style={{ fontSize: '0.82rem', color: 'var(--gray-light)', marginTop: '2px' }}>
                       {cls.schedule} · {cls.duration} · 정원 {cls.capacity}

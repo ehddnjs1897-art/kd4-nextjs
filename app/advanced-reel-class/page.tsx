@@ -266,7 +266,7 @@ export default function AdvancedReelPage() {
           <ol role="list" style={{ maxWidth: '640px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '10px', listStyle: 'none' }}>
             {PREP_ITEMS.map((item, i) => (
               <li key={i} style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '14px', alignItems: 'start', background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '10px', padding: '14px 16px' }}>
-                <span aria-hidden="true" style={{ fontFamily: 'var(--font-display)', fontSize: '0.72rem', fontWeight: 700, color: 'var(--navy)', background: 'var(--navy-tint-1)', borderRadius: '999px', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
+                <span aria-hidden="true" style={{ fontFamily: 'var(--font-display)', fontSize: '0.75rem', fontWeight: 700, color: 'var(--navy)', background: 'var(--navy-tint-1)', borderRadius: '999px', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
                   {i + 1}
                 </span>
                 <span style={{ fontSize: 'clamp(0.88rem, 2.1vw, 0.92rem)', color: '#111', lineHeight: 1.65, wordBreak: 'keep-all' }}>{item}</span>
@@ -294,7 +294,7 @@ export default function AdvancedReelPage() {
                 <div className="reel-month-rail" style={{ position: 'relative', textAlign: 'right', paddingRight: '28px' }}>
                   <div aria-hidden="true" style={{ fontSize: '1.5rem', lineHeight: 1 }}>{m.emoji}</div>
                   <div style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', fontWeight: 700, marginTop: '10px', color: '#111' }}>{m.month}</div>
-                  <div lang="en" style={{ fontFamily: 'var(--font-display)', fontSize: '0.68rem', letterSpacing: '0.1em', color: 'var(--gray)', marginTop: '2px' }}>MONTH {mi + 1}</div>
+                  <div lang="en" style={{ fontFamily: 'var(--font-display)', fontSize: '0.75rem', letterSpacing: '0.1em', color: 'var(--gray)', marginTop: '2px' }}>MONTH {mi + 1}</div>
                   <span className="reel-month-dot" aria-hidden="true" style={{ position: 'absolute', right: '-4px', top: '0.5rem', width: '9px', height: '9px', borderRadius: '50%', background: 'var(--navy)', border: '2px solid var(--bg2)', boxSizing: 'content-box' }} />
                 </div>
                 <div className="reel-month-body" style={{ paddingLeft: '28px' }}>
@@ -315,7 +315,7 @@ export default function AdvancedReelPage() {
                             padding: '14px 16px',
                           }}
                         >
-                          <span aria-hidden="true" style={{ fontFamily: 'var(--font-display)', fontSize: '0.72rem', fontWeight: 700, color: 'var(--navy)', background: s.highlight ? 'var(--navy-tint-2)' : 'var(--navy-tint-1)', borderRadius: '999px', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
+                          <span aria-hidden="true" style={{ fontFamily: 'var(--font-display)', fontSize: '0.75rem', fontWeight: 700, color: 'var(--navy)', background: s.highlight ? 'var(--navy-tint-2)' : 'var(--navy-tint-1)', borderRadius: '999px', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
                             {n}
                           </span>
                           <span>
@@ -409,7 +409,7 @@ export default function AdvancedReelPage() {
                 { label: '신청 자격', value: '출연영상 클래스 수료자' },
               ].map((info) => (
                 <div key={info.label}>
-                  <span style={{ fontSize: '0.7rem', color: 'var(--gray)', display: 'block' }}>{info.label}</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--gray)', display: 'block' }}>{info.label}</span>
                   <span style={{ fontSize: '0.92rem', color: '#111', fontWeight: 600 }}>{info.value}</span>
                 </div>
               ))}

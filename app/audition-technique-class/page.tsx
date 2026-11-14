@@ -216,12 +216,12 @@ export default function AuditionTechniqueClassPage() {
               </p>
               <dl style={{ margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <div>
-                  <dt style={{ fontFamily: 'var(--font-display)', fontSize: '0.7rem', letterSpacing: '0.12em', color: 'var(--navy)', fontWeight: 700, marginBottom: '4px' }} lang="en">EDUCATION</dt>
+                  <dt style={{ fontFamily: 'var(--font-display)', fontSize: '0.75rem', letterSpacing: '0.12em', color: 'var(--navy)', fontWeight: 700, marginBottom: '4px' }} lang="en">EDUCATION</dt>
                   <dd style={{ ...proseStyle, margin: 0, fontSize: '0.88rem' }}>{SEBIN.education.join(' · ')}</dd>
                 </div>
                 {SEBIN.filmographySections.map((sec) => (
                   <div key={sec.label}>
-                    <dt style={{ fontFamily: 'var(--font-display)', fontSize: '0.7rem', letterSpacing: '0.12em', color: 'var(--navy)', fontWeight: 700, marginBottom: '4px' }} lang="en">{sec.label}</dt>
+                    <dt style={{ fontFamily: 'var(--font-display)', fontSize: '0.75rem', letterSpacing: '0.12em', color: 'var(--navy)', fontWeight: 700, marginBottom: '4px' }} lang="en">{sec.label}</dt>
                     <dd style={{ ...proseStyle, margin: 0, fontSize: '0.88rem' }}>{sec.items.join(' · ')}</dd>
                   </div>
                 ))}
@@ -287,20 +287,20 @@ export default function AuditionTechniqueClassPage() {
 
       {/* ===== 관련 페이지 ===== */}
       <section aria-label="관련 페이지 바로가기" style={{ padding: '32px 24px', background: 'var(--bg2)', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'center', gap: '24px', flexWrap: 'wrap' }}>
-          <Link href="/classes" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+        <div className="container" style={{ display: 'flex', justifyContent: 'center', gap: '0 24px', flexWrap: 'wrap' }}>
+          <Link href="/classes" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             <span aria-hidden="true">← </span>전체 클래스 보기
           </Link>
-          <Link href="/meisner-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+          <Link href="/meisner-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             마이즈너 테크닉 정규 클래스 <span aria-hidden="true">→</span>
           </Link>
-          <Link href="/reel-production-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+          <Link href="/reel-production-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             출연영상 클래스 <span aria-hidden="true">→</span>
           </Link>
-          <Link href="/monologues" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+          <Link href="/monologues" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             독백 대본 모음
           </Link>
-          <Link href="/acting-coaches" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+          <Link href="/acting-coaches" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             액팅 코치 소개
           </Link>
         </div>

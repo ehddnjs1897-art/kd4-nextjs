@@ -104,7 +104,7 @@ function SectionHeader({ eyebrow, title, desc }: { eyebrow: string; title: strin
       <p
         style={{
           fontFamily: 'var(--font-display), Oswald, sans-serif',
-          fontSize: '0.7rem',
+          fontSize: '0.75rem',
           letterSpacing: '0.25em',
           color: 'var(--gold)',
           textTransform: 'uppercase',
@@ -364,7 +364,7 @@ export default function BenefitsPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                 <span style={{
                   fontFamily: 'var(--font-display), Oswald, sans-serif',
-                  fontSize: '0.65rem',
+                  fontSize: '0.75rem',
                   letterSpacing: '0.15em',
                   color: 'var(--gold)',
                   textTransform: 'uppercase',
@@ -587,7 +587,7 @@ export default function BenefitsPage() {
                   <hr style={{ border: 'none', borderTop: '1px solid rgba(255,255,255,0.08)', margin: '8px 0 4px' }} />
                   <p style={{
                     fontFamily: 'var(--font-display), Oswald, sans-serif',
-                    fontSize: '0.68rem',
+                    fontSize: '0.75rem',
                     letterSpacing: '0.2em',
                     color: 'var(--gold)',
                     textTransform: 'uppercase',
@@ -602,7 +602,7 @@ export default function BenefitsPage() {
                           <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.88rem', fontWeight: 700, color: 'var(--white)', whiteSpace: 'nowrap' }}>{p.price}</span>
                         </div>
                         {p.note && (
-                          <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.73rem', color: 'rgba(255,255,255,0.32)', lineHeight: 1.45 }}>{p.note}</span>
+                          <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', color: 'rgba(255,255,255,0.32)', lineHeight: 1.45 }}>{p.note}</span>
                         )}
                       </li>
                     ))}

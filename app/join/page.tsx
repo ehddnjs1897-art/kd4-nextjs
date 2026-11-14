@@ -225,7 +225,7 @@ export default function JoinPage() {
                 </div>
                 <div
                   style={{
-                    fontSize: 'clamp(0.68rem, 1.8vw, 0.78rem)',
+                    fontSize: 'clamp(0.75rem, 1.8vw, 0.78rem)',
                     color: 'rgba(255,255,255,0.75)',
                     marginTop: '6px',
                     letterSpacing: '0.03em',
@@ -257,9 +257,11 @@ export default function JoinPage() {
               <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} />
             </JoinCTALink>
             <JoinCTALink
-              href="/classes"
+              href="https://pf.kakao.com/_ximxdqn"
+              kind="external"
+              channel="kakao"
               location="hero"
-              label="클래스·수강료 보기"
+              label="카카오로 문의하기"
               fireLead
               className="btn-outline"
               style={{
@@ -267,7 +269,8 @@ export default function JoinPage() {
                 color: 'rgba(255,255,255,0.9)',
               }}
             >
-              클래스·수강료 보기
+              <MessageCircle aria-hidden={true} size={14} strokeWidth={2.2} />
+              카카오로 문의하기
             </JoinCTALink>
           </div>
 
@@ -280,24 +283,6 @@ export default function JoinPage() {
             }}
           >
             연기 경험 없어도 OK
-            <span aria-hidden="true" style={{ margin: '0 8px', opacity: 0.5 }}>·</span>
-            <JoinCTALink
-              href="https://pf.kakao.com/_ximxdqn"
-              kind="external"
-              channel="kakao"
-              location="hero"
-              label="카카오로 문의"
-              fireLead
-              style={{
-                color: 'rgba(255,255,255,0.92)',
-                textDecoration: 'underline',
-                textUnderlineOffset: '4px',
-                display: 'inline-block',
-                padding: '10px 2px',
-              }}
-            >
-              카카오로 문의
-            </JoinCTALink>
           </p>
         </div>
       </section>
@@ -757,7 +742,7 @@ export default function JoinPage() {
             <p
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '0.7rem',
+                fontSize: '0.75rem',
                 color: 'var(--gray)',
                 letterSpacing: '0.18em',
                 textTransform: 'uppercase',
@@ -768,7 +753,7 @@ export default function JoinPage() {
             </p>
             <p
               style={{
-                fontSize: '0.74rem',
+                fontSize: '0.75rem',
                 color: 'var(--gray-light)',
                 letterSpacing: '0.01em',
               }}

@@ -160,7 +160,7 @@ export default function BasicActingClassPage() {
           <ul role="list" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px', maxWidth: '900px', margin: '0 auto', listStyle: 'none', padding: 0 }}>
             {BASIC.bullets.map((b, i) => (
               <li key={b} style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '14px', alignItems: 'start', background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '10px', padding: '18px 20px' }}>
-                <span aria-hidden="true" style={{ fontFamily: 'var(--font-display)', fontSize: '0.72rem', fontWeight: 700, color: 'var(--navy)', background: 'var(--navy-tint-1)', borderRadius: '999px', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
+                <span aria-hidden="true" style={{ fontFamily: 'var(--font-display)', fontSize: '0.75rem', fontWeight: 700, color: 'var(--navy)', background: 'var(--navy-tint-1)', borderRadius: '999px', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
                   {i + 1}
                 </span>
                 <span style={{ fontSize: 'clamp(0.88rem, 2.1vw, 0.92rem)', color: 'var(--gray-light)', lineHeight: 1.7, wordBreak: 'keep-all' }}>{b}</span>
@@ -175,7 +175,7 @@ export default function BasicActingClassPage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
               {BASIC_CURRICULUM.map(({ month, theme, lead, items }) => (
                 <div key={month} style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '12px', padding: '24px' }}>
-                  <p lang="en" style={{ fontFamily: 'var(--font-display)', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', color: 'var(--navy)', marginBottom: '4px' }}>{month}</p>
+                  <p lang="en" style={{ fontFamily: 'var(--font-display)', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.12em', color: 'var(--navy)', marginBottom: '4px' }}>{month}</p>
                   <h4 lang="en" style={{ fontFamily: 'var(--font-serif)', fontSize: '1.02rem', fontWeight: 700, marginBottom: '8px' }}>{theme}</h4>
                   <p style={{ fontSize: '0.88rem', color: '#111', lineHeight: 1.7, marginBottom: '12px', wordBreak: 'keep-all' }}>{lead}</p>
                   <ul role="list" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: '6px' }}>
@@ -209,7 +209,7 @@ export default function BasicActingClassPage() {
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', paddingTop: '16px', borderTop: '1px solid var(--border)' }}>
               {SPEC_ITEMS.map((info) => (
                 <div key={info.label}>
-                  <span style={{ fontSize: '0.7rem', color: 'var(--gray)', display: 'block' }}>{info.label}</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--gray)', display: 'block' }}>{info.label}</span>
                   <span style={{ fontSize: '0.92rem', color: '#111', fontWeight: 600 }}>{info.value}</span>
                 </div>
               ))}
@@ -284,20 +284,20 @@ export default function BasicActingClassPage() {
 
       {/* 관련 페이지 크로스링크 */}
       <section aria-label="관련 페이지 바로가기" style={{ padding: '32px 24px', background: 'var(--bg2)', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'center', gap: '24px', flexWrap: 'wrap' }}>
-          <Link href="/classes" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+        <div className="container" style={{ display: 'flex', justifyContent: 'center', gap: '0 24px', flexWrap: 'wrap' }}>
+          <Link href="/classes" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             <span aria-hidden="true">← </span>전체 클래스 보기
           </Link>
-          <Link href="/meisner-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+          <Link href="/meisner-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             마이즈너 테크닉 정규 클래스 <span aria-hidden="true">→</span>
           </Link>
-          <Link href="/audition-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+          <Link href="/audition-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             오디션 테크닉 클래스 <span aria-hidden="true">→</span>
           </Link>
-          <Link href="/sinchon-acting-academy" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+          <Link href="/sinchon-acting-academy" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             신촌 스튜디오 오시는 길
           </Link>
-          <Link href="/faq" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+          <Link href="/faq" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             자주 묻는 질문
           </Link>
         </div>

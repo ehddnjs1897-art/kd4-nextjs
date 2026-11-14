@@ -296,11 +296,11 @@ export default function Footer() {
         <div style={{ borderTop: '1px solid var(--border)', marginBottom: '24px' }} />
 
         {/* 법적 고지 — 개인정보처리방침은 다른 링크와 구별되게 굵게 (개인정보보호법 제30조) */}
-        <div style={{ display: 'flex', gap: 18, marginBottom: 14, flexWrap: 'wrap' }}>
-          <Link href="/privacy" style={{ color: 'var(--white)', fontSize: '0.78rem', fontWeight: 700, padding: '4px 0' }}>
+        <div style={{ display: 'flex', gap: 18, marginBottom: 2, marginTop: -10, flexWrap: 'wrap' }}>
+          <Link href="/privacy" style={{ color: 'var(--white)', fontSize: '0.78rem', fontWeight: 700, padding: '13px 0', minHeight: 44, display: 'inline-flex', alignItems: 'center' }}>
             개인정보처리방침
           </Link>
-          <Link href="/terms" style={{ color: 'var(--gray-light)', fontSize: '0.78rem', padding: '4px 0' }}>
+          <Link href="/terms" style={{ color: 'var(--gray-light)', fontSize: '0.78rem', padding: '13px 0', minHeight: 44, display: 'inline-flex', alignItems: 'center' }}>
             이용약관
           </Link>
         </div>

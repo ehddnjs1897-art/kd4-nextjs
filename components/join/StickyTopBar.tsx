@@ -44,7 +44,7 @@ export default function StickyTopBar({
       }}
     >
       {/* 첫 달 라벨 */}
-      <span style={{ fontSize: '0.7rem', color: 'var(--gray)', flexShrink: 0 }}>
+      <span style={{ fontSize: '0.75rem', color: 'var(--gray)', flexShrink: 0 }}>
         첫 달
       </span>
 
@@ -54,7 +54,7 @@ export default function StickyTopBar({
           {cohorts.map((c, i) => (
             <span key={c.name} style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
               {i > 0 && (
-                <span style={{ color: 'var(--border)', fontSize: '0.68rem' }}>·</span>
+                <span style={{ color: 'var(--border)', fontSize: '0.75rem' }}>·</span>
               )}
               <span style={{ fontSize: '0.75rem', color: 'var(--gray-light)' }}>{c.name}</span>
               {c.price && (
@@ -62,7 +62,7 @@ export default function StickyTopBar({
                   ₩{wan(c.price)}
                 </span>
               )}
-              <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#fff', background: 'var(--accent-red)', borderRadius: '999px', padding: '2px 7px', letterSpacing: '0.04em' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#fff', background: 'var(--accent-red)', borderRadius: '999px', padding: '2px 7px', letterSpacing: '0.04em' }}>
                 🔥 HOT
               </span>
             </span>
@@ -71,7 +71,7 @@ export default function StickyTopBar({
       ) : (
         <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--navy)', fontFamily: 'var(--font-display)', flex: 1 }}>
           ₩250,000~ &nbsp;
-          <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#fff', background: 'var(--accent-red)', borderRadius: '999px', padding: '2px 7px', letterSpacing: '0.04em' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#fff', background: 'var(--accent-red)', borderRadius: '999px', padding: '2px 7px', letterSpacing: '0.04em' }}>
             🔥 HOT
           </span>
         </span>
@@ -88,7 +88,7 @@ export default function StickyTopBar({
           minHeight: 44,
           borderRadius: 'var(--radius)',
           fontFamily: 'var(--font-display)',
-          fontSize: '0.73rem',
+          fontSize: '0.75rem',
           fontWeight: 600,
           letterSpacing: '0.06em',
           textDecoration: 'none',

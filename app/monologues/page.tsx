@@ -158,7 +158,7 @@ function FilterGroup({ label, first, children }: { label: string; first?: boolea
       <div
         style={{
           fontFamily: 'var(--font-sans)',
-          fontSize: '0.72rem',
+          fontSize: '0.75rem',
           fontWeight: 700,
           letterSpacing: '0.03em',
           color: 'var(--gray)',

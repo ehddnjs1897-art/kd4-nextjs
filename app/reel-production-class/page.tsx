@@ -214,13 +214,13 @@ export default function ReelPage() {
                 <div className="reel-month-rail" style={{ position: 'relative', textAlign: 'right', paddingRight: '28px' }}>
                   <div aria-hidden="true" style={{ fontSize: '1.5rem', lineHeight: 1 }}>{m.emoji}</div>
                   <div style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', fontWeight: 700, marginTop: '10px', color: '#111' }}>{m.month}</div>
-                  <div lang="en" style={{ fontFamily: 'var(--font-display)', fontSize: '0.68rem', letterSpacing: '0.1em', color: 'var(--gray)', marginTop: '2px' }}>MONTH {mi + 1}</div>
+                  <div lang="en" style={{ fontFamily: 'var(--font-display)', fontSize: '0.75rem', letterSpacing: '0.1em', color: 'var(--gray)', marginTop: '2px' }}>MONTH {mi + 1}</div>
                   <span className="reel-month-dot" aria-hidden="true" style={{ position: 'absolute', right: '-4px', top: '0.5rem', width: '9px', height: '9px', borderRadius: '50%', background: 'var(--navy)', border: '2px solid var(--bg2)', boxSizing: 'content-box' }} />
                 </div>
                 <div className="reel-month-body" style={{ paddingLeft: '28px' }}>
                   {m.goal && (
                     <p style={{ fontSize: 'clamp(0.86rem, 2.1vw, 0.92rem)', color: 'var(--navy)', lineHeight: 1.7, marginBottom: '16px', wordBreak: 'keep-all' }}>
-                      <span lang="en" style={{ fontFamily: 'var(--font-display)', fontSize: '0.68rem', letterSpacing: '0.1em', color: 'var(--gray)', display: 'block', marginBottom: '4px' }}>GOAL</span>
+                      <span lang="en" style={{ fontFamily: 'var(--font-display)', fontSize: '0.75rem', letterSpacing: '0.1em', color: 'var(--gray)', display: 'block', marginBottom: '4px' }}>GOAL</span>
                       {m.goal}
                     </p>
                   )}
@@ -239,7 +239,7 @@ export default function ReelPage() {
                           padding: '14px 16px',
                         }}
                       >
-                        <span aria-hidden="true" style={{ fontFamily: 'var(--font-display)', fontSize: '0.72rem', fontWeight: 700, color: 'var(--navy)', background: s.highlight ? 'var(--navy-tint-2)' : 'var(--navy-tint-1)', borderRadius: '999px', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
+                        <span aria-hidden="true" style={{ fontFamily: 'var(--font-display)', fontSize: '0.75rem', fontWeight: 700, color: 'var(--navy)', background: s.highlight ? 'var(--navy-tint-2)' : 'var(--navy-tint-1)', borderRadius: '999px', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
                           {si + 1}
                         </span>
                         <span>
@@ -342,7 +342,7 @@ export default function ReelPage() {
                 { label: '월 수강료', value: `₩${FILM_CLASS.originalPrice ?? FILM_CLASS.price}` },
               ].map((info) => (
                 <div key={info.label}>
-                  <span style={{ fontSize: '0.7rem', color: 'var(--gray)', display: 'block' }}>{info.label}</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--gray)', display: 'block' }}>{info.label}</span>
                   <span style={{ fontSize: '0.92rem', color: '#111', fontWeight: 600 }}>{info.value}</span>
                 </div>
               ))}

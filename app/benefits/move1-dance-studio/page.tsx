@@ -353,13 +353,13 @@ export default async function Move1PartnershipPage() {
       {/* ===== 크로스링크 ===== */}
       <section aria-label="관련 페이지 바로가기" style={{ padding: '28px 24px 48px', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
         <div style={{ display: 'flex', justifyContent: 'center', gap: 24, flexWrap: 'wrap' }}>
-          <Link href="/benefits" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+          <Link href="/benefits" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             <span aria-hidden="true">← </span>전체 멤버 혜택
           </Link>
-          <Link href="/benefits/mom-pt-pilates" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+          <Link href="/benefits/mom-pt-pilates" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             재활PT · 필라테스 제휴
           </Link>
-          <Link href="/classes" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+          <Link href="/classes" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             전체 클래스 보기
           </Link>
         </div>

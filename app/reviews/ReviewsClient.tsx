@@ -56,7 +56,7 @@ function TextReviewCard({ review }: { review: Review }) {
           background: getCourseColor(review.course_type),
           color: '#fff',
           borderRadius: '100px',
-          fontSize: '0.72rem',
+          fontSize: '0.75rem',
           fontWeight: 700,
           letterSpacing: '0.04em',
           alignSelf: 'flex-start',
@@ -92,7 +92,9 @@ function TextReviewCard({ review }: { review: Review }) {
             color: 'var(--navy)',
             fontSize: '0.8rem',
             fontWeight: 600,
-            padding: 0,
+            padding: '12px 16px 12px 0',
+            margin: '-12px 0',
+            minHeight: 44,
             alignSelf: 'flex-start',
           }}
         >
@@ -166,7 +168,7 @@ function ImageReviewCard({ review }: { review: Review }) {
         >
           <span style={{ fontSize: '2rem' }}>💬</span>
           <span style={{ fontSize: '0.8rem' }}>후기 이미지</span>
-          <span style={{ fontSize: '0.7rem', opacity: 0.6 }}>업로드 예정</span>
+          <span style={{ fontSize: '0.75rem', opacity: 0.6 }}>업로드 예정</span>
         </div>
       )}
 
@@ -180,7 +182,7 @@ function ImageReviewCard({ review }: { review: Review }) {
           background: getCourseColor(review.course_type),
           color: '#fff',
           borderRadius: '100px',
-          fontSize: '0.67rem',
+          fontSize: '0.75rem',
           fontWeight: 700,
           letterSpacing: '0.03em',
         }}

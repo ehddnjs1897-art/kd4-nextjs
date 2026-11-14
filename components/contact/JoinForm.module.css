@@ -39,7 +39,7 @@
   border: 2px solid var(--border);
   color: var(--gray);
   font-family: var(--font-display);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -59,7 +59,7 @@
   color: #ffffff;
 }
 .progressLabel {
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   color: var(--gray);
   letter-spacing: 0.02em;
   word-break: keep-all;
@@ -122,7 +122,7 @@
   align-items: center;
   gap: 6px;
   font-family: var(--font-display);
-  font-size: 0.66rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -134,7 +134,7 @@
   margin-bottom: 9px;
 }
 .cardHot {
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #ffffff;
   background: var(--accent-red);
@@ -231,13 +231,13 @@
   margin: 9px 0 2px;
 }
 .detailPrice span {
-  font-size: 0.74rem;
+  font-size: 0.75rem;
   font-weight: 500;
   color: var(--gray);
   margin-left: 5px;
 }
 .detailMeta {
-  font-size: 0.74rem;
+  font-size: 0.75rem;
   color: var(--gray);
   margin: 0;
 }
@@ -404,7 +404,7 @@
   background: none;
   border: none;
   color: var(--navy);
-  font-size: 0.74rem;
+  font-size: 0.75rem;
   font-family: inherit;
   cursor: pointer;
   padding: 4px;

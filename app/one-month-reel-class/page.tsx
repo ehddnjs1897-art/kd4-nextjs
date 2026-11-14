@@ -330,7 +330,7 @@ export default function OneMonthReelPage() {
                 { label: '신청 자격', value: '마이즈너 정규·출연영상 수료자' },
               ].map((info) => (
                 <div key={info.label}>
-                  <span style={{ fontSize: '0.7rem', color: 'var(--gray)', display: 'block' }}>{info.label}</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--gray)', display: 'block' }}>{info.label}</span>
                   <span style={{ fontSize: '0.92rem', color: '#111', fontWeight: 600 }}>{info.value}</span>
                 </div>
               ))}

@@ -205,13 +205,13 @@ export default function MeisnerPage() {
                 <div className="meisner-month-rail" style={{ position: 'relative', textAlign: 'right', paddingRight: '28px' }}>
                   <div aria-hidden="true" style={{ fontSize: '1.5rem', lineHeight: 1 }}>{m.emoji}</div>
                   <div style={{ fontFamily: 'var(--font-serif)', fontSize: '1rem', fontWeight: 700, marginTop: '10px', color: '#111' }}>{m.month}</div>
-                  <div lang="en" style={{ fontFamily: 'var(--font-display)', fontSize: '0.68rem', letterSpacing: '0.1em', color: 'var(--gray)', marginTop: '2px' }}>MONTH {mi + 1}</div>
+                  <div lang="en" style={{ fontFamily: 'var(--font-display)', fontSize: '0.75rem', letterSpacing: '0.1em', color: 'var(--gray)', marginTop: '2px' }}>MONTH {mi + 1}</div>
                   <span className="meisner-month-dot" aria-hidden="true" style={{ position: 'absolute', right: '-4px', top: '0.5rem', width: '9px', height: '9px', borderRadius: '50%', background: 'var(--navy)', border: '2px solid var(--bg2)', boxSizing: 'content-box' }} />
                 </div>
                 <div className="meisner-month-body" style={{ paddingLeft: '28px' }}>
                   {m.goal && (
                     <p style={{ fontSize: 'clamp(0.86rem, 2.1vw, 0.92rem)', color: 'var(--navy)', lineHeight: 1.7, marginBottom: '16px', wordBreak: 'keep-all' }}>
-                      <span lang="en" style={{ fontFamily: 'var(--font-display)', fontSize: '0.68rem', letterSpacing: '0.1em', color: 'var(--gray)', display: 'block', marginBottom: '4px' }}>GOAL</span>
+                      <span lang="en" style={{ fontFamily: 'var(--font-display)', fontSize: '0.75rem', letterSpacing: '0.1em', color: 'var(--gray)', display: 'block', marginBottom: '4px' }}>GOAL</span>
                       {m.goal}
                     </p>
                   )}
@@ -230,7 +230,7 @@ export default function MeisnerPage() {
                           padding: '14px 16px',
                         }}
                       >
-                        <span aria-hidden="true" style={{ fontFamily: 'var(--font-display)', fontSize: '0.72rem', fontWeight: 700, color: 'var(--navy)', background: s.highlight ? 'var(--navy-tint-2)' : 'var(--navy-tint-1)', borderRadius: '999px', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
+                        <span aria-hidden="true" style={{ fontFamily: 'var(--font-display)', fontSize: '0.75rem', fontWeight: 700, color: 'var(--navy)', background: s.highlight ? 'var(--navy-tint-2)' : 'var(--navy-tint-1)', borderRadius: '999px', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
                           {si + 1}
                         </span>
                         <span>
@@ -262,7 +262,7 @@ export default function MeisnerPage() {
                 { label: '월 수강료', value: `₩${MAIN_CLASS.originalPrice ?? MAIN_CLASS.price}` },
               ].map((info) => (
                 <div key={info.label}>
-                  <span style={{ fontSize: '0.7rem', color: 'var(--gray)', display: 'block' }}>{info.label}</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--gray)', display: 'block' }}>{info.label}</span>
                   <span style={{ fontSize: '0.92rem', color: '#111', fontWeight: 600 }}>{info.value}</span>
                 </div>
               ))}
@@ -460,23 +460,23 @@ export default function MeisnerPage() {
 
       {/* 관련 클래스 크로스링크 */}
       <section aria-label="관련 클래스 바로가기" style={{ padding: '32px 24px', background: 'var(--bg2)', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'center', gap: '24px', flexWrap: 'wrap' }}>
-          <Link href="/classes" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+        <div className="container" style={{ display: 'flex', justifyContent: 'center', gap: '0 24px', flexWrap: 'wrap' }}>
+          <Link href="/classes" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             <span aria-hidden="true">← </span>전체 클래스 보기
           </Link>
-          <Link href="/reel-production-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+          <Link href="/reel-production-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             출연영상 클래스 <span aria-hidden="true">→</span>
           </Link>
-          <Link href="/audition-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+          <Link href="/audition-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             오디션 테크닉 클래스 <span aria-hidden="true">→</span>
           </Link>
-          <Link href="/sinchon-acting-academy" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+          <Link href="/sinchon-acting-academy" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             신촌 스튜디오 오시는 길
           </Link>
-          <Link href="/about" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+          <Link href="/about" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             KD4 소개
           </Link>
-          <Link href="/benefits" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600 }}>
+          <Link href="/benefits" style={{ fontSize: '0.9rem', color: 'var(--navy)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
             멤버 혜택
           </Link>
         </div>

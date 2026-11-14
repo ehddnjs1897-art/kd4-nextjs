@@ -168,7 +168,7 @@ export function DirectorSection({ numbered = true }: { numbered?: boolean } = {}
             <p
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '0.7rem',
+                fontSize: '0.75rem',
                 letterSpacing: '0.15em',
                 color: 'var(--navy)',
                 marginTop: '20px',
@@ -348,7 +348,7 @@ export function PromiseSection({ numbered = true }: { numbered?: boolean } = {})
               </p>
               <p
                 style={{
-                  fontSize: 'clamp(0.68rem, 1.85vw, 0.85rem)',
+                  fontSize: 'clamp(0.75rem, 1.85vw, 0.85rem)',
                   color: 'var(--gray-light)',
                   lineHeight: 1.6,
                 }}
