@@ -7,6 +7,7 @@ import PageJsonLd from '@/components/seo/PageJsonLd'
 import { LAST_UPDATED } from '@/lib/last-updated'
 import { buildBreadcrumb, buildWebPage } from '@/lib/seo-schemas'
 import StickyTopBar from '@/components/join/StickyTopBar'
+import JoinHeader from '@/components/join/JoinHeader'
 import JoinCTALink from '@/components/join/JoinCTALink'
 import { WhyKD4Section, DirectorSection, ReviewsSection, PromiseSection } from '@/components/join/JoinTrustSections'
 import { SITE_URL } from '@/lib/constants'
@@ -108,7 +109,9 @@ export default function JoinPage() {
         }),
       ]} />
 
-      <StickyTopBar cohorts={OPEN_COHORTS} />
+      {/* 2026-11-14 검색 광고 대응: 얇은 상단 메뉴(고정) + 가격 띠(고정 해제, 버튼은 메뉴로 이동) */}
+      <JoinHeader />
+      <StickyTopBar cohorts={OPEN_COHORTS} sticky={false} showCta={false} />
 
       {/* 분석: 랜딩 ViewContent + 스크롤 깊이 추적 (GA4 + Meta Pixel) */}
       <JoinPageView />
@@ -141,9 +144,16 @@ export default function JoinPage() {
         >
           <p
             className="section-eyebrow"
-            style={{ color: 'rgba(255,255,255,0.75)', marginBottom: '20px', wordBreak: 'keep-all' }}
+            style={{
+              color: 'rgba(255,255,255,0.95)',
+              marginBottom: '20px',
+              wordBreak: 'keep-all',
+              fontSize: 'clamp(0.84rem, 2.2vw, 0.95rem)',
+              fontWeight: 600,
+              letterSpacing: '0.14em',
+            }}
           >
-            캐스팅 디렉터 · 인물 조감독 공식 협업 아카데미
+            신촌 · KD4 액팅 스튜디오
           </p>
 
           <h1
@@ -152,7 +162,7 @@ export default function JoinPage() {
               fontSize: 'clamp(1.55rem, 4.2vw, 2.8rem)',
               color: '#ffffff',
               lineHeight: 1.4,
-              marginBottom: '28px',
+              marginBottom: '14px',
               maxWidth: '640px',
               marginLeft: 'auto',
               marginRight: 'auto',
@@ -172,6 +182,19 @@ export default function JoinPage() {
             </span>
           </h1>
 
+          {/* 무엇을 배우는 곳인지 한 줄 — 검색 유입자가 3초 안에 알도록 (2026-11-14) */}
+          <p
+            style={{
+              fontSize: 'clamp(0.88rem, 2.4vw, 1rem)',
+              color: 'rgba(255,255,255,0.9)',
+              marginBottom: '26px',
+              letterSpacing: '0.01em',
+              wordBreak: 'keep-all',
+            }}
+          >
+            입문 베이직 · 마이즈너 테크닉 · 출연영상
+          </p>
+
           {/* 숫자 임팩트 — 첫 화면 후킹 */}
           <div
             style={{
@@ -185,7 +208,7 @@ export default function JoinPage() {
             {[
               { num: '150명', label: '현직 배우 수료' },
               { num: '3년', label: '캐스팅 연계 운영' },
-              { num: '8명', label: '소수정예 정원' },
+              { num: '6~8명', label: '소수정예 정원' },
             ].map((s) => (
               <div key={s.label} style={{ textAlign: 'center' }}>
                 <div
@@ -234,11 +257,9 @@ export default function JoinPage() {
               <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} />
             </JoinCTALink>
             <JoinCTALink
-              href="https://pf.kakao.com/_ximxdqn"
-              kind="external"
-              channel="kakao"
+              href="/classes"
               location="hero"
-              label="카카오로 문의하기"
+              label="클래스·수강료 보기"
               fireLead
               className="btn-outline"
               style={{
@@ -246,20 +267,37 @@ export default function JoinPage() {
                 color: 'rgba(255,255,255,0.9)',
               }}
             >
-              <MessageCircle aria-hidden={true} size={14} strokeWidth={2.2} />
-              카카오로 문의하기
+              클래스·수강료 보기
             </JoinCTALink>
           </div>
 
           <p
             style={{
-              fontSize: 'clamp(0.78rem, 2vw, 0.85rem)',
-              color: 'rgba(255,255,255,0.7)',
+              fontSize: 'clamp(0.8rem, 2vw, 0.88rem)',
+              color: 'rgba(255,255,255,0.8)',
               marginTop: '18px',
               letterSpacing: '0.02em',
             }}
           >
             연기 경험 없어도 OK
+            <span aria-hidden="true" style={{ margin: '0 8px', opacity: 0.5 }}>·</span>
+            <JoinCTALink
+              href="https://pf.kakao.com/_ximxdqn"
+              kind="external"
+              channel="kakao"
+              location="hero"
+              label="카카오로 문의"
+              fireLead
+              style={{
+                color: 'rgba(255,255,255,0.92)',
+                textDecoration: 'underline',
+                textUnderlineOffset: '4px',
+                display: 'inline-block',
+                padding: '10px 2px',
+              }}
+            >
+              카카오로 문의
+            </JoinCTALink>
           </p>
         </div>
       </section>
@@ -272,7 +310,7 @@ export default function JoinPage() {
         aria-label="즉시 무료 상담 신청"
         className="section"
         style={{
-          scrollMarginTop: '80px', // sticky 상단바 가림 보정 (모양 불변)
+          scrollMarginTop: '68px', // sticky 상단 메뉴 가림 보정 (모양 불변)
           background: 'radial-gradient(ellipse at 50% 0%, rgba(21,72,138,0.08) 0%, var(--bg) 70%)',
           padding: 'clamp(48px, 9vw, 80px) 0',
         }}
@@ -288,7 +326,7 @@ export default function JoinPage() {
                 배우의 여정, 여기서 시작
               </h2>
               <p style={{ fontSize: '0.88rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-                클래스를 고르고 연락처만 남기면 끝 — 24시간 이내 SMS로 연락드립니다.
+                연락처 → 클래스 → 확인, 3단계. 접수 즉시 안내 문자를 보내고 <span style={{ whiteSpace: 'nowrap' }}>1~2일 안에 대표가 직접 전화드립니다.</span>
               </p>
             </div>
             <JoinForm />
@@ -592,7 +630,7 @@ export default function JoinPage() {
                 무료 상담 신청
               </h2>
               <p style={{ fontSize: '0.9rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-                연락처부터 확인까지 3단계 — 24시간 이내 SMS로 연락드립니다.
+                연락처 → 클래스 → 확인, 3단계. 접수 즉시 안내 문자를 보내고 <span style={{ whiteSpace: 'nowrap' }}>1~2일 안에 대표가 직접 전화드립니다.</span>
               </p>
             </div>
             <JoinForm />

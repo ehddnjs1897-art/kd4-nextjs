@@ -1,0 +1,72 @@
+/* /join 전용 얇은 상단 메뉴 — 광고 유입자가 수강료·후기·위치를 한 번에 확인 (2026-11-14) */
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 14px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-sans);
+}
+.logo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  min-height: 44px;
+}
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+  min-width: 0;
+}
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 7px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--navy);
+  text-decoration: none;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+.link:hover,
+.link:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.cta {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  min-height: 36px;
+  margin-left: 4px;
+  padding: 0 13px;
+  border-radius: var(--radius);
+  background: var(--navy);
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+/* 아주 좁은 화면(≤350px): 「오시는 길」은 접고 수강료·후기·상담만 */
+@media (max-width: 350px) {
+  .hideNarrow { display: none; }
+  .bar { padding: 0 10px; gap: 6px; }
+}
+@media (min-width: 768px) {
+  .bar { padding: 0 28px; min-height: 60px; }
+  .nav { gap: 10px; }
+  .link { font-size: 0.9rem; padding: 0 10px; }
+  .cta { font-size: 0.85rem; min-height: 40px; padding: 0 18px; margin-left: 10px; }
+}

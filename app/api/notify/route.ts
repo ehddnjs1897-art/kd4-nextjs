@@ -123,7 +123,7 @@ function mapClassToNotion(cls: string | null): string | null {
 async function sendNotionConsultation(payload: {
   name: string
   phone: string
-  email: string
+  email: string | null
   class_name: string | null
   source: string | null
   utm_source: string | null
@@ -152,7 +152,7 @@ async function sendNotionConsultation(payload: {
       title: [{ type: 'text', text: { content: payload.name } }],
     },
     '연락처': { phone_number: payload.phone },
-    '이메일': { email: payload.email },
+    '이메일': { email: payload.email || null },
     '상태': { select: { name: '🆕 상담 신청' } },
     '접수일': { date: { start: new Date().toISOString() } },
   }
@@ -381,19 +381,12 @@ export async function POST(request: NextRequest) {
     if (!/^01[0-9][\-\s]?\d{3,4}[\-\s]?\d{4}$/.test(phone.replace(/\s/g, ''))) {
       return NextResponse.json({ error: '연락처 형식이 올바르지 않습니다. (예: 010-1234-5678)' }, { status: 400 })
     }
-    // 이메일: JoinForm 등 기본 상담은 필수. 캐스팅 문의(inquiry_type='casting_inquiry')는 면제.
-    // casting_inquiry는 전화 + 작품/역할 정보로 충분 — 마찰 최소화 목적.
+    // casting_inquiry(캐스팅 문의)는 전화 + 작품/역할 정보로 받는 별도 양식 — 아래 알림 분기에서 사용
     const isCastingInquiry = typeof record?.inquiry_type === 'string' && record.inquiry_type === 'casting_inquiry'
-    const emailRaw = typeof record?.email === 'string' ? record.email.trim() : null
-    if (!isCastingInquiry && !isMetaInstant) {
-      if (!emailRaw) {
-        return NextResponse.json({ error: '이메일은 필수입니다.' }, { status: 400 })
-      }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailRaw)) {
-        return NextResponse.json({ error: '이메일 형식이 올바르지 않습니다.' }, { status: 400 })
-      }
-    } else if (emailRaw && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailRaw)) {
-      // 캐스팅 문의·인스턴트 양식에서도 이메일을 제공했다면 형식 검증
+    // 이메일: 선택 (2026-11-14 대표 지시 — 상담 폼 필수 → 선택). 적었을 때만 형식 검증.
+    // 연락은 문자·전화로 하므로 이메일이 없어도 접수된다. 접수 확인 메일은 이메일이 있을 때만 발송.
+    const emailRaw: string | null = typeof record?.email === 'string' ? record.email.trim() || null : null
+    if (emailRaw && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailRaw)) {
       return NextResponse.json({ error: '이메일 형식이 올바르지 않습니다.' }, { status: 400 })
     }
 

@@ -15,16 +15,23 @@ function wan(price: number) {
 
 export default function StickyTopBar({
   cohorts,
+  sticky = true,
+  showCta = true,
 }: {
   seats?: number
   cohorts?: Cohort[]
+  /** false면 화면 위에 붙지 않는 일반 띠 (상단 메뉴가 따로 있을 때) */
+  sticky?: boolean
+  /** false면 띠 안의 무료상담 버튼을 숨김 (상단 메뉴 버튼과 중복 방지) */
+  showCta?: boolean
 }) {
   return (
     <div
       style={{
-        position: 'sticky',
+        position: sticky ? 'sticky' : 'static',
         top: 0,
         zIndex: 99,
+        justifyContent: showCta ? undefined : 'center',
         background: 'var(--bg2)',
         borderBottom: '1px solid var(--border)',
         padding: '9px 16px',
@@ -43,7 +50,7 @@ export default function StickyTopBar({
 
       {/* 클래스별 가격 + HOT 뱃지 */}
       {cohorts && cohorts.length > 0 ? (
-        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', rowGap: '4px', gap: '6px', flex: 1, minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', rowGap: '4px', gap: '6px', flex: showCta ? 1 : undefined, minWidth: 0 }}>
           {cohorts.map((c, i) => (
             <span key={c.name} style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
               {i > 0 && (
@@ -71,7 +78,7 @@ export default function StickyTopBar({
       )}
 
       {/* CTA */}
-      <a
+      {showCta && <a
         href="#form-hero"
         aria-label="무료 상담 신청 폼으로 이동"
         style={{
@@ -95,7 +102,7 @@ export default function StickyTopBar({
       >
         무료상담
         <ArrowRight aria-hidden={true} size={11} strokeWidth={2.2} />
-      </a>
+      </a>}
     </div>
   )
 }

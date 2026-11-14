@@ -7,6 +7,7 @@ import { MessageCircle, CheckCircle, Check, ArrowRight, ArrowLeft } from 'lucide
 import { CLASSES, DIRECTOR } from '@/lib/classes'
 import { analytics } from '@/lib/analytics'
 import { SOURCE_VALUES, MEISNER_OPTIONS } from '@/lib/form-options'
+import { normalizeUtmSource } from '@/lib/utm'
 import styles from './JoinForm.module.css'
 
 /** UTM 파라미터 추적 (2026-05-14) — 광고 채널별 ROI 분석용
@@ -102,9 +103,19 @@ function validatePhone(v: string): string {
     ? ''
     : '올바른 연락처를 입력해 주세요. (예: 010-1234-5678)'
 }
+/** 이메일은 선택 (2026-11-14 대표 지시) — 비우면 통과, 적었으면 형식만 확인 */
 function validateEmail(v: string): string {
-  if (!v.trim()) return '이메일을 입력해 주세요.'
+  if (!v.trim()) return ''
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? '' : '올바른 이메일 형식이 아니에요.'
+}
+
+/** 광고·검색 꼬리표(utm_source)로 유입 경로를 이미 아는 경우 — 「어떻게 알게 되셨나요?」 질문 생략용 (2026-11-14)
+ *  값은 lib/form-options.ts SOURCE_VALUES 중 하나. 모르는 출처면 빈 문자열(= 질문을 그대로 보여줌). */
+function sourceFromUTM(utm: UTMData): string {
+  const s = normalizeUtmSource(utm.utm_source)
+  if (s === 'naver' || s === 'google') return '네이버·구글 검색'
+  if (s === 'instagram' || s === 'facebook') return '인스타그램'
+  return ''
 }
 
 /** 연락처 자동 하이픈 — 010-1234-5678 형태로 정리 (모바일 숫자 키보드 대응) */
@@ -170,6 +181,8 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
     referrer: null,
     landing: null,
   })
+  /** 꼬리표로 유입 경로를 이미 알면 그 값 — 있으면 유입 경로 질문을 숨기고 자동 기록 */
+  const [autoSource, setAutoSource] = useState('')
   useEffect(() => {
     utmRef.current = readUTMFromURL()
   }, [])
@@ -223,6 +236,12 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
       return
     }
     analytics.custom('form_step', { step: 2, step_name: 'class' })
+    // 꼬리표로 유입 경로를 이미 알면 2단계의 유입 경로 질문을 숨기고 자동 기록
+    const auto = sourceFromUTM(utmRef.current)
+    if (auto) {
+      setAutoSource(auto)
+      if (!source) setSource(auto)
+    }
     setStep(1)
   }
 
@@ -232,7 +251,7 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
       className: selectedClass ? '' : '클래스를 선택해 주세요. 아직 못 정하셨으면 "기타 / 상담 후 결정"도 괜찮아요.',
       email: validateEmail(email),
       meisnerExp: meisnerExp ? '' : '경험 여부를 선택해 주세요.',
-      source: source ? '' : '유입 경로를 선택해 주세요.',
+      source: source || autoSource ? '' : '유입 경로를 선택해 주세요.',
     }
     setFieldErrors((prev) => ({ ...prev, ...errors }))
     const firstInvalid = Object.keys(errors).find((k) => errors[k])
@@ -313,8 +332,10 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
     }
 
     // 저장 성공 확인 후 Lead 발화 (2026-06-09 fix: 성공 후 이동)
+    // 2026-11-14: 인스타 고정 라벨 → 실제 유입 출처. 인스타 유입은 기존 값 그대로(메타 보고 연속성)
+    const leadSrc = normalizeUtmSource(utmRef.current.utm_source)
     analytics.lead({
-      source: 'join_form_instagram_ad',
+      source: !leadSrc ? 'join_form_direct' : leadSrc === 'instagram' ? 'join_form_instagram_ad' : `join_form_${leadSrc}`,
       className: selectedClass || undefined,
       eventId,
     })
@@ -934,11 +955,11 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
             <p className={styles.fieldError} role="alert">{fieldErrors.className}</p>
           )}
 
-          {/* 클래스 아래 추가 정보 3개 — 전부 필수 (2026-05-20 대표 지시 유지). 중간 안내문은 stepHint 음수여백 때문에 뺌 */}
+          {/* 클래스 아래 추가 정보 — 마이즈너 경험·유입 경로는 필수, 이메일은 선택. 중간 안내문은 stepHint 음수여백 때문에 뺌 */}
 
-          {/* 이메일 — 필수 (2026-05-20: 대표 지시로 필수 복귀) */}
+          {/* 이메일 — 선택 (2026-11-14 대표 지시: 필수 → 선택. 적으면 접수 확인 메일 발송) */}
           <div className={styles.field}>
-            <label htmlFor={`join-email-${uid}`} className={styles.fieldLabel}>이메일</label>
+            <label htmlFor={`join-email-${uid}`} className={styles.fieldLabel}>이메일 <span style={{ fontWeight: 400, color: 'var(--gray)' }}>(선택)</span></label>
             <input
               id={`join-email-${uid}`}
               className={`${styles.input} ${fieldErrors.email ? styles.inputInvalid : email && !validateEmail(email) ? styles.inputValid : ''}`}
@@ -956,8 +977,6 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
               autoCapitalize="none"
               maxLength={254}
               spellCheck={false}
-              required
-              aria-required="true"
             />
             {fieldErrors.email && <p id={`join-email-err-${uid}`} className={styles.fieldError}>{fieldErrors.email}</p>}
           </div>
@@ -995,8 +1014,8 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
             {fieldErrors.meisnerExp && <p id={`join-meisner-err-${uid}`} role="alert" className={styles.fieldError}>{fieldErrors.meisnerExp}</p>}
           </div>
 
-          {/* 유입 경로 */}
-          <div className={styles.field}>
+          {/* 유입 경로 — 광고·검색 꼬리표로 이미 아는 경우 묻지 않음 (autoSource 자동 기록) */}
+          {!autoSource && <div className={styles.field}>
             <label htmlFor={`join-source-${uid}`} className={styles.fieldLabel}>KD4를 어떻게 알게 되셨나요?</label>
             <div className={styles.selectWrap}>
               <select
@@ -1019,7 +1038,7 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
               <span aria-hidden="true" className={styles.selectArrow}>▼</span>
             </div>
             {fieldErrors.source && <p id={`join-source-err-${uid}`} role="alert" className={styles.fieldError}>{fieldErrors.source}</p>}
-          </div>
+          </div>}
 
           <div className={styles.navRow}>
             <button type="button" className={styles.btnGhost} onClick={() => setStep(0)}>
@@ -1060,7 +1079,7 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
             </div>
             <div className={styles.summaryRow}>
               <span className={styles.summaryKey}>이메일</span>
-              <span className={styles.summaryVal}>{email}</span>
+              <span className={styles.summaryVal}>{email || '입력 안 함'}</span>
               <button type="button" className={styles.summaryEdit} onClick={() => setStep(1)} aria-label="이메일 수정">수정</button>
             </div>
             <div className={styles.summaryRow}>
