@@ -275,11 +275,11 @@ export default function ReelPage() {
               ))}
             </ul>
             {/* 동의서 다운로드 — 수강 전 확인 서류 */}
-            <p style={{ fontSize: '0.86rem', paddingTop: '14px', borderTop: '1px solid var(--border)', marginBottom: '10px' }}>
+            <p style={{ fontSize: '0.86rem', paddingTop: '4px', borderTop: '1px solid var(--border)', marginBottom: '0' }}>
               <a
                 href="/docs/reel-class-consent.docx"
                 download="출연영상 클래스 동의서.docx"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--navy)', fontWeight: 600 }}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', minHeight: 44, color: 'var(--navy)', fontWeight: 600 }}
               >
                 <span aria-hidden="true">📄</span> 출연영상 동의서 내려받기 <span aria-hidden="true">↓</span>
               </a>
@@ -408,32 +408,32 @@ export default function ReelPage() {
       </section>
 
       {/* CROSS-LINK */}
-      <section aria-label="관련 클래스 바로가기" style={{ padding: '24px', background: 'var(--bg)', textAlign: 'center', borderTop: '1px solid var(--border)' }}>
-        <Link href="/meisner-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
+      <section aria-label="관련 클래스 바로가기" style={{ padding: '14px 24px', background: 'var(--bg)', textAlign: 'center', borderTop: '1px solid var(--border)' }}>
+        <Link href="/meisner-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px', display: 'inline-block', padding: '10px 0' }}>
           <span aria-hidden="true">← </span>마이즈너 정규 클래스
         </Link>
-        <Link href="/advanced-reel-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
+        <Link href="/advanced-reel-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px', display: 'inline-block', padding: '10px 0' }}>
           출연영상 심화 클래스 (수료 후)
         </Link>
-        <Link href="/one-month-reel-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
+        <Link href="/one-month-reel-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px', display: 'inline-block', padding: '10px 0' }}>
           출연영상 1달 완성 클래스 (수료 후)
         </Link>
-        <Link href="/audition-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
+        <Link href="/audition-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px', display: 'inline-block', padding: '10px 0' }}>
           오디션 테크닉 클래스
         </Link>
-        <Link href="/acting-coaches" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
+        <Link href="/acting-coaches" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px', display: 'inline-block', padding: '10px 0' }}>
           권동원 액팅 코치
         </Link>
-        <Link href="/sinchon-acting-academy" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
+        <Link href="/sinchon-acting-academy" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px', display: 'inline-block', padding: '10px 0' }}>
           신촌 연기학원 오시는 길
         </Link>
-        <Link href="/classes" style={{ fontSize: '0.9rem', color: 'var(--navy)' }}>
+        <Link href="/classes" style={{ fontSize: '0.9rem', color: 'var(--navy)', display: 'inline-block', padding: '10px 0' }}>
           전체 클래스 보기 <span aria-hidden="true">→</span>
         </Link>
-        <Link href="/about" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginLeft: '20px' }}>
+        <Link href="/about" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginLeft: '20px', display: 'inline-block', padding: '10px 0' }}>
           KD4 소개
         </Link>
-        <Link href="/benefits" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginLeft: '20px' }}>
+        <Link href="/benefits" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginLeft: '20px', display: 'inline-block', padding: '10px 0' }}>
           멤버 혜택
         </Link>
       </section>

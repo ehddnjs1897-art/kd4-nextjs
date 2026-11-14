@@ -212,7 +212,7 @@ export default async function AdLandingPage({ params }: { params: Params }) {
           </JoinCTALink>
         </div>
         <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.78rem', color: 'var(--gray)', lineHeight: 1.7, marginTop: 24, wordBreak: 'keep-all' }}>
-          KD4 액팅 스튜디오 · 서울 서대문구 이화여대1안길 12 아리움3차 1층 (이대역 도보 2분)
+          KD4 액팅 스튜디오 · 서울 서대문구 이화여대1안길 12 아리움3차 1층 (이대역 도보 3분)
         </p>
       </section>
 

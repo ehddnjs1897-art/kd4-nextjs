@@ -468,3 +468,23 @@
     transition: none;
   }
 }
+
+/* ── 폼 아래 카카오 대안 한 줄 (/join) ── */
+.kakaoAlt {
+  margin: 6px 0 0;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--gray);
+  line-height: 1.6;
+  word-break: keep-all;
+}
+.kakaoAltLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  color: var(--navy);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

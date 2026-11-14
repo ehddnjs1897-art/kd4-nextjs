@@ -314,7 +314,7 @@ export default function JoinPage() {
                 연락처 → 클래스 → 확인, 3단계. 접수 즉시 안내 문자를 보내고 <span style={{ whiteSpace: 'nowrap' }}>1~2일 안에 대표가 직접 전화드립니다.</span>
               </p>
             </div>
-            <JoinForm />
+            <JoinForm kakaoAlt />
           </div>
         </div>
       </section>
@@ -618,7 +618,7 @@ export default function JoinPage() {
                 연락처 → 클래스 → 확인, 3단계. 접수 즉시 안내 문자를 보내고 <span style={{ whiteSpace: 'nowrap' }}>1~2일 안에 대표가 직접 전화드립니다.</span>
               </p>
             </div>
-            <JoinForm />
+            <JoinForm kakaoAlt />
           </div>
         </div>
       </section>
@@ -759,6 +759,17 @@ export default function JoinPage() {
               }}
             >
               서울시 서대문구 이화여대1안길 12 아리움3차 1F
+            </p>
+            <p
+              style={{
+                fontSize: '0.75rem',
+                color: 'var(--gray-light)',
+                letterSpacing: '0.01em',
+                marginTop: '4px',
+                wordBreak: 'keep-all',
+              }}
+            >
+              2호선 이대역 5번 출구 도보 약 3분 · 경의중앙선 신촌역 도보 약 5분
             </p>
           </div>
         </div>

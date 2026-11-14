@@ -497,8 +497,8 @@ export default function AdvancedReelPage() {
               KD4 액팅 스튜디오 · 유익액터스 대표 권동원 드림
             </p>
             <div style={{ marginTop: '32px', paddingTop: '20px', borderTop: '1px solid var(--border)' }}>
-              <p style={{ fontSize: '0.86rem', color: 'var(--gray)', marginBottom: '10px' }}>아직 출연영상 클래스를 수료하지 않았다면</p>
-              <Link href="/reel-production-class#form" style={{ color: 'var(--navy)', fontWeight: 700, fontSize: '0.92rem' }}>
+              <p style={{ fontSize: '0.86rem', color: 'var(--gray)', marginBottom: '0' }}>아직 출연영상 클래스를 수료하지 않았다면</p>
+              <Link href="/reel-production-class#form" style={{ color: 'var(--navy)', fontWeight: 700, fontSize: '0.92rem', display: 'inline-flex', alignItems: 'center', minHeight: 44 }}>
                 출연영상 클래스 상담 <span aria-hidden="true">→</span>
               </Link>
             </div>
@@ -507,23 +507,23 @@ export default function AdvancedReelPage() {
       </section>
 
       {/* CROSS-LINK */}
-      <section aria-label="관련 클래스 바로가기" style={{ padding: '24px', background: 'var(--bg)', textAlign: 'center', borderTop: '1px solid var(--border)' }}>
-        <Link href="/reel-production-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
+      <section aria-label="관련 클래스 바로가기" style={{ padding: '14px 24px', background: 'var(--bg)', textAlign: 'center', borderTop: '1px solid var(--border)' }}>
+        <Link href="/reel-production-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px', display: 'inline-block', padding: '10px 0' }}>
           <span aria-hidden="true">← </span>출연영상 클래스
         </Link>
-        <Link href="/meisner-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
+        <Link href="/meisner-technique-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px', display: 'inline-block', padding: '10px 0' }}>
           마이즈너 정규 클래스
         </Link>
-        <Link href="/one-month-reel-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
+        <Link href="/one-month-reel-class" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px', display: 'inline-block', padding: '10px 0' }}>
           출연영상 1달 완성 클래스
         </Link>
-        <Link href="/acting-coaches" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px' }}>
+        <Link href="/acting-coaches" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginRight: '20px', display: 'inline-block', padding: '10px 0' }}>
           권동원 액팅 코치
         </Link>
-        <Link href="/classes" style={{ fontSize: '0.9rem', color: 'var(--navy)' }}>
+        <Link href="/classes" style={{ fontSize: '0.9rem', color: 'var(--navy)', display: 'inline-block', padding: '10px 0' }}>
           전체 클래스 보기 <span aria-hidden="true">→</span>
         </Link>
-        <Link href="/benefits" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginLeft: '20px' }}>
+        <Link href="/benefits" style={{ fontSize: '0.9rem', color: 'var(--navy)', marginLeft: '20px', display: 'inline-block', padding: '10px 0' }}>
           멤버 혜택
         </Link>
       </section>

@@ -8,6 +8,7 @@ import { CLASSES, DIRECTOR } from '@/lib/classes'
 import { analytics } from '@/lib/analytics'
 import { SOURCE_VALUES, MEISNER_OPTIONS } from '@/lib/form-options'
 import { normalizeUtmSource } from '@/lib/utm'
+import JoinCTALink from '@/components/join/JoinCTALink'
 import styles from './JoinForm.module.css'
 
 /** UTM 파라미터 추적 (2026-05-14) — 광고 채널별 ROI 분석용
@@ -126,7 +127,7 @@ function formatPhone(raw: string): string {
   return `${d.slice(0, 3)}-${d.slice(3, d.length - 4)}-${d.slice(-4)}`
 }
 
-export default function JoinForm({ initialClass }: { initialClass?: string } = {}) {
+export default function JoinForm({ initialClass, kakaoAlt = false }: { initialClass?: string; /** 폼 아래 «통화가 부담되면 카카오로» 한 줄 (광고 랜딩 /join 전용) */ kakaoAlt?: boolean } = {}) {
   const uid = useId()
   const consentId = `join-consent-${uid}`
   const errorId = `join-form-error-${uid}`
@@ -440,8 +441,7 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
           }}
         >
           <p style={{ fontSize: '0.88rem', color: '#111', lineHeight: 1.75, marginBottom: '10px' }}>
-            문자를 남겨주시면 <strong>24시간 이내</strong> 연락드립니다.{' '}
-            <span style={{ color: 'var(--gray)', fontSize: '0.82rem' }}>(SMS 확인)</span>
+            방금 <strong>안내 문자</strong>를 보내드렸어요. 1~2일 안에 대표가 직접 전화드립니다.
           </p>
           <p style={{ fontSize: '0.82rem', color: 'var(--gray)', lineHeight: 1.7 }}>
             30분 상담 예약 일정을 잡은 뒤 상담을 진행합니다.
@@ -1086,10 +1086,13 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
               <span className={styles.summaryKey}>마이즈너 경험</span>
               <span className={styles.summaryVal}>{meisnerExp}</span>
             </div>
-            <div className={styles.summaryRow}>
-              <span className={styles.summaryKey}>알게 된 경로</span>
-              <span className={styles.summaryVal}>{source}</span>
-            </div>
+            {/* 광고·검색 꼬리표로 자동 기록된 경로는 본인이 고른 게 아니므로 확인 화면에 보이지 않게 */}
+            {!autoSource && (
+              <div className={styles.summaryRow}>
+                <span className={styles.summaryKey}>알게 된 경로</span>
+                <span className={styles.summaryVal}>{source}</span>
+              </div>
+            )}
           </div>
 
           <p style={{ fontSize: '0.78rem', color: 'var(--gray)', lineHeight: 1.6, margin: '2px 2px 0', wordBreak: 'keep-all' }}>
@@ -1126,6 +1129,25 @@ export default function JoinForm({ initialClass }: { initialClass?: string } = {
             </button>
           </div>
         </div>
+      )}
+
+      {kakaoAlt && (
+        <p className={styles.kakaoAlt}>
+          통화가 부담되면{' '}
+          <JoinCTALink
+            href="https://pf.kakao.com/_ximxdqn"
+            kind="external"
+            channel="kakao"
+            location="form_alt"
+            label="카카오로 먼저 물어보기"
+            fireLead
+            aria-label="카카오로 먼저 물어보기 (새 탭에서 열림)"
+            className={styles.kakaoAltLink}
+          >
+            <MessageCircle aria-hidden={true} size={13} strokeWidth={2.2} />
+            카카오로 먼저 물어보셔도 돼요
+          </JoinCTALink>
+        </p>
       )}
     </form>
   )

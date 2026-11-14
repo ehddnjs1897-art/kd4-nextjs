@@ -34,12 +34,12 @@ export default function StickyTopBar({
         justifyContent: showCta ? undefined : 'center',
         background: 'var(--bg2)',
         borderBottom: '1px solid var(--border)',
-        padding: '9px 16px',
+        padding: showCta ? '9px 16px' : '9px 8px',
         display: 'flex',
         alignItems: 'center',
         gap: '8px',
         rowGap: '5px',
-        flexWrap: 'wrap',
+        flexWrap: showCta ? 'wrap' : 'nowrap',
         fontFamily: 'var(--font-sans)',
       }}
     >
