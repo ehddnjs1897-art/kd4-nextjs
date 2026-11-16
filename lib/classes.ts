@@ -187,6 +187,8 @@ const CLASS_DATA: ClassItem[] = [
     // 2026-10-13 대표: 정규 클래스 이수 조건 폐지 — 신규도 바로 신청 (상담 폼·신규 등록·/classes «신규 멤버 클래스»에 노출)
     step: "STEP 1",
     nameKo: "오디션 테크닉 클래스",
+    photo: "/class-photos/audition.jpg",
+    photoAlt: "오디션 테크닉 클래스 — 카메라 앞에서 연기하고 모니터로 바로 확인하는 멤버들",
     nameEn: "Audition Technique Class",
     quote: "캐스팅 관계자의 시선을 멈추게 할 독백 만들기",
     bullets: [
