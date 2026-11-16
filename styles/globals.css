@@ -8,6 +8,10 @@
 
    서브셋 생성: pyftsubset으로 프로젝트 실제 사용 글자(835자)만 추출
    원본 대비: Dotum 1,982KB→64KB(-97%), Batang 3,170KB→112KB(-96%)
+
+   2026-11-16 보충 글꼴: 위 기본 서브셋은 한글 672자뿐 → 없는 글자는 styles/kopub-ext.css 의 보충 파일(ext1·ext2)이
+   «그 글자가 화면에 있을 때만» 내려받아 같은 KoPub 으로 보여 준다. 만드는 법: scripts/build-kopub-ext-fonts.py
+   글꼴 변수(--font-serif 등)는 app/layout.tsx 의 <html> 클래스(next/font 변수)가 있어야 유효하다 — <body>로 옮기지 말 것.
 */
 
 /* KoPubWorld Dotum (본문·UI 전용) — 서브셋 로컬 */
@@ -118,7 +122,13 @@ body {
   overflow-x: hidden;
   word-break: keep-all;
   overflow-wrap: break-word;
+  /* 2026-11-16 줄바꿈 다듬기: KoPub은 기기 기본 글꼴보다 글자 폭이 넓어, 글꼴 수리 뒤 문장 끝에 한 단어만 남는 줄이 생김
+     → 마지막 줄에 한 단어만 남지 않게(pretty). 지원하지 않는 브라우저는 예전 그대로(무해). */
+  text-wrap: pretty;
 }
+
+/* 제목은 두 줄이 될 때 길이를 고르게 나눔 (예: 「… 액팅 / 코치」 → 「… · / 액팅 코치」) */
+h1, h2, h3, .section-title-serif { text-wrap: balance; }
 
 h1, h2, h3, h4, h5, h6, p, span, li, div, label, a, button {
   color: inherit;
@@ -2150,7 +2160,7 @@ main {
 .join-reel-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--navy); color: #fff; font-weight: 700; font-size: 0.95rem; padding: 14px 26px; border-radius: 10px; text-decoration: none; min-height: 48px; }
 .join-reel-link { display: inline-flex; align-items: center; gap: 6px; font-size: 0.84rem; font-weight: 700; color: var(--navy); text-decoration: none; border-bottom: 1px solid var(--navy); padding: 4px 0; position: relative; }
 .join-reel-link::after { content: ''; position: absolute; left: -6px; right: -6px; top: -8px; bottom: -8px; }
-/* 2026-11-16 대표 확정: 수강료 포함 내용 한 줄(⑧) + 영상 2편만 먼저, 나머지는 「더 보기」(②) + 숫자 안내 한 줄(⑥) */
+/* 2026-11-16 대표 확정: 수강료 포함 내용 한 줄(⑧) + 영상 4편 먼저(처음 2편 → 같은 날 «영상4편»), 나머지는 「더 보기」(②) + 숫자 안내 한 줄(⑥). --two = 한 줄에 2칸 */
 .join-reel-incl { margin-top: 10px; font-size: 0.84rem; line-height: 1.6; color: var(--gray); word-break: keep-all; }
 .join-reel-incl strong { color: var(--navy); font-weight: 700; margin-right: 8px; }
 .join-reel-grid--two { max-width: 880px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }

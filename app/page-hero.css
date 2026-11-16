@@ -104,14 +104,10 @@
 .hero-a {
   width: 100%;
 }
-/* 글꼴 이름을 직접 적는 이유 (2026-11-16): 공통 변수 --font-serif 는 :root 에서 무효다
-   (참조하는 --font-noto-serif-kr 가 body 에만 정의돼 있음 → 2026-05-01부터 사이트 전체가 기기 기본 글꼴로 표시).
-   첫 화면 제목·라벨은 대표가 승인한 A안(KoPub 바탕)과 같아야 하므로 변수 대신 글꼴 이름을 쓴다.
-   Batang Medium(400)은 layout.tsx 에서 이미 preload 중이라 추가 다운로드 없음.
-   공통 변수 수리는 사이트 전체 글꼴이 바뀌는 일이라 대표 확인 후 별도 진행. */
+/* 글꼴은 공통 변수(--font-serif = KoPub 바탕). 2026-11-16 글꼴 변수 수리(app/layout.tsx <html> 클래스)로 변수가 정상 동작한다. */
 .hero-a-label {
   margin: 0;
-  font-family: 'KoPubWorld Batang', 'Noto Serif KR', Georgia, serif;
+  font-family: var(--font-serif);
   font-weight: 400;
   font-size: 0.656rem;
   line-height: 1.4;
@@ -121,7 +117,7 @@
 }
 .hero-a-line {
   margin: 16px 0 0;
-  font-family: 'KoPubWorld Batang', 'Noto Serif KR', Georgia, serif;
+  font-family: var(--font-serif);
   font-weight: 400;
   font-size: clamp(1.7rem, 8.97vw, 2.6rem);
   line-height: 1.28;
@@ -246,7 +242,7 @@
   gap: 8px;
 }
 .hero-scroll-label {
-  font-family: 'KoPubWorld Batang', 'Noto Serif KR', Georgia, serif;
+  font-family: var(--font-serif);
   font-size: 0.6rem;
   line-height: 1;
   letter-spacing: 0.34em;

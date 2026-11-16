@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Noto_Sans_KR, Noto_Serif_KR, Oswald } from 'next/font/google'
 import Script from 'next/script'
 import '../styles/globals.css'
+import '../styles/kopub-ext.css' // KoPub 보충 글꼴(기본 서브셋에 없는 글자) — 자동 생성, scripts/build-kopub-ext-fonts.py
 import ConditionalShell from '@/components/layout/ConditionalShell'
 import { RouteAnnouncer } from '@/components/layout/RouteAnnouncer'
 import JsonLd from '@/components/seo/JsonLd'
@@ -93,7 +94,9 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="ko">
+    // 글꼴 변수 클래스는 <html>에 둔다 (2026-11-16 대표 «kopub으로해»): styles/globals.css 의 --font-serif/--font-sans/--font-display 가
+    // :root 에서 var(--font-noto-*)를 참조하므로, 이 클래스가 <body>에만 있으면 세 변수가 무효가 되어 사이트 전체가 기기 기본 글꼴로 나온다(5/1~11/16 실제 발생).
+    <html lang="ko" className={`${notoSansKR.variable} ${notoSerifKR.variable} ${oswald.variable}`}>
       <head>
         <JsonLd />
         {/* KoPubWorld 서브셋 폰트 preload — Vercel edge에서 직서빙, 64~122KB */}
@@ -109,9 +112,7 @@ export default function RootLayout({
           <link rel="preconnect" href={process.env.NEXT_PUBLIC_SUPABASE_URL.trim()} crossOrigin="anonymous" />
         )}
       </head>
-      <body
-        className={`${notoSansKR.variable} ${notoSerifKR.variable} ${oswald.variable}`}
-      >
+      <body>
         <noscript>
           <p style={{ textAlign: 'center', padding: '2rem', fontFamily: 'sans-serif' }}>
             이 사이트는 JavaScript가 필요합니다. 브라우저 설정에서 JavaScript를 활성화해주세요.

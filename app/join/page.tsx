@@ -67,12 +67,14 @@ const REEL_BEST_IDS = ['AMcMn4UgJp4', '4Cc3L2IGRu8', 'RV1yvKguTy4', 'IWL6hlOrU-w
 const REEL_TITLE_FIX: Record<string, string> = { 'IWL6hlOrU-w': '메소드 연기', 'PUlrhjOkvjA': '외사랑', 'qwD63hTNQLs': '엄마 곁을 지킨 5년' }
 const REEL_BEST = REEL_BEST_IDS.flatMap((id) => REEL_PORTFOLIO_VIDEOS.filter((v) => v.id === id)).map((v) => ({ ...v, title: REEL_TITLE_FIX[v.id] ?? v.title }))
 const REEL_FACTS = [REEL_CLASS.schedule, `회당 ${REEL_CLASS.duration}`, `정원 ${REEL_CLASS.capacity}`, REEL_CLASS.course].filter(Boolean)
-/* 2026-11-16 대표 «2 더보기로 접는거 좋은아이디어»: 6편을 다 펼치면 휴대폰에서 약 2.8화면 → 앞 2편만 보이고 나머지는 「더 보기」.
-   앞 2편 = 대표가 10/19 광고 랜딩에 고른 순서 그대로 맨 앞 2편(가장 최근작). */
-const REEL_TOP = REEL_BEST.slice(0, 2)
-const REEL_REST = REEL_BEST.slice(2)
-/* 2026-11-16 대표 «8 반영»: 수강료에 무엇이 들어 있는지 한 줄 — 정본 REEL_INCLUDES(출연영상 클래스 페이지와 같은 목록)에서 괄호 설명만 뺀 것 */
-const REEL_INCLUDED_LINE = REEL_INCLUDES.filter((i) => i.yes).map((i) => i.text.replace(/\s*\(.*\)$/, '')).join(', ')
+/* 2026-11-16 대표 «2 더보기로 접는거 좋은아이디어» → 같은 날 «영상4편보이고 더보기로해»: 앞 4편이 보이고 나머지 2편은 「더 보기」.
+   앞 4편 = 대표가 10/19 광고 랜딩에 고른 4편(AD_REEL_PICKS) 순서 그대로. */
+const REEL_TOP = REEL_BEST.slice(0, 4)
+const REEL_REST = REEL_BEST.slice(4)
+/* 2026-11-16 대표 «8 반영»: 수강료에 무엇이 들어 있는지 한 줄 — 정본 REEL_INCLUDES(출연영상 클래스 페이지와 같은 목록)에서 괄호 설명만 뺀 것.
+   같은 날 대표 «이 문구를 빼고»: 이 한 줄에서는 「캐스팅·오디션 제출용 영상 납품」 제외 (출연영상 클래스 페이지의 목록은 그대로). */
+const REEL_INCLUDED_HIDE = ['캐스팅·오디션 제출용 영상 납품']
+const REEL_INCLUDED_LINE = REEL_INCLUDES.filter((i) => i.yes && !REEL_INCLUDED_HIDE.includes(i.text)).map((i) => i.text.replace(/\s*\(.*\)$/, '')).join(', ')
 
 /* ── 더 알아보기 링크 (2026-10-19 대표: 스튜디오 소개 + 클래스·각 페이지 링크) — 이름·한 줄·가격은 lib/classes.ts 그대로 ── */
 const MORE_LINKS = [
@@ -289,6 +291,50 @@ export default function JoinPage() {
             }}
           >
             연기 경험 없어도 OK
+          </p>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* MORE — 더 알아보기 (2026-10-19 대표 «스튜디오 소개 + 클래스 소개·각 페이지 링크»).
+          2026-11-16 대표 «올리고»: 맨 아래 폼(#form) 뒤 → 첫 화면 바로 아래·위쪽 폼(#form-hero) 앞으로 통째로 이동. 내용·디자인은 그대로.
+          되돌리려면 이 구간을 아래쪽 폼(#form) 뒤로 옮기면 됨. */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section aria-label="더 알아보기" className="section join-more">
+        <div className="container">
+          <div className="join-more-head">
+            <p className="section-eyebrow"><span lang="en">MORE ABOUT KD4</span></p>
+            <h2 className="section-title-serif join-more-title">KD4를 더 알아보고 싶다면</h2>
+            <p className="join-more-sub">스튜디오 이야기와 클래스별 커리큘럼·일정을 자세히 볼 수 있어요.</p>
+          </div>
+
+          <a href="/about" className="join-more-studio">
+            <span className="join-more-studio-label" lang="en">STUDIO</span>
+            <span className="join-more-studio-title">스튜디오 소개</span>
+            <span className="join-more-studio-desc">마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 배우의 성장을 운영합니다.</span>
+            <span className="join-more-studio-go" aria-hidden="true">
+              자세히 보기 <ArrowRight size={15} strokeWidth={2.2} />
+            </span>
+          </a>
+
+          <ul className="join-more-grid" role="list">
+            {MORE_LINKS.map(({ nameKo, href, tag, cls }) => (
+              <li key={nameKo}>
+                <a href={href} className="join-more-card">
+                  <span className="join-more-tag">{tag}</span>
+                  <span className="join-more-name">{nameKo}</span>
+                  <span className="join-more-quote">{cls.quote}</span>
+                  <span className="join-more-foot">
+                    <span className="join-more-price">월 {cls.price}원</span>
+                    <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} className="join-more-arrow" />
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <p className="join-more-all">
+            <a href="/classes">클래스 전체 한눈에 보기 <ArrowRight aria-hidden={true} size={14} strokeWidth={2.2} /></a>
           </p>
         </div>
       </section>
@@ -646,48 +692,6 @@ export default function JoinPage() {
             </div>
             <JoinForm kakaoAlt />
           </div>
-        </div>
-      </section>
-
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑫-2 MORE — 더 알아보기 (2026-10-19 대표 «스튜디오 소개 + 클래스 소개·각 페이지 링크», 폼 아래라 신청 흐름 방해 없음) */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section aria-label="더 알아보기" className="section join-more">
-        <div className="container">
-          <div className="join-more-head">
-            <p className="section-eyebrow"><span lang="en">MORE ABOUT KD4</span></p>
-            <h2 className="section-title-serif join-more-title">KD4를 더 알아보고 싶다면</h2>
-            <p className="join-more-sub">스튜디오 이야기와 클래스별 커리큘럼·일정을 자세히 볼 수 있어요.</p>
-          </div>
-
-          <a href="/about" className="join-more-studio">
-            <span className="join-more-studio-label" lang="en">STUDIO</span>
-            <span className="join-more-studio-title">스튜디오 소개</span>
-            <span className="join-more-studio-desc">마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 배우의 성장을 운영합니다.</span>
-            <span className="join-more-studio-go" aria-hidden="true">
-              자세히 보기 <ArrowRight size={15} strokeWidth={2.2} />
-            </span>
-          </a>
-
-          <ul className="join-more-grid" role="list">
-            {MORE_LINKS.map(({ nameKo, href, tag, cls }) => (
-              <li key={nameKo}>
-                <a href={href} className="join-more-card">
-                  <span className="join-more-tag">{tag}</span>
-                  <span className="join-more-name">{nameKo}</span>
-                  <span className="join-more-quote">{cls.quote}</span>
-                  <span className="join-more-foot">
-                    <span className="join-more-price">월 {cls.price}원</span>
-                    <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} className="join-more-arrow" />
-                  </span>
-                </a>
-              </li>
-            ))}
-          </ul>
-
-          <p className="join-more-all">
-            <a href="/classes">클래스 전체 한눈에 보기 <ArrowRight aria-hidden={true} size={14} strokeWidth={2.2} /></a>
-          </p>
         </div>
       </section>
 
