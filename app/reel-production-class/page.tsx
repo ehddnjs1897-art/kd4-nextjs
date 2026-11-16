@@ -23,7 +23,7 @@ const FILM_CLASS = CLASSES.find((c) => c.nameKo === '출연영상 클래스')!
 export const metadata: Metadata = {
   title: '출연영상 클래스 — 배우 프로필 영상·포트폴리오 제작',
   description:
-    '전문 영화팀과 함께 만드는 출연영상 포트폴리오. 마이즈너 테크닉 + 맞춤 시나리오 + 현장 촬영. 현직 배우 100명+ 참여한 시그니처 클래스. 서울 신촌 이대역 도보 3분. 무료 상담 신청.',
+    '전문 영화팀과 함께 만드는 출연영상 포트폴리오. 마이즈너 테크닉 + 맞춤 시나리오 + 현장 촬영. 현직 배우 100여 명이 참여한 시그니처 클래스. 서울 신촌 이대역 도보 3분. 무료 상담 신청.',
   keywords: [
     '출연영상 제작',
     '배우 포트폴리오',
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     type: 'website',
     url: PAGE_URL,
     title: '출연영상 클래스 — 배우 포트폴리오 제작 | KD4',
-    description: '전문 영화팀 + 맞춤 시나리오로 만드는 캐스팅용 출연영상 포트폴리오. 현직 배우 100명+ 참여한 시그니처 클래스.',
+    description: '전문 영화팀 + 맞춤 시나리오로 만드는 캐스팅용 출연영상 포트폴리오. 현직 배우 100여 명이 참여한 시그니처 클래스.',
     images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: '출연영상 클래스 — 배우 포트폴리오 제작 | KD4', type: 'image/jpeg' }],
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
@@ -137,7 +137,7 @@ export default function ReelPage() {
             <p className="section-eyebrow" lang="en">01 — WHY REEL</p>
             <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>왜 출연영상이 필요한가</h2>
             <p className="section-desc">
-              현직 배우 100명 이상이 거쳐간 KD4 시그니처 클래스. 한 편의 영상이 캐스팅으로 이어지는 자산이 됩니다.
+              현직 배우 100여 명이 거쳐간 KD4 시그니처 클래스. 한 편의 영상이 캐스팅으로 이어지는 자산이 됩니다.
             </p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', maxWidth: '720px', margin: '0 auto' }}>

@@ -11,7 +11,7 @@ import JoinHeader from '@/components/join/JoinHeader'
 import JoinCTALink from '@/components/join/JoinCTALink'
 import { WhyKD4Section, DirectorSection, ReviewsSection, PromiseSection } from '@/components/join/JoinTrustSections'
 import { SITE_URL } from '@/lib/constants'
-import { REEL_PORTFOLIO_VIDEOS } from '@/lib/class-landing-content'
+import { REEL_PORTFOLIO_VIDEOS, REEL_INCLUDES } from '@/lib/class-landing-content'
 
 /* 폴드 아래 / 비즈니스 크리티컬하지 않은 컴포넌트 — 지연 로딩 */
 const JoinPageView = dynamic(() => import('@/components/analytics/JoinPageView'))
@@ -67,6 +67,12 @@ const REEL_BEST_IDS = ['AMcMn4UgJp4', '4Cc3L2IGRu8', 'RV1yvKguTy4', 'IWL6hlOrU-w
 const REEL_TITLE_FIX: Record<string, string> = { 'IWL6hlOrU-w': '메소드 연기', 'PUlrhjOkvjA': '외사랑', 'qwD63hTNQLs': '엄마 곁을 지킨 5년' }
 const REEL_BEST = REEL_BEST_IDS.flatMap((id) => REEL_PORTFOLIO_VIDEOS.filter((v) => v.id === id)).map((v) => ({ ...v, title: REEL_TITLE_FIX[v.id] ?? v.title }))
 const REEL_FACTS = [REEL_CLASS.schedule, `회당 ${REEL_CLASS.duration}`, `정원 ${REEL_CLASS.capacity}`, REEL_CLASS.course].filter(Boolean)
+/* 2026-11-16 대표 «2 더보기로 접는거 좋은아이디어»: 6편을 다 펼치면 휴대폰에서 약 2.8화면 → 앞 2편만 보이고 나머지는 「더 보기」.
+   앞 2편 = 대표가 10/19 광고 랜딩에 고른 순서 그대로 맨 앞 2편(가장 최근작). */
+const REEL_TOP = REEL_BEST.slice(0, 2)
+const REEL_REST = REEL_BEST.slice(2)
+/* 2026-11-16 대표 «8 반영»: 수강료에 무엇이 들어 있는지 한 줄 — 정본 REEL_INCLUDES(출연영상 클래스 페이지와 같은 목록)에서 괄호 설명만 뺀 것 */
+const REEL_INCLUDED_LINE = REEL_INCLUDES.filter((i) => i.yes).map((i) => i.text.replace(/\s*\(.*\)$/, '')).join(', ')
 
 /* ── 더 알아보기 링크 (2026-10-19 대표: 스튜디오 소개 + 클래스·각 페이지 링크) — 이름·한 줄·가격은 lib/classes.ts 그대로 ── */
 const MORE_LINKS = [
@@ -547,21 +553,39 @@ export default function JoinPage() {
               <span className="join-reel-price">월 {REEL_CLASS.price}원</span>
               <span className="join-reel-meta">{REEL_FACTS.join(' · ')}</span>
             </div>
+            <p className="join-reel-incl"><strong>수강료에 포함</strong>{REEL_INCLUDED_LINE}</p>
             {REEL_CLASS.priceChangeNote && (
               <p style={{ fontSize: '0.8rem', color: 'var(--navy)', fontWeight: 600, marginTop: '10px', lineHeight: 1.5, wordBreak: 'keep-all' }}>{REEL_CLASS.priceChangeNote}</p>
             )}
           </div>
 
-          <h3 className="join-reel-sub">포트폴리오 베스트 6</h3>
+          <h3 className="join-reel-sub">포트폴리오 베스트</h3>
           <p className="join-reel-subdesc">KD4 멤버가 전문 영화팀과 촬영·편집한 출연영상입니다.</p>
-          <ul className="join-reel-grid" role="list">
-            {REEL_BEST.map((v) => (
+          <ul className="join-reel-grid join-reel-grid--two" role="list">
+            {REEL_TOP.map((v) => (
               <li key={v.id} className="join-reel-video">
                 <YouTubeFacade videoId={v.id} title={v.title} />
                 <p className="join-reel-vtitle">「{v.title}」</p>
               </li>
             ))}
           </ul>
+          {REEL_REST.length > 0 && (
+            <details className="join-reel-more">
+              <summary>
+                <span className="join-reel-more-closed">포트폴리오 {REEL_REST.length}편 더 보기</span>
+                <span className="join-reel-more-open">접기</span>
+                <span className="join-reel-more-arrow" aria-hidden="true" />
+              </summary>
+              <ul className="join-reel-grid join-reel-grid--two" role="list">
+                {REEL_REST.map((v) => (
+                  <li key={v.id} className="join-reel-video">
+                    <YouTubeFacade videoId={v.id} title={v.title} />
+                    <p className="join-reel-vtitle">「{v.title}」</p>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
 
           <div className="join-reel-cta">
             <JoinCTALink href="#form-hero" location="reel_section" label="출연영상 클래스 무료 상담 신청" fireLead className="join-reel-btn">
@@ -575,7 +599,9 @@ export default function JoinPage() {
       </section>
 
       {/* ⑥ DIRECTOR — 강사 크레딧 (광고 압축: highlights 3개 + 링크) */}
-      <DirectorSection />
+      {/* 2026-11-16 대표 ⑥: 이 페이지에 150명·100여명·400명+ 세 숫자가 따로 나와 헷갈린다는 지적 → 무엇을 센 숫자인지 한 줄.
+          라벨은 정본(lib/stats.ts «누적 코칭 배우»·«현직 배우 수료», lib/classes.ts 출연영상 «현직 배우 100여명 참여») 그대로 */}
+      <DirectorSection statNote="※ 숫자 안내: 400명+는 누적 코칭 배우, 150명은 현직 배우 수료, 100여 명은 출연영상 클래스 참여 배우 수입니다." />
 
       {/* 옛 출연영상 포트폴리오 6편 구간 — 10/15 제거, 10/29 위 «출연영상 클래스 + 베스트 3»으로 대체 */}
 

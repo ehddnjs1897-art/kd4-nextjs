@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
@@ -10,6 +11,22 @@ const HIDE_ON: string[] = ['/actors', '/board', '/ai-tools', '/auth', '/dashboar
 
 export default function FloatingCTA() {
   const pathname = usePathname()
+
+  /* 홈 첫 화면 A안 (2026-11-16 대표 확정): 홈에서는 첫 화면에 밑줄 «상담 신청 →»이 이미 있으므로
+     하단 막대는 첫 화면을 지난 뒤(화면 높이의 60% 이상 내린 뒤)에만 보인다. 다른 페이지는 예전 그대로 항상 표시. */
+  const isHome = pathname === '/'
+  const [pastHero, setPastHero] = useState(false)
+  useEffect(() => {
+    if (!isHome) return
+    const onScroll = () => setPastHero(window.scrollY > window.innerHeight * 0.6)
+    const raf = requestAnimationFrame(onScroll)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('scroll', onScroll)
+    }
+  }, [isHome])
+  const barHidden = isHome && !pastHero
 
   const isHidden = HIDE_ON.some((prefix) => pathname.startsWith(prefix))
   if (isHidden) return null
@@ -24,7 +41,7 @@ export default function FloatingCTA() {
         onClick={() => analytics.contact('kakao')}
         style={{
           position: 'fixed',
-          bottom: '84px',
+          bottom: barHidden ? '24px' : '84px',
           right: '20px',
           zIndex: 901,
           width: '46px',
@@ -36,7 +53,7 @@ export default function FloatingCTA() {
           justifyContent: 'center',
           boxShadow: '0 3px 12px rgba(21,72,138,0.22)',
           border: '1px solid rgba(0,0,0,0.06)',
-          transition: 'transform 0.2s, box-shadow 0.2s',
+          transition: 'transform 0.2s, box-shadow 0.2s, bottom 0.3s ease',
           textDecoration: 'none',
         }}
         onMouseEnter={e => {
@@ -53,12 +70,20 @@ export default function FloatingCTA() {
 
       {/* 수강신청 바 */}
       <div
+        aria-hidden={barHidden || undefined}
         style={{
           position: 'fixed',
           bottom: '16px',
           left: '16px',
           right: '16px',
           zIndex: 900,
+          opacity: barHidden ? 0 : 1,
+          transform: barHidden ? 'translateY(14px)' : 'none',
+          visibility: barHidden ? 'hidden' : 'visible',
+          pointerEvents: barHidden ? 'none' : 'auto',
+          transition: barHidden
+            ? 'opacity 0.3s ease, transform 0.3s ease, visibility 0s linear 0.3s'
+            : 'opacity 0.3s ease, transform 0.3s ease, visibility 0s',
         }}
       >
         <Link

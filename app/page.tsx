@@ -111,75 +111,10 @@ const reviewAuthorStyle: React.CSSProperties = {
 
 export default function HomePage() {
   const heroRef = useRef<HTMLElement>(null)
-  const heroTitleRef = useRef<HTMLDivElement>(null)
   const mainRef = useRef<HTMLElement>(null)
 
-  /* ── 히어로 타이틀: 서브 가로폭을 h1과 일치시킨 후 "한 번만" 등장 ──
-       - KoPub·Helvetica 명시 로드 → offsetWidth 실측 → letter-spacing 1차 계산
-       - 1차 적용 후 실제 폭 재측정 → 오차(브라우저별 trailing letter-spacing 차이) 보정
-       - 등장 이후에는 어떤 재조정도 없음 (리사이즈 리스너 제거)
-       - 데스크톱에서 KoPub이 뒤늦게 적용돼서 h1 폭만 커지는 이슈 방지 */
-  const [titleReady, setTitleReady] = useState(false)
   const [marqueePaused, setMarqueePaused] = useState(false)
   const [reviewPaused, setReviewPaused] = useState(false)
-  useEffect(() => {
-    let cancelled = false
-    const container = heroTitleRef.current
-    if (!container) return
-    // 시각 타이틀은 aria-hidden div (실제 h1은 sr-only 1개 — 홈 h1 단일화)
-    const h1 = container.querySelector('.hero-title-wall-main') as HTMLElement | null
-    const sub = container.querySelector('.hero-title-wall-sub') as HTMLElement | null
-    if (!h1 || !sub) { setTitleReady(true); return }
-
-    const measureAndApply = () => {
-      sub.style.letterSpacing = '0'
-      // offsetWidth: 레이아웃 실측 (transform/scale 영향 없음)
-      const h1W = h1.offsetWidth
-      const subW = sub.offsetWidth
-      if (subW <= 0 || h1W <= 0) return
-      const chars = Math.max(1, (sub.textContent || '').length)
-      // 1차 추정 — letter-spacing이 N개 글자에 각각 공간을 추가한다고 가정
-      const initialSpacing = (h1W - subW) / chars
-      sub.style.letterSpacing = `${Math.max(0, initialSpacing)}px`
-      // 2차 보정 — 실제 적용 후 남은 오차를 추가 분배 (trailing letter-spacing 브라우저 차이 대응)
-      const actualW = sub.offsetWidth
-      const delta = h1W - actualW
-      if (Math.abs(delta) > 0.3) {
-        const corrected = initialSpacing + delta / chars
-        sub.style.letterSpacing = `${Math.max(0, corrected)}px`
-      }
-    }
-
-    const init = async () => {
-      // 폰트 파일을 실제 크기로 명시 로드 — KoPub가 늦게 적용되는 데스크톱 이슈 방지
-      try {
-        if (document.fonts) {
-          const h1Size = parseFloat(getComputedStyle(h1).fontSize) || 48
-          const subSize = parseFloat(getComputedStyle(sub).fontSize) || 14
-          await Promise.all([
-            document.fonts.load(`700 ${h1Size}px KoPubWorldDotum`).catch(() => {}),
-            document.fonts.load(`400 ${subSize}px "Helvetica Neue"`).catch(() => {}),
-          ])
-          if (document.fonts.ready) await document.fonts.ready
-        }
-      } catch {}
-      if (cancelled) return
-      // double rAF — 폰트 적용 후 레이아웃 안정화 대기
-      requestAnimationFrame(() => {
-        if (cancelled) return
-        requestAnimationFrame(() => {
-          if (cancelled) return
-          measureAndApply()
-          requestAnimationFrame(() => {
-            if (!cancelled) setTitleReady(true)
-          })
-        })
-      })
-    }
-    init()
-    return () => { cancelled = true }
-  }, [])
-
   /* ── Lenis + GSAP 애니메이션 (동적 import — 초기 번들 ~200KB 분리) ── */
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -229,10 +164,10 @@ export default function HomePage() {
         /* === HERO 요소 입장 (달리줌 중반에 맞춰 등장) ===
            인라인 opacity:0 가드가 있으므로 from(opacity:0)이 아닌 to(opacity:1)로 페이드인
            (from은 시작=끝=0이 되어 영영 안 보이는 GSAP footgun) */
-        // 마이즈너 문구는 .hero-wall-statement 의 CSS 애니메이션으로 중앙에서 페이드인
-        // (KD4 타이틀 페이드아웃과 동기 — page-hero.css heroStatementFade)
+        // 문장·라벨·버튼(.hero-a)은 처음부터 보인다 — 등장은 page-hero.css 의 짧은 CSS 페이드(heroARise)뿐
+        // (2026-11-16 A안: 예전엔 KD4 타이틀 → 문장으로 바뀌는 데 약 11초)
         gsap.to('.hero-scroll-indicator', {
-          opacity: 1, duration: 0.4, delay: 4.0,
+          opacity: 1, duration: 0.4, delay: 1.2,
         })
 
         /* === HERO 패럴랙스 — 배경/타이틀/서브타이틀 레이어별 스크롤 속도 분리 ===
@@ -247,7 +182,7 @@ export default function HomePage() {
             yPercent: 12, scale: 1.06, transformOrigin: 'center bottom', ease: 'none',
             scrollTrigger: heroScrub(),
           })
-          gsap.to('.hero-title-wall-pos', {
+          gsap.to('.hero-a', {
             yPercent: -45, ease: 'none',
             scrollTrigger: heroScrub(),
           })
@@ -375,23 +310,24 @@ export default function HomePage() {
           }}
         />
 
-        {/* 마이즈너 문구는 사이드 캡션이 아니라 타이틀 자리(중앙)에서 페이드인
-             — .hero-wall-statement 로 이동 (2026-06-16, 대표 디렉션) */}
-
         {/* sr-only h1 — JS 렌더 전에도 스크린리더에 즉시 노출 */}
         <h1 className="sr-only">KD4 액팅 스튜디오 — <span lang="en">ACTOR ACCELERATING SYSTEM</span></h1>
 
-        {/* 뒷벽에 박히는 타이틀 — DOM/CSS로 선명하게, 달리줌과 동기화
-             측정 완료 전(titleReady=false)에는 비가시 — letter-spacing 적용 후 등장 */}
-        <div className={`hero-title-wall-pos ${titleReady ? 'is-ready' : ''}`}>
-          <div className="hero-title-wall" ref={heroTitleRef}>
-            <div className="hero-title-wall-main" aria-hidden="true">KD4 액팅 스튜디오</div>
-            <p className="hero-title-wall-sub"><span lang="en">ACTOR ACCELERATING SYSTEM</span></p>
-          </div>
-          {/* 달리줌으로 KD4 타이틀이 사라지면 같은 자리에 마이즈너 문구가 떠오름 */}
-          <div className="hero-wall-statement">
-            <span className="hero-wall-statement-eyebrow" lang="en">Meisner Technique · Sinchon, Seoul</span>
-            <p className="hero-wall-statement-line">상상의 상황 속에서,<br />진실하게 살아내는 것</p>
+        {/* 첫 화면 A안 (2026-11-16 대표 «A안으로 가고») — 처음부터 문장을 크게, 진한 네이비로.
+             작은 라벨(스튜디오 이름) · 문장 · 밑줄 한 줄 버튼. 휴대폰 = 왼쪽 정렬 두 줄, 768px 이상 = 가운데 한 줄.
+             글꼴(KoPub 바탕)·색(크림+네이비)·배경(연습실 3D)·문장은 그대로. 예전 «KD4 타이틀 → 약 11초 뒤 문장» 연출은 제거.
+             등장은 CSS만(스크롤 트리거 없음) — JS가 늦거나 꺼져도 문장은 보인다 */}
+        <div className="hero-a-pos">
+          <div className="hero-a">
+            <p className="hero-a-label" lang="en">KD4 Acting Studio · Sinchon, Seoul</p>
+            <p className="hero-a-line">상상의 상황 속에서,{' '}<br className="hero-a-br" />진실하게 살아내는 것</p>
+            <Link
+              href="/join#form-hero"
+              className="hero-a-cta"
+              onClick={() => analytics.ctaClick('hero_first', '상담 신청')}
+            >
+              상담 신청 <span aria-hidden="true">→</span>
+            </Link>
           </div>
         </div>
 
@@ -407,6 +343,7 @@ export default function HomePage() {
             opacity: 0,
           }}
         >
+          <span className="hero-scroll-label" lang="en">Scroll</span>
           <div className="hero-scroll-line" />
         </div>
       </section>

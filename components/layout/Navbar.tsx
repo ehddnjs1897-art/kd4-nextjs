@@ -37,6 +37,11 @@ export default function Navbar() {
   const hamburgerRef = useRef<HTMLButtonElement>(null)
   const mobileOverlayRef = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
+  /* 홈 첫 화면 A안 (2026-11-16 대표 확정): 홈에서만 상단을 덜어낸다 — 로고 회색 상자 없음,
+     색 버튼(회원가입·무료 상담 신청) 대신 글씨(무료 상담 신청만 밑줄). 다른 페이지는 예전 그대로. */
+  const isHome = pathname === '/'
+  /* 메뉴가 «열렸다 닫힐 때»만 메뉴 버튼으로 초점을 돌려주기 위한 기록 */
+  const wasMobileOpenRef = useRef(false)
 
   /* ── 스크롤 감지 ── */
   useEffect(() => {
@@ -112,9 +117,12 @@ export default function Navbar() {
         'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
       )
       focusables[0]?.focus()
-    } else {
+    } else if (wasMobileOpenRef.current) {
+      // 메뉴를 닫았을 때만 초점 복귀. 예전엔 페이지가 처음 뜰 때도 초점을 옮겨서
+      // 휴대폰 첫 화면마다 메뉴 버튼에 네모 테두리(초점 표시)가 떠 있었다 (2026-11-16 수정)
       hamburgerRef.current?.focus()
     }
+    wasMobileOpenRef.current = mobileOpen
   }, [mobileOpen])
 
   /* ── 인증 상태 & 역할 fetch — Supabase 클라이언트 동적 로드 (메인 페이지 초기 번들에서 제외) ── */
@@ -253,23 +261,36 @@ export default function Navbar() {
           }}
         >
           {/* ── 로고 ── */}
-          <Link href="/" style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-            <Image
-              src="/heart-logo.png"
-              alt="KD4 Acting Studio"
-              width={400}
-              height={400}
-              sizes="44px"
-              priority
-              style={{
-                height: '44px',
-                width: 'auto',
-                objectFit: 'contain',
-                background: '#D5D0C8',
-                borderRadius: '6px',
-                padding: '4px 8px',
-              }}
-            />
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', flexShrink: 0, minHeight: 44 }}>
+            {isHome ? (
+              /* 홈: 회색 상자 없이 마크만 — heart-logo.png의 흰 바탕을 투명하게 만든 파일 (마크 모양·색 동일) */
+              <Image
+                src="/heart-logo-flat.png"
+                alt="KD4 Acting Studio"
+                width={312}
+                height={117}
+                sizes="48px"
+                priority
+                style={{ height: '16px', width: 'auto', objectFit: 'contain' }}
+              />
+            ) : (
+              <Image
+                src="/heart-logo.png"
+                alt="KD4 Acting Studio"
+                width={400}
+                height={400}
+                sizes="44px"
+                priority
+                style={{
+                  height: '44px',
+                  width: 'auto',
+                  objectFit: 'contain',
+                  background: '#D5D0C8',
+                  borderRadius: '6px',
+                  padding: '4px 8px',
+                }}
+              />
+            )}
           </Link>
 
           {/* ── Desktop Nav ── */}
@@ -478,20 +499,26 @@ export default function Navbar() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   minHeight: 44,
-                  padding: '8px 16px',
+                  padding: isHome ? '8px 12px' : '8px 16px',
                   background: 'transparent',
-                  color: 'var(--navy)',
-                  border: '1px solid var(--navy)',
+                  color: isHome ? '#111111' : 'var(--navy)',
+                  border: isHome ? '1px solid transparent' : '1px solid var(--navy)',
                   borderRadius: 'var(--radius)',
                   fontFamily: 'var(--font-sans)',
                   fontSize: '0.825rem',
-                  fontWeight: 700,
+                  fontWeight: isHome ? 500 : 700,
                   textDecoration: 'none',
                   whiteSpace: 'nowrap',
                   transition: 'background 0.2s, color 0.2s',
                 }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'var(--navy)'; e.currentTarget.style.color = '#ffffff' }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--navy)' }}
+                onMouseEnter={e => {
+                  if (isHome) { e.currentTarget.style.color = 'var(--navy)'; return }
+                  e.currentTarget.style.background = 'var(--navy)'; e.currentTarget.style.color = '#ffffff'
+                }}
+                onMouseLeave={e => {
+                  if (isHome) { e.currentTarget.style.color = '#111111'; return }
+                  e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--navy)'
+                }}
               >
                 회원가입
               </Link>
@@ -574,10 +601,10 @@ export default function Navbar() {
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                padding: '8px 20px',
+                padding: isHome ? '8px 4px 8px 12px' : '8px 20px',
                 minHeight: 44,
-                background: 'var(--gold)',
-                color: '#ffffff',
+                background: isHome ? 'transparent' : 'var(--gold)',
+                color: isHome ? 'var(--navy)' : '#ffffff',
                 fontFamily: 'var(--font-sans)',
                 fontSize: '0.825rem',
                 fontWeight: 700,
@@ -587,10 +614,18 @@ export default function Navbar() {
                 whiteSpace: 'nowrap',
                 textDecoration: 'none',
               }}
-              onMouseEnter={e => (e.currentTarget.style.background = 'var(--gold-light)')}
-              onMouseLeave={e => (e.currentTarget.style.background = 'var(--gold)')}
+              onMouseEnter={e => {
+                if (isHome) { e.currentTarget.style.opacity = '0.7'; return }
+                e.currentTarget.style.background = 'var(--gold-light)'
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.opacity = '1'
+                if (!isHome) e.currentTarget.style.background = 'var(--gold)'
+              }}
             >
-              무료 상담 신청
+              {isHome ? (
+                <span style={{ borderBottom: '1.5px solid var(--navy)', paddingBottom: '4px' }}>무료 상담 신청</span>
+              ) : '무료 상담 신청'}
             </Link>
 
             {/* 햄버거 */}

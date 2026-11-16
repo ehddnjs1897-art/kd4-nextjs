@@ -6,7 +6,7 @@ interface Cohort {
   name: string
   cohort: string
   seats: number
-  price?: number   // 첫 달 가격 (원)
+  price?: number   // 월 수강료 (원)
 }
 
 function wan(price: number) {
@@ -43,9 +43,9 @@ export default function StickyTopBar({
         fontFamily: 'var(--font-sans)',
       }}
     >
-      {/* 첫 달 라벨 */}
+      {/* 월 수강료 라벨 — 2026-11-16 대표 확정: «첫 달»은 첫 달만 그 값이라는 오해 소지 → «월» */}
       <span style={{ fontSize: '0.75rem', color: 'var(--gray)', flexShrink: 0 }}>
-        첫 달
+        월
       </span>
 
       {/* 클래스별 가격 + HOT 뱃지 */}

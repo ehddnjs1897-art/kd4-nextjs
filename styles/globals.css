@@ -2150,3 +2150,17 @@ main {
 .join-reel-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--navy); color: #fff; font-weight: 700; font-size: 0.95rem; padding: 14px 26px; border-radius: 10px; text-decoration: none; min-height: 48px; }
 .join-reel-link { display: inline-flex; align-items: center; gap: 6px; font-size: 0.84rem; font-weight: 700; color: var(--navy); text-decoration: none; border-bottom: 1px solid var(--navy); padding: 4px 0; position: relative; }
 .join-reel-link::after { content: ''; position: absolute; left: -6px; right: -6px; top: -8px; bottom: -8px; }
+/* 2026-11-16 대표 확정: 수강료 포함 내용 한 줄(⑧) + 영상 2편만 먼저, 나머지는 「더 보기」(②) + 숫자 안내 한 줄(⑥) */
+.join-reel-incl { margin-top: 10px; font-size: 0.84rem; line-height: 1.6; color: var(--gray); word-break: keep-all; }
+.join-reel-incl strong { color: var(--navy); font-weight: 700; margin-right: 8px; }
+.join-reel-grid--two { max-width: 880px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+.join-reel-more { max-width: 880px; margin: 14px auto 0; }
+.join-reel-more > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 9px; min-height: 48px; font-size: 0.88rem; font-weight: 700; color: var(--navy); background: #fff; border: 1px solid var(--border); border-radius: 12px; -webkit-tap-highlight-color: transparent; }
+.join-reel-more > summary::-webkit-details-marker { display: none; }
+.join-reel-more-open { display: none; }
+.join-reel-more[open] .join-reel-more-open { display: inline; }
+.join-reel-more[open] .join-reel-more-closed { display: none; }
+.join-reel-more-arrow { width: 7px; height: 7px; border-right: 1.5px solid var(--navy); border-bottom: 1.5px solid var(--navy); transform: translateY(-2px) rotate(45deg); transition: transform 0.2s; }
+.join-reel-more[open] .join-reel-more-arrow { transform: translateY(2px) rotate(-135deg); }
+.join-reel-more > .join-reel-grid { margin-top: 14px; }
+.join-stat-note { font-size: 0.78rem; line-height: 1.65; color: var(--gray); margin: -10px 0 24px; padding-top: 10px; border-top: 1px solid var(--border); word-break: keep-all; }

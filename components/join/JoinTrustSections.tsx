@@ -132,7 +132,8 @@ export function WhyKD4Section({ numbered = true }: { numbered?: boolean } = {}) 
   )
 }
 
-export function DirectorSection({ numbered = true }: { numbered?: boolean } = {}) {
+/** statNote — 숫자가 여러 개 나오는 페이지(/join)에서만 넘기는 «각 숫자가 무엇을 센 것인지» 한 줄 (2026-11-16 대표 ⑥) */
+export function DirectorSection({ numbered = true, statNote }: { numbered?: boolean; statNote?: string } = {}) {
   return (
     <section aria-label="강사 권동원 소개" className="section" style={{ background: 'var(--bg)', padding: 'clamp(56px, 10vw, 88px) 0' }}>
       <div className="container">
@@ -206,6 +207,7 @@ export function DirectorSection({ numbered = true }: { numbered?: boolean } = {}
                 </li>
               ))}
             </ul>
+            {statNote && <p className="join-stat-note">{statNote}</p>}
 
             {/* FILMOGRAPHY — DirectorFilmography 공용 컴포넌트 (스펙 2-F) */}
             <DirectorFilmography labelColor="var(--navy)" />
