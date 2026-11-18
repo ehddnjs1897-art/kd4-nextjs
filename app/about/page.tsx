@@ -73,7 +73,7 @@ const LAYERS = [
   { num: '02', name: '실행', desc: '촬영 · 출연영상 · 독백 · 레피티션 · 장면' },
   { num: '03', name: '관리', desc: '목표 · 피드백 · 성장 기록 · AI 분석 · 멘토 리뷰' },
   { num: '04', name: '커리어', desc: '프로필 · 오디션 · 캐스팅 · 감독 네트워크 · 제작' },
-  { num: '05', name: '커뮤니티', desc: '멤버십 · 선후배 · 스터디 · 협업' },
+  { num: '05', name: '커뮤니티', desc: '멤버십 · 스터디 · 협업' },
 ]
 
 const TESTIMONIALS = [
@@ -569,22 +569,22 @@ export default function AboutPage() {
         <nav aria-label="관련 페이지" style={{ marginTop: '32px', paddingTop: '20px', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
           <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link href="/acting-coaches" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-              권동원 액팅 코치 <span aria-hidden="true">→</span>
+              권동원 액팅 코치
             </Link>
             <Link href="/acting-coaches#sebin" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-              주세빈 액팅 코치 <span aria-hidden="true">→</span>
+              주세빈 액팅 코치
             </Link>
             <Link href="/meisner-technique-class" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-              마이즈너 테크닉 클래스 <span aria-hidden="true">→</span>
+              마이즈너 테크닉 클래스
             </Link>
             <Link href="/sinchon-acting-academy" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-              신촌 연기학원 오시는 길 <span aria-hidden="true">→</span>
+              신촌 연기학원 오시는 길
             </Link>
             <Link href="/classes" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-              클래스 안내 <span aria-hidden="true">→</span>
+              클래스 안내
             </Link>
             <Link href="/benefits" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-              멤버 혜택 <span aria-hidden="true">→</span>
+              멤버 혜택
             </Link>
           </div>
         </nav>

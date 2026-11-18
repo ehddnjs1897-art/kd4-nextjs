@@ -2118,11 +2118,9 @@ main {
 .join-more-head { max-width: 720px; margin: 0 auto 22px; text-align: center; }
 .join-more-title { font-size: clamp(1.5rem, 3.6vw, 2.1rem); margin-bottom: 0; }
 .join-more-links { list-style: none; margin: 0 auto; padding: 0; max-width: 720px; display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
-.join-more-link { height: 100%; min-height: 68px; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 16px 20px; background: #fff; border: 1px solid var(--border); border-radius: 14px; color: var(--black); text-decoration: none; transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition); }
-.join-more-link:hover { border-color: var(--navy); transform: translateY(-2px); box-shadow: 0 8px 22px rgba(21,72,138,0.10); }
-.join-more-link > svg { color: var(--navy); flex-shrink: 0; transition: transform var(--transition); }
-.join-more-link:hover > svg { transform: translateX(3px); }
+.join-more-link { height: 100%; min-height: 68px; display: flex; flex-direction: column; justify-content: center; padding: 16px 20px; background: var(--navy); border: 1.5px solid var(--navy); border-radius: 14px; color: #fff; text-decoration: none; transition: background-color var(--transition), border-color var(--transition), transform var(--transition), box-shadow var(--transition); }
+.join-more-link:hover { background: var(--navy-light); border-color: var(--navy-light); transform: translateY(-2px); box-shadow: 0 8px 22px rgba(21,72,138,0.22); }
 .join-more-link-name { display: block; font-family: var(--font-serif); font-size: 1.08rem; font-weight: 700; }
-.join-more-link-desc { display: block; margin-top: 3px; font-size: 0.82rem; color: var(--gray); line-height: 1.55; word-break: keep-all; }
+.join-more-link-desc { display: block; margin-top: 3px; font-size: 0.82rem; color: rgba(255,255,255,0.82); line-height: 1.55; word-break: keep-all; }
 /* 2026-11-16 대표 확정: 숫자 안내 한 줄(⑥) */
 .join-stat-note { font-size: 0.78rem; line-height: 1.65; color: var(--gray); margin: -10px 0 24px; padding-top: 10px; border-top: 1px solid var(--border); word-break: keep-all; }

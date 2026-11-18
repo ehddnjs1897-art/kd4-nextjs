@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Fragment } from 'react'
 import dynamic from 'next/dynamic'
-import { ArrowRight, MessageCircle } from 'lucide-react'
+import { MessageCircle } from 'lucide-react'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { LAST_UPDATED } from '@/lib/last-updated'
 import { buildBreadcrumb, buildWebPage } from '@/lib/seo-schemas'
@@ -132,7 +132,6 @@ export default function JoinPage() {
                   <span className="join-more-link-name">클래스 소개</span>
                   <span className="join-more-link-desc">클래스별 커리큘럼·일정·수강료</span>
                 </span>
-                <ArrowRight aria-hidden={true} size={18} strokeWidth={2.2} />
               </a>
             </li>
             <li>
@@ -141,7 +140,6 @@ export default function JoinPage() {
                   <span className="join-more-link-name">스튜디오 소개</span>
                   <span className="join-more-link-desc">마이즈너 테크닉 · 연기하지 않는 연기</span>
                 </span>
-                <ArrowRight aria-hidden={true} size={18} strokeWidth={2.2} />
               </a>
             </li>
           </ul>

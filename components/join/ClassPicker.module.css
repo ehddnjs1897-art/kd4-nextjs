@@ -76,18 +76,20 @@
   min-height: 92px;
   padding: 14px 14px 15px;
   overflow: hidden;
-  background: #ffffff;
-  border: 1px solid var(--border);
+  /* 흰 카드는 크림 바탕에서 눈에 안 들어온다(2026-11-19 대표) → 네이비 바탕 + 흰 글씨 */
+  background: var(--navy);
+  border: 1.5px solid var(--navy);
   border-radius: 14px;
-  color: #111111;
+  color: #ffffff;
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 .tile:hover,
 .tile:focus-visible {
-  border-color: var(--navy);
-  box-shadow: 0 10px 26px rgba(21, 72, 138, 0.14);
+  background: var(--navy-light);
+  border-color: var(--navy-light);
+  box-shadow: 0 10px 26px rgba(21, 72, 138, 0.22);
   transform: translateY(-2px);
 }
 .tile:focus-visible {
@@ -99,10 +101,6 @@
 }
 
 .name {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 6px;
   font-family: var(--font-serif);
   font-weight: 700;
   font-size: 1.0625rem;
@@ -111,38 +109,25 @@
   word-break: keep-all;
 }
 
-.arrow {
-  flex-shrink: 0;
-  margin-top: 4px;
-  color: var(--navy);
-  transition: transform 0.2s ease;
-}
-.tile:hover .arrow {
-  transform: translateX(3px);
-}
-
 .sub {
   font-size: 0.78rem;
   line-height: 1.46;
-  color: var(--gray);
+  color: rgba(255, 255, 255, 0.82);
   word-break: keep-all;
 }
 
+/* 추천받기 — 클래스 5개와 구분되게 테두리형(크림 바탕 + 네이비 글씨) */
 .tileRecommend {
-  background: var(--navy);
-  border-color: var(--navy);
-  color: #ffffff;
+  background: transparent;
+  color: var(--navy);
 }
 .tileRecommend .sub {
-  color: rgba(255, 255, 255, 0.8);
-}
-.tileRecommend .arrow {
-  color: #ffffff;
+  color: var(--gray);
 }
 .tileRecommend:hover,
 .tileRecommend:focus-visible {
-  background: var(--navy-light);
-  border-color: var(--navy-light);
+  background: var(--navy-tint-2);
+  border-color: var(--navy);
 }
 
 /* ── 선택지 아래 ── */
@@ -218,14 +203,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tile,
-  .arrow {
+  .tile {
     transition: none;
   }
   .tile:hover,
   .tile:focus-visible,
-  .tile:active,
-  .tile:hover .arrow {
+  .tile:active {
     transform: none;
   }
 }

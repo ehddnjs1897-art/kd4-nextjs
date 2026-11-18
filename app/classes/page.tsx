@@ -439,25 +439,25 @@ export default function ClassesPage() {
       <nav aria-label="관련 페이지" style={{ padding: '24px', background: 'var(--bg2)', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
         <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link href="/meisner-technique-class" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-            마이즈너 테크닉 클래스 <span aria-hidden="true">→</span>
+            마이즈너 테크닉 클래스
           </Link>
           <Link href="/reel-production-class" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-            출연영상 클래스 <span aria-hidden="true">→</span>
+            출연영상 클래스
           </Link>
           <Link href="/audition-technique-class" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-            오디션 테크닉 클래스 <span aria-hidden="true">→</span>
+            오디션 테크닉 클래스
           </Link>
           <Link href="/acting-coaches" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-            권동원 액팅 코치 <span aria-hidden="true">→</span>
+            권동원 액팅 코치
           </Link>
           <Link href="/acting-coaches#sebin" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-            주세빈 액팅 코치 <span aria-hidden="true">→</span>
+            주세빈 액팅 코치
           </Link>
           <Link href="/about" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-            KD4 소개 <span aria-hidden="true">→</span>
+            KD4 소개
           </Link>
           <Link href="/benefits" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-            멤버 혜택 <span aria-hidden="true">→</span>
+            멤버 혜택
           </Link>
         </div>
       </nav>
