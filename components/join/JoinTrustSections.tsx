@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { Users, FileText, Film, Handshake, ArrowRight, HeartHandshake } from 'lucide-react'
+import { Users, FileText, Film, Handshake, HeartHandshake } from 'lucide-react'
 import { DIRECTOR } from '@/lib/classes'
 import DirectorFilmography from '@/components/director/DirectorFilmography'
 import JoinCTALink from '@/components/join/JoinCTALink'
@@ -273,7 +273,6 @@ export function ReviewsSection({ ctaHref = '#form-hero', numbered = true }: { ct
             }}
           >
             나도 진짜 배우로 · 무료 상담 신청
-            <ArrowRight aria-hidden={true} size={14} strokeWidth={2.2} />
           </JoinCTALink>
         </div>
       </div>
