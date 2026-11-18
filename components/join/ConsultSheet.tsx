@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
-import { ArrowRight, Check, ChevronLeft, ChevronRight, MessageCircle, X } from 'lucide-react'
+import { Check, ChevronLeft, MessageCircle, X } from 'lucide-react'
 import { analytics } from '@/lib/analytics'
 import type { InstantClass, InstantKey } from '@/lib/join-instant'
 import {
@@ -489,7 +489,6 @@ export default function ConsultSheet({ classes }: { classes: InstantClass[] }) {
                   )}
                   <button type="button" className={s.detailBtn} onClick={openDetail}>
                     {cls.key === 'recommend' ? '클래스별 차이 보기' : `${cls.label} 상세소개 보기`}
-                    <ChevronRight aria-hidden={true} size={16} strokeWidth={2.2} />
                   </button>
                 </div>
 
@@ -605,7 +604,6 @@ export default function ConsultSheet({ classes }: { classes: InstantClass[] }) {
 
                   <button type="submit" className={s.btnPrimary} disabled={loading} aria-busy={loading}>
                     {loading ? '접수 중…' : '무료 상담 신청'}
-                    {!loading && <ArrowRight aria-hidden={true} size={17} strokeWidth={2.2} />}
                   </button>
 
                   <p className={s.reassure}>
@@ -710,7 +708,6 @@ export default function ConsultSheet({ classes }: { classes: InstantClass[] }) {
 
                 <a href={cls.href} target="_blank" rel="noopener noreferrer" className={s.pageLink}>
                   {cls.label} 소개 페이지 전체 보기 (새 탭)
-                  <ChevronRight aria-hidden={true} size={15} strokeWidth={2.2} />
                 </a>
               </>
             )}
@@ -735,7 +732,6 @@ export default function ConsultSheet({ classes }: { classes: InstantClass[] }) {
                       </p>
                       <button type="button" className={s.pickBtn} onClick={() => switchClass(p.key)}>
                         {p.label} 상담으로 바꾸기
-                        <ArrowRight aria-hidden={true} size={15} strokeWidth={2.2} />
                       </button>
                     </li>
                   ))}
@@ -788,7 +784,6 @@ export default function ConsultSheet({ classes }: { classes: InstantClass[] }) {
             <div className={s.foot}>
               <button type="button" className={s.btnPrimary} onClick={() => backToConsult('cta')}>
                 {cls.key === 'recommend' ? '추천 상담 이어서 신청하기' : '이어서 상담 신청하기'}
-                <ArrowRight aria-hidden={true} size={17} strokeWidth={2.2} />
               </button>
             </div>
           )}
