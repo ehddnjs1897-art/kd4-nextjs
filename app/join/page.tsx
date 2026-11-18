@@ -6,16 +6,18 @@ import { CLASSES } from '@/lib/classes'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { LAST_UPDATED } from '@/lib/last-updated'
 import { buildBreadcrumb, buildWebPage } from '@/lib/seo-schemas'
-import StickyTopBar from '@/components/join/StickyTopBar'
 import JoinHeader from '@/components/join/JoinHeader'
 import JoinCTALink from '@/components/join/JoinCTALink'
+import ClassPicker from '@/components/join/ClassPicker'
+import ConsultSheet from '@/components/join/ConsultSheet'
+import ConsultOpenLink from '@/components/join/ConsultOpenLink'
 import { WhyKD4Section, DirectorSection, ReviewsSection, PromiseSection } from '@/components/join/JoinTrustSections'
 import { SITE_URL } from '@/lib/constants'
 import { REEL_PORTFOLIO_VIDEOS, REEL_INCLUDES } from '@/lib/class-landing-content'
+import { buildInstantClasses } from '@/lib/join-instant'
 
 /* 폴드 아래 / 비즈니스 크리티컬하지 않은 컴포넌트 — 지연 로딩 */
 const JoinPageView = dynamic(() => import('@/components/analytics/JoinPageView'))
-const JoinForm = dynamic(() => import('@/components/contact/JoinForm'))
 const StickyBottomCTA = dynamic(() => import('@/components/join/StickyBottomCTA'))
 const ScrollDepth = dynamic(() => import('@/components/analytics/ScrollDepth'))
 const YouTubeFacade = dynamic(() => import('@/components/youtube/YouTubeFacade'))
@@ -49,16 +51,6 @@ export const revalidate = 3600
 /* 2026-05-30: 봄맞이 프로모션 종료 — 카운트다운/마감 카피 전부 제거.
    다음 프로모션 시 CountdownTimer + DEADLINE + lib/classes.ts promoLabel/originalPrice 부활. */
 
-/* ── lib/classes.ts 데이터 재사용 ─────────────────────────────────── */
-const MAIN_CLASS = CLASSES.find((c) => c.nameKo === '마이즈너 테크닉 정규 클래스')!
-const FILM_CLASS = CLASSES.find((c) => c.nameKo === '출연영상 클래스')!
-
-/* Sticky 상단 모집 중 반 (기수 정보 포함) */
-const OPEN_COHORTS = [
-  { name: '마이즈너', cohort: '3기', seats: MAIN_CLASS.remainingSeats ?? 0, price: parseInt(MAIN_CLASS.price.replace(/,/g, ''), 10) },
-  { name: '출연영상', cohort: '19기', seats: FILM_CLASS.remainingSeats ?? 0, price: parseInt(FILM_CLASS.price.replace(/,/g, ''), 10) },
-]
-
 /* ── 출연영상 클래스 + 포트폴리오 베스트 3 (2026-10-29 대표 «출연영상클래스와 포트폴리오 베스트 3개정도 넣는게좋겠어»)
  *    영상 = 대표가 10/19 출연영상 광고 랜딩에 고른 4편(AD_REEL_PICKS) 중 앞 3편(가장 최근). 클래스 사실은 lib/classes.ts ── */
 const REEL_CLASS = CLASSES.find((c) => c.nameKo === '출연영상 클래스')!
@@ -74,16 +66,8 @@ const REEL_REST = REEL_BEST.slice(4)
 /* 2026-11-16 대표 «8 반영»: 수강료에 무엇이 들어 있는지 한 줄 — 정본 REEL_INCLUDES(출연영상 클래스 페이지와 같은 목록)에서 괄호 설명만 뺀 것.
    같은 날 대표 «이 문구를 빼고»: 이 한 줄에서는 「캐스팅·오디션 제출용 영상 납품」 제외 (출연영상 클래스 페이지의 목록은 그대로). */
 const REEL_INCLUDED_HIDE = ['캐스팅·오디션 제출용 영상 납품']
-const REEL_INCLUDED_LINE = REEL_INCLUDES.filter((i) => i.yes && !REEL_INCLUDED_HIDE.includes(i.text)).map((i) => i.text.replace(/\s*\(.*\)$/, '')).join(', ')
-
-/* ── 더 알아보기 링크 (2026-10-19 대표: 스튜디오 소개 + 클래스·각 페이지 링크) — 이름·한 줄·가격은 lib/classes.ts 그대로 ── */
-const MORE_LINKS = [
-  { nameKo: '베이직 클래스', href: '/basic-acting-class', tag: '취미 · 입문' },
-  { nameKo: '마이즈너 테크닉 정규 클래스', href: '/meisner-technique-class', tag: '정규 클래스' },
-  { nameKo: '출연영상 클래스', href: '/reel-production-class', tag: '정규 · 포트폴리오' },
-  { nameKo: '오디션 테크닉 클래스', href: '/audition-technique-class', tag: '정규 · 오디션 준비' },
-  { nameKo: '개인 레슨', href: '/acting-coaches', tag: '1:1 · 맞춤 지도' },
-].map((l) => ({ ...l, cls: CLASSES.find((c) => c.nameKo === l.nameKo)! }))
+const REEL_INCLUDED_ITEMS = REEL_INCLUDES.filter((i) => i.yes && !REEL_INCLUDED_HIDE.includes(i.text)).map((i) => i.text.replace(/\s*\(.*\)$/, ''))
+const REEL_INCLUDED_LINE = REEL_INCLUDED_ITEMS.join(', ')
 
 /* ── 후기 마퀴 (2행 교차) ── */
 
@@ -91,6 +75,12 @@ const MORE_LINKS = [
 /* ══════════════════════════════════════════════════════════════════ */
 
 export default function JoinPage() {
+  /* 클래스 선택 타일·상담창 데이터 — 수강료가 정해진 시각에 바뀌므로(lib/classes.ts) 그릴 때마다 읽는다 */
+  const instantClasses = buildInstantClasses({
+    reelVideos: REEL_TOP.map(({ id, title }) => ({ id, title })),
+    reelIncludes: REEL_INCLUDED_ITEMS,
+  })
+
   return (
     <>
       <div
@@ -117,189 +107,23 @@ export default function JoinPage() {
         }),
       ]} />
 
-      {/* 2026-11-14 검색 광고 대응: 얇은 상단 메뉴(고정) + 가격 띠(고정 해제, 버튼은 메뉴로 이동) */}
+      {/* 얇은 상단 메뉴(고정). 2026-11-18 대표 브리프: 가격은 첫 화면이 아니라 클래스를 누른 직후(연락처 입력 전) 상담창에서 보여준다 → 가격 띠(StickyTopBar) 제거 */}
       <JoinHeader />
-      <StickyTopBar cohorts={OPEN_COHORTS} sticky={false} showCta={false} />
 
       {/* 분석: 랜딩 ViewContent + 스크롤 깊이 추적 (GA4 + Meta Pixel) */}
       <JoinPageView />
       <ScrollDepth />
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ① HERO — 강사 사진 + 세리프 헤드라인                      */}
+      {/* ① 첫 화면 — 질문 하나 + 클래스 선택지 (2026-11-18 대표 브리프: 리바이저 문의 페이지 방식)
+          공통 광고로 들어온 방문자가 클래스를 한 번 누르면 그 클래스 상담창이 바로 열린다.
+          옛 구성(네이비 히어로 → 클래스 소개 카드 5장 → 3단계 폼)을 이 한 화면으로 바꿈.
+          되돌리려면 이 커밋을 revert (옛 폼 components/contact/JoinForm.tsx 는 그대로 있음). */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section
-        aria-label="히어로 — 권동원 대표 소개"
-        style={{
-          position: 'relative',
-          minHeight: '560px',
-          overflow: 'hidden',
-          background: 'var(--navy)',
-        }}
-      >
-        {/* B. Hero 시네마틱 배경 (Preview) — director.jpg overlay + 그라데이션 */}
-        <div className="hero-bg-image" aria-hidden />
-        <div className="hero-cinematic-overlay" aria-hidden />
+      <ClassPicker id="form-hero" classes={instantClasses} location="top" />
 
-        <div
-          className="container"
-          style={{
-            position: 'relative',
-            zIndex: 1,
-            padding: 'clamp(72px, 14vw, 120px) 24px clamp(60px, 10vw, 90px)',
-            textAlign: 'center',
-          }}
-        >
-          <p
-            className="section-eyebrow"
-            style={{
-              color: 'rgba(255,255,255,0.95)',
-              marginBottom: '20px',
-              wordBreak: 'keep-all',
-              fontSize: 'clamp(0.84rem, 2.2vw, 0.95rem)',
-              fontWeight: 600,
-              letterSpacing: '0.14em',
-            }}
-          >
-            신촌 · KD4 액팅 스튜디오
-          </p>
-
-          <h1
-            className="section-title-serif"
-            style={{
-              fontSize: 'clamp(1.55rem, 4.2vw, 2.8rem)',
-              color: '#ffffff',
-              lineHeight: 1.4,
-              marginBottom: '14px',
-              maxWidth: '640px',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              wordBreak: 'keep-all',
-            }}
-          >
-            수업이 끝이 아닙니다.
-            <br />
-            <span
-              style={{
-                color: '#ffffff',
-                borderBottom: '2px solid var(--navy-accent)',
-                paddingBottom: '2px',
-              }}
-            >
-              캐스팅까지 연결합니다.
-            </span>
-          </h1>
-
-          {/* 무엇을 배우는 곳인지 한 줄 — 검색 유입자가 3초 안에 알도록 (2026-11-14) */}
-          <p
-            style={{
-              fontSize: 'clamp(0.88rem, 2.4vw, 1rem)',
-              color: 'rgba(255,255,255,0.9)',
-              marginBottom: '26px',
-              letterSpacing: '0.01em',
-              wordBreak: 'keep-all',
-            }}
-          >
-            입문 베이직 · 마이즈너 테크닉 · 출연영상
-          </p>
-
-          {/* 숫자 임팩트 — 첫 화면 후킹 */}
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              gap: 'clamp(20px, 6vw, 44px)',
-              marginBottom: '28px',
-              flexWrap: 'wrap',
-            }}
-          >
-            {[
-              { num: '150명', label: '현직 배우 수료' },
-              { num: '3년', label: '캐스팅 연계 운영' },
-              { num: '6~8명', label: '소수정예 정원' },
-            ].map((s) => (
-              <div key={s.label} style={{ textAlign: 'center' }}>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: 'clamp(1.6rem, 5vw, 2.4rem)',
-                    fontWeight: 800,
-                    color: '#ffffff',
-                    lineHeight: 1,
-                    letterSpacing: '0.01em',
-                  }}
-                >
-                  {s.num}
-                </div>
-                <div
-                  style={{
-                    fontSize: 'clamp(0.75rem, 1.8vw, 0.78rem)',
-                    color: 'rgba(255,255,255,0.75)',
-                    marginTop: '6px',
-                    letterSpacing: '0.03em',
-                  }}
-                >
-                  {s.label}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div
-            style={{
-              display: 'flex',
-              gap: '12px',
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-            }}
-          >
-            <JoinCTALink
-              href="#form-hero"
-              location="hero"
-              label="지금 무료 상담 신청"
-              fireLead
-              className="btn-primary uplift-cta-pulse"
-              style={{ background: 'var(--navy)', color: '#ffffff' }}
-            >
-              지금 무료 상담 신청
-              <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} />
-            </JoinCTALink>
-            <JoinCTALink
-              href="https://pf.kakao.com/_ximxdqn"
-              kind="external"
-              channel="kakao"
-              location="hero"
-              label="카카오로 문의하기"
-              fireLead
-              className="btn-outline"
-              style={{
-                borderColor: 'rgba(255,255,255,0.4)',
-                color: 'rgba(255,255,255,0.9)',
-              }}
-            >
-              <MessageCircle aria-hidden={true} size={14} strokeWidth={2.2} />
-              카카오로 문의하기
-            </JoinCTALink>
-          </div>
-
-          <p
-            style={{
-              fontSize: 'clamp(0.8rem, 2vw, 0.88rem)',
-              color: 'rgba(255,255,255,0.8)',
-              marginTop: '18px',
-              letterSpacing: '0.02em',
-            }}
-          >
-            연기 경험 없어도 OK
-          </p>
-        </div>
-      </section>
-
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* MORE — 더 알아보기 (2026-10-19 대표 «스튜디오 소개 + 클래스 소개·각 페이지 링크»).
-          2026-11-16 대표 «올리고»: 맨 아래 폼(#form) 뒤 → 첫 화면 바로 아래·위쪽 폼(#form-hero) 앞으로 통째로 이동. 내용·디자인은 그대로.
-          되돌리려면 이 구간을 아래쪽 폼(#form) 뒤로 옮기면 됨. */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* MORE — 스튜디오 소개 (2026-10-19 대표 «스튜디오 소개 + 클래스 소개·각 페이지 링크»).
+          2026-11-18: 클래스 카드 5장은 위 선택 타일·상담창의 «상세소개 보기»로 옮겨 가서 여기선 뺌 — 스튜디오 소개와 전체 보기 링크만 남김 */}
       <section aria-label="더 알아보기" className="section join-more">
         <div className="container">
           <div className="join-more-head">
@@ -317,57 +141,9 @@ export default function JoinPage() {
             </span>
           </a>
 
-          <ul className="join-more-grid" role="list">
-            {MORE_LINKS.map(({ nameKo, href, tag, cls }) => (
-              <li key={nameKo}>
-                <a href={href} className="join-more-card">
-                  <span className="join-more-tag">{tag}</span>
-                  <span className="join-more-name">{nameKo}</span>
-                  <span className="join-more-quote">{cls.quote}</span>
-                  <span className="join-more-foot">
-                    <span className="join-more-price">월 {cls.price}원</span>
-                    <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} className="join-more-arrow" />
-                  </span>
-                </a>
-              </li>
-            ))}
-          </ul>
-
           <p className="join-more-all">
             <a href="/classes">클래스 전체 한눈에 보기 <ArrowRight aria-hidden={true} size={14} strokeWidth={2.2} /></a>
           </p>
-        </div>
-      </section>
-
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⓪ FORM-HERO — Hero 직후 즉시 신청 (스크롤 거리 0)         */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section
-        id="form-hero"
-        aria-label="즉시 무료 상담 신청"
-        className="section"
-        style={{
-          scrollMarginTop: '68px', // sticky 상단 메뉴 가림 보정 (모양 불변)
-          background: 'radial-gradient(ellipse at 50% 0%, rgba(21,72,138,0.08) 0%, var(--bg) 70%)',
-          padding: 'clamp(48px, 9vw, 80px) 0',
-        }}
-      >
-        <div className="container">
-          <div style={{ maxWidth: '520px', margin: '0 auto' }}>
-            <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-              <p className="section-eyebrow">무료 상담 · 3단계 간편 신청</p>
-              <h2
-                className="section-title-serif"
-                style={{ fontSize: 'clamp(1.4rem, 3.6vw, 1.9rem)', marginBottom: '10px' }}
-              >
-                배우의 여정, 여기서 시작
-              </h2>
-              <p style={{ fontSize: '0.88rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-                연락처 → 클래스 → 확인, 3단계. 접수 즉시 안내 문자를 보내고 <span style={{ whiteSpace: 'nowrap' }}>1~2일 안에 대표가 직접 전화드립니다.</span>
-              </p>
-            </div>
-            <JoinForm kakaoAlt />
-          </div>
         </div>
       </section>
 
@@ -634,9 +410,9 @@ export default function JoinPage() {
           )}
 
           <div className="join-reel-cta">
-            <JoinCTALink href="#form-hero" location="reel_section" label="출연영상 클래스 무료 상담 신청" fireLead className="join-reel-btn">
+            <ConsultOpenLink classKey="reel" location="reel_section" label="출연영상 클래스 무료 상담 신청" className="join-reel-btn">
               출연영상 클래스 상담 신청 <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} />
-            </JoinCTALink>
+            </ConsultOpenLink>
             <a href="/reel-production-class" className="join-reel-link">
               커리큘럼 자세히 보기 <ArrowRight aria-hidden={true} size={14} strokeWidth={2.2} />
             </a>
@@ -662,38 +438,9 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <PromiseSection />
 
-      {/* 아래쪽 상담 폼 — 2026-10-15 한때 뺐다가 같은 날 대표 «하단에 상담 신청 하나 더 넣어»로 되살림 */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* ⑫ FORM — 신청 폼                                          */}
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section
-        id="form"
-        aria-label="무료 상담 신청"
-        className="section"
-        style={{
-          scrollMarginTop: '80px',
-          background: 'radial-gradient(ellipse at 50% 0%, rgba(21,72,138,0.08) 0%, var(--bg) 70%)',
-          padding: 'clamp(64px, 12vw, 100px) 0',
-        }}
-      >
-        <div className="container">
-          <div style={{ maxWidth: '520px', margin: '0 auto' }}>
-            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-              <p className="section-eyebrow"><span lang="en">06 — CONTACT</span></p>
-              <h2
-                className="section-title-serif"
-                style={{ fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', marginBottom: '10px' }}
-              >
-                무료 상담 신청
-              </h2>
-              <p style={{ fontSize: '0.9rem', color: 'var(--gray-light)', lineHeight: 1.7 }}>
-                연락처 → 클래스 → 확인, 3단계. 접수 즉시 안내 문자를 보내고 <span style={{ whiteSpace: 'nowrap' }}>1~2일 안에 대표가 직접 전화드립니다.</span>
-              </p>
-            </div>
-            <JoinForm kakaoAlt />
-          </div>
-        </div>
-      </section>
+      {/* 아래쪽 클래스 선택 — 2026-10-15 대표 «하단에 상담 신청 하나 더 넣어» 자리.
+          2026-11-18 대표 브리프: 3단계 폼 → 클래스 타일을 누르면 바로 상담창. 맨 위와 같은 선택지 */}
+      <ClassPicker id="form" classes={instantClasses} location="bottom" variant="bottom" />
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑬ FOOTER 안심 문구                                         */}
@@ -806,6 +553,9 @@ export default function JoinPage() {
       </section>
 
       {/* 맨 아래 «클래스 자세히 보기» 줄 — 2026-10-19 «더 알아보기» 구간으로 합침 */}
+
+      {/* 「바로 상담」 창 — 클래스 타일·출연영상 구역 버튼이 연다 (한 개만 둔다) */}
+      <ConsultSheet classes={instantClasses} />
 
       <StickyBottomCTA />
       </div>

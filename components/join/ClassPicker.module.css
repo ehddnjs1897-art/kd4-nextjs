@@ -1,0 +1,270 @@
+/* /join 클래스 선택 화면 — 크림 바탕 + 네이비 + KoPub (색·글꼴은 기존 변수 그대로) */
+
+.wrap {
+  background: var(--bg);
+  scroll-margin-top: 60px; /* 위에 붙는 상단 메뉴에 제목이 가리지 않게 */
+}
+.top {
+  padding: clamp(20px, 5vw, 64px) 0 clamp(30px, 6vw, 72px);
+}
+.bottom {
+  padding: clamp(56px, 10vw, 96px) 0 clamp(48px, 8vw, 80px);
+  border-top: 1px solid var(--border);
+  background: radial-gradient(ellipse at 50% 0%, rgba(21, 72, 138, 0.08) 0%, var(--bg) 70%);
+}
+
+.inner {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  color: var(--navy);
+}
+
+.question {
+  margin: 0 0 10px;
+  text-align: center;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: clamp(1.7rem, 7.4vw, 3.1rem);
+  line-height: 1.24;
+  letter-spacing: -0.02em;
+  color: #111111;
+  word-break: keep-all;
+}
+.bottom .question {
+  font-size: clamp(1.55rem, 5.6vw, 2.4rem);
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.lead {
+  margin: 0 auto clamp(16px, 3.4vw, 34px);
+  max-width: 30em;
+  text-align: center;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--gray);
+  word-break: keep-all;
+}
+
+/* ── 선택지 ── */
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: #111111;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+.tile:hover,
+.tile:focus-visible {
+  border-color: var(--navy);
+  box-shadow: 0 10px 26px rgba(21, 72, 138, 0.14);
+  transform: translateY(-2px);
+}
+.tile:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 2px;
+}
+.tile:active {
+  transform: scale(0.985);
+}
+
+.photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  background: var(--bg2);
+  overflow: hidden;
+}
+.photo img {
+  transition: transform 0.5s ease;
+}
+.tile:hover .photo img {
+  transform: scale(1.04);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  padding: 10px 12px 12px;
+}
+
+.name {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  line-height: 1.32;
+  letter-spacing: -0.01em;
+  word-break: keep-all;
+}
+
+.arrow {
+  flex-shrink: 0;
+  margin-top: 4px;
+  color: var(--navy);
+  transition: transform 0.2s ease;
+}
+.tile:hover .arrow {
+  transform: translateX(3px);
+}
+
+.sub {
+  font-size: 0.78rem;
+  line-height: 1.46;
+  color: var(--gray);
+  word-break: keep-all;
+}
+
+/* 사진 없는 타일 — 개인 레슨 · 추천받기 */
+.tileText {
+  justify-content: center;
+  min-height: 86px;
+}
+.tileText .text {
+  flex: 0 0 auto;
+  padding: 14px 14px;
+}
+
+.tileRecommend {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #ffffff;
+}
+.tileRecommend .sub {
+  color: rgba(255, 255, 255, 0.8);
+}
+.tileRecommend .arrow {
+  color: #ffffff;
+}
+.tileRecommend:hover,
+.tileRecommend:focus-visible {
+  background: var(--navy-light);
+  border-color: var(--navy-light);
+}
+
+/* ── 선택지 아래 ── */
+.trust {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 0;
+  margin: clamp(16px, 3vw, 28px) 0 0;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--gray-light);
+}
+.trust span {
+  white-space: nowrap;
+}
+.trust span + span::before {
+  content: '·';
+  margin: 0 7px;
+  color: var(--border);
+}
+
+.alt {
+  margin: 6px auto 0;
+  max-width: 34em;
+  text-align: center;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--gray);
+  word-break: keep-all;
+}
+.bottom .alt {
+  margin-top: clamp(16px, 3vw, 26px);
+}
+.altLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  color: var(--navy);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── 넓은 화면: 사진 타일 4개 한 줄 + 글자 타일 2개가 아래 줄을 반씩 ── */
+@media (min-width: 760px) {
+  .inner {
+    padding: 0 24px;
+  }
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .wide {
+    grid-column: span 2;
+  }
+  .text {
+    padding: 14px 16px 16px;
+    gap: 5px;
+  }
+  .name {
+    font-size: 1.15rem;
+  }
+  .sub {
+    font-size: 0.84rem;
+  }
+  .tileText {
+    min-height: 96px;
+  }
+  .tileText .text {
+    padding: 18px 20px;
+  }
+  .lead {
+    font-size: 0.95rem;
+  }
+  .trust,
+  .alt {
+    font-size: 0.86rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile,
+  .photo img,
+  .arrow {
+    transition: none;
+  }
+  .tile:hover,
+  .tile:focus-visible,
+  .tile:active,
+  .tile:hover .photo img,
+  .tile:hover .arrow {
+    transform: none;
+  }
+}
