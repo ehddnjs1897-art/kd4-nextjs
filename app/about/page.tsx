@@ -171,20 +171,15 @@ export default function AboutPage() {
         >
           카메라 앞에서 통하는 &lsquo;연기하지 않는 연기&rsquo;를 배웁니다.
         </p>
-        <p
-          style={{
-            fontFamily: 'var(--font-display), Oswald, sans-serif',
-            fontSize: 'clamp(2.4rem, 7vw, 5rem)',
-            fontWeight: 700,
-            letterSpacing: '0.08em',
-            color: 'var(--navy)',
-            textTransform: 'uppercase',
-            lineHeight: 1,
-            marginTop: '8px',
-          }}
-        >
-          <span lang="en">OFF THE PLASTIC</span>
-        </p>
+        {/* 2026-11-19 대표 «OFF THE PLASTIC 폰트도 혼자 동떨어져 있다 — 디자인적으로 매칭해서 바꿔»:
+            크고 굵은 글씨 → 홈 첫 화면과 같은 모양(가는 선 사이, 자간 넓은 작은 글씨). 글꼴은 그대로 KoPub */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+          <span aria-hidden="true" style={{ display: 'block', width: '36px', height: '1px', background: 'var(--gold)' }} />
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(0.75rem, 1.6vw, 0.85rem)', fontWeight: 400, letterSpacing: '0.32em', color: 'var(--gold)', textTransform: 'uppercase' }}>
+            <span lang="en">OFF THE PLASTIC</span>
+          </p>
+          <span aria-hidden="true" style={{ display: 'block', width: '36px', height: '1px', background: 'var(--gold)' }} />
+        </div>
       </section>
 
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
