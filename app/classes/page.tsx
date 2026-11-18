@@ -72,40 +72,27 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
       )}
 
       <div style={{ padding: '28px 24px 20px', flex: 1 }}>
-        {/* 뱃지 */}
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap' }}>
-          <span style={{
-            padding: '3px 10px', background: 'rgba(21,72,138,0.08)',
-            border: '1px solid rgba(21,72,138,0.35)', borderRadius: '2px',
-            fontSize: '0.75rem', letterSpacing: '0.1em', color: 'var(--navy)', fontWeight: 700,
-          }}>
-            {cls.step}
-          </span>
-          {cls.isHobby && (
+        {/* 뱃지 — 2026-11-19 대표 «중복되거나 지저분한 거 지우기»: 카드마다 반복되던 STEP 딱지 삭제
+            (묶음 제목이 이미 STEP 1·2·3을 말함). 취미반 딱지만 남김 */}
+        {cls.isHobby && (
+          <div style={{ marginBottom: '16px' }}>
             <span style={{
               padding: '2px 8px', background: 'rgba(255,255,255,0.06)',
               border: '1px solid var(--border)', borderRadius: '2px',
               fontSize: '0.75rem', color: 'var(--gray)',
             }}>취미반</span>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* 인용구 */}
         <p style={{ color: 'var(--gold)', fontSize: '0.85rem', lineHeight: 1.5, marginBottom: '12px', fontStyle: 'italic' }}>
           &ldquo;{cls.quote}&rdquo;
         </p>
 
-        {/* 클래스명 */}
-        <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--white)', marginBottom: '4px' }}>
+        {/* 클래스명 — 2026-11-19: 영문 이름 줄·한 줄 부제 삭제 (한글 이름·인용구·수업 내용과 같은 말) */}
+        <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--white)', marginBottom: '12px' }}>
           {cls.nameKo}
         </h3>
-        <p lang="en" style={{ fontSize: '0.75rem', color: 'var(--gray)', letterSpacing: '0.08em', marginBottom: '12px' }}>
-          {cls.nameEn}
-        </p>
-
-        {cls.subtitle && (
-          <p style={{ fontSize: '0.8rem', color: 'var(--gray-light)', marginBottom: '8px' }}>{cls.subtitle}</p>
-        )}
 
         {cls.note && (
           <p style={{
@@ -244,145 +231,7 @@ export default function ClassesPage() {
         </div>
       </section>
 
-      {/* ── 자가진단 — 직관적 비주얼 (큰 아이콘 + 레벨 시각화 + 골드 클래스명) ─── */}
-      <section
-        aria-label="나에게 맞는 클래스 찾기"
-        style={{
-          padding: 'clamp(56px, 8vw, 80px) 24px',
-          borderBottom: '1px solid var(--border)',
-        }}
-      >
-        <div className="container" style={{ maxWidth: 1080, margin: '0 auto' }}>
-          <p className="section-eyebrow" style={{ textAlign: 'center', marginBottom: 14 }}>
-            <span lang="en">FIND YOUR CLASS</span>
-          </p>
-          <h2
-            style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: 'clamp(1.6rem, 4vw, 2.2rem)',
-              fontWeight: 700,
-              color: 'var(--white)',
-              textAlign: 'center',
-              lineHeight: 1.35,
-              marginBottom: 'clamp(40px, 6vw, 56px)',
-            }}
-          >
-            나는 어떤 클래스를 들어야 할까?
-          </h2>
-
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-              gap: 14,
-            }}
-          >
-            {[
-              {
-                num: '01',
-                tag: 'BEGINNER',
-                title: '베이직 클래스',
-                desc: '취미로 연기를 시작하고 싶은 분',
-              },
-              {
-                num: '02',
-                tag: 'TRAINING',
-                title: '마이즈너 테크닉 정규 클래스',
-                desc: '제대로 배우 훈련을 받고 싶은 분 · 연기 매너리즘 · 연기하지 않는 연기',
-              },
-              {
-                num: '03',
-                tag: 'PORTFOLIO',
-                title: '출연영상 클래스',
-                desc: '캐스팅되는 포트폴리오를 만들고 싶은 분 · 연기력 업그레이드',
-              },
-            ].map(({ num, tag, title, desc }) => (
-              <a
-                key={title}
-                href="#class-cards-step1"
-                aria-label={`${title} — 클래스 카드로 이동`}
-                onClick={(e) => {
-                  e.preventDefault()
-                  const reduceMotion =
-                    typeof window !== 'undefined' &&
-                    window.matchMedia('(prefers-reduced-motion: reduce)').matches
-                  document
-                    .getElementById('class-cards-step1')
-                    ?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' })
-                }}
-                style={{
-                  background: 'var(--bg2)',
-                  border: '1px solid var(--border)',
-                  borderRadius: 12,
-                  padding: 24,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 8,
-                  textDecoration: 'none',
-                  transition: 'border-color 0.2s, transform 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--gold)'
-                  e.currentTarget.style.transform = 'translateY(-2px)'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--border)'
-                  e.currentTarget.style.transform = 'none'
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-                  <span style={{
-                    fontFamily: 'var(--font-display), Oswald, sans-serif',
-                    fontSize: '0.75rem',
-                    letterSpacing: '0.15em',
-                    color: 'var(--gold)',
-                    textTransform: 'uppercase',
-                    background: 'rgba(21,72,138,0.1)',
-                    border: '1px solid rgba(21,72,138,0.25)',
-                    borderRadius: 3,
-                    padding: '3px 9px',
-                  }}><span lang="en">{tag}</span></span>
-                  <span aria-hidden style={{
-                    fontFamily: 'var(--font-display), Oswald, sans-serif',
-                    fontSize: '1.3rem',
-                    fontWeight: 300,
-                    color: 'var(--gray)',
-                    letterSpacing: '0.05em',
-                    lineHeight: 1,
-                  }}>{num}</span>
-                </div>
-                <h3 style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '1.05rem',
-                  fontWeight: 700,
-                  color: 'var(--white)',
-                  letterSpacing: '0.02em',
-                  marginTop: 6,
-                }}>{title}</h3>
-                <p style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '0.85rem',
-                  color: 'var(--secondary)',
-                  lineHeight: 1.7,
-                }}>{desc}</p>
-              </a>
-            ))}
-          </div>
-
-          <p
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: '0.78rem',
-              color: 'var(--gray)',
-              textAlign: 'center',
-              marginTop: 28,
-            }}
-          >
-            {/* ↓ 장식용 — 스크린 리더 불필요 (WCAG 1.3.3) */}
-            <span aria-hidden="true">↓ </span>카드를 클릭하면 클래스 상세로 이동합니다
-          </p>
-        </div>
-      </section>
+      {/* 「나는 어떤 클래스를 들어야 할까?」 3칸 — 2026-11-19 대표 지시로 삭제 (바로 아래 클래스 카드와 같은 세 클래스가 한 번 더 나옴) */}
 
       <section className="section" aria-label="클래스 상세 목록" style={{ background: 'var(--bg)' }}>
         <div className="container">

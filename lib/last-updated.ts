@@ -11,8 +11,8 @@
 // 2026-08-30 텍스트 감사 일괄 수정 (캐스팅 80건·프로그램 명칭·문구 정합화)
 export const LAST_UPDATED = {
   home: '2026-08-30',
-  about: '2026-10-11',
-  classes: '2026-11-10',
+  about: '2026-11-19',
+  classes: '2026-11-19',
   basic: '2026-10-13',
   meisner: '2026-11-10',
   // /audition-technique-class — 오디션 테크닉 클래스 (2026-09-17 신설)
@@ -28,7 +28,7 @@ export const LAST_UPDATED = {
   oneMonthReel: '2026-11-10',
   sinchon: '2026-08-20',
   coaches: '2026-08-30',
-  join: '2026-11-10',
+  join: '2026-11-19',
   // /faq — 화면 «최종 수정일»·JSON-LD dateModified·sitemap이 모두 이 값을 쓴다
   faq: '2026-10-13',
 } as const

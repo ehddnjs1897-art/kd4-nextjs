@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Fragment } from 'react'
 import dynamic from 'next/dynamic'
 import { ArrowRight, MessageCircle } from 'lucide-react'
-import { CLASSES } from '@/lib/classes'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { LAST_UPDATED } from '@/lib/last-updated'
 import { buildBreadcrumb, buildWebPage } from '@/lib/seo-schemas'
@@ -10,7 +9,6 @@ import JoinHeader from '@/components/join/JoinHeader'
 import JoinCTALink from '@/components/join/JoinCTALink'
 import ClassPicker from '@/components/join/ClassPicker'
 import ConsultSheet from '@/components/join/ConsultSheet'
-import ConsultOpenLink from '@/components/join/ConsultOpenLink'
 import { WhyKD4Section, DirectorSection, ReviewsSection, PromiseSection } from '@/components/join/JoinTrustSections'
 import { SITE_URL } from '@/lib/constants'
 import { REEL_PORTFOLIO_VIDEOS, REEL_INCLUDES } from '@/lib/class-landing-content'
@@ -51,23 +49,18 @@ export const revalidate = 3600
 /* 2026-05-30: 봄맞이 프로모션 종료 — 카운트다운/마감 카피 전부 제거.
    다음 프로모션 시 CountdownTimer + DEADLINE + lib/classes.ts promoLabel/originalPrice 부활. */
 
-/* ── 출연영상 클래스 + 포트폴리오 베스트 3 (2026-10-29 대표 «출연영상클래스와 포트폴리오 베스트 3개정도 넣는게좋겠어»)
- *    영상 = 대표가 10/19 출연영상 광고 랜딩에 고른 4편(AD_REEL_PICKS) 중 앞 3편(가장 최근). 클래스 사실은 lib/classes.ts ── */
-const REEL_CLASS = CLASSES.find((c) => c.nameKo === '출연영상 클래스')!
-const REEL_BEST_IDS = ['AMcMn4UgJp4', '4Cc3L2IGRu8', 'RV1yvKguTy4', 'IWL6hlOrU-w', 'PUlrhjOkvjA', 'qwD63hTNQLs']
-/* 10/29 대표 «포트폴리오 3개 더» → 출연영상 클래스 결과물 3편 추가(심화·1달 영상 제외). 데이터 제목이 «출연영상 샘플 N»이라 유튜브 실제 제목으로 표시 */
-const REEL_TITLE_FIX: Record<string, string> = { 'IWL6hlOrU-w': '메소드 연기', 'PUlrhjOkvjA': '외사랑', 'qwD63hTNQLs': '엄마 곁을 지킨 5년' }
-const REEL_BEST = REEL_BEST_IDS.flatMap((id) => REEL_PORTFOLIO_VIDEOS.filter((v) => v.id === id)).map((v) => ({ ...v, title: REEL_TITLE_FIX[v.id] ?? v.title }))
-const REEL_FACTS = [REEL_CLASS.schedule, `회당 ${REEL_CLASS.duration}`, `정원 ${REEL_CLASS.capacity}`, REEL_CLASS.course].filter(Boolean)
-/* 2026-11-16 대표 «2 더보기로 접는거 좋은아이디어» → 같은 날 «영상4편보이고 더보기로해»: 앞 4편이 보이고 나머지 2편은 「더 보기」.
-   앞 4편 = 대표가 10/19 광고 랜딩에 고른 4편(AD_REEL_PICKS) 순서 그대로. */
-const REEL_TOP = REEL_BEST.slice(0, 4)
-const REEL_REST = REEL_BEST.slice(4)
-/* 2026-11-16 대표 «8 반영»: 수강료에 무엇이 들어 있는지 한 줄 — 정본 REEL_INCLUDES(출연영상 클래스 페이지와 같은 목록)에서 괄호 설명만 뺀 것.
-   같은 날 대표 «이 문구를 빼고»: 이 한 줄에서는 「캐스팅·오디션 제출용 영상 납품」 제외 (출연영상 클래스 페이지의 목록은 그대로). */
+/* ── 출연영상 상세소개(상담창)용 자료 ──
+ *    2026-11-19 대표 «출연영상 포트폴리오 베스트는 삭제해도 될 거 같고» → 페이지의 「출연영상 클래스 + 포트폴리오 베스트」 구간을 통째로 뺌.
+ *    영상 4편과 «수강료에 포함»은 출연영상 타일 → 상담창 → 「상세소개 보기」 안에만 남는다 (눌렀을 때만 불러옴).
+ *    영상 4편 = 대표가 10/19 출연영상 광고 랜딩에 고른 4편(AD_REEL_PICKS) 순서 그대로. */
+const REEL_DETAIL_IDS = ['AMcMn4UgJp4', '4Cc3L2IGRu8', 'RV1yvKguTy4', 'IWL6hlOrU-w']
+/* 데이터 제목이 «출연영상 샘플 N»인 영상은 유튜브 실제 제목으로 표시 */
+const REEL_TITLE_FIX: Record<string, string> = { 'IWL6hlOrU-w': '메소드 연기' }
+const REEL_TOP = REEL_DETAIL_IDS.flatMap((id) => REEL_PORTFOLIO_VIDEOS.filter((v) => v.id === id)).map((v) => ({ ...v, title: REEL_TITLE_FIX[v.id] ?? v.title }))
+/* 수강료에 무엇이 들어 있는지 — 정본 REEL_INCLUDES(출연영상 클래스 페이지와 같은 목록)에서 괄호 설명만 뺀 것.
+   2026-11-16 대표 «이 문구를 빼고»: 「캐스팅·오디션 제출용 영상 납품」 제외 (출연영상 클래스 페이지의 목록은 그대로). */
 const REEL_INCLUDED_HIDE = ['캐스팅·오디션 제출용 영상 납품']
 const REEL_INCLUDED_ITEMS = REEL_INCLUDES.filter((i) => i.yes && !REEL_INCLUDED_HIDE.includes(i.text)).map((i) => i.text.replace(/\s*\(.*\)$/, ''))
-const REEL_INCLUDED_LINE = REEL_INCLUDED_ITEMS.join(', ')
 
 /* ── 후기 마퀴 (2행 교차) ── */
 
@@ -122,28 +115,36 @@ export default function JoinPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <ClassPicker id="form-hero" classes={instantClasses} location="top" />
 
-      {/* MORE — 스튜디오 소개 (2026-10-19 대표 «스튜디오 소개 + 클래스 소개·각 페이지 링크»).
-          2026-11-18: 클래스 카드 5장은 위 선택 타일·상담창의 «상세소개 보기»로 옮겨 가서 여기선 뺌 — 스튜디오 소개와 전체 보기 링크만 남김 */}
+      {/* MORE — 클래스 소개·스튜디오 소개로 가는 길 (2026-10-19 대표 «스튜디오 소개 + 클래스 소개·각 페이지 링크»).
+          2026-11-19 대표 «스튜디오 소개가 너무 커서 클래스 소개가 눈에 안 들어와» → 큰 네이비 카드를 없애고
+          같은 크기의 작은 카드 2장으로 (클래스 소개가 먼저) */}
       <section aria-label="더 알아보기" className="section join-more">
         <div className="container">
           <div className="join-more-head">
             <p className="section-eyebrow"><span lang="en">MORE ABOUT KD4</span></p>
             <h2 className="section-title-serif join-more-title">KD4를 더 알아보고 싶다면</h2>
-            <p className="join-more-sub">스튜디오 이야기와 클래스별 커리큘럼·일정을 자세히 볼 수 있어요.</p>
           </div>
 
-          <a href="/about" className="join-more-studio">
-            <span className="join-more-studio-label" lang="en">STUDIO</span>
-            <span className="join-more-studio-title">스튜디오 소개</span>
-            <span className="join-more-studio-desc">마이즈너 테크닉과 연기하지 않는 연기를 중심으로, 배우의 성장을 운영합니다.</span>
-            <span className="join-more-studio-go" aria-hidden="true">
-              자세히 보기 <ArrowRight size={15} strokeWidth={2.2} />
-            </span>
-          </a>
-
-          <p className="join-more-all">
-            <a href="/classes">클래스 전체 한눈에 보기 <ArrowRight aria-hidden={true} size={14} strokeWidth={2.2} /></a>
-          </p>
+          <ul className="join-more-links" role="list">
+            <li>
+              <a href="/classes" className="join-more-link">
+                <span>
+                  <span className="join-more-link-name">클래스 소개</span>
+                  <span className="join-more-link-desc">클래스별 커리큘럼·일정·수강료</span>
+                </span>
+                <ArrowRight aria-hidden={true} size={18} strokeWidth={2.2} />
+              </a>
+            </li>
+            <li>
+              <a href="/about" className="join-more-link">
+                <span>
+                  <span className="join-more-link-name">스튜디오 소개</span>
+                  <span className="join-more-link-desc">마이즈너 테크닉 · 연기하지 않는 연기</span>
+                </span>
+                <ArrowRight aria-hidden={true} size={18} strokeWidth={2.2} />
+              </a>
+            </li>
+          </ul>
         </div>
       </section>
 
@@ -352,80 +353,12 @@ export default function JoinPage() {
           가격·일정은 상담 폼 클래스 카드(누르면 펼침)에, 상세는 /classes·/benefits·각 클래스 페이지에 그대로 있음.
           마이즈너 소개(③)는 같은 날 대표 «마이즈너 테크닉 소개는 넣어»로 되살림 */}
 
-      {/* REEL — 출연영상 클래스 + 포트폴리오 베스트 3 (2026-10-29 대표, 3단계의 «STEP 02 포트폴리오 제작» 바로 다음) */}
-      <section id="reel" aria-label="출연영상 클래스와 포트폴리오" className="section join-reel">
-        <div className="container">
-          <div className="join-reel-head">
-            <p className="section-eyebrow"><span lang="en">REEL PRODUCTION CLASS</span></p>
-            <h2 className="section-title-serif join-reel-title">출연영상 클래스</h2>
-            <p className="join-reel-quote">{REEL_CLASS.quote}</p>
-          </div>
-
-          <div className="join-reel-card">
-            <div className="join-reel-card-top">
-              <span className="join-more-tag">정규 · 포트폴리오</span>
-              {REEL_CLASS.hot && <span className="join-reel-hot">🔥 HOT</span>}
-            </div>
-            <ul className="join-reel-bullets" role="list">
-              {REEL_CLASS.bullets.map((b) => (
-                <li key={b}><span aria-hidden="true">✓</span>{b}</li>
-              ))}
-            </ul>
-            <div className="join-reel-facts">
-              <span className="join-reel-price">월 {REEL_CLASS.price}원</span>
-              <span className="join-reel-meta">{REEL_FACTS.join(' · ')}</span>
-            </div>
-            <p className="join-reel-incl"><strong>수강료에 포함</strong>{REEL_INCLUDED_LINE}</p>
-            {REEL_CLASS.priceChangeNote && (
-              <p style={{ fontSize: '0.8rem', color: 'var(--navy)', fontWeight: 600, marginTop: '10px', lineHeight: 1.5, wordBreak: 'keep-all' }}>{REEL_CLASS.priceChangeNote}</p>
-            )}
-          </div>
-
-          <h3 className="join-reel-sub">포트폴리오 베스트</h3>
-          <p className="join-reel-subdesc">KD4 멤버가 전문 영화팀과 촬영·편집한 출연영상입니다.</p>
-          <ul className="join-reel-grid join-reel-grid--two" role="list">
-            {REEL_TOP.map((v) => (
-              <li key={v.id} className="join-reel-video">
-                <YouTubeFacade videoId={v.id} title={v.title} />
-                <p className="join-reel-vtitle">「{v.title}」</p>
-              </li>
-            ))}
-          </ul>
-          {REEL_REST.length > 0 && (
-            <details className="join-reel-more">
-              <summary>
-                <span className="join-reel-more-closed">포트폴리오 {REEL_REST.length}편 더 보기</span>
-                <span className="join-reel-more-open">접기</span>
-                <span className="join-reel-more-arrow" aria-hidden="true" />
-              </summary>
-              <ul className="join-reel-grid join-reel-grid--two" role="list">
-                {REEL_REST.map((v) => (
-                  <li key={v.id} className="join-reel-video">
-                    <YouTubeFacade videoId={v.id} title={v.title} />
-                    <p className="join-reel-vtitle">「{v.title}」</p>
-                  </li>
-                ))}
-              </ul>
-            </details>
-          )}
-
-          <div className="join-reel-cta">
-            <ConsultOpenLink classKey="reel" location="reel_section" label="출연영상 클래스 무료 상담 신청" className="join-reel-btn">
-              출연영상 클래스 상담 신청 <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} />
-            </ConsultOpenLink>
-            <a href="/reel-production-class" className="join-reel-link">
-              커리큘럼 자세히 보기 <ArrowRight aria-hidden={true} size={14} strokeWidth={2.2} />
-            </a>
-          </div>
-        </div>
-      </section>
+      {/* 출연영상 클래스 + 포트폴리오 베스트 구간 — 2026-11-19 대표 지시로 삭제 (영상은 출연영상 상담창의 「상세소개 보기」 안에) */}
 
       {/* ⑥ DIRECTOR — 강사 크레딧 (광고 압축: highlights 3개 + 링크) */}
       {/* 2026-11-16 대표 ⑥: 이 페이지에 150명·100여명·400명+ 세 숫자가 따로 나와 헷갈린다는 지적 → 무엇을 센 숫자인지 한 줄.
           라벨은 정본(lib/stats.ts «누적 코칭 배우»·«현직 배우 수료», lib/classes.ts 출연영상 «현직 배우 100여명 참여») 그대로 */}
       <DirectorSection statNote="※ 숫자 안내: 400명+는 누적 코칭 배우, 150명은 현직 배우 수료, 100여 명은 출연영상 클래스 참여 배우 수입니다." />
-
-      {/* 옛 출연영상 포트폴리오 6편 구간 — 10/15 제거, 10/29 위 «출연영상 클래스 + 베스트 3»으로 대체 */}
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* ⑥ PROOF — 후기 (광고 압축: 마퀴 1행 + 더보기 링크)         */}
@@ -554,7 +487,7 @@ export default function JoinPage() {
 
       {/* 맨 아래 «클래스 자세히 보기» 줄 — 2026-10-19 «더 알아보기» 구간으로 합침 */}
 
-      {/* 「바로 상담」 창 — 클래스 타일·출연영상 구역 버튼이 연다 (한 개만 둔다) */}
+      {/* 「바로 상담」 창 — 클래스 타일이 연다 (한 개만 둔다) */}
       <ConsultSheet classes={instantClasses} />
 
       <StickyBottomCTA />
