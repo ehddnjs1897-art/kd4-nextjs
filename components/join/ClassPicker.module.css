@@ -71,7 +71,10 @@
 .tile {
   display: flex;
   flex-direction: column;
+  gap: 4px;
   height: 100%;
+  min-height: 92px;
+  padding: 14px 14px 15px;
   overflow: hidden;
   background: #ffffff;
   border: 1px solid var(--border);
@@ -93,29 +96,6 @@
 }
 .tile:active {
   transform: scale(0.985);
-}
-
-.photo {
-  position: relative;
-  display: block;
-  /* 휴대폰: 첫 화면에 선택지 6개가 다 보이도록 사진을 조금 낮게 (PC는 아래에서 16:9) */
-  aspect-ratio: 1.9 / 1;
-  background: var(--bg2);
-  overflow: hidden;
-}
-.photo img {
-  transition: transform 0.5s ease;
-}
-.tile:hover .photo img {
-  transform: scale(1.04);
-}
-
-.text {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  flex: 1;
-  padding: 8px 12px 10px;
 }
 
 .name {
@@ -146,16 +126,6 @@
   line-height: 1.46;
   color: var(--gray);
   word-break: keep-all;
-}
-
-/* 사진 없는 타일 — 개인 레슨 · 추천받기 */
-.tileText {
-  justify-content: center;
-  min-height: 76px;
-}
-.tileText .text {
-  flex: 0 0 auto;
-  padding: 10px 14px;
 }
 
 .tileRecommend {
@@ -218,36 +188,25 @@
   text-underline-offset: 3px;
 }
 
-/* ── 넓은 화면: 사진 타일 4개 한 줄 + 글자 타일 2개가 아래 줄을 반씩 ── */
+/* ── 넓은 화면: 글자 타일 6개를 3개씩 두 줄 ── */
 @media (min-width: 760px) {
   .inner {
     padding: 0 24px;
   }
   .grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px;
   }
-  .wide {
-    grid-column: span 2;
-  }
-  .photo {
-    aspect-ratio: 16 / 9;
-  }
-  .text {
-    padding: 14px 16px 16px;
-    gap: 5px;
+  .tile {
+    gap: 6px;
+    min-height: 116px;
+    padding: 20px 22px 22px;
   }
   .name {
     font-size: 1.15rem;
   }
   .sub {
     font-size: 0.84rem;
-  }
-  .tileText {
-    min-height: 96px;
-  }
-  .tileText .text {
-    padding: 18px 20px;
   }
   .lead {
     font-size: 0.95rem;
@@ -260,14 +219,12 @@
 
 @media (prefers-reduced-motion: reduce) {
   .tile,
-  .photo img,
   .arrow {
     transition: none;
   }
   .tile:hover,
   .tile:focus-visible,
   .tile:active,
-  .tile:hover .photo img,
   .tile:hover .arrow {
     transform: none;
   }

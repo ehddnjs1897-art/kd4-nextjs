@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import { ArrowRight, MessageCircle } from 'lucide-react'
 import type { InstantClass } from '@/lib/join-instant'
 import { openConsult } from '@/lib/consult-instant'
@@ -11,7 +10,7 @@ import s from './ClassPicker.module.css'
  * /join 클래스 선택 화면 (2026-11-18 대표 브리프 — 리바이저 문의 페이지 방식)
  * 큰 질문 하나 + 눈에 잘 들어오는 선택지. 타일을 누르면 「다음」 없이 그 클래스 상담창이 바로 열린다.
  *
- * - 휴대폰 2열 / PC 4열. 수업 사진이 있는 4개는 흑백 스틸 타일, 사진 없는 개인 레슨·추천받기는 글자 타일.
+ * - 휴대폰 2열 / PC 3열, 글자 타일 6개. 수업 사진은 넣지 않는다 (2026-11-19 대표: «클래스 소개에 어차피 있으니까»).
  * - 가격은 여기서 보여주지 않는다 — 누른 직후·연락처 입력 전에 상담창에서 보여준다.
  * - 타일은 링크(<a>)다: 화면이 덜 켜진 순간에 눌려도 그 클래스 소개 페이지로 가므로 «눌러도 반응 없는» 일이 없다.
  */
@@ -50,41 +49,22 @@ export default function ClassPicker({
         </p>
 
         <ul className={s.grid} role="list">
-          {classes.map((c, i) => {
-            const isRecommend = c.key === 'recommend'
-            const hasPhoto = Boolean(c.photo)
-            return (
-              <li key={c.key} className={hasPhoto ? undefined : s.wide}>
-                <a
-                  href={c.href}
-                  className={`${s.tile} ${hasPhoto ? '' : s.tileText} ${isRecommend ? s.tileRecommend : ''}`}
-                  aria-haspopup="dialog"
-                  onClick={(e) => handleClick(e, c)}
-                >
-                  {hasPhoto && (
-                    <span className={s.photo}>
-                      <Image
-                        src={c.photo!}
-                        alt={c.photoAlt ?? ''}
-                        fill
-                        sizes="(max-width: 759px) 46vw, 230px"
-                        loading={isTop ? 'eager' : 'lazy'}
-                        fetchPriority={isTop && i < 2 ? 'high' : undefined}
-                        style={{ objectFit: 'cover' }}
-                      />
-                    </span>
-                  )}
-                  <span className={s.text}>
-                    <span className={s.name}>
-                      {c.label}
-                      <ArrowRight aria-hidden={true} size={15} strokeWidth={2.2} className={s.arrow} />
-                    </span>
-                    <span className={s.sub}>{c.sub}</span>
-                  </span>
-                </a>
-              </li>
-            )
-          })}
+          {classes.map((c) => (
+            <li key={c.key}>
+              <a
+                href={c.href}
+                className={`${s.tile} ${c.key === 'recommend' ? s.tileRecommend : ''}`}
+                aria-haspopup="dialog"
+                onClick={(e) => handleClick(e, c)}
+              >
+                <span className={s.name}>
+                  {c.label}
+                  <ArrowRight aria-hidden={true} size={15} strokeWidth={2.2} className={s.arrow} />
+                </span>
+                <span className={s.sub}>{c.sub}</span>
+              </a>
+            </li>
+          ))}
         </ul>
 
         {isTop ? (

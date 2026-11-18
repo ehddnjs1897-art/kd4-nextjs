@@ -1,7 +1,6 @@
 'use client'
 
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
-import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import { ArrowRight, Check, ChevronLeft, ChevronRight, MessageCircle, X } from 'lucide-react'
 import { analytics } from '@/lib/analytics'
@@ -641,18 +640,6 @@ export default function ConsultSheet({ classes }: { classes: InstantClass[] }) {
                   {cls.nameKo ?? cls.label}
                 </h2>
                 {cls.quote && <p className={s.quote}>{cls.quote}</p>}
-
-                {cls.photo && (
-                  <div className={s.detailPhoto}>
-                    <Image
-                      src={cls.photo}
-                      alt={cls.photoAlt ?? ''}
-                      fill
-                      sizes="(max-width: 719px) 100vw, 560px"
-                      style={{ objectFit: 'cover' }}
-                    />
-                  </div>
-                )}
 
                 {cls.bullets && cls.bullets.length > 0 && (
                   <section className={s.sec}>

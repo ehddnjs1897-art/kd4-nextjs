@@ -20,8 +20,6 @@ export interface InstantClass {
   /** 자바스크립트가 아직 안 켜졌을 때 타일이 가는 곳 = 그 클래스 소개 페이지 */
   href: string
   nameKo?: string
-  photo?: string
-  photoAlt?: string
   quote?: string
   /** 대상 안내 한 줄 (베이직: 연기 경험 없어도 OK) */
   note?: string
@@ -71,8 +69,6 @@ export function buildInstantClasses(extra: {
       className: cls.nameKo,
       href: d.href,
       nameKo: cls.nameKo,
-      photo: cls.photo,
-      photoAlt: cls.photoAlt,
       quote: cls.quote,
       note: cls.note,
       bullets: cls.bullets,
