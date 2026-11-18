@@ -26,7 +26,28 @@ export default function FloatingCTA() {
       window.removeEventListener('scroll', onScroll)
     }
   }, [isHome])
-  const barHidden = isHome && !pastHero
+
+  /* 상담 버튼은 한 화면에 하나만 (2026-11-19 홈 피드백 «상담 신청 버튼 1개만 크게»):
+     페이지 안의 상담 버튼(data-floating-cta-hide 표시)이 화면에 보이는 동안에는 아래 막대를 숨긴다. */
+  /* 값에 페이지 주소를 같이 적어 두어, 다른 페이지로 옮기면 예전 페이지 값은 저절로 무시된다 */
+  const [inlineCta, setInlineCta] = useState<{ path: string; visible: boolean }>({ path: '', visible: false })
+  useEffect(() => {
+    const targets = Array.from(document.querySelectorAll('[data-floating-cta-hide]'))
+    if (targets.length === 0 || typeof IntersectionObserver === 'undefined') return
+    const seen = new Set<Element>()
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) seen.add(e.target)
+        else seen.delete(e.target)
+      }
+      setInlineCta({ path: pathname, visible: seen.size > 0 })
+    })
+    targets.forEach((t) => io.observe(t))
+    return () => io.disconnect()
+  }, [pathname])
+  const inlineCtaVisible = inlineCta.path === pathname && inlineCta.visible
+
+  const barHidden = (isHome && !pastHero) || inlineCtaVisible
 
   const isHidden = HIDE_ON.some((prefix) => pathname.startsWith(prefix))
   if (isHidden) return null
@@ -116,7 +137,7 @@ export default function FloatingCTA() {
             e.currentTarget.style.transform = 'translateY(0)'
           }}
         >
-          상담 신청 <span aria-hidden="true">→</span>
+          상담 신청
         </Link>
       </div>
     </>

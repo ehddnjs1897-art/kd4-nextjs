@@ -362,7 +362,7 @@ export default function HomePage() {
           </ul>
           <p className="home-classes-foot">개강 일정과 수업 요일은 상담에서 안내해 드려요.</p>
 
-          <div className="home-classes-actions">
+          <div className="home-classes-actions" data-floating-cta-hide="">
             <Link
               href="/join#form-hero"
               onClick={() => analytics.ctaClick('classes_section', '무료 상담 신청')}
@@ -908,7 +908,7 @@ export default function HomePage() {
             연기 훈련부터 캐스팅까지
           </p>
 
-          <div style={{ marginBottom: "14px" }}>
+          <div style={{ marginBottom: "14px" }} data-floating-cta-hide="">
             <Link
               href="/join#form"
               onClick={() => analytics.ctaClick('homepage_final_cta', '무료 상담 신청')}
