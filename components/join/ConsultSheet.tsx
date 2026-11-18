@@ -399,6 +399,7 @@ export default function ConsultSheet({ classes }: { classes: InstantClass[] }) {
     setDoneClass(doneLabel)
     setTicketNo(makeTicketNo())
     setLoading(false)
+    setConsent(false) // 접수 뒤 다른 클래스를 열어도 실수로 한 번 더 접수되지 않게 — 동의는 다시 받는다
     viewRef.current = 'done'
     setView('done')
   }

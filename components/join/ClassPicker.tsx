@@ -46,7 +46,7 @@ export default function ClassPicker({
           어떤 연기 수업을 <span className={s.nowrap}>찾고 계세요?</span>
         </Heading>
         <p className={s.lead}>
-          클래스를 누르면 수강료를 확인하고 <span className={s.nowrap}>바로 상담을 신청할 수 있어요.</span>
+          클래스를 누르면 <span className={s.nowrap}>수강료와 상담 신청이 바로 열려요.</span>
         </p>
 
         <ul className={s.grid} role="list">

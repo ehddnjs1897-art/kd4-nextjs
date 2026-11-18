@@ -92,7 +92,7 @@ export function buildInstantClasses(extra: {
   list.push({
     key: 'recommend',
     label: '어떤 반이 맞을지 추천받기',
-    sub: '아직 못 정했다면 상담에서 같이 정해요',
+    sub: '상담에서 같이 정해요',
     className: RECOMMEND_CLASS_NAME,
     href: '/classes',
   })
