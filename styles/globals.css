@@ -2113,64 +2113,14 @@ main {
 .post-html-content img { max-width: 100%; height: auto; border-radius: var(--radius); margin: 12px 0; display: block; }
 .post-html-content a { color: var(--gold); text-decoration: underline; }
 
-/* === /join «더 알아보기» (2026-10-19) — 크림+네이비, 흰 카드+얇은 테두리 === */
+/* === /join «더 알아보기» (2026-10-19) — 크림+네이비, 흰 카드+얇은 테두리. 2026-11-19 큰 네이비 카드 → 작은 카드 2장, 출연영상 구간 스타일 삭제 === */
 .join-more { background: var(--bg2); padding: clamp(56px, 10vw, 88px) 0; border-top: 1px solid var(--border); }
-.join-more-head { max-width: 720px; margin: 0 auto 28px; text-align: center; }
-.join-more-title { font-size: clamp(1.5rem, 3.6vw, 2.1rem); margin-bottom: 10px; }
-.join-more-sub { font-size: 0.9rem; color: var(--gray-light); line-height: 1.7; word-break: keep-all; }
-.join-more-studio { display: grid; gap: 6px; max-width: 880px; margin: 0 auto 14px; padding: 26px 28px; border-radius: 14px; background: var(--navy); color: #fff; text-decoration: none; box-shadow: 0 10px 30px rgba(21,72,138,0.18); transition: transform var(--transition), box-shadow var(--transition); }
-.join-more-studio:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(21,72,138,0.26); }
-.join-more-studio-label { font-family: var(--font-display); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.22em; color: rgba(255,255,255,0.6); }
-.join-more-studio-title { font-family: var(--font-serif); font-size: clamp(1.25rem, 3vw, 1.5rem); font-weight: 700; }
-.join-more-studio-desc { font-size: 0.86rem; line-height: 1.65; color: rgba(255,255,255,0.82); word-break: keep-all; }
-.join-more-studio-go { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.04em; }
-.join-more-grid { list-style: none; margin: 0 auto; padding: 0; max-width: 880px; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 270px), 1fr)); }
-.join-more-card { height: 100%; display: flex; flex-direction: column; gap: 6px; padding: 20px 22px; background: #fff; border: 1px solid var(--border); border-radius: 14px; color: var(--black); text-decoration: none; transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition); }
-.join-more-card:hover { border-color: var(--navy); transform: translateY(-2px); box-shadow: 0 8px 22px rgba(21,72,138,0.10); }
-.join-more-tag { align-self: flex-start; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; color: var(--navy); background: var(--navy-tint-1); border: 1px solid var(--navy-tint-3); border-radius: 999px; padding: 3px 10px; }
-.join-more-name { font-family: var(--font-serif); font-size: 1.05rem; font-weight: 700; margin-top: 4px; }
-.join-more-quote { font-size: 0.82rem; color: var(--gray); line-height: 1.6; word-break: keep-all; flex: 1; }
-.join-more-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--bg2); }
-.join-more-price { font-size: 0.84rem; font-weight: 700; color: var(--navy); }
-.join-more-arrow { color: var(--navy); transition: transform var(--transition); }
-.join-more-card:hover .join-more-arrow { transform: translateX(3px); }
-.join-more-all { text-align: center; margin-top: 24px; }
-.join-more-all a { display: inline-flex; align-items: center; gap: 6px; font-size: 0.84rem; font-weight: 700; color: var(--navy); text-decoration: none; border-bottom: 1px solid var(--navy); padding: 4px 0; min-height: 44px; }
-
-/* === /join 출연영상 클래스 + 포트폴리오 베스트 3 (2026-10-29) === */
-.join-reel { background: var(--bg2); padding: clamp(56px, 10vw, 88px) 0; border-top: 1px solid var(--border); }
-.join-reel-head { max-width: 720px; margin: 0 auto 24px; text-align: center; }
-.join-reel-title { font-size: clamp(1.6rem, 4vw, 2.3rem); margin-bottom: 10px; }
-.join-reel-quote { font-size: 0.95rem; color: var(--gray-light); line-height: 1.7; word-break: keep-all; }
-.join-reel-card { max-width: 880px; margin: 0 auto; background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 22px 24px; }
-.join-reel-card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
-.join-reel-hot { font-size: 0.75rem; font-weight: 700; color: #fff; background: var(--accent-red); border-radius: 999px; padding: 3px 10px; }
-.join-reel-bullets { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
-.join-reel-bullets li { display: flex; gap: 10px; font-size: 0.92rem; line-height: 1.6; color: var(--black); word-break: keep-all; }
-.join-reel-bullets li span { color: var(--navy); font-weight: 700; }
-.join-reel-facts { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--bg2); }
-.join-reel-price { font-family: var(--font-serif); font-size: 1.25rem; font-weight: 700; color: var(--navy); }
-.join-reel-meta { font-size: 0.84rem; color: var(--gray); }
-.join-reel-sub { text-align: center; font-family: var(--font-serif); font-size: clamp(1.15rem, 2.8vw, 1.4rem); font-weight: 700; margin: 40px 0 6px; }
-.join-reel-subdesc { text-align: center; font-size: 0.86rem; color: var(--gray-light); margin-bottom: 18px; word-break: keep-all; }
-.join-reel-grid { list-style: none; margin: 0 auto; padding: 0; max-width: 980px; display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
-.join-reel-video { background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-.join-reel-vtitle { font-family: var(--font-serif); font-size: 0.92rem; font-weight: 700; padding: 12px 14px; word-break: keep-all; }
-.join-reel-cta { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 28px; }
-.join-reel-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--navy); color: #fff; font-weight: 700; font-size: 0.95rem; padding: 14px 26px; border-radius: 10px; text-decoration: none; min-height: 48px; }
-.join-reel-link { display: inline-flex; align-items: center; gap: 6px; font-size: 0.84rem; font-weight: 700; color: var(--navy); text-decoration: none; border-bottom: 1px solid var(--navy); padding: 4px 0; position: relative; }
-.join-reel-link::after { content: ''; position: absolute; left: -6px; right: -6px; top: -8px; bottom: -8px; }
-/* 2026-11-16 대표 확정: 수강료 포함 내용 한 줄(⑧) + 영상 4편 먼저(처음 2편 → 같은 날 «영상4편»), 나머지는 「더 보기」(②) + 숫자 안내 한 줄(⑥). --two = 한 줄에 2칸 */
-.join-reel-incl { margin-top: 10px; font-size: 0.84rem; line-height: 1.6; color: var(--gray); word-break: keep-all; }
-.join-reel-incl strong { color: var(--navy); font-weight: 700; margin-right: 8px; }
-.join-reel-grid--two { max-width: 880px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
-.join-reel-more { max-width: 880px; margin: 14px auto 0; }
-.join-reel-more > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 9px; min-height: 48px; font-size: 0.88rem; font-weight: 700; color: var(--navy); background: #fff; border: 1px solid var(--border); border-radius: 12px; -webkit-tap-highlight-color: transparent; }
-.join-reel-more > summary::-webkit-details-marker { display: none; }
-.join-reel-more-open { display: none; }
-.join-reel-more[open] .join-reel-more-open { display: inline; }
-.join-reel-more[open] .join-reel-more-closed { display: none; }
-.join-reel-more-arrow { width: 7px; height: 7px; border-right: 1.5px solid var(--navy); border-bottom: 1.5px solid var(--navy); transform: translateY(-2px) rotate(45deg); transition: transform 0.2s; }
-.join-reel-more[open] .join-reel-more-arrow { transform: translateY(2px) rotate(-135deg); }
-.join-reel-more > .join-reel-grid { margin-top: 14px; }
+.join-more-head { max-width: 720px; margin: 0 auto 22px; text-align: center; }
+.join-more-title { font-size: clamp(1.5rem, 3.6vw, 2.1rem); margin-bottom: 0; }
+.join-more-links { list-style: none; margin: 0 auto; padding: 0; max-width: 720px; display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+.join-more-link { height: 100%; min-height: 68px; display: flex; flex-direction: column; justify-content: center; padding: 16px 20px; background: var(--navy); border: 1.5px solid var(--navy); border-radius: 14px; color: #fff; text-decoration: none; transition: background-color var(--transition), border-color var(--transition), transform var(--transition), box-shadow var(--transition); }
+.join-more-link:hover { background: var(--navy-light); border-color: var(--navy-light); transform: translateY(-2px); box-shadow: 0 8px 22px rgba(21,72,138,0.22); }
+.join-more-link-name { display: block; font-family: var(--font-serif); font-size: 1.08rem; font-weight: 700; }
+.join-more-link-desc { display: block; margin-top: 3px; font-size: 0.82rem; color: rgba(255,255,255,0.82); line-height: 1.55; word-break: keep-all; }
+/* 2026-11-16 대표 확정: 숫자 안내 한 줄(⑥) */
 .join-stat-note { font-size: 0.78rem; line-height: 1.65; color: var(--gray); margin: -10px 0 24px; padding-top: 10px; border-top: 1px solid var(--border); word-break: keep-all; }
