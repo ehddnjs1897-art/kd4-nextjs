@@ -678,7 +678,7 @@ export default function ConsultSheet({ classes }: { classes: InstantClass[] }) {
                     <h3 className={s.secTitle}>담당 액팅코치</h3>
                     <div className={s.coaches}>
                       {(cls.key === 'meisner' || cls.key === 'reel' ? [
-                        { name: '권동원', photo: '/director.jpg', anchor: 'dongwon', role: 'KD4 대표 · 대표 직강', credits: ['Netflix 《중증외상센터》', '영화 《강철비2》', 'K-웹드라마 어워드 연기상'] },
+                        { name: '권동원', photo: '/director.jpg', anchor: 'dongwon', role: 'KD4 대표 · 대표 직강', credits: [] },
                       ] : cls.key === 'audition' ? [
                         { name: '주세빈', photo: '/sebin-joo.jpg', anchor: 'sebin', role: '오디션 테크닉', credits: ['TV조선 《닥터신》 주연', 'JTBC 《디 엠파이어: 법의 제국》 주연'] },
                       ] : [
@@ -690,7 +690,11 @@ export default function ConsultSheet({ classes }: { classes: InstantClass[] }) {
                           <div>
                             <h4 className={s.coachName}>{coach.name} 액팅코치</h4>
                             <p className={s.coachTime}>{coach.role}</p>
-                            <ul className={s.bullets}>{coach.credits.map((credit) => <li key={credit}>{credit}</li>)}</ul>
+                            {coach.anchor === 'dongwon' ? (
+                              <a className={s.coachLink} href="/acting-coaches#dongwon" target="_blank" rel="noopener noreferrer" aria-label="대표 코치 소개 (새 탭)">대표 코치 소개</a>
+                            ) : (
+                              <ul className={s.bullets}>{coach.credits.map((credit) => <li key={credit}>{credit}</li>)}</ul>
+                            )}
                           </div>
                         </article>
                       ))}
