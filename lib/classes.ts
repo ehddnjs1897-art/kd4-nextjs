@@ -69,8 +69,9 @@ const CLASS_DATA: ClassItem[] = [
   {
     step: "STEP 1",
     nameKo: "마이즈너 테크닉 정규 클래스",
-    photo: "/class-photos/meisner.jpg",
-    photoAlt: "마이즈너 테크닉 정규 클래스 — 마주 서서 장면 연기를 하는 두 멤버",
+    // 2026-11-19 대표 «레피티션 사진 1번으로»: 마이즈너 테크닉 2기 영상 캡처(흑백·1280×720). 새 이름 = 이미지 캐시가 옛 사진을 안 내보내게
+    photo: "/class-photos/meisner-repetition.jpg",
+    photoAlt: "마이즈너 테크닉 정규 클래스 — 짝을 지어 마주 보고 레피티션 훈련을 하는 멤버들",
     nameEn: "Meisner Technique Class",
     quote: "막혀있던 감정의 둑을 터뜨리는 수업, 배우로 다시 태어나는 시간",
     subtitle: "마이즈너 테크닉 / 장면연기",
