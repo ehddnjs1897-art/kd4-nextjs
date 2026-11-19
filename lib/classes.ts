@@ -21,7 +21,7 @@ export interface ClassItem {
   isNewMemberOpen?: boolean;    // 신규 신청 가능 클래스
   isHobby?: boolean;            // 취미반 딱지
   category?: "step2" | "step3" | "extra"; // 이후 클래스 분류
-  /** 클래스 카드 맨 위 수업 사진 (16:9). 2026-11-19 대표 «모자이크 컬러있게 다른거 전부 적용해봐» → 컬러 + 얼굴 모자이크(베이직·출연영상은 컬러 원본이 없어 흑백). public/class-photos/ */
+  /** 클래스 카드 맨 위 수업 사진 (16:9). 2026-11-19 대표 «모자이크 컬러있게» → «모자이크말고 블러로» → 컬러 + 얼굴 블러(베이직·출연영상은 컬러 원본이 없어 흑백, 원본 받으면 교체). public/class-photos/ */
   photo?: string;
   photoAlt?: string;
   /** 예정된 새 가격 (2027 수강료 조정, 2026-11-10 대표). 아래 withScheduledPrice 참고 */
@@ -46,7 +46,7 @@ const CLASS_DATA: ClassItem[] = [
   {
     step: "STEP 1",
     nameKo: "베이직 클래스",
-    photo: "/class-photos/basic-mosaic.jpg",
+    photo: "/class-photos/basic-blur.jpg",
     photoAlt: "베이직 클래스 — 함께 움직이며 웃는 멤버들",
     nameEn: "Basic Class",
     quote: "취미로 가볍게 시작하는 연기",
@@ -70,7 +70,7 @@ const CLASS_DATA: ClassItem[] = [
     step: "STEP 1",
     nameKo: "마이즈너 테크닉 정규 클래스",
     // 2026-11-19 대표 «레피티션 사진 1번으로»: 마이즈너 테크닉 2기 영상 캡처(1280×720). 새 이름 = 이미지 캐시가 옛 사진을 안 내보내게
-    photo: "/class-photos/meisner-repetition-mosaic.jpg",
+    photo: "/class-photos/meisner-repetition-blur.jpg",
     photoAlt: "마이즈너 테크닉 정규 클래스 — 짝을 지어 마주 보고 레피티션 훈련을 하는 멤버들",
     nameEn: "Meisner Technique Class",
     quote: "막혀있던 감정의 둑을 터뜨리는 수업, 배우로 다시 태어나는 시간",
@@ -97,7 +97,7 @@ const CLASS_DATA: ClassItem[] = [
   {
     step: "STEP 1",
     nameKo: "출연영상 클래스",
-    photo: "/class-photos/reel-mosaic.jpg",
+    photo: "/class-photos/reel-blur.jpg",
     photoAlt: "출연영상 클래스 — 카메라 앞에서 연기하는 멤버",
     nameEn: "Reel Production Class",
     quote: "실제 영화 현장의 퀄리티로 당신의 포트폴리오를 만듭니다.",
@@ -165,7 +165,7 @@ const CLASS_DATA: ClassItem[] = [
   {
     step: "STEP 3",
     nameKo: "액터스 리더 클래스",
-    photo: "/class-photos/leader-mosaic.jpg",
+    photo: "/class-photos/leader-blur.jpg",
     photoAlt: "액터스 리더 클래스 — 멤버들 앞에서 장면 연기를 하는 멤버",
     category: "step3",
     nameEn: "Actor's Leader Class",
@@ -188,7 +188,7 @@ const CLASS_DATA: ClassItem[] = [
     // 2026-10-13 대표: 정규 클래스 이수 조건 폐지 — 신규도 바로 신청 (상담 폼·신규 등록·/classes «신규 멤버 클래스»에 노출)
     step: "STEP 1",
     nameKo: "오디션 테크닉 클래스",
-    photo: "/class-photos/audition-mosaic.jpg",
+    photo: "/class-photos/audition-blur.jpg",
     photoAlt: "오디션 테크닉 클래스 — 카메라 앞에서 연기하고 모니터로 바로 확인하는 멤버들",
     nameEn: "Audition Technique Class",
     quote: "캐스팅 관계자의 시선을 멈추게 할 독백 만들기",
