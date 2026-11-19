@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { CheckCircle, ArrowRight } from 'lucide-react'
+import { CheckCircle } from 'lucide-react'
 
 interface ClassOption {
   nameKo: string
@@ -178,7 +178,7 @@ export default function EnrollForm({
             결제 안내는 등록하신 연락처로 개별 안내드립니다.
           </p>
           <Link href="/dashboard" className="btn-primary" style={{ background: 'var(--navy)', color: '#fff' }}>
-            마이페이지로 이동 <ArrowRight aria-hidden={true} size={15} strokeWidth={2.2} />
+            마이페이지로 이동
           </Link>
         </div>
       </div>
@@ -421,7 +421,6 @@ export default function EnrollForm({
           {loading ? '신청 중...' : (
             <>
               {ymLabel(nextMonth)} 클래스 신청하기
-              <ArrowRight aria-hidden={true} size={16} strokeWidth={2.5} />
             </>
           )}
         </button>

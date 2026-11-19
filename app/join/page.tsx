@@ -326,20 +326,9 @@ export default function JoinPage() {
                     </p>
                   </div>
 
-                  {/* 화살표 (마지막 제외) */}
-                  {i < 2 && (
-                    <div key={`arrow-${i}`} className="step-journey-arrow">
-                      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <path
-                          d="M4 10h12M11 5l5 5-5 5"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </div>
-                  )}
+                  {/* 카드 사이 빈 칸 — 화살표 그림은 뺐다(2026-11-19 대표 «화살표 쓰지마», 홈과 같은 처리).
+                      휴대폰 칸 배치(1fr auto 1fr auto 1fr)를 지키려고 빈 칸으로 간격만 남긴다 */}
+                  {i < 2 && <div key={`arrow-${i}`} className="step-journey-arrow" aria-hidden="true" />}
                 </Fragment>
               ))}
             </div>

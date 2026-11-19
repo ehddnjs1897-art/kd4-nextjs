@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useId, useRef, useState } from 'react'
-import { MessageCircle, CheckCircle, Check, ArrowRight, ArrowLeft } from 'lucide-react'
+import { MessageCircle, CheckCircle, Check } from 'lucide-react'
 import { CLASSES, DIRECTOR } from '@/lib/classes'
 import { analytics } from '@/lib/analytics'
 import { SOURCE_VALUES, MEISNER_OPTIONS } from '@/lib/form-options'
@@ -555,7 +555,7 @@ export default function JoinForm({ initialClass, kakaoAlt = false }: { initialCl
                     gap: '3px',
                   }}
                 >
-                  자세히 보기 <ArrowRight aria-hidden={true} size={11} strokeWidth={2.2} />
+                  자세히 보기
                 </p>
               </div>
             </Link>
@@ -607,7 +607,7 @@ export default function JoinForm({ initialClass, kakaoAlt = false }: { initialCl
                     gap: '3px',
                   }}
                 >
-                  자세히 보기 <ArrowRight aria-hidden={true} size={11} strokeWidth={2.2} />
+                  자세히 보기
                 </p>
               </div>
             </Link>
@@ -659,7 +659,7 @@ export default function JoinForm({ initialClass, kakaoAlt = false }: { initialCl
                     gap: '3px',
                   }}
                 >
-                  자세히 보기 <ArrowRight aria-hidden={true} size={11} strokeWidth={2.2} />
+                  자세히 보기
                 </p>
               </div>
             </a>
@@ -711,7 +711,7 @@ export default function JoinForm({ initialClass, kakaoAlt = false }: { initialCl
                     gap: '3px',
                   }}
                 >
-                  자세히 보기 <ArrowRight aria-hidden={true} size={11} strokeWidth={2.2} />
+                  자세히 보기
                 </p>
               </div>
             </a>
@@ -865,7 +865,6 @@ export default function JoinForm({ initialClass, kakaoAlt = false }: { initialCl
           <div className={styles.navRow}>
             <button type="button" className={styles.btnPrimary} onClick={goNextFromContact}>
               다음 — 희망 클래스 선택
-              <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} />
             </button>
           </div>
         </div>
@@ -1042,12 +1041,10 @@ export default function JoinForm({ initialClass, kakaoAlt = false }: { initialCl
 
           <div className={styles.navRow}>
             <button type="button" className={styles.btnGhost} onClick={() => setStep(0)}>
-              <ArrowLeft aria-hidden={true} size={15} strokeWidth={2.2} />
               이전
             </button>
             <button type="button" className={styles.btnPrimary} onClick={goNextFromClass}>
               다음 — 신청 내용 확인
-              <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} />
             </button>
           </div>
         </div>
@@ -1115,7 +1112,6 @@ export default function JoinForm({ initialClass, kakaoAlt = false }: { initialCl
 
           <div className={styles.navRow}>
             <button type="button" className={styles.btnGhost} onClick={() => setStep(1)} disabled={loading}>
-              <ArrowLeft aria-hidden={true} size={15} strokeWidth={2.2} />
               이전
             </button>
             <button
@@ -1125,7 +1121,7 @@ export default function JoinForm({ initialClass, kakaoAlt = false }: { initialCl
               aria-busy={loading}
               aria-describedby={errorId}
             >
-              {loading ? '신청 중...' : <>무료 상담 신청 완료 <ArrowRight aria-hidden={true} size={16} strokeWidth={2.2} /></>}
+              {loading ? '신청 중...' : <>무료 상담 신청 완료</>}
             </button>
           </div>
         </div>

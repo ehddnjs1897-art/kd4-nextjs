@@ -90,6 +90,10 @@
   --text-warm: #5A5550;          /* 따뜻한 갈색톤 본문 — 메인 페이지 서브텍스트용 */
   --border: #D2D2C8;
   --border-strong: #B8B8AC;
+  /* 2026-11-19: Noto 웹글꼴(next/font)을 빼면서 변수 이름만 여기서 정의 — 이 두 줄을 지우면 아래 세 글꼴 변수가 무효가 되어
+     사이트 전체가 기기 기본 글꼴로 나온다(5/1~11/16 실제 사고). 기기에 Noto가 설치돼 있으면 그대로 쓰고, 없으면 다음 글꼴로 넘어간다. */
+  --font-noto-sans-kr: 'Noto Sans KR';
+  --font-noto-serif-kr: 'Noto Serif KR';
   --font-serif: 'KoPubWorld Batang', var(--font-noto-serif-kr), 'Noto Serif KR', Georgia, serif;
   --font-sans: 'KoPubWorld Dotum', var(--font-noto-sans-kr), 'Noto Sans KR', Helvetica, 'Helvetica Neue', Arial, sans-serif;
   --font-display: 'KoPubWorld Dotum', var(--font-oswald), var(--font-noto-sans-kr), Helvetica, 'Helvetica Neue', Arial, sans-serif;

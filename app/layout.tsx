@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Noto_Sans_KR, Noto_Serif_KR, Oswald } from 'next/font/google'
+import { Oswald } from 'next/font/google'
 import Script from 'next/script'
 import '../styles/globals.css'
 import '../styles/kopub-ext.css' // KoPub 보충 글꼴(기본 서브셋에 없는 글자) — 자동 생성, scripts/build-kopub-ext-fonts.py
@@ -12,23 +12,10 @@ import FirstTouchTracker from '@/components/analytics/FirstTouchTracker'
 import MetaPixel from '@/components/analytics/MetaPixel'
 import { SITE_URL } from '@/lib/constants'
 
-const notoSansKR = Noto_Sans_KR({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '700', '900'],
-  variable: '--font-noto-sans-kr',
-  // 2026-11-19 첫 화면 속도(대표 «2.5초 고»): KoPub이 먼저라 이 글꼴은 화면에 거의 안 쓰인다 → 미리 받지 않음(필요할 때만 받음)
-  preload: false,
-  display: 'swap',
-})
-
-const notoSerifKR = Noto_Serif_KR({
-  subsets: ['latin'],
-  weight: ['300', '400', '700'],
-  variable: '--font-noto-serif-kr',
-  // 2026-11-19 첫 화면 속도(대표 «2.5초 고»): KoPub이 먼저라 이 글꼴은 화면에 거의 안 쓰인다 → 미리 받지 않음(필요할 때만 받음)
-  preload: false,
-  display: 'swap',
-})
+// Noto Sans KR · Noto Serif KR (next/font) 은 뺐다 — 2026-11-19 첫 화면 속도(대표 «2.5초 고»).
+// 두 글꼴은 KoPub(+보충 kopub-ext)에 없는 글자 대비용 예비였는데, 홈·/join·/classes·/about·마이즈너·게시판에서 실제로 한 번도
+// 내려받지 않았다(/actors 영어 조각 1개뿐). 그런데 글꼴 목록(@font-face 약 1,000줄, 53KB)이 첫 화면을 막고 있었다.
+// 측정(휴대폰·느린 통신): /join 첫 큰 글자 2.73초 → 2.30초, 첫 표시 2.5초 → 1.4초. 글꼴 이름은 styles/globals.css :root 에 그대로 둔다.
 
 const oswald = Oswald({
   subsets: ['latin'],
@@ -101,8 +88,9 @@ export default function RootLayout({
 }) {
   return (
     // 글꼴 변수 클래스는 <html>에 둔다 (2026-11-16 대표 «kopub으로해»): styles/globals.css 의 --font-serif/--font-sans/--font-display 가
-    // :root 에서 var(--font-noto-*)를 참조하므로, 이 클래스가 <body>에만 있으면 세 변수가 무효가 되어 사이트 전체가 기기 기본 글꼴로 나온다(5/1~11/16 실제 발생).
-    <html lang="ko" className={`${notoSansKR.variable} ${notoSerifKR.variable} ${oswald.variable}`}>
+    // :root 에서 var(--font-oswald)를 참조하므로, 이 클래스가 <body>에만 있으면 변수가 무효가 되어 사이트 전체가 기기 기본 글꼴로 나온다(5/1~11/16 실제 발생).
+    // --font-noto-* 는 2026-11-19부터 styles/globals.css :root 에서 직접 정의한다(위 주석 참고).
+    <html lang="ko" className={oswald.variable}>
       <head>
         <JsonLd />
         {/* KoPubWorld 서브셋 폰트 preload — Vercel edge에서 직서빙, 64~122KB.
