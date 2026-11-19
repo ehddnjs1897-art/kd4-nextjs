@@ -5,7 +5,6 @@ import { SITE_URL } from '@/lib/constants'
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { LAST_UPDATED } from '@/lib/last-updated'
 import { buildBreadcrumb, buildWebPage } from '@/lib/seo-schemas'
-import YouTubeFacade from '@/components/youtube/YouTubeFacade'
 
 export const metadata: Metadata = {
   title: '스튜디오 소개 — 마이즈너 연기학원 KD4',
@@ -68,23 +67,13 @@ const STEPS = [
   },
 ]
 
-// 배우가 실패하는 진짜 이유 (Pain Points) — 대표 전략 정의 언어 그대로
-const PAIN_POINTS = [
-  '무엇을 연습해야 하는지 모른다',
-  '언제 촬영해야 하는지 모른다',
-  '어떤 독백을 해야 하는지 모른다',
-  '어떤 오디션을 선택해야 하는지 모른다',
-  '성장하고 있는지 알 수 없다',
-  '혼자서 계속 흔들린다',
-]
-
 // Actor Operating System — 배우의 성장을 운영하는 5개 레이어
 const LAYERS = [
   { num: '01', name: '교육', desc: '오프라인 수업 · 개인레슨 · 마스터클래스' },
   { num: '02', name: '실행', desc: '촬영 · 출연영상 · 독백 · 레피티션 · 장면' },
   { num: '03', name: '관리', desc: '목표 · 피드백 · 성장 기록 · AI 분석 · 멘토 리뷰' },
   { num: '04', name: '커리어', desc: '프로필 · 오디션 · 캐스팅 · 감독 네트워크 · 제작' },
-  { num: '05', name: '커뮤니티', desc: '멤버십 · 선후배 · 스터디 · 협업' },
+  { num: '05', name: '커뮤니티', desc: '멤버십 · 스터디 · 협업' },
 ]
 
 const TESTIMONIALS = [
@@ -122,25 +111,6 @@ export default function AboutPage() {
           dateModified: LAST_UPDATED.about,
           speakableCssSelectors: ['h1', 'h2', '.section-desc'],
         }),
-        {
-          '@context': 'https://schema.org',
-          '@type': 'VideoObject',
-          '@id': `${SITE_URL}/about#video-kd4-intro`,
-          name: 'KD4 연기하지 않는 연기',
-          description: 'KD4 액팅 스튜디오의 마이즈너 테크닉 기반 연기 훈련 소개 영상. 연기하지 않는 연기, 진짜 반응을 훈련하는 KD4의 방식을 담았습니다.',
-          thumbnailUrl: 'https://i.ytimg.com/vi/tB7f4VnC6rM/hqdefault.jpg',
-          // uploadDate = 유튜브 실제 업로드일 실측 (2026-08-30)
-          uploadDate: '2026-04-01T08:50:44-07:00',
-          contentUrl: 'https://www.youtube.com/watch?v=tB7f4VnC6rM',
-          embedUrl: 'https://www.youtube.com/embed/tB7f4VnC6rM',
-          inLanguage: 'ko',
-          publisher: {
-            '@type': 'Organization',
-            '@id': `${SITE_URL}#org`,
-            name: 'KD4 액팅 스튜디오',
-            url: SITE_URL,
-          },
-        },
       ]} />
 
       {/* ── HERO ── */}
@@ -201,20 +171,15 @@ export default function AboutPage() {
         >
           카메라 앞에서 통하는 &lsquo;연기하지 않는 연기&rsquo;를 배웁니다.
         </p>
-        <p
-          style={{
-            fontFamily: 'var(--font-display), Oswald, sans-serif',
-            fontSize: 'clamp(2.4rem, 7vw, 5rem)',
-            fontWeight: 700,
-            letterSpacing: '0.08em',
-            color: 'var(--navy)',
-            textTransform: 'uppercase',
-            lineHeight: 1,
-            marginTop: '8px',
-          }}
-        >
-          <span lang="en">OFF THE PLASTIC</span>
-        </p>
+        {/* 2026-11-19 대표 «OFF THE PLASTIC 폰트도 혼자 동떨어져 있다 — 디자인적으로 매칭해서 바꿔»:
+            크고 굵은 글씨 → 홈 첫 화면과 같은 모양(가는 선 사이, 자간 넓은 작은 글씨). 글꼴은 그대로 KoPub */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+          <span aria-hidden="true" style={{ display: 'block', width: '36px', height: '1px', background: 'var(--gold)' }} />
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(0.75rem, 1.6vw, 0.85rem)', fontWeight: 400, letterSpacing: '0.32em', color: 'var(--gold)', textTransform: 'uppercase' }}>
+            <span lang="en">OFF THE PLASTIC</span>
+          </p>
+          <span aria-hidden="true" style={{ display: 'block', width: '36px', height: '1px', background: 'var(--gold)' }} />
+        </div>
       </section>
 
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
@@ -237,110 +202,7 @@ export default function AboutPage() {
           상대방에게 반응하는 살아있는 연기를 훈련합니다.
         </p>
 
-        {/* 마이즈너 핵심 3요소 */}
-        <div style={{ marginTop: '36px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
-          {[
-            {
-              label: 'REPETITION',
-              title: 'Repetition 훈련',
-              titleNode: (<><span lang="en">Repetition</span>{' 훈련'}</>),
-              desc: '두 배우가 상대를 관찰하며 말과 행동을 반복·반응하는 핵심 훈련. 감정을 혼자 만들지 않고, 상대에게서 촉발된 충동에 반응합니다.',
-            },
-            {
-              label: 'CAMERA',
-              title: '카메라 연기에 최적화',
-              desc: '마이즈너 테크닉은 과장 없이 미세한 반응으로 진실을 담는 방식입니다. 무대 연기와 달리 클로즈업 카메라 앞에서 오히려 더 강력합니다.',
-            },
-            {
-              label: 'VS OTHER METHODS',
-              title: '다른 방법과의 차이',
-              desc: '스타니슬랍스키의 감정기억과 달리, 마이즈너는 상대에게 집중합니다. 혼자 짜내는 감정이 아니라 관계 속에서 살아나는 연기입니다.',
-            },
-          ].map(item => (
-            <div
-              key={item.label}
-              style={{
-                background: 'var(--bg2)',
-                border: '1px solid var(--border)',
-                borderRadius: '12px',
-                padding: '22px 20px',
-              }}
-            >
-              <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.75rem', letterSpacing: '0.2em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '8px' }}>
-                <span lang="en">{item.label}</span>
-              </p>
-              <h3 style={{ fontFamily: 'var(--font-sans)', fontSize: '0.95rem', fontWeight: 700, color: 'var(--white)', marginBottom: '8px' }}>
-                {'titleNode' in item ? item.titleNode : item.title}
-              </h3>
-              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', color: 'var(--secondary)', lineHeight: 1.75 }}>
-                {item.desc}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        {/* YouTube 영상 — 클릭 시 재생 (YouTubeFacade: 지연 로드) */}
-        <div style={{
-          marginTop: '48px',
-          borderRadius: '4px',
-          overflow: 'hidden',
-          aspectRatio: '21/9',
-          width: '100vw',
-          maxWidth: '100vw',
-          marginLeft: 'calc(-50vw + 50%)',
-          background: '#000',
-        }}>
-          <YouTubeFacade
-            videoId="tB7f4VnC6rM"
-            title="KD4 연기하지 않는 연기"
-            containerStyle={{ paddingBottom: 0, height: '100%' }}
-          />
-        </div>
-      </section>
-
-      <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
-
-      {/* ── 배우가 실패하는 진짜 이유 (Pain Points) ── */}
-      <section aria-label="배우가 실패하는 진짜 이유" style={{ maxWidth: '900px', margin: '0 auto', padding: 'clamp(48px, 8vw, 96px) 24px' }}>
-        <p style={{ fontFamily: 'var(--font-display), Oswald, sans-serif', fontSize: '0.75rem', letterSpacing: '0.25em', color: 'var(--gold)', textTransform: 'uppercase', marginBottom: '16px', textAlign: 'center' }}>
-          <span lang="en">WHY ACTORS FAIL</span>
-        </p>
-        <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 700, textAlign: 'center', marginBottom: '20px' }}>
-          배우가 실패하는 진짜 이유
-        </h2>
-        <p className="section-desc" style={{ fontFamily: 'var(--font-sans)', fontSize: '1rem', color: 'var(--secondary)', lineHeight: 1.85, textAlign: 'center', maxWidth: '620px', margin: '0 auto 40px' }}>
-          배우는 연기를 몰라서 실패하지 않습니다. 무엇을 연습하고, 언제 촬영하고,
-          지금 성장하고 있는지 — 그 성장을 운영해줄 시스템이 없어서 흔들립니다.
-        </p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
-          {PAIN_POINTS.map((item, i) => (
-            <div
-              key={item}
-              style={{
-                background: 'var(--bg2)',
-                border: '1px solid var(--border)',
-                borderRadius: '12px',
-                padding: '24px 20px',
-                display: 'flex',
-                gap: '12px',
-                alignItems: 'flex-start',
-              }}
-            >
-              <span style={{
-                fontFamily: 'var(--font-display), Oswald, sans-serif',
-                color: 'var(--gold)',
-                fontSize: '0.9rem',
-                fontWeight: 700,
-                marginTop: '1px',
-                flexShrink: 0,
-                minWidth: '20px',
-              }}>
-                {i + 1}.
-              </span>
-              <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.95rem', lineHeight: 1.6, color: 'var(--white)' }}>{item}</p>
-            </div>
-          ))}
-        </div>
+        {/* 2026-11-19 대표 지시: 마이즈너 핵심 3요소 카드·큰 유튜브 영상·「배우가 실패하는 진짜 이유」 구간 삭제 */}
       </section>
 
       <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 24px' }} />
@@ -563,7 +425,7 @@ export default function AboutPage() {
               textDecoration: 'none',
             }}
           >
-            제휴 혜택 전체 보기 <span aria-hidden="true">→</span>
+            제휴 혜택 전체 보기
           </Link>
         </div>
       </section>
@@ -707,22 +569,22 @@ export default function AboutPage() {
         <nav aria-label="관련 페이지" style={{ marginTop: '32px', paddingTop: '20px', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
           <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link href="/acting-coaches" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-              권동원 액팅 코치 <span aria-hidden="true">→</span>
+              권동원 액팅 코치
             </Link>
             <Link href="/acting-coaches#sebin" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-              주세빈 액팅 코치 <span aria-hidden="true">→</span>
+              주세빈 액팅 코치
             </Link>
             <Link href="/meisner-technique-class" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-              마이즈너 테크닉 클래스 <span aria-hidden="true">→</span>
+              마이즈너 테크닉 클래스
             </Link>
             <Link href="/sinchon-acting-academy" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-              신촌 연기학원 오시는 길 <span aria-hidden="true">→</span>
+              신촌 연기학원 오시는 길
             </Link>
             <Link href="/classes" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-              클래스 안내 <span aria-hidden="true">→</span>
+              클래스 안내
             </Link>
             <Link href="/benefits" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-              멤버 혜택 <span aria-hidden="true">→</span>
+              멤버 혜택
             </Link>
           </div>
         </nav>

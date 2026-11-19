@@ -16,6 +16,8 @@ const notoSansKR = Noto_Sans_KR({
   subsets: ['latin'],
   weight: ['300', '400', '500', '700', '900'],
   variable: '--font-noto-sans-kr',
+  // 2026-11-19 첫 화면 속도(대표 «2.5초 고»): KoPub이 먼저라 이 글꼴은 화면에 거의 안 쓰인다 → 미리 받지 않음(필요할 때만 받음)
+  preload: false,
   display: 'swap',
 })
 
@@ -23,6 +25,8 @@ const notoSerifKR = Noto_Serif_KR({
   subsets: ['latin'],
   weight: ['300', '400', '700'],
   variable: '--font-noto-serif-kr',
+  // 2026-11-19 첫 화면 속도(대표 «2.5초 고»): KoPub이 먼저라 이 글꼴은 화면에 거의 안 쓰인다 → 미리 받지 않음(필요할 때만 받음)
+  preload: false,
   display: 'swap',
 })
 
@@ -30,6 +34,8 @@ const oswald = Oswald({
   subsets: ['latin'],
   weight: ['300', '400', '600', '700'],
   variable: '--font-oswald',
+  // 2026-11-19 첫 화면 속도(대표 «2.5초 고»): KoPub이 먼저라 이 글꼴은 화면에 거의 안 쓰인다 → 미리 받지 않음(필요할 때만 받음)
+  preload: false,
   display: 'swap',
 })
 
@@ -99,9 +105,10 @@ export default function RootLayout({
     <html lang="ko" className={`${notoSansKR.variable} ${notoSerifKR.variable} ${oswald.variable}`}>
       <head>
         <JsonLd />
-        {/* KoPubWorld 서브셋 폰트 preload — Vercel edge에서 직서빙, 64~122KB */}
+        {/* KoPubWorld 서브셋 폰트 preload — Vercel edge에서 직서빙, 64~122KB.
+            바탕(제목 글꼴)은 페이지마다 첫 화면 굵기가 달라 각 페이지에서 따로 미리 받는다 (2026-11-19):
+            홈 = 바탕 Medium(app/page.tsx), /join = 바탕 Bold(app/join/layout.tsx). */}
         <link rel="preload" href="/fonts/KoPubWorldDotum-Medium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/KoPubWorldBatang-Medium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         {/* 서드파티 도메인 preconnect — TCP+TLS를 미리 열어 스크립트 로딩 지연 감소 */}
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://www.google-analytics.com" />

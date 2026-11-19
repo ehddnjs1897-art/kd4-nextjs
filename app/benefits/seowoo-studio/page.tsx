@@ -622,16 +622,16 @@ export default function SeowooPartnershipPage() {
         <nav aria-label="관련 페이지" style={{ marginTop: '32px', paddingTop: '20px', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
           <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link href="/meisner-technique-class" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-              마이즈너 테크닉 클래스 <span aria-hidden="true">→</span>
+              마이즈너 테크닉 클래스
             </Link>
             <Link href="/reel-production-class" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-              출연영상 클래스 <span aria-hidden="true">→</span>
+              출연영상 클래스
             </Link>
             <Link href="/about" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-              KD4 소개 <span aria-hidden="true">→</span>
+              KD4 소개
             </Link>
             <Link href="/acting-coaches" style={{ fontSize: '0.85rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-              권동원 액팅 코치 <span aria-hidden="true">→</span>
+              권동원 액팅 코치
             </Link>
           </div>
         </nav>

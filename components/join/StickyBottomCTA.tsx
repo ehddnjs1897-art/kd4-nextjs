@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ArrowRight } from 'lucide-react'
 import { analytics } from '@/lib/analytics'
 
 /**
@@ -98,7 +97,6 @@ export default function StickyBottomCTA({ href = '#form-hero', label = '무료 �
         }}
       >
         {label}
-        <ArrowRight aria-hidden={true} size={15} strokeWidth={2.5} />
       </a>
     </div>
   )

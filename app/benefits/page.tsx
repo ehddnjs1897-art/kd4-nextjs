@@ -33,8 +33,8 @@ export const metadata: Metadata = {
 
 const RESCHEDULE_STEPS = [
   '부득이하게 결석하시는 경우, 보강을 받으실 수 있습니다.',
-  '스케줄표에 있는 다른 수업 클래스에서 보강이 가능합니다.',
-  '보강은 수업 3일 전까지 미리 신청해 주세요.',
+  '오디션 테크닉·베이직 클래스·개인레슨은 타 클래스 보강 대신 해당 수업 차수를 늘립니다. 그 외 수업은 스케줄표에 있는 다른 클래스에서 보강할 수 있습니다.',
+  '보강은 수업일 5일 전까지 카카오채널로 연락해 주세요.',
   '보강 신청은 아래 카카오채널로 접수해 주세요.',
 ]
 
@@ -797,16 +797,16 @@ export default function BenefitsPage() {
         <nav aria-label="관련 페이지" style={{ marginTop: '32px', paddingTop: '20px', borderTop: '1px solid rgba(255,255,255,0.1)', textAlign: 'center' }}>
           <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link href="/about" style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.55)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-              KD4 소개 <span aria-hidden="true">→</span>
+              KD4 소개
             </Link>
             <Link href="/acting-coaches" style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.55)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-              권동원 액팅 코치 <span aria-hidden="true">→</span>
+              권동원 액팅 코치
             </Link>
             <Link href="/meisner-technique-class" style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.55)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-              마이즈너 테크닉 클래스 <span aria-hidden="true">→</span>
+              마이즈너 테크닉 클래스
             </Link>
             <Link href="/sinchon-acting-academy" style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.55)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-              신촌 연기학원 오시는 길 <span aria-hidden="true">→</span>
+              신촌 연기학원 오시는 길
             </Link>
           </div>
         </nav>

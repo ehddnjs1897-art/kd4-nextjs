@@ -6,7 +6,6 @@ import { useState, useEffect } from 'react'
 import { CLASSES, PROMO_DEADLINE } from '@/lib/classes'
 
 import { analytics } from '@/lib/analytics'
-import { ArrowRight } from 'lucide-react'
 
 /** 신규 SEO 상세 페이지 매핑 — 마이즈너/출연영상 카드 하단에 상세 페이지 링크 노출 */
 const CLASS_DETAIL_HREF: Record<string, string> = {
@@ -72,40 +71,27 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
       )}
 
       <div style={{ padding: '28px 24px 20px', flex: 1 }}>
-        {/* 뱃지 */}
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap' }}>
-          <span style={{
-            padding: '3px 10px', background: 'rgba(21,72,138,0.08)',
-            border: '1px solid rgba(21,72,138,0.35)', borderRadius: '2px',
-            fontSize: '0.75rem', letterSpacing: '0.1em', color: 'var(--navy)', fontWeight: 700,
-          }}>
-            {cls.step}
-          </span>
-          {cls.isHobby && (
+        {/* 뱃지 — 2026-11-19 대표 «중복되거나 지저분한 거 지우기»: 카드마다 반복되던 STEP 딱지 삭제
+            (묶음 제목이 이미 STEP 1·2·3을 말함). 취미반 딱지만 남김 */}
+        {cls.isHobby && (
+          <div style={{ marginBottom: '16px' }}>
             <span style={{
               padding: '2px 8px', background: 'rgba(255,255,255,0.06)',
               border: '1px solid var(--border)', borderRadius: '2px',
               fontSize: '0.75rem', color: 'var(--gray)',
             }}>취미반</span>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* 인용구 */}
         <p style={{ color: 'var(--gold)', fontSize: '0.85rem', lineHeight: 1.5, marginBottom: '12px', fontStyle: 'italic' }}>
           &ldquo;{cls.quote}&rdquo;
         </p>
 
-        {/* 클래스명 */}
-        <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--white)', marginBottom: '4px' }}>
+        {/* 클래스명 — 2026-11-19: 영문 이름 줄·한 줄 부제 삭제 (한글 이름·인용구·수업 내용과 같은 말) */}
+        <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--white)', marginBottom: '12px' }}>
           {cls.nameKo}
         </h3>
-        <p lang="en" style={{ fontSize: '0.75rem', color: 'var(--gray)', letterSpacing: '0.08em', marginBottom: '12px' }}>
-          {cls.nameEn}
-        </p>
-
-        {cls.subtitle && (
-          <p style={{ fontSize: '0.8rem', color: 'var(--gray-light)', marginBottom: '8px' }}>{cls.subtitle}</p>
-        )}
 
         {cls.note && (
           <p style={{
@@ -190,7 +176,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             transition: 'opacity 0.2s', boxShadow: '0 4px 16px rgba(21,72,138,0.25)',
           }}
         >
-          무료 상담 신청 <span aria-hidden="true">→</span>
+          무료 상담 신청
         </a>
 
         {detailHref && (
@@ -208,7 +194,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
             onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(21,72,138,0.08)' }}
             onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
           >
-            자세히 보기 <span aria-hidden="true">→</span>
+            자세히 보기
           </Link>
         )}
       </div>
@@ -239,150 +225,12 @@ export default function ClassesPage() {
             className="btn-primary"
             style={{ background: 'var(--navy)', color: '#fff', textDecoration: 'none' }}
           >
-            무료 상담 신청 <ArrowRight aria-hidden={true} size={14} />
+            무료 상담 신청
           </Link>
         </div>
       </section>
 
-      {/* ── 자가진단 — 직관적 비주얼 (큰 아이콘 + 레벨 시각화 + 골드 클래스명) ─── */}
-      <section
-        aria-label="나에게 맞는 클래스 찾기"
-        style={{
-          padding: 'clamp(56px, 8vw, 80px) 24px',
-          borderBottom: '1px solid var(--border)',
-        }}
-      >
-        <div className="container" style={{ maxWidth: 1080, margin: '0 auto' }}>
-          <p className="section-eyebrow" style={{ textAlign: 'center', marginBottom: 14 }}>
-            <span lang="en">FIND YOUR CLASS</span>
-          </p>
-          <h2
-            style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: 'clamp(1.6rem, 4vw, 2.2rem)',
-              fontWeight: 700,
-              color: 'var(--white)',
-              textAlign: 'center',
-              lineHeight: 1.35,
-              marginBottom: 'clamp(40px, 6vw, 56px)',
-            }}
-          >
-            나는 어떤 클래스를 들어야 할까?
-          </h2>
-
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-              gap: 14,
-            }}
-          >
-            {[
-              {
-                num: '01',
-                tag: 'BEGINNER',
-                title: '베이직 클래스',
-                desc: '취미로 연기를 시작하고 싶은 분',
-              },
-              {
-                num: '02',
-                tag: 'TRAINING',
-                title: '마이즈너 테크닉 정규 클래스',
-                desc: '제대로 배우 훈련을 받고 싶은 분 · 연기 매너리즘 · 연기하지 않는 연기',
-              },
-              {
-                num: '03',
-                tag: 'PORTFOLIO',
-                title: '출연영상 클래스',
-                desc: '캐스팅되는 포트폴리오를 만들고 싶은 분 · 연기력 업그레이드',
-              },
-            ].map(({ num, tag, title, desc }) => (
-              <a
-                key={title}
-                href="#class-cards-step1"
-                aria-label={`${title} — 클래스 카드로 이동`}
-                onClick={(e) => {
-                  e.preventDefault()
-                  const reduceMotion =
-                    typeof window !== 'undefined' &&
-                    window.matchMedia('(prefers-reduced-motion: reduce)').matches
-                  document
-                    .getElementById('class-cards-step1')
-                    ?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' })
-                }}
-                style={{
-                  background: 'var(--bg2)',
-                  border: '1px solid var(--border)',
-                  borderRadius: 12,
-                  padding: 24,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 8,
-                  textDecoration: 'none',
-                  transition: 'border-color 0.2s, transform 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--gold)'
-                  e.currentTarget.style.transform = 'translateY(-2px)'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--border)'
-                  e.currentTarget.style.transform = 'none'
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-                  <span style={{
-                    fontFamily: 'var(--font-display), Oswald, sans-serif',
-                    fontSize: '0.75rem',
-                    letterSpacing: '0.15em',
-                    color: 'var(--gold)',
-                    textTransform: 'uppercase',
-                    background: 'rgba(21,72,138,0.1)',
-                    border: '1px solid rgba(21,72,138,0.25)',
-                    borderRadius: 3,
-                    padding: '3px 9px',
-                  }}><span lang="en">{tag}</span></span>
-                  <span aria-hidden style={{
-                    fontFamily: 'var(--font-display), Oswald, sans-serif',
-                    fontSize: '1.3rem',
-                    fontWeight: 300,
-                    color: 'var(--gray)',
-                    letterSpacing: '0.05em',
-                    lineHeight: 1,
-                  }}>{num}</span>
-                </div>
-                <h3 style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '1.05rem',
-                  fontWeight: 700,
-                  color: 'var(--white)',
-                  letterSpacing: '0.02em',
-                  marginTop: 6,
-                }}>{title}</h3>
-                <p style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '0.85rem',
-                  color: 'var(--secondary)',
-                  lineHeight: 1.7,
-                }}>{desc}</p>
-              </a>
-            ))}
-          </div>
-
-          <p
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: '0.78rem',
-              color: 'var(--gray)',
-              textAlign: 'center',
-              marginTop: 28,
-            }}
-          >
-            {/* ↓ 장식용 — 스크린 리더 불필요 (WCAG 1.3.3) */}
-            <span aria-hidden="true">↓ </span>카드를 클릭하면 클래스 상세로 이동합니다
-          </p>
-        </div>
-      </section>
+      {/* 「나는 어떤 클래스를 들어야 할까?」 3칸 — 2026-11-19 대표 지시로 삭제 (바로 아래 클래스 카드와 같은 세 클래스가 한 번 더 나옴) */}
 
       <section className="section" aria-label="클래스 상세 목록" style={{ background: 'var(--bg)' }}>
         <div className="container">
@@ -439,60 +287,10 @@ export default function ClassesPage() {
             </div>
           ))}
 
-          {/* QW2 (R292): 수강→배우 DB 등록→캐스팅 연결 3단계 흐름 블록 */}
+          {/* HOW IT WORKS «수업 후 캐스팅까지» 3단계 블록은 뺐다 (2026-11-19 대표 «추천대로해» — 질문 구역은 검색용으로 남김) */}
+          {/* 자주 묻는 결정 3가지 — 직답 섹션 */}
           <div style={{
             marginTop: '64px', marginBottom: '40px',
-            padding: 'clamp(28px, 6vw, 40px) clamp(20px, 5vw, 32px)',
-            background: 'var(--bg2)',
-            border: '1px solid var(--border)',
-            borderRadius: '12px',
-          }}>
-            <p className="section-eyebrow" style={{ textAlign: 'center', marginBottom: '8px' }}>
-              <span lang="en">HOW IT WORKS</span>
-            </p>
-            <h2 style={{ textAlign: 'center', fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)', fontWeight: 700, color: 'var(--navy)', marginBottom: '32px' }}>
-              수업 후 캐스팅까지 — KD4 멤버의 여정
-            </h2>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))',
-              gap: '24px',
-            }}>
-              {[
-                {
-                  step: '01',
-                  title: '클래스 수강',
-                  desc: 'KD4 클래스를 수강하면 KD4 멤버가 됩니다.',
-                },
-                {
-                  step: '02',
-                  title: '배우 DB 등록',
-                  desc: 'KD4 멤버는 프로필을 등록하면 배우 DB에 공개됩니다. 사진·필모그래피·영상이 함께 올라갑니다.',
-                },
-                {
-                  step: '03',
-                  title: '캐스팅 연결',
-                  desc: '캐스팅 디렉터가 배우 DB를 통해 직접 연락합니다. 최근 캐스팅 80건이 이뤄졌습니다.',
-                },
-              ].map((item) => (
-                <div key={item.step} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  <span style={{
-                    fontFamily: 'var(--font-display), Oswald, sans-serif',
-                    fontSize: '2rem',
-                    fontWeight: 700,
-                    color: 'rgba(21,72,138,0.18)',
-                    lineHeight: 1,
-                  }}>{item.step}</span>
-                  <p style={{ fontWeight: 700, fontSize: '1rem', color: '#111111', margin: 0 }}>{item.title}</p>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.7, margin: 0 }}>{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* 자주 묻는 결정 3가지 — 직답 섹션 (기존 HOW IT WORKS 블록 스타일 재사용) */}
-          <div style={{
-            marginTop: '0', marginBottom: '40px',
             padding: 'clamp(28px, 6vw, 40px) clamp(20px, 5vw, 32px)',
             background: 'var(--bg2)',
             border: '1px solid var(--border)',
@@ -517,7 +315,7 @@ export default function ClassesPage() {
                   <li><strong style={{ color: '#111111', fontWeight: 600 }}>먼저 겪어보고 싶다면</strong> — 무료 상담에서 체험 수업 가능 여부를 확인하세요.</li>
                 </ul>
                 <Link href="/basic-acting-class" style={{ fontSize: '0.85rem', color: 'var(--navy)', fontWeight: 600, textDecoration: 'none' }}>
-                  베이직 클래스 자세히 보기 <span aria-hidden="true">→</span>
+                  베이직 클래스 자세히 보기
                 </Link>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -539,7 +337,7 @@ export default function ClassesPage() {
                   클래스별 수강 동의서와 상담 안내를 따릅니다.
                 </p>
                 <Link href="/faq" style={{ fontSize: '0.85rem', color: 'var(--navy)', fontWeight: 600, textDecoration: 'none' }}>
-                  자주 묻는 질문 전체 보기 <span aria-hidden="true">→</span>
+                  자주 묻는 질문 전체 보기
                 </Link>
               </div>
             </div>
@@ -565,7 +363,7 @@ export default function ClassesPage() {
                 className="btn-primary"
                 style={{ background: 'var(--navy)', color: '#fff', textDecoration: 'none', boxShadow: '0 4px 20px rgba(21,72,138,0.3)' }}
               >
-                무료 상담 신청 <span aria-hidden="true">→</span>
+                무료 상담 신청
               </Link>
               <a
                 href="https://pf.kakao.com/_ximxdqn"
@@ -590,25 +388,25 @@ export default function ClassesPage() {
       <nav aria-label="관련 페이지" style={{ padding: '24px', background: 'var(--bg2)', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
         <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link href="/meisner-technique-class" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-            마이즈너 테크닉 클래스 <span aria-hidden="true">→</span>
+            마이즈너 테크닉 클래스
           </Link>
           <Link href="/reel-production-class" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-            출연영상 클래스 <span aria-hidden="true">→</span>
+            출연영상 클래스
           </Link>
           <Link href="/audition-technique-class" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-            오디션 테크닉 클래스 <span aria-hidden="true">→</span>
+            오디션 테크닉 클래스
           </Link>
           <Link href="/acting-coaches" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-            권동원 액팅 코치 <span aria-hidden="true">→</span>
+            권동원 액팅 코치
           </Link>
           <Link href="/acting-coaches#sebin" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-            주세빈 액팅 코치 <span aria-hidden="true">→</span>
+            주세빈 액팅 코치
           </Link>
           <Link href="/about" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-            KD4 소개 <span aria-hidden="true">→</span>
+            KD4 소개
           </Link>
           <Link href="/benefits" style={{ fontSize: '0.88rem', color: 'var(--secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', minHeight: '44px' }}>
-            멤버 혜택 <span aria-hidden="true">→</span>
+            멤버 혜택
           </Link>
         </div>
       </nav>

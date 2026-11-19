@@ -4,14 +4,15 @@ import '@/app/page-hero.css'
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { KD4_STATS } from "@/lib/stats";
 import { DIRECTOR } from "@/lib/classes";
 
 import { analytics } from "@/lib/analytics";
 import { STAT_ICONS } from "@/lib/stat-icons";
 import DirectorFilmography from "@/components/director/DirectorFilmography";
-import { CASTING_PHOTOS } from "@/lib/casting-photos"
+import { CASTING_PHOTOS, castingWork } from "@/lib/casting-photos"
+import { buildInstantClasses } from "@/lib/join-instant"
 import PageJsonLd from '@/components/seo/PageJsonLd'
 import { LAST_UPDATED } from '@/lib/last-updated'
 import { buildBreadcrumb, buildWebPage } from '@/lib/seo-schemas'
@@ -47,22 +48,23 @@ function wrapHomeEnglishToken(text: string): React.ReactNode {
   return text
 }
 
-// ─── 후기 마퀴 데이터 ────────────────────────────────────────────────────────
-
-const REVIEW_ITEMS = [
-  { text: "연기를 다시 즐길 수 있게 되었습니다", author: "조*솔", emoji: "😊" },
-  { text: "마이즈너 테크닉을 처음 접했습니다. 진짜 연기가 뭔지 발견했습니다", author: "김*현", emoji: "😲" },
-  { text: "단순한 클래스 이상의 경험, 연기에 대한 마음을 다시 채울 수 있는 소중한 시간", author: "이*정", emoji: "🥹" },
-  { text: "형식적으로 흘러가기 쉬운데, KD4는 정말 달랐습니다", author: "박*우", emoji: "😤" },
-  { text: "막 시작해서 방향을 찾고 있는 분들께 꼭 추천드리고 싶습니다", author: "최*민", emoji: "😄" },
+// ─── 멤버 이야기 (홈) ────────────────────────────────────────────────────────
+// 실제 멤버가 쓴 후기 문장 그대로 — 지어내지 않는다. 같은 후기를 두 번 보여주지 않는다.
+// 출처: /reviews 공개 후기(클래스 표기 있는 것) · /join 후기 구간. 이름은 성만 남긴다.
+// 성과 후기(맨 앞, 실명 + 캐스팅 작품): 2026-11-19 대표 «성과후기 동의 다 됐어 해».
+//   후기 문장 = 오디션 테크닉 페이지의 노션 원문(lib/class-landing-content.ts AUDITION_REVIEWS) 그대로,
+//   작품 = 캐스팅 카드 글자(lib/casting-photos.ts) 그대로. 실명 후기가 확인된 캐스팅 멤버는 지금 2명뿐 —
+//   세 번째는 대표가 이름을 주면 추가(성만 남은 후기를 실명 멤버로 짐작해 붙이지 말 것).
+const HOME_RESULT_REVIEWS: { text: string; by: string; cls: string; work: string }[] = [
+  { text: "솔직함을 어떻게 잘 전달할지 고민하게 해주는 수업이었습니다. 하루 100명 넘게 오디션 보는 사람의 입장에서 다시 생각해보게 됐고, 객관적으로 마이너스 요인이 될 수 있는 디테일을 정확히 잡아주셨습니다.", by: "채병욱 배우", cls: "오디션 테크닉 클래스", work: "NETFLIX 〈천천히 강렬하게〉 출연" },
+  { text: "오디션에 임하는 자세부터 어떤 독백을 준비해야 하는지, 인터뷰, 오디션 마무리까지. 그동안 갈피를 못 잡던 부분들을 경험 많은 배우님을 통해 해결할 수 있었습니다.", by: "배승헌 배우", cls: "오디션 테크닉 클래스", work: "NETFLIX 〈천천히 강렬하게〉 출연" },
 ]
-
-const REVIEW_ITEMS_2 = [
-  { text: "긴장 없이 연기를 순수하게 느낄 수 있었고, 그 시간이 저에게 큰 위로가 되었습니다", author: "한*아", emoji: "😌" },
-  { text: "한 사람 한 사람에게 디테일한 피드백을 주신다는 점이 가장 좋았습니다", author: "정*석", emoji: "😍" },
-  { text: "처음 만난 분들과도 자연스럽게 이야기를 나눌 수 있었고, 서로의 경험을 공유하는 느낌", author: "김*안", emoji: "🤗" },
-  { text: "이런 좋은 프로그램을 받을 수 있게 해주셔서 감사드립니다", author: "윤*호", emoji: "😭" },
-  { text: "지금 이 순간, 진짜 감정에 솔직하게 느끼는 것. 그게 마이즈너의 핵심이었습니다", author: "서*린", emoji: "🥺" },
+const HOME_REVIEWS: { text: string; by: string; cls?: string }[] = [
+  { text: "오디션 스터디를 2년 했는데도, 현역으로 활동하시는 배우님의 코멘트는 확실히 오디션에 실질적으로 도움이 됐습니다.", by: "나OO", cls: "오디션 테크닉 클래스" },
+  { text: "안 보이던 업계의 길이 보였습니다. 현역 배우가 현실적으로 설명해주는 곳.", by: "한OO" },
+  { text: "마이즈너 테크닉을 처음 접했습니다. 진짜 연기가 뭔지 발견했습니다.", by: "김OO" },
+  { text: "한 사람 한 사람에게 디테일한 피드백을 주신다는 점이 가장 좋았습니다.", by: "정OO" },
+  { text: "내 의지로 만들어진 연기가 아니라 의식 깊은 곳에서 건드려진 감정이 자연스럽게 뱉어지는 경험을 했습니다.", by: "강OO" },
 ]
 
 const PARTNERS = [
@@ -74,36 +76,6 @@ const PARTNERS = [
   { name: '서우스튜디오', logo: '/partners/seowoo-logo.webp' },
 ]
 
-const reviewCardStyle: React.CSSProperties = {
-  flex: "0 0 auto",
-  width: "clamp(260px, 80vw, 360px)",
-  padding: "24px 28px",
-  background: "var(--bg2)",
-  border: "1px solid var(--border)",
-  borderRadius: "12px",
-  marginRight: "14px",
-}
-
-const reviewEmojiStyle: React.CSSProperties = {
-  fontSize: "3rem",
-  lineHeight: 1,
-  display: "block",
-  marginBottom: "14px",
-}
-
-const reviewTextStyle: React.CSSProperties = {
-  fontSize: "0.88rem",
-  color: "var(--white)",
-  lineHeight: 1.7,
-  marginBottom: "14px",
-}
-
-const reviewAuthorStyle: React.CSSProperties = {
-  fontSize: "0.78rem",
-  color: "var(--gray)",
-  letterSpacing: "0.02em",
-}
-
 // STAT_ICONS는 lib/stat-icons.tsx에서 import (join/page.tsx 공용화 — 스펙 2-F)
 
 // ─── 메인 페이지 ───────────────────────────────────────────────────────────────
@@ -114,7 +86,8 @@ export default function HomePage() {
   const mainRef = useRef<HTMLElement>(null)
 
   const [marqueePaused, setMarqueePaused] = useState(false)
-  const [reviewPaused, setReviewPaused] = useState(false)
+  // 처음 오는 분이 고를 수 있는 클래스 5개 — 이름·수강료·횟수는 lib/classes.ts 정본 그대로 (/join 타일과 같은 목록)
+  const homeClasses = useMemo(() => buildInstantClasses().filter((c) => c.key !== 'recommend'), [])
   /* ── Lenis + GSAP 애니메이션 (동적 import — 초기 번들 ~200KB 분리) ── */
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -220,16 +193,6 @@ export default function HomePage() {
            카드가 이미 viewport 안에 있으면 onEnter 미발화 → opacity:0인 채 잔존하는 버그.
            카드는 처음부터 보이는 게 안전. (레이아웃 변경마다 깨지는 구조적 결함 제거) */
 
-        /* === 후기 마퀴: 스크롤 연동 가속 === */
-        document.querySelectorAll('.review-marquee-track').forEach((track, i) => {
-          gsap.to(track, {
-            x: i % 2 === 0 ? -150 : 150, ease: "none",
-            scrollTrigger: {
-              trigger: track.parentElement, start: "top bottom", end: "bottom top", scrub: 0.5,
-            },
-          })
-        })
-
         /* === 캐스팅 마퀴: 스크롤 연동 가속 === */
         document.querySelectorAll('.marquee-track').forEach((track) => {
           gsap.to(track, {
@@ -258,6 +221,8 @@ export default function HomePage() {
 
   return (
     <>
+      {/* 첫 화면 큰 문장 글꼴(KoPub 바탕 Medium)만 홈에서 미리 받는다 — 2026-11-19 첫 화면 속도 */}
+      <link rel="preload" href="/fonts/KoPubWorldBatang-Medium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       <link
         rel="preload"
         as="image"
@@ -321,12 +286,14 @@ export default function HomePage() {
           <div className="hero-a">
             <p className="hero-a-label" lang="en">KD4 Acting Studio · Sinchon, Seoul</p>
             <p className="hero-a-line">상상의 상황 속에서,{' '}<br className="hero-a-br" />진실하게 살아내는 것</p>
+            {/* 2026-11-19 대표 «Acting is living truthfully under imaginary circumstances 안넣어도돼?» — 위 한국어 문장의 원문(샌포드 마이즈너의 연기 정의)을 작은 글씨 출처로만 붙인다. 문장 하나 원칙은 유지 */}
+            <p className="hero-a-quote" lang="en">“Acting is living truthfully under imaginary circumstances.” <span className="hero-a-quote-by">Sanford Meisner</span></p>
             <Link
               href="/join#form-hero"
               className="hero-a-cta"
               onClick={() => analytics.ctaClick('hero_first', '상담 신청')}
             >
-              상담 신청 <span aria-hidden="true">→</span>
+              상담 신청
             </Link>
           </div>
         </div>
@@ -348,72 +315,75 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── HERO INTRO (카피 + CTA, Stats 직전) ───────────────────────────────── */}
+      {/* ── 둘째 화면 — 한 문장 + 서명 (2026-11-19 피드백 시안: 문장 4개·버튼 3개 → 문장 1개) ── */}
       <section className="hero-intro-section" aria-label="브랜드 소개">
-        <p
-          className="shimmer-tag"
-          style={{
-            fontSize: "clamp(0.78rem, 1.6vw, 0.95rem)",
-            letterSpacing: "0.3em",
-            fontFamily: "var(--font-display)",
-            textTransform: "uppercase",
-            marginBottom: "32px",
-            /* animation 제거됨 */
-          }}
-        >
-          배우들의 아지트
+        <p className="home-statement">
+          우리는 양산형 배우를 찍어내는{' '}<br className="home-statement-br" />공장식 학원을 거부합니다.
         </p>
-        <p style={{ fontSize: "clamp(0.88rem, 1.8vw, 1.05rem)", color: "#111111", letterSpacing: "0.02em", marginBottom: "6px" }}>
-          우리는 양산형 배우를 찍어내는 공장식 학원을 거부합니다.
-        </p>
-        <p style={{ fontSize: "clamp(0.88rem, 1.8vw, 1.05rem)", color: "var(--gold)", fontWeight: 600, letterSpacing: "0.02em", marginBottom: "32px" }}>
-          우리는 배우를 성장시키는 KD4 액팅 스튜디오입니다.
-        </p>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", marginBottom: "40px" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px" }}>
           <span style={{ display: "block", width: "36px", height: "1px", background: "var(--gold)" }} />
           <p style={{ fontFamily: "var(--font-display)", fontSize: "clamp(0.75rem, 1.6vw, 0.85rem)", fontWeight: 400, letterSpacing: "0.32em", color: "var(--gold)", textTransform: "uppercase" }}>
             <span lang="en">OFF THE PLASTIC</span>
           </p>
           <span style={{ display: "block", width: "36px", height: "1px", background: "var(--gold)" }} />
         </div>
-        <div className="cta-buttons">
-          <Link
-            href="/join#form"
-            onClick={() => analytics.ctaClick('hero', '무료 상담 신청')}
-            className="btn-primary"
-            style={{
-              background: "var(--gold)",
-              color: "#ffffff",
-              textDecoration: "none",
-              boxShadow: "0 4px 14px rgba(0,0,0,0.12)",
-            }}
-          >
-            무료 상담 신청 <span aria-hidden="true">→</span>
-          </Link>
-          <Link
-            href="#classes"
-            className="btn-primary"
-            style={{
-              background: "var(--navy)",
-              color: "#ffffff",
-              textDecoration: "none",
-              boxShadow: "0 4px 14px rgba(21,72,138,0.2)",
-            }}
-          >
-            클래스 알아보기 <span aria-hidden="true">→</span>
-          </Link>
-          <Link
-            href="/actors"
-            style={{
-              padding: "14px 32px", border: "1px solid rgba(17,17,17,0.35)", color: "#111111",
-              fontWeight: 600, fontSize: "0.85rem", letterSpacing: "0.08em",
-              borderRadius: "var(--radius)", display: "inline-flex", alignItems: "center",
-              minHeight: 44,
-              background: "rgba(255,255,255,0.35)", backdropFilter: "blur(4px)", transition: "background var(--transition)",
-            }}
-          >
-            배우 갤러리
-          </Link>
+      </section>
+
+      {/* ── CLASSES — 처음 오는 분이 고를 수 있는 5개를 한 표로 (누구에게 · 기간과 횟수 · 수강료) ──
+           예전: 3개 카드(가격·기간 없음), 화면 한참 아래. 지금: 둘째 화면 바로 다음.
+           #classes 는 스크롤 등장 연출에서 빠져 있어 처음부터 보인다 */}
+      <section id="classes" aria-label="클래스 소개" className="home-classes">
+        <div className="container" style={{ maxWidth: 980 }}>
+          <div className="home-classes-intro">
+            <p className="section-eyebrow"><span lang="en">CURRICULUM</span></p>
+            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.6rem, 4vw, 2.2rem)", fontWeight: 700, color: "var(--white)", lineHeight: 1.35, marginBottom: 12 }}>
+              나에게 맞는 클래스 찾기
+            </h2>
+            <p style={{ fontSize: "0.92rem", color: "var(--gray-light)", lineHeight: 1.8, wordBreak: "keep-all" }}>
+              처음 오는 분이 고를 수 있는 클래스는 다섯 가지입니다. 누구에게 맞는지, 기간과 수강료를 견주어 보세요.
+            </p>
+          </div>
+
+          <div className="home-class-head" aria-hidden="true">
+            <span>클래스</span>
+            <span>이런 분께</span>
+            <span>기간과 횟수</span>
+            <span className="home-class-head-price">수강료</span>
+          </div>
+          <ul role="list" className="home-class-list">
+            {homeClasses.map((c) => (
+              <li key={c.key}>
+                <Link
+                  href={c.href}
+                  className="home-class-row"
+                  onClick={() => analytics.ctaClick('home_class_row', c.className)}
+                >
+                  <h3 className="home-class-name">{c.nameKo}</h3>
+                  <p className="home-class-who">
+                    {c.sub}
+                    {c.note && <span className="home-class-note">{c.note}</span>}
+                  </p>
+                  <p className="home-class-facts">
+                    {[c.course, ...(c.facts ?? [])].filter(Boolean).join(' · ')}
+                  </p>
+                  <p className="home-class-price">월 {c.price}원</p>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <p className="home-classes-foot">개강 일정과 수업 요일은 상담에서 안내해 드려요.</p>
+
+          <div className="home-classes-actions" data-floating-cta-hide="">
+            <Link
+              href="/join#form-hero"
+              onClick={() => analytics.ctaClick('classes_section', '무료 상담 신청')}
+              className="btn-primary"
+              style={{ background: "var(--navy)", color: "#ffffff", textDecoration: "none" }}
+            >
+              무료 상담 신청
+            </Link>
+            <Link href="/classes" className="home-textlink">클래스 자세히 보기</Link>
+          </div>
         </div>
       </section>
 
@@ -460,6 +430,161 @@ export default function HomePage() {
               </div>
             )
           })}
+        </div>
+      </section>
+
+      {/* ── 5. CASTING ───────────────────────────────────────────────────────── */}
+      <section
+        id="casting"
+        aria-label="캐스팅 연계"
+        className="section"
+        style={{ background: "var(--bg2)", borderTop: "1px solid var(--border)", paddingBottom: "80px" }}
+      >
+        <div className="container">
+          <div style={{ textAlign: "center", marginBottom: "48px" }}>
+            <p
+              className="section-eyebrow"
+            >
+              <span lang="en">CASTING RESULTS</span>
+            </p>
+            <h2 style={{ fontSize: "clamp(1.6rem, 4vw, 2.4rem)", fontWeight: 700 }}>
+              KD4 캐스팅현황
+            </h2>
+            <p style={{ color: "var(--gray)", fontSize: "0.9rem", marginTop: "12px" }}>
+              KD4 멤버들의 실제 캐스팅 결과입니다
+            </p>
+          </div>
+        </div>
+
+        {/* 마퀴 — 컨테이너 밖으로 full-width */}
+        {/* WCAG 2.2.2: 자동 이동 콘텐츠 일시정지 버튼 */}
+        <div style={{ textAlign: 'center', marginBottom: 8 }}>
+          <button
+            type="button"
+            aria-pressed={marqueePaused}
+            aria-label={marqueePaused ? '캐스팅 마퀴 재생' : '캐스팅 마퀴 일시정지'}
+            onClick={() => setMarqueePaused(v => !v)}
+            style={{
+              background: 'none', border: '1px solid var(--border)',
+              color: 'var(--gray)', borderRadius: 6, padding: '4px 12px',
+              minHeight: 44, fontSize: '0.75rem', cursor: 'pointer', letterSpacing: '0.05em',
+            }}
+          >
+            {marqueePaused ? <><span aria-hidden="true">▶</span> 재생</> : <><span aria-hidden="true">⏸</span> 일시정지</>}
+          </button>
+        </div>
+        {/* 스크린 리더용 목록 — 마퀴는 시각적 전용 */}
+        <ul role="list" className="sr-only">
+          {CASTING_PHOTOS.map((photo) => (
+            <li key={photo.url}>{photo.name}{castingWork(photo) ? ` — ${castingWork(photo)}` : ''}</li>
+          ))}
+        </ul>
+        <div className="marquee-wrap" aria-hidden="true">
+          <div className="marquee-track" style={{ animationPlayState: marqueePaused ? 'paused' : 'running' }}>
+            {[...CASTING_PHOTOS, ...CASTING_PHOTOS].map((photo, i) => (
+              <div key={`${photo.url}-${i}`} className="home-cast-item">
+                <div
+                  style={{
+                    width: "100%",
+                    borderRadius: "8px",
+                    overflow: "hidden",
+                    background: "var(--bg3)",
+                    border: "1px solid var(--border)",
+                    position: "relative",
+                    aspectRatio: "9 / 16",
+                  }}
+                >
+                  <Image
+                    src={photo.url}
+                    alt=""
+                    fill
+                    sizes="200px"
+                    loading="lazy"
+                    style={{ objectFit: "cover" }}
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = "none" }}
+                  />
+                </div>
+                {/* 카드 안 작은 글씨는 이 크기에서 안 읽힌다 → 이름·작품을 카드 아래에 글자로 */}
+                <p className="home-cast-name">{photo.name}</p>
+                <p className="home-cast-work">{castingWork(photo)}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CASTING → /about 핸드오프 (글자 링크) ─────────────────────────────── */}
+      <div style={{ background: "var(--bg2)", borderTop: "1px solid var(--border)", padding: "28px 24px 44px" }}>
+        <div className="container" style={{ maxWidth: "720px", textAlign: "center" }}>
+          <p style={{ fontSize: "0.86rem", color: "var(--gray)", marginBottom: "4px", lineHeight: 1.7 }}>
+            위 캐스팅 결과를 만들어낸 훈련 방식이 궁금하다면
+          </p>
+          <Link
+            href="/about"
+            onClick={() => analytics.ctaClick('casting_handoff', '마이즈너 테크닉 알아보기')}
+            className="home-textlink"
+          >
+            훈련 방식 알아보기
+          </Link>
+        </div>
+      </div>
+
+      {/* ── 8. REVIEWS — 한 번씩만 (흐르는 띠·이모지·일시정지 버튼 없음) ─────────── */}
+      <section
+        id="reviews"
+        aria-label="멤버 후기"
+        style={{
+          padding: "64px 0 56px",
+          borderTop: "1px solid var(--border)",
+          background: "var(--bg)",
+        }}
+      >
+        <div className="container" style={{ maxWidth: 980 }}>
+          <p className="section-eyebrow" style={{ textAlign: "center" }}>
+            <span lang="en">REAL REVIEWS</span>
+          </p>
+          <h2
+            style={{
+              textAlign: "center",
+              fontSize: "clamp(1.2rem, 3vw, 1.6rem)",
+              fontWeight: 700,
+              marginBottom: "28px",
+            }}
+          >
+            KD4 멤버 이야기
+          </h2>
+
+          {/* 성과 후기 — 캐스팅된 멤버의 실명 후기 + 출연작 */}
+          <ul role="list" className="home-reviews home-reviews-result">
+            {HOME_RESULT_REVIEWS.map((r) => (
+              <li key={r.by} className="home-review">
+                <figure style={{ margin: 0 }}>
+                  <blockquote className="home-review-text">{r.text}</blockquote>
+                  <figcaption className="home-review-by">
+                    <strong className="home-review-name">{r.by}</strong> · {r.work}
+                    <span className="home-review-cls">{r.cls}</span>
+                  </figcaption>
+                </figure>
+              </li>
+            ))}
+          </ul>
+
+          <ul role="list" className="home-reviews">
+            {HOME_REVIEWS.map((r) => (
+              <li key={r.by + r.text.slice(0, 8)} className="home-review">
+                <figure style={{ margin: 0 }}>
+                  <blockquote className="home-review-text">{r.text}</blockquote>
+                  <figcaption className="home-review-by">
+                    {r.by}{r.cls ? ` · ${r.cls}` : ''}
+                  </figcaption>
+                </figure>
+              </li>
+            ))}
+          </ul>
+
+          <p style={{ textAlign: "center", marginTop: 18 }}>
+            <Link href="/reviews" className="home-textlink">멤버 이야기 더 보기</Link>
+          </p>
         </div>
       </section>
 
@@ -586,8 +711,8 @@ export default function HomePage() {
                 lineHeight: 1.2,
               }}
             >
-              배우지망생 <span aria-hidden="true">→</span>{" "}
-              <span style={{ color: "var(--gold)" }}>진짜 배우</span>
+              배우지망생에서{" "}
+              <span style={{ color: "var(--gold)" }}>진짜 배우</span>로
             </h2>
             <p
               style={{
@@ -703,20 +828,8 @@ export default function HomePage() {
                     </p>
                   </div>
 
-                  {/* 화살표 (마지막 제외) */}
-                  {i < 2 && (
-                    <div key={`arrow-${i}`} className="step-journey-arrow">
-                      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <path
-                          d="M4 10h12M11 5l5 5-5 5"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </div>
-                  )}
+                  {/* 카드 사이 빈 칸 — 화살표는 뺐다(2026-11-19 대표 «빼»). 휴대폰 칸 배치(1fr auto 1fr auto 1fr)가 /join과 같은 CSS라 빈 칸으로 간격만 남긴다 */}
+                  {i < 2 && <div className="step-journey-arrow" aria-hidden="true" />}
                 </React.Fragment>
               ))}
             </div>
@@ -736,357 +849,10 @@ export default function HomePage() {
               <strong style={{ display: "block", color: "var(--navy)", fontWeight: 700, marginBottom: "4px" }}>
                 시작하는 방법
               </strong>
-              온라인 상담 신청 <span aria-hidden="true">→</span> 맞는 클래스 안내{" "}
-              <span aria-hidden="true">→</span> 첫 수업에서 진단·맞춤 피드백
+              온라인 상담 신청 · 맞는 클래스 안내 · 첫 수업에서 진단과 맞춤 피드백
             </p>
           </div>
         </div>
-      </section>
-
-      {/* ── 5. CASTING ───────────────────────────────────────────────────────── */}
-      <section
-        id="casting"
-        aria-label="캐스팅 연계"
-        className="section"
-        style={{ background: "var(--bg2)", borderTop: "1px solid var(--border)", paddingBottom: "80px" }}
-      >
-        <div className="container">
-          <div style={{ textAlign: "center", marginBottom: "48px" }}>
-            <p
-              className="section-eyebrow"
-            >
-              <span lang="en">CASTING RESULTS</span>
-            </p>
-            <h2 style={{ fontSize: "clamp(1.6rem, 4vw, 2.4rem)", fontWeight: 700 }}>
-              KD4 캐스팅현황
-            </h2>
-            <p style={{ color: "var(--gray)", fontSize: "0.9rem", marginTop: "12px" }}>
-              KD4 멤버들의 실제 캐스팅 결과입니다
-            </p>
-          </div>
-        </div>
-
-        {/* 마퀴 — 컨테이너 밖으로 full-width */}
-        {/* WCAG 2.2.2: 자동 이동 콘텐츠 일시정지 버튼 */}
-        <div style={{ textAlign: 'center', marginBottom: 8 }}>
-          <button
-            type="button"
-            aria-pressed={marqueePaused}
-            aria-label={marqueePaused ? '캐스팅 마퀴 재생' : '캐스팅 마퀴 일시정지'}
-            onClick={() => setMarqueePaused(v => !v)}
-            style={{
-              background: 'none', border: '1px solid var(--border)',
-              color: 'var(--gray)', borderRadius: 6, padding: '4px 12px',
-              minHeight: 44, fontSize: '0.75rem', cursor: 'pointer', letterSpacing: '0.05em',
-            }}
-          >
-            {marqueePaused ? <><span aria-hidden="true">▶</span> 재생</> : <><span aria-hidden="true">⏸</span> 일시정지</>}
-          </button>
-        </div>
-        {/* 스크린 리더용 배우 목록 — 마퀴는 시각적 전용 */}
-        <ul role="list" className="sr-only">
-          {CASTING_PHOTOS.map((photo) => (
-            <li key={photo.url}>{photo.name}{photo.work ? ` — ${photo.work}` : ''}</li>
-          ))}
-        </ul>
-        <div className="marquee-wrap" aria-hidden="true">
-          <div className="marquee-track" style={{ animationPlayState: marqueePaused ? 'paused' : 'running' }}>
-            {[...CASTING_PHOTOS, ...CASTING_PHOTOS].map((photo, i) => (
-              <div
-                key={`${photo.url}-${i}`}
-                aria-hidden={i >= CASTING_PHOTOS.length || undefined}
-                style={{
-                  flexShrink: 0,
-                  width: "200px",
-                  marginRight: "16px",
-                  borderRadius: "8px",
-                  overflow: "hidden",
-                  background: "var(--bg3)",
-                  border: "1px solid var(--border)",
-                  position: "relative",
-                  aspectRatio: "9 / 16",
-                }}
-              >
-                {/* 이름 fallback — 이미지 로드 실패 시 노출 */}
-                <span style={{
-                  position: "absolute", inset: 0,
-                  display: "flex", alignItems: "flex-end", justifyContent: "center",
-                  paddingBottom: "14px", fontSize: "0.82rem", color: "var(--text-warm)",
-                  zIndex: 0,
-                }}>
-                  {i < CASTING_PHOTOS.length ? photo.name : ""}
-                </span>
-                <Image
-                  src={photo.url}
-                  alt={i < CASTING_PHOTOS.length ? photo.name : ""}
-                  fill
-                  sizes="200px"
-                  loading="lazy"
-                  style={{ objectFit: "cover", zIndex: 1 }}
-                  onError={(e) => { (e.target as HTMLImageElement).style.display = "none" }}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── CASTING → /about 핸드오프 ─────────────────────────────────────────── */}
-      <div style={{ background: "var(--bg2)", borderTop: "1px solid var(--border)", padding: "48px 24px 60px" }}>
-        <div className="container" style={{ maxWidth: "720px", textAlign: "center" }}>
-          <p style={{ fontSize: "0.82rem", color: "var(--gray)", marginBottom: "20px", lineHeight: 1.7 }}>
-            위 캐스팅 결과를 만들어낸 훈련 방식이 궁금하다면
-          </p>
-          <Link
-            href="/about"
-            onClick={() => analytics.ctaClick('casting_handoff', '마이즈너 테크닉 알아보기')}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px",
-              padding: "14px 36px",
-              background: "var(--navy)",
-              color: "#ffffff",
-              fontWeight: 700,
-              fontSize: "0.9rem",
-              letterSpacing: "0.06em",
-              borderRadius: "var(--radius)",
-              textDecoration: "none",
-              boxShadow: "0 4px 16px rgba(21,72,138,0.2)",
-              maxWidth: "320px",
-              width: "100%",
-              boxSizing: "border-box",
-            } as React.CSSProperties}
-          >
-            훈련 방식 알아보기 <span aria-hidden="true">→</span>
-          </Link>
-        </div>
-      </div>
-
-      {/* ── 7. CLASSES — 압축 버전 (전체 보기는 /classes로) ─────────────────── */}
-      <section id="classes" aria-label="클래스 소개" className="section" style={{ background: "var(--bg)" }}>
-        <div className="container" style={{ maxWidth: 980 }}>
-          <div style={{ textAlign: "center", marginBottom: "40px" }}>
-            <p className="section-eyebrow"><span lang="en">CURRICULUM</span></p>
-            <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.6rem, 4vw, 2.2rem)", fontWeight: 700, color: "var(--white)", lineHeight: 1.35, marginBottom: 12 }}>
-              나에게 맞는 클래스 찾기
-            </h2>
-            <p style={{ fontSize: "0.92rem", color: "var(--gray-light)", lineHeight: 1.8, maxWidth: 540, margin: "0 auto" }}>
-              베이직 · 마이즈너 정규 · 출연영상 — 3가지 트랙으로<br />
-              입문부터 캐스팅까지 단계별 훈련.
-            </p>
-          </div>
-
-          {/* 3개 미니 카드 — canonical 카드 패턴 (tag + 클래스명 + 한 줄) */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14, marginBottom: 40 }}>
-            {[
-              { tag: "BEGINNER", num: "01", title: "베이직 클래스", desc: "취미로 연기를 시작하고 싶은 분", href: "/basic-acting-class", hot: false },
-              { tag: "TRAINING", num: "02", title: "마이즈너 테크닉 정규 클래스", desc: "제대로 배우 훈련을 받고 싶은 분", href: "/meisner-technique-class", hot: true },
-              { tag: "PORTFOLIO", num: "03", title: "출연영상 클래스", desc: "캐스팅되는 포트폴리오를 만들고 싶은 분", href: "/reel-production-class", hot: true },
-            ].map(({ tag, num, title, desc, href, hot }) => (
-              <Link
-                key={title}
-                href={href}
-                style={{
-                  background: "var(--bg2)",
-                  border: "1px solid var(--border)",
-                  borderRadius: 12,
-                  padding: 24,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 8,
-                  textDecoration: "none",
-                  transition: "border-color 0.2s, transform 0.2s",
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.borderColor = "var(--gold)"
-                  e.currentTarget.style.transform = "translateY(-2px)"
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.borderColor = "var(--border)"
-                  e.currentTarget.style.transform = "none"
-                }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                  <span style={{
-                    fontFamily: "var(--font-display), Oswald, sans-serif",
-                    fontSize: "0.75rem",
-                    letterSpacing: "0.15em",
-                    color: "var(--gold)",
-                    textTransform: "uppercase",
-                    background: "rgba(21,72,138,0.1)",
-                    border: "1px solid rgba(21,72,138,0.25)",
-                    borderRadius: 3,
-                    padding: "3px 9px",
-                  }} lang="en">{tag}</span>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    {hot && (
-                      <span style={{
-                        fontFamily: "var(--font-sans)",
-                        fontSize: "0.75rem",
-                        fontWeight: 800,
-                        color: "#fff",
-                        background: "var(--accent-red)",
-                        borderRadius: 999,
-                        padding: "2px 8px",
-                        letterSpacing: "0.05em",
-                      }}><span aria-hidden="true">🔥</span>{' HOT'}</span>
-                    )}
-                    <span aria-hidden style={{
-                      fontFamily: "var(--font-display), Oswald, sans-serif",
-                      fontSize: "1.3rem",
-                      fontWeight: 300,
-                      color: "var(--gray)",
-                      letterSpacing: "0.05em",
-                      lineHeight: 1,
-                    }}>{num}</span>
-                  </div>
-                </div>
-                <h3 style={{
-                  fontFamily: "var(--font-sans)",
-                  fontSize: "1.05rem",
-                  fontWeight: 700,
-                  color: "var(--white)",
-                  letterSpacing: "0.02em",
-                  marginTop: 6,
-                }}>{title}</h3>
-                <p style={{
-                  fontFamily: "var(--font-sans)",
-                  fontSize: "0.85rem",
-                  color: "var(--secondary)",
-                  lineHeight: 1.7,
-                }}>{desc}</p>
-              </Link>
-            ))}
-          </div>
-
-          {/* CTA — 전체 클래스 + 상담 */}
-          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-            <Link
-              href="/classes"
-              style={{
-                display: "inline-block",
-                padding: "14px 32px",
-                background: "var(--navy)",
-                color: "#ffffff",
-                fontFamily: "var(--font-sans)",
-                fontSize: "0.92rem",
-                fontWeight: 700,
-                borderRadius: "var(--radius)",
-                letterSpacing: "0.05em",
-                textDecoration: "none",
-                boxShadow: "0 4px 20px rgba(21,72,138,0.25)",
-              }}
-            >
-              전체 클래스 보러가기 <span aria-hidden="true">→</span>
-            </Link>
-            <Link
-              href="/join#form-hero"
-              onClick={() => analytics.ctaClick('classes_section', '무료 상담 신청')}
-              style={{
-                display: "inline-block",
-                padding: "14px 32px",
-                background: "transparent",
-                color: "#111111",
-                fontFamily: "var(--font-sans)",
-                fontSize: "0.92rem",
-                fontWeight: 600,
-                border: "1px solid rgba(17,17,17,0.35)",
-                borderRadius: "var(--radius)",
-                letterSpacing: "0.05em",
-                textDecoration: "none",
-              }}
-            >
-              무료 상담 신청
-            </Link>
-          </div>
-
-          {/* 내부 교차 링크 — SEO: Googlebot 1-hop 연결 */}
-          <nav aria-label="주요 클래스 및 정보" style={{ marginTop: 28, textAlign: "center", borderTop: "1px solid var(--border)", paddingTop: 20 }}>
-            <div style={{ display: "flex", gap: 24, justifyContent: "center", flexWrap: "wrap" }}>
-              <Link href="/meisner-technique-class" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>마이즈너 테크닉 클래스 <span aria-hidden="true">→</span></Link>
-              <Link href="/reel-production-class" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>출연영상 클래스 <span aria-hidden="true">→</span></Link>
-              <Link href="/acting-coaches" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>권동원 액팅 코치 <span aria-hidden="true">→</span></Link>
-              <Link href="/sinchon-acting-academy" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>신촌 연기학원 오시는 길 <span aria-hidden="true">→</span></Link>
-              <Link href="/benefits" style={{ fontSize: "0.84rem", color: "var(--secondary)", textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44 }}>멤버 혜택 <span aria-hidden="true">→</span></Link>
-            </div>
-          </nav>
-        </div>
-      </section>
-
-      {/* ── 8. REVIEWS MARQUEE ─────────────────────────────────────────────── */}
-      <section
-        id="reviews"
-        aria-label="멤버 후기"
-        style={{
-          padding: "48px 0",
-          borderTop: "1px solid var(--border)",
-          background: "var(--bg)",
-          overflow: "hidden",
-        }}
-      >
-        <p className="section-eyebrow" style={{ textAlign: "center" }}>
-          <span lang="en">REAL REVIEWS</span>
-        </p>
-        <h2
-          style={{
-            textAlign: "center",
-            fontSize: "clamp(1.2rem, 3vw, 1.6rem)",
-            fontWeight: 700,
-            marginBottom: "32px",
-          }}
-        >
-          KD4 멤버 이야기
-        </h2>
-
-        {/* WCAG 2.2.2: 자동 이동 콘텐츠 일시정지 버튼 */}
-        <div style={{ textAlign: 'center', marginBottom: 8 }}>
-          <button
-            type="button"
-            aria-pressed={reviewPaused}
-            aria-label={reviewPaused ? '멤버 이야기 마퀴 재생' : '멤버 이야기 마퀴 일시정지'}
-            onClick={() => setReviewPaused(v => !v)}
-            style={{
-              background: 'none', border: '1px solid var(--border)',
-              color: 'var(--gray)', borderRadius: 6, padding: '4px 12px',
-              minHeight: 44, fontSize: '0.75rem', cursor: 'pointer', letterSpacing: '0.05em',
-            }}
-          >
-            {reviewPaused ? <><span aria-hidden="true">▶</span> 재생</> : <><span aria-hidden="true">⏸</span> 일시정지</>}
-          </button>
-        </div>
-
-        {/* 1행: 왼쪽으로 */}
-        <div className="review-marquee" aria-hidden="true" style={{ marginBottom: "12px" }}>
-          <div className="review-marquee-track" style={{ animationPlayState: reviewPaused ? 'paused' : 'running' }}>
-            {[...REVIEW_ITEMS, ...REVIEW_ITEMS].map((r, i) => (
-              <div key={`${r.author}-${i}`} aria-hidden={i >= REVIEW_ITEMS.length ? true : undefined} style={reviewCardStyle}>
-                <span aria-hidden="true" style={reviewEmojiStyle}>{r.emoji}</span>
-                <p style={reviewTextStyle}>&ldquo;{r.text}&rdquo; <span style={reviewAuthorStyle}>— {r.author}</span></p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* 2행: 오른쪽으로 */}
-        <div className="review-marquee reverse" aria-hidden="true">
-          <div className="review-marquee-track" style={{ animationPlayState: reviewPaused ? 'paused' : 'running' }}>
-            {[...REVIEW_ITEMS_2, ...REVIEW_ITEMS_2].map((r, i) => (
-              <div key={`${r.author}-${i}`} aria-hidden={i >= REVIEW_ITEMS_2.length ? true : undefined} style={reviewCardStyle}>
-                <span aria-hidden="true" style={reviewEmojiStyle}>{r.emoji}</span>
-                <p style={reviewTextStyle}>&ldquo;{r.text}&rdquo; <span style={reviewAuthorStyle}>— {r.author}</span></p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* 스크린리더 전용 후기 목록 */}
-        <ul role="list" className="sr-only">
-          {[...REVIEW_ITEMS, ...REVIEW_ITEMS_2].map((r, i) => (
-            <li key={`${r.author}-${i}`}>&ldquo;{r.text}&rdquo; — {r.author}</li>
-          ))}
-        </ul>
       </section>
 
       {/* ── Partners ─────────────────────────────────────────────────────────── */}
@@ -1150,15 +916,12 @@ export default function HomePage() {
               lineHeight: 1.7,
             }}
           >
-            배우지망생 <span aria-hidden="true">→</span> 진짜 배우
+            배우지망생에서 진짜 배우로
             <br />
             연기 훈련부터 캐스팅까지
           </p>
 
-          <div
-            className="cta-buttons"
-            style={{ marginBottom: "48px" }}
-          >
+          <div style={{ marginBottom: "14px" }} data-floating-cta-hide="">
             <Link
               href="/join#form"
               onClick={() => analytics.ctaClick('homepage_final_cta', '무료 상담 신청')}
@@ -1170,38 +933,39 @@ export default function HomePage() {
                 boxShadow: "0 6px 18px rgba(21,72,138,0.2)",
               }}
             >
-              무료 상담 신청 <span aria-hidden="true">→</span>
+              무료 상담 신청
             </Link>
+          </div>
+          <p style={{ marginBottom: "44px" }}>
             <a
               href="https://pf.kakao.com/_ximxdqn"
               target="_blank" rel="noopener noreferrer"
               aria-label="카카오로 문의하기 (새 탭에서 열림)"
               onClick={() => analytics.contact('kakao')}
-              style={{
-                display: "inline-block",
-                padding: "18px 52px",
-                border: "1px solid rgba(17,17,17,0.35)",
-                color: "#111111",
-                fontWeight: 800,
-                fontSize: "1.15rem",
-                letterSpacing: "0.08em",
-                borderRadius: "var(--radius)",
-              }}
+              className="home-textlink"
             >
               카카오로 문의하기
             </a>
-          </div>
+          </p>
 
           {/* 독백 아카이브 내부 링크 — "독백 대본" 키워드 앵커 텍스트 (SEO) */}
-          <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.7 }}>
+          <p style={{ fontSize: '0.85rem', color: 'var(--gray)', lineHeight: 1.7, wordBreak: 'keep-all' }}>
             오디션 준비 중이라면 — 남자독백·여자독백 무료{' '}
             <Link
               href="/monologues"
               style={{ color: 'var(--navy)', fontWeight: 700, textDecoration: 'underline', textUnderlineOffset: 4 }}
             >
-              독백 대본 아카이브 <span aria-hidden="true">→</span>
+              독백 대본 아카이브
             </Link>
           </p>
+
+          {/* 나머지 길 — 버튼이 아니라 조용한 글자 링크 한 줄 (검색 로봇용 1-hop 연결도 겸한다) */}
+          <nav aria-label="더 둘러보기" className="home-quiet-links">
+            <Link href="/acting-coaches">권동원 액팅 코치</Link>
+            <Link href="/sinchon-acting-academy">신촌 연기학원 오시는 길</Link>
+            <Link href="/benefits">멤버 혜택</Link>
+            <Link href="/actors">배우 갤러리</Link>
+          </nav>
         </div>
       </section>
     </>

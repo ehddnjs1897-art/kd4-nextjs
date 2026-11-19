@@ -10,13 +10,13 @@
  */
 // 2026-08-30 텍스트 감사 일괄 수정 (캐스팅 80건·프로그램 명칭·문구 정합화)
 export const LAST_UPDATED = {
-  home: '2026-08-30',
-  about: '2026-10-11',
-  classes: '2026-11-10',
+  home: '2026-11-19',
+  about: '2026-11-19',
+  classes: '2026-11-19',
   basic: '2026-10-13',
   meisner: '2026-11-10',
   // /audition-technique-class — 오디션 테크닉 클래스 (2026-09-17 신설)
-  audition: '2026-11-10',
+  audition: '2026-11-19',
   // /meisner-technique — 정보형 가이드 (2026-08-20 신설)
   meisnerGuide: '2026-08-20',
   // /meisner-technique/repetition-emotion-words — 레피티션 감정 어휘표 (2026-09-08 신설)

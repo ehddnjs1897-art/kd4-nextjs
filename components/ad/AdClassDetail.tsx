@@ -178,7 +178,7 @@ export default function AdClassDetail({ adKey }: { adKey: AdKey }) {
         <Sec eyebrow="FOR WHOM" title="이런 분께 추천합니다" alt>
           <Checks items={AUDITION_AUDIENCE} />
         </Sec>
-        <Sec eyebrow="CURRICULUM" title="3개월 커리큘럼">
+        <Sec eyebrow="CURRICULUM" title="오디션 테크닉 A to Z">
           <div style={{ display: 'grid', gap: 12 }}>
             {AUDITION_CURRICULUM.map((m) => (
               <div key={m.month} style={card}>

@@ -19,9 +19,9 @@ const PAGE_URL = `${SITE_URL}/audition-technique-class`
 const AUDITION = CLASSES.find((c) => c.nameKo === '오디션 테크닉 클래스')!
 
 export const metadata: Metadata = {
-  title: '오디션 테크닉 클래스 — 오디션 독백·에티튜드·모의 오디션 3개월',
+  title: '주세빈 액팅코치의 오디션 테크닉 A to Z',
   description:
-    `오디션에서 통하는 나만의 독백을 만들고, 오디션 현장 에티튜드와 실전 변수 대응까지 훈련하는 3개월 클래스. 이미지 브랜딩 → 연기 고도화 → 모의 오디션. 정원 6명 소수정예, 월 4회·회당 4시간, 월 ${wonOf('오디션 테크닉 클래스')}. 서울 신촌 이대역 도보 3분 KD4 액팅 스튜디오.`,
+    `드라마 주연 배우 주세빈 액팅코치의 오디션 테크닉 A to Z. 모의 오디션·이미지 컨설팅·오디션 필살 독백 만들기·오디션 애티튜드. 정원 6명 소수정예, 월 4회·회당 4시간, 월 ${wonOf('오디션 테크닉 클래스')}. 서울 신촌 이대역 도보 3분 KD4 액팅 스튜디오.`,
   keywords: [
     '오디션 테크닉',
     '오디션 준비',
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     type: 'website',
     url: PAGE_URL,
     title: '오디션 테크닉 클래스 | KD4 액팅 스튜디오',
-    description: `오디션 독백 만들기 · 현장 에티튜드 · 모의 오디션까지 3개월. 정원 6명 소수정예, 월 4회·회당 4시간, 월 ${wonOf('오디션 테크닉 클래스')}.`,
+    description: `주세빈 액팅코치의 오디션 테크닉 A to Z. 모의 오디션·이미지 컨설팅·오디션 필살 독백 만들기·오디션 애티튜드. 정원 6명 소수정예, 월 4회·회당 4시간, 월 ${wonOf('오디션 테크닉 클래스')}.`,
     images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: '오디션 테크닉 클래스 — KD4 액팅 스튜디오', type: 'image/jpeg' }],
     locale: 'ko_KR',
     siteName: 'KD4 액팅 스튜디오',
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: '오디션 테크닉 클래스 | KD4 액팅 스튜디오',
-    description: `오디션 독백 만들기 · 현장 에티튜드 · 모의 오디션까지 3개월. 정원 6명 소수정예, 월 ${wonOf('오디션 테크닉 클래스')}.`,
+    description: `주세빈 액팅코치의 오디션 테크닉 A to Z. 모의 오디션·이미지 컨설팅·오디션 필살 독백 만들기·오디션 애티튜드. 정원 6명 소수정예, 월 ${wonOf('오디션 테크닉 클래스')}.`,
     images: [{ url: `${SITE_URL}/og-heart.jpg`, width: 1200, height: 630, alt: '오디션 테크닉 클래스 — KD4 액팅 스튜디오', type: 'image/jpeg' }],
   },
 }
@@ -95,7 +95,7 @@ export default function AuditionTechniqueClassPage() {
             idPath: '/audition-technique-class#webpage',
             url: PAGE_URL,
             name: '오디션 테크닉 클래스 | KD4 액팅 스튜디오',
-            description: '오디션 독백 만들기 · 오디션 현장 에티튜드 · 모의 오디션까지 3개월 과정. 정원 6명 소수정예.',
+            description: '드라마 주연 배우 주세빈 액팅코치의 오디션 테크닉 A to Z. 모의 오디션·이미지 컨설팅·오디션 필살 독백 만들기·오디션 애티튜드.',
             mainEntity: { '@id': `${PAGE_URL}#course-audition-technique-class` },
             dateModified: LAST_UPDATED.audition,
             speakableCssSelectors: ['h1', '.section-desc', '.faq-answer'],
@@ -115,7 +115,7 @@ export default function AuditionTechniqueClassPage() {
             오디션 테크닉 클래스
           </h1>
           <p className="section-desc" style={{ color: 'rgba(255,255,255,0.9)', maxWidth: '640px', margin: '0 auto' }}>
-            {AUDITION.quote}. 카메라 앞 긴장에서 자유로워지고, 내 매력을 정확히 알고, 오디션에서 꺼낼 무기를 만드는 3개월입니다.
+            드라마 주연 배우 주세빈 액팅코치의 오디션 테크닉 A to Z. 모의 오디션·이미지 컨설팅·오디션 필살 독백 만들기·오디션 애티튜드를 함께 훈련합니다.
           </p>
         </div>
       </section>
@@ -156,13 +156,13 @@ export default function AuditionTechniqueClassPage() {
       </section>
 
       {/* ===== 커리큘럼 ===== */}
-      <section aria-label="3개월 커리큘럼" style={{ padding: 'clamp(48px, 9vw, 80px) 0', background: 'var(--bg)' }}>
+      <section aria-label="오디션 테크닉 A to Z" style={{ padding: 'clamp(48px, 9vw, 80px) 0', background: 'var(--bg)' }}>
         <div className="container" style={{ maxWidth: '860px' }}>
           <div style={{ textAlign: 'center', marginBottom: '32px' }}>
             <p className="section-eyebrow"><span lang="en">CURRICULUM</span></p>
-            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>3개월 커리큘럼</h2>
+            <h2 className="section-title-serif" style={{ marginBottom: '12px' }}>오디션 테크닉 A to Z</h2>
             <p className="section-desc" style={{ maxWidth: '620px', margin: '0 auto' }}>
-              독백을 고르는 것부터 실제 오디션장과 같은 환경의 최종 모의 오디션까지, 12주 동안 순서대로 쌓아 갑니다.
+              모의 오디션·이미지 컨설팅·오디션 필살 독백 만들기·오디션 애티튜드.
             </p>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>

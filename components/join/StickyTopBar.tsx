@@ -1,6 +1,5 @@
 'use client'
 
-import { ArrowRight } from 'lucide-react'
 
 interface Cohort {
   name: string
@@ -101,7 +100,6 @@ export default function StickyTopBar({
         }}
       >
         무료상담
-        <ArrowRight aria-hidden={true} size={11} strokeWidth={2.2} />
       </a>}
     </div>
   )
