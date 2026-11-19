@@ -173,8 +173,11 @@
 .hero-a > :nth-child(2) { animation-delay: 0.08s; }
 .hero-a > :nth-child(3) { animation-delay: 0.16s; }
 .hero-a > :nth-child(4) { animation-delay: 0.24s; }
+/* 시작 투명도 0.01(0 아님) — 2026-11-19 «2.5초 고»: 크롬은 투명도 0으로 처음 그려진 글자를 «첫 큰 글자»로 안 세고,
+   이 효과는 화면 합성 단계에서만 돌아서 다시 세지 않는다 → 1.3초에 보이는 첫 문장이 JS가 다 뜬 2.8초로 잡혔다.
+   0.01은 눈으로 0과 구분이 안 된다(움직임·속도는 그대로). 다시 0으로 바꾸지 말 것 */
 @keyframes heroARise {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0.01; transform: translateY(10px); }
   to   { opacity: 1; transform: none; }
 }
 

@@ -1864,8 +1864,11 @@ main {
 /* === /join 페이지 visual uplift === */
 
 /* A. 섹션 진입 fade-up — 페이지 로드 후 자동 stagger */
+/* 시작 투명도 0.01(0 아님) — 2026-11-19 «2.5초 고»: 크롬은 투명도 0으로 처음 그려진 글자를 «첫 큰 글자»로 안 세고,
+   이 효과는 화면 합성 단계에서만 돌아서 다시 세지 않는다 → 실제론 1.5초에 보이는 제목이 JS가 다 뜬 2.3초로 잡혔다.
+   0.01은 눈으로 0과 구분이 안 된다(움직임·속도는 그대로). 다시 0으로 바꾸지 말 것 */
 @keyframes upliftIn {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0.01; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 .uplift-page > section {
