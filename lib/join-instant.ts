@@ -41,8 +41,8 @@ export interface InstantClass {
 /* 신규 멤버 상담 대상 5개 — 순서·대상은 기존 상담 폼 카드와 같다 (심화·1달·리더는 폼에 넣지 않음) */
 const TILE_DEFS: { key: Exclude<InstantKey, 'recommend'>; label: string; sub: string; nameKo: string; href: string }[] = [
   { key: 'basic', label: '베이직', sub: '취미로 가볍게 시작하는 연기', nameKo: '베이직 클래스', href: '/basic-acting-class' },
-  { key: 'meisner', label: '마이즈너 테크닉', sub: '막혀있던 감정의 둑을 터뜨리는 수업', nameKo: '마이즈너 테크닉 정규 클래스', href: '/meisner-technique-class' },
-  { key: 'reel', label: '출연영상', sub: '맞춤형 시나리오 · 전문 영화팀 제작', nameKo: '출연영상 클래스', href: '/reel-production-class' },
+  { key: 'meisner', label: '마이즈너 테크닉', sub: '배우로 거듭나는 시간', nameKo: '마이즈너 테크닉 정규 클래스', href: '/meisner-technique-class' },
+  { key: 'reel', label: '출연영상', sub: '마이즈너 테크닉 + 캐스팅되는 출연영상', nameKo: '출연영상 클래스', href: '/reel-production-class' },
   { key: 'audition', label: '오디션 테크닉', sub: '주세빈 코치의 오디션 테크닉 A to Z', nameKo: '오디션 테크닉 클래스', href: '/audition-technique-class' },
   { key: 'private', label: '개인 레슨', sub: '나만을 위한 집중 훈련', nameKo: '개인 레슨', href: '/acting-coaches' },
 ]

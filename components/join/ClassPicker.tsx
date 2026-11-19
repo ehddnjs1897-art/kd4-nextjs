@@ -60,7 +60,7 @@ export default function ClassPicker({
                 onClick={(e) => handleClick(e, c)}
               >
                 <JoinClassIcon kind={c.key} className={s.icon} />
-                <span className={s.name}>{c.label}</span>
+                <span className={s.name}>{c.nameKo ?? c.label}</span>
                 <span className={s.sub}>{c.sub}</span>
               </a>
             </li>
