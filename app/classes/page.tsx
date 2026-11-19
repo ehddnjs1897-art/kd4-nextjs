@@ -58,7 +58,7 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
         </span>
       )}
 
-      {/* 수업 사진 — 흑백 16:9 통일 (2026-11-12 대표 확정) */}
+      {/* 수업 사진 — 16:9, 컬러 + 얼굴 모자이크 (2026-11-19 대표) */}
       {cls.photo && (
         <Image
           src={cls.photo}
