@@ -657,7 +657,7 @@ export default function ConsultSheet({ classes }: { classes: InstantClass[] }) {
                     <h3 className={s.secTitle}>토요일 클래스 · 액팅코치</h3>
                     <div className={s.coaches}>
                       {[
-                        { name: '박우진', time: '낮 클래스 · 매주 토요일 12:00–15:00', id: '1b828f43-db23-4491-ae9e-c5e7b45b8492', photo: '1783422086383_IMG_8078.jpg', credits: ['드라마 ENA 《닥터 섬보이》', '드라마 MBC 《노무사 노무진》 (목소리 출연)'] },
+                        { name: '박우진', time: '낮 클래스 · 매주 토요일 12:00–15:00', id: '1b828f43-db23-4491-ae9e-c5e7b45b8492', photo: '1783422086383_IMG_8078.jpg', credits: ['드라마 ENA 《닥터 섬보이》', '드라마 MBC 《마인드 닥터》 (2027년 상반기 방영 예정)', '드라마 ENA 《혹하는 로맨스》 (2027년 상반기 방영 예정)'] },
                         { name: '홍수민', time: '저녁 클래스 · 매주 토요일 15:00–18:00', id: '745adec4-6d10-42d2-b2a4-46e2cf1ee25e', photo: '1783414751735_IMG_0904.jpeg', credits: ['영화 《방황하는 새벽》', '영화 《연애상담》'] },
                       ].map((coach) => (
                         <article key={coach.id} className={s.coach}>
