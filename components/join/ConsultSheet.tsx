@@ -657,8 +657,8 @@ export default function ConsultSheet({ classes }: { classes: InstantClass[] }) {
                     <h3 className={s.secTitle}>토요일 클래스 · 액팅코치</h3>
                     <div className={s.coaches}>
                       {[
-                        { name: '박우진', time: '낮 클래스 · 매주 토요일 12:00–15:00', id: '1b828f43-db23-4491-ae9e-c5e7b45b8492', photo: '1783422086383_IMG_8078.jpg', credits: ['드라마 ENA 《닥터 섬보이》', '드라마 MBC 《마인드 닥터》 (2027년 상반기 방영 예정)', '드라마 ENA 《혹하는 로맨스》 (2027년 상반기 방영 예정)'] },
-                        { name: '홍수민', time: '저녁 클래스 · 매주 토요일 15:00–18:00', id: '745adec4-6d10-42d2-b2a4-46e2cf1ee25e', photo: '1783414751735_IMG_0904.jpeg', credits: ['영화 《방황하는 새벽》', '영화 《연애상담》'] },
+                        { name: '박우진', time: '낮 클래스 · 매주 토요일 12:00–15:00', id: '1b828f43-db23-4491-ae9e-c5e7b45b8492', photo: '1783422086383_IMG_8078.jpg', credits: ['드라마 ENA 《닥터 섬보이》', '드라마 MBC 《마인드 닥터》', '드라마 ENA 《혹하는 로맨스》'] },
+                        { name: '홍수민', time: '저녁 클래스 · 매주 토요일 15:00–18:00', id: '745adec4-6d10-42d2-b2a4-46e2cf1ee25e', photo: '1783414751735_IMG_0904.jpeg', credits: ['영화 《방황하는 새벽》', '영화 《연애상담》', '공연 《안녕 이끼끼》', '공연 《플랫폼》'] },
                       ].map((coach) => (
                         <article key={coach.id} className={s.coach}>
                           <Image src={`https://qudyncopszvcbnwgrwbd.supabase.co/storage/v1/object/public/actor-photos/actors/${coach.id}/${coach.photo}`} alt={`${coach.name} 액팅코치`} width={96} height={128} sizes="96px" quality={65} className={s.coachPhoto} />
@@ -666,7 +666,6 @@ export default function ConsultSheet({ classes }: { classes: InstantClass[] }) {
                             <h4 className={s.coachName}>{coach.name} 액팅코치</h4>
                             <p className={s.coachTime}>{coach.time}</p>
                             <ul className={s.bullets}>{coach.credits.map((credit) => <li key={credit}>{credit}</li>)}</ul>
-                            <a href={`/actors/${coach.id}`} target="_blank" rel="noopener noreferrer" className={s.coachLink}>공개 배우 프로필 보기 (새 탭)</a>
                           </div>
                         </article>
                       ))}
@@ -692,7 +691,6 @@ export default function ConsultSheet({ classes }: { classes: InstantClass[] }) {
                             <h4 className={s.coachName}>{coach.name} 액팅코치</h4>
                             <p className={s.coachTime}>{coach.role}</p>
                             <ul className={s.bullets}>{coach.credits.map((credit) => <li key={credit}>{credit}</li>)}</ul>
-                            <a href={`/acting-coaches#${coach.anchor}`} target="_blank" rel="noopener noreferrer" className={s.coachLink}>코치 프로필 보기 (새 탭)</a>
                           </div>
                         </article>
                       ))}
