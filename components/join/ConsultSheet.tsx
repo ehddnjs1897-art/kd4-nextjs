@@ -651,6 +651,19 @@ export default function ConsultSheet({ classes }: { classes: InstantClass[] }) {
                   </section>
                 )}
 
+                {cls.key === 'meisner' && (
+                  <section className={s.sec}>
+                    <h3 className={s.secTitle}>정규 2기 발표회</h3>
+                    <figure className={s.video}>
+                      <a href="https://www.youtube.com/watch?v=SOpMlunkY94" target="_blank" rel="noopener noreferrer" aria-label="정규 2기 발표회 보기 (YouTube 새 탭)">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src="https://i.ytimg.com/vi/SOpMlunkY94/hqdefault.jpg" alt="마이즈너 테크닉 정규 2기 쇼케이스" width={480} height={360} loading="lazy" style={{ display: 'block', width: '100%', height: 'auto', borderRadius: '10px' }} />
+                        <span>정규 2기 발표회 보기</span>
+                      </a>
+                    </figure>
+                  </section>
+                )}
+
                 {cls.videos && cls.videos.length > 0 && (
                   <section className={s.sec}>
                     <h3 className={s.secTitle}>멤버 출연영상</h3>
