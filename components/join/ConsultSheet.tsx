@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
+import Image from 'next/image'
 import { Check, ChevronLeft, MessageCircle, X } from 'lucide-react'
 import { analytics } from '@/lib/analytics'
 import type { InstantClass, InstantKey } from '@/lib/join-instant'
@@ -651,6 +652,28 @@ export default function ConsultSheet({ classes }: { classes: InstantClass[] }) {
                   </section>
                 )}
 
+                {cls.key === 'basic' && (
+                  <section className={s.sec}>
+                    <h3 className={s.secTitle}>토요일 클래스 · 액팅코치</h3>
+                    <div className={s.coaches}>
+                      {[
+                        { name: '박우진', time: '낮 클래스 · 매주 토요일 12:00–15:00', id: '1b828f43-db23-4491-ae9e-c5e7b45b8492', photo: '1783422086383_IMG_8078.jpg', credits: ['단편 《같지만 다른 사람》', '연극 《음모론자들》'] },
+                        { name: '홍수민', time: '저녁 클래스 · 매주 토요일 15:00–18:00', id: '745adec4-6d10-42d2-b2a4-46e2cf1ee25e', photo: '1792809242320_IMG_0734.jpg', credits: ['단편 《방황하는 새벽》', '단편 《연애상담》'] },
+                      ].map((coach) => (
+                        <article key={coach.id} className={s.coach}>
+                          <Image src={`https://qudyncopszvcbnwgrwbd.supabase.co/storage/v1/object/public/actor-photos/actors/${coach.id}/${coach.photo}`} alt={`${coach.name} 액팅코치`} width={96} height={128} sizes="96px" quality={65} className={s.coachPhoto} />
+                          <div>
+                            <h4 className={s.coachName}>{coach.name} 액팅코치</h4>
+                            <p className={s.coachTime}>{coach.time}</p>
+                            <ul className={s.bullets}>{coach.credits.map((credit) => <li key={credit}>{credit}</li>)}</ul>
+                            <a href={`/actors/${coach.id}`} target="_blank" rel="noopener noreferrer" className={s.coachLink}>공개 배우 프로필 보기 (새 탭)</a>
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
                 {cls.key === 'meisner' && (
                   <section className={s.sec}>
                     <h3 className={s.secTitle}>정규 2기 발표회</h3>
@@ -708,15 +731,27 @@ export default function ConsultSheet({ classes }: { classes: InstantClass[] }) {
                         <dd>{cls.facts.join(' · ')}</dd>
                       </div>
                     )}
+                    {(cls.key === 'meisner' || cls.key === 'reel') && (
+                      <div className={s.row}>
+                        <dt>수업 시간</dt>
+                        <dd>낮 12:00–16:00 / 저녁 18:00–22:00 · 요일은 기수별로 상이함.</dd>
+                      </div>
+                    )}
+                    {cls.key === 'private' && (
+                      <div className={s.row}>
+                        <dt>날짜·시간</dt>
+                        <dd>강사와 협의</dd>
+                      </div>
+                    )}
                     {cls.instructor && (
                       <div className={s.row}>
                         <dt>진행</dt>
-                        <dd>{cls.instructor}</dd>
+                        <dd>{cls.key === 'basic' ? '박우진 액팅코치 · 홍수민 액팅코치' : cls.instructor}</dd>
                       </div>
                     )}
                   </dl>
                   {cls.priceNote && <p className={s.priceNote}>{cls.priceNote}</p>}
-                  <p className={s.small}>개강 일정과 수업 요일은 상담에서 안내해 드려요.</p>
+                  {cls.key !== 'private' && <p className={s.small}>{cls.key === 'audition' ? '개강 일정과 수업 요일은 상담에서 안내해 드려요.' : '개강 일정은 상담에서 안내해 드려요.'}</p>}
                 </section>
 
                 <a href={cls.href} target="_blank" rel="noopener noreferrer" className={s.pageLink}>

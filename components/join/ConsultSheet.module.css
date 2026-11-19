@@ -648,3 +648,15 @@
     animation: none;
   }
 }
+
+/* /join 베이직 상세만: 공개 배우 프로필을 활용한 두 토요일 반 안내 */
+.coaches { display: grid; gap: 16px; }
+.coach { display: grid; grid-template-columns: 80px minmax(0, 1fr); gap: 14px; align-items: start; }
+.coachPhoto { width: 80px; height: 107px; object-fit: cover; border-radius: 10px; }
+.coachName { margin: 0 0 4px; font-size: 1rem; line-height: 1.4; color: var(--navy); }
+.coachTime { margin: 0 0 8px; font-size: 0.85rem; line-height: 1.6; word-break: keep-all; }
+.coachLink { display: inline-block; padding: 10px 0; font-size: 0.8rem; text-decoration: underline; text-underline-offset: 3px; }
+@media (min-width: 760px) {
+  .coach { grid-template-columns: 96px minmax(0, 1fr); }
+  .coachPhoto { width: 96px; height: 128px; }
+}
