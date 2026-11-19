@@ -4,6 +4,7 @@ import { MessageCircle } from 'lucide-react'
 import type { InstantClass } from '@/lib/join-instant'
 import { openConsult } from '@/lib/consult-instant'
 import JoinCTALink from './JoinCTALink'
+import JoinClassIcon from './JoinClassIcon'
 import s from './ClassPicker.module.css'
 
 /**
@@ -58,6 +59,7 @@ export default function ClassPicker({
                 aria-haspopup="dialog"
                 onClick={(e) => handleClick(e, c)}
               >
+                <JoinClassIcon kind={c.key} className={s.icon} />
                 <span className={s.name}>{c.label}</span>
                 <span className={s.sub}>{c.sub}</span>
               </a>

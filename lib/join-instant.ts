@@ -40,11 +40,11 @@ export interface InstantClass {
 
 /* 신규 멤버 상담 대상 5개 — 순서·대상은 기존 상담 폼 카드와 같다 (심화·1달·리더는 폼에 넣지 않음) */
 const TILE_DEFS: { key: Exclude<InstantKey, 'recommend'>; label: string; sub: string; nameKo: string; href: string }[] = [
-  { key: 'basic', label: '베이직', sub: '취미로 가볍게 시작하고 싶다면', nameKo: '베이직 클래스', href: '/basic-acting-class' },
-  { key: 'meisner', label: '마이즈너 테크닉', sub: '연기하지 않는 연기를 훈련하고 싶다면', nameKo: '마이즈너 테크닉 정규 클래스', href: '/meisner-technique-class' },
-  { key: 'reel', label: '출연영상', sub: '오디션에 보낼 내 장면을 만들고 싶다면', nameKo: '출연영상 클래스', href: '/reel-production-class' },
-  { key: 'audition', label: '오디션 테크닉', sub: '시선을 멈추게 할 독백을 준비한다면', nameKo: '오디션 테크닉 클래스', href: '/audition-technique-class' },
-  { key: 'private', label: '개인 레슨', sub: '1:1로 집중해서 훈련하고 싶다면', nameKo: '개인 레슨', href: '/acting-coaches' },
+  { key: 'basic', label: '베이직', sub: '취미로 가볍게 시작하는 연기', nameKo: '베이직 클래스', href: '/basic-acting-class' },
+  { key: 'meisner', label: '마이즈너 테크닉', sub: '막혀있던 감정의 둑을 터뜨리는 수업', nameKo: '마이즈너 테크닉 정규 클래스', href: '/meisner-technique-class' },
+  { key: 'reel', label: '출연영상', sub: '맞춤형 시나리오 · 전문 영화팀 제작', nameKo: '출연영상 클래스', href: '/reel-production-class' },
+  { key: 'audition', label: '오디션 테크닉', sub: '주세빈 코치의 오디션 테크닉 A to Z', nameKo: '오디션 테크닉 클래스', href: '/audition-technique-class' },
+  { key: 'private', label: '개인 레슨', sub: '나만을 위한 집중 훈련', nameKo: '개인 레슨', href: '/acting-coaches' },
 ]
 
 /** 「추천받기」가 접수에 넘기는 값 — 기존 폼의 「기타 / 상담 후 결정」과 같은 값(노션 «❓ 미정»으로 들어감) */
@@ -88,7 +88,7 @@ export function buildInstantClasses(extra: {
   list.push({
     key: 'recommend',
     label: '어떤 반이 맞을지 추천받기',
-    sub: '상담에서 같이 정해요',
+    sub: '상담으로 나에게 맞는 수업 찾기',
     className: RECOMMEND_CLASS_NAME,
     href: '/classes',
   })
