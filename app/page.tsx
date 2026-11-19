@@ -277,6 +277,8 @@ export default function HomePage() {
           <div className="hero-a">
             <p className="hero-a-label" lang="en">KD4 Acting Studio · Sinchon, Seoul</p>
             <p className="hero-a-line">상상의 상황 속에서,{' '}<br className="hero-a-br" />진실하게 살아내는 것</p>
+            {/* 2026-11-19 대표 «Acting is living truthfully under imaginary circumstances 안넣어도돼?» — 위 한국어 문장의 원문(샌포드 마이즈너의 연기 정의)을 작은 글씨 출처로만 붙인다. 문장 하나 원칙은 유지 */}
+            <p className="hero-a-quote" lang="en">“Acting is living truthfully under imaginary circumstances.” <span className="hero-a-quote-by">Sanford Meisner</span></p>
             <Link
               href="/join#form-hero"
               className="hero-a-cta"
