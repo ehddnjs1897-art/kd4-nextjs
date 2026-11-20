@@ -26,7 +26,22 @@ const AUDITION_C = findClass('오디션 테크닉 클래스')
 const MOVEMENT_C = findClass('움직임 클래스')
 const PERSONAL_C = findClass('개인 레슨')
 
-function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
+/** 카카오 채널 — 수료 멤버 전용 클래스(STEP 2·3)는 상담 폼이 아니라 카카오로 신청 (2026-10-06 대표) */
+const KAKAO_URL = 'https://pf.kakao.com/_ximxdqn'
+
+/** 2026-11-20 대표 «움직임 클래스 내려놓고» — 별도 코스 안에서 맨 뒤로 */
+const CTA_STYLE: React.CSSProperties = {
+  display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '12px 0', minHeight: 44,
+  background: 'var(--gold)', color: '#fff', fontWeight: 700,
+  fontSize: '0.88rem', fontFamily: 'var(--font-display)', letterSpacing: '0.06em',
+  borderRadius: 'var(--radius)', textDecoration: 'none',
+  transition: 'opacity 0.2s', boxShadow: '0 4px 16px rgba(21,72,138,0.25)',
+}
+
+const MOVEMENT_LAST =(a: (typeof CLASSES)[0], b: (typeof CLASSES)[0]) =>
+  (a.nameKo === '움직임 클래스' ? 1 : 0) - (b.nameKo === '움직임 클래스' ? 1 : 0)
+
+function ClassCard({ cls, showPhoto = false, kakaoApply = false }: { cls: (typeof CLASSES)[0]; showPhoto?: boolean; kakaoApply?: boolean }) {
   // useEffect로 client-only 계산 — SSR/hydration mismatch 방지 (PROMO_DEADLINE 경계 순간)
   // SSR에서는 false(프로모 활성)로 렌더, 클라이언트 mount 시 실제 시각 반영
   const [isPromoExpired, setIsPromoExpired] = useState(false)
@@ -58,14 +73,15 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
         </span>
       )}
 
-      {/* 수업 사진 — 16:9, 컬러 + 얼굴 블러 (2026-11-19 대표) */}
-      {cls.photo && (
+      {/* 수업 사진 — 16:9 컬러, 얼굴 공개 (2026-11-20 대표). STEP 1(신규 멤버) 4장만 — 아래 단계는 사진 없는 카드로 통일
+          (대표 «일관성 떨어지면 사진 빼도 돼»: 리더 1장만 사진이 있으면 구역마다 들쭉날쭉) */}
+      {showPhoto && cls.photo && (
         <Image
           src={cls.photo}
           alt={cls.photoAlt ?? `${cls.nameKo} 수업 장면`}
           width={1280}
           height={720}
-          sizes="(max-width: 700px) 100vw, 420px"
+          sizes="(max-width: 900px) 100vw, 600px"
           style={{ display: 'block', width: '100%', height: 'auto', aspectRatio: '16 / 9', objectFit: 'cover', borderBottom: '1px solid var(--border)' }}
         />
       )}
@@ -163,21 +179,28 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
           )}
         </div>
 
-        {/* CTA */}
-        <a
-          href="/join"
-          aria-label={`${cls.nameKo} 무료 상담 신청`}
-          onClick={() => { analytics.viewContent(cls.nameKo); analytics.ctaClick('class_card', cls.nameKo) }}
-          style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '12px 0', minHeight: 44,
-            background: 'var(--gold)', color: '#fff', fontWeight: 700,
-            fontSize: '0.88rem', fontFamily: 'var(--font-display)', letterSpacing: '0.06em',
-            borderRadius: 'var(--radius)', textDecoration: 'none',
-            transition: 'opacity 0.2s', boxShadow: '0 4px 16px rgba(21,72,138,0.25)',
-          }}
-        >
-          무료 상담 신청
-        </a>
+        {/* CTA — 신규 멤버·별도 코스 = 상담 폼(/join), 수료 멤버 전용(STEP 2·3) = 카카오 채널 */}
+        {kakaoApply ? (
+          <a
+            href={KAKAO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${cls.nameKo} 카카오 채널로 신청 (새 탭에서 열림)`}
+            onClick={() => { analytics.contact('kakao'); analytics.ctaClick('class_card_kakao', cls.nameKo) }}
+            style={CTA_STYLE}
+          >
+            카카오채널로 신청
+          </a>
+        ) : (
+          <a
+            href="/join"
+            aria-label={`${cls.nameKo} 무료 상담 신청`}
+            onClick={() => { analytics.viewContent(cls.nameKo); analytics.ctaClick('class_card', cls.nameKo) }}
+            style={CTA_STYLE}
+          >
+            무료 상담 신청
+          </a>
+        )}
 
         {detailHref && (
           <Link
@@ -203,10 +226,6 @@ function ClassCard({ cls }: { cls: (typeof CLASSES)[0] }) {
 }
 
 export default function ClassesPage() {
-  const [step2Open, setStep2Open] = useState(false)
-  const [step3Open, setStep3Open] = useState(false)
-  const [extraOpen, setExtraOpen] = useState(false)
-
   return (
     <div style={{ paddingTop: '80px', background: 'var(--bg)', minHeight: '100vh' }}>
       {/* 헤더 */}
@@ -235,54 +254,27 @@ export default function ClassesPage() {
       <section className="section" aria-label="클래스 상세 목록" style={{ background: 'var(--bg)' }}>
         <div className="container">
 
-          {/* STEP 1 */}
-          <div style={{ marginBottom: '48px' }}>
-            <div style={{
-              display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center',
-              marginBottom: '32px', gap: '10px', padding: 'clamp(20px, 5vw, 28px) clamp(20px, 5vw, 32px)',
-              border: '1px solid rgba(21,72,138,0.35)', borderRadius: '12px',
-              background: 'rgba(21,72,138,0.04)',
-            }}>
-              <p style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.25em', color: 'var(--navy)', fontFamily: 'var(--font-display)', margin: 0 }}><span lang="en">STEP 1</span></p>
-              <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', fontWeight: 800, color: '#111111', fontFamily: 'var(--font-serif)', margin: 0 }}>신규 멤버 클래스</h2>
-              <p style={{ fontSize: 'clamp(0.9rem, 2vw, 1rem)', color: 'var(--navy)', fontWeight: 600, margin: 0 }}>지금 바로 신청할 수 있어요</p>
-            </div>
-            <div id="class-cards-step1" className="classes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))', gap: '16px', scrollMarginTop: 80 }}>
-              {CLASSES.filter(c => c.isNewMemberOpen).map((cls) => <ClassCard key={cls.nameEn} cls={cls} />)}
-            </div>
-          </div>
-
-          {/* STEP 2·3·Extra 아코디언 */}
+          {/* 2026-11-20 대표 «스텝 1,2,3 토글 말고 쫙 보이게»: 접는 칸(아코디언) 없앰 — 4구역 모두 펼친 채 같은 머리 모양으로.
+              카드는 PC 2열(한 줄에 2장)·모바일 1열. 흐리게(opacity) 처리하던 것도 없앰 */}
           {[
-            { label: 'STEP 2', title: '', desc: 'STEP 1 수료 후 참여할 수 있는 클래스입니다.', open: step2Open, setOpen: setStep2Open, filter: 'step2' },
-            { label: 'STEP 3', title: '', desc: 'STEP 2 수료 후 참여할 수 있는 클래스입니다.', open: step3Open, setOpen: setStep3Open, filter: 'step3' },
-            { label: 'EXTRA',  title: '별도 코스', desc: '별도로 운영되는 클래스입니다.', open: extraOpen, setOpen: setExtraOpen, filter: 'extra' },
-          ].map(({ label, title, desc, open, setOpen, filter }) => (
-            <div key={filter} style={{ marginBottom: '16px' }}>
-              <button
-                type="button"
-                id={`btn-${filter}`}
-                aria-expanded={open}
-                aria-controls={`step-${filter}-panel`}
-                onClick={() => setOpen((o: boolean) => !o)}
-                style={{
-                  display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%',
-                  background: open ? 'rgba(255,255,255,0.03)' : 'none',
-                  border: '1px solid var(--border)', borderRadius: '12px',
-                  cursor: 'pointer', padding: '24px 32px', marginBottom: open ? '20px' : '0',
-                  textAlign: 'center', gap: '8px', transition: 'border-color 0.2s, background 0.2s',
-                }}
-              >
+            { key: 'step1', label: 'STEP 1', title: '신규 멤버 클래스', desc: '지금 바로 신청할 수 있어요', items: CLASSES.filter(c => c.isNewMemberOpen), photo: true, kakao: false },
+            { key: 'step2', label: 'STEP 2', title: '수료 멤버 클래스', desc: 'STEP 1을 마친 멤버가 들을 수 있어요', items: CLASSES.filter(c => c.category === 'step2'), photo: false, kakao: true },
+            { key: 'step3', label: 'STEP 3', title: '리더 클래스', desc: 'STEP 2를 마친 멤버가 들을 수 있어요', items: CLASSES.filter(c => c.category === 'step3'), photo: false, kakao: true },
+            { key: 'extra', label: 'EXTRA', title: '별도 코스', desc: '단계와 따로 운영하는 클래스예요', items: CLASSES.filter(c => c.category === 'extra').sort(MOVEMENT_LAST), photo: false, kakao: false },
+          ].map(({ key, label, title, desc, items, photo, kakao }) => (
+            <div key={key} id={`class-cards-${key}`} style={{ marginBottom: '64px', scrollMarginTop: 80 }}>
+              <div style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center',
+                marginBottom: '24px', gap: '10px', padding: 'clamp(20px, 5vw, 28px) clamp(20px, 5vw, 32px)',
+                border: '1px solid rgba(21,72,138,0.35)', borderRadius: '12px',
+                background: 'rgba(21,72,138,0.04)',
+              }}>
                 <p style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.25em', color: 'var(--navy)', fontFamily: 'var(--font-display)', margin: 0 }}><span lang="en">{label}</span></p>
-                {title && (
-                  <span style={{ fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', fontWeight: 800, color: 'var(--gray-light)', fontFamily: 'var(--font-serif)', margin: 0 }}>{title}</span>
-                )}
-                <p style={{ fontSize: '0.8rem', color: 'var(--gray)', margin: 0 }}>{desc}</p>
-                <span aria-hidden="true" style={{ fontSize: '0.85rem', color: 'var(--gray)', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s', display: 'inline-block', marginTop: '4px' }}>▼</span>
-              </button>
-              {/* 패널은 DOM에 항상 유지 — display:none으로 가시성 제어 (ARIA accordion 패턴) */}
-              <div id={`step-${filter}-panel`} aria-labelledby={`btn-${filter}`} className="classes-grid" style={{ display: open ? 'grid' : 'none', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: '12px', opacity: 0.85, marginTop: open ? '20px' : 0 }}>
-                {CLASSES.filter(c => c.category === filter).map((cls) => <ClassCard key={cls.nameEn} cls={cls} />)}
+                <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', fontWeight: 800, color: '#111111', fontFamily: 'var(--font-serif)', margin: 0 }}>{title}</h2>
+                <p style={{ fontSize: 'clamp(0.9rem, 2vw, 1rem)', color: 'var(--navy)', fontWeight: 600, margin: 0 }}>{desc}</p>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 400px), 1fr))', gap: '16px' }}>
+                {items.map((cls) => <ClassCard key={cls.nameEn} cls={cls} showPhoto={photo} kakaoApply={kakao} />)}
               </div>
             </div>
           ))}
@@ -326,8 +318,8 @@ export default function ClassesPage() {
                   <li style={{ display: 'flex', justifyContent: 'space-between', gap: '12px' }}><span>마이즈너 테크닉 정규 클래스 ({MEISNER_C?.course ?? ''})</span><strong style={{ color: '#111111', fontWeight: 600 }}>{MEISNER_C?.price ?? ''}원</strong></li>
                   <li style={{ display: 'flex', justifyContent: 'space-between', gap: '12px' }}><span>출연영상 클래스 ({REEL_C?.course ?? ''})</span><strong style={{ color: '#111111', fontWeight: 600 }}>{REEL_C?.price ?? ''}원</strong></li>
                   <li style={{ display: 'flex', justifyContent: 'space-between', gap: '12px' }}><span>오디션 테크닉 클래스</span><strong style={{ color: '#111111', fontWeight: 600 }}>{AUDITION_C?.price ?? ''}원</strong></li>
-                  <li style={{ display: 'flex', justifyContent: 'space-between', gap: '12px' }}><span>움직임 클래스</span><strong style={{ color: '#111111', fontWeight: 600 }}>{MOVEMENT_C?.price ?? ''}원</strong></li>
                   <li style={{ display: 'flex', justifyContent: 'space-between', gap: '12px' }}><span>개인 레슨</span><strong style={{ color: '#111111', fontWeight: 600 }}>{PERSONAL_C?.price ?? ''}원</strong></li>
+                  <li style={{ display: 'flex', justifyContent: 'space-between', gap: '12px' }}><span>움직임 클래스</span><strong style={{ color: '#111111', fontWeight: 600 }}>{MOVEMENT_C?.price ?? ''}원</strong></li>
                   <li>마이즈너 정규·출연영상 클래스는 일시납 시 10만원 추가 할인.</li>
                 </ul>
               </div>
