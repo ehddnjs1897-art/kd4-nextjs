@@ -31,6 +31,10 @@ export default function JoinHeader() {
         />
       </Link>
       <nav className={styles.nav} aria-label="주요 안내">
+        {/* 2026-11-21 대표 «홈페이지 메인으로 가는 버튼도 하나 만들자, 같은 느낌으로» — 로고만으로는 홈 가는 길인 줄 모른다 */}
+        <JoinCTALink href="/" location="join_nav" label="홈" fireLead className={styles.link}>
+          홈
+        </JoinCTALink>
         <JoinCTALink href="/classes" location="join_nav" label="클래스·수강료" fireLead className={styles.link}>
           클래스·수강료
         </JoinCTALink>

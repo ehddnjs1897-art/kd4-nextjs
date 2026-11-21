@@ -59,9 +59,12 @@
   text-decoration: none;
   white-space: nowrap;
 }
-/* 아주 좁은 화면(≤350px): 「오시는 길」은 접고 수강료·후기·상담만 */
-@media (max-width: 350px) {
+/* 좁은 화면(≤380px): 「오시는 길」은 접고 홈·수강료·후기·상담만
+   (11/21 «홈» 추가로 360·375px에서 한 줄에 다 안 들어감 — 실측 여유 18·33px) */
+@media (max-width: 380px) {
   .hideNarrow { display: none; }
+}
+@media (max-width: 350px) {
   .bar { padding: 0 10px; gap: 6px; }
 }
 @media (min-width: 768px) {

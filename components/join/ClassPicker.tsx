@@ -1,6 +1,8 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { MessageCircle } from 'lucide-react'
+import { PRICE_CHANGE_AT } from '@/lib/classes'
 import type { InstantClass } from '@/lib/join-instant'
 import { openConsult } from '@/lib/consult-instant'
 import JoinCTALink from './JoinCTALink'
@@ -31,6 +33,16 @@ export default function ClassPicker({
 }) {
   const isTop = variant === 'top'
   const Heading = isTop ? 'h1' : 'h2'
+
+  // 인상까지 남은 날(12/31 = D-DAY). 첫 그림은 서버와 같게 null, 화면이 켜진 뒤 채운다
+  const changeAt = Date.parse(PRICE_CHANGE_AT)
+  const [priceExpired, setPriceExpired] = useState(false)
+  const [daysLeft, setDaysLeft] = useState<number | null>(null)
+  useEffect(() => {
+    const left = changeAt - Date.now()
+    if (left <= 0) { setPriceExpired(true); return }
+    setDaysLeft(Math.floor(left / 86_400_000))
+  }, [changeAt])
 
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>, c: InstantClass) {
     // 새 탭으로 열기(⌘·Ctrl·Shift·가운데 버튼)는 막지 않는다
@@ -66,6 +78,22 @@ export default function ClassPicker({
             </li>
           ))}
         </ul>
+
+        {/* 2027 수강료 인상 예고 — 2026-11-21 대표 «하단에 수업 인상 예정 안내 써서 배포해 · 작게 아니고 마케팅적으로 보여지게».
+            오르는 클래스(lib/classes.ts nextPrice): 마이즈너 정규·출연영상·출연영상 1달·오디션·개인 레슨 (베이직·심화는 그대로).
+            PRICE_CHANGE_AT이 지나면 저절로 사라진다. D-day는 화면이 켜진 뒤 계산(서버·브라우저 시각 차이로 화면이 어긋나지 않게) */}
+        {isTop && !priceExpired && (
+          <div className={s.priceNotice} role="note">
+            <p className={s.priceHead}>
+              {daysLeft !== null && <span className={s.priceBadge}>{daysLeft === 0 ? 'D-DAY' : `D-${daysLeft}`}</span>}
+              <strong>12월 31일까지 등록하면 <span className={s.nowrap}>지금 수강료 그대로</span></strong>
+            </p>
+            <p className={s.priceSub}>
+              2027년 1월 1일부터 <span className={s.nowrap}>마이즈너·출연영상·오디션·개인 레슨</span>{' '}
+              <span className={s.nowrap}>수강료가 올라요.</span>
+            </p>
+          </div>
+        )}
 
         {isTop ? (
           <>

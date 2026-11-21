@@ -139,6 +139,50 @@
 }
 
 /* ── 선택지 아래 ── */
+/* 2027 수강료 인상 예고 — 카드 바로 아래, 눈에 띄게 (2026-11-21 대표 «작게 아니고 마케팅적으로») */
+.priceNotice {
+  margin: clamp(16px, 3vw, 24px) 0 0;
+  padding: clamp(16px, 3.5vw, 22px) clamp(16px, 4vw, 28px);
+  border: 1.5px solid var(--navy);
+  border-radius: 14px;
+  background: var(--navy-tint-2, rgba(21, 72, 138, 0.08));
+  text-align: center;
+  word-break: keep-all;
+}
+.priceHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px 10px;
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.08rem, 3.6vw, 1.35rem);
+  line-height: 1.4;
+  color: var(--navy);
+}
+.priceHead strong {
+  font-weight: 800;
+}
+.priceBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--navy);
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.priceSub {
+  margin: 8px 0 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--gray);
+}
+
 .trust {
   display: flex;
   flex-wrap: wrap;
