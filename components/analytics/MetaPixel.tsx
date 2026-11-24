@@ -5,6 +5,8 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useRef } from 'react'
 
 const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim()
+// 11/25 새 광고 계정(823898187436452)용 픽셀 «KD4.club-새계정». fbq('track')은 init된 픽셀 전부로 전송됨
+const PIXEL_ID_NEW_ACCOUNT = '1131782372962920'
 
 export default function MetaPixel() {
   const pathname = usePathname()
@@ -44,6 +46,7 @@ export default function MetaPixel() {
           s.parentNode.insertBefore(t,s)}(window, document,'script',
           'https://connect.facebook.net/en_US/fbevents.js');
           fbq('init', '${PIXEL_ID}');
+          fbq('init', '${PIXEL_ID_NEW_ACCOUNT}');
           fbq('track', 'PageView');
         `}
       </Script>
