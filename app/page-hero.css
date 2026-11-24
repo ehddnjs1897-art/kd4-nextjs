@@ -510,6 +510,29 @@
   color: var(--gray-light);
   word-break: keep-all;
 }
+/* 마퀴 아래 «캐스팅 현황 전체 보기» (11/25) — 상담 버튼(네이비 채움)과 구분되게 네이비 테두리형 */
+.home-cast-more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 30px;
+  border: 1.5px solid var(--navy);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--navy);
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+.home-cast-more:hover,
+.home-cast-more:focus-visible {
+  background: var(--navy);
+  color: #ffffff;
+}
 
 /* ── 멤버 이야기: 한 번씩만 ── */
 .home-reviews {

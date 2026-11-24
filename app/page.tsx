@@ -511,6 +511,17 @@ export default function HomePage() {
             ))}
           </div>
         </div>
+
+        {/* 2026-11-25 대표 «캐스팅현황 메인페이지에 마퀴 하단에 캐스팅현황 버튼 만들고» — 전체 52건은 /casting */}
+        <div style={{ textAlign: "center", marginTop: 36 }}>
+          <Link
+            href="/casting"
+            onClick={() => analytics.ctaClick('casting_section', '캐스팅 현황 전체 보기')}
+            className="home-cast-more"
+          >
+            캐스팅 현황 전체 보기
+          </Link>
+        </div>
       </section>
 
       {/* ── CASTING → /about 핸드오프 (글자 링크) ─────────────────────────────── */}

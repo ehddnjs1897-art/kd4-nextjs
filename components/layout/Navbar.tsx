@@ -8,6 +8,8 @@ import { useRouter, usePathname } from 'next/navigation'
 const publicLinks = [
   { label: '스튜디오 소개', href: '/about' },
   { label: '클래스 소개', href: '/classes' },
+  // 2026-11-25 대표 «메뉴에도 후기 위에 캐스팅현황 넣어»
+  { label: '캐스팅 현황', href: '/casting' },
   { label: '후기', href: '/reviews' },
   { label: '멤버 혜택', href: '/benefits' },
   { label: 'FAQ', href: '/faq' },
