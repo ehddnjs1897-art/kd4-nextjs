@@ -87,7 +87,7 @@
 
 /* ═══ HERO A안 (2026-11-16 대표 확정) — 처음부터 문장을 크게, 진한 네이비로 ═══
    작은 라벨(스튜디오 이름) · 문장 · 밑줄 한 줄 버튼.
-   휴대폰 = 왼쪽 정렬 두 줄(390px 폭에서 35px) / 768px 이상 = 가운데 한 줄(1440px 폭에서 58px).
+   휴대폰 = 가운데 정렬 두 줄(390px 폭에서 35px, 11/25 왼쪽→가운데) / 768px 이상 = 가운데 한 줄(1440px 폭에서 58px).
    글꼴은 KoPub 바탕 Medium(이 사이트에서는 weight 400), 그림자 없음.
    예전 «KD4 타이틀 → 약 11초 뒤 문장으로 교체» 연출(HERO TITLE WALL / WALL STATEMENT)은 이 블록으로 대체.
    등장은 짧은 CSS 페이드 1회뿐 — 스크롤 트리거·JS에 기대지 않는다(핵심 문장이 안 보이는 사고 방지) */
@@ -97,8 +97,11 @@
   z-index: 10;
   display: flex;
   align-items: center;
-  padding: 0 20px 8vh 28px;
-  padding: 0 20px 8svh 28px; /* 아래 여백 8% → 덩어리 중심이 화면 높이 46% 지점 */
+  /* 2026-11-25 대표 «모바일도 히어로 텍스트 가운데정렬» — 휴대폰도 PC처럼 가운데(줄바꿈 두 줄은 그대로) */
+  justify-content: center;
+  text-align: center;
+  padding: 0 24px 8vh;
+  padding: 0 24px 8svh; /* 아래 여백 8% → 덩어리 중심이 화면 높이 46% 지점 */
   pointer-events: none;
 }
 .hero-a {
@@ -127,7 +130,7 @@
 }
 /* 한국어 문장의 원문 출처(2026-11-19) — 문장보다 확실히 작고 옅게, 라벨과 같은 바탕체 */
 .hero-a-quote {
-  margin: 14px 0 0;
+  margin: 14px auto 0;
   max-width: 34em;
   font-family: var(--font-serif);
   font-weight: 400;
