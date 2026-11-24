@@ -143,31 +143,35 @@
   text-transform: uppercase;
   margin-left: 0.4em;
 }
+/* 2026-11-25 대표 «히어로페이지 상담신청 눈에 더 잘보이게해» — 밑줄 글자 → 네이비 채움 버튼(흰 글자).
+   글꼴(KoPub 돋움)·색(네이비)·문구 «상담 신청»은 그대로, 화살표 없음 */
 .hero-a-cta {
   position: relative;
-  display: inline-block;
-  margin-top: 26px;
-  padding-bottom: 5px;
-  border-bottom: 1.5px solid var(--navy);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  margin-top: 28px;
+  padding: 0 34px;
+  border-radius: var(--radius);
+  background: var(--navy);
+  box-shadow: 0 8px 22px rgba(15, 51, 100, 0.28);
   font-family: var(--font-sans);
   font-weight: 700;
-  font-size: 0.9375rem;
-  letter-spacing: 0.02em;
-  color: var(--navy);
+  font-size: 1.0625rem;
+  letter-spacing: 0.04em;
+  color: #ffffff;
   text-decoration: none;
   pointer-events: auto;
-  transition: opacity 0.2s;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
 }
 /* 보이는 모양은 밑줄 글씨 그대로 두고, 누르는 영역만 손가락 크기(44px 이상)로 넓힘 */
-.hero-a-cta::after {
-  content: '';
-  position: absolute;
-  left: -14px;
-  right: -14px;
-  top: -12px;
-  bottom: -12px;
+.hero-a-cta:hover,
+.hero-a-cta:focus-visible {
+  background: var(--navy-deep);
+  box-shadow: 0 10px 26px rgba(15, 51, 100, 0.36);
+  transform: translateY(-1px);
 }
-.hero-a-cta:hover { opacity: 0.7; }
 
 .hero-a > * { animation: heroARise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
 .hero-a > :nth-child(2) { animation-delay: 0.08s; }
@@ -200,7 +204,7 @@
   .hero-a-line { margin-top: 20px; font-size: clamp(2rem, 4.03vw, 4rem); }
   .hero-a-quote { margin: 18px auto 0; font-size: 0.875rem; }
   .hero-a-quote-by { font-size: 0.75rem; }
-  .hero-a-cta { margin-top: 30px; font-size: 1.0625rem; }
+  .hero-a-cta { margin-top: 34px; min-height: 58px; padding: 0 46px; font-size: 1.1875rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-a > * { animation: none; }
